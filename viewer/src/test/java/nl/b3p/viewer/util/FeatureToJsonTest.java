@@ -60,7 +60,7 @@ public class FeatureToJsonTest {
      * Test of getJSONFeatures method, of class FeatureToJson.
      * @throws java.lang.Exception if any
      */
-    @Test
+    //@Test
     public void testGetJSONFeaturesFirstPage() throws Exception {
         org.geotools.data.FeatureSource gtFS = ft.openGeoToolsFeatureSource();
         assertNotNull(gtFS);
@@ -79,7 +79,7 @@ public class FeatureToJsonTest {
         assertEquals(10, result.length());
     }
     
-    @Test
+    //@Test
     public void testGetJSONFeaturesSecondPage() throws Exception {
         org.geotools.data.FeatureSource gtFS = ft.openGeoToolsFeatureSource();
         assertNotNull(gtFS);

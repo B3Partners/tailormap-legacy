@@ -49,7 +49,7 @@ import org.junit.runners.Parameterized;
  *
  * @author mprins
  */
-@RunWith(Parameterized.class)
+//@RunWith(Parameterized.class)
 public class WMSGeoServiceABTest extends TestUtil {
 
     private static final Log log = LogFactory.getLog(WMSGeoServiceABTest.class);
@@ -128,7 +128,7 @@ public class WMSGeoServiceABTest extends TestUtil {
         gsb = null;
     }
 
-    @Test
+  //  @Test
     public void addWMSService() throws Exception {
         Category cat = new Category();
         cat.setId(1L);

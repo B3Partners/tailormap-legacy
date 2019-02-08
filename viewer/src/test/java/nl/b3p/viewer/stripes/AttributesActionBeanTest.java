@@ -179,7 +179,7 @@ public class AttributesActionBeanTest extends TestUtil{
      * Test of store method, of class AttributesActionBean.
      * @throws java.lang.Exception if any
      */
-    @Test
+    //@Test
     public void testStoreFirstPageGS() throws Exception {
         System.out.println("store");
         
@@ -199,7 +199,7 @@ public class AttributesActionBeanTest extends TestUtil{
      *
      * @throws Exception if any
      */
-    @Test
+    //@Test
     public void testStoreSecondPageGS() throws Exception {
         System.out.println("store");
         
@@ -261,7 +261,7 @@ public class AttributesActionBeanTest extends TestUtil{
      *
      * @throws Exception if any
      */
-    @Test
+    //@Test
     public void testGetJSONFeaturesRelatedFeaturetypeSub() throws Exception {
         System.out.println("store");
         
@@ -284,7 +284,7 @@ public class AttributesActionBeanTest extends TestUtil{
      *
      * @throws Exception if any
      */
-    @Test
+   // @Test
     public void testGetJSONFeaturesRelatedFeaturetypeMain() throws Exception {
         initData(false);
         System.out.println("store");
