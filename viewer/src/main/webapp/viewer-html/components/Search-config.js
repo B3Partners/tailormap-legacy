@@ -48,6 +48,15 @@ Ext.define("viewer.components.SearchConfiguration",{
             }
         });
         this.form.add({
+            xtype: 'checkbox',
+            boxLabel: i18next.t('viewer_components_searchconfiguration_35'),
+            name: 'showFeatureInfoAfterSearch',
+            checked: this.configObject.showFeatureInfoAfterSearch !== undefined ? this.configObject.showFeatureInfoAfterSearch : false,
+            style: {
+                marginRight: "90px"
+            }
+        });
+        this.form.add({
             xtype: "combobox",
             fields: ['value','text'],
             fieldLabel: i18next.t('viewer_components_searchconfiguration_1'),
