@@ -45,6 +45,7 @@ import org.geotools.data.simple.SimpleFeatureStore;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.filter.identity.FeatureIdImpl;
 import org.geotools.filter.text.cql2.CQL;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.opengis.feature.simple.SimpleFeature;
@@ -180,7 +181,7 @@ public class EditFeatureActionBean extends LocalizableApplicationActionBean impl
                 }
                 store = (SimpleFeatureStore)fs;
                 addAuditTrailLog();
-                jsonFeature = new JSONObject(feature);
+                jsonFeature = getJsonFeature(feature);
                 if (!this.isFeatureWriteAuthorized(appLayer,jsonFeature,context.getRequest())){
                      error = getBundle().getString("viewer.editfeatureactionbean.6");
                      break;
@@ -390,6 +391,10 @@ public class EditFeatureActionBean extends LocalizableApplicationActionBean impl
 
         return new StreamingResolution("application/json", new StringReader(json.toString(4)));
     }
+    
+    protected JSONObject getJsonFeature(String feature){
+        return new JSONObject(feature);        
+    }
 
     public Resolution removeRelatedFeatures() throws JSONException, Exception {
         JSONObject json = new JSONObject();
@@ -513,6 +518,9 @@ public class EditFeatureActionBean extends LocalizableApplicationActionBean impl
                                 g = new WKTReader().read(wkt);
                             }
                             values.add(g);
+                        } else if(ad.getType().getBinding().getCanonicalName().equals("byte[]")){
+                            Object ba = jsonFeature.get(attribute);
+                            values.add(ba);
                         } else {
                             String v = jsonFeature.optString(attribute);
                             values.add(StringUtils.defaultIfBlank(v, null));
