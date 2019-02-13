@@ -77,11 +77,11 @@ public class EditFeatureActionBean extends LocalizableApplicationActionBean impl
     @Validate
     private ApplicationLayer appLayer;
 
-    private Layer layer;
+    protected Layer layer;
 
-    private SimpleFeatureStore store;
+    protected SimpleFeatureStore store;
 
-    private JSONObject jsonFeature;
+    protected JSONObject jsonFeature;
 
     //<editor-fold defaultstate="collapsed" desc="getters and setters">
     @Override
@@ -124,6 +124,10 @@ public class EditFeatureActionBean extends LocalizableApplicationActionBean impl
 
     public JSONObject getJsonFeature() {
         return jsonFeature;
+    }
+    
+    public void setJsonFeature(JSONObject jsonFeature){
+        this.jsonFeature = jsonFeature;
     }
 
     public Layer getLayer() {
