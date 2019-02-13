@@ -139,12 +139,10 @@
 					</fo:block>
 				</xsl:if>
 			</xsl:if>
-    </fo:block>
-
-		<fo:block xsl:use-attribute-sets="header-font">
-			<xsl:text>legenda</xsl:text>
 		</fo:block>
-		<xsl:call-template name="legend"/>
+		<xsl:call-template name="legend">
+			<xsl:with-param name="header" select="'legenda'"/>
+		</xsl:call-template>
 
 		<!-- overzichtskaart
 		<xsl:call-template name="overview-block">

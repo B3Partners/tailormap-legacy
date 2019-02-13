@@ -160,9 +160,9 @@ Ext.define ("viewer.components.LayerContext",{
         var me = this;
         if (this.config.tooltip){
             var tocs= this.config.viewerController.getComponentsByClassName("viewer.components.TOC");
-            this.config.viewerController.traverseSelectedContent(function(){},function(layer){
-                var serviceLayer=me.config.viewerController.getServiceLayer(layer);
-                if( (   serviceLayer.details && 
+            this.config.viewerController.traverseSelectedContent(function(){}, function(layer) {
+                var serviceLayer = me.config.viewerController.getServiceLayer(layer);
+                if( (   serviceLayer && serviceLayer.details &&
                         (serviceLayer.details ["metadata.stylesheet"] || serviceLayer.details ["download.url"])) ||  
                     (   typeof layer.details !== 'undefined' &&
                         typeof layer.details.context !== 'undefined'

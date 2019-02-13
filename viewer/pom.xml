@@ -9,7 +9,7 @@
     <parent>
         <groupId>org.flamingo-mc</groupId>
         <artifactId>flamingo-mc</artifactId>
-        <version>5.3.11-SNAPSHOT</version>
+        <version>5.3.12-SNAPSHOT</version>
     </parent>
     <name>viewer</name>
 
@@ -487,6 +487,7 @@
                                 <database.properties.file>postgres.properties</database.properties.file>
                             </systemPropertyVariables>
                             <useFile>false</useFile>
+                            <argLine>${failsafeArgLine}</argLine>
                         </configuration>
                         <executions>
                             <execution>
@@ -526,15 +527,20 @@
                             </execution>
                         </executions>
                         <dependencies>
-                            <dependency>
-                                <groupId>javax.mail</groupId>
-                                <artifactId>mail</artifactId>
-                                <version>1.4.7</version>
+                           <dependency>
+                                <groupId>com.sun.mail</groupId>
+                                <artifactId>javax.mail</artifactId>
+                                <version>${javax.mail.version}</version>
                             </dependency>
                             <dependency>
                                 <groupId>org.postgresql</groupId>
                                 <artifactId>postgresql</artifactId>
                                 <version>${postgresql.version}</version>
+                            </dependency>
+                            <dependency>
+                                <groupId>org.jacoco</groupId>
+                                <artifactId>org.jacoco.agent</artifactId>
+                                <version>${jacoco-maven-plugin.version}</version>
                             </dependency>
                         </dependencies>
                     </plugin>
@@ -624,15 +630,20 @@
                             </execution>
                         </executions>
                         <dependencies>
-                            <dependency>
-                                <groupId>javax.mail</groupId>
-                                <artifactId>mail</artifactId>
-                                <version>1.4.7</version>
+                           <dependency>
+                                <groupId>com.sun.mail</groupId>
+                                <artifactId>javax.mail</artifactId>
+                                <version>${javax.mail.version}</version>
                             </dependency>
                             <dependency>
                                 <groupId>com.oracle</groupId>
                                 <artifactId>ojdbc7</artifactId>
                                 <version>12.1.0.2.0</version>
+                            </dependency>
+                            <dependency>
+                                <groupId>org.jacoco</groupId>
+                                <artifactId>org.jacoco.agent</artifactId>
+                                <version>${jacoco-maven-plugin.version}</version>
                             </dependency>
                         </dependencies>
                     </plugin>

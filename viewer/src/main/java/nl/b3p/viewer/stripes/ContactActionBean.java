@@ -63,7 +63,7 @@ public class ContactActionBean extends LocalizableApplicationActionBean implemen
                 subject = config.getString("receiverSubject");
             }
             try {
-                Mailer.sendMail(req.getString("name"), req.getString("email"), config.getString("receiverTo"), subject, req.getString("message"));
+                Mailer.sendMail(req.getString("name"), req.getString("email"), config.getString("receiverTo"), subject, req.getString("message"), req.getString("email"));
                 resp.put("success", true);
                 resp.remove("message");
             } catch (Exception ex) {

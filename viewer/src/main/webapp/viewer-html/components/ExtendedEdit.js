@@ -173,6 +173,7 @@ Ext.define ("viewer.components.ExtendedEdit",{
         });
     },
     featuresReceived: function(features) {
+        var features = features.features;
         for(var i = 0; i < features.length; i++) {
             var featureId = null;
             if(features[i].__fid) {

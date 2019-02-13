@@ -85,6 +85,7 @@ Ext.define("viewer.AppLoader", {
         Ext.Ajax.request({
             url: Ext.String.urlAppend(this.config.actionbeanUrl, "t=" + (new Date()).getTime()),
             scope:this,
+            timeout: 120000,
             params: {
                 application: this.config.appId
             },

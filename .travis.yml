@@ -30,6 +30,11 @@ before_install:
   - ls -la ~
 
 install:
+  # load pki-overheid G2/G3 certificates
+  - wget http://cert.pkioverheid.nl/RootCA-G3.cer
+  - sudo keytool -importcert -file ./RootCA-G3.cer -alias G3 -keystore $JAVA_HOME/jre/lib/security/cacerts -storepass 'changeit' -v -noprompt -trustcacerts
+  - wget http://cert.pkioverheid.nl/RootCA-G2.cer
+  - sudo keytool -importcert -file ./RootCA-G2.cer -alias G2 -keystore $JAVA_HOME/jre/lib/security/cacerts -storepass 'changeit' -v -noprompt -trustcacerts
   # install without testing
   - travis_wait 40 mvn --settings .travis/settings.xml -Ptravis-ci-prebuild install -U -DskipTests -Dtest.skip.integrationtests=true -B -V -fae
 
@@ -46,7 +51,8 @@ script:
   # run integration tests on viewer-admin module only
   - mvn -e clean verify -B -Ptravis-ci -pl 'viewer-admin'
   # run code coverage
-  - mvn cobertura:cobertura -Ptravis-ci
+  #- mvn cobertura:cobertura -Ptravis-ci
+  #- mvn cobertura:cobertura-integration-test -Ptravis-ci
   # on oracle java 8 run a javadoc build to check for errors
   - if [ "$TRAVIS_JDK_VERSION" == oraclejdk8 ]; then
          mvn javadoc:javadoc;
@@ -57,9 +63,7 @@ script:
     fi
 
 after_success:
-  - if [ "$TRAVIS_JDK_VERSION" == oraclejdk8 ]; then
-         bash <(curl -s https://codecov.io/bash)
-    fi
+  - bash <(curl -s https://codecov.io/bash)
   
 jdk:
   - oraclejdk8

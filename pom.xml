@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.flamingo-mc</groupId>
     <artifactId>flamingo-mc</artifactId>
-    <version>5.3.11-SNAPSHOT</version>
+    <version>5.3.12-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>flamingo-mc</name>
     <url>http://github.com/flamingo-mc</url>
@@ -34,7 +34,7 @@
         </license>
     </licenses>
     <properties>
-        <flamingo.version>5.3.11-SNAPSHOT</flamingo.version>
+        <flamingo.version>5.3.12-SNAPSHOT</flamingo.version>
         <java.version>1.8</java.version>
         <project.build.sourceVersion>${java.version}</project.build.sourceVersion>
         <project.build.targetVersion>${java.version}</project.build.targetVersion>
@@ -43,25 +43,29 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <!-- when updating geotools also check jts and b3p-commons-csw or you will end up in trabnsitive dependency hell -->
-        <geotools.version>20.1</geotools.version>
+        <geotools.version>20.2</geotools.version>
         <powermock.version>2.0.0</powermock.version>
         <hsqldb.version>2.4.1</hsqldb.version>
         <test.persistence.unit>viewer-config-hsqldb</test.persistence.unit>
         <postgresql.version>42.2.5</postgresql.version>
         <apache.poi.version>4.0.1</apache.poi.version>
-        <apache.httpcomponents.version>4.5.6</apache.httpcomponents.version>
+        <javax.mail.version>1.6.2</javax.mail.version>
+        <apache.httpcomponents.version>4.5.7</apache.httpcomponents.version>
         <!-- skip integration tests by default, override this property from commandline
         or as part of a profile, see eg. 'travis-ci' profile in viewer -->
         <test.skip.integrationtests>false</test.skip.integrationtests>
         <maven-surefire-plugin.version>3.0.0-M3</maven-surefire-plugin.version>
         <tomcat.version>7.0.92</tomcat.version>
+        <jacoco-maven-plugin.version>0.8.3</jacoco-maven-plugin.version>
+        <!--<jacoco.it.execution.data.file>${project.build.directory}/jacoco-it.exec</jacoco.it.execution.data.file>-->
+        <!--<jacoco.ut.execution.data.file>${project.build.directory}/jacoco-ut.exec</jacoco.ut.execution.data.file>-->
     </properties>
     <dependencyManagement>
         <!--
             To check for dependency updates use the following command:
             mvn -U org.codehaus.mojo:versions-maven-plugin:display-dependency-updates > dependency-updates.log
             and check the output for any available updates.
-            
+
             To check for vulnarabilities in dependencies use the following command:
             mvn org.owasp:dependency-check-maven:check > vuln-check.log
         -->
@@ -151,7 +155,7 @@
             <dependency>
                 <groupId>nl.b3p</groupId>
                 <artifactId>b3p-commons-csw</artifactId>
-                <version>5.1.1</version>
+                <version>5.1.2</version>
                 <exclusions>
                     <exclusion>
                         <groupId>javax.persistence</groupId>
@@ -237,7 +241,7 @@
             <dependency>
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-core</artifactId>
-                <version>2.23.4</version>
+                <version>2.24.0</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
@@ -418,7 +422,7 @@
             <dependency>
                 <groupId>javax.mail</groupId>
                 <artifactId>javax.mail-api</artifactId>
-                <version>1.6.2</version>
+                <version>${javax.mail.version}</version>
                 <scope>provided</scope>
             </dependency>
 
@@ -706,9 +710,9 @@
                     <version>1.0.0</version>
                 </plugin>
                 <plugin>
-                    <groupId>org.codehaus.mojo</groupId>
-                    <artifactId>cobertura-maven-plugin</artifactId>
-                    <version>2.7</version>
+                    <groupId>org.jacoco</groupId>
+                    <artifactId>jacoco-maven-plugin</artifactId>
+                    <version>${jacoco-maven-plugin.version}</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -734,18 +738,7 @@
                     <systemPropertyVariables>
                         <test.persistence.unit>${test.persistence.unit}</test.persistence.unit>
                     </systemPropertyVariables>
-                    <argLine>-Xmx1g -Xms1g -XX:+TieredCompilation -XX:TieredStopAtLevel=1</argLine>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>cobertura-maven-plugin</artifactId>
-                <configuration>
-                    <formats>
-                        <format>html</format>
-                        <format>xml</format>
-                    </formats>
-                    <check />
+                    <argLine>${surefireArgLine}</argLine>
                 </configuration>
             </plugin>
             <plugin>
@@ -769,8 +762,77 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>pre-unit-test</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                        <configuration>
+                            <!--<destFile>${jacoco.ut.execution.data.file}</destFile>-->
+                            <propertyName>surefireArgLine</propertyName>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>pre-integration-test</id>
+                        <phase>pre-integration-test</phase>
+                        <goals>
+                            <goal>prepare-agent-integration</goal>
+                        </goals>
+                        <configuration>
+                            <!--<destFile>${jacoco.it.execution.data.file}</destFile>-->
+                            <propertyName>failsafeArgLine</propertyName>
+                        </configuration>
+                    </execution>
+                   <execution>
+                        <id>post-unit-test</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                        <configuration>
+                            <!--<dataFile>${jacoco.ut.execution.data.file}</dataFile>-->
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>post-integration-test</id>
+                        <phase>post-integration-test</phase>
+                        <goals>
+                            <goal>report-integration</goal>
+                        </goals>
+                        <configuration>
+                            <!--<dataFile>${jacoco.it.execution.data.file}</dataFile>-->
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>${jacoco-maven-plugin.version}</version>
+                <configuration>
+                    <dataFileIncludes>
+                        <dataFileInclude>${project.build.directory}/coverage-reports/jacoco-ut.exec</dataFileInclude>
+                        <dataFileInclude>${project.build.directory}/coverage-reports/jacoco-it.exec</dataFileInclude>
+                    </dataFileIncludes>
+                </configuration>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>report-aggregate</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+        </plugins>
+    </reporting>
     <profiles>
         <profile>
             <id>travis-ci</id>

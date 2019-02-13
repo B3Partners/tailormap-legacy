@@ -125,7 +125,7 @@ public class ProxyActionBeanTest extends TestUtil {
     @Test
     public void testScaledLegendUrl() throws Exception {
         User geb = entityManager.find(User.class, "admin");
-        String legendUrl = "https://flamingo4.b3p.nl/geoserver/test_omgeving_fla5/wms?request=GetLegendGraphic&format=image%2Fpng&width=20&height=20&layer=antenne_register&SERVICE=WMS&SCALE=3.167838379715733";
+        String legendUrl = "https://flamingo5.b3p.nl/geoserver/test_omgeving_fla5/wms?request=GetLegendGraphic&format=image%2Fpng&width=20&height=20&layer=antenne_register&SERVICE=WMS&SCALE=3.167838379715733";
         context = new TestActionBeanContext(geb);
         ab = new ProxyActionBean();
         ab.setContext(context);
