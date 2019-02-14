@@ -665,6 +665,11 @@ Ext.define ("viewer.components.Search",{
         if (this.config.showRemovePin){
             this.form.query("#removePin"+ this.name)[0].setVisible(true);
         }
+        if (this.config.showFeatureInfoAfterSearch){
+            var pixel = this.config.viewerController.mapComponent.getMap().coordinateToPixel(result.x,result.y);
+            var options ={coord:{x:result.x,y:result.y},x:pixel.x,y:pixel.y};
+            this.config.viewerController.mapComponent.getMap().fire(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO,options);
+        }
     },
     getExtComponents: function() {
         var c = [ this.mainContainer.getId(), this.form.getId() ];
