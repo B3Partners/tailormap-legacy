@@ -198,7 +198,7 @@ public class EditFeatureActionBean extends LocalizableApplicationActionBean impl
                 json.put("success", Boolean.TRUE);
             } while(false);
         } catch(Exception e) {
-            log.error(String.format("Exception editing feature", e),e);
+            log.error("Exception editing feature",e);
 
             error = e.toString();
             if(e.getCause() != null) {
@@ -298,7 +298,7 @@ public class EditFeatureActionBean extends LocalizableApplicationActionBean impl
                         }
                         json.put("success", Boolean.TRUE);
                     } catch (Exception ex) {
-                        log.error(String.format("cannot save relatedFeature Exception: ",ex));
+                        log.error("cannot save relatedFeature Exception: ",ex);
                     }finally{
                         if(fs != null){
                             fs.getDataStore().dispose();
