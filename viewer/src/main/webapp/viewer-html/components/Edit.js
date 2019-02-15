@@ -321,14 +321,20 @@ Ext.define("viewer.components.Edit", {
             buttons.push({
                 xtype: 'button',
                 itemId: 'snappingButton',
-                text: "Snapping",
+                text: "Snapping aan",
                 listeners: {
                     click: {
                         scope: this,
-                        fn: function () {
+                        fn: function (btn) {
                             var c = this.config.viewerController.getComponentsByClassName("viewer.components.Snapping");
                             if (c.length > 0) {
-                                c[0].enableAllLayers(true);
+                                if(btn.getText() === "Snapping aan"){
+                                    c[0].enableAllLayers(true);
+                                    btn.setText("Snapping uit");
+                                }else{
+                                    c[0].enableAllLayers(false);
+                                    btn.setText("Snapping aan");
+                                }
                             }
                         }
                     }
