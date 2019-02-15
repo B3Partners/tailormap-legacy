@@ -24,6 +24,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersTilingLayer",{
         openLayersLayer: "viewer.viewercontroller.openlayers.OpenLayersLayer"
     },
     utils: null,
+    serverRes:null,
     /**
      *Constructor
      */
@@ -86,15 +87,13 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersTilingLayer",{
             options.projection =  'EPSG:28992';
             this.frameworkLayer = new OpenLayers.Layer.ArcGISCache(this.name,this.url,options);
         }else if (this.getProtocol()==="WMTS"){
-            var convertRatio = 1/0.00028;
             options.url = this.url;
             options.style = this.config.style;
             options.layer = this.config.name;
             options.matrixSet = this.config.matrixSet.identifier;
             options.matrixIds = this.getMatrixIds(this.config.matrixSet.matrices);
             options.format = this.extension;
-            options.maxResolution = this.config.matrixSet.matrices[0].scaleDenominator /convertRatio;
-            options.minResolution = this.config.matrixSet.matrices[this.config.matrixSet.matrices.length -1].scaleDenominator /convertRatio;
+            options.serverResolutions = this.serverRes;
             var wmts = new OpenLayers.Layer.WMTS(options);
             this.frameworkLayer = wmts;
         }
@@ -102,11 +101,14 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersTilingLayer",{
     
     getMatrixIds: function(matrices){
         var newMatrixIds = [];
+        var convertRatio = 1/0.00028;
+        this.serverRes = [];
         for(var i = 0 ; i<matrices.length;i++){
             var matrix = matrices[i];
             var topLeft = matrix.topLeftCorner;
             var x = topLeft.substring(0, topLeft.indexOf(" "));
             var y = topLeft.substring(topLeft.indexOf(" ") +1);
+            this.serverRes.push(parseFloat(matrix.scaleDenominator)/convertRatio);
             var newMatrix = {
                identifier : matrix.identifier,
                scaleDenominator: parseFloat(matrix.scaleDenominator),
