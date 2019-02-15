@@ -15,6 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global Ext, i18next */
+
 Ext.define("viewer.AppLoader", {
 
     config: {
