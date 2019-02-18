@@ -27,6 +27,6 @@ public class I18nActionBean extends LocalizableActionBean {
      */
     public Resolution i18nextJs() {
         context.getResponse().addDateHeader("Expires", System.currentTimeMillis() + (1000 * 60 * 60 * 24));
-        return new StreamingResolution("application/js", new StringReader(ResourceBundleToJsProvider.toJs(getBundle())));
+        return new StreamingResolution("application/javascript", new StringReader(ResourceBundleToJsProvider.toJs(getBundle())));
     }
 }
