@@ -27,7 +27,7 @@ public class I18nActionBean implements ActionBean {
         Locale locale = LocaleUtils.toLocale(language);
         ResourceBundle bundle = ResourceBundleProvider.getResourceBundle(locale);
         context.getResponse().addDateHeader("Expires", System.currentTimeMillis() + (1000 * 60 * 60 * 24));
-        return new StreamingResolution("application/js", new StringReader(ResourceBundleToJsProvider.toJs(bundle)));
+        return new StreamingResolution("application/javascript", new StringReader(ResourceBundleToJsProvider.toJs(bundle)));
     }
 
     public ActionBeanContext getContext() {
