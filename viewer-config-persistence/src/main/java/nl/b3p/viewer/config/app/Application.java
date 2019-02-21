@@ -419,7 +419,7 @@ public class Application implements Comparable<Application>{
         authorizationsModified = new Date();
     }
 
-    public String toJSON(HttpServletRequest request, boolean validXmlTags, boolean onlyServicesAndLayers, EntityManager em) throws JSONException {
+    public JSONObject toJSON(HttpServletRequest request, boolean validXmlTags, boolean onlyServicesAndLayers, EntityManager em) throws JSONException {
         return toJSON(request, validXmlTags, onlyServicesAndLayers, false, false, em, true);
     }
 
@@ -439,7 +439,7 @@ public class Application implements Comparable<Application>{
      * @return a json representation of this object
      * @throws JSONException if transforming to json fails
      */
-    public String toJSON(HttpServletRequest request, boolean validXmlTags, boolean onlyServicesAndLayers, boolean includeAppLayerAttributes, boolean includeRelations, 
+    public JSONObject toJSON(HttpServletRequest request, boolean validXmlTags, boolean onlyServicesAndLayers, boolean includeAppLayerAttributes, boolean includeRelations, 
             EntityManager em, boolean shouldProcessCache) throws JSONException {
         JSONObject o = null;
         SelectedContentCache cache = new SelectedContentCache();
@@ -489,7 +489,7 @@ public class Application implements Comparable<Application>{
             }
         }
 
-        return o.toString(4);
+        return o;
     }
 
     private void walkAppTreeForJSON(JSONObject levels, JSONObject appLayers, List selectedContent, Level l, boolean parentIsBackground, HttpServletRequest request, boolean validXmlTags, boolean includeAppLayerAttributes, boolean includeRelations, EntityManager em) throws JSONException {

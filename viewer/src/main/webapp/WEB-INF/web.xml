@@ -24,6 +24,18 @@
         <filter-name>StripesFilter</filter-name>
         <url-pattern>*.jsp</url-pattern>
     </filter-mapping>
+    <!--filter>
+        <filter-name>CompressingFilter</filter-name>
+        <filter-class>com.github.ziplet.filter.compression.CompressingFilter</filter-class>
+        <init-param>
+            <param-name>includeContentTypes</param-name>
+            <param-value>application/json</param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>CompressingFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping-->
     <filter-mapping>
         <filter-name>StripesFilter</filter-name>
         <servlet-name>StripesDispatcher</servlet-name>
