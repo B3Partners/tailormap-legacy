@@ -28,4 +28,4 @@ cache:
 build: off
 
 test_script:
-  - mvn -e test -B
+  - mvn -e clean test -B

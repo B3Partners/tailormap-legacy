@@ -42,10 +42,10 @@ timestamps {
                 }
 
             } finally {
-                stage('Publish Results'){
+                stage('Publish Test Results') {
                     junit allowEmptyResults: true, testResults: '**/target/surefire-reports/TEST-*.xml, **/target/failsafe-reports/TEST-*.xml'
                 }
-                stage('Test Coverage results') {
+                stage('Publish Test Coverage results') {
                     jacoco exclusionPattern: '**/*Test.class', execPattern: '**/target/**.exec'
                 }
             }

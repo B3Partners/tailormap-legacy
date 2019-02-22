@@ -47,9 +47,9 @@ script:
   # execute unit tests
   - mvn -e clean test -B
   # run integration tests on all modules except viewer-admin
-  - mvn -e clean verify -B -Ptravis-ci -pl '!viewer-admin'
+  - mvn -e verify -B -Ptravis-ci -pl '!viewer-admin'
   # run integration tests on viewer-admin module only
-  - mvn -e clean verify -B -Ptravis-ci -pl 'viewer-admin'
+  - mvn -e verify -B -Ptravis-ci -pl 'viewer-admin'
   # run code coverage
   #- mvn cobertura:cobertura -Ptravis-ci
   #- mvn cobertura:cobertura-integration-test -Ptravis-ci
