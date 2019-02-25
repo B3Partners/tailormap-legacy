@@ -24,7 +24,6 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Properties;
 import java.util.Scanner;
 import nl.b3p.viewer.util.LoggingTestUtil;
 import org.apache.commons.logging.Log;
@@ -64,9 +63,8 @@ public class ViewerAdminLockoutIntegrationTest extends LoggingTestUtil {
     /**
      * the viewer url. {@value}
      */
-    private static String BASE_TEST_URL = "http://localhost:XXX/viewer-admin/";
+    private static String BASE_TEST_URL = "http://localhost:9091/viewer-admin/";
 
-    private static final Properties PROPS = new Properties();
     /**
      * our test client.
      */
@@ -82,19 +80,12 @@ public class ViewerAdminLockoutIntegrationTest extends LoggingTestUtil {
      */
     @BeforeClass
     public static void setupClient() {
-        //client = HttpClientBuilder.create().build();
         client = HttpClients.custom()
                 .useSystemProperties()
                 .setUserAgent("brmo integration test")
                 .setRedirectStrategy(new LaxRedirectStrategy())
                 .setDefaultCookieStore(new BasicCookieStore())
                 .build();
-    }
-
-    @BeforeClass
-    public static void initTomcatPort() throws IOException {
-        PROPS.load(ViewerAdminLockoutIntegrationTest.class.getClassLoader().getResourceAsStream("tomcatports.properties"));
-        BASE_TEST_URL = BASE_TEST_URL.replace("XXX", PROPS.getProperty("tomcat.maven.http.port", "9091"));
     }
 
     /**
@@ -203,7 +194,7 @@ public class ViewerAdminLockoutIntegrationTest extends LoggingTestUtil {
         //   the status for a form-based login page is (and should be) 200
 
 
-        LOG.info("trying one laste time with locked-out user, but correct password");
+        LOG.info("trying one last time with locked-out user, but correct password");
         login = RequestBuilder.post()
                 .setUri(new URI(BASE_TEST_URL + "j_security_check"))
                 .addParameter("j_username", "admin")

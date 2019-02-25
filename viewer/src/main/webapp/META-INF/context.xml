@@ -12,10 +12,11 @@
         - https://tomcat.apache.org/tomcat-8.5-doc/jndi-datasource-examples-howto.html
 
     <Server ...>
+
+      <GlobalNamingResources>
         ...
         Oracle:
 
-        <GlobalNamingResources>
             <Resource name="jdbc/geo_viewer"
                 auth="Container"
                 type="javax.sql.DataSource"
@@ -28,7 +29,6 @@
                 minEvictableIdleTimeMillis="5000"
                 validationQuery="select 1 from dual"
             />
-        </GlobalNamingResources>
         ...
 
         PostgreSQL:
@@ -46,6 +46,27 @@
                   maxTotal="40"
                   validationQuery="select 1"
         />
+        ...
+
+        MS SQL Server 2017
+
+        <Resource auth="Container"
+                  driverClassName="com.microsoft.sqlserver.jdbc.SQLServerDriver"
+                  type="javax.sql.DataSource"
+                  name="jdbc/geo_viewer"
+                  url="jdbc:sqlserver://localhost:1433;databaseName=flamingo4;"
+                  username="flamingo4"
+                  password="flamingo4"
+                  timeBetweenEvictionRunsMillis="30000"
+                  maxWaitMillis="15000"
+                  minEvictableIdleTimeMillis="5000"
+                  maxTotal="40"
+                  validationQuery="select 1"
+         />
+         ...
+
+     </GlobalNamingResources>
+
     </Server>
 
     NOTE: each JDBC driver version and each version of Tomcat will have different options that can/must be set

@@ -81,7 +81,7 @@ public class DynamicStripersistInitializer implements InitializeSettings {
                 if(databaseProductName == null) {
                     throw new Exception("No database product name found!");
                 } else {
-                    persistenceUnit = PU_PREFIX + databaseProductName.toLowerCase();
+                    persistenceUnit = PU_PREFIX + databaseProductName.toLowerCase().replace(' ', '_');
                     if(!persistenceUnits.containsKey(persistenceUnit)) {
                         throw new Exception(String.format("No persistence unit \"%s\" found for database product name \"%s\"",
                                 persistenceUnit,

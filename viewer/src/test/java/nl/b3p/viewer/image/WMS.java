@@ -6,13 +6,8 @@ package nl.b3p.viewer.image;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import nl.b3p.viewer.image.CombineImageSettings;
-import nl.b3p.viewer.image.CombineImagesHandler;
 import org.json.JSONObject;
-import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -20,13 +15,6 @@ import org.junit.Test;
  * @author Roy Braam
  */
 public class WMS {
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-    }
-
-    @AfterClass
-    public static void tearDownClass() throws Exception {
-    }
 
     @Before
     public void setUp() {
@@ -36,11 +24,8 @@ public class WMS {
         }
     }
 
-    @After
-    public void tearDown() {
-    }
 
-    private static final String DEST_DIR = "test-output";
+    private static final String DEST_DIR = "target" + File.separator + "test-output";
     
      /**
      * @settings a JSONObject in the following format:
@@ -84,7 +69,7 @@ public class WMS {
      */
     public void wmsTest() throws Exception {
         CombineImageSettings settings = CombineImageSettings.fromJson(new JSONObject(JSONCONFIG));
-        FileOutputStream fos = new FileOutputStream(DEST_DIR + "/WMS_split.png");
+        FileOutputStream fos = new FileOutputStream(DEST_DIR + File.separator + "WMS_split.png");
         CombineImagesHandler.combineImage(fos, settings,null);
     }
 }

@@ -35,6 +35,11 @@
                                 <hbm2ddl export="false" drop="false" create="true" outputfilename="postgresql-schema-export.sql" format="true">
                                     <jpaconfiguration persistenceUnit="viewer-config-postgresql" />
                                 </hbm2ddl>
+                                <!--use unformatted output to help with serach/replace, see maven-antrun-plugin plugin below-->
+                                <hbm2ddl export="false" drop="false" create="true" outputfilename="microsoft_sql_server-schema-export.sql"
+                                         format="false">
+                                    <jpaconfiguration persistenceUnit="viewer-config-microsoft_sql_server" />
+                                </hbm2ddl>
                             </hibernatetool>
                         </configuration>
                         <goals>
@@ -69,6 +74,79 @@
                         <version>${hsqldb.version}</version>
                     </dependency>
                 </dependencies>
+            </plugin>
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>process-classes</phase>
+                        <configuration>
+                            <tasks>
+                                <!--
+                                The ms sql schema export needs tweaking due to a bug in the tooling (should be solved in hib 5 and up)
+                                the problem is that details tables are generated with a nullable field for details_key,
+                                but that is not allowed because it takes part in the PK
+
+                                // application_details
+                                details_key varchar(255) null,
+                                details_key varchar(255) not null,
+
+                                // application_layer_details
+                                details_key varchar(255) null,
+                                details_key varchar(255) not null,
+
+                                // configured_component_details (
+                                details_key varchar(255) null,
+                                details_key varchar(255) not null,
+
+                                // geo_service_details
+                                details_key varchar(255) null,
+                                details_key varchar(255) not null,
+
+                                // layar_source_details
+                                details_key varchar(255) null,
+                                details_key varchar(255) not null,
+
+                                // layer_details
+                                details_key varchar(255) null,
+                                details_key varchar(255) not null,
+
+                                // user_details
+                                details_key varchar(255) null,
+                                details_key varchar(255) not null,
+                                -->
+                                <replace token= " details_key varchar(255) null,"
+                                         value=" details_key varchar(255) not null,"
+                                         file="target/classes/scripts/microsoft_sql_server-schema-export.sql"
+                                         summary="true" />
+                                <!-- and also:
+                                // layer_bounding_boxes
+                                crs varchar(255) null,
+                                crs varchar(255) not null,
+                                -->
+                                <!-- NB this fails on windows
+                                NB this is whitespace sensitive
+                                <replace                                         -->
+                                    <!--file="target/classes/scripts/microsoft_sql_server-schema-export.sql"-->
+                                    <!--summary="true">-->
+                                    <!--<replacetoken><![CDATA[null,-->
+        <!--miny double precision null,-->
+        <!--crs varchar(255) null,]]></replacetoken>-->
+                                    <!--<replacevalue><![CDATA[null,-->
+        <!--miny double precision null,-->
+        <!--crs varchar(255) not null,]]></replacevalue>-->
+                                <!--</replace>-->
+                                <replace token= "crs varchar(255) null, primary key (layer, crs));"
+                                         value="crs varchar(255) not null, primary key (layer, crs));"
+                                         file="target/classes/scripts/microsoft_sql_server-schema-export.sql"
+                                         summary="true" />
+                            </tasks>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
