@@ -384,6 +384,11 @@
                 <artifactId>gt-jdbc-postgis</artifactId>
                 <version>${geotools.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.geotools.jdbc</groupId>
+                <artifactId>gt-jdbc-sqlserver</artifactId>
+                <version>${geotools.version}</version>
+            </dependency>
 
             <!-- web-commons -->
             <dependency>

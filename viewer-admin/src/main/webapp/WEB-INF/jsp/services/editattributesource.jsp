@@ -125,14 +125,19 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                                     var dbType = Ext.query("select[name='dbtype']")[0].value;
                                     var port = Ext.query("input[name='port']")[0];
                                     if(dbType == "oracle") {
-                                        if(port.value == "" || port.value == "5432") {
+                                        if(port.value == "" || port.value == "5432" || port.value == "1433") {
                                             port.value = "1521";
                                         }
                                     } else if(dbType == "postgis") {
-                                        if(port.value == "" || port.value == "1521") {
+                                        if(port.value == "" || port.value == "1521" || port.value == "1433") {
                                             port.value = "5432";
                                         }
+                                    } else if(dbType == "sqlserver") {
+                                        if(port.value == "" || port.value == "1521" || port.value == "5432") {
+                                            port.value = "1433";
+                                        }
                                     }
+
                                 }
                                 Ext.onReady(checkProtocol);
                             </script>
@@ -160,6 +165,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                                         <stripes:select name="dbtype" onchange="checkDefaults()" onkeyup="checkDefaults()">
                                             <stripes:option value="oracle">Oracle</stripes:option>
                                             <stripes:option value="postgis">PostGIS</stripes:option>
+                                            <stripes:option value="sqlserver">SQL Server</stripes:option>
                                         </stripes:select>
                                     </td>
                                 </tr>
