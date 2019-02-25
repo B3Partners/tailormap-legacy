@@ -8,6 +8,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.nio.file.Files;
 import javax.swing.ImageIcon;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.json.JSONObject;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -21,7 +23,8 @@ import org.junit.Test;
  */
 public class TilingIntegrationTest {
 
-    private static final String DEST_DIR = "test-output";
+    private static final Log log = LogFactory.getLog(TilingIntegrationTest.class);
+    private static final String DEST_DIR = "target" + File.separator + "test-output";
     
      /**
      * @settings a JSONObject in the following format:
@@ -79,15 +82,16 @@ public class TilingIntegrationTest {
     public void wmscTest() throws Exception {
         CombineImageSettings settings = CombineImageSettings.fromJson(new JSONObject(JSONCONFIG));
         // this will produce a png because CombineImagesHandler#defaultReturnMime is image/png
-        try (FileOutputStream fos = new FileOutputStream(DEST_DIR + "/WMSc.pngtest")) {
+        try (FileOutputStream fos = new FileOutputStream(DEST_DIR + File.separator + "WMSc.pngtest")) {
             CombineImagesHandler.combineImage(fos, settings, null);
         }
 
-        File f = new File(DEST_DIR + "/WMSc.pngtest");
+        File f = new File(DEST_DIR + File.separator + "WMSc.pngtest");
         try {
             ImageIcon i = new ImageIcon(f.getAbsolutePath());
         } catch (Exception e) {
-            fail("not a valid png");
+            log.error("Maybe not a valid png?...", e);
+            fail("Image may not be a valid png");
         }
         assertEquals("Image is not a valid png", "image/png", Files.probeContentType(f.toPath()));
     }

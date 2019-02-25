@@ -486,7 +486,7 @@
                                 <database.properties.file>ms_sql_server.properties</database.properties.file>
                             </systemPropertyVariables>
                             <useFile>false</useFile>
-                            <argLine>${failsafeArgLine}</argLine>
+                            <!--<argLine>${failsafeArgLine}</argLine>-->
                         </configuration>
                         <executions>
                             <execution>
@@ -501,7 +501,7 @@
                         <groupId>org.apache.tomcat.maven</groupId>
                         <artifactId>tomcat7-maven-plugin</artifactId>
                         <configuration>
-                            <port>9090</port>
+                            <port>9091</port>
                             <contextFile>src/test/tomcatconf/appveyorcontext.xml</contextFile>
                             <systemProperties>
                             </systemProperties>
@@ -536,11 +536,11 @@
                                 <artifactId>mssql-jdbc</artifactId>
                                 <version>${mssql.version}</version>
                             </dependency>
-                            <dependency>
+                            <!--dependency>
                                 <groupId>org.jacoco</groupId>
                                 <artifactId>org.jacoco.agent</artifactId>
                                 <version>${jacoco-maven-plugin.version}</version>
-                            </dependency>
+                            </dependency -->
                         </dependencies>
                     </plugin>
                 </plugins>
