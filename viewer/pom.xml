@@ -684,6 +684,9 @@
                             <includes>
                                 <include>**/*IntegrationTest.java</include>
                             </includes>
+                            <excludes>
+                                <exclude>**/TilingIntegrationTest.java</exclude>
+                            </excludes>
                             <trimStackTrace>false</trimStackTrace>
                             <testFailureIgnore>!${test.skip.integrationtests}</testFailureIgnore>
                             <skipTests>!${test.skip.integrationtests}</skipTests>
@@ -692,7 +695,7 @@
                                 <database.properties.file>ms_sql_server.properties</database.properties.file>
                             </systemPropertyVariables>
                             <useFile>false</useFile>
-                            <argLine>${failsafeArgLine}</argLine>
+                            <!--<argLine>${failsafeArgLine}</argLine>-->
                         </configuration>
                         <executions>
                             <execution>
@@ -742,11 +745,13 @@
                                 <artifactId>mssql-jdbc</artifactId>
                                 <version>${mssql.version}</version>
                             </dependency>
+                            <!--
                             <dependency>
                                 <groupId>org.jacoco</groupId>
                                 <artifactId>org.jacoco.agent</artifactId>
                                 <version>${jacoco-maven-plugin.version}</version>
                             </dependency>
+                            -->
                         </dependencies>
                     </plugin>
                 </plugins>

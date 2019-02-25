@@ -24,7 +24,6 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Properties;
 import java.util.Scanner;
 import nl.b3p.viewer.util.LoggingTestUtil;
 import org.apache.commons.logging.Log;
