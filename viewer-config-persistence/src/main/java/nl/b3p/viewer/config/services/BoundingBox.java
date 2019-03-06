@@ -17,7 +17,7 @@
 package nl.b3p.viewer.config.services;
 
 import javax.persistence.Embeddable;
-import org.geotools.data.ows.CRSEnvelope;
+import org.geotools.ows.wms.CRSEnvelope;
 import org.json.JSONException;
 import org.json.JSONObject;
 

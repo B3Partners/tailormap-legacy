@@ -20,7 +20,7 @@ import java.lang.reflect.Method;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
-import org.geotools.factory.GeoTools;
+import org.geotools.util.factory.GeoTools;
 import org.stripesstuff.stripersist.Stripersist;
 
 /**

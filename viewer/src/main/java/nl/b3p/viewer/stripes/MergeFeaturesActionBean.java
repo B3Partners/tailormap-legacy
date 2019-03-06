@@ -50,7 +50,7 @@ import org.geotools.feature.FeatureCollection;
 import org.geotools.filter.identity.FeatureIdImpl;
 import org.geotools.geometry.jts.GeometryCollector;
 import org.geotools.util.Converter;
-import org.geotools.util.GeometryTypeConverterFactory;
+import org.geotools.data.util.GeometryTypeConverterFactory;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.opengis.feature.simple.SimpleFeature;
