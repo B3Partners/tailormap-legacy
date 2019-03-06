@@ -71,7 +71,7 @@ import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.data.simple.SimpleFeatureSource;
 import org.geotools.data.wfs.WFSDataStoreFactory;
 import org.geotools.factory.CommonFactoryFinder;
-import org.geotools.factory.GeoTools;
+import org.geotools.util.factory.GeoTools;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.opengis.feature.simple.SimpleFeature;

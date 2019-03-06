@@ -25,7 +25,6 @@ import nl.b3p.viewer.util.TestUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import static org.junit.Assert.*;
-
 import org.junit.Test;
 
 /**
@@ -40,8 +39,8 @@ public class GeoServiceActionBeanTest extends TestUtil{
 
     @Test
     public void addWMSService(){
+        String url = "https://geodata.nationaalgeoregister.nl/inspire/au/wms?SERVICE=WMS&";
         try {
-            String url = "https://geodata.nationaalgeoregister.nl/inspire/au/wms?SERVICE=WMS&";
             String protocol = "wms";
             boolean overrideUrl = false;
             Category cat = new Category();
@@ -63,15 +62,15 @@ public class GeoServiceActionBeanTest extends TestUtil{
             //assertEquals("The number of layers should be the same", 3, layers.size());
             assertEquals("The url should be the same", url, service.getUrl());
         } catch (Exception ex) {
-            log.error("Error testing adding a geoservice:", ex);
-            assert(false);
+            log.error("Error testing adding a geoservice: " + url, ex);
+            fail("Error testing adding a geoservice:" + url);
         }
     }
 
     @Test
     public void addArcGISService(){
-         try {
-            String url = "https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer";
+        String url = "https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer";
+        try {
             String protocol = "arcgis";
             boolean overrideUrl = false;
             Category cat = new Category();
@@ -91,8 +90,8 @@ public class GeoServiceActionBeanTest extends TestUtil{
              assertEquals("The number of layers should be the same", 2, layers.size());
              assertEquals("The url should be the same", url, service.getUrl());
         } catch (Exception ex) {
-            log.error("Error testing adding a geoservice:", ex);
-            fail(ex.getLocalizedMessage());
+            log.error("Error testing adding a geoservice: " + url, ex);
+            fail("Error testing adding a geoservice: " + url);
         }
     }
 
