@@ -43,7 +43,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <!-- when updating geotools also check jts and b3p-commons-csw or you will end up in trabnsitive dependency hell -->
-        <geotools.version>20.2</geotools.version>
+        <geotools.version>21.0</geotools.version>
         <powermock.version>2.0.0</powermock.version>
         <hsqldb.version>2.4.1</hsqldb.version>
         <test.persistence.unit>viewer-config-hsqldb</test.persistence.unit>
@@ -259,11 +259,6 @@
             </dependency>
             <dependency>
                 <groupId>org.geotools</groupId>
-                <artifactId>gt-data</artifactId>
-                <version>${geotools.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.geotools</groupId>
                 <artifactId>gt-jdbc</artifactId>
                 <version>${geotools.version}</version>
             </dependency>
@@ -364,6 +359,7 @@
                 <artifactId>web-commons</artifactId>
                 <version>${flamingo.version} </version>
             </dependency>
+
             <dependency>
                 <groupId>org.geotools</groupId>
                 <artifactId>gt-wms</artifactId>
@@ -389,7 +385,16 @@
                 <artifactId>gt-jdbc-sqlserver</artifactId>
                 <version>${geotools.version}</version>
             </dependency>
-
+            <dependency>
+                <groupId>org.geotools.xsd</groupId>
+                <artifactId>gt-xsd-core</artifactId>
+                <version>${geotools.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.geotools.xsd</groupId>
+                <artifactId>gt-xsd-gml3</artifactId>
+                <version>${geotools.version}</version>
+            </dependency>
             <!-- web-commons -->
             <dependency>
                 <groupId>javax.servlet.jsp</groupId>
@@ -407,12 +412,6 @@
                 <artifactId>gt-referencing</artifactId>
                 <version>${geotools.version}</version>
             </dependency>
-            <dependency>
-                <groupId>org.geotools</groupId>
-                <artifactId>gt-api</artifactId>
-                <version>${geotools.version}</version>
-            </dependency>
-
             <dependency>
                 <groupId>org.geotools</groupId>
                 <artifactId>gt-geojson</artifactId>

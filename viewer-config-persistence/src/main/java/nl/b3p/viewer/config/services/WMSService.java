@@ -31,13 +31,13 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.geotools.data.ServiceInfo;
 import org.geotools.data.ows.HTTPClient;
-import org.geotools.data.ows.LayerDescription;
+import org.geotools.ows.wms.LayerDescription;
 import org.geotools.data.ows.SimpleHttpClient;
 import org.geotools.data.ows.Specification;
 import org.geotools.data.wfs.WFSDataStoreFactory;
-import org.geotools.data.wms.*;
-import org.geotools.data.wms.request.DescribeLayerRequest;
-import org.geotools.data.wms.response.DescribeLayerResponse;
+import org.geotools.ows.wms.*;
+import org.geotools.ows.wms.request.DescribeLayerRequest;
+import org.geotools.ows.wms.response.DescribeLayerResponse;
 import org.geotools.ows.ServiceException;
 import org.stripesstuff.stripersist.Stripersist;
 
@@ -207,8 +207,8 @@ public class WMSService extends GeoService implements Updatable {
         boolean supportsDescribeLayer = wms.getCapabilities().getRequest().getDescribeLayer() != null;
         
         status.setProgress(40);
-        
-        org.geotools.data.ows.Layer rl = wms.getCapabilities().getLayer();
+
+        org.geotools.ows.wms.Layer rl = wms.getCapabilities().getLayer();
         setTopLayer(new Layer(rl, this));
 
         if (this.getSkipDiscoverWFS()) {
@@ -719,14 +719,14 @@ public class WMSService extends GeoService implements Updatable {
     /**
      * Get all non-virtual layers for the DescribeLayer request (layer with a
      * name is non-virtual).
-     * @param sb StringBuffer building the LAYERS parameter for DescribeLayer
+     * @param layers list of layernames
      * @param l the top layer
      */
-    private static void getAllNonVirtualLayers(List<String> layers , org.geotools.data.ows.Layer l) {
+    private static void getAllNonVirtualLayers(List<String> layers , org.geotools.ows.wms.Layer l) {
         if(l.getName() != null) {
             layers.add(l.getName());
         }
-        for(org.geotools.data.ows.Layer child: l.getChildren()) {
+        for(org.geotools.ows.wms.Layer child: l.getChildren()) {
             getAllNonVirtualLayers(layers, child);
         }
     }

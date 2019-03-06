@@ -55,7 +55,7 @@ import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.filter.identity.FeatureIdImpl;
 import org.geotools.util.Converter;
-import org.geotools.util.GeometryTypeConverterFactory;
+import org.geotools.data.util.GeometryTypeConverterFactory;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.opengis.feature.simple.SimpleFeature;
@@ -338,7 +338,7 @@ public class SplitFeatureActionBean extends LocalizableApplicationActionBean imp
      *
      * @param geoms to sort
      *
-     * @see com.​vividsolutions.​jts.​geom.​Geometry#compareTo(Object)
+     * @see org.locationtech.​jts.​geom.​Geometry#compareTo(Object)
      */
     private void geometrySorter(List<? extends Geometry> geoms) {
         Collections.sort(geoms, new Comparator<Geometry>() {
