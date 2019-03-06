@@ -840,6 +840,7 @@ OpenLayers.Layer.Vector = OpenLayers.Class(OpenLayers.Layer, {
                             'with it.');
         }
         var feature = null;
+        evt.l = this;
         var featureId = this.renderer.getFeatureIdFromEvent(evt);
         if (featureId) {
             if (typeof featureId === "string") {
