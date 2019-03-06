@@ -362,7 +362,7 @@ public class SplitFeatureActionBean extends LocalizableApplicationActionBean imp
         for (int i = 0; i < lines.getNumGeometries(); i++) {
             LineString l = (LineString) lines.getGeometryN(i);
             // TODO to be tested
-            if (toSplit.contains(l.getInteriorPoint())) {
+            if (toSplit.intersects(l.getInteriorPoint())) {
                 output.add(l);
             }
         }
