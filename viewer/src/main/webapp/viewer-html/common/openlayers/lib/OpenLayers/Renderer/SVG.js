@@ -956,6 +956,21 @@ OpenLayers.Renderer.SVG = OpenLayers.Class(OpenLayers.Renderer.Elements, {
             featureId = target.parentNode && target != this.rendererRoot ?
                 target.parentNode._featureId : undefined;
         }
+        if(!featureId) {
+            var childnodes = this.vectorRoot.childNodes;
+            var lonlat = this.map.getLonLatFromPixel(evt.xy);
+            for(var i = 0 ; i < childnodes.length;i++){
+                var cn = childnodes[i];
+                if(cn._featureId){
+                    var feat = evt.l.getFeatureById(cn._featureId);
+                    if (feat.atPoint(lonlat)) {
+                        featureId = cn._featureId;
+                        break;
+                    }
+                }
+            }
+            
+        }
         return featureId;
     },
 
