@@ -35,13 +35,13 @@ install:
   - wget http://cert.pkioverheid.nl/RootCA-G2.cer
   # load pki-overheid G2/G3 certificates on java 8
   - if [ "$TRAVIS_JDK_VERSION" == oraclejdk8 ] || [ "$TRAVIS_JDK_VERSION" == openjdk8 ]; then
-     sudo keytool -importcert -file ./RootCA-G3.cer -alias G3 -keystore $JAVA_HOME/jre/lib/security/cacerts -storepass 'changeit' -v -noprompt -trustcacerts;
-     sudo keytool -importcert -file ./RootCA-G2.cer -alias G2 -keystore $JAVA_HOME/jre/lib/security/cacerts -storepass 'changeit' -v -noprompt -trustcacerts;
-  fi
+       sudo keytool -importcert -file ./RootCA-G3.cer -alias G3 -keystore $JAVA_HOME/jre/lib/security/cacerts -storepass 'changeit' -v -noprompt -trustcacerts;
+       sudo keytool -importcert -file ./RootCA-G2.cer -alias G2 -keystore $JAVA_HOME/jre/lib/security/cacerts -storepass 'changeit' -v -noprompt -trustcacerts;
+    fi
   # load pki-overheid G2/G3 certificates on java 11
   - if [ "$TRAVIS_JDK_VERSION" == openjdk11 ]; then
-    sudo keytool -importcert -file ./RootCA-G3.cer -alias G3 -keystore $JAVA_HOME/lib/security/cacerts -storepass 'changeit' -v -noprompt -trustcacerts;
-    sudo keytool -importcert -file ./RootCA-G2.cer -alias G2 -keystore $JAVA_HOME/lib/security/cacerts -storepass 'changeit' -v -noprompt -trustcacerts;
+       sudo keytool -importcert -file ./RootCA-G3.cer -alias G3 -keystore $JAVA_HOME/lib/security/cacerts -storepass 'changeit' -v -noprompt -trustcacerts;
+       sudo keytool -importcert -file ./RootCA-G2.cer -alias G2 -keystore $JAVA_HOME/lib/security/cacerts -storepass 'changeit' -v -noprompt -trustcacerts;
     fi
   # install without testing
   - travis_wait 40 mvn --settings .travis/settings.xml -Ptravis-ci-prebuild install -U -DskipTests -Dtest.skip.integrationtests=true -B -V -fae
