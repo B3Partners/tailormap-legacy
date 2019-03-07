@@ -52,6 +52,9 @@
         <apache.poi.version>4.0.1</apache.poi.version>
         <javax.mail.version>1.6.2</javax.mail.version>
         <apache.httpcomponents.version>4.5.7</apache.httpcomponents.version>
+        <jaxb.api.version>2.3.1</jaxb.api.version>
+        <jaxb.impl.version>2.3.2</jaxb.impl.version>
+        <activation.api.version>1.2.0</activation.api.version>
         <!-- skip integration tests by default, override this property from commandline
         or as part of a profile, see eg. 'travis-ci' profile in viewer -->
         <test.skip.integrationtests>false</test.skip.integrationtests>
@@ -242,7 +245,7 @@
             <dependency>
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-core</artifactId>
-                <version>2.24.5</version>
+                <version>2.25.0</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
@@ -308,6 +311,12 @@
                         <groupId>commons-fileupload</groupId>
                         <artifactId>commons-fileupload</artifactId>
                     </exclusion>
+                    <exclusion>
+                    <!-- exclude java 6 tools.jar system scoped dependency 
+                         a transitive from org.apache.hadoop:hadoop-annotations:jar:2.2.0 -->
+                        <groupId>jdk.tools</groupId>
+                        <artifactId>jdk.tools</artifactId>
+                    </exclusion>
                 </exclusions>
             </dependency>
 
@@ -334,7 +343,7 @@
                 <exclusions>
                     <exclusion>
                         <!--
-                        exclude old javassist so we can use 3.22.0-CR2, see issue #745
+                        exclude old javassist so we can use 3.24.1-GA, see issue #745
                         when upgrading hibernate this should be removed
                         -->
                         <groupId>javassist</groupId>
@@ -884,6 +893,34 @@
                 <test.persistence.unit>viewer-config-microsoft_sql_server</test.persistence.unit>
                 <test.skip.integrationtests>true</test.skip.integrationtests>
             </properties>
+        </profile>
+        <profile>
+            <id>jdk11+</id>
+            <activation>
+                <jdk>[11,)</jdk>
+            </activation>
+            <properties>
+                <java.version>11</java.version>
+            </properties>
+            <dependencyManagement>
+                <dependencies>
+                    <dependency>
+                        <groupId>javax.xml.bind</groupId>
+                        <artifactId>jaxb-api</artifactId>
+                        <version>${jaxb.api.version}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.glassfish.jaxb</groupId>
+                        <artifactId>jaxb-runtime</artifactId>
+                        <version>${jaxb.impl.version}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>javax.activation</groupId>
+                        <artifactId>javax.activation-api</artifactId>
+                        <version>${activation.api.version}</version>
+                    </dependency>
+                </dependencies>
+            </dependencyManagement>
         </profile>
     </profiles>
     <modules>
