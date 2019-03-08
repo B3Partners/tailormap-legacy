@@ -27,14 +27,13 @@ import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
+import java.security.interfaces.RSAPrivateCrtKey;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityManager;
-import net.sourceforge.stripes.action.ActionBean;
 import net.sourceforge.stripes.action.ActionBeanContext;
-import net.sourceforge.stripes.action.Before;
 import net.sourceforge.stripes.action.DefaultHandler;
 import net.sourceforge.stripes.action.FileBean;
 import net.sourceforge.stripes.action.ForwardResolution;
@@ -56,7 +55,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.stripesstuff.stripersist.Stripersist;
-import sun.security.rsa.RSAPrivateCrtKeyImpl;
 
 /**
  *
@@ -189,7 +187,7 @@ public class CycloramaConfigurationActionBean extends LocalizableActionBean {
             Key ksKey = ks.getKey(alias, password.toCharArray());
             String keyFormat = ksKey.getFormat();
 
-            if ((ksKey instanceof RSAPrivateCrtKeyImpl) && keyFormat.equals(KEY_FORMAT)) {
+            if ((ksKey instanceof RSAPrivateCrtKey) && keyFormat.equals(KEY_FORMAT)) {
                 privateKey = (PrivateKey) ksKey;
             }
         }
