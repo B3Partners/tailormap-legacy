@@ -914,3 +914,47 @@ OpenLayers.Strategy.Cluster.prototype.cluster = function(event) {
 };
 
 
+OpenLayers.Layer.Vector.prototype.getFeatureFromEvent = function (evt) {
+    if (!this.renderer) {
+        throw new Error('getFeatureFromEvent called on layer with no ' +
+                'renderer. This usually means you destroyed a ' +
+                'layer, but not some handler which is associated ' +
+                'with it.');
+    }
+    var feature = null;
+    evt.l = this;
+    var featureId = this.renderer.getFeatureIdFromEvent(evt);
+    if (featureId) {
+        if (typeof featureId === "string") {
+            feature = this.getFeatureById(featureId);
+        } else {
+            feature = featureId;
+        }
+    }
+    return feature;
+};
+
+OpenLayers.Renderer.SVG.prototype.getFeatureIdFromEvent = function(evt) {
+        var featureId = OpenLayers.Renderer.Elements.prototype.getFeatureIdFromEvent.apply(this, arguments);
+        if(!featureId) {
+            var target = evt.target;
+            featureId = target.parentNode && target != this.rendererRoot ?
+                target.parentNode._featureId : undefined;
+        }
+        if(!featureId) {
+            var childnodes = this.vectorRoot.childNodes;
+            var lonlat = this.map.getLonLatFromPixel(evt.xy);
+            for(var i = 0 ; i < childnodes.length;i++){
+                var cn = childnodes[i];
+                if(cn._featureId){
+                    var feat = evt.l.getFeatureById(cn._featureId);
+                    if (feat.atPoint(lonlat)) {
+                        featureId = cn._featureId;
+                        break;
+                    }
+                }
+            }
+            
+        }
+        return featureId;
+    };
