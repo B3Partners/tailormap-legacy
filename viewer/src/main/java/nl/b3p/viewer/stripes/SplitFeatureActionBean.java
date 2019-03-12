@@ -72,7 +72,7 @@ import org.stripesstuff.stripersist.Stripersist;
  * one or more new features are created or the split feature is deleted and all
  * new features are created.
  *
- * @author Mark Prins mark@b3partners.nl
+ * @author Mark Prins
  */
 @UrlBinding("/action/feature/split")
 @StrictBinding
@@ -338,7 +338,7 @@ public class SplitFeatureActionBean extends LocalizableApplicationActionBean imp
      *
      * @param geoms to sort
      *
-     * @see com.​vividsolutions.​jts.​geom.​Geometry#compareTo(Object)
+     * @see org.locationtech.jts.geom.Geometry#compareTo(Object)
      */
     private void geometrySorter(List<? extends Geometry> geoms) {
         Collections.sort(geoms, new Comparator<Geometry>() {
@@ -361,7 +361,6 @@ public class SplitFeatureActionBean extends LocalizableApplicationActionBean imp
         Geometry bufferedToSplit = toSplit.buffer(1);
         for (int i = 0; i < lines.getNumGeometries(); i++) {
             LineString l = (LineString) lines.getGeometryN(i);
-            // TODO to be tested
             if (bufferedToSplit.contains(l)) {
                 output.add(l);
             }
