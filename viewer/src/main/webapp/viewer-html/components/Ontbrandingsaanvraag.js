@@ -22,7 +22,7 @@
  * @author <a href="mailto:geertplaisier@b3partners.nl">Geert Plaisier</a>
  */
 Ext.define ("viewer.components.Ontbrandingsaanvraag",{
-    extend: "viewer.components.tools.DownloadMap",
+    extend: "viewer.components.Component",
     vectorLayer: null,
     extraObjectsLayer: null,
     calculationResultLayer: null,
@@ -92,7 +92,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
             obj[conf[i].label] = {
                 distance: conf[i].distance,
                 fan: conf[i].fan
-            }
+            };
         }
     },
 
@@ -353,12 +353,6 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                     xtype: 'button',
                     html: i18next.t('viewer_components_ontbrandingsaanvraag_20'),
                     margin: this.defaultMargin,
-                    listeners: { click: this.makeImage, scope: this }
-                },
-                {
-                    xtype: 'button',
-                    html: i18next.t('viewer_components_ontbrandingsaanvraag_21'),
-                    margin: this.defaultMargin,
                     listeners: { click: this.printRequest, scope: this }
                 },
                 {
@@ -483,6 +477,9 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                 { name: 'zonedistance_consumer', type: 'string' },
                 { name: 'custom_zonedistance_consumer', type: 'number' },
                 { name: 'custom_fireworktype_consumer', type: 'string' },
+                { name: 'lengthdistanceline', type: 'boolean', defaultValue: true },
+                { name: 'showcircle', type: 'boolean', defaultValue: true },
+                { name: 'distanceline', type: 'boolean', defaultValue: true },
                 { name: 'fireworks_type', type: 'string', defaultValue: 'consumer' },
                 { name: 'zonedistance_professional', type: 'string' },
                 { name: 'custom_zonedistance_professional', type: 'number' },
@@ -622,6 +619,45 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                             name: 'fireworks_type',
                             inputValue: 'professional',
                             itemId: 'fireworks_type_choice_professional'
+                        }
+                    ]
+                },{
+                    xtype: 'fieldcontainer',
+                    fieldLabel: 'Laat op kaart zien na berekening:',
+                    height: 65,
+                    defaultType: 'checkbox',
+                    defaults: {
+                        flex: 1,
+                        listeners: {
+                            change: function(field,newValue){
+                                if(field.getName() === "distanceline"){
+                                    var lengthDistanceCmp = Ext.getCmp("lengthdistanceline");
+                                    lengthDistanceCmp.setDisabled(!newValue);
+                                }
+                                this.toggleZonedistancesForm();
+                            },
+                            blur: this.saveIgnitionLocation,
+                            scope: this
+                        }
+                    },
+                    layout: 'hbox',
+                    items: [
+                        {
+                            boxLabel: 'Binnencirkel tonen',
+                            name: 'showcircle',
+                            itemId: 'showcircle',
+                            value: true
+                        },{
+                            boxLabel: 'Afstandslijn',
+                            name: 'distanceline',
+                            itemId: 'distanceline',
+                            value: true
+                        }, {
+                            boxLabel: 'Lengte afstandslijn',
+                            name: 'lengthdistanceline',
+                            itemId: 'lengthdistanceline',
+                            id: 'lengthdistanceline',
+                            value: true
                         }
                     ]
                 },
@@ -1086,7 +1122,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         }
         var grid = this.getGridForType(drawType);
         if(grid) {
-            grid.mask(i18next.t('viewer_components_ontbrandingsaanvraag_64', {type:drawingName}));
+            grid.mask("Teken een " + drawingName + " op de kaart");
         }
         var form = this.getContentContainer().query(this.toId(formQuery))[0];
         form.setVisible(false);
@@ -1387,8 +1423,12 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
 
     saveFile: function() {
         Ext.Msg.prompt(
-            i18next.t('viewer_components_ontbrandingsaanvraag_78'),
-            i18next.t('viewer_components_ontbrandingsaanvraag_68'),
+            'Aanvraag opslaan',
+            [
+                'U kunt de aanvraag opslaan om op een later moment verder te gaan,<br />of de aanvraag later opnieuw te gebruiken.',
+                '<br /><br />Vul hieronder de bestandsnaam in en klik op "Ok" in het bestand te downloaden',
+                '<br /><br />'
+            ].join(''),
             function(btn, text){
                 if (btn === 'ok') {
                     this._saveFile(text);
@@ -1473,13 +1513,9 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         for(var i = count - 1; i >= 0; i--) {
             this._removeLocation(grid, i);
         }
-    },
-    makeImage: function() {
-        var features = this.getAllFeatures();
-        this.buttonDown();
-    },
-    
+    },    
     printRequest:function(){
+        this.deselectAllFeatures();
         this.printComponent.buttonClick();
         this.printComponent.qualitySlider.setValue(this.printComponent.qualitySlider.maxValue);
     },
@@ -1553,6 +1589,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
             Ext.Ajax.request({
                 url: actionBeans["ontbrandings"],
                 scope: this,
+                timeout: 1200000,
                 params: {
                     features: Ext.JSON.encode(features),
                     showIntermediateResults:false
@@ -1572,7 +1609,10 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
 
     showSafetyZoneError: function() {
         this.wizardPages[3].unmask();
-        this.addMessageInContainer('#calculation_messages', i18next.t('viewer_components_ontbrandingsaanvraag_70'));
+        this.addMessageInContainer('#calculation_messages',
+            'Er is iets mis gegaan met het berekenen van de veiligheidszone. ' +
+            'Sla uw tekening op en probeer het opnieuw. ' +
+            'U kunt uw tekening opslaan door naar het tabblad \'Opslaan en printen\' te gaan of onderin tweemaal op \'Volgende\' te klikken.');
         this.isAddingSafetyZone = false;
     },
 
@@ -1607,8 +1647,8 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
             this.addMessageInContainer('#calculation_messages', i18next.t('viewer_components_ontbrandingsaanvraag_71'));
             return false;
         }
-        if(store.find('mainLocation', true).length === 0) {
-            this.addMessageInContainer('#calculation_messages', i18next.t('viewer_components_ontbrandingsaanvraag_72'));
+        if(store.find('mainLocation', true) === -1) {
+            this.addMessageInContainer('#calculation_messages',  i18next.t('viewer_components_ontbrandingsaanvraag_72'));
             return false;
         }
         return true;
