@@ -358,11 +358,11 @@ public class SplitFeatureActionBean extends LocalizableApplicationActionBean imp
     protected List<LineString> splitLine(Geometry toSplit, Geometry line) {
         List<LineString> output = new ArrayList();
         Geometry lines = toSplit.union(line);
-
+        Geometry bufferedToSplit = toSplit.buffer(1);
         for (int i = 0; i < lines.getNumGeometries(); i++) {
             LineString l = (LineString) lines.getGeometryN(i);
             // TODO to be tested
-            if (toSplit.contains(l.getInteriorPoint())) {
+            if (bufferedToSplit.contains(l)) {
                 output.add(l);
             }
         }
