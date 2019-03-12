@@ -74,6 +74,9 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersSnappingController", {
         this.config.viewerController.mapComponent.getMap().addListener(
                 viewer.viewercontroller.controller.Event.ON_FINISHED_CHANGE_EXTENT,
                 this.changedExtent, this);
+        this.config.viewerController.addListener(
+                viewer.viewercontroller.controller.Event.ON_EDIT_SUCCESS,
+        this.addAppLayer, this);
         // this.config.viewerController.mapComponent.getMap().addListener(
         //         viewer.viewercontroller.controller.Event.ON_LAYER_REMOVED,
         //         this.layerRemoved, this);
