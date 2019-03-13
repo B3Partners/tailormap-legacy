@@ -192,7 +192,11 @@
             <artifactId>powermock-api-mockito2</artifactId>
             <scope>test</scope>
         </dependency>
-
+        <dependency>
+            <groupId>org.apache.tika</groupId>
+            <artifactId>tika-core</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -692,7 +696,7 @@
                                 <include>**/*IntegrationTest.java</include>
                             </includes>
                             <excludes>
-                                <exclude>**/TilingIntegrationTest.java</exclude>
+                                <!--<exclude>**/TilingIntegrationTest.java</exclude>-->
                             </excludes>
                             <trimStackTrace>false</trimStackTrace>
                             <testFailureIgnore>!${test.skip.integrationtests}</testFailureIgnore>
