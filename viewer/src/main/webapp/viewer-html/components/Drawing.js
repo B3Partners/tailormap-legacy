@@ -146,7 +146,8 @@ Ext.define ("viewer.components.Drawing",{
             showmeasures:true,
             viewerController: this.config.viewerController,
             defaultFeatureStyle: this.defaultStyle,
-            addStyleToFeature: true
+            addStyleToFeature: true,
+            mustCreateVertices: !this.config.dummyUser
         });
         this.config.viewerController.registerSnappingLayer(this.vectorLayer);
         this.config.viewerController.mapComponent.getMap().addLayer(this.vectorLayer);
