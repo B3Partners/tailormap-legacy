@@ -100,7 +100,8 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
         this.drawFeatureControls.push(this.freehandLine);
 
         // The modifyfeature control allows us to edit and select features.
-        this.modifyFeature = new OpenLayers.Control.ModifyFeature(this.frameworkLayer,{createVertices : false,vertexRenderIntent: "select"});
+        var createVertices = config.mustCreateVertices !== undefined && config.mustCreateVertices !== null ? config.mustCreateVertices : true;
+        this.modifyFeature = new OpenLayers.Control.ModifyFeature(this.frameworkLayer,{createVertices : createVertices,vertexRenderIntent: "select"});
 
         map.addControl(this.point);
         map.addControl(this.line);
