@@ -559,9 +559,8 @@
             <id>jenkins</id>
             <dependencies>
                 <dependency>
-                    <groupId>com.oracle</groupId>
-                    <artifactId>ojdbc7</artifactId>
-                    <version>12.1.0.2.0</version>
+                    <groupId>com.oracle.jdbc</groupId>
+                    <artifactId>ojdbc8</artifactId>
                     <scope>test</scope>
                 </dependency>
             </dependencies>
@@ -644,9 +643,9 @@
                                 <version>${javax.mail.version}</version>
                             </dependency>
                             <dependency>
-                                <groupId>com.oracle</groupId>
-                                <artifactId>ojdbc7</artifactId>
-                                <version>12.1.0.2.0</version>
+                                <groupId>com.oracle.jdbc</groupId>
+                                <artifactId>ojdbc8</artifactId>
+                                <version>${oracle.version}</version>
                             </dependency>
                             <dependency>
                                 <groupId>org.jacoco</groupId>

@@ -93,6 +93,9 @@ public class TilingIntegrationTest {
             log.error("Maybe not a valid png?...", e);
             fail("Image may not be a valid png");
         }
+        // this apparently sometimes fails in server mode open?java 11 on eg travis and appveyor, seems OK on java 8 or maybe
+        // if (System.getProperty("java.version").startsWith("1.8")) {
         assertEquals("Image is not a valid png", "image/png", Files.probeContentType(f.toPath()));
+        //}
     }
 }
