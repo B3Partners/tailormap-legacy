@@ -21,7 +21,6 @@
  */
 package nl.b3p.viewer.image;
 
-import com.sun.imageio.plugins.png.PNGMetadata;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.LineString;
@@ -124,21 +123,9 @@ public class ImageTool {
             ir.setInput(stream, true);
             i = ir.read(0);
             //if image is a png, has no alpha and has a tRNS then make that color transparent.
-            if (!i.getColorModel().hasAlpha() && ir.getImageMetadata(0) instanceof PNGMetadata) {
-                PNGMetadata metadata = (PNGMetadata) ir.getImageMetadata(0);
-                if (metadata.tRNS_present) {
-                    int alphaPix = (metadata.tRNS_red << 16) | (metadata.tRNS_green << 8) | (metadata.tRNS_blue);
-                    BufferedImage tmp = new BufferedImage(i.getWidth(), i.getHeight(),
-                            BufferedImage.TYPE_INT_ARGB);
-                    for (int x = 0; x < i.getWidth(); x++) {
-                        for (int y = 0; y < i.getHeight(); y++) {
-                            int rgb = i.getRGB(x, y);
-                            rgb = (rgb & 0xFFFFFF) == alphaPix ? alphaPix : rgb;
-                            tmp.setRGB(x, y, rgb);
-                        }
-                    }
-                    i = tmp;
-                }
+            if (!i.getColorModel().hasAlpha() && mimeType.toLowerCase().contains("png")) {
+                log.debug("If the print shows up with a white (or other non-transparent) background, this must be fixed here: the original image has no alpha, but a background color. Here some code could filter that out. Look at the commit history for guidance.");
+                // Removed proprietary class PNGMetadata. Probably not needed anymore, if so: replace by using an imagefilter like something in: https://stackoverflow.com/questions/665406/how-to-make-a-color-transparent-in-a-bufferedimage-and-save-as-png
             }
         } finally {
             if (ir != null) {
