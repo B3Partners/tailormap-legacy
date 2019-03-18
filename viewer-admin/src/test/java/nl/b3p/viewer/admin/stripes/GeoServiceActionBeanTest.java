@@ -41,7 +41,7 @@ public class GeoServiceActionBeanTest extends TestUtil{
     //@Test
     public void addWMSService(){
         try {
-            String url = "http://geodata.nationaalgeoregister.nl/rwsgeluidskaarten/wms?SERVICE=WMS&";
+            String url = "https://geodata.nationaalgeoregister.nl/rwsgeluidskaarten/ows?language=dut&";
             String protocol = "wms";
             boolean overrideUrl = false;
             Category cat = new Category();
