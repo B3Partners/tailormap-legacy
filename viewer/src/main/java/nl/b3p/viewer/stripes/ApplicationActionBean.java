@@ -318,28 +318,7 @@ public class ApplicationActionBean extends LocalizableApplicationActionBean impl
         appConfigJSON = obj.toString(4);
         response.put("config", appConfigJSON);
         response.put("success", true);
-
         return new StreamingResolution("application/json", new StringReader(response.toString()));
-       /* HttpServletRequest request = context.getRequest();
-        final InputStream in = request.getInputStream();
-        if ("gzip".equals(request.getHeader("Accept-Encoding"))) {
-
-            StreamingResolution res = new StreamingResolution("application/json") {
-                @Override
-                public void stream(HttpServletResponse resp) throws Exception {
-                    OutputStream out = resp.getOutputStream();
-                    resp.setDateHeader("Expires", System.currentTimeMillis() + (1000 * 60 * 60 * 24));
-                    GZIPOutputStream gout = new GZIPOutputStream(out);
-                    InputStream gin = new ByteArrayInputStream(response.toString().getBytes());
-                    IOUtils.copy(gin, gout);
-                }
-            };
-            return res;
-
-        } else {
-            return new StreamingResolution("application/json", new StringReader(response.toString()));
-
-        }*/
     }
 
     @DefaultHandler
