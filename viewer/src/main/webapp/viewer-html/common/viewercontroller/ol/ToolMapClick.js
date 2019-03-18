@@ -60,8 +60,9 @@ Ext.define ("viewer.viewercontroller.ol.ToolMapClick",{
     },
     
     activateTool : function(){      
+        var me = this;
         this.clickControl = this.olMap.on("click", function(evt){
-            this.handleClick(evt);
+            me.handleClick(evt);
         },this);
     },
     
