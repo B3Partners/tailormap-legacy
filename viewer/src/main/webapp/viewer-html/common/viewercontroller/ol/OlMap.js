@@ -137,6 +137,10 @@ Ext.define ("viewer.viewercontroller.ol.OlMap",{
          return this.getFrameworkMap().getView().getResolution();
      },
      
+     getResolutions : function(){
+         return this.getFrameworkMap().getView().getResolutions();
+     },
+     
      getScale : function(){
         return this.getFrameworkMap().getView().getResolution();
     },
@@ -144,6 +148,11 @@ Ext.define ("viewer.viewercontroller.ol.OlMap",{
         var center = [x,y];
         this.getFrameworkMap().getView().setCenter(center);
         new ol.geom.Point(center);
+    },
+    
+    zoomToResolution : function(resolution){
+        return this.getFrameworkMap().getView().setZoom(this.getFrameworkMap().getView().getZoomForResolution(resolution));
+       
     },
     
     setMarker : function(markerName,x,y,type){
