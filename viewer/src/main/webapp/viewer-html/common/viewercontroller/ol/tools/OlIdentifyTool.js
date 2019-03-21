@@ -47,6 +47,7 @@ Ext.define("viewer.viewercontroller.ol.tools.OlIdentifyTool",{
     },
     
     activate: function(){
+        var me = this;
         this.conf.actives =true;
         this.tempKey = this.mapComponent.maps[0].getFrameworkMap().on('singleclick',function(evt){  
             var crd = evt.coordinate;
@@ -60,7 +61,7 @@ Ext.define("viewer.viewercontroller.ol.tools.OlIdentifyTool",{
                 y:crd[1]
             }
         };
-            this.handleClick(this,options);
+            me.handleClick(me,options);
         },this);
     },
     
