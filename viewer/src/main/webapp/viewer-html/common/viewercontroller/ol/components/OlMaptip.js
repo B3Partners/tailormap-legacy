@@ -22,8 +22,8 @@ Ext.define ("viewer.viewercontroller.ol.components.OlMaptip",{
         var me  = this;
         this.frameworkObject = new ol.interaction.Pointer();
         this.map.getFrameworkMap().on('pointermove', function(evt) {
-            this.clearTimer();
-            this.timerId = window.setTimeout(function(){me.onPause(evt); },this.delay);
+            me.clearTimer();
+            me.timerId = window.setTimeout(function(){me.onPause(evt); },this.delay);
       },this);
         
     },
