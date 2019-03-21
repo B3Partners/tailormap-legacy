@@ -363,5 +363,9 @@ Ext.define("viewer.viewercontroller.controller.Map",{
      */
     updateSize : function(){
         Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_map_26')});
+    },
+    
+    compareExtent: function(ext1, ext2){
+        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_map_26')});
     }
 });
