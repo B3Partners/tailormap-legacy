@@ -221,7 +221,7 @@ Ext.define ("viewer.components.Maptip",{
             }
             options.data = data;
             var curExtent = me.config.viewerController.mapComponent.getMap().getExtent();
-            if (curExtent.equals(me.requestExtent)){
+            if (me.config.viewerController.mapComponent.compareExtent(curExtent,me.requestExtent)){
                 for( var i = 0 ; i < data.length ;i++){
                     var row = data[i];
                     if(row.error) {
@@ -242,8 +242,9 @@ Ext.define ("viewer.components.Maptip",{
      * @param options the options of the event
      */
     onMapData: function(layer,options){
+        var me = this;
         var curExtent = this.config.viewerController.mapComponent.getMap().getExtent();
-        if (curExtent.equals(this.requestExtent)){
+        if (me.config.viewerController.mapComponent.compareExtent(curExtent,me.requestExtent)){
             this.onDataReturned(options);
         }
     },
