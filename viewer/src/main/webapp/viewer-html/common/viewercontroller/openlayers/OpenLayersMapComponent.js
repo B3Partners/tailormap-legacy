@@ -831,6 +831,10 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
         } else {
             Ext.get(this.domId).dom.style.cursor = "default";
         }
+    },
+    
+    compareExtent: function(ext1, ext2){
+        return ext1.equals(ext2);
     }
 
     /****************************************************************Event handling***********************************************************/

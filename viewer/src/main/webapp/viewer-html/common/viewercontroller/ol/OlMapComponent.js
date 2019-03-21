@@ -478,6 +478,10 @@ Ext.define("viewer.viewercontroller.OlMapComponent",{
         } else {
             Ext.get(this.domId).dom.style.cursor = "default";
         }
+    },
+    
+    compareExtent: function(ext1, ext2){
+        return ol.extent.equals(ext1,ext2);
     }
     
     
