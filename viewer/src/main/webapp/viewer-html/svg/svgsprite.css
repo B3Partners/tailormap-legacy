@@ -16,6 +16,7 @@
     bottom: -1px;
     z-index: 11;
     background-color: transparent;
+    background-image: none;
 }
 
 .svg-tool svg {
