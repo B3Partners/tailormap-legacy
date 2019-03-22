@@ -716,8 +716,12 @@ Ext.define ("viewer.components.Drawing",{
      * @param feature the feature which has been activated
      * Event handlers
      **/
-    activeFeatureChanged : function (vectorLayer,feature){
+    activeFeatureChanged : function (vectorLayer,feature, evt){
         this.toggleSelectForm(true);
+        if (evt && evt.type && evt.type === 'afterfeaturemodified') {
+            this.activeFeature = null;
+            return;
+        }
         this.activeFeature = this.features[feature.config.id];
         if (!this.features.hasOwnProperty(feature.config.id)) {
             feature.color = feature.color || (feature.style || {}).color || this.colorPicker.getColor();
