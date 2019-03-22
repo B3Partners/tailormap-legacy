@@ -44,6 +44,7 @@ Ext.define ("viewer.components.Drawing",{
     mobileHide: false,
     pointType:"circle",
     defaultProps:null,
+    updateFormLayoutTimer: null,
     config:{
         title: "",
         reactivateTools:null,
@@ -724,7 +725,10 @@ Ext.define ("viewer.components.Drawing",{
             this.featureStyleChanged();
         } else {
             if (this.activeFeature.getId() === feature.getId()) {
-                this.changeFormToCurrentFeature(feature);
+                this.updateFormLayoutTimer = window.setTimeout((function() {
+                    this.changeFormToCurrentFeature(feature);
+                }).bind(this), 0);
+
             }
         }
         if (this.activeFeature) {
@@ -740,6 +744,9 @@ Ext.define ("viewer.components.Drawing",{
         });
         this.showMobilePopup();
         this.featureStyleChanged();
+        if (this.updateFormLayoutTimer) {
+            window.clearTimeout(this.updateFormLayoutTimer);
+        }
         if(this.config.dummyUser){
             this.drawFreeHand();
         }
