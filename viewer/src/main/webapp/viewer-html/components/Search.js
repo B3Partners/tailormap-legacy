@@ -361,6 +361,7 @@ Ext.define ("viewer.components.Search",{
         if(data.location){
             this.handleSearchResult(data);
             this.searchField.collapse();
+            this.resultPanel.removeAll();
         }else{
             this.search();
         }
