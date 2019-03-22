@@ -617,3 +617,10 @@ TODO: check if we always need to do this, not only mobile, only on mobile are we
     overflow-x: auto !important;
     overflow-y: auto !important;
 }
+
+/** Fixes resize handles overlappng the scrollbars (https://www.sencha.com/forum/showthread.php?339346-Resize-Handler-Overlap-Scrollbars-in-the-Triton-Theme)
+    This fix moves the resize-handles on the right and the bottom to outside of the popup,
+    preventing them from overlapping the scrollbar inside the popup */
+.screen-popup { overflow: visible; }
+.x-resizable-handle-east { right: -10px; }
+.x-resizable-handle-south { bottom: -10px; }
