@@ -43,6 +43,13 @@ div.olControlZoom a.svg-tool {
     text-indent: 0;
 }
 
+/** Explicitly set the height of the component. When positioning the component the SVG might not be loaded,
+    and height would be 0, making it dissapear from the screen when positioned in the bottom-right */
+div.olControlZoom {
+    width: 28px;
+    height: 51px;
+}
+
 div.olControlZoom a.svg-tool svg {
     width: 22px;
     height: 22px;
