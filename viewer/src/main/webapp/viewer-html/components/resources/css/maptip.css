@@ -191,7 +191,7 @@
 }
 .feature_detail_attr_value{}
 .load-releated-features {
-    display: inline-block;
+    display: block;
     text-indent: 100%;
     white-space: nowrap;
     overflow: hidden;
