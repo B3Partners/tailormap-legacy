@@ -797,5 +797,51 @@
                 </plugins>
             </build>
         </profile>
+        <profile>
+            <id>tomcat-9</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.tomcat.maven</groupId>
+                        <artifactId>tomcat7-maven-plugin</artifactId>
+                        <configuration>
+                            <port>9090</port>
+                            <contextFile>src/test/tomcatconf/context.xml</contextFile>
+                            <systemProperties>
+                            </systemProperties>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>tomcat-startup</id>
+                                <goals/>
+                                <phase>pre-integration-test</phase>
+                            </execution>
+                            <execution>
+                                <id>tomcat-shutdown</id>
+                                <goals/>
+                                <phase>post-integration-test</phase>
+                            </execution>
+                        </executions>
+                        <dependencies>
+                           <dependency>
+                                <groupId>com.sun.mail</groupId>
+                                <artifactId>javax.mail</artifactId>
+                                <version>${javax.mail.version}</version>
+                            </dependency>
+                            <dependency>
+                                <groupId>org.postgresql</groupId>
+                                <artifactId>postgresql</artifactId>
+                                <version>${postgresql.version}</version>
+                            </dependency>
+                            <dependency>
+                                <groupId>org.jacoco</groupId>
+                                <artifactId>org.jacoco.agent</artifactId>
+                                <version>${jacoco-maven-plugin.version}</version>
+                            </dependency>
+                        </dependencies>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
     </profiles>
 </project>
