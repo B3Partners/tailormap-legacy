@@ -33,6 +33,7 @@ before_install:
   - ls -la ~
   - sudo chown travis:travis ~/.gitconfig
   - ls -la ~
+  - docker pull tomcat:9-jre8
 
 install:
   - wget http://cert.pkioverheid.nl/RootCA-G3.cer
@@ -58,7 +59,8 @@ script:
   - free -m
   - wait-on -t 120000 http-get://localhost:8600/geoserver && echo "docker geoserver is up" || true
   # execute unit tests
-  - mvn -e clean test -B
+  - mvn -e clean test -B  -pl '!tomcat-lib'
+  - .travis/start_tomcat_9.sh
   # run integration tests on all modules except viewer-admin
   - mvn -e verify -B -Ptravis-ci -pl '!viewer-admin'
   # run integration tests on viewer-admin module only
@@ -74,6 +76,9 @@ script:
   - if [ "$TRAVIS_JDK_VERSION" == oraclejdk8 ]; then
          mvn javadoc:test-javadoc;
     fi
+
+after_script:
+  #- docker stop tomcat9
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)

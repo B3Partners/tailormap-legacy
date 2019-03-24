@@ -13,6 +13,12 @@
             <useProjectArtifact>${project.groupId}:tomcat-lib</useProjectArtifact>
             <outputDirectory>lib/</outputDirectory>
             <unpack>false</unpack>
+            <!--
+            <includes>
+                <include>com.sun.mail:javax.mail</include>
+                <include>javax.activation:activation</include>
+            </includes>
+            -->
             <outputFileNameMapping>${artifact.artifactId}-${artifact.version}.${artifact.extension}</outputFileNameMapping>
         </dependencySet>
         <dependencySet>
