@@ -38,7 +38,7 @@ public class GeoServiceActionBeanTest extends TestUtil{
     public GeoServiceActionBeanTest() {
     }
 
-    @Test
+    //@Test
     public void addWMSService(){
         try {
             String url = "http://geodata.nationaalgeoregister.nl/rwsgeluidskaarten/wms?SERVICE=WMS&";
