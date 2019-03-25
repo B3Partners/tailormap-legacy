@@ -315,7 +315,7 @@ public class ApplicationActionBean extends LocalizableApplicationActionBean impl
             details.remove(SelectedContentCache.DETAIL_CACHED_EXPANDED_SELECTED_CONTENT);
             details.remove(SelectedContentCache.DETAIL_CACHED_SELECTED_CONTENT);
         }
-        appConfigJSON = obj.toString(4);
+        appConfigJSON = obj.toString();
         response.put("config", appConfigJSON);
         response.put("success", true);
         return new StreamingResolution("application/json", new StringReader(response.toString()));
@@ -377,7 +377,7 @@ public class ApplicationActionBean extends LocalizableApplicationActionBean impl
 
         buildComponentSourceHTML(em);
 
-        appConfigJSON = application.toJSON(context.getRequest(),false, false,em).toString(4);
+        appConfigJSON = application.toJSON(context.getRequest(),false, false,em).toString();
         this.viewerType = retrieveViewerType();
         if(StringUtils.isBlank(title)) {
             this.title = application.getName();
