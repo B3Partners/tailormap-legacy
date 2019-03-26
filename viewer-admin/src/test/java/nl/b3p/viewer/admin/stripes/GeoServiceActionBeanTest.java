@@ -38,10 +38,10 @@ public class GeoServiceActionBeanTest extends TestUtil{
     public GeoServiceActionBeanTest() {
     }
 
-    //@Test
+    @Test
     public void addWMSService(){
         try {
-            String url = "https://geodata.nationaalgeoregister.nl/rwsgeluidskaarten/ows?language=dut&";
+            String url = "https://geodata.nationaalgeoregister.nl/inspire/au/wms?&request=GetCapabilities&SERVICE=WMS";
             String protocol = "wms";
             boolean overrideUrl = false;
             Category cat = new Category();
@@ -59,7 +59,7 @@ public class GeoServiceActionBeanTest extends TestUtil{
 
             List<Layer> layers = service.loadLayerTree(entityManager);
             // hmmmp PDOK weirdness v1.1.0 caps file has 3 layers, v1.3.0 has 6
-            assertEquals("The number of layers should be the same", 8, layers.size());
+            assertEquals("The number of layers should be the same", 3, layers.size());
             //assertEquals("The number of layers should be the same", 3, layers.size());
             assertEquals("The url should be the same", url, service.getUrl());
         } catch (Exception ex) {
