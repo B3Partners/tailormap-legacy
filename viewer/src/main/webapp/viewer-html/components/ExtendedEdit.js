@@ -280,7 +280,7 @@ Ext.define ("viewer.components.ExtendedEdit",{
             removeMessage.setVisible(false);
         }, 5000);
     },
-    addSuccesIconToButton(btn) {
+    addSuccesIconToButton: function(btn) {
         if(!btn) {
             return;
         }

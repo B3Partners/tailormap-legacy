@@ -48,6 +48,7 @@ Ext.define ("viewer.viewercontroller.openlayers.components.OpenLayersBorderNavig
             var appSprite = this.config.viewerController.getApplicationSprite();
             function addSvgIcon(el, cls) {
                 el.setHtml([
+                    '<div class="svg-click-area"></div>', // An extra transparent DIV is added to fix issue where button could not be clicked in IE
                     '<svg role="img" title=""><use xlink:href="',
                     appSprite,
                     '#icon-',

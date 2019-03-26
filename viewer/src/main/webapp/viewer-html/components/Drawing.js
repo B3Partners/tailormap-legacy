@@ -44,6 +44,7 @@ Ext.define ("viewer.components.Drawing",{
     mobileHide: false,
     pointType:"circle",
     defaultProps:null,
+    updateFormLayoutTimer: null,
     config:{
         title: "",
         reactivateTools:null,
@@ -715,8 +716,12 @@ Ext.define ("viewer.components.Drawing",{
      * @param feature the feature which has been activated
      * Event handlers
      **/
-    activeFeatureChanged : function (vectorLayer,feature){
+    activeFeatureChanged : function (vectorLayer,feature, evt){
         this.toggleSelectForm(true);
+        if (evt && evt.type && evt.type === 'afterfeaturemodified') {
+            this.activeFeature = null;
+            return;
+        }
         this.activeFeature = this.features[feature.config.id];
         if (!this.features.hasOwnProperty(feature.config.id)) {
             feature.color = feature.color || (feature.style || {}).color || this.colorPicker.getColor();
@@ -724,7 +729,10 @@ Ext.define ("viewer.components.Drawing",{
             this.featureStyleChanged();
         } else {
             if (this.activeFeature.getId() === feature.getId()) {
-                this.changeFormToCurrentFeature(feature);
+                this.updateFormLayoutTimer = window.setTimeout((function() {
+                    this.changeFormToCurrentFeature(feature);
+                }).bind(this), 0);
+
             }
         }
         if (this.activeFeature) {
@@ -740,6 +748,9 @@ Ext.define ("viewer.components.Drawing",{
         });
         this.showMobilePopup();
         this.featureStyleChanged();
+        if (this.updateFormLayoutTimer) {
+            window.clearTimeout(this.updateFormLayoutTimer);
+        }
         if(this.config.dummyUser){
             this.drawFreeHand();
         }
