@@ -19,13 +19,19 @@
  * @author <a href="mailto:geertplaisier@b3partners.nl">Geert Plaisier</a>
  */
 Ext.define("viewer.components.CustomConfiguration", {
-    extend: "viewer.components.SelectionWindowConfig",
+    extend: "viewer.components.ConfigObject",
     constructor: function (parentId, configObject, configPage) {
         if (configObject === null){
             configObject = {};
         }
-        configObject.showLabelconfig = true;
         viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId, configObject, configPage);
+        this.form = new Ext.form.FormPanel({
+            frame: false,
+            bodyPadding: this.formPadding,
+            width: this.formWidth,
+            items: [],
+            renderTo: this.parentId//(2)
+        });
         this.form.add([
             {
                 xtype: 'fieldset',

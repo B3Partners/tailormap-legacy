@@ -34,7 +34,6 @@ Ext.define ("viewer.components.Bookmark",{
         shareEmail: false,
         shareTwitter: false,
         shareLinkedIn: false,
-        shareGooglePlus: false,
         shareFacebook: false,
         shareText: i18next.t('viewer_components_bookmark_0'),
         shareTitle: i18next.t('viewer_components_bookmark_1'),
@@ -55,7 +54,6 @@ Ext.define ("viewer.components.Bookmark",{
             email: "mailto:%20?subject=[title]&body=[text]%20[url]",
             twitter: "http://twitter.com/share?url=[url]&text=[text]",
             linkedin: "http://www.linkedin.com/shareArticle?mini=true&url=[url]&summary=[text]&title=[title]",
-            googleplus: "https://plus.google.com/share?url=[url]&text=[text]",
             facebook: "https://www.facebook.com/sharer.php?u=[url]&text=[text]"
         };
         
@@ -124,22 +122,8 @@ Ext.define ("viewer.components.Bookmark",{
                     }
                 }            
             });
-        }if (this.config.shareGooglePlus){
-            socialButtons.push({
-                xtype: 'button',                
-                margin: '10px 0px 0px 10px',
-                //text: i18next.t('viewer_components_bookmark_5'),
-                icon: imagePath + 'gplus-16.png',
-                listeners: {
-                    click:{
-                        scope: this,
-                        fn: function(){
-                            this.share(this.shareUrls["googleplus"]);
-                        }
-                    }
-                }            
-            });           
-        }if (this.config.shareFacebook){
+        }
+        if (this.config.shareFacebook){
             socialButtons.push({
                 xtype: 'button',                
                 margin: '10px 0px 0px 10px',
