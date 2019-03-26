@@ -399,7 +399,7 @@ public class ApplicationTreeActionBean extends ApplicationActionBean {
         if(l == null || target == null || oldParent == null){
             throw new IllegalArgumentException("Passed ids yield no levels, or level doesn't have a parent (do not try to move the application level. No. Don't.)");
         }
-        
+        removeLevelFromChildren(l, target, em);
         if (!oldParent.getId().equals(target.getId())) {
             target.getChildren().add(l);
             l.setParent(target);
@@ -413,6 +413,16 @@ public class ApplicationTreeActionBean extends ApplicationActionBean {
             em.persist(l);
             em.persist(target);
             em.persist(oldParent);
+        }
+    }
+    
+    private void removeLevelFromChildren(Level level, Level newParent, EntityManager em){
+        List<Level> parentList = em.createQuery("select l FROM Level l join l.children c where c = :level", Level.class).setParameter("level", level).getResultList();
+        for (Level l : parentList) {
+            if(!l.getId().equals(newParent.getId())){
+                l.getChildren().remove(level);
+                em.persist(l);
+            }
         }
     }
 }
