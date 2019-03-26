@@ -529,10 +529,10 @@ Ext.define ("viewer.components.Maptip",{
                 var filteredAttributes = ["related_featuretypes", "__fid"];
                 if (this.detailHideGeomAttr) {
                     filteredAttributes.push(appLayer.geometryAttribute);
-                }
-                for (var n = 0; n < geomFields.length; n++) {
-                    filteredAttributes.push(geomFields[n].name);
-                    filteredAttributes.push(geomFields[n].alias);
+                    for (var n = 0; n < geomFields.length; n++) {
+                        filteredAttributes.push(geomFields[n].name);
+                        filteredAttributes.push(geomFields[n].alias);
+                    }
                 }
                 var html = "<table>";
                 feature.forEachAttribute(function(key, value) {
