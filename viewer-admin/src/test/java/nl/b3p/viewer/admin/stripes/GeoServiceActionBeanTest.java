@@ -42,7 +42,7 @@ public class GeoServiceActionBeanTest extends TestUtil{
     public void addWMSService(){
         try {
             
-            String url = "https://geodata.nationaalgeoregister.nl/inspire/au/wms?&request=GetCapabilities&SERVICE=WMS";
+            String url = "https://geodata.nationaalgeoregister.nl/inspire/au/wms?SERVICE=WMS&";
             String protocol = "wms";
             boolean overrideUrl = false;
             Category cat = new Category();
