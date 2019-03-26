@@ -279,7 +279,8 @@ Ext.define("viewer.components.Legend", {
         // priority
         
         var map = this.config.viewerController.mapComponent.getMap();
-        var curScale = OpenLayers.Util.getScaleFromResolution(map.getResolution(), map.units);
+        var mapResolution = map.getResolution();
+        var curScale = OpenLayers.Util.getScaleFromResolution(mapResolution, map.units);
         var legendScale = curScale;
         var serviceLayer = this.config.viewerController.getServiceLayer(appLayer);
 
@@ -287,6 +288,10 @@ Ext.define("viewer.components.Legend", {
             legendScale = serviceLayer.maxScale;
         } else if (this.config.viewerController.compareToScale(appLayer, curScale, false) == 1) {
             legendScale = serviceLayer.minScale;
+        }
+
+        if (legendScale < mapResolution) {
+            return;
         }
         
         // TODO when layer is out of scale we could also decide not to show the legend for this layer

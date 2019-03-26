@@ -131,17 +131,6 @@ Ext.define("viewer.components.CustomConfiguration", {
                         }
                     },{
                         xtype: 'checkbox',
-                        boxLabel: i18next.t('bookmark_config_9'),
-                        name: 'shareGooglePlus',
-                        /*columnWidth : 0.5,*/
-                        //value: true,
-                        inputValue: true,
-                        checked: this.configObject.shareGooglePlus != undefined ? this.configObject.shareGooglePlus : false,
-                        style: {
-                            marginRight: "90px"
-                        }
-                    },{
-                        xtype: 'checkbox',
                         boxLabel: i18next.t('bookmark_config_10'),
                         name: 'shareFacebook',
                         /*columnWidth : 0.5,*/

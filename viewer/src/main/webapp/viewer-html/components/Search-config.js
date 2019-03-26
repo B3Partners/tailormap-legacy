@@ -650,6 +650,8 @@ Ext.define("viewer.components.SearchConfiguration",{
         if(this.attribuutbronSearchconfigs.hasOwnProperty(searchconfigId)) {
             // Get the checked solr configs
             var checkedASConfigs = this.attribuutbronSearchconfigs[searchconfigId].getChecked();
+            // Empty config before creating new config
+            Config = {};
             // For each of the checked solr configs we will create a config object
            Ext.Array.each(checkedASConfigs, function(asConfigId) {
                 // Replace previous config object
@@ -679,6 +681,8 @@ Ext.define("viewer.components.SearchConfiguration",{
         if(this.solrSearchconfigs.hasOwnProperty(searchconfigId)) {
             // Get the checked solr configs
             var checkedSolrconfigs = this.solrSearchconfigs[searchconfigId].getChecked();
+            // Empty config before creating new config
+            solrConfig = {};
             // For each of the checked solr configs we will create a config object
             Ext.Array.each(checkedSolrconfigs, function(solrConfigId) {
                 // Set required Layers
