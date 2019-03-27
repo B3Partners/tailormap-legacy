@@ -129,6 +129,9 @@ Ext.define ("viewer.components.ExtendedEdit",{
     },
     selectedLayerChanged: function(layer) {
         this.currentLayer = layer;
+        if(this.config.allowEdit) {
+            this.edit();
+        }
     },
     createPaginationButton: function(direction, label) {
         return Ext.create('Ext.button.Button', {
