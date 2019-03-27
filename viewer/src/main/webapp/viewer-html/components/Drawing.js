@@ -988,11 +988,17 @@ Ext.define ("viewer.components.Drawing",{
         for ( var i = 0 ; i < features.length;i++){
             var feature = features[i];
             var featureObject = Ext.create("viewer.viewercontroller.controller.Feature",feature);
-            this.vectorLayer.style.fillcolor = featureObject._color;
-            this.vectorLayer.style.strokecolor = featureObject._color;
-            this.vectorLayer.adjustStyle();
+            var featureStyle = this.vectorLayer.frameworkStyleToFeatureStyle({});
+            
+            featureStyle.set('strokeColor',  featureObject.getStyle().getFillColor());
+            featureStyle.set('fillColor', featureObject.getStyle().getStrokeColor());
+            this.vectorLayer.setDefaultFeatureStyle(featureStyle);
+            
             this.vectorLayer.addFeature(featureObject);
             this.vectorLayer.setLabel(this.activeFeature.getId(),featureObject._label);
+            
+            this.features[this.activeFeature.getId()].setStyle(featureStyle);
+            this.vectorLayer.setFeatureStyle(this.activeFeature.getId(), featureStyle);
         }
 
     },
