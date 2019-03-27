@@ -1754,6 +1754,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
     valuesFromURL : function(params){
         var layersLoaded = false;
         var bookmark = false;
+        var levelsLoaded = [];
         var appLayers = this.app.appLayers;
         var selectedContent = this.app.selectedContent;
 
@@ -1809,6 +1810,8 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                             type: "level",
                             id: id
                         });
+                        this.app.levels[id].removed = false;
+                        levelsLoaded.push(id);
                     } else if (value[i][0] === "A") {
                         var id = value[i].slice(1, value[i].length);
                         selectedContent.push({
@@ -1820,6 +1823,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                             type: "level",
                             id: value[i]
                         });
+                        levelsLoaded.push(value[i]);
                     }
                 }
             }else if(key === "levels"){
@@ -1846,6 +1850,13 @@ Ext.define("viewer.viewercontroller.ViewerController", {
 
         if(layersLoaded && !bookmark){
             this.app.appLayers = appLayers;
+            // set all applayers of the loaded levels to removed = false, so the layers will be added to the map (and not an empty level is visible in the toc)
+            for(var i = 0 ; i < levelsLoaded.length ;i++){
+                var layers = this.app.levels[levelsLoaded[i]].layers;
+                for(var j = 0 ; j < layers.length; j++){
+                    this.app.appLayers[layers[j]].removed = false;
+                }
+            }
             this.setSelectedContent(selectedContent);
             this.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE,function(){
 
