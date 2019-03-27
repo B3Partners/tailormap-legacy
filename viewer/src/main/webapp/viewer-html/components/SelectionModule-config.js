@@ -159,7 +159,6 @@ Ext.define("viewer.components.CustomConfiguration",{
             layout: {
                 type: 'vbox'
             },
-            height: 170,
             padding: '5 5 0 5',
             items:[
                 {
@@ -207,7 +206,6 @@ Ext.define("viewer.components.CustomConfiguration",{
                 },
                 {
                     xtype: "fieldset",
-                    height: 110,
                     width: '100%',
                     title: i18next.t('selectionmodule_config_28'),
                     layout: 'hbox',
@@ -232,8 +230,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                         id: "advancedFilterValues",
                         items: waardeItems,
                         flex: 1,
-                        autoScroll: true,
-                        height: 90 // Weird ExtJS behaviour (bug?) does not take fieldset height into account when calculating layout
+                        autoScroll: true
                     }]
                 }
             ]
