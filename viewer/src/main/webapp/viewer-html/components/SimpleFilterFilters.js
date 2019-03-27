@@ -1189,6 +1189,8 @@ Ext.define("viewer.components.sf.Date", {
             start = new Date(curr.setDate(first));
             end = new Date(curr.setDate(last));
 
+        }else if (this.config.filterConfig.start){
+            start = Ext.Date.parse(this.config.filterConfig.start, 'd-m-Y');    
         }
         if (this.config.filterConfig.datepickerType === "gt" || this.config.filterConfig.datepickerType === "bt"){
             this.from = Ext.create({
