@@ -52,7 +52,7 @@ Ext.define("viewer.viewercontroller.controller.Feature",{
         json.id = this._id;
         json.wktgeom = this._wktgeom;
         json.label = this.label;
-        json.style = this.style.getProperties();
+        json.style = this.style.getProperties ? this.style.getProperties() : this.style;
         return json;
     },
     /**
