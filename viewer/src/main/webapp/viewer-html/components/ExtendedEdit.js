@@ -258,6 +258,7 @@ Ext.define ("viewer.components.ExtendedEdit",{
         }
     },
     saveSucces: function(fid) {
+        this.callParent([fid, true]);
         this.savedFeatureId = fid;
         var feature = this.vectorLayer.getFeature(0);
         if(feature) {
@@ -272,7 +273,6 @@ Ext.define ("viewer.components.ExtendedEdit",{
         if(this.currentCoords) {
             this.startEdit(null, { coord: this.currentCoords });
         }
-        this.callParent([fid, true]);
         this.layerSelectorInit();
     },
     deleteSucces: function() {
