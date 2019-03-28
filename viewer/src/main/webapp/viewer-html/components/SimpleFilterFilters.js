@@ -1027,6 +1027,9 @@ Ext.define("viewer.components.sf.Slider", {
     reset: function () {
         this.slider.setValue(this.startValues);
         this.callParent();
+    },
+    getValue:function(){
+        return this.slider.getValue();
     }
 });
 
