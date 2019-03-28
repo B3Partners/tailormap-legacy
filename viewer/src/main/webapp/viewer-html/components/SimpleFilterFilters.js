@@ -1202,10 +1202,16 @@ Ext.define("viewer.components.sf.Date", {
                 fieldLabel: i18next.t('viewer_components_sf_simplefilterbase_0'),
                 name: 'from_date',
                 format:'d-m-Y',
+                enableKeyEvents:true,
                 value: start,
                 listeners: {
                     scope: this,
-                    select: this.applyFilter
+                    select: this.applyFilter,
+                    keypress:function(field, event){
+                        if(event.keyCode === 13){
+                            this.applyFilter();
+                        }
+                    }
                 }
             });
             pickers.push(this.from);
@@ -1218,10 +1224,16 @@ Ext.define("viewer.components.sf.Date", {
                 fieldLabel: i18next.t('viewer_components_sf_simplefilterbase_1'),
                 name: 'to_date',
                 value: end,
+                enableKeyEvents:true,
                 format:'d-m-Y',
                 listeners: {
                     scope: this,
-                    select: this.applyFilter
+                    select: this.applyFilter,
+                    keypress:function(field, event){
+                        if(event.keyCode === 13){
+                            this.applyFilter();
+                        }
+                    }
                 }
             });
             pickers.push(this.to);
@@ -1242,21 +1254,35 @@ Ext.define("viewer.components.sf.Date", {
         var mustEscape = this.mustEscapeAttribute();
 
         if(this.from){
-            var val = Ext.Date.format(this.from.getValue(), "Y-m-d") + "T00:00:00";
-            var c = this.config.attributeName + " >= " + val;
-            cql.push(c);
+            var val = Ext.Date.format(this.from.getValue(), "Y-m-d");
+            if(val){
+                val += "T00:00:00";
+                var c = this.config.attributeName + " >= " + val;
+                cql.push(c);
+            }
         }
 
         if(this.to){
-            var val = Ext.Date.format(this.to.getValue(), "Y-m-d") + "T00:00:00";
-            var c = this.config.attributeName + " <= " + val;
-            cql.push(c);
+            var val = Ext.Date.format(this.to.getValue(), "Y-m-d");
+            if(val){
+                val += "T00:00:00";
+                var c = this.config.attributeName + " <= " + val;
+                cql.push(c);
+            }
         }
-        return cql.join(" AND ");
+        if(cql.length > 0 ){
+            return cql.join(" AND ");
+        }else{
+            return "";
+        }
     },
     reset : function(){
-        this.minField.setValue(this.config.defaultValues.Min);
-        this.maxField.setValue(this.config.defaultValues.Max);
+        if(this.from){
+            this.from.setValue(this.config.defaultValues ? this.config.defaultValues.Min : null);
+        }
+        if(this.to){
+            this.to.setValue(this.config.defaultValues ? this.config.defaultValues.Max : null);
+        }
         this.callParent();
         this.applyFilter();
     }
