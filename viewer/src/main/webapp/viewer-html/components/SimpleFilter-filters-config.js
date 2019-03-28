@@ -79,7 +79,10 @@ Ext.define("viewer.components.sf.Config", {
         console.log("Error: getTitle() not yet implemented");
     },
     getOtherFilters: function(){
-         var filters = [];
+         var filters = [{
+                label:  i18next.t('viewer_components_sf_config_81'),
+                id: -1
+            }];
         var currentConfig = null;
         for(var i = 0 ; i <this.configurator.filterConfigs.length; i++){
             var f = this.configurator.filterConfigs[i];
@@ -462,6 +465,12 @@ Ext.define("viewer.components.sf.ComboConfig", {
                         target: c.getEl(),
                         text: c.qtip
                     });
+                },
+                change: function (record, value) {
+                    if (value === -1) {
+                        Ext.getCmp("linkedFilterAttribute").setValue(null);
+                        Ext.getCmp("linkedFilter").setValue(null);
+                    }
                 },
                 scope:this
             }
