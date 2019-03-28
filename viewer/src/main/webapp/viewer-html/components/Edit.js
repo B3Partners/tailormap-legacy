@@ -257,10 +257,6 @@ Ext.define("viewer.components.Edit", {
             {
                 itemId: 'savePanel',
                 xtype: "container",
-                layout: {
-                    type: 'hbox',
-                    pack: 'end'
-                },
                 defaults: {
                     xtype: 'button'
                 },
