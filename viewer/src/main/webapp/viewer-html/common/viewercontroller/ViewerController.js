@@ -1402,7 +1402,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
 
             // Check override for appLayer by service admin
             if(appLayer.details != undefined && appLayer.details.legendImageUrl != undefined) {
-                success(appLayer, { parts: [ {url: appLayer.details.legendImageUrl, isAlternative:false}] });
+                success(appLayer, { parts: [ {url: appLayer.details.legendImageUrl, isAlternative:false,serviceId: appLayer.serviceId}] });
                 return;
             }
 
@@ -1428,7 +1428,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
 
                             info = { parts: [] };
                             Ext.Array.each(theStyle.legendURLs, function(legendURL) {
-                                info.parts.push( { url: legendURL, isAlternative:false });
+                                info.parts.push( { url: legendURL, isAlternative:false,serviceId: serviceLayer.serviceId });
                             });
                         }
                     });
@@ -1443,14 +1443,14 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                 if(l.getLegendGraphic) {
                     // l.getLegendGraphic() will create GetLegendGraphic URL
                     // with the SLD parameter the layer was created with
-                    success(appLayer, { parts: [ { url: l.getLegendGraphic(), isAlternative:false } ] });
+                    success(appLayer, { parts: [ { url: l.getLegendGraphic(), isAlternative:false,serviceId: serviceLayer.serviceId } ] });
                     return;
                 }
             }
 
             // Check override by service admin
             if(serviceLayer.details != undefined && serviceLayer.details['alternateLegendImageUrl']) {
-                success(appLayer, { parts: [ {url: serviceLayer.details.alternateLegendImageUrl, isAlternative:true}] });
+                success(appLayer, { parts: [ {url: serviceLayer.details.alternateLegendImageUrl, isAlternative:true,serviceId: serviceLayer.serviceId}] });
                 return;
             }
 
@@ -1460,7 +1460,8 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                     parts: [ {
                         url: serviceLayer.legendImageUrl,
                         label: appLayer.alias, 
-                        isAlternative:false
+                        isAlternative:false,
+                        serviceId: serviceLayer.serviceId
                     }],
                     name: appLayer.alias
                 });

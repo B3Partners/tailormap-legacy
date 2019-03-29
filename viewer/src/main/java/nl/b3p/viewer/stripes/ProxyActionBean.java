@@ -250,7 +250,7 @@ public class ProxyActionBean implements ActionBean {
         return theUrl;
     }
     
-    protected HttpClientConfigured getHttpClient(URL theUrl, EntityManager em) {
+    public HttpClientConfigured getHttpClient(URL theUrl, EntityManager em) {
         String username = null;
         String password = null;
         if (mustLogin && serviceId != null) {
@@ -277,7 +277,7 @@ public class ProxyActionBean implements ActionBean {
         return client;
     }
 
-    protected HttpUriRequest getHttpRequest(URL url) throws URISyntaxException{
+    public HttpUriRequest getHttpRequest(URL url) throws URISyntaxException{
         return new HttpGet(url.toURI());
     }
 
