@@ -202,7 +202,10 @@ public class TileService extends GeoService {
 
             XPathFactory xPathfactory = XPathFactory.newInstance();
             XPath xpath = xPathfactory.newXPath();
-            
+            /*
+            log welke xpath implementatie er is
+            log of xpathconstants.string er is
+            */
             // Service info
             s = new TileService();
             s.setTilingProtocol(TILING_PROTOCOL_WMTS);
