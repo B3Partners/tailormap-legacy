@@ -427,10 +427,17 @@
                 <version>0.6.0</version>
             </dependency>
             <dependency>
+                <!-- mail interfaces -->
                 <groupId>jakarta.mail</groupId>
                 <artifactId>jakarta.mail-api</artifactId>
                 <version>${jakarta.mail.version}</version>
                 <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <!-- mail impl. only for tomcat-lib artifact -->
+                <groupId>com.sun.mail</groupId>
+                <artifactId>jakarta.mail</artifactId>
+                <version>${jakarta.mail.version}</version>
             </dependency>
 
             <!-- Flamingo dependencies -->
@@ -598,7 +605,7 @@
                 <plugin>
                     <groupId>nl.geodienstencentrum.maven</groupId>
                     <artifactId>closure-compiler-maven-plugin</artifactId>
-                    <version>2.4</version> 
+                    <version>2.4</version>
                </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -881,6 +888,7 @@
         </profile>
     </profiles>
     <modules>
+        <module>tomcat-lib</module>
         <module>web-commons</module>
         <module>viewer-commons</module>
         <module>viewer-config-persistence</module>
