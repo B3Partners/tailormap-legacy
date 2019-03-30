@@ -49,8 +49,9 @@
         <test.persistence.unit>viewer-config-hsqldb</test.persistence.unit>
         <postgresql.version>42.2.5</postgresql.version>
         <mssql.version>7.2.1.jre8</mssql.version>
+        <oracle.version></oracle.version>
         <apache.poi.version>4.0.1</apache.poi.version>
-        <javax.mail.version>1.6.2</javax.mail.version>
+        <jakarta.mail.version>1.6.3</jakarta.mail.version>
         <apache.httpcomponents.version>4.5.8</apache.httpcomponents.version>
         <!-- skip integration tests by default, override this property from commandline
         or as part of a profile, see eg. 'travis-ci' profile in viewer -->
@@ -426,9 +427,9 @@
                 <version>0.6.0</version>
             </dependency>
             <dependency>
-                <groupId>javax.mail</groupId>
-                <artifactId>javax.mail-api</artifactId>
-                <version>${javax.mail.version}</version>
+                <groupId>jakarta.mail</groupId>
+                <artifactId>jakarta.mail-api</artifactId>
+                <version>${jakarta.mail.version}</version>
                 <scope>provided</scope>
             </dependency>
 
