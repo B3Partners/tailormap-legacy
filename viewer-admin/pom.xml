@@ -320,9 +320,9 @@
                         </executions>
                         <dependencies>
                             <dependency>
-								<groupId>com.sun.mail</groupId>
-								<artifactId>jakarta.mail</artifactId>
-								<version>${jakarta.mail.version}</version>
+                                <groupId>com.sun.mail</groupId>
+                                <artifactId>jakarta.mail</artifactId>
+                                <version>${jakarta.mail.version}</version>
                             </dependency>
                             <dependency>
                                 <groupId>org.postgresql</groupId>
@@ -425,9 +425,9 @@
                         </executions>
                         <dependencies>
                            <dependency>
-								<groupId>com.sun.mail</groupId>
-								<artifactId>jakarta.mail</artifactId>
-								<version>${jakarta.mail.version}</version>
+                                <groupId>com.sun.mail</groupId>
+                                <artifactId>jakarta.mail</artifactId>
+                                <version>${jakarta.mail.version}</version>
                             </dependency>
                             <dependency>
                                 <groupId>com.oracle</groupId>
@@ -527,9 +527,9 @@
                         </executions>
                         <dependencies>
                             <dependency>
-								<groupId>com.sun.mail</groupId>
-								<artifactId>jakarta.mail</artifactId>
-								<version>${jakarta.mail.version}</version>
+                                <groupId>com.sun.mail</groupId>
+                                <artifactId>jakarta.mail</artifactId>
+                                <version>${jakarta.mail.version}</version>
                             </dependency>
                             <dependency>
                                 <groupId>com.microsoft.sqlserver</groupId>
