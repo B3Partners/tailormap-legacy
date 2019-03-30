@@ -59,7 +59,7 @@ script:
   - free -m
   - wait-on -t 120000 http-get://localhost:8600/geoserver && echo "docker geoserver is up" || true
   # execute unit tests
-  - mvn -e clean test -B  -pl '!tomcat-lib'
+  - mvn -e test -B  -pl '!tomcat-lib'
   - .travis/start_tomcat_9.sh
   # run integration tests on all modules except viewer-admin
   - mvn -e verify -B -Ptravis-ci -pl '!viewer-admin'
