@@ -114,7 +114,7 @@
         </init-param>
         <init-param>
             <param-name>LocalePicker.Locales</param-name>
-            <param-value>nl_NL,en_US</param-value>
+            <param-value>nl_NL</param-value>
         </init-param>
         <init-param>
             <param-name>LocalizationBundleFactory.ErrorMessageBundle</param-name>
