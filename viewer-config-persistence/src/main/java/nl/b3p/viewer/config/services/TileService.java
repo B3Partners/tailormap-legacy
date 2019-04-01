@@ -199,7 +199,8 @@ public class TileService extends GeoService {
                 log.error("Check request; Failed to retrieve getcapabilities: " + e.getLocalizedMessage());
                 return null;
             }
-
+            // Hack: when using the correct XpathFactory.newInstance() it sometimes returned JSTLXPathFactoryImpl, which was incorrect and
+            // couldn't compile valid xpathexpressions
             XPathFactory xPathfactory = new org.apache.xpath.jaxp.XPathFactoryImpl();
             XPath xpath = xPathfactory.newXPath();
             log.error("Parsing wmts getcap with following objects:");
