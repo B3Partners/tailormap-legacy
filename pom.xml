@@ -51,7 +51,7 @@
         <mssql.version>7.2.1.jre8</mssql.version>
         <apache.poi.version>4.0.1</apache.poi.version>
         <javax.mail.version>1.6.2</javax.mail.version>
-        <apache.httpcomponents.version>4.5.7</apache.httpcomponents.version>
+        <apache.httpcomponents.version>4.5.8</apache.httpcomponents.version>
         <!-- skip integration tests by default, override this property from commandline
         or as part of a profile, see eg. 'travis-ci' profile in viewer -->
         <test.skip.integrationtests>false</test.skip.integrationtests>
