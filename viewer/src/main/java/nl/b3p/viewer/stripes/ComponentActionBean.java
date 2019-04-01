@@ -222,6 +222,7 @@ public class ComponentActionBean implements ActionBean {
         if(lastModified != -1) {
             res.setLastModified(lastModified);
         }
+        res.setCharacterEncoding("UTF-8");
         return res;
     }
 
