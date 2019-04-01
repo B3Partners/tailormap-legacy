@@ -293,8 +293,9 @@ Ext.define("viewer.components.Legend", {
         if (legendScale < mapResolution) {
             return;
         }
-        
-        // TODO when layer is out of scale we could also decide not to show the legend for this layer
+        if(curScale > legendScale){
+            return null;
+        }
 
         this.config.viewerController.getLayerLegendInfo(
             appLayer,
