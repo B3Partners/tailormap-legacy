@@ -27,7 +27,10 @@ Ext.define("viewer.components.CustomConfiguration", {
         configObject.showLabelconfig = true;
         viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId, configObject, configPage);
         this.createCheckBoxes(this.configObject.layers, {editable: true});
-
+        var hidden = {};
+        if(this.configPage._metadata.hidden){
+            hidden = this.configPage._metadata.hidden;
+        }
         this.form.add([
             {
                 xtype: 'numberfield',
@@ -71,6 +74,7 @@ Ext.define("viewer.components.CustomConfiguration", {
                 xtype: 'checkbox',
                 fieldLabel: i18next.t('edit_config_5'),
                 name: 'showEditLinkInFeatureInfo',
+                hidden: hidden.showEditLinkInFeatureInfo === "true" ? true:false,
                 value: this.configObject.showEditLinkInFeatureInfo !== undefined ? this.configObject.showEditLinkInFeatureInfo : false,
                 labelWidth: this.labelWidth
             },
