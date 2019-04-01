@@ -200,7 +200,7 @@ public class TileService extends GeoService {
                 return null;
             }
 
-            XPathFactory xPathfactory = XPathFactory.newInstance();
+            XPathFactory xPathfactory = new org.apache.xpath.jaxp.XPathFactoryImpl();
             XPath xpath = xPathfactory.newXPath();
             log.error("Parsing wmts getcap with following objects:");
             log.error("Xpath: " + xpath.getClass().toGenericString());
