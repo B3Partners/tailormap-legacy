@@ -997,7 +997,6 @@
         </profile>
     </profiles>
     <modules>
-        <module>tomcat-lib</module>
         <module>web-commons</module>
         <module>viewer-audit</module>
         <module>viewer-audit-noplogger</module>
