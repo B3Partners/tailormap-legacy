@@ -81,7 +81,7 @@ script:
   - free -m
   - wait-on -t 120000 http-get://localhost:8600/geoserver && echo "docker geoserver is up" || true
   # execute unit tests
-  - mvn -e test -B  -pl '!tomcat-lib'
+  - mvn -e test -B
   - if [ "$PROFILE" == "tomcat-9" ]; then
       .travis/start_tomcat_9.sh;
     fi
