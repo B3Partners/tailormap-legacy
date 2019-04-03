@@ -16,6 +16,7 @@
     <properties>
         <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
         <test.persistence.unit>viewer-config-hsqldb</test.persistence.unit>
+        <tomcat.test.port>9091</tomcat.test.port>
     </properties>
 
     <dependencies>
@@ -265,6 +266,7 @@
                             <systemPropertyVariables>
                                 <test.persistence.unit>${test.persistence.unit}</test.persistence.unit>
                                 <database.properties.file>postgres.properties</database.properties.file>
+                                <tomcat.test.port>${tomcat.test.port}</tomcat.test.port>
                             </systemPropertyVariables>
                             <useFile>false</useFile>
                             <argLine>${failsafeArgLine}</argLine>
@@ -282,7 +284,7 @@
                         <groupId>org.apache.tomcat.maven</groupId>
                         <artifactId>tomcat7-maven-plugin</artifactId>
                         <configuration>
-                            <port>9091</port>
+                            <port>${tomcat.test.port}</port>
                             <contextFile>${project.basedir}/src/test/tomcatconf/context.xml</contextFile>
                             <systemProperties />
                             <useTestClasspath>true</useTestClasspath>
@@ -380,6 +382,7 @@
                             <systemPropertyVariables>
                                 <test.persistence.unit>${test.persistence.unit}</test.persistence.unit>
                                 <database.properties.file>oracle.properties</database.properties.file>
+                                <tomcat.test.port>${tomcat.test.port}</tomcat.test.port>
                             </systemPropertyVariables>
                             <useFile>false</useFile>
                             <rerunFailingTestsCount>3</rerunFailingTestsCount>
@@ -397,7 +400,7 @@
                         <groupId>org.apache.tomcat.maven</groupId>
                         <artifactId>tomcat7-maven-plugin</artifactId>
                         <configuration>
-                            <port>9091</port>
+                            <port>${tomcat.test.port}</port>
                             <contextFile>${project.basedir}/src/test/tomcatconf/jenkinscontext.xml</contextFile>
                             <systemProperties />
                             <useTestClasspath>true</useTestClasspath>
@@ -484,6 +487,7 @@
                             <systemPropertyVariables>
                                 <test.persistence.unit>${test.persistence.unit}</test.persistence.unit>
                                 <database.properties.file>ms_sql_server.properties</database.properties.file>
+                                <tomcat.test.port>${tomcat.test.port}</tomcat.test.port>
                             </systemPropertyVariables>
                             <useFile>false</useFile>
                             <!--<argLine>${failsafeArgLine}</argLine>-->
@@ -501,7 +505,7 @@
                         <groupId>org.apache.tomcat.maven</groupId>
                         <artifactId>tomcat7-maven-plugin</artifactId>
                         <configuration>
-                            <port>9091</port>
+                            <port>${tomcat.test.port}</port>
                             <contextFile>src/test/tomcatconf/appveyorcontext.xml</contextFile>
                             <systemProperties>
                             </systemProperties>
@@ -548,6 +552,9 @@
         </profile>
         <profile>
             <id>tomcat-9</id>
+            <properties>
+                <tomcat.test.port>8080</tomcat.test.port>
+            </properties>
             <dependencies>
                 <dependency>
                     <groupId>org.postgresql</groupId>
@@ -586,6 +593,7 @@
                             <systemPropertyVariables>
                                 <test.persistence.unit>${test.persistence.unit}</test.persistence.unit>
                                 <database.properties.file>postgres.properties</database.properties.file>
+                                <tomcat.test.port>${tomcat.test.port}</tomcat.test.port>
                             </systemPropertyVariables>
                             <useFile>false</useFile>
                             <argLine>${failsafeArgLine}</argLine>

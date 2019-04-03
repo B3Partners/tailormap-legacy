@@ -51,7 +51,7 @@ public class ViewerIntegrationTest {
     /**
      * the viewer url. {@value}
      */
-    public static final String BASE_TEST_URL = "http://localhost:9090/viewer/";
+    public static final String BASE_TEST_URL = "http://localhost:" + System.getProperty("tomcat.test.port","9090") + "/viewer/";
 
     /**
      * our test client.
