@@ -56,6 +56,7 @@ before_install:
   - if [ "$PROFILE" == "tomcat-9" ]; then
        docker pull tomcat:9-jre8;
     fi
+  - ip address
 
 install:
   - wget http://cert.pkioverheid.nl/RootCA-G3.cer
