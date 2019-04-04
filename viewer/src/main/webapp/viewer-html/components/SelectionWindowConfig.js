@@ -36,6 +36,7 @@ Ext.define("viewer.components.SelectionWindowConfig",{
         var label = config.label;
         var showLabelconfig = config.showLabelconfig === true;
         var hidePopupConfig = config.hidePopupConfig === true;
+        var hideTooltipConfig = config.hideTooltipConfig === true;
         if(Ext.isEmpty(iconurl) || !Ext.isDefined(iconurl)) iconurl = null;
         if(Ext.isEmpty(label) || !Ext.isDefined(label)) label = "";
         var hidden = {};
@@ -82,7 +83,11 @@ Ext.define("viewer.components.SelectionWindowConfig",{
                         src: iconurl,
                         style: {"margin-left": "100px"}
                     }]
-            },{ 
+            }],
+            renderTo: this.parentId//(2)
+        });
+        if (!hideTooltipConfig && !hidePopupConfig) {
+            this.form.add({
                 xtype: 'textfield',
                 fieldLabel: i18next.t('general_components_selectionwindowconfig_2'),
                 name: 'tooltip',
@@ -90,9 +95,8 @@ Ext.define("viewer.components.SelectionWindowConfig",{
                 hidden: hidden.tooltip === "true" ? true:false,
                 labelWidth:me.labelWidth,
                 width: 700
-            }],
-            renderTo: this.parentId//(2)
-        });
+            });
+        }
         if(showLabelconfig) {
             this.form.add({ 
                 xtype: 'textfield',
