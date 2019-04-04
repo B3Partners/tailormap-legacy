@@ -25,6 +25,7 @@ Ext.define("viewer.components.SearchConfiguration",{
     searchconfigs: [],
     nextId: 1,
     maxSearchConfigs: -1,
+    hideRemovePinConfig: false,
     solrSearchconfigs: {},
     attribuutbronSearchconfigs: {},
     simpleListConfigs: {},
@@ -36,17 +37,19 @@ Ext.define("viewer.components.SearchConfiguration",{
             configObject = {};
         }
         viewer.components.SearchConfiguration.superclass.constructor.call(this, parentId, configObject, configPage);
-        this.form.add({
-            xtype: 'checkbox',
-            boxLabel: i18next.t('viewer_components_searchconfiguration_0'),
-            name: 'showRemovePin',
-            value: true,
-            inputValue: true,
-            checked: this.configObject.showRemovePin !== undefined ? this.configObject.showRemovePin : true,
-            style: {
-                marginRight: "90px"
-            }
-        });
+        if (!this.hideRemovePinConfig) {
+            this.form.add({
+                xtype: 'checkbox',
+                boxLabel: i18next.t('viewer_components_searchconfiguration_0'),
+                name: 'showRemovePin',
+                value: true,
+                inputValue: true,
+                checked: this.configObject.showRemovePin !== undefined ? this.configObject.showRemovePin : true,
+                style: {
+                    marginRight: "90px"
+                }
+            });
+        }
         this.form.add({
             xtype: 'checkbox',
             boxLabel: i18next.t('viewer_components_searchconfiguration_35'),
