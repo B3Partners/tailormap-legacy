@@ -462,7 +462,7 @@ Ext.define ("viewer.components.Maptip",{
      * @param {viewer.FeatureInfoWrapper} feature the feature that must be shown
      */
     showDetails: function(appLayer,feature){
-        var cDiv=Ext.get(this.getContentDiv());
+        var cDiv = Ext.get(this.getContentDiv());
         var childs = cDiv.query('*', false);
         var len = childs.length;
         for(var i = len-1; i >= 0; i--) {
