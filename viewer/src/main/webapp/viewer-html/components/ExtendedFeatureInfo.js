@@ -63,6 +63,9 @@ Ext.define ("viewer.components.ExtendedFeatureInfo",{
             },
             tools: this.getHelpToolConfig()
         });
+
+        this.getContentContainer().setHtml('');
+        this.getContentContainer().removeAll();
         this.getContentContainer().add(this.panel);
         
         this.getViewerController().mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,this.onAddLayer,this);
