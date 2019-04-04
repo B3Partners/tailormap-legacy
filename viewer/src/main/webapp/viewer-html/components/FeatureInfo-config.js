@@ -18,16 +18,17 @@
  * Custom configuration object for FeatureInfo configuration
  * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
  */
-Ext.define("viewer.components.CustomConfiguration",{
+Ext.define("viewer.components.FeatureInfoConfiguration",{
     extend: "viewer.components.SelectionWindowConfig",
     form: null,
+    hideBalloonSettings: false,
     constructor: function (parentId, configObject, configPage) {
         if (configObject===undefined || configObject===null){
             configObject={};
         }
         configObject.layerFilter=this.layerFilter;
         
-        viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId, configObject, configPage);        
+        viewer.components.FeatureInfoConfiguration.superclass.constructor.call(this, parentId, configObject, configPage);
         
         this.checkPanelHeight=270;
         
@@ -37,26 +38,30 @@ Ext.define("viewer.components.CustomConfiguration",{
             name: 'moreLink',
             value: this.configObject.moreLink !== undefined ? this.configObject.moreLink : i18next.t('featureinfo_config_1'),
             labelWidth:this.labelWidth
-        },{
-            xtype: 'textfield',
-            fieldLabel: i18next.t('featureinfo_config_2'),
-            name: 'height',
-            value: this.configObject.height !== undefined ? this.configObject.height : 300,
-            labelWidth:this.labelWidth
-        },{
-            xtype: 'textfield',
-            fieldLabel: i18next.t('featureinfo_config_3'),
-            name: 'width',
-            value: this.configObject.width !== undefined ? this.configObject.width : 300,
-            labelWidth:this.labelWidth
-        },{
-            xtype: 'textfield',
-            fieldLabel: i18next.t('featureinfo_config_4'),
-            name: 'heightDescription',
-            value: this.configObject.heightDescription !== undefined ? this.configObject.heightDescription : "",
-            labelWidth: this.labelWidth
-        },
-         {
+        }]);
+        if (!this.hideBalloonSettings) {
+            this.form.add([{
+                xtype: 'textfield',
+                fieldLabel: i18next.t('featureinfo_config_2'),
+                name: 'height',
+                value: this.configObject.height !== undefined ? this.configObject.height : 300,
+                labelWidth:this.labelWidth
+            },{
+                xtype: 'textfield',
+                fieldLabel: i18next.t('featureinfo_config_3'),
+                name: 'width',
+                value: this.configObject.width !== undefined ? this.configObject.width : 300,
+                labelWidth:this.labelWidth
+            },{
+                xtype: 'textfield',
+                fieldLabel: i18next.t('featureinfo_config_4'),
+                name: 'heightDescription',
+                value: this.configObject.heightDescription !== undefined ? this.configObject.heightDescription : "",
+                labelWidth: this.labelWidth
+            }]);
+        }
+        this.form.add([
+        {
             xtype: 'numberfield',
             fieldLabel: i18next.t('featureinfo_config_5'),
             name: 'clickRadius',
