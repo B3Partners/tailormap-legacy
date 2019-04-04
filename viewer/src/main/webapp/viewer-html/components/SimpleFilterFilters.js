@@ -875,14 +875,14 @@ Ext.define("viewer.components.sf.Slider", {
             }
         }
 
-        if(c.min === "min"){
+        if(c.min === "min" || c.min === ""){
             min = 0;
             this.retrieveMinVal = true;
         }else{
             min = c.min;
         }
 
-        if(c.max === "max"){
+        if(c.max === "max" || c.max === ""){
             max = 0;
             this.retrieveMaxVal = true;
         }else{
