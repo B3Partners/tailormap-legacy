@@ -24,6 +24,7 @@ Ext.define("viewer.components.CustomConfiguration",{
     constructor: function (parentId, configObject, configPage) {
 
         configObject.layerFilter=this.layerFilter;
+        configObject.hideTooltipConfig = true;
         configObject.showLabelconfig = false;
         
         viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId, configObject, configPage);        
