@@ -18,6 +18,8 @@
 Ext.define("viewer.components.CustomConfiguration",{
     extend: "viewer.components.ConfigObject",
 
+    mixins: ['Ext.mixin.Observable'],
+
     filterTypes: null,
     filterStore: null,
     filterConfigs: null,
@@ -28,6 +30,7 @@ Ext.define("viewer.components.CustomConfiguration",{
 
     constructor: function (parentId, configObject, configPage) {
         viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId, configObject, configPage);
+        this.mixins.observable.constructor.call(this, config);
 
         Ext.tip.QuickTipManager.init();  // enable tooltips
 
@@ -162,6 +165,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                                         });
                                     });
 
+                                    me.fireEvent("simpleFilterLayerChanged", appLayer);
                                 }
                             }
                         },{
