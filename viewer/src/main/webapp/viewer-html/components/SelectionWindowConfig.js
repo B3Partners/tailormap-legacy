@@ -34,6 +34,7 @@ Ext.define("viewer.components.SelectionWindowConfig",{
         var iconurl = config.iconUrl;
         var label = config.label;
         var showLabelconfig = config.showLabelconfig === true;
+        var hidePopupConfig = config.hidePopupConfig === true;
         if(Ext.isEmpty(iconurl) || !Ext.isDefined(iconurl)) iconurl = null;
         if(Ext.isEmpty(label) || !Ext.isDefined(label)) label = "";
         this.form=new Ext.form.FormPanel({
@@ -43,7 +44,7 @@ Ext.define("viewer.components.SelectionWindowConfig",{
             /*defaults: {
                 anchor: '100%'
             },*/
-            items: [{ 
+            items: hidePopupConfig ? [] : [{
                 xtype: 'container',
                 layout: {type: 'hbox'},
                 items: [{
