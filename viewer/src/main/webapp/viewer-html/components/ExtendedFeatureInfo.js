@@ -35,7 +35,6 @@ Ext.define ("viewer.components.ExtendedFeatureInfo",{
         viewer.components.Maptip.superclass.constructor.call(this, this.config);
         this.showMaxFeaturesText = false;
         this.config.clickRadius = this.config.clickRadius ? this.config.clickRadius : 4;
-        this.config.moreLink = null;
 
         this.navigateBackButton = this.createButton('left', i18next.t('viewer_components_extendedfeatureinfo_0'));
         this.navigateForwardButton = this.createButton('right', i18next.t('viewer_components_extendedfeatureinfo_1'));
@@ -184,6 +183,14 @@ Ext.define ("viewer.components.ExtendedFeatureInfo",{
             }
         });
         this.panel.add(container);
+    },
+    getContentDiv: function() {
+        var pages = this.panel.query('[cls=feature-info-page]');
+        if (pages[this.currentIndex]) {
+            return pages[this.currentIndex].getEl();
+        }
+        // Prevent JS error by returning empty DIV if for some reason the current page is not available
+        return new Ext.Element(document.createElement('div'));
     },
     showPage: function(index, currentFeatureId){
         var pages = this.panel.query('[cls=feature-info-page]');
