@@ -225,11 +225,16 @@ Ext.define("viewer.components.sf.SimpleFilter",{
             return;
         }
         this.reset();
-        var extraFilter = reset ? "" : this.parentFilterInstance.getCQL(this.config.filterConfig.linkedFilterAttribute, this.parentFilterInstance.getValue(),true);
+        var extraFilter = "";
+        if (!reset) {
+            var isCombo = this.parentFilterInstance instanceof viewer.components.sf.Combo;
+            extraFilter = isCombo
+                ? this.parentFilterInstance.getCQL(this.config.filterConfig.linkedFilterAttribute, this.parentFilterInstance.getValue(), true)
+                : this.parentFilterInstance.getCQL();
+        }
         this.initCalculatedValues(extraFilter);
-        
         this.addListener(viewer.viewercontroller.controller.Event.ON_FILTER_VALUES_UPDATED,function(){
-            this.setFilter(extraFilter,true,reset);
+            this.setFilter(extraFilter,true, reset);
         }, this,{single:true});
         
     },
