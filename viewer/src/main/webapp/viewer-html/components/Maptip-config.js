@@ -90,7 +90,6 @@ Ext.define("viewer.components.CustomConfiguration",{
                     fieldLabel: i18next.t('maptip_config_7'),
                     name: 'detailShowTitle',
                     /*columnWidth : 0.5,*/
-                    value: true,
                     inputValue: true,
                     checked: this.configObject.detailShowTitle != undefined ? this.configObject.detailShowTitle : true,
                     labelWidth:this.labelWidth,
@@ -102,7 +101,6 @@ Ext.define("viewer.components.CustomConfiguration",{
                     fieldLabel: i18next.t('maptip_config_8'),
                     name: 'detailShowImage',
                     /*columnWidth : 0.5,*/
-                    value: true,
                     inputValue: true,
                     checked: this.configObject.detailShowImage != undefined ? this.configObject.detailShowImage : true,
                     labelWidth:this.labelWidth
@@ -111,7 +109,6 @@ Ext.define("viewer.components.CustomConfiguration",{
                     fieldLabel: i18next.t('maptip_config_9'),
                     name: 'detailShowDesc',
                     /*columnWidth : 0.5,*/
-                    value: true,
                     inputValue: true,
                     checked: this.configObject.detailShowDesc != undefined ? this.configObject.detailShowDesc : true,
                     labelWidth:this.labelWidth,
@@ -123,7 +120,6 @@ Ext.define("viewer.components.CustomConfiguration",{
                     fieldLabel: i18next.t('maptip_config_10'),
                     name: 'detailShowAttr',
                     /*columnWidth : 0.5,*/
-                    value: true,
                     inputValue: true,
                     checked: this.configObject.detailShowAttr != undefined ? this.configObject.detailShowAttr : true,
                     labelWidth:this.labelWidth
