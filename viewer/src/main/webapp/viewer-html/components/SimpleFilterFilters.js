@@ -429,7 +429,9 @@ Ext.define("viewer.components.sf.Radio", {
         var cql = "";
         var mustEscape = this.mustEscapeAttribute();
         if (checkbox.getGroupValue()) {
-            cql = this.config.attributeName + " = " + (mustEscape ? "'" : "") + this.sanitizeValue(checkbox.getGroupValue(),mustEscape) + (mustEscape ? "'" : "");
+            var value = checkbox.getGroupValue();
+            var operator = value.indexOf('%') === -1 ? ' = ' : ' ILIKE ';
+            cql = this.config.attributeName + operator + (mustEscape ? "'" : "") + this.sanitizeValue(value,mustEscape) + (mustEscape ? "'" : "");
         }
         return cql;
     }
