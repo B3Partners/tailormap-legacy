@@ -248,6 +248,7 @@ Ext.define("viewer.components.Component",{
         if(this.config && this.config.hasOwnProperty('showHelpButton') && this.config.showHelpButton !== "false") {
             tools = [{
                 type: 'help',
+                tooltip: i18next.t('viewer_components_svgheader_1'),
                 scope: this,
                 handler: function(event, toolEl, panel){
                     this.config.viewerController.showHelp(this.config);
