@@ -180,7 +180,8 @@ Ext.define ("viewer.components.ExtendedFeatureInfo",{
                     contentEl.destroy();
                     this.setHtml('');
                 }
-            }
+            },
+            scrollable: true
         });
         this.panel.add(container);
     },
