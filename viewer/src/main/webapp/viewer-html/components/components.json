@@ -397,22 +397,6 @@
         "restrictions": ["content_bottom"]
     },
     {
-        "className": "viewer.components.FlamingoComponent",
-        "name": "Flamingo Component",
-        "shortName": "fmc",
-        "sources": ["FlamingoComponent.js"],
-        "closureCompilerSafe": true,
-
-        "singleton": true,
-        "restrictions": ["content"],
-        "notInCombinationWith": ["OpenLayersMap"],
-
-        "extPropertyGridConfigs": {
-            "propertyNames": {"xml": "Xml Configuratie"},
-            "source": {"xml": ""}
-        }
-    },
-    {
         "className": "viewer.components.TOC",
         "name": "Table of Contents",
         "shortName": "TOC",
