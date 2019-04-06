@@ -899,6 +899,7 @@
     <modules>
         <module>tomcat-lib</module>
         <module>web-commons</module>
+        <module>viewer-audit</module>
         <module>viewer-commons</module>
         <module>viewer-config-persistence</module>
         <module>solr-commons</module>

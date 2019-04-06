@@ -13,3 +13,4 @@ vuln-check.log
 /viewer/nbproject/
 /.idea/
 *.iml
+target/
