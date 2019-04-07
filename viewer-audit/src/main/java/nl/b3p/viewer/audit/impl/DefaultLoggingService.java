@@ -23,8 +23,9 @@ import org.apache.commons.logging.LogFactory;
 /**
  * Default implementation of {@link LoggingService}.
  * Uses the configured logging framework to write audit logging.
- * eg. for log4j:
+ * eg. for log4j something like below:
  * <pre>
+ * {@code
  *     <appender name="auditlog" class="org.apache.log4j.RollingFileAppender">
  *         <param name="Threshold" value="info"/>
  *         <param name="file" value="target/auditlog.log"/>
@@ -39,6 +40,7 @@ import org.apache.commons.logging.LogFactory;
  *         <level value="info"/>
  *         <appender-ref ref="auditlog"/>
  *     </logger>
+ * }
  * </pre>
  * 
  * @author mprins

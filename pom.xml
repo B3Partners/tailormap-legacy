@@ -109,7 +109,11 @@
                 <artifactId>stripersist</artifactId>
                 <version>1.0.3</version>
             </dependency>
-
+            <dependency>
+                <groupId>org.flamingo-mc</groupId>
+                <artifactId>viewer-audit</artifactId>
+                <version>${flamingo.version}</version>
+            </dependency>
             <dependency>
                 <groupId>org.flamingo-mc</groupId>
                 <artifactId>viewer-config-persistence</artifactId>
@@ -900,6 +904,7 @@
         <module>tomcat-lib</module>
         <module>web-commons</module>
         <module>viewer-audit</module>
+        <module>viewer-audit-noplogger</module>
         <module>viewer-commons</module>
         <module>viewer-config-persistence</module>
         <module>solr-commons</module>
