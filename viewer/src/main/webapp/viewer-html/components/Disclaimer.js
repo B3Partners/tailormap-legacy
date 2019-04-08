@@ -30,7 +30,7 @@ Ext.define ("viewer.components.Disclaimer",{
         this.initConfig(conf);
         this.localStorageKey = ["hideDisclaimer", this.config.viewerController.getApplicationName(), "v", this.config.viewerController.getApplicationVersion()].join("_");
         viewer.components.Disclaimer.superclass.constructor.call(this, this.config);
-        if (viewer.components.LocalStorage.getItem(this.localStorageKey) !== true) {
+        if (viewer.components.LocalStorage.getItem(this.localStorageKey) !== this.hashDisclaimer(this.config.text)) {
             this.openWindow();
         }
         return this;
@@ -42,6 +42,7 @@ Ext.define ("viewer.components.Disclaimer",{
             width: 400,
             layout: 'fit',
             html: this.config.text,
+            scrollable: true,
             listeners: {
                 beforeclose: {
                     fn: this.onClose,
@@ -75,6 +76,18 @@ Ext.define ("viewer.components.Disclaimer",{
     },
     onClose : function(){
         var dontShow = Ext.getCmp("dontshow").getValue();
-        viewer.components.LocalStorage.setItem(this.localStorageKey, dontShow);
+        if (dontShow) {
+            viewer.components.LocalStorage.setItem(this.localStorageKey, this.hashDisclaimer(this.config.text));
+        }
+    },
+    hashDisclaimer: function(str) {
+        var hash = 0, i, chr;
+        if (str.length === 0) return hash;
+        for (i = 0; i < str.length; i++) {
+            chr   = String.charCodeAt(i);
+            hash  = ((hash << 5) - hash) + chr;
+            hash |= 0;
+        }
+        return hash;
     }
 });

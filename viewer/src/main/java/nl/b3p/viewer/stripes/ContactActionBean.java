@@ -55,7 +55,11 @@ public class ContactActionBean extends LocalizableApplicationActionBean implemen
         JSONObject config = getContactformConfig();
         JSONObject resp = new JSONObject();
         resp.put("success", false);
-        resp.put("message", getBundle().getString("viewer.contactactionbean.not_configured"));
+        String defaultErrorMessage = getBundle().getString("viewer.contactactionbean.not_configured");
+        if (config != null && config.has("errorMessage") && StringUtils.isNotEmpty(config.getString("errorMessage"))) {
+            defaultErrorMessage = config.getString("errorMessage");
+        }
+        resp.put("message", defaultErrorMessage);
 
         if (config != null && config.has("receiverTo") && StringUtils.isNotEmpty(config.getString("receiverTo"))) {
             String subject = getBundle().getString("viewer.contactactionbean.default_subject");

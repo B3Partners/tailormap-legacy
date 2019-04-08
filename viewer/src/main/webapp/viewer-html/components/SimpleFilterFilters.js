@@ -225,11 +225,16 @@ Ext.define("viewer.components.sf.SimpleFilter",{
             return;
         }
         this.reset();
-        var extraFilter = reset ? "" : this.parentFilterInstance.getCQL(this.config.filterConfig.linkedFilterAttribute, this.parentFilterInstance.getValue(),true);
+        var extraFilter = "";
+        if (!reset) {
+            var isCombo = this.parentFilterInstance instanceof viewer.components.sf.Combo;
+            extraFilter = isCombo
+                ? this.parentFilterInstance.getCQL(this.config.filterConfig.linkedFilterAttribute, this.parentFilterInstance.getValue(), true)
+                : this.parentFilterInstance.getCQL();
+        }
         this.initCalculatedValues(extraFilter);
-        
         this.addListener(viewer.viewercontroller.controller.Event.ON_FILTER_VALUES_UPDATED,function(){
-            this.setFilter(extraFilter,true,reset);
+            this.setFilter(extraFilter,true, reset);
         }, this,{single:true});
         
     },
@@ -424,7 +429,9 @@ Ext.define("viewer.components.sf.Radio", {
         var cql = "";
         var mustEscape = this.mustEscapeAttribute();
         if (checkbox.getGroupValue()) {
-            cql = this.config.attributeName + " = " + (mustEscape ? "'" : "") + this.sanitizeValue(checkbox.getGroupValue(),mustEscape) + (mustEscape ? "'" : "");
+            var value = checkbox.getGroupValue();
+            var operator = value.indexOf('%') === -1 ? ' = ' : ' ILIKE ';
+            cql = this.config.attributeName + operator + (mustEscape ? "'" : "") + this.sanitizeValue(value,mustEscape) + (mustEscape ? "'" : "");
         }
         return cql;
     }
@@ -875,14 +882,14 @@ Ext.define("viewer.components.sf.Slider", {
             }
         }
 
-        if(c.min === "min"){
+        if(c.min === "min" || c.min === ""){
             min = 0;
             this.retrieveMinVal = true;
         }else{
             min = c.min;
         }
 
-        if(c.max === "max"){
+        if(c.max === "max" || c.max === ""){
             max = 0;
             this.retrieveMaxVal = true;
         }else{
