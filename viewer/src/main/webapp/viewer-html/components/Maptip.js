@@ -536,6 +536,7 @@ Ext.define ("viewer.components.Maptip",{
                 }
                 var html = "<table>";
                 feature.forEachAttribute(function(key, value) {
+                    value = "" + value;
                     html+="<tr>";
                     html+="<td class='feature_detail_attr_key'>"+key+"</td>";
                     if(!noHtmlEncode) {
