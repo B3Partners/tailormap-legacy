@@ -967,7 +967,9 @@
         <profile>
             <!-- should not be run by itself, it decorates the existing pgsql/mssql/oracle profiles to use tomcat 9 -->
             <id>tomcat-9</id>
-            <properties></properties>
+            <properties>
+                <tomcat.test.port>8080</tomcat.test.port>
+            </properties>
             <build>
                 <plugins>
                     <plugin>
