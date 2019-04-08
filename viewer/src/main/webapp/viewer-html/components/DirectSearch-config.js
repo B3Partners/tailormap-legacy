@@ -21,12 +21,14 @@
 Ext.define('viewer.components.CustomConfiguration', {
     extend: 'viewer.components.SearchConfiguration',
     maxSearchConfigs: 1,
+    hideRemovePinConfig: true,
     constructor: function (parentId, configObject, configPage) {
         if (configObject === null){
             configObject = {
                 title: i18next.t('directsearch_config_0')
             };
         }
+        configObject.hidePopupConfig = true;
         viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId, configObject, configPage);
         var alignmentStore = Ext.create('Ext.data.ArrayStore', {
             autoDestroy: true,

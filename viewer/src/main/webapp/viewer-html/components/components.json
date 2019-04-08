@@ -132,7 +132,7 @@
         "group": "Map",
         "singleton": true,
         "restrictions": ["content"],
-        "configSource": ["ConfigObject.js","SelectionWindowConfig.js","FeatureInfo-config.js"]
+        "configSource": ["ConfigObject.js","SelectionWindowConfig.js","FeatureInfo-config.js","FeatureInfo-configwrapper.js"]
     },
     {
         "className": "viewer.components.ExtendedFeatureInfo",
@@ -144,7 +144,7 @@
         "group": "Map",
         "singleton": false,
         "restrictions": ["rightmargin_top", "leftmargin_top","leftmargin_bottom","rightmargin_bottom","popupwindow","left_menu"],
-        "configSource": ["ConfigObject.js","SelectionWindowConfig.js","FeatureInfo-config.js"],
+        "configSource": ["ConfigObject.js","SelectionWindowConfig.js","FeatureInfo-config.js","ExtendedFeatureInfo-config.js"],
         "showHelp": true
     },
     {
@@ -395,22 +395,6 @@
         },
         "singleton": true,
         "restrictions": ["content_bottom"]
-    },
-    {
-        "className": "viewer.components.FlamingoComponent",
-        "name": "Flamingo Component",
-        "shortName": "fmc",
-        "sources": ["FlamingoComponent.js"],
-        "closureCompilerSafe": true,
-
-        "singleton": true,
-        "restrictions": ["content"],
-        "notInCombinationWith": ["OpenLayersMap"],
-
-        "extPropertyGridConfigs": {
-            "propertyNames": {"xml": "Xml Configuratie"},
-            "source": {"xml": ""}
-        }
     },
     {
         "className": "viewer.components.TOC",
