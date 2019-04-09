@@ -24,7 +24,6 @@ import java.io.StringReader;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
-import net.sourceforge.stripes.action.ActionBean;
 import net.sourceforge.stripes.action.ActionBeanContext;
 import net.sourceforge.stripes.action.After;
 import net.sourceforge.stripes.action.Before;
@@ -34,6 +33,8 @@ import net.sourceforge.stripes.action.StrictBinding;
 import net.sourceforge.stripes.action.UrlBinding;
 import net.sourceforge.stripes.controller.LifecycleStage;
 import net.sourceforge.stripes.validation.Validate;
+import nl.b3p.viewer.audit.AuditMessageObject;
+import nl.b3p.viewer.audit.Auditable;
 import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.ApplicationLayer;
 import nl.b3p.viewer.config.security.Authorizations;
@@ -70,7 +71,7 @@ import org.stripesstuff.stripersist.Stripersist;
  */
 @UrlBinding("/action/feature/merge")
 @StrictBinding
-public class MergeFeaturesActionBean extends LocalizableApplicationActionBean implements ActionBean {
+public class MergeFeaturesActionBean extends LocalizableApplicationActionBean implements Auditable {
 
     private static final Log LOG = LogFactory.getLog(MergeFeaturesActionBean.class);
 
@@ -110,6 +111,8 @@ public class MergeFeaturesActionBean extends LocalizableApplicationActionBean im
 
     private boolean unauthorized;
 
+    private AuditMessageObject auditMessageObject;
+
     @After(stages = LifecycleStage.BindingAndValidation)
     public void loadLayer() {
         this.layer = appLayer.getService().getSingleLayer(appLayer.getLayerName(), Stripersist.getEntityManager());
@@ -121,6 +124,7 @@ public class MergeFeaturesActionBean extends LocalizableApplicationActionBean im
                 || !Authorizations.isLayerGeomWriteAuthorized(layer, context.getRequest(), Stripersist.getEntityManager())) {
             unauthorized = true;
         }
+        auditMessageObject = new AuditMessageObject();
     }
 
     public Resolution merge() throws JSONException {
@@ -179,6 +183,7 @@ public class MergeFeaturesActionBean extends LocalizableApplicationActionBean im
         if (error != null) {
             json.put("error", error);
         }
+        this.auditMessageObject.addMessage(json);
         return new StreamingResolution("application/json", new StringReader(json.toString()));
     }
 
@@ -446,6 +451,10 @@ public class MergeFeaturesActionBean extends LocalizableApplicationActionBean im
 
     public Layer getLayer() {
         return layer;
+    }
+
+    public AuditMessageObject getAuditMessageObject() {
+        return this.auditMessageObject;
     }
     //</editor-fold>
 }

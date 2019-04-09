@@ -1,6 +1,7 @@
 package nl.b3p.viewer.stripes;
 
 import net.sourceforge.stripes.action.*;
+import net.sourceforge.stripes.controller.LifecycleStage;
 import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.ApplicationLayer;
@@ -25,10 +26,12 @@ import java.io.*;
 import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
+import nl.b3p.viewer.audit.AuditMessageObject;
+import nl.b3p.viewer.audit.Auditable;
 
 @UrlBinding("/action/upload")
 @StrictBinding
-public class FileUploadActionBean extends LocalizableApplicationActionBean implements ActionBean {
+public class FileUploadActionBean extends LocalizableApplicationActionBean implements Auditable {
     private static final Log log = LogFactory.getLog(FileUploadActionBean.class);
     private ActionBeanContext context;
     public static final String DATA_DIR = "flamingo.data.dir";
@@ -49,6 +52,8 @@ public class FileUploadActionBean extends LocalizableApplicationActionBean imple
 
     @Validate
     private FileUpload upload;
+
+    private AuditMessageObject auditMessageObject;
 
     // <editor-fold default-state="collapsed" desc="Getters and setters">
     @Override
@@ -108,7 +113,15 @@ public class FileUploadActionBean extends LocalizableApplicationActionBean imple
         this.upload = upload;
     }
 
+    public AuditMessageObject getAuditMessageObject() {
+        return this.auditMessageObject;
+    }
     // </editor-fold>
+
+    @Before(stages = LifecycleStage.EventHandling)
+    public void initAudit(){
+        auditMessageObject = new AuditMessageObject();
+    }
 
     @DefaultHandler
     public Resolution uploadFile() {
@@ -171,6 +184,7 @@ public class FileUploadActionBean extends LocalizableApplicationActionBean imple
                 }
             }
         }
+        this.auditMessageObject.addMessage(json);
         return new StreamingResolution("application/json", new StringReader(json.toString(4)));
     }
 
@@ -237,6 +251,7 @@ public class FileUploadActionBean extends LocalizableApplicationActionBean imple
                 String name = up.getFilename();
                 res.setFilename(name);
                 res.setAttachment(false);
+                this.auditMessageObject.addMessage(f);
                 return res;
             } catch (FileNotFoundException e) {
                 log.error("Cannot retrieve file: ", e);
@@ -283,6 +298,7 @@ public class FileUploadActionBean extends LocalizableApplicationActionBean imple
         }else{
             json.put("message",error );
         }
+        this.auditMessageObject.addMessage(json);
         return new StreamingResolution("application/json", new StringReader(json.toString(4)));
     }
 }
