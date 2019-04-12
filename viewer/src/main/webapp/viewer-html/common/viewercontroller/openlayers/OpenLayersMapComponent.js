@@ -822,9 +822,19 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
         } else {
             Ext.get(this.domId).dom.style.cursor = "default";
         }
-    }
+    },
 
     /****************************************************************Event handling***********************************************************/
+    
+    deselectAllOtherFeatures: function(layer){
+        var vectorLayers = this.viewerController.mapComponent.getMap().getAllVectorLayers();
+        for(var i = 0 ; i < vectorLayers.length; i++){
+            var vl = vectorLayers[i];
+            if(vl.getId() !== layer.getId()){
+                vl.unselectAll();
+            }
+        }
+    }
 
 });
 

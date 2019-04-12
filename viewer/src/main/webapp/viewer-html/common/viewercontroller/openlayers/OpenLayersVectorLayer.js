@@ -111,15 +111,21 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
         map.addControl(this.freehand);
         map.addControl(this.freehandLine);
         map.addControl(this.modifyFeature);
-
+        var me = this;
+        this.modifyFeature.selectControl.onBeforeSelect = function(){ me.beforeSelect();};
         this.modifyFeature.selectControl.events.register("featurehighlighted", this, this.activeFeatureChanged);
         this.frameworkLayer.events.register("afterfeaturemodified", this, this.featureModified);
         this.frameworkLayer.events.register("featuremodified", this, this.featureModified);
         this.frameworkLayer.events.register("featureadded", this, this.featureAdded);
 
-        if(this.allowSelection()) this.modifyFeature.activate();
+        if(this.allowSelection()) {
+            this.modifyFeature.activate();
+        }
     },
 
+    beforeSelect:function(){
+        this.config.viewerController.mapComponent.deselectAllOtherFeatures(this);
+    },
     allowSelection: function() {
         return !this.config.hasOwnProperty('allowselection') || this.config.allowselection;
     },

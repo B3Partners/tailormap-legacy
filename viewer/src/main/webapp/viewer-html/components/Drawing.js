@@ -87,6 +87,7 @@ Ext.define ("viewer.components.Drawing",{
 
         this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE,this.selectedContentChanged,this );
         this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_COMPONENTS_FINISHED_LOADING,this.init,this);
+        this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_LAYERS_INITIALIZED,this.createVectorLayer, this);
         this.iconPath=FlamingoAppLoader.get('contextPath')+"/viewer-html/components/resources/images/drawing/";
         this.loadWindow();
         if(this.config.reactivateTools){
@@ -96,10 +97,8 @@ Ext.define ("viewer.components.Drawing",{
         return this;
     },
     init:function(){
-        this.createVectorLayer();
         if(this.config.dummyUser){
             setTimeout(this.drawFreeHand.bind(this),0);
-            
         }
     },
     showWindow : function (){

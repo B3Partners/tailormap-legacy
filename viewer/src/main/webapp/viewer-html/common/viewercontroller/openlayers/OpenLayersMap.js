@@ -112,7 +112,7 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
     getAllWMSLayers : function(){
         var lagen = new Array();
         for(var i = 0 ; i < this.layers.length;i++){
-            if(this.layers[i] instanceof OpenLayersWMSLayer){
+            if(this.layers[i] instanceof viewer.viewercontroller.openlayers.OpenLayersWMSLayer){
                 lagen.push(this.layers[i]);
             }
         }
@@ -125,7 +125,7 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
     getAllVectorLayers : function(){
         var lagen = new Array();
         for(var i = 0 ; i < this.layers.length;i++){
-            if(this.layers[i] instanceof OpenLayersVectorLayer){
+            if(this.layers[i] instanceof viewer.viewercontroller.openlayers.OpenLayersVectorLayer){
                 lagen.push(this.layers[i]);
             }
         }
