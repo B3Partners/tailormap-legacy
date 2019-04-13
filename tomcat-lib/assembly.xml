@@ -5,6 +5,7 @@
     <formats>
         <format>zip</format>
     </formats>
+    <id>tomcat</id>
     <includeBaseDirectory>false</includeBaseDirectory>
     <dependencySets>
         <dependencySet>
