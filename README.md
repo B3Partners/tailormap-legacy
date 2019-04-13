@@ -19,3 +19,5 @@ Check out the [wiki](https://github.com/flamingo-geocms/flamingo/wiki) for more 
 [![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/flamingo-geocms/flamingo.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/flamingo-geocms/flamingo/context:javascript)
 [![Total alerts](https://img.shields.io/lgtm/alerts/g/flamingo-geocms/flamingo.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/flamingo-geocms/flamingo/alerts/)
 [![BrowserStack.com](http://files.b3p.nl/flamingo/bs.png)]()
+
+[![code coverage master](https://codecov.io/gh/flamingo-geocms/flamingo/branch/master/graphs/sunburst.svg)](https://codecov.io/gh/flamingo-geocms/flamingo/branch/master)
