@@ -55,7 +55,7 @@
         <apache.httpcomponents.version>4.5.8</apache.httpcomponents.version>
         <jaxb.api.version>2.3.1</jaxb.api.version>
         <jaxb.impl.version>2.3.2</jaxb.impl.version>
-        <activation.api.version>1.2.0</activation.api.version>
+        <activation.api.version>1.2.1</activation.api.version>
         <!-- skip integration tests by default, override this property from commandline
         or as part of a profile, see eg. 'travis-ci' profile in viewer -->
         <test.skip.integrationtests>false</test.skip.integrationtests>
@@ -941,8 +941,8 @@
                         <version>${jaxb.impl.version}</version>
                     </dependency>
                     <dependency>
-                        <groupId>javax.activation</groupId>
-                        <artifactId>javax.activation-api</artifactId>
+                        <groupId>jakarta.activation</groupId>
+                        <artifactId>jakarta.activation-api</artifactId>
                         <version>${activation.api.version}</version>
                     </dependency>
                 </dependencies>
