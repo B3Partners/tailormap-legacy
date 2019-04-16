@@ -93,17 +93,6 @@ Ext.define("viewer.components.sf.Config", {
             }
         }
         return filters;
-        if(currentConfig){
-            var currentAppLayer = this.configurator.getAppConfig().appLayers[currentConfig.appLayerId];
-            var attrs = [];
-            Ext.Array.each(currentAppLayer.attributes, function(attr) {
-                attrs.push({
-                    name : attr.name,
-                    label : attr.alias || attr.name,
-                    type : attr.type
-                });
-            });
-        }
     },
     getAttributes: function() {
         var ac = Ext.ComponentQuery.query("#attributeCombo")[0];
