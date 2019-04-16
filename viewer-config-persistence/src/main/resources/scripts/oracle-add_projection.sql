@@ -1,1 +1,1 @@
-alter table application add column varchar2(255 char);
+alter table application add projection_code varchar2(255 char);
