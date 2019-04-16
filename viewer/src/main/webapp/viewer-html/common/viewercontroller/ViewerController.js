@@ -288,11 +288,14 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             // When there are no layers loaded from bookmark the startmap layers are loaded,
             if(!layersloaded){
                 this.initLayers();
-                this.fireEvent(viewer.viewercontroller.controller.Event.ON_LAYERS_INITIALIZED);
+                setTimeout(this.layersFinished.bind(this),0);
             }
         } catch(e) {
             this.logger.error(e);
         }
+    },
+    layersFinished: function(){
+        this.fireEvent(viewer.viewercontroller.controller.Event.ON_LAYERS_INITIALIZED);
     },
 
     /** Constructs all components defined in the app configuration object. To be

@@ -115,23 +115,23 @@ Ext.define("viewer.components.Edit", {
             viewerController: this.config.viewerController
         });
         this.schema = new Ext.data.schema.Schema();
-        this.lastUsedValues = {};
+        this.lastUsedValues = {};        
         this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_COMPONENTS_FINISHED_LOADING,this.loadWindow,this);
         this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE, this.selectedContentChanged, this);
+        this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_LAYERS_INITIALIZED,this.createVectorLayerTimeout, this);
+        
         return this;
     },
-    selectedContentChanged: function () {
-        if (this.vectorLayer === null) {
-            this.createVectorLayer();
-        } else {
-            this.config.viewerController.mapComponent.getMap().addLayer(this.vectorLayer);
-        }
+    createVectorLayerTimeout: function () {
+        setTimeout(this.createVectorLayer.bind(this),0);
     },
     createVectorLayer: function () {
         this.vectorLayer = this.config.viewerController.mapComponent.createVectorLayer({
             name: this.name + 'VectorLayer',
             geometrytypes: ["Circle", "Polygon", "MultiPolygon", "Point", "LineString"],
             showmeasures: false,
+            mustCreateVertices:true,
+            allowselection:true,
             viewerController: this.config.viewerController,
             style: {
                 fillcolor: "FF0000",
@@ -148,7 +148,7 @@ Ext.define("viewer.components.Edit", {
     },
     showWindow: function () {
         if (this.vectorLayer === null) {
-            this.createVectorLayer();
+           this.createVectorLayer();
         }
         this.mobileHide = false;
         this.layerSelector.initLayers();
@@ -198,9 +198,6 @@ Ext.define("viewer.components.Edit", {
         this.buttonPanel = this.maincontainer.down("#buttonPanel");
         this.savebutton = this.maincontainer.down("#saveButton");
         this.editHelpLabel = this.maincontainer.down("#editHelpLabel");
-        if (!this.config.isPopup && this.vectorLayer == null) {
-            this.createVectorLayer();
-        }
     },
     getFormItems: function() {
         this.createLayerSelector();
@@ -1028,6 +1025,13 @@ Ext.define("viewer.components.Edit", {
     },
     setInputPanel: function (feature) {
         this.inputContainer.getForm().setValues(feature);
+    },
+    selectedContentChanged: function () {
+        if (this.vectorLayer === null) {
+            this.createVectorLayer();
+        } else {
+            this.config.viewerController.mapComponent.getMap().addLayer(this.vectorLayer);
+        }
     },
     mapClicked: function (toolMapClick, comp) {
         this.deactivateMapClick();
