@@ -120,7 +120,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                             select: function (combo, record, eOpts) {
                                 me.resetConfig();
                                 var type = record.get("type");
-                                me.createFilterConfig(type,me);
+                                me.createFilterConfig(type,{});
                             }
                         }
                     },{
