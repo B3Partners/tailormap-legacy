@@ -477,9 +477,6 @@ Ext.define ("viewer.components.SpatialFilter",{
                 ]
             }]
         });
-        if (this.vectorLayer === null) {
-            this.createVectorLayer();
-        }
         this.layerSelector.initLayers();
     },
     createLayerSelector: function(){
