@@ -1405,7 +1405,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
 
             // Check override for appLayer by service admin
             if(appLayer.details != undefined && appLayer.details.legendImageUrl != undefined) {
-                success(appLayer, { parts: [ {url: appLayer.details.legendImageUrl, isAlternative:false}] });
+                success(appLayer, { parts: [ {url: appLayer.details.legendImageUrl, isAlternative:false, serviceId: appLayer.serviceId, label: appLayer.alias}] });
                 return;
             }
 
@@ -1431,7 +1431,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
 
                             info = { parts: [] };
                             Ext.Array.each(theStyle.legendURLs, function(legendURL) {
-                                info.parts.push( { url: legendURL, isAlternative:false });
+                                info.parts.push( { url: legendURL, isAlternative:false,serviceId: serviceLayer.serviceId, label: appLayer.alias });
                             });
                         }
                     });
@@ -1446,14 +1446,14 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                 if(l.getLegendGraphic) {
                     // l.getLegendGraphic() will create GetLegendGraphic URL
                     // with the SLD parameter the layer was created with
-                    success(appLayer, { parts: [ { url: l.getLegendGraphic(), isAlternative:false } ] });
+                    success(appLayer, { parts: [ { url: l.getLegendGraphic(), isAlternative:false,serviceId: serviceLayer.serviceId, label: appLayer.alias} ] });
                     return;
                 }
             }
 
             // Check override by service admin
             if(serviceLayer.details != undefined && serviceLayer.details['alternateLegendImageUrl']) {
-                success(appLayer, { parts: [ {url: serviceLayer.details.alternateLegendImageUrl, isAlternative:true}] });
+                success(appLayer, { parts: [ {url: serviceLayer.details.alternateLegendImageUrl, isAlternative:true,serviceId: serviceLayer.serviceId,label: appLayer.alias }] });
                 return;
             }
 
@@ -1463,7 +1463,8 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                     parts: [ {
                         url: serviceLayer.legendImageUrl,
                         label: appLayer.alias, 
-                        isAlternative:false
+                        isAlternative:false,
+                        serviceId: serviceLayer.serviceId
                     }],
                     name: appLayer.alias
                 });
@@ -1757,6 +1758,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
     valuesFromURL : function(params){
         var layersLoaded = false;
         var bookmark = false;
+        var levelsLoaded = [];
         var appLayers = this.app.appLayers;
         var selectedContent = this.app.selectedContent;
 
@@ -1812,6 +1814,10 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                             type: "level",
                             id: id
                         });
+                        if(this.app.levels[id]){
+                            this.app.levels[id].removed = false;
+                            levelsLoaded.push(id);
+                        }
                     } else if (value[i][0] === "A") {
                         var id = value[i].slice(1, value[i].length);
                         selectedContent.push({
@@ -1823,6 +1829,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                             type: "level",
                             id: value[i]
                         });
+                        levelsLoaded.push(value[i]);
                     }
                 }
             }else if(key === "levels"){
@@ -1849,6 +1856,16 @@ Ext.define("viewer.viewercontroller.ViewerController", {
 
         if(layersLoaded && !bookmark){
             this.app.appLayers = appLayers;
+            // set all applayers of the loaded levels to removed = false, so the layers will be added to the map (and not an empty level is visible in the toc)
+            for(var i = 0 ; i < levelsLoaded.length ;i++){
+                if(!this.app.levels[levelsLoaded[i]] || !this.app.levels[levelsLoaded[i]].layers){
+                    continue;
+                }
+                var layers = this.app.levels[levelsLoaded[i]].layers;
+                for(var j = 0 ; j < layers.length; j++){
+                    this.app.appLayers[layers[j]].removed = false;
+                }
+            }
             this.setSelectedContent(selectedContent);
             this.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE,function(){
 

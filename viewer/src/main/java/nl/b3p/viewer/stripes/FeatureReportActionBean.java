@@ -219,7 +219,10 @@ public class FeatureReportActionBean extends LocalizableApplicationActionBean im
                         String rightSide = keys.get(0).getRightSide().getName();
                         
                         JSONObject info = new JSONObject();
-                        if (FeaturePropertiesArrayHelper.containsKey(jFeat, leftSide)) {
+                        if (FeaturePropertiesArrayHelper.containsKey(jFeat, leftSide) || FeaturePropertiesArrayHelper.containsKey(jFeat, keys.get(0).getLeftSide().getAlias())) {
+                            if (!FeaturePropertiesArrayHelper.containsKey(jFeat, leftSide)) {
+                                leftSide = keys.get(0).getLeftSide().getAlias();
+                            }
                             String type = keys.get(0).getLeftSide().getExtJSType();
                             String query = rightSide + "=";
                             if (type.equalsIgnoreCase("string")

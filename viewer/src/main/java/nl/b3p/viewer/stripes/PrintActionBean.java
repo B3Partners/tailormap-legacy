@@ -188,7 +188,7 @@ public class PrintActionBean extends LocalizableActionBean implements ActionBean
                     info.getLegendUrls().add(legend);
                 }
             }
-            info.cacheLegendImagesAndReadDimensions();
+            info.cacheLegendImagesAndReadDimensions(context, em);
         }
 
         if (jRequest.has("includeAttributes") && jRequest.getBoolean("includeAttributes")){

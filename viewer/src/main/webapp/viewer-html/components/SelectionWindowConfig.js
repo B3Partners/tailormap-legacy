@@ -29,6 +29,7 @@ Ext.define("viewer.components.SelectionWindowConfig",{
         //this.createCheckBoxes(this.configObject.layers);*/
     },
     createForm: function(config){
+        console.log(this);
         //to make this accessible in object
         var me=this;
         var iconurl = config.iconUrl;
@@ -38,6 +39,10 @@ Ext.define("viewer.components.SelectionWindowConfig",{
         var hideTooltipConfig = config.hideTooltipConfig === true;
         if(Ext.isEmpty(iconurl) || !Ext.isDefined(iconurl)) iconurl = null;
         if(Ext.isEmpty(label) || !Ext.isDefined(label)) label = "";
+        var hidden = {};
+        if(this.configPage._metadata.hidden){
+            hidden = this.configPage._metadata.hidden;
+        }
         this.form=new Ext.form.FormPanel({
             frame: false,
             bodyPadding: me.formPadding,
@@ -63,6 +68,7 @@ Ext.define("viewer.components.SelectionWindowConfig",{
                             fieldLabel: i18next.t('general_components_selectionwindowconfig_1'),
                             name: 'iconUrl',
                             value: config.iconUrl,
+                            hidden: hidden.iconUrl === "true" ? true:false,
                             labelWidth:me.labelWidth,
                             width: 700,
                             listeners: {
@@ -86,6 +92,7 @@ Ext.define("viewer.components.SelectionWindowConfig",{
                 fieldLabel: i18next.t('general_components_selectionwindowconfig_2'),
                 name: 'tooltip',
                 value: config.tooltip,
+                hidden: hidden.tooltip === "true" ? true:false,
                 labelWidth:me.labelWidth,
                 width: 700
             });
@@ -96,6 +103,7 @@ Ext.define("viewer.components.SelectionWindowConfig",{
                 fieldLabel: i18next.t('general_components_selectionwindowconfig_3'),
                 name: 'label',
                 value: label,
+                hidden: hidden.label === "true" ? true:false,
                 labelWidth: me.labelWidth,
                 width: 700
             });

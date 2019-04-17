@@ -610,6 +610,7 @@
         "name": "Extended Edit",
         "shortName": "EEd",
         "group": "Component",
+        "hidden":{"tooltip":"true","label":"true","iconUrl":"true","showEditLinkInFeatureInfo":"true"},
         "sources": ["Edit.js", "ExtendedEdit.js"],
         "configSource": ["ConfigObject.js","SelectionWindowConfig.js","Edit-config.js"],
         "restrictions": ["rightmargin_top", "leftmargin_top","leftmargin_bottom","rightmargin_bottom"],

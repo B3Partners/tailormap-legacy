@@ -28,11 +28,12 @@ import org.json.JSONObject;
  */
 
 @XmlRootElement(name="legendPart")
-@XmlType(propOrder = {"label","url", "width", "height"})
+@XmlType(propOrder = {"label","url", "width", "height","serviceId"})
 public class LegendPart {
     private String label;
     private String url;
     private Integer width, height;
+    private Integer serviceId;
 
     LegendPart(){}
     LegendPart(JSONObject json) throws JSONException {
@@ -41,6 +42,9 @@ public class LegendPart {
         }
         if (json.has("url")){
             this.setUrl(json.getString("url"));
+        }
+        if (json.has("serviceId")){
+            setServiceId(json.getInt("serviceId"));
         }
     }
 
@@ -76,5 +80,13 @@ public class LegendPart {
 
     public void setHeight(Integer height) {
         this.height = height;
+    }
+
+    public Integer getServiceId() {
+        return serviceId;
+    }
+
+    public void setServiceId(Integer serviceId) {
+        this.serviceId = serviceId;
     }
 }

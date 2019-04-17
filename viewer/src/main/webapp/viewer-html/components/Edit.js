@@ -254,10 +254,6 @@ Ext.define("viewer.components.Edit", {
             {
                 itemId: 'savePanel',
                 xtype: "container",
-                layout: {
-                    type: 'hbox',
-                    pack: 'end'
-                },
                 defaults: {
                     xtype: 'button'
                 },
@@ -1002,7 +998,19 @@ Ext.define("viewer.components.Edit", {
             editable: !(attribute.hasOwnProperty('allowValueListOnly') && attribute.allowValueListOnly),
             labelClsExtra: this.editLblClass
         });
-
+        
+        //when device is mobile dont allow the touchend event. This will activate a field that is lying under the dropdown picker(ul)
+        if (viewer.components.MobileManager.isMobile()) {
+            input.on('focusenter', function () {
+                if (!input.eventInit) {
+                    document.getElementById(attribute.name + "-picker-listEl").addEventListener('touchend', function (e) {
+                        e.preventDefault();
+                    }, false);
+                    input.eventInit = true;
+                }
+            });
+        }
+        
         if (disallowNull) {
             try {
                 if (valueStore.loadCount !== 0) { // if store is loaded already load event is not fired anymore

@@ -238,13 +238,8 @@ Ext.define("viewer.components.CustomConfiguration",{
 
                                     if(record.length > 0){
                                         var id = record[0].data.id;
-                                        var me = this;
-                                        Ext.MessageBox.confirm(i18next.t('simplefilter_config_20'), i18next.t('simplefilter_config_21'), function(btn, text){
-                                            if (btn === 'yes') {
-                                                me.removeConfig(id);
-                                                me.resetConfig(true);
-                                            }
-                                        });
+                                        this.removeConfig(id);
+                                        this.resetConfig(true);
                                     }else{
                                         Ext.MessageBox.alert(i18next.t('simplefilter_config_22'), i18next.t('simplefilter_config_23'));
                                     }
