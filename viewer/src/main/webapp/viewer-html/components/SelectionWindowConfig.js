@@ -29,7 +29,6 @@ Ext.define("viewer.components.SelectionWindowConfig",{
         //this.createCheckBoxes(this.configObject.layers);*/
     },
     createForm: function(config){
-        console.log(this);
         //to make this accessible in object
         var me=this;
         var iconurl = config.iconUrl;
