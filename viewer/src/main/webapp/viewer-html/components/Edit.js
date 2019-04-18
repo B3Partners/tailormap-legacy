@@ -1003,7 +1003,11 @@ Ext.define("viewer.components.Edit", {
         if (viewer.components.MobileManager.isMobile()) {
             input.on('focusenter', function () {
                 if (!input.eventInit) {
-                    document.getElementById(attribute.name + "-picker-listEl").addEventListener('touchend', function (e) {
+                    var pickerList = document.getElementById(attribute.name + "-picker-listEl");
+                    if (!pickerList) {
+                        return;
+                    }
+                    pickerList.addEventListener('touchend', function (e) {
                         e.preventDefault();
                     }, false);
                     input.eventInit = true;
