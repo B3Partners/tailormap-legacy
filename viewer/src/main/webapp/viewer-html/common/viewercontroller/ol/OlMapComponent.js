@@ -130,6 +130,7 @@ Ext.define("viewer.viewercontroller.OlMapComponent",{
     
     createTilingLayer : function (name,url, options){
         options.name=name;
+        options.origin = "*";
         options.url=url;
         options.viewerController=this.viewerController;
         if(options.alpha != undefined) {

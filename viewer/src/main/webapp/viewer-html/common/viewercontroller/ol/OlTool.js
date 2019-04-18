@@ -30,6 +30,7 @@ Ext.define("viewer.viewercontroller.ol.OlTool",{
       this.panelTool.className = "svg-tool "+conf.class+'ItemInactive';
       this.panelTool.title = (conf.tooltip) ? conf.tooltip : "";
       this.panelTool.id = conf.id;
+      if(conf.class){
       var spriteLink = "/viewer/viewer-html/sprite.svg#icon-"+conf.class.toLowerCase();
       this.panelTool.innerHTML = [
                     '<div class="svg-click-area"></div>', // An extra transparent DIV is added to fix issue where button could not be clicked in IE
@@ -39,6 +40,7 @@ Ext.define("viewer.viewercontroller.ol.OlTool",{
             //var me = this;
             //this.panelTool.addEventListener('click',function(){me.fire(viewer.viewercontroller.controller.Event.ON_EVENT_DOWN);},me);
       //}else{
+    }
         this.panelTool.addEventListener("click",function(){me.test();},me);
        // }
     },

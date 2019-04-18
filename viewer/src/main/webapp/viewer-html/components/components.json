@@ -984,6 +984,18 @@
         "singleton": true,
         "showHelp": true
     },
+    {
+        "className": "viewer.components.VectorTile",
+        "name": "VectorTile",
+        "shortName": "VT",
+        "group": "Component",
+        "sources": ["VectorTile.js"],
+        "configSource": ["ConfigObject.js","SelectionWindowConfig.js","VectorTile-config.js"],
+        "restrictions": ["left_menu"],
+        "type": "popup",
+        "singleton": true,
+        "showHelp": true
+    },
 
     {
         "className": "viewer.components.Contactform",
