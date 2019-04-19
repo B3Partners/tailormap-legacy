@@ -126,6 +126,13 @@ Ext.define("viewer.viewercontroller.controller.Event",{
          */
         TOC_EXPANDED                            : "TOC_EXPANDED",
         /**
+         * @field
+         * Occures when a lstyle is selected for a certain layer
+         * @param {Object} layerObject the layer object
+         * @param {Object} style the style object
+         */
+        ON_STYLE_SELECTED                       : "ON_STYLE_SELECTED",
+        /**
          *@field
          *occures when a mouse is moved and the maptip must be cancelled
          *@param map the map object that called this event.
