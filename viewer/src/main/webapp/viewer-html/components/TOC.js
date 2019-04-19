@@ -14,6 +14,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+/* global Ext, FlamingoAppLoader, i18next */
+
 /**
  * TOC component
  * Creates a Table of comtents Component
@@ -26,7 +28,11 @@ Ext.define('Maps', {
         // Added convert function to icon
         {name: 'icon', type: 'string', convert: function(fieldName, record) {
             if(record.get('leaf')) {
-                return FlamingoAppLoader.get('contextPath') + '/viewer-html/components/resources/images/selectionModule/map.png';
+                if(record.get('hasMultipleStyles')){
+                    return FlamingoAppLoader.get('contextPath') + '/viewer-html/components/resources/images/selectionModule/maplevel.png';
+                }else{
+                    return FlamingoAppLoader.get('contextPath') + '/viewer-html/components/resources/images/selectionModule/map.png';
+                }
             }
             return FlamingoAppLoader.get('contextPath') + '/viewer-html/components/resources/images/selectionModule/folder.png';
         }}
@@ -360,6 +366,29 @@ Ext.define ("viewer.components.TOC",{
                 treeNodeLayer.layerObj.download = serviceLayer.details ["download.url"];
             }
 
+            if(serviceLayer.details ["wms.styles"] !== undefined){
+                var styles = Ext.JSON.decode(serviceLayer.details ["wms.styles"]);
+                var sNodes = [];
+                for (var i = 0; i < styles.length; i++) {
+                    var style = styles[i];
+                    var styleId = layerId + "_" + style.name;
+                    var styleNode = {
+                        text: Ext.String.format('<span id=\"span_{0}\">{1}</span>', styleId, style.name),
+                        expanded: true,
+                        leaf: true,
+                        background: false,
+                        
+                        cls : 'radionode',
+                        layerObj: {
+                            nodeId: styleId,
+                            appLayer: appLayerObj
+                        }
+                    };
+                    sNodes.push(styleNode);
+                }
+                treeNodeLayer.layerObj.children = sNodes;
+                treeNodeLayer.hasMultipleStyles = true;
+            }
         }
         var retChecked = false;
         var defaultChecked = this.config.viewerController.getLayerChecked(appLayerObj);
@@ -533,7 +562,7 @@ Ext.define ("viewer.components.TOC",{
         var me = this;
         var checked = me.getNodeChecked(node);
         var updateTree = false;
-        if(node.hasChildNodes()) {
+        if(node.hasChildNodes() && !node.data.hasMultipleStyles) {
             // It is a folder
             updateTree = true;
             me.updateTreeNodes = [];

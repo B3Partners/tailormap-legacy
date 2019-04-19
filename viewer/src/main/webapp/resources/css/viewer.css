@@ -310,6 +310,12 @@ html {
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 
+.radionode{
+    
+    background-position: 0 -44px;
+    background-image: url(../images/extjs-overrides/touch-crisp/radio.png);
+}
+
 .theme-crisp-touch .tristatenode .x-tree-checkbox {
     background-position: 0 -44px;
 }
