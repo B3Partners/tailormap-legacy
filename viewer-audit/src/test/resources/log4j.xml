@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration PUBLIC "-//APACHE//DTD LOG4J 1.2//EN" "log4j.dtd">
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+    <!-- this is the audit log-->
+    <appender name="auditlog" class="org.apache.log4j.RollingFileAppender">
+        <param name="Threshold" value="info"/>
+        <param name="file" value="target/test-classes/audit.log"/>
+        <param name="MaxFileSize" value="10MB"/>
+        <param name="MaxBackupIndex" value="10"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d{dd MMM yyyy HH:mm:ss} - %m%n"/>
+        </layout>
+    </appender>
+    <!-- default log, receiving other logging which goes to the console in this case -->
+    <appender name="consoleAppender" class="org.apache.log4j.ConsoleAppender">
+        <param name="Threshold" value="debug"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d{HH:mm:ss} viewer-audit-test: %5p (%C#%M:%L) - %m%n"/>
+        </layout>
+    </appender>
+    <logger name="nl.b3p.viewer.audit.impl.DefaultLoggingService" additivity="false">
+        <level value="info"/>
+        <appender-ref ref="auditlog"/>
+    </logger>
+    <root>
+        <level value="debug"/>
+        <appender-ref ref="consoleAppender"/>
+    </root>
+</log4j:configuration>
