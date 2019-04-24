@@ -25,7 +25,8 @@ import net.sourceforge.stripes.controller.Intercepts;
 import net.sourceforge.stripes.controller.LifecycleStage;
 import nl.b3p.viewer.audit.AuditMessageObject;
 import nl.b3p.viewer.audit.Auditable;
-import nl.b3p.viewer.audit.LoggingServiceFactory;
+import nl.b3p.viewer.audit.strategy.LoggingStrategy;
+import nl.b3p.viewer.audit.strategy.LoggingStrategyFactory;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -51,18 +52,17 @@ public class AuditLoggingInterceptor implements Interceptor {
         LOG.debug("actionbeancontext: " + actionbeancontext);
         LOG.debug("event: " + event);
         LOG.debug("user: " + user);
-
-        if (actionbean instanceof Auditable) {
-            LOG.debug("user: " + user + " hit: Auditable " + actionbean.getClass().getName() + "#" + event);
-
-            AuditMessageObject o = ((Auditable) actionbean).getAuditMessageObject();
-            o.setEvent(actionbean.getClass().getSimpleName() + "#" + event);
-            o.setUsername(user);
-
-            LOG.debug("audit msg obj: " + o);
-            LoggingServiceFactory.getInstance().logMessage(o.getUsername(), o.getMessagesAsString());
+        try {
+            LoggingStrategy ls = LoggingStrategyFactory.getStrategy(actionbean);
+            if (ls != null) {
+                AuditMessageObject amo = ((Auditable) actionbean).getAuditMessageObject();
+                amo.setEvent(actionbean.getClass().getSimpleName() + "#" + event);
+                amo.setUsername(user);
+                ls.log(((Auditable) actionbean), amo);
+            }
+        } catch (Exception e) {
+            LOG.error("Failed to write audi log: " + e);
         }
-
         return resolution;
     }
 
