@@ -683,7 +683,7 @@ Ext.define ("viewer.components.TOC",{
     },
 
     updateMap: function(nodeObj, checked) {
-        if(nodeObj.isLeaf()){
+        if(nodeObj.isLeaf() || nodeObj.data.hasMultipleStyles){
             var node = nodeObj.raw;
             if(node ===undefined){
                 node = nodeObj.data;
@@ -746,11 +746,7 @@ Ext.define ("viewer.components.TOC",{
             parentNode.eachChild(function(childNode) {
                 childNode.set("checked", childNode.data.layerObj.nodeId === nodeLayerObject.nodeId);
             });
-            this.config.viewerController.fireEvent(
-                viewer.viewercontroller.controller.Event.ON_STYLE_SELECTED,
-                nodeLayerObject.appLayer,
-                nodeLayerObject.style
-            );
+            this.config.viewerController.setLayerStyle(nodeLayerObject.appLayer, nodeLayerObject.style.name);
         }
     },
 
