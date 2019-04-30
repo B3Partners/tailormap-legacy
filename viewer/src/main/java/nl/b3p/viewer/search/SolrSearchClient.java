@@ -202,6 +202,7 @@ public class SolrSearchClient extends SearchClient {
                 bbox.put("miny", doc.getFieldValue("miny"));
                 bbox.put("maxx", doc.getFieldValue("maxx"));
                 bbox.put("maxy", doc.getFieldValue("maxy"));
+                bbox.put("id", doc.getFieldValue("id"));
                 result.put("location", bbox);
 
                 result.put("searchConfig", doc.getFieldValue("searchConfig"));
