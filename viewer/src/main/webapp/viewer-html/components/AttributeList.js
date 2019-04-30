@@ -766,6 +766,7 @@ Ext.define ("viewer.components.AttributeList",{
         if (this.featureExtentService === null) {
             this.featureExtentService = Ext.create('viewer.FeatureExtent');
         }
+        this.config.viewerController.fireEvent(viewer.viewercontroller.controller.Event.ON_FEATURE_HIGHLIGHTED,feature.__fid,this.layerSelector.getValue());
         this.featureExtentService.getExtentForFeatures(
                 /*featureIds=*/feature.__fid,
                 /*appLayer=*/this.layerSelector.getValue(),

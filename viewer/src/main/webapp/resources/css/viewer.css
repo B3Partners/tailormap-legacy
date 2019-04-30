@@ -20,7 +20,9 @@ b {
     text-align: left;
     width: 100px
 }
-
+.featureinfo_highlighted{
+    background-color:rgba(0,0,255,0.3);
+}
 #loader {
     position: absolute;
 
