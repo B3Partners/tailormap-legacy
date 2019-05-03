@@ -240,7 +240,7 @@ public class SimplifyFeatureActionBean extends LocalizableApplicationActionBean 
             return true;
 
         } else if (sft != null) {
-            // Dit kan alleen als er via een zoekopdracht een call wordt gedaan, dus checken of solrconfig is geconfigureer voor deze applicatie
+            // Dit kan alleen als er via een zoekopdracht een call wordt gedaan, dus checken of solrconfig is geconfigureerd voor deze applicatie
             Set<ConfiguredComponent> comps = application.getComponents();
             for (ConfiguredComponent comp : comps) {
                 if (comp.getClassName().equals("viewer.components.Search")) {
@@ -248,8 +248,12 @@ public class SimplifyFeatureActionBean extends LocalizableApplicationActionBean 
                     JSONArray searchConfigs = config.getJSONArray("searchconfigs");
                     for (Iterator<Object> iterator = searchConfigs.iterator(); iterator.hasNext();) {
                         JSONObject searchConfig = (JSONObject) iterator.next();
-                        if (searchConfig.getString("type").equals("solr")) {
-                            JSONObject solrConfigs = searchConfig.getJSONObject("solrConfig");
+                        String type = searchConfig.getString("type");
+                        if (type.equals("solr") || type.equals("attributesource") ){
+                            JSONObject solrConfigs = searchConfig.optJSONObject("solrConfig");
+                            if(solrConfigs == null){
+                                solrConfigs = searchConfig.optJSONObject("asConfig");
+                            }
                             Set<String> configs = solrConfigs.keySet();
                             for (String c : configs) {
                                 JSONObject sc = solrConfigs.getJSONObject(c);
