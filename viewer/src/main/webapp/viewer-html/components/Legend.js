@@ -82,6 +82,7 @@ Ext.define("viewer.components.Legend", {
         this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.TOC_EXPANDED, this.tocExpanded, this);
         this.config.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_VISIBILITY_CHANGED,this.onLayerVisibilityChanged,this);
         this.config.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_ZOOM_END,this.onZoomEnd,this);
+        this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_STYLE_SELECTED,this.onZoomEnd,this);
           
         return this;
     },
@@ -495,18 +496,31 @@ Ext.define("viewer.components.Legend", {
         divLayer.appendChild(divName);
 
         var img, divImage;
-        function getImageSource(url) {
+        function getImageSource(url, al) {
             // Only WMS support SCALE for legend images
             if(url.search(/service=wms/i) === -1) {
                 return url;
             }
+            
             // Append SCALE when not present
             if (url.search(/SCALE/i) === -1){
-                return Ext.String.urlAppend(url, "SCALE=" + legendScale);
+                url = Ext.String.urlAppend(url, "SCALE=" + legendScale);
+            }else{
+                url = url.replace(/SCALE=[0-9.,]*/i, "SCALE=" + legendScale);
             }
-            return url.replace(/SCALE=[0-9.,]*/i, "SCALE=" + legendScale);
+            
+            if (al.options.STYLES) {
+                if (url.search(/STYLE/i) === -1) {
+                    url = Ext.String.urlAppend(url, "STYLE=" + al.options.STYLES);
+                } else {
+                    url = url.replace(/SCALE=[0-9.,]*/i, "STYLE=" + al.options.STYLES);
+                }
+            }
+            
+            return url;
         }
         var svc = this.config.viewerController.getService(al.serviceId);
+        var layer = this.config.viewerController.getLayer(al);
         Ext.Array.each(legendInfo.parts, function(part) {
             divImage = document.createElement("div");
             var divLabel = document.createElement("div");
@@ -517,10 +531,10 @@ Ext.define("viewer.components.Legend", {
                         Ext.Object.toQueryString({
                             serviceId: al.serviceId,
                             mustLogin: svc.mustLogin,
-                            url: getImageSource(part.url)
+                            url: getImageSource(part.url, layer)
                         });
             } else {
-                img.src = getImageSource(part.url);
+                img.src = getImageSource(part.url, layer);
             }
             img.onload = function() {
                 //console.log("legend image for label " + divLabel.innerHTML + " loaded, height " + this.height);

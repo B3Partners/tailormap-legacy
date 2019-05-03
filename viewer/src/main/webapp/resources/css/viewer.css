@@ -147,8 +147,23 @@ input.error[type="radio"], input.error[type="checkbox"], select.error {
     content: "\f0c8";
 }
 
-.toc-outofscale {
+.theme-triton .radionode .x-tree-checkbox:before {
+    content: "\f10c";
+}
+
+.theme-triton .radionode .x-tree-checkbox-checked:before {
+    content: "\f192";
+}
+
+.toc-outofscale,
+.node-disabled,
+.node-disabled .x-tree-checkbox {
     color : gray;
+}
+.node-disabled img {
+    filter: gray;
+    -webkit-filter: grayscale(1);
+    filter: grayscale(1);
 }
 .toc-zoomtoscale{
     height: 36px !important;
@@ -271,6 +286,9 @@ body > .legend {
 .theme-crisp .x-tree-checkbox {
     background-image: url(../images/extjs-overrides/crisp/checkbox.png);
 }
+.theme-crisp .radionode .x-tree-checkbox {
+    background-image: url(../images/extjs-overrides/touch-crisp/radio.png);
+}
 .theme-crisp .x-btn-wrap-default-small.x-btn-split-right:after {
     background-image: url(../images/extjs-overrides/crisp/default-small-s-arrow.png);
 }
@@ -319,6 +337,9 @@ html {
 /* ExtJS override images */
 .theme-crisp-touch .x-tree-checkbox {
     background-image: url(../images/extjs-overrides/touch-crisp/checkbox.png);
+}
+.theme-crisp .radionode .x-tree-checkbox {
+    background-image: url(../images/extjs-overrides/touch-crisp/radio.png);
 }
 .theme-crisp-touch .x-btn-wrap-default-small.x-btn-split-right:after {
     background-image: url(../images/extjs-overrides/touch-crisp/default-small-s-arrow.png);
