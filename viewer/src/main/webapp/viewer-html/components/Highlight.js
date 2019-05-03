@@ -32,6 +32,11 @@ Ext.define("viewer.components.Highlight", {
     constructor: function (conf) {
         this.initConfig(conf);
         viewer.components.Highlight.superclass.constructor.call(this, this.config);
+        this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_FEATURE_HIGHLIGHTED, this.highlightFeature, this);
+        this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_LAYERS_INITIALIZED,this.createVectorLayer, this);
+        return this;
+    },
+    createVectorLayer: function(){
         this.vectorLayer = this.config.viewerController.mapComponent.createVectorLayer({
             name: this.name + 'VectorLayer',
             geometrytypes: ["Circle", "Polygon", "MultiPolygon", "Point", "LineString"],
@@ -50,15 +55,19 @@ Ext.define("viewer.components.Highlight", {
         });
         this.config.viewerController.registerSnappingLayer(this.vectorLayer);
         this.config.viewerController.mapComponent.getMap().addLayer(this.vectorLayer);
-        this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_FEATURE_HIGHLIGHTED, this.highlightFeature, this);
-        return this;
     },
-    highlightFeature: function (featureId, appLayer) {
+    highlightFeature: function (featureId, appLayer, sft, searchconfig) {
         var options = {
             application: FlamingoAppLoader.get("appId"),
-            appLayer: appLayer.id,
             featureId: featureId
         };
+        if(appLayer){
+            options.appLayer = appLayer.id;
+        }
+        if(sft){
+            options.sft = sft;
+            options.solrconfig = searchconfig;
+        }
         Ext.Ajax.request({
             url: actionBeans.simplify,
             params: options,

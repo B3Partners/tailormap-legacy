@@ -623,6 +623,8 @@ Ext.define ("viewer.components.Search",{
         if(type === "solr"){
 
             var searchconfig = this.getCurrentSearchconfig();
+            this.config.viewerController.fireEvent(viewer.viewercontroller.controller.Event.ON_FEATURE_HIGHLIGHTED, result.location.id, null, result.sft, result.searchConfig);
+ 
             if(searchconfig ){
                 var solrConfig = searchconfig.solrConfig[result.searchConfig];
                 var switchOnLayers = solrConfig.switchOnLayers;

@@ -8,8 +8,8 @@ package nl.b3p.viewer.stripes;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.Iterator;
+import java.util.Set;
 import javax.persistence.EntityManager;
 import net.sourceforge.stripes.action.ActionBeanContext;
 import net.sourceforge.stripes.action.DefaultHandler;
@@ -22,8 +22,11 @@ import nl.b3p.viewer.audit.AuditMessageObject;
 import nl.b3p.viewer.audit.Auditable;
 import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.ApplicationLayer;
+import nl.b3p.viewer.config.app.ConfiguredComponent;
 import nl.b3p.viewer.config.security.Authorizations;
 import nl.b3p.viewer.config.services.Layer;
+import nl.b3p.viewer.config.services.SimpleFeatureType;
+import nl.b3p.viewer.config.services.SolrConf;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.geotools.data.DefaultTransaction;
@@ -33,9 +36,9 @@ import org.geotools.data.simple.SimpleFeatureStore;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.feature.FeatureIterator;
 import org.geotools.filter.identity.FeatureIdImpl;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.locationtech.jts.geom.Geometry;
-import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.PrecisionModel;
 import org.locationtech.jts.precision.GeometryPrecisionReducer;
 import org.locationtech.jts.simplify.TopologyPreservingSimplifier;
@@ -55,6 +58,12 @@ public class SimplifyFeatureActionBean extends LocalizableApplicationActionBean 
     private static final Log LOG = LogFactory.getLog(SimplifyFeatureActionBean.class);
 
     private ActionBeanContext context;
+
+    @Validate
+    private SimpleFeatureType sft;
+
+    @Validate
+    private SolrConf solrconfig;
 
     @Validate
     private ApplicationLayer appLayer;
@@ -99,6 +108,22 @@ public class SimplifyFeatureActionBean extends LocalizableApplicationActionBean 
     public void setApplication(Application application) {
         this.application = application;
     }
+
+    public SimpleFeatureType getSft() {
+        return sft;
+    }
+
+    public void setSft(SimpleFeatureType sft) {
+        this.sft = sft;
+    }
+
+    public SolrConf getSolrconfig() {
+        return solrconfig;
+    }
+
+    public void setSolrconfig(SolrConf solrconfig) {
+        this.solrconfig = solrconfig;
+    }
     // </editor-fold>
 
     @Override
@@ -112,61 +137,63 @@ public class SimplifyFeatureActionBean extends LocalizableApplicationActionBean 
         Transaction transaction = new DefaultTransaction("edit");
         result.put("success", false);
         FeatureSource fs = null;
-        try {
-            JSONObject json = new JSONObject();
-
-            json.put("success", Boolean.FALSE);
-            String error = null;
-            Layer layer;
-            EntityManager em = Stripersist.getEntityManager();
-            if (appLayer == null) {
-                error = getBundle().getString("viewer.editfeatureactionbean.1");
-            }
-            if (!Authorizations.isAppLayerWriteAuthorized(application, appLayer, context.getRequest(), em)) {
-                error = getBundle().getString("viewer.editfeatureactionbean.2");
-            }
-
-            layer = appLayer.getService().getLayer(appLayer.getLayerName(), em);
-
-            if (layer == null) {
-                error = getBundle().getString("viewer.editfeatureactionbean.3");
-            }
-
-            if (layer.getFeatureType() == null) {
-                error = getBundle().getString("viewer.editfeatureactionbean.4");
-            }
-
-            fs = layer.getFeatureType().openGeoToolsFeatureSource();
-            store = (SimpleFeatureStore) fs;
-            store.setTransaction(transaction);
-
-            FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2();
-
-            Filter filter = ff.id(new FeatureIdImpl(featureId));
-
-            FeatureIterator<SimpleFeature> it = null;
-            it = fs.getFeatures(filter).features();
-            SimpleFeature sf = null;
-            while (it.hasNext()) {
-                sf = it.next();
-            }
-            if (sf != null) {
-                Geometry geom = (Geometry) sf.getDefaultGeometry();
-                result.put("geom", simplify(geom));
-                result.put("success", true);
-            }
-
-        } catch (Exception ex) {
-            LOG.error("Cannot simplify feature: ", ex);
-        } finally {
+        if (checkAuthorizations(result)) {
             try {
-                transaction.close();
-            } catch (IOException ex) {
-                LOG.error("cannot close transaction", ex);
-            }
+                JSONObject json = new JSONObject();
 
-            if (fs != null) {
-                fs.getDataStore().dispose();
+                json.put("success", Boolean.FALSE);
+                String error = null;
+                Layer layer;
+                EntityManager em = Stripersist.getEntityManager();
+
+                if (appLayer != null) {
+                    layer = appLayer.getService().getLayer(appLayer.getLayerName(), em);
+
+                    if (layer == null) {
+                        throw new Exception(getBundle().getString("viewer.editfeatureactionbean.3"));
+                    }
+
+                    if (layer.getFeatureType() == null) {
+                        throw new Exception(getBundle().getString("viewer.editfeatureactionbean.4"));
+                    }
+
+                    fs = layer.getFeatureType().openGeoToolsFeatureSource();
+                } else {
+                    fs = sft.openGeoToolsFeatureSource();
+                }
+
+                store = (SimpleFeatureStore) fs;
+                store.setTransaction(transaction);
+
+                FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2();
+
+                Filter filter = ff.id(new FeatureIdImpl(featureId));
+
+                FeatureIterator<SimpleFeature> it = fs.getFeatures(filter).features();
+                SimpleFeature sf = null;
+                while (it.hasNext()) {
+                    sf = it.next();
+                }
+                if (sf != null) {
+                    Geometry geom = (Geometry) sf.getDefaultGeometry();
+                    result.put("geom", simplify(geom));
+                    result.put("success", true);
+                }
+
+            } catch (Exception ex) {
+                LOG.error("Cannot simplify feature: ", ex);
+                result.put("message", ex.getLocalizedMessage());
+            } finally {
+                try {
+                    transaction.close();
+                } catch (IOException ex) {
+                    LOG.error("cannot close transaction", ex);
+                    result.put("message", ex.getLocalizedMessage());
+                }
+
+                if (fs != null) {
+                    fs.getDataStore().dispose();
+                }
             }
         }
         return new StreamingResolution("application/json", new StringReader(result.toString()));
@@ -197,5 +224,48 @@ public class SimplifyFeatureActionBean extends LocalizableApplicationActionBean 
         } else {
             return geomTxt;
         }
+    }
+
+    private boolean checkAuthorizations(JSONObject result) {
+        if (appLayer == null && sft == null) {
+            result.put("message", getBundle().getString("viewer.simplifyfeatureactionbean.1"));
+            return false;
+        }
+        EntityManager em = Stripersist.getEntityManager();
+        if (appLayer != null) {
+            if (!Authorizations.isAppLayerWriteAuthorized(application, appLayer, context.getRequest(), em)) {
+                result.put("message", getBundle().getString("viewer.simplifyfeatureactionbean.2"));
+                return false;
+            }
+            return true;
+
+        } else if (sft != null) {
+            // Dit kan alleen als er via een zoekopdracht een call wordt gedaan, dus checken of solrconfig is geconfigureer voor deze applicatie
+            Set<ConfiguredComponent> comps = application.getComponents();
+            for (ConfiguredComponent comp : comps) {
+                if (comp.getClassName().equals("viewer.components.Search")) {
+                    JSONObject config = new JSONObject(comp.getConfig());
+                    JSONArray searchConfigs = config.getJSONArray("searchconfigs");
+                    for (Iterator<Object> iterator = searchConfigs.iterator(); iterator.hasNext();) {
+                        JSONObject searchConfig = (JSONObject) iterator.next();
+                        if (searchConfig.getString("type").equals("solr")) {
+                            JSONObject solrConfigs = searchConfig.getJSONObject("solrConfig");
+                            Set<String> configs = solrConfigs.keySet();
+                            for (String c : configs) {
+                                JSONObject sc = solrConfigs.getJSONObject(c);
+                                if (sc.getInt("solrConfigid") == solrconfig.getId()) {
+                                    return true;
+                                }
+
+                            }
+                        }
+
+                    }
+                }
+            }
+            result.put("message", getBundle().getString("viewer.simplifyfeatureactionbean.3"));
+        }
+        return false;
+
     }
 }

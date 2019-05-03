@@ -206,25 +206,30 @@ public class SolrSearchClient extends SearchClient {
                 result.put("location", bbox);
 
                 result.put("searchConfig", doc.getFieldValue("searchConfig"));
-                String naam = getConfigurationNaam((Integer)doc.getFieldValue("searchConfig"));
-                result.put("type", naam);
+                retrieveConfigInformation(result, doc);
             }
         } catch (JSONException ex) {
             log.error(ex);
         }
         return result;
     }
-    private String getConfigurationNaam(Integer id){
+
+    private void retrieveConfigInformation(JSONObject result, SolrDocument doc) {
+        SolrConf c = getConfig((Integer) doc.getFieldValue("searchConfig"));
+        result.put("type", c.getName());
+        result.put("sft", c.getSimpleFeatureType().getId());
+    }
+    
+    private SolrConf getConfig (Integer id){
         Long longValue = new Long(id);
         if(!configMap.containsKey(longValue)){
             EntityManager em = Stripersist.getEntityManager();
             SolrConf configuration = em.find(SolrConf.class, longValue);
             configMap.put(longValue,configuration);
-            return configuration.getName();
         }
-        return configMap.get(longValue).getName();
+        return configMap.get(longValue);
+        
     }
-
     public JSONObject getConfig() {
         return config;
     }
