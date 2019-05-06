@@ -24,7 +24,11 @@ Ext.define("viewer.viewercontroller.controller.Feature",{
             this.label = "";
         }
         if(config.style){
-            this.style = Ext.create("viewer.viewercontroller.controller.FeatureStyle", config.style);
+            if(config.style.$className === "viewer.viewercontroller.controller.FeatureStyle"){
+                this.style = config.style;
+            }else{
+                this.style = Ext.create("viewer.viewercontroller.controller.FeatureStyle", config.style);
+            }
         }
     },
     
