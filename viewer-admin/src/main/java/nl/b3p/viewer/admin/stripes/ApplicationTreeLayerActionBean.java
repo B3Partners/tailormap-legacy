@@ -358,7 +358,8 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
                 "summary.retrieveUploads",
                 "editfeature.usernameAttribute",
                 "editfeature.uploadDocument",
-                "editfeature.uploadDocument.types"
+                "editfeature.uploadDocument.types",
+                "stylesOrder"
         ));     
         for(Map.Entry<String,String> e: details.entrySet()) {
             if(e.getValue() != null) { // Don't insert null value ClobElement 
@@ -391,7 +392,7 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
         em.getTransaction().commit();
 
         attributesConfig = new JSONArray();
-        
+            
         Layer layer = applicationLayer.getService().getSingleLayer(applicationLayer.getLayerName(), em);
         makeAttributeJSONArray(layer.getFeatureType());
 
@@ -621,8 +622,8 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
     public void setAttributesConfig(JSONArray attributesConfig) {
         this.attributesConfig = attributesConfig;
     }
-    
 
+    
     //</editor-fold>    
 
 
