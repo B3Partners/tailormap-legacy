@@ -36,29 +36,50 @@ Ext.define('vieweradmin.components.ApplicationTreeLayerStyles', {
     },
     createTree: function () {
         var s = this.config.styles;
-        var styles = [];
+        var stylesArray = [];
         
         var savedStyles = {};
         for(var i = 0 ; i < this.config.savedState.length ; i++){
             var state = this.config.savedState[i];
-            savedStyles[state.name] = state.checked;
+            savedStyles[state.name] = state;
         }
+        var newItems = []; // items not in savedstyles. To be added at the tail.
         for(var key in s){
-            if(s.hasOwnProperty(key)){
-                styles.push({
+            if(savedStyles[key]){
+                if (s.hasOwnProperty(key)) {
+                    
+                    stylesArray[savedStyles[key].order] = {
+                        title: s[key].styleTitle,
+                        name: key,
+                        leaf: true,
+                        text: s[key].styleTitle,
+                        checked: savedStyles[key].checked
+                    };
+                }
+            }else{
+                newItems.push({
                     title: s[key].styleTitle,
                     name: key,
                     leaf:true,
                     text: s[key].styleTitle,
-                    checked:savedStyles[key] ? savedStyles[key] : false
+                    checked: false
                 });
             }
         }
         
+        stylesArray = stylesArray.concat(newItems);
+
+        var styles = [];
+        for (var i = 0; i < stylesArray.length; i++) {
+            var s = stylesArray[i];
+            if (s) {
+                styles.push(s);
+            }
+        }
         var store =  Ext.create('Ext.data.TreeStore', {
             root: {
                 expanded: true,
-                children: styles
+                children: stylesArray
             }
         });
         this.stylesorder = Ext.create('Ext.tree.Panel', {

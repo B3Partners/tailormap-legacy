@@ -125,7 +125,7 @@ Ext.define('vieweradmin.components.ApplicationTreeLayer', {
         tabconfig.push({
             xtype: 'container',
             width: '100%',
-            title: i18next.t('viewer_admin_applicationtreelayer_40'),
+            title: i18next.t('viewer_admin_applicationtreelayer_59'),
             layout: {type: 'hbox', align: "stretch"},
             items: this.stylesOrder.getItems()
         });

@@ -705,11 +705,15 @@ Ext.define ("viewer.components.TOC",{
     },
 
     createStylesChildren: function(serviceLayer, layerId, treeNodeLayer, appLayerObj, parentChecked) {
-        var styles = Ext.JSON.decode(serviceLayer.details ["wms.styles"]);
-        if (styles.length > 1) {
+        var stylesOrder = Ext.JSON.decode(appLayerObj.details ["stylesOrder"]);
+     
+        if (stylesOrder.length > 1) {
             var sNodes = [];
-            for (var i = 0; i < styles.length; i++) {
-                var style = styles[i];
+            for (var i = 0; i < stylesOrder.length; i++) {
+                var style = stylesOrder[i];
+                if(!style.checked){
+                    continue;
+                }
                 var styleId = layerId + "_" + style.name;
                 var styleNode = {
                     text: Ext.String.format('<span id=\"span_{0}\">{1}</span>', styleId, style.name),
@@ -725,10 +729,17 @@ Ext.define ("viewer.components.TOC",{
                         style: style
                     }
                 };
-                sNodes.push(styleNode);
+                sNodes[style.order] = styleNode;
             }
-            treeNodeLayer.layerObj.children = sNodes;
-            treeNodeLayer.hasMultipleStyles = true;
+            var styles = [];
+            for(var i = 0 ; i < sNodes.length ;i++){
+                var s = sNodes[i];
+                if(s){
+                    styles.push(s);
+                }
+            }
+            treeNodeLayer.layerObj.children = styles;
+            treeNodeLayer.hasMultipleStyles = styles.length > 0;
         }
     },
 
