@@ -648,12 +648,14 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                             itemId: 'showcircle',
                             inputValue: true,
                             submitValue: true,
+                            uncheckedValue: false,
                             value: true
                         },{
                             boxLabel: 'Afstandslijn',
                             name: 'distanceline',
                             itemId: 'distanceline',
                             inputValue: true,
+                            uncheckedValue: false,
                             submitValue: true,
                             value: true
                         }, {
@@ -661,6 +663,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                             name: 'lengthdistanceline',
                             itemId: 'lengthdistanceline',
                             inputValue: true,
+                            uncheckedValue: false,
                             id: 'lengthdistanceline',
                             submitValue: true,
                             value: true
