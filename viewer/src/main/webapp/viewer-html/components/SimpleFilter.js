@@ -60,22 +60,26 @@ Ext.define("viewer.components.SimpleFilter", {
         Ext.Array.each(this.config.filters, function(filter, index) {
             var className = filter["class"];
             var appLayerId = me.config.layers[filter.appLayerId];
-            var newFilter = Ext.create(className, {
-                appLayerId: appLayerId, // convert from index to actual appLayerId
-                attributeName: filter.attributeName,
-                filterConfig: filter.config,
-                container: containerContentId,
-                simpleFilter: me,
-                name: me.config.name + "_" + index,
-                viewerController: me.viewerController
-            });
-            if(newFilter instanceof viewer.components.sf.SimpleFilter){
-                me.simpleFilters.push(newFilter);
+            
+            var appLayer = me.config.viewerController.getAppLayerById(appLayerId);
+            if (appLayer) {
+                var newFilter = Ext.create(className, {
+                    appLayerId: appLayerId, // convert from index to actual appLayerId
+                    attributeName: filter.attributeName,
+                    filterConfig: filter.config,
+                    container: containerContentId,
+                    simpleFilter: me,
+                    name: me.config.name + "_" + index,
+                    viewerController: me.viewerController
+                });
+                if (newFilter instanceof viewer.components.sf.SimpleFilter) {
+                    me.simpleFilters.push(newFilter);
+                }
+                me.allFilters.push({
+                    filter: newFilter,
+                    appLayerId: appLayerId
+                });
             }
-            me.allFilters.push({
-                filter: newFilter,
-                appLayerId: appLayerId
-            });
         });
         Ext.Array.each(this.simpleFilters, function (child) {
             Ext.Array.each(me.simpleFilters, function (parent) {
