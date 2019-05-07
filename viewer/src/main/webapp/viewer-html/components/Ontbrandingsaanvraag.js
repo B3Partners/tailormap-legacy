@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2017 B3Partners B.V.
+ * Copyright (C) 2012-2019 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-/* global Ext, contextPath, MobileManager, actionBeans, saveAs */
+/* global Ext, contextPath, MobileManager, actionBeans, saveAs, i18next */
 
 /**
  * Ontbrandingsaanvraag component
@@ -22,7 +22,7 @@
  * @author <a href="mailto:geertplaisier@b3partners.nl">Geert Plaisier</a>
  */
 Ext.define ("viewer.components.Ontbrandingsaanvraag",{
-    extend: "viewer.components.tools.DownloadMap",
+    extend: "viewer.components.Component",
     vectorLayer: null,
     extraObjectsLayer: null,
     calculationResultLayer: null,
@@ -92,7 +92,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
             obj[conf[i].label] = {
                 distance: conf[i].distance,
                 fan: conf[i].fan
-            }
+            };
         }
     },
 
@@ -351,12 +351,6 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                 },
                 {
                     xtype: 'button',
-                    html: i18next.t('viewer_components_ontbrandingsaanvraag_20'),
-                    margin: this.defaultMargin,
-                    listeners: { click: this.makeImage, scope: this }
-                },
-                {
-                    xtype: 'button',
                     html: i18next.t('viewer_components_ontbrandingsaanvraag_21'),
                     margin: this.defaultMargin,
                     listeners: { click: this.printRequest, scope: this }
@@ -483,6 +477,9 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                 { name: 'zonedistance_consumer', type: 'string' },
                 { name: 'custom_zonedistance_consumer', type: 'number' },
                 { name: 'custom_fireworktype_consumer', type: 'string' },
+                { name: 'lengthdistanceline', type: 'boolean', defaultValue: true },
+                { name: 'showcircle', type: 'boolean', defaultValue: true },
+                { name: 'distanceline', type: 'boolean', defaultValue: true },
                 { name: 'fireworks_type', type: 'string', defaultValue: 'consumer' },
                 { name: 'zonedistance_professional', type: 'string' },
                 { name: 'custom_zonedistance_professional', type: 'number' },
@@ -624,6 +621,51 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                             itemId: 'fireworks_type_choice_professional'
                         }
                     ]
+                },{
+                    xtype: 'fieldcontainer',
+                    fieldLabel: 'Laat op kaart zien na berekening:',
+                    height: 65,
+                    defaultType: 'checkbox',
+                    defaults: {
+                        flex: 1,
+                        listeners: {
+                            change: function(field,newValue){
+                                if(field.getName() === "distanceline"){
+                                    var lengthDistanceCmp = Ext.getCmp("lengthdistanceline");
+                                    lengthDistanceCmp.setDisabled(!newValue);
+                                }
+                                this.toggleZonedistancesForm();
+                            },
+                            blur: this.saveIgnitionLocation,
+                            scope: this
+                        }
+                    },
+                    layout: 'hbox',
+                    items: [
+                        {
+                            boxLabel: 'Binnencirkel tonen',
+                            name: 'showcircle',
+                            itemId: 'showcircle',
+                            inputValue: true,
+                            submitValue: true,
+                            value: true
+                        },{
+                            boxLabel: 'Afstandslijn',
+                            name: 'distanceline',
+                            itemId: 'distanceline',
+                            inputValue: true,
+                            submitValue: true,
+                            value: true
+                        }, {
+                            boxLabel: 'Lengte afstandslijn',
+                            name: 'lengthdistanceline',
+                            itemId: 'lengthdistanceline',
+                            inputValue: true,
+                            id: 'lengthdistanceline',
+                            submitValue: true,
+                            value: true
+                        }
+                    ]
                 },
                 {
                     xtype: 'container',
@@ -698,7 +740,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                 }/*,
                 {
                     xtype: 'button',
-                    text: i18next.t('viewer_components_ontbrandingsaanvraag_47'),
+                    text: 'Opslaan',
                     listeners: { click: this.saveIgnitionLocation, scope: this }
                 }*/
             ]
@@ -778,7 +820,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                 }/*,
                 {
                     xtype: 'button',
-                    text: i18next.t('viewer_components_ontbrandingsaanvraag_50'),
+                    text: 'Opslaan',
                     listeners: { click: this.saveAudienceLocation, scope: this }
                 }*/
             ]
@@ -831,7 +873,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                 {
                     xtype: 'combobox',
                     editable: false,
-                    fieldLabel: i18next.t('viewer_components_ontbrandingsaanvraag_54'),
+                    fieldLabel: 'Pijlen',
                     queryMode: 'local',
                     store: [['none', 'Geen'], ['begin', 'Begin van de lijn'], ['end', 'Eind van de lijn'], ['both', 'Beide kanten van de lijn']],
                     name: 'arrow',
@@ -839,7 +881,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
                 }/*,
                 {
                     xtype: 'button',
-                    text: i18next.t('viewer_components_ontbrandingsaanvraag_55'),
+                    text: 'Opslaan',
                     listeners: { click: this.saveExtraObject, scope: this }
                 }*/
             ]
@@ -952,6 +994,10 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         var featureStyle = feature.getStyle();
         if(!featureStyle) {
             featureStyle = Ext.create('viewer.viewercontroller.controller.FeatureStyle', {});
+        }
+        if(featureStyle.$className !== "viewer.viewercontroller.controller.FeatureStyle"){
+            featureStyle = Ext.create('viewer.viewercontroller.controller.FeatureStyle', featureStyle);
+            feature.setStyle(featureStyle);
         }
         featureStyle.set('strokeColor', '#' + extraObject.get('color'));
         featureStyle.set('strokeDashstyle', extraObject.get('dashStyle'));
@@ -1473,13 +1519,9 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
         for(var i = count - 1; i >= 0; i--) {
             this._removeLocation(grid, i);
         }
-    },
-    makeImage: function() {
-        var features = this.getAllFeatures();
-        this.buttonDown();
-    },
-    
+    },    
     printRequest:function(){
+        this.deselectAllFeatures();
         this.printComponent.buttonClick();
         this.printComponent.qualitySlider.setValue(this.printComponent.qualitySlider.maxValue);
     },
@@ -1553,6 +1595,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
             Ext.Ajax.request({
                 url: actionBeans["ontbrandings"],
                 scope: this,
+                timeout: 1200000,
                 params: {
                     features: Ext.JSON.encode(features),
                     showIntermediateResults:false
@@ -1607,7 +1650,7 @@ Ext.define ("viewer.components.Ontbrandingsaanvraag",{
             this.addMessageInContainer('#calculation_messages', i18next.t('viewer_components_ontbrandingsaanvraag_71'));
             return false;
         }
-        if(store.find('mainLocation', true).length === 0) {
+        if(store.find('mainLocation', true) === -1) {
             this.addMessageInContainer('#calculation_messages', i18next.t('viewer_components_ontbrandingsaanvraag_72'));
             return false;
         }
