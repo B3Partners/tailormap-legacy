@@ -172,11 +172,11 @@ public class SimplifyFeatureActionBean extends LocalizableApplicationActionBean 
                     layer = appLayer.getService().getLayer(appLayer.getLayerName(), em);
 
                     if (layer == null) {
-                        throw new Exception(getBundle().getString("viewer.editfeatureactionbean.3"));
+                        throw new Exception(getBundle().getString("viewer.simplifyfeatureactionbean.4"));
                     }
 
                     if (layer.getFeatureType() == null) {
-                        throw new Exception(getBundle().getString("viewer.editfeatureactionbean.4"));
+                        throw new Exception(getBundle().getString("viewer.simplifyfeatureactionbean.5"));
                     }
 
                     fs = layer.getFeatureType().openGeoToolsFeatureSource();
