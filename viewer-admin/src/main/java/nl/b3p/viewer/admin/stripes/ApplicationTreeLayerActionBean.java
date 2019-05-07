@@ -126,6 +126,7 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
                 style.put("title", "WMS server style: " + wmsStyle.getString("name") + (wmsStyle.has("title") ? " (" + wmsStyle.getString("title") + ")" : ""));
                 JSONObject styleTitleJson = new JSONObject();
                 styleTitleJson.put("styleTitle", wmsStyle.has("title") ? wmsStyle.getString("title") : wmsStyle.getString("name"));
+                styleTitleJson.put("name", wmsStyle.getString("name"));
                 styles.add(style);
                 stylesTitleJson.put((String)style.get("id"), styleTitleJson);
             }

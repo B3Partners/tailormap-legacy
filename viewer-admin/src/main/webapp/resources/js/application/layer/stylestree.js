@@ -44,26 +44,27 @@ Ext.define('vieweradmin.components.ApplicationTreeLayerStyles', {
             savedStyles[state.name] = state;
         }
         var newItems = []; // items not in savedstyles. To be added at the tail.
-        for(var key in s){
-            if(savedStyles[key]){
-                if (s.hasOwnProperty(key)) {
-                    
-                    stylesArray[savedStyles[key].order] = {
+        for (var key in s) {
+            if (s.hasOwnProperty(key)) {
+                var name = s[key].name;
+                if (savedStyles[name]) {
+
+                    stylesArray[savedStyles[name].order] = {
                         title: s[key].styleTitle,
-                        name: key,
+                        name: name,
                         leaf: true,
                         text: s[key].styleTitle,
-                        checked: savedStyles[key].checked
+                        checked: savedStyles[name].checked
                     };
+                } else {
+                    newItems.push({
+                        title: s[key].styleTitle,
+                        name: s[key].name,
+                        leaf: true,
+                        text: s[key].styleTitle,
+                        checked: false
+                    });
                 }
-            }else{
-                newItems.push({
-                    title: s[key].styleTitle,
-                    name: key,
-                    leaf:true,
-                    text: s[key].styleTitle,
-                    checked: false
-                });
             }
         }
         
