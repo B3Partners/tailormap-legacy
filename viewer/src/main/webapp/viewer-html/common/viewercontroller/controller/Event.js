@@ -127,7 +127,7 @@ Ext.define("viewer.viewercontroller.controller.Event",{
         TOC_EXPANDED                            : "TOC_EXPANDED",
         /**
          * @field
-         * Occures when a lstyle is selected for a certain layer
+         * Occurs when a style is selected for a certain layer
          * @param {Object} layerObject the layer object
          * @param {Object} style the style object
          */
