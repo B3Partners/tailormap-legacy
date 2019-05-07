@@ -158,7 +158,6 @@ public class SimplifyFeatureActionBean extends LocalizableApplicationActionBean 
     @DefaultHandler
     public Resolution simplify() {
         JSONObject result = new JSONObject();
-        Transaction transaction = new DefaultTransaction("edit");
         result.put("success", false);
         FeatureSource fs = null;
         if (checkAuthorizations(result)) {
@@ -166,7 +165,6 @@ public class SimplifyFeatureActionBean extends LocalizableApplicationActionBean 
                 JSONObject json = new JSONObject();
 
                 json.put("success", Boolean.FALSE);
-                String error = null;
                 Layer layer;
                 EntityManager em = Stripersist.getEntityManager();
 
@@ -187,7 +185,6 @@ public class SimplifyFeatureActionBean extends LocalizableApplicationActionBean 
                 }
 
                 store = (SimpleFeatureStore) fs;
-                store.setTransaction(transaction);
 
                 FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2();
 
@@ -208,13 +205,6 @@ public class SimplifyFeatureActionBean extends LocalizableApplicationActionBean 
                 LOG.error("Cannot simplify feature: ", ex);
                 result.put("message", ex.getLocalizedMessage());
             } finally {
-                try {
-                    transaction.close();
-                } catch (IOException ex) {
-                    LOG.error("cannot close transaction", ex);
-                    result.put("message", ex.getLocalizedMessage());
-                }
-
                 if (fs != null) {
                     fs.getDataStore().dispose();
                 }
