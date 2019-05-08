@@ -783,7 +783,9 @@ Ext.define ("viewer.components.Search",{
             url: null,
             urlOnly: false
         });
-        this.currentSeachId = component.name;
+        if (this.searchconfigs.length === 1) {
+            this.currentSeachId = component.name;
+        }
         this.loadWindow();
     },
     /**
