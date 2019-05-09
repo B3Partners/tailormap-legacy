@@ -620,9 +620,11 @@ Ext.define ("viewer.components.Search",{
         this.config.viewerController.mapComponent.getMap().setMarker("searchmarker",result.x,result.y, this.config.marker);
         
         var type = this.getCurrentSearchType(result);
-        if(type === "solr"){
-
-            var searchconfig = this.getCurrentSearchconfig();
+        var searchconfig = this.getCurrentSearchconfig();
+        if(type === "attributesource" || type === "solr"){
+            this.config.viewerController.fireEvent(viewer.viewercontroller.controller.Event.ON_FEATURE_HIGHLIGHTED, result.id, null, result.sft, result.searchConfig);
+        }
+        if(type === "solr"){ 
             if(searchconfig ){
                 var solrConfig = searchconfig.solrConfig[result.searchConfig];
                 var switchOnLayers = solrConfig.switchOnLayers;

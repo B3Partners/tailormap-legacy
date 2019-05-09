@@ -721,6 +721,12 @@ Ext.define ("viewer.components.AttributeList",{
                     cols[i].autoSize();
                 }
                 dataview.panel.updateLayout();
+            },
+            select: {
+                scope: me,
+                fn: function (grid, record) {
+                    this.config.viewerController.fireEvent(viewer.viewercontroller.controller.Event.ON_FEATURE_HIGHLIGHTED, record.data.__fid, this.layerSelector.getValue());
+                }
             }
         };
         if(this.hasGeometry(appLayer) && this.config.addZoomTo) {

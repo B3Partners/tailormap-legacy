@@ -180,5 +180,11 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersWMSLayer",{
      */
     destroy: function (){
         this.mixins.openLayersLayer.destroy.call(this);
+    },
+    setStyle: function (name) {
+        this.options["STYLES"] = name;
+        this.setOGCParams({"STYLES": name});
+        this.reload();
+        this.config.viewerController.fireEvent(viewer.viewercontroller.controller.Event.ON_STYLE_SELECTED,this,name);
     }
 });
