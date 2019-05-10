@@ -47,7 +47,7 @@ Ext.define ("viewer.components.tools.DownloadMap",{
             }else{
                 this.button= this.config.viewerController.mapComponent.createTool({
                     type: viewer.viewercontroller.controller.Tool.BUTTON,
-                    displayClass: "downloadMap",
+                    displayClass: this.viewerController.hasSvgSprite() ? "toolsdownloadmap" : "downloadMap",
                     tooltip: this.config.tooltip || null,
                     viewerController: this.config.viewerController
                 });
