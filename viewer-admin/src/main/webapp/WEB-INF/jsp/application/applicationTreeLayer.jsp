@@ -184,7 +184,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         applicationLayerFeatureType: ${actionBean.appLayerFeatureType != null ? actionBean.appLayerFeatureType : -1},
                         displayName: <js:quote value="${actionBean.displayName}"/>,
                         stylesTitleJson: ${actionBean.stylesTitleJson},
-                        styleDetails : ${actionBean.details.stylesOrder},
+                        styleDetails : ${actionBean.details.stylesOrder != null ? actionBean.details.stylesOrder : '{}'},
                         imagePath: "${contextPath}/resources/images/",
                         actionBeans: {
                             imageupload: <js:quote><stripes:url beanclass="nl.b3p.viewer.admin.stripes.ImageUploadActionBean"/></js:quote>,
