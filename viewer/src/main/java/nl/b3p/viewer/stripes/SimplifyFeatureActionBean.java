@@ -16,7 +16,6 @@
  */
 package nl.b3p.viewer.stripes;
 
-import java.io.IOException;
 import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
 import java.util.Iterator;
@@ -40,9 +39,8 @@ import nl.b3p.viewer.config.services.SimpleFeatureType;
 import nl.b3p.viewer.config.services.SolrConf;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.geotools.data.DefaultTransaction;
 import org.geotools.data.FeatureSource;
-import org.geotools.data.Transaction;
+import org.geotools.data.simple.SimpleFeatureSource;
 import org.geotools.data.simple.SimpleFeatureStore;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.feature.FeatureIterator;
@@ -80,7 +78,6 @@ public class SimplifyFeatureActionBean extends LocalizableApplicationActionBean 
     private ApplicationLayer appLayer;
     @Validate
     private Application application;
-    private SimpleFeatureStore store;
     @Validate
     private String featureId;
 
@@ -183,8 +180,6 @@ public class SimplifyFeatureActionBean extends LocalizableApplicationActionBean 
                 } else {
                     fs = sft.openGeoToolsFeatureSource();
                 }
-
-                store = (SimpleFeatureStore) fs;
 
                 FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2();
 
