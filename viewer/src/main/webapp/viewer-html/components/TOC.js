@@ -380,7 +380,8 @@ Ext.define ("viewer.components.TOC",{
                 this.addQtip(i18next.t('viewer_components_toc_9'), 'span_'+layerId);
                 treeNodeLayer.layerObj.download = serviceLayer.details ["download.url"];
             }
-            if (typeof serviceLayer.details["wms.styles"] !== "undefined") {
+            
+            if (appLayerObj.details && typeof appLayerObj.details ["stylesOrder"] !== "undefined") {
                 this.createStylesChildren(serviceLayer, layerId, treeNodeLayer, appLayerObj, retChecked);
             }
         }
