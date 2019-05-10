@@ -179,7 +179,7 @@ Ext.define('vieweradmin.components.ChooseApplication', {
                 change: {
                     fn: function(combo, newvalue) {
                         combo.setLoading(i18next.t('viewer_admin_chooseapplication_14'));
-                        this.defaultApplicationChanged(combo, applications.findRecord("value", newvalue));
+                        this.defaultApplicationChanged(combo, applications.findRecord("value", newvalue, 0, false, false, /*exactMatch=*/true));
                     },
                     scope: this
                 }
