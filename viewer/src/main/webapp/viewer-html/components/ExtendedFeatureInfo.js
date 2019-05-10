@@ -174,6 +174,7 @@ Ext.define ("viewer.components.ExtendedFeatureInfo",{
             cls: 'feature-info-page',
             hidden: false,
             featureId: featureId,
+            appLayer: data.appLayer,
             listeners: {
                 beforedestroy: function() {
                     // Manually destroy element: solves errors from Ext's garbage collector
@@ -208,10 +209,14 @@ Ext.define ("viewer.components.ExtendedFeatureInfo",{
             index = 0;
         }
         for(var i = 0; i < pages.length; i++) {
-            if(i === index && pages[i].isHidden()) {
-                pages[i].setHidden(false);
+            var page = pages[i];
+            if(i === index ) {
+                if( page.isHidden()){
+                    page.setHidden(false);
+                }
+                this.config.viewerController.fireEvent(viewer.viewercontroller.controller.Event.ON_FEATURE_HIGHLIGHTED, page.featureId, page.appLayer);
             } else if(i !== index) {
-                pages[i].setHidden(true);
+                page.setHidden(true);
             }
         }
         this.createPagination();
