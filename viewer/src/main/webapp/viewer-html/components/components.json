@@ -960,5 +960,16 @@
         "singleton": true,
         "configSource": ["ConfigObject.js","SelectionWindowConfig.js", "Contactform-config.js"],
         "restrictions": ["rightmargin_top", "leftmargin_top","rightmargin_bottom", "leftmargin_bottom", "header","footer", "popupwindow"]
+    },
+
+    {
+        "className": "viewer.components.Highlight",
+        "name": "Highlight",
+        "group": "Map",
+        "shortName": "Highlight",
+        "sources": ["Highlight.js"],
+        "singleton": true,
+        "configSource": ["ConfigObject.js","SelectionWindowConfig.js", "Highlight-config.js"],
+        "restrictions": ["content"]
     }
 ]

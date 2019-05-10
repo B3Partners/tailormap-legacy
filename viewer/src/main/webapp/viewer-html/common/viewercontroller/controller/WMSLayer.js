@@ -14,6 +14,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+/* global Ext, i18next */
+
 /**
  * Abstract component to for WMS Layers
   *@author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
@@ -23,9 +25,11 @@ Ext.define("viewer.viewercontroller.controller.WMSLayer",{
     constructor : function (config){
         viewer.viewercontroller.controller.WMSLayer.superclass.constructor.call(this, config);
         this.type=viewer.viewercontroller.controller.Layer.WMS_TYPE;
-        this.url = config.options.url;  
+        this.url = config.options.url;
     },
-    
+    setStyle: function(name){
+        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_wmslayer_0')});
+    },
     /** 
      * Get info as specified by ViewerController.getLayerLegendInfo()  
      * @see viewer.viewercontroller.controller.Layer#getLayerLegendInfo
@@ -55,6 +59,7 @@ Ext.define("viewer.viewercontroller.controller.WMSLayer",{
             "REQUEST": "GetLegendGraphic",
             "LAYER": this.getAppLayerName(),
             "VERSION": "1.1.1",
+            "STYLE": this.getStyle(),
             "FORMAT": "image/png"
         };
         

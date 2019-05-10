@@ -14,6 +14,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+/* global Ext, FlamingoAppLoader, i18next */
+
 /**
  * TOC component
  * Creates a Table of comtents Component
@@ -26,7 +28,11 @@ Ext.define('Maps', {
         // Added convert function to icon
         {name: 'icon', type: 'string', convert: function(fieldName, record) {
             if(record.get('leaf')) {
-                return FlamingoAppLoader.get('contextPath') + '/viewer-html/components/resources/images/selectionModule/map.png';
+                if(record.get('hasMultipleStyles')){
+                    return FlamingoAppLoader.get('contextPath') + '/viewer-html/components/resources/images/selectionModule/maplevel.png';
+                }else{
+                    return FlamingoAppLoader.get('contextPath') + '/viewer-html/components/resources/images/selectionModule/map.png';
+                }
             }
             return FlamingoAppLoader.get('contextPath') + '/viewer-html/components/resources/images/selectionModule/folder.png';
         }}
@@ -150,6 +156,9 @@ Ext.define ("viewer.components.TOC",{
                     toc: this,
                     fn: this.itemClicked,
                     scope: this
+                },
+                beforecheckchange: function(node) {
+                    return (!node || !node.get("cls") || node.get("cls").indexOf("node-disabled") === -1);
                 },
                 checkchange:{
                     toc: this,
@@ -349,18 +358,6 @@ Ext.define ("viewer.components.TOC",{
         if(serviceLayer === undefined){
             return null;
         }
-        if(serviceLayer.details != undefined){
-            if(serviceLayer.details ["metadata.stylesheet"] !== undefined){
-                this.addQtip(i18next.t('viewer_components_toc_8'), 'span_'+layerId);
-                treeNodeLayer.layerObj.metadata = serviceLayer.details ["metadata.stylesheet"];
-            }
-
-            if(serviceLayer.details ["download.url"] != undefined){
-                this.addQtip(i18next.t('viewer_components_toc_9'), 'span_'+layerId);
-                treeNodeLayer.layerObj.download = serviceLayer.details ["download.url"];
-            }
-
-        }
         var retChecked = false;
         var defaultChecked = this.config.viewerController.getLayerChecked(appLayerObj);
         if(this.config.layersChecked){
@@ -373,6 +370,22 @@ Ext.define ("viewer.components.TOC",{
         if(this.config.persistCheckedLayers) {
             this.config.viewerController.saveCheckedState(appLayerObj, retChecked);
         }
+
+        if (typeof serviceLayer.details !== "undefined") {
+            if (typeof serviceLayer.details["metadata.stylesheet"] !== "undefined") {
+                this.addQtip(i18next.t('viewer_components_toc_8'), 'span_'+layerId);
+                treeNodeLayer.layerObj.metadata = serviceLayer.details ["metadata.stylesheet"];
+            }
+            if (typeof serviceLayer.details["download.url"] !== "undefined") {
+                this.addQtip(i18next.t('viewer_components_toc_9'), 'span_'+layerId);
+                treeNodeLayer.layerObj.download = serviceLayer.details ["download.url"];
+            }
+            
+            if (appLayerObj.details && typeof appLayerObj.details ["stylesOrder"] !== "undefined") {
+                this.createStylesChildren(serviceLayer, layerId, treeNodeLayer, appLayerObj, retChecked);
+            }
+        }
+
         return {
             node: treeNodeLayer,
             checked: retChecked
@@ -533,7 +546,7 @@ Ext.define ("viewer.components.TOC",{
         var me = this;
         var checked = me.getNodeChecked(node);
         var updateTree = false;
-        if(node.hasChildNodes()) {
+        if(node.hasChildNodes() && !this.isStylesRadioNode(node)) {
             // It is a folder
             updateTree = true;
             me.updateTreeNodes = [];
@@ -612,19 +625,26 @@ Ext.define ("viewer.components.TOC",{
     },
 
     checkChildNodes: function(node, checked) {
-        var me = this;
         node.eachChild(function(childNode) {
-            if((!childNode.hasChildNodes() && me.config.layersChecked) || (childNode.hasChildNodes() && me.config.groupCheck)){
+            if (this.isStylesRadioNode(childNode)) {
+                if (checked) {
+                    childNode.set("cls", "radionode");
+                } else {
+                    childNode.set("cls", "radionode node-disabled");
+                }
+                return;
+            }
+            if((!childNode.hasChildNodes() && this.config.layersChecked) || (childNode.hasChildNodes() && this.config.groupCheck)){
                 childNode.set('checked', checked);
             }else {
                 childNode.set('hidden_check', checked);
             }
-            me.updateTreeNodes.push(childNode);
+            this.updateTreeNodes.push(childNode);
             if(childNode.hasChildNodes()) {
                 childNode.set('cls', '');
-                me.checkChildNodes(childNode, checked);
+                this.checkChildNodes(childNode, checked);
             }
-        });
+        }, this);
     },
 
     getNodeChecked: function(node) {
@@ -664,7 +684,7 @@ Ext.define ("viewer.components.TOC",{
     },
 
     updateMap: function(nodeObj, checked) {
-        if(nodeObj.isLeaf()){
+        if(nodeObj.isLeaf() || nodeObj.data.hasMultipleStyles){
             var node = nodeObj.raw;
             if(node ===undefined){
                 node = nodeObj.data;
@@ -685,9 +705,71 @@ Ext.define ("viewer.components.TOC",{
         return this.panel;
     },
 
+    createStylesChildren: function(serviceLayer, layerId, treeNodeLayer, appLayerObj, parentChecked) {
+        var stylesOrder = Ext.JSON.decode(appLayerObj.details ["stylesOrder"]);
+     
+        if (stylesOrder.length > 1) {
+            var sNodes = [];
+            for (var i = 0; i < stylesOrder.length; i++) {
+                var style = stylesOrder[i];
+                if(!style.checked){
+                    continue;
+                }
+                var styleId = layerId + "_" + style.name;
+                var styleNode = {
+                    text: Ext.String.format('<span id=\"span_{0}\">{1}</span>', styleId, style.name),
+                    expanded: true,
+                    leaf: true,
+                    checked: i === 0,
+                    background: false,
+                    cls : 'radionode' + (parentChecked ? "" : " node-disabled"),
+                    layerObj: {
+                        nodeId: styleId,
+                        parentLayerId: layerId,
+                        appLayer: appLayerObj,
+                        style: style
+                    }
+                };
+                sNodes[style.order] = styleNode;
+            }
+            var styles = [];
+            for(var i = 0 ; i < sNodes.length ;i++){
+                var s = sNodes[i];
+                if(s){
+                    styles.push(s);
+                }
+            }
+            treeNodeLayer.layerObj.children = styles;
+            treeNodeLayer.hasMultipleStyles = styles.length > 0;
+        }
+    },
+
+    isStylesRadioNode: function(nodeObj) {
+        return nodeObj.data && (nodeObj.data.cls || "").indexOf("radionode") !== -1;
+    },
+
+    updateStylesForLayer: function(nodeObj) {
+        var rootNode = this.panel.getRootNode();
+        var nodeLayerObject = nodeObj.data.layerObj;
+        var parentNode = rootNode.findChildBy(function(node){
+            return (node.data.layerObj.nodeId === nodeLayerObject.parentLayerId);
+        }, this, true);
+        if (parentNode) {
+            parentNode.eachChild(function(childNode) {
+                childNode.set("checked", childNode.data.layerObj.nodeId === nodeLayerObject.nodeId);
+            });
+            this.config.viewerController.setLayerStyle(nodeLayerObject.appLayer, nodeLayerObject.style.name);
+        }
+    },
+
     /*************************  Event handlers ***********************************************************/
 
-    checkboxClicked : function(nodeObj,checked,toc){
+    checkboxClicked : function(nodeObj,checked,toc) {
+        if (this.isStylesRadioNode(nodeObj)) {
+            this.updateStylesForLayer(nodeObj);
+            return;
+        }
+
         this.updateMap(nodeObj, checked);
         this.setTriState(nodeObj);
 

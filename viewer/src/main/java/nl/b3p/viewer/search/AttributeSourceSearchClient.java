@@ -13,8 +13,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import javax.persistence.EntityManager;
-import nl.b3p.viewer.config.services.AttributeDescriptor;
-import nl.b3p.viewer.config.services.FeatureSource;
 import nl.b3p.viewer.config.services.SimpleFeatureType;
 import nl.b3p.viewer.config.services.SolrConf;
 import nl.b3p.viewer.util.FeatureToJson;
@@ -104,6 +102,9 @@ public class AttributeSourceSearchClient extends SearchClient {
                 newFeature.put("location", bbox);
                 newFeature.put("type", conf.getName());
                 newFeature.put("label", label);
+                newFeature.put("sft",ft.getId() );
+                newFeature.put("id",oldFeature.optString("__fid"));
+                newFeature.put("searchConfig", solrConfigId);
                 processedResults.put(newFeature);
             }
 

@@ -764,6 +764,13 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             this.mapComponent.getMap().setLayerVisible(layer, visible);
         }
     },
+    
+    setLayerStyle: function (appLayer, style){
+        var layer = this.getLayer(appLayer);
+        if (layer){
+            layer.setStyle(style);
+        }
+    },
     /**
      * Get the layer or null if not found
      * @param appLayer the app layer
@@ -1458,10 +1465,18 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             }
 
             // Use default legend (for WMS, Legend URL from the first, default Style)
-             if(serviceLayer.legendImageUrl) {
+            if(serviceLayer.legendImageUrl) {
+                var url = serviceLayer.legendImageUrl;
+                if (l.options.STYLES) {
+                    if (url.search(/STYLE/i) === -1) {
+                        url = Ext.String.urlAppend(url, "STYLE=" + l.options.STYLES);
+                    } else {
+                        url = url.replace(/SCALE=[0-9.,]*/i, "STYLE=" + l.options.STYLES);
+                    }
+                }
                 success(appLayer, {
                     parts: [ {
-                        url: serviceLayer.legendImageUrl,
+                        url: url,
                         label: appLayer.alias, 
                         isAlternative:false,
                         serviceId: serviceLayer.serviceId

@@ -424,7 +424,9 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
             object.feature.style = this.getCurrentStyleHash();
         }
         this.removeMeasures();
-        this.editFeature(object.feature);
+        if(this.allowSelection()){
+            this.editFeature(object.feature);
+        }
         this.fireEvent(viewer.viewercontroller.controller.Event.ON_FEATURE_ADDED,this,feature);
     },
     

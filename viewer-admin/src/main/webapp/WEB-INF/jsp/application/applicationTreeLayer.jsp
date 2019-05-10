@@ -27,6 +27,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <stripes:form beanclass="nl.b3p.viewer.admin.stripes.ApplicationTreeLayerActionBean" id="apptreelayerform" class="maximize">
             <stripes:hidden name="applicationLayer" value="${actionBean.applicationLayer.id}"/>
             <stripes:hidden name="attributesJSON" id="attributesJSON" value="${actionBean.attributesJSON}"/>
+            <stripes:hidden name="details['stylesOrder']" id="stylesJSON"/>
             <div id="tabs" class="maximize">
                 <div id="settings-tab" class="tabdiv">
                     <a href="#Instellingen_Per_Kaartlaag_Help" title="<fmt:message key="viewer_admin.applicationtreelayer.1" />" class="helplink"></a>
@@ -173,6 +174,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <script type="text/javascript" src="${contextPath}/resources/js/ux/form/HtmlEditorTable.js"></script>
             <script type="text/javascript" src="${contextPath}/resources/js/application/applicationTreeLayer.js"></script>
             <script type="text/javascript" src="${contextPath}/resources/js/application/layer/attributes.js"></script>
+            <script type="text/javascript" src="${contextPath}/resources/js/application/layer/stylestree.js"></script>
             <script type="text/javascript">
                 Ext.onReady(function() {
                     Ext.create('vieweradmin.components.ApplicationTreeLayer', {
@@ -182,6 +184,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         applicationLayerFeatureType: ${actionBean.appLayerFeatureType != null ? actionBean.appLayerFeatureType : -1},
                         displayName: <js:quote value="${actionBean.displayName}"/>,
                         stylesTitleJson: ${actionBean.stylesTitleJson},
+                        styleDetails : ${actionBean.details.stylesOrder != null ? actionBean.details.stylesOrder : '{}'},
                         imagePath: "${contextPath}/resources/images/",
                         actionBeans: {
                             imageupload: <js:quote><stripes:url beanclass="nl.b3p.viewer.admin.stripes.ImageUploadActionBean"/></js:quote>,
