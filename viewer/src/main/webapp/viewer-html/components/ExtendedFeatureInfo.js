@@ -211,7 +211,7 @@ Ext.define ("viewer.components.ExtendedFeatureInfo",{
         for(var i = 0; i < pages.length; i++) {
             var page = pages[i];
             if(i === index ) {
-                if( pages[i].isHidden()){
+                if( page.isHidden()){
                     page.setHidden(false);
                 }
                 this.config.viewerController.fireEvent(viewer.viewercontroller.controller.Event.ON_FEATURE_HIGHLIGHTED, page.featureId, page.appLayer);
