@@ -3,12 +3,12 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.flamingo-mc</groupId>
     <artifactId>tomcat-lib</artifactId>
-    <version>5.5.1</version>
+    <version>5.5.2-SNAPSHOT</version>
     <packaging>pom</packaging>
     <parent>
         <groupId>org.flamingo-mc</groupId>
         <artifactId>flamingo-mc</artifactId>
-        <version>5.5.1</version>
+        <version>5.5.2-SNAPSHOT</version>
     </parent>
     <name>Tomcat libs distributie</name>
     <description>A zipfile w/ drivers to be placed in the Tomcat lib directory</description>
