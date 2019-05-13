@@ -48,10 +48,11 @@
             <groupId>com.microsoft.sqlserver</groupId>
             <artifactId>mssql-jdbc</artifactId>
         </dependency>
-        <!-- using provided scope to note the extra libs for Java 11 -->
+        <!-- using provided scope to note the optional extra libs for Java 11, 
+             probably geotools pulls these in as well -->
         <dependency>
-            <groupId>javax.xml.bind</groupId>
-            <artifactId>jaxb-api</artifactId>
+            <groupId>jakarta.xml.bind</groupId>
+            <artifactId>jakarta.xml.bind-api</artifactId>
             <version>${jaxb.api.version}</version>
             <scope>provided</scope>
         </dependency>

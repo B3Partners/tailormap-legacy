@@ -43,7 +43,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <!-- when updating geotools also check jts and b3p-commons-csw or you will end up in transitive dependency hell -->
-        <geotools.version>21.0</geotools.version>
+        <geotools.version>21.1</geotools.version>
         <powermock.version>2.0.2</powermock.version>
         <hsqldb.version>2.4.1</hsqldb.version>
         <test.persistence.unit>viewer-config-hsqldb</test.persistence.unit>
@@ -53,7 +53,7 @@
         <apache.poi.version>4.1.0</apache.poi.version>
         <jakarta.mail.version>1.6.3</jakarta.mail.version>
         <apache.httpcomponents.version>4.5.8</apache.httpcomponents.version>
-        <jaxb.api.version>2.3.1</jaxb.api.version>
+        <jaxb.api.version>2.3.2</jaxb.api.version>
         <jaxb.impl.version>2.3.2</jaxb.impl.version>
         <activation.api.version>1.2.1</activation.api.version>
         <!-- skip integration tests by default, override this property from commandline
@@ -164,7 +164,7 @@
             <dependency>
                 <groupId>nl.b3p</groupId>
                 <artifactId>b3p-commons-csw</artifactId>
-                <version>6.0.0</version>
+                <version>6.0.1</version>
                 <exclusions>
                     <exclusion>
                         <groupId>javax.persistence</groupId>
@@ -377,15 +377,7 @@
             <dependency>
                 <groupId>org.geotools</groupId>
                 <artifactId>gt-wms</artifactId>
-                <!--
-                NOTE: this is a patched version that contains a fix for
-                https://osgeo-org.atlassian.net/browse/GEOT-6260
-                When upgrading to geotools 21.1 we should go back to the geotools version,
-                assuming the patches have been merged, see also:
-                https://github.com/geotools/geotools/pull/2296
-                https://github.com/geotools/geotools/pull/2297
-                -->
-                <version>${geotools.version}-GEOT6260</version>
+                <version>${geotools.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.geotools</groupId>
@@ -931,8 +923,8 @@
             <dependencyManagement>
                 <dependencies>
                     <dependency>
-                        <groupId>javax.xml.bind</groupId>
-                        <artifactId>jaxb-api</artifactId>
+                        <groupId>jakarta.xml.bind</groupId>
+                        <artifactId>jakarta.xml.bind-api</artifactId>
                         <version>${jaxb.api.version}</version>
                     </dependency>
                     <dependency>
