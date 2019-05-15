@@ -52,7 +52,11 @@ public class CombineWMTSUrl extends CombineTileImageUrl {
     protected String createUrl(ImageBbox imageBbox, Bbox tileBbox, int indexX, int indexY, int zoomlevel) {
         try {
             TileMatrix tm = set.getMatrices().get(zoomlevel);
-            return url + "request=GetTile&version=1.0.0&format=image/png&SERVICE=WMTS&layer=" + getLayername() + "&TileMatrixSet="
+            String format = "image/png";
+            if(getExtension() != null){
+                format = getExtension();
+            }
+            return url + "request=GetTile&version=1.0.0&format=" +format + "&SERVICE=WMTS&layer=" + getLayername() + "&TileMatrixSet="
                     + URLEncoder.encode(set.getIdentifier(), "UTF-8") + "&TileRow=" + indexY + "&TileCol=" + indexX
                     + "&TileMatrix=" + URLEncoder.encode(tm.getIdentifier(), "UTF-8") + "&STYLE=default";
         } catch (UnsupportedEncodingException ex) {
