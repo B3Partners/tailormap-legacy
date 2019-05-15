@@ -33,14 +33,17 @@ Ext.define("viewer.viewercontroller.controller.WMSLayer",{
     getLayerLegendInfo: function(success, failure) {
         // XXX service may not support GETLEGENDGRAPHIC
         var name=this.id;
+        var serviceId = 0;
         if (this.appLayerId){
             var appLayer=this.config.viewerController.getAppLayerById(this.appLayerId);
             name=appLayer.alias;
+            serviceId = appLayer.serviceId;
         }
         success({
             name: name,
             parts: [
                 {
+                    serviceId: serviceId,
                     //label: no label? only one per layer for WMS.
                     url: this.getLegendGraphic() 
                 }
