@@ -25,8 +25,8 @@ import nl.b3p.viewer.config.app.ApplicationLayer;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.geotools.data.ows.CRSEnvelope;
-import org.geotools.data.ows.StyleImpl;
+import org.geotools.ows.wms.CRSEnvelope;
+import org.geotools.ows.wms.StyleImpl;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -165,7 +165,7 @@ public class Layer implements Cloneable, Serializable {
     public Layer() {
     }
 
-    public Layer(org.geotools.data.ows.Layer l, GeoService service) {
+    public Layer(org.geotools.ows.wms.Layer l, GeoService service) {
         name = l.getName();
         if (name != null && name.length() > 254) {
             log.warn("Layer name longer than 254 char will be truncated, was: " + name);
@@ -288,7 +288,7 @@ public class Layer implements Cloneable, Serializable {
             legendImageUrl = legendUrl;
         }
 
-        for(org.geotools.data.ows.Layer child: l.getLayerChildren()) {
+        for(org.geotools.ows.wms.Layer child: l.getLayerChildren()) {
             Layer childLayer = new Layer(child, service);
             childLayer.setParent(this);
             children.add(childLayer);

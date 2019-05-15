@@ -15,13 +15,21 @@
             <unpack>false</unpack>
             <outputFileNameMapping>${artifact.artifactId}-${artifact.version}.${artifact.extension}</outputFileNameMapping>
         </dependencySet>
+        <dependencySet>
+            <useTransitiveDependencies>false</useTransitiveDependencies>
+            <useProjectArtifact>${project.groupId}:tomcat-lib</useProjectArtifact>
+            <scope>provided</scope>
+            <outputDirectory>java11-extra/</outputDirectory>
+            <unpack>false</unpack>
+            <outputFileNameMapping>${artifact.artifactId}-${artifact.version}.${artifact.extension}</outputFileNameMapping>
+        </dependencySet>
     </dependencySets>
     <fileSets>
         <fileSet>
             <directory>${project.basedir}</directory>
             <outputDirectory>/</outputDirectory>
             <includes>
-                <include>**/README.md</include>
+                <include>README.md</include>
             </includes>
         </fileSet>
     </fileSets>

@@ -6,10 +6,10 @@ package nl.b3p.viewer.image;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.nio.file.Files;
 import javax.swing.ImageIcon;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.tika.Tika;
 import org.json.JSONObject;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -93,6 +93,7 @@ public class TilingIntegrationTest {
             log.error("Maybe not a valid png?...", e);
             fail("Image may not be a valid png");
         }
-        assertEquals("Image is not a valid png", "image/png", Files.probeContentType(f.toPath()));
+        Tika tika = new Tika();
+        assertEquals("Image is not a valid png", "image/png", tika.detect(f));
     }
 }

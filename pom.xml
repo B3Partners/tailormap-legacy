@@ -43,7 +43,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <!-- when updating geotools also check jts and b3p-commons-csw or you will end up in transitive dependency hell -->
-        <geotools.version>20.3</geotools.version>
+        <geotools.version>21.1</geotools.version>
         <powermock.version>2.0.2</powermock.version>
         <hsqldb.version>2.4.1</hsqldb.version>
         <test.persistence.unit>viewer-config-hsqldb</test.persistence.unit>
@@ -53,6 +53,9 @@
         <apache.poi.version>4.1.0</apache.poi.version>
         <jakarta.mail.version>1.6.3</jakarta.mail.version>
         <apache.httpcomponents.version>4.5.8</apache.httpcomponents.version>
+        <jaxb.api.version>2.3.2</jaxb.api.version>
+        <jaxb.impl.version>2.3.2</jaxb.impl.version>
+        <activation.api.version>1.2.1</activation.api.version>
         <!-- skip integration tests by default, override this property from commandline
         or as part of a profile, see eg. 'travis-ci' profile in viewer -->
         <test.skip.integrationtests>false</test.skip.integrationtests>
@@ -161,7 +164,7 @@
             <dependency>
                 <groupId>nl.b3p</groupId>
                 <artifactId>b3p-commons-csw</artifactId>
-                <version>5.1.2</version>
+                <version>6.0.1</version>
                 <exclusions>
                     <exclusion>
                         <groupId>javax.persistence</groupId>
@@ -264,11 +267,6 @@
             </dependency>
             <dependency>
                 <groupId>org.geotools</groupId>
-                <artifactId>gt-data</artifactId>
-                <version>${geotools.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.geotools</groupId>
                 <artifactId>gt-jdbc</artifactId>
                 <version>${geotools.version}</version>
             </dependency>
@@ -318,6 +316,12 @@
                         <groupId>commons-fileupload</groupId>
                         <artifactId>commons-fileupload</artifactId>
                     </exclusion>
+                    <exclusion>
+                    <!-- exclude java 6 tools.jar system scoped dependency 
+                         a transitive from org.apache.hadoop:hadoop-annotations:jar:2.2.0 -->
+                        <groupId>jdk.tools</groupId>
+                        <artifactId>jdk.tools</artifactId>
+                    </exclusion>
                 </exclusions>
             </dependency>
 
@@ -344,7 +348,7 @@
                 <exclusions>
                     <exclusion>
                         <!--
-                        exclude old javassist so we can use 3.22.0-CR2, see issue #745
+                        exclude old javassist so we can use 3.24.1-GA, see issue #745
                         when upgrading hibernate this should be removed
                         -->
                         <groupId>javassist</groupId>
@@ -369,6 +373,7 @@
                 <artifactId>web-commons</artifactId>
                 <version>${flamingo.version} </version>
             </dependency>
+
             <dependency>
                 <groupId>org.geotools</groupId>
                 <artifactId>gt-wms</artifactId>
@@ -394,7 +399,16 @@
                 <artifactId>gt-jdbc-sqlserver</artifactId>
                 <version>${geotools.version}</version>
             </dependency>
-
+            <dependency>
+                <groupId>org.geotools.xsd</groupId>
+                <artifactId>gt-xsd-core</artifactId>
+                <version>${geotools.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.geotools.xsd</groupId>
+                <artifactId>gt-xsd-gml3</artifactId>
+                <version>${geotools.version}</version>
+            </dependency>
             <!-- web-commons -->
             <dependency>
                 <groupId>javax.servlet.jsp</groupId>
@@ -412,12 +426,6 @@
                 <artifactId>gt-referencing</artifactId>
                 <version>${geotools.version}</version>
             </dependency>
-            <dependency>
-                <groupId>org.geotools</groupId>
-                <artifactId>gt-api</artifactId>
-                <version>${geotools.version}</version>
-            </dependency>
-
             <dependency>
                 <groupId>org.geotools</groupId>
                 <artifactId>gt-geojson</artifactId>
@@ -518,6 +526,11 @@
                 <groupId>org.skyscreamer</groupId>
                 <artifactId>jsonassert</artifactId>
                 <version>1.5.0</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.tika</groupId>
+                <artifactId>tika-core</artifactId>
+                <version>1.20</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -898,6 +911,34 @@
                 <test.persistence.unit>viewer-config-microsoft_sql_server</test.persistence.unit>
                 <test.skip.integrationtests>true</test.skip.integrationtests>
             </properties>
+        </profile>
+        <profile>
+            <id>jdk11+</id>
+            <activation>
+                <jdk>[11,)</jdk>
+            </activation>
+            <properties>
+                <java.version>11</java.version>
+            </properties>
+            <dependencyManagement>
+                <dependencies>
+                    <dependency>
+                        <groupId>jakarta.xml.bind</groupId>
+                        <artifactId>jakarta.xml.bind-api</artifactId>
+                        <version>${jaxb.api.version}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.glassfish.jaxb</groupId>
+                        <artifactId>jaxb-runtime</artifactId>
+                        <version>${jaxb.impl.version}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>jakarta.activation</groupId>
+                        <artifactId>jakarta.activation-api</artifactId>
+                        <version>${activation.api.version}</version>
+                    </dependency>
+                </dependencies>
+            </dependencyManagement>
         </profile>
     </profiles>
     <modules>
