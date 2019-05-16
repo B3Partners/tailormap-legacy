@@ -36,7 +36,7 @@ timestamps {
                     lock('flamingo-oracle') {
                       timeout(90) {
                         stage("Prepare Oracle: ${indexOfJdk}") {
-                             sh "sqlplus -l -S C##JENKINS_FLAMINGO/jenkins_flamingo@192.168.1.11:1521/orcl < ./.jenkins/clear-oracle-schema.sql"
+                             sh "sqlplus -l -S JENKINS_FLAMINGO/jenkins_flamingo@192.168.1.11:1521/orcl < ./.jenkins/clear-oracle-schema.sql"
                         }
 
                         stage("IntegrationTest: ${jdkTestName}") {
