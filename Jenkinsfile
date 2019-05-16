@@ -9,7 +9,7 @@ timestamps {
                 numToKeepStr: '3']
             ]]);
 
-        withEnv(["JAVA_HOME=${ tool 'JDK8' }", "PATH+MAVEN=${tool 'Maven 3.5.3'}/bin:${env.JAVA_HOME}/bin"]) {
+        withEnv(["JAVA_HOME=${ tool 'JDK8' }", "PATH+MAVEN=${tool 'Maven CURRENT'}/bin:${env.JAVA_HOME}/bin"]) {
 
             stage('Prepare') {
                  checkout scm
@@ -29,7 +29,7 @@ timestamps {
                 lock('flamingo-oracle') {
 
                     stage('Prepare Oracle') {
-                         sh "sqlplus -l -S C##JENKINS_FLAMINGO/jenkins_flamingo@192.168.1.11:1521/orcl < ./.jenkins/clear-oracle-schema.sql"
+                         sh "sqlplus -l -S JENKINS_FLAMINGO/jenkins_flamingo@192.168.1.11:1521/orcl < ./.jenkins/clear-oracle-schema.sql"
                     }
 
                     stage('IntegrationTest') {
