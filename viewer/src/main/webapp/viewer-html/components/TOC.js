@@ -717,7 +717,7 @@ Ext.define ("viewer.components.TOC",{
                 }
                 var styleId = layerId + "_" + style.name;
                 var styleNode = {
-                    text: Ext.String.format('<span id=\"span_{0}\">{1}</span>', styleId, style.name),
+                    text: Ext.String.format('<span id=\"span_{0}\">{1}</span>', styleId, style.title ? style.title : style.name),
                     expanded: true,
                     leaf: true,
                     checked: i === 0,
