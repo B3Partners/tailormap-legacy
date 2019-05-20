@@ -310,7 +310,7 @@ Ext.define ("viewer.components.Maptip",{
     createInfoHtmlElements: function (data, options){
         var me = this;
         var components=[];
-        var shouldHighlight = this.config.viewerController.getComponentsByClassName("viewer.components.Highlight").length > 0;
+        var shouldHighlight = this.$className !== "viewer.components.ExtendedFeatureInfo" && this.config.viewerController.getComponentsByClassName("viewer.components.Highlight").length > 0;
         for (var layerIndex = 0 ; layerIndex < data.length ;layerIndex ++ ){
             var layer=data[layerIndex];
             if (layer.error){
