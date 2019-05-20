@@ -24,6 +24,7 @@ import org.apache.commons.logging.LogFactory;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFinder;
 import org.geotools.data.simple.SimpleFeatureSource;
+import org.geotools.data.sqlserver.SQLServerDataStoreFactory;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.jdbc.JDBCDataStoreFactory;
 import org.json.JSONException;
@@ -204,6 +205,9 @@ public class JDBCFeatureSource extends UpdatableFeatureSource{
         params.put("passwd", getPassword());
         params.put(JDBCDataStoreFactory.EXPOSE_PK.key, true);
         params.put(JDBCDataStoreFactory.PK_METADATA_TABLE.key, "gt_pk_metadata");
+        // this key is available in ao. Oracle and MS SQL datastore factories, but not in the common parent..
+        // we need this for mssql to determine a featuretype on an empty table
+        params.put(SQLServerDataStoreFactory.GEOMETRY_METADATA_TABLE.key, "geometry_columns");
         Map logParams = new HashMap(params);
         if(getPassword() != null) {
             logParams.put("passwd", new String(new char[getPassword().length()]).replace("\0", "*"));
