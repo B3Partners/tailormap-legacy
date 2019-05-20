@@ -89,7 +89,7 @@ Ext.define('vieweradmin.components.ApplicationTreeLayerStyles', {
             selModel: { mode: "SINGLE" },
             useArrows: true,
             frame: true,
-            width: 325,
+            width: 625,
             autoScroll: true,
             margin: 10,
             viewConfig: {
