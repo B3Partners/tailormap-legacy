@@ -443,14 +443,17 @@ public class EditFeatureActionBean extends LocalizableApplicationActionBean impl
         Transaction transaction = new DefaultTransaction("create");
         store.setTransaction(transaction);
 
-        for(AttributeDescriptor ad: store.getSchema().getAttributeDescriptors()) {
-            if(ad.getType() instanceof GeometryType) {
+        for (AttributeDescriptor ad : store.getSchema().getAttributeDescriptors()) {
+            if (ad.getType() instanceof GeometryType) {
                 String wkt = jsonFeature.optString(ad.getLocalName(), null);
                 Geometry g = null;
-                if(wkt != null) {
+                if (wkt != null) {
                     g = new WKTReader().read(wkt);
                 }
                 f.setDefaultGeometry(g);
+            } else if (ad.getType().getBinding().getCanonicalName().equals("byte[]")) {
+                Object ba = jsonFeature.get(ad.getLocalName());
+                f.setAttribute(ad.getLocalName(), ba);
             } else {
                 String v = jsonFeature.optString(ad.getLocalName());
                 f.setAttribute(ad.getLocalName(), StringUtils.defaultIfBlank(v, null));
