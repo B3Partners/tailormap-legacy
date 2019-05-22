@@ -14,6 +14,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+/* global contextPath, Ext, i18next */
+
 /**
  * Split component.
  *
@@ -634,8 +636,10 @@ Ext.define("viewer.components.Split", {
         if (this.vectorLayer) {
             this.vectorLayer.removeAllFeatures();
         }
-        if (this.vectorLayer) {
+        if (this.drawLayer) {
             this.drawLayer.removeAllFeatures();
+            this.config.viewerController.mapComponent.getMap().removeLayer(this.drawLayer);
+            this.drawLayer = null;
         }
     },
     getExtComponents: function () {

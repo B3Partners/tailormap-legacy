@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-/* global Ext, contextPath, MobileManager, actionBeans, i18next, viewer */
+/* global Ext, contextPath, MobileManager, actionBeans, i18next, viewer, FlamingoAppLoader */
 
 /**
  * Drawing component
@@ -87,7 +87,7 @@ Ext.define ("viewer.components.Drawing",{
 
         this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE,this.selectedContentChanged,this );
         this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_COMPONENTS_FINISHED_LOADING,this.init,this);
-        this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_LAYERS_INITIALIZED,this.createVectorLayer, this);
+        this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_LAYERS_INITIALIZED,this.createVectorLayerTimeout, this);
         this.iconPath=FlamingoAppLoader.get('contextPath')+"/viewer-html/components/resources/images/drawing/";
         this.loadWindow();
         if(this.config.reactivateTools){
@@ -100,6 +100,9 @@ Ext.define ("viewer.components.Drawing",{
         if(this.config.dummyUser){
             setTimeout(this.drawFreeHand.bind(this),0);
         }
+    },
+    createVectorLayerTimeout: function () {
+        setTimeout(this.createVectorLayer.bind(this),0);
     },
     showWindow : function (){
         this.deActivatedTools = this.config.viewerController.mapComponent.deactivateTools();
