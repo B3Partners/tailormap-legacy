@@ -137,7 +137,9 @@ public class SelectedContentCache {
         int serverPort = request.getServerPort();
         String contextPath = request.getContextPath();
         StringBuilder url = new StringBuilder();
-        String servletPath = "/action/proxy/wms";
+        String servletPath = (request.getServletContext().getInitParameter("proxy") == null
+                ? "/action/proxy/wms"
+                : request.getServletContext().getInitParameter("proxy"));
         url.append(scheme).append("://").append(serverName);
 
         if ((serverPort != 80) && (serverPort != 443)) {
