@@ -482,7 +482,7 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
      */
     getLayerByOpenLayersId: function(olId){
         for (var i=0; i < this.layers.length; i++){
-            if (this.layers[i].frameworkLayer){
+            if (this.layers[i] && this.layers[i].frameworkLayer){
                 if (this.layers[i].frameworkLayer.id == olId){
                     return this.layers[i];
                 }
