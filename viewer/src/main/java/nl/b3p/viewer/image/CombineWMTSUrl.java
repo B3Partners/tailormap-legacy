@@ -161,7 +161,7 @@ public class CombineWMTSUrl extends CombineTileImageUrl {
 
                 Bbox tileBbox = new Bbox(tempBbox);
 
-                CombineStaticImageUrl tile = createTile(imbbox, tileBbox, ix, iy, indexOfMatrix, (numX * (tm.getTileWidth() / ratio)) - xOffset, (numY * (tm.getTileHeight() / ratio)) - yOffset);
+                CombineStaticImageUrl tile = createTile(imbbox, tileBbox, ix, iy, indexOfMatrix, (numX * (tm.getTileWidth() / ratio)) - xOffset - numX , (numY * (tm.getTileHeight() / ratio)) - yOffset - numY );
                 tileImages.add(tile);
                 numY++;
             }
