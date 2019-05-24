@@ -596,7 +596,8 @@ Ext.define("viewer.components.SearchConfiguration",{
                     appId: this.getApplicationId(),
                     layerlist:true
                 },
-                parentContainer: Ext.ComponentQuery.query('#requiredLayersOn')[0]
+                parentContainer: Ext.ComponentQuery.query('#requiredLayersOn')[0],
+                checked: (searchConfig && searchConfig.hasOwnProperty('requiredLayers')) ? searchConfig.requiredLayers : []
             });
             me.switchLayersOn = Ext.create('Ext.ux.b3p.FilterableCheckboxes', {
                 requestUrl: this.getContextpath() + "/action/componentConfigList",
@@ -625,16 +626,7 @@ Ext.define("viewer.components.SearchConfiguration",{
                 // If any layers are selected, enable checkbox
                 checkbox.checked = true;
             }
-            var config = me.getConfig(searchconfigId);
-            config.solrConfig [solrConfigId] = {
-                    // Config id
-                    'solrConfigid': solrConfigId,
-                    // Layers that are required to be on
-                    'requiredLayers': requiredOn,
-                    // Layers that should be switched on
-                    'switchOnLayers': switchOn
-                };
-            me.saveSolrconfig(searchconfigId);
+            me.saveSolrconfig(searchconfigId, requiredOn, switchOn);
             me.layerSelectionWindow.hide();
         });
         me.requiredLayersOn.resetChecked(requiredLayersChecked);
@@ -684,8 +676,10 @@ Ext.define("viewer.components.SearchConfiguration",{
         if(this.solrSearchconfigs.hasOwnProperty(searchconfigId)) {
             // Get the checked solr configs
             var checkedSolrconfigs = this.solrSearchconfigs[searchconfigId].getChecked();
-            // Empty config before creating new config
-            solrConfig = {};
+            // Empty config if there are no checked configs
+            if (checkedSolrconfigs.length === 0) {
+                solrConfig = {};
+            }
             // For each of the checked solr configs we will create a config object
             Ext.Array.each(checkedSolrconfigs, function(solrConfigId) {
                 // Set required Layers
