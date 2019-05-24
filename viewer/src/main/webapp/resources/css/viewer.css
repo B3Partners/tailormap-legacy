@@ -233,7 +233,9 @@ body > .legend {
     background-color: #f5f5f5 !important;
     border-color: #d8d8d8 !important;
 }
-.x-tab-active.x-tab-default {
+.x-tab-active.x-tab-default,
+.x-btn.x-btn-menu-active.x-btn-default-small,
+.x-btn.x-btn-pressed.x-btn-default-small{
     background-color: #E5E5E5 !important;
     border-color: #C8C8C8 !important;
 }
