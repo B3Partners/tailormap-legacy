@@ -525,13 +525,20 @@ TODO: check if we always need to do this, not only mobile, only on mobile are we
     background-color: rgb(255, 243, 205);
     border-color: rgb(255, 238, 186);
 }
-.alert-message.success {
+.alert-message.success,
+.success-toast.x-window-default,
+.success-toast .x-window-header {
     color: rgb(21, 87, 36);
     background-color: rgb(212, 237, 218);
     border-color: rgb(195, 230, 203);
 }
-.icon-green {
+.icon-green,
+.success-toast .x-title-text,
+.success-toast .x-window-header-title-default > .x-title-icon-wrap-default > .x-title-icon-default {
     color: rgb(21, 87, 36);
+}
+.success-toast {
+    border-width: 2px;
 }
 
 /* Override font-face declarations form Ext to fix IE errors (embedded-opentype) */

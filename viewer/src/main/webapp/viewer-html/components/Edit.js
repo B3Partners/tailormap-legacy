@@ -1458,7 +1458,7 @@ Ext.define("viewer.components.Edit", {
                 msg += " " + extratext;
             }
             if(!skipSuccessMessage) {
-                Ext.Msg.alert("Gelukt", msg);
+                me.showSuccessToast(msg, i18next.t('viewer_components_edit_40'));
             }
             me.cancel();
         };
@@ -1519,7 +1519,7 @@ Ext.define("viewer.components.Edit", {
         this.editingLayer.reload();
         this.currentFID = null;
         if(!skipSuccessMessage) {
-            Ext.MessageBox.alert(i18next.t('viewer_components_edit_40'), i18next.t('viewer_components_edit_41'));
+            this.showSuccessToast(msg, i18next.t('viewer_components_edit_41'));
         }
         this.cancel();
     },
