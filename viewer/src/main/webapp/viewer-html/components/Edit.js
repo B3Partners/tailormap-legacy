@@ -243,6 +243,46 @@ Ext.define("viewer.components.Edit", {
                 xtype: "container"
             },
             {
+                itemId: "geomToggle",
+                margin: '5 0',
+                xtype: "container",
+                hidden: true,
+                items: [
+                    {
+                        html: i18next.t("viewer_components_edit_geomtoggle_label"),
+                        xtype: "container",
+                        margin: '0 0 5 0',
+                    },
+                    {
+                        xtype: "segmentedbutton",
+                        allowMultiple: false,
+                        items: [{
+                            itemId: "geomToggle_polygon",
+                            text: i18next.t("viewer_components_edit_geomtoggle_polygon"),
+                            tooltip: i18next.t("viewer_components_edit_geomtoggle_polygontooltip"),
+                            pressed: true
+                        },{
+                            itemId: "geomToggle_circle",
+                            text: i18next.t("viewer_components_edit_geomtoggle_circle"),
+                            tooltip: i18next.t("viewer_components_edit_geomtoggle_circletooltip")
+                        }],
+                        listeners: {
+                            toggle: function(container, button, pressed) {
+                                if (button.getItemId() === "geomToggle_polygon") {
+                                    this.newGeomType = "Polygon"
+                                }
+                                if (button.getItemId() === "geomToggle_circle") {
+                                    this.newGeomType = "Circle"
+                                }
+                                this.vectorLayer.removeAllFeatures();
+                                this.vectorLayer.drawFeature(this.newGeomType);
+                            },
+                            scope: this
+                        }
+                    }
+                ]
+            },
+            {
                 itemId: 'inputPanel',
                 border: 0,
                 xtype: "form",
@@ -558,6 +598,7 @@ Ext.define("viewer.components.Edit", {
         }
         this.showMobilePopup();
         this.setFormVisible(true);
+        this.toggleGeomToggleForm(false);
         var firstField = this.inputContainer.down("field");
         if(firstField) {
             firstField.focus();
@@ -1206,6 +1247,7 @@ Ext.define("viewer.components.Edit", {
      * clear any loaded feature from the form and the map.
      */
     clearFeatureAndForm: function () {
+        this.toggleGeomToggleForm(false);
         this.vectorLayer.removeAllFeatures();
         this.inputContainer.getForm().reset();
         this.currentFID = null;
@@ -1222,12 +1264,16 @@ Ext.define("viewer.components.Edit", {
         }else if (this.newGeomType !== null && this.geometryEditable) {
             this.geomlabel.setHtml(i18next.t('viewer_components_edit_26', {tekstGeom: this.tekstGeom}));
             this.vectorLayer.drawFeature(this.newGeomType);
+            this.toggleGeomToggleForm(this.newGeomType === "Circle" || this.newGeomType === "Polygon");
         }
         this.savebutton.setText(i18next.t('viewer_components_edit_27'));
         this.untoggleButtons("newButton");
         if(this.config.rememberValuesInSession){
             this.populateFormWithPreviousValues();
         }
+    },
+    toggleGeomToggleForm: function(show) {
+        Ext.ComponentQuery.query("#geomToggle")[0].setVisible(show);
     },
     populateFormWithPreviousValues: function(){
         var feature = this.lastUsedValues[this.layerSelector.getValue().id];
@@ -1412,7 +1458,7 @@ Ext.define("viewer.components.Edit", {
                 msg += " " + extratext;
             }
             if(!skipSuccessMessage) {
-                Ext.Msg.alert("Gelukt", msg);
+                me.showSuccessToast(msg, i18next.t('viewer_components_edit_40'));
             }
             me.cancel();
         };
@@ -1473,7 +1519,7 @@ Ext.define("viewer.components.Edit", {
         this.editingLayer.reload();
         this.currentFID = null;
         if(!skipSuccessMessage) {
-            Ext.MessageBox.alert(i18next.t('viewer_components_edit_40'), i18next.t('viewer_components_edit_41'));
+            this.showSuccessToast(msg, i18next.t('viewer_components_edit_41'));
         }
         this.cancel();
     },
@@ -1496,6 +1542,7 @@ Ext.define("viewer.components.Edit", {
         this.setFormVisible(false);
         this.buttonPanel.setVisible(true);
         this.config.viewerController.mapComponent.getMap().removeMarker("edit");
+        this.toggleGeomToggleForm(false);
         if (this.vectorLayer) {
             // vector layer may be null when cancel() is called
             this.vectorLayer.removeAllFeatures();

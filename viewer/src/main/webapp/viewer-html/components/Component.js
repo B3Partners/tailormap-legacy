@@ -547,6 +547,18 @@ Ext.define("viewer.components.Component",{
             return;
         }
         this.currentDeferred.reject("timeout");
+    },
+
+    showSuccessToast: function(msg, title) {
+        Ext.toast({
+            title: title,
+            html: msg,
+            width: 300,
+            align: 'tr',
+            autoCloseDelay: 5000,
+            iconCls: 'x-fa fa-info-circle',
+            cls: "success-toast"
+        });
     }
 
 });
