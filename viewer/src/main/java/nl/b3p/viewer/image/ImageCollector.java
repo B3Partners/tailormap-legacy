@@ -132,7 +132,7 @@ public class ImageCollector implements Callable<ImageCollector> {
 
             int statusCode = client.executeMethod(method);
             if (statusCode != HttpStatus.SC_OK) {
-                throw new Exception("Error connecting to server. HTTP status code: " + statusCode);
+                throw new Exception("Error connecting to server with url " + url  + ". HTTP status code: " + statusCode);
             }
 
             String mime = method.getResponseHeader("Content-Type").getValue();
