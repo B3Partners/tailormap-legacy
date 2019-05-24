@@ -94,6 +94,11 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersTilingLayer",{
             options.matrixIds = this.getMatrixIds(this.config.matrixSet.matrices);
             options.format = this.extension;
             options.serverResolutions = this.serverRes;
+            if(this.config.matrixSet.bbox){
+                var bbox = this.config.matrixSet.bbox;
+                this.serviceEnvelope = bbox.minx+","+bbox.miny+","+bbox.maxx+","+bbox.maxy;
+            }
+            
             var wmts = new OpenLayers.Layer.WMTS(options);
             this.frameworkLayer = wmts;
         }
