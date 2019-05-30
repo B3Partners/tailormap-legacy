@@ -1,3 +1,13 @@
+---
+name: Bug report
+about: Create a bug report
+title: ''
+labels: ':bomb: bug'
+assignees: ''
+
+---
+
+
 ### Version
 Which version of flamingo do you use: <!-- go to http://<server>/viewer-admin/about.jsp or http://<server>/viewer/about.jsp and paste below -->
 
