@@ -4,6 +4,10 @@ Flamingo
 The Repository of Flamingo.
 Check out the [wiki](https://github.com/flamingo-geocms/flamingo/wiki) for more info.
 
+For security related information please check the [security policy](./.github/SECURITY.md)
+
+![Flamingo logo](https://raw.githubusercontent.com/flamingo-geocms/flamingo/master/viewer/src/main/webapp/WEB-INF/xsl/print/logo.png)
+
 
 [![Travis Build Status](https://travis-ci.org/flamingo-geocms/flamingo.svg?branch=master)](https://travis-ci.org/flamingo-geocms/flamingo)
 [![AppVeyor Build status](https://ci.appveyor.com/api/projects/status/msxqhcpp8f0bjixk/branch/master?svg=true)](https://ci.appveyor.com/project/mtoonen/flamingo-e1jns/branch/master)
@@ -22,3 +26,6 @@ Check out the [wiki](https://github.com/flamingo-geocms/flamingo/wiki) for more 
 [![BrowserStack.com](http://files.b3p.nl/flamingo/bs.png)]()
 
 [![code coverage master](https://codecov.io/gh/flamingo-geocms/flamingo/branch/master/graphs/sunburst.svg)](https://codecov.io/gh/flamingo-geocms/flamingo/branch/master)
+
+[![BrowserStack.com](http://files.b3p.nl/flamingo/bs.png)]()
+
