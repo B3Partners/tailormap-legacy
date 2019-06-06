@@ -20,6 +20,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.ServiceLoader;
 
@@ -54,8 +55,9 @@ public interface LoggingServiceFactory {
         if (loggingServices.size() == 1) {
             service = loggingServices.get(0);
         } else {
-            while (loggingServices.iterator().hasNext()) {
-                service = loggingServices.iterator().next();
+            Iterator it = loggingServices.iterator();
+            while (it.hasNext()) {
+                service = (LoggingService) it.next();
                 LOG.debug("found audit log provider: " + service);
                 if (service instanceof nl.b3p.viewer.audit.impl.DefaultLoggingService) {
                     continue;
