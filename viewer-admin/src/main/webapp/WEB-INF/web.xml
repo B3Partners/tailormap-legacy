@@ -180,7 +180,7 @@
             <!-- Note that the option to specify the encoding using nl_NL:UTF-8
                  is not required because we have a separate filter for that:
                  SetCharacterEncodingFilter -->
-            <param-value>nl_NL,en_US</param-value>
+            <param-value>nl</param-value>
         </init-param>
         <init-param>
             <param-name>LocalizationBundleFactory.ErrorMessageBundle</param-name>
