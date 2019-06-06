@@ -48,7 +48,6 @@ import org.apache.commons.logging.LogFactory;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
 import org.geotools.factory.CommonFactoryFinder;
-import org.geotools.filter.text.cql2.CQL;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -313,7 +312,7 @@ public class FeatureInfoActionBean extends LocalizableApplicationActionBean impl
                         spatialFilter = ff.intersects(ff.property(geomAttribute), ff.literal(p));
                     }
 
-                    Filter currentFilter = filter != null && filter.trim().length() > 0 ? CQL.toFilter(filter) : null;
+                    Filter currentFilter = filter != null && filter.trim().length() > 0 ? FlamingoCQL.toFilter(filter,em) : null;
 
                     if (currentFilter!=null){
                         currentFilter = (Filter) currentFilter.accept(new ChangeMatchCase(false), null);
