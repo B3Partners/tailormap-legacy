@@ -560,7 +560,9 @@ Ext.define ("viewer.components.Maptip",{
         }
         featureDiv.selectable();
         cDiv.appendChild(featureDiv);
-        this.popup.show();
+        if (this.popup) {
+            this.popup.show();
+        }
     },
     /**
      * Handle failure of ajax requests.

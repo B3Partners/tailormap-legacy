@@ -29,7 +29,8 @@ Ext.define ("viewer.components.ExtendedFeatureInfo",{
     pagination:null,
     content:null,
     
-    constructor: function (conf){  
+    constructor: function (conf) {
+        conf.useOrderedAttributes = true;
         //don't call maptip constructor but that of super maptip.
         this.initConfig(conf);
         viewer.components.Maptip.superclass.constructor.call(this, this.config);
