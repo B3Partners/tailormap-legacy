@@ -36,12 +36,14 @@ Ext.define("viewer.components.SelectionWindowConfig",{
         var showLabelconfig = config.showLabelconfig === true;
         var hidePopupConfig = config.hidePopupConfig === true;
         var hideTooltipConfig = config.hideTooltipConfig === true;
+        var hideIconConfig = config.hideIconConfig === true;
         if(Ext.isEmpty(iconurl) || !Ext.isDefined(iconurl)) iconurl = null;
         if(Ext.isEmpty(label) || !Ext.isDefined(label)) label = "";
         var hidden = {};
         if(this.configPage._metadata.hidden){
             hidden = this.configPage._metadata.hidden;
         }
+        var emptycontainer = { xtype: 'container' };
         this.form=new Ext.form.FormPanel({
             frame: false,
             bodyPadding: me.formPadding,
@@ -55,14 +57,14 @@ Ext.define("viewer.components.SelectionWindowConfig",{
                 items: [{
                         xtype: 'container',
                         //layout: {type: 'vbox'},
-                        items: [{                     
+                        items: [{
                             xtype: 'textfield',
                             fieldLabel: i18next.t('general_components_selectionwindowconfig_0'),
                             name: 'title',
                             value: config.title,
                             labelWidth:me.labelWidth,
                             width: 700
-                        },{                        
+                        }, hideIconConfig ? emptycontainer : {
                             xtype: 'textfield',
                             fieldLabel: i18next.t('general_components_selectionwindowconfig_1'),
                             name: 'iconUrl',
@@ -75,8 +77,8 @@ Ext.define("viewer.components.SelectionWindowConfig",{
                                     me.onIconChange(textField,options);
                                 }
                             }
-                        }]                    
-                    },{
+                        }]
+                    }, hideIconConfig ? emptycontainer : {
                         xtype: "image",
                         id: "iconImage",
                         src: iconurl,

@@ -3,7 +3,7 @@
 ## Supported Versions
 
 The project supports the last 2 stable releases (built from the specific version branch) and 
-the last community release (cut from the `master` branch).
+the last(latest) community release (cut from the `master` branch).
 
 At the time of writing (May 2019) the support matrix looks as follows:
 

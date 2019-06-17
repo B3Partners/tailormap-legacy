@@ -20,5 +20,13 @@
  */
 Ext.define('viewer.components.CustomConfiguration', {
     extend: 'viewer.components.FeatureInfoConfiguration',
-    hideBalloonSettings: true
+    hideBalloonSettings: true,
+    constructor: function (parentId, configObject, configPage) {
+        if (configObject === null) {
+            configObject = {};
+        }
+        configObject.hideTooltipConfig = true;
+        configObject.hideIconConfig = true;
+        viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId, configObject, configPage);
+    }
 });
