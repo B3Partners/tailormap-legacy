@@ -548,6 +548,10 @@ Ext.define("viewer.components.Component",{
         }
         this.currentDeferred.reject("timeout");
     },
+    
+    activate: function(){
+        
+    },
 
     showSuccessToast: function(msg, title) {
         Ext.toast({

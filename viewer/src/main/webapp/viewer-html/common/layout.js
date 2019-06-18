@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global Ext */
+/* global Ext, FlamingoAppLoader */
 
 Ext.define('viewer.LayoutManager', {
     defaultRegionSettings: {
@@ -680,7 +680,18 @@ Ext.define('viewer.LayoutManager', {
                     hideMode: 'offsets'
                 },
                 items: componentItems,
-                tabBar: tabBarLayout
+                tabBar: tabBarLayout,
+               
+                listeners: {
+                    tabchange: function(panel, newCard, oldCard) {
+                        var cmp_name =newCard.config.data.cmp_name;
+                        var vc = FlamingoAppLoader.get("viewerController");
+                        var newComp = vc.getComponentByName(cmp_name);
+                        if(newComp){
+                            newComp.activate();
+                        }
+                    }
+                }
             };
             return tabcomponent;
         }

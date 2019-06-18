@@ -118,12 +118,11 @@ Ext.define("viewer.components.Edit", {
         this.lastUsedValues = {};        
         this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_COMPONENTS_FINISHED_LOADING,this.loadWindow,this);
         this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE, this.selectedContentChanged, this);
-        this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_LAYERS_INITIALIZED,this.createVectorLayerTimeout, this);
-        
+        this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_LAYERS_INITIALIZED,this.createVectorLayer, this);
         return this;
     },
-    createVectorLayerTimeout: function () {
-        setTimeout(this.createVectorLayer.bind(this),0);
+    activate: function(){
+        this.vectorLayer.bringToFront();
     },
     createVectorLayer: function () {
         this.vectorLayer = this.config.viewerController.mapComponent.createVectorLayer({
@@ -163,6 +162,7 @@ Ext.define("viewer.components.Edit", {
             buttons[0].fireEvent("click", buttons[0]);
         }
         if(this.config.isPopup) {
+            this.vectorLayer.bringToFront();
             this.popup.show();
             this.popup.popupWin.addListener('hide', function () {
                 this.cancel();

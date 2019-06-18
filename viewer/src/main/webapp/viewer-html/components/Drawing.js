@@ -86,28 +86,26 @@ Ext.define ("viewer.components.Drawing",{
 
 
         this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE,this.selectedContentChanged,this );
-        this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_COMPONENTS_FINISHED_LOADING,this.init,this);
-        this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_LAYERS_INITIALIZED,this.createVectorLayerTimeout, this);
+        this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_LAYERS_INITIALIZED,this.createVectorLayer, this);
         this.iconPath=FlamingoAppLoader.get('contextPath')+"/viewer-html/components/resources/images/drawing/";
         this.loadWindow();
-        if(this.config.reactivateTools){
-            this.popup.addListener("hide", this.hideWindow, this);
+        if (!this.isPopup) {
+            this.deActivatedTools = this.config.viewerController.mapComponent.deactivateTools();
+        } else {
+            if (this.config.reactivateTools) {
+                this.popup.addListener("hide", this.hideWindow, this);
+            }
         }
-        
         return this;
     },
-    init:function(){
-        if(this.config.dummyUser){
-            setTimeout(this.drawFreeHand.bind(this),0);
-        }
-    },
-    createVectorLayerTimeout: function () {
-        setTimeout(this.createVectorLayer.bind(this),0);
+    activate: function(){
+        this.vectorLayer.bringToFront();
     },
     showWindow : function (){
         this.deActivatedTools = this.config.viewerController.mapComponent.deactivateTools();
         this.mobileHide = false;
         this.popup.show();
+        this.vectorLayer.bringToFront();
     },
     hideWindow: function () {
         if(this.mobileHide) {
@@ -143,7 +141,7 @@ Ext.define ("viewer.components.Drawing",{
         };
         this.defaultStyle = Ext.create('viewer.viewercontroller.controller.FeatureStyle', this.defaultProps);
         this.vectorLayer=this.config.viewerController.mapComponent.createVectorLayer({
-            name:'drawingVectorLayer',
+            name:'drawingVectorLayer' + this.config.name,
             geometrytypes:["Circle","Polygon","Point","LineString"],
             showmeasures:true,
             viewerController: this.config.viewerController,
@@ -156,6 +154,9 @@ Ext.define ("viewer.components.Drawing",{
 
         this.vectorLayer.addListener (viewer.viewercontroller.controller.Event.ON_ACTIVE_FEATURE_CHANGED,this.activeFeatureChanged,this);
         this.vectorLayer.addListener (viewer.viewercontroller.controller.Event.ON_FEATURE_ADDED,this.activeFeatureFinished,this);
+        if(this.config.dummyUser){
+            this.drawFreeHand();
+        }
     },
     /**
      * Create the GUI

@@ -300,8 +300,8 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
     },
 
     drawFeature: function (type) {
-// call superclass method to register keydown events
-
+        // call superclass method to register keydown events
+        this.bringToFront();
         this.superclass.drawFeature.call(this, type);
         
         if (type === "Point") {
@@ -392,11 +392,15 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
             this.activeDrawFeatureControl.cancel();
         }
     },
-
+    bringToFront: function(){
+        var map = this.config.viewerController.mapComponent.maps[0];
+        map.setLayerIndex(this, map.layers.length);
+    },
     /**
      * Called when a feature is selected
      */
     activeFeatureChanged : function (object){
+        this.bringToFront();
         var feature = this.fromOpenLayersFeature (object.feature);
         this.fireEvent(viewer.viewercontroller.controller.Event.ON_ACTIVE_FEATURE_CHANGED,this,feature);
     },
