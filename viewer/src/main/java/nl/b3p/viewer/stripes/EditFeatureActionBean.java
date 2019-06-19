@@ -452,8 +452,10 @@ public class EditFeatureActionBean extends LocalizableApplicationActionBean impl
                 }
                 f.setDefaultGeometry(g);
             } else if (ad.getType().getBinding().getCanonicalName().equals("byte[]")) {
-                Object ba = jsonFeature.get(ad.getLocalName());
-                f.setAttribute(ad.getLocalName(), ba);
+                Object ba = jsonFeature.opt(ad.getLocalName());
+                if(ba != null){
+                    f.setAttribute(ad.getLocalName(), ba);
+                }
             } else {
                 String v = jsonFeature.optString(ad.getLocalName());
                 f.setAttribute(ad.getLocalName(), StringUtils.defaultIfBlank(v, null));
@@ -522,8 +524,12 @@ public class EditFeatureActionBean extends LocalizableApplicationActionBean impl
                             }
                             values.add(g);
                         } else if(ad.getType().getBinding().getCanonicalName().equals("byte[]")){
-                            Object ba = jsonFeature.get(attribute);
-                            values.add(ba);
+                            Object ba = jsonFeature.opt(attribute);
+                            if(ba != null){
+                                values.add(ba);
+                            }else{
+                                attributes.remove(attribute);
+                            }
                         } else {
                             String v = jsonFeature.optString(attribute);
                             values.add(StringUtils.defaultIfBlank(v, null));
