@@ -243,7 +243,7 @@ public class SolrUpdateJob implements Job {
                         doc.addField("maxy", env.getMaxY());
                     }
                     
-                    doc.addField("id", feature.getID());
+                    doc.addField("id", id + "-" + feature.getID());
                     doc.addField("searchConfig", id);
                     docs.add(doc);
                 }
