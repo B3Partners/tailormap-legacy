@@ -234,13 +234,18 @@ public class FeatureInfoActionBean extends LocalizableApplicationActionBean impl
 
     @DefaultHandler
     public Resolution info() throws JSONException {
+        JSONArray responses = infoResponses();
+        return new StreamingResolution("application/json", new StringReader(responses.toString(4)));
+    }
+
+    public JSONArray infoResponses() throws JSONException {
         JSONArray queries = new JSONArray(queryJSON);
 
         JSONArray responses = new JSONArray();
 
         FeatureSource fs = null;
 
-        EntityManager em = Stripersist.getEntityManager();
+        EntityManager em = getEntityManager();
         for(int i = 0; i < queries.length(); i++) {
             JSONObject query = queries.getJSONObject(i);
 
@@ -370,9 +375,13 @@ public class FeatureInfoActionBean extends LocalizableApplicationActionBean impl
             }
         }
         this.auditMessageObject.addMessage(responses);
-        return new StreamingResolution("application/json", new StringReader(responses.toString(4)));
+        return responses;
     }
-    
+
+    protected EntityManager getEntityManager() {
+        return Stripersist.getEntityManager();
+    }
+
     public Resolution relatedInfo() throws JSONException, Exception {
         JSONArray queries = new JSONArray(queryJSON);
         Boolean checkRelated = true;
@@ -381,7 +390,7 @@ public class FeatureInfoActionBean extends LocalizableApplicationActionBean impl
         JSONObject jFeat = null;
         JSONArray responses = new JSONArray();
         FeatureSource fs = null;
-        EntityManager em = Stripersist.getEntityManager();
+        EntityManager em = getEntityManager();
 
         for (int i = 0; i < queries.length(); i++) {
             JSONObject query = queries.getJSONObject(i);
@@ -566,7 +575,7 @@ public class FeatureInfoActionBean extends LocalizableApplicationActionBean impl
             throws IOException, JSONException, Exception {
 
         FeatureToJson ftjson = new FeatureToJson(arrays, edit, graph, true /*aliases*/, false /*returnNullval*/, attributesToInclude, ordered);
-        JSONArray features = ftjson.getJSONFeatures(al, ft, fs, q, null, null,Stripersist.getEntityManager(),application, context.getRequest());
+        JSONArray features = ftjson.getJSONFeatures(al, ft, fs, q, null, null, getEntityManager(),application, context.getRequest());
         return features;
     }
 }

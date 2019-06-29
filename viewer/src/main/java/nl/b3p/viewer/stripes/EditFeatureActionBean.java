@@ -17,6 +17,7 @@
 package nl.b3p.viewer.stripes;
 
 import net.sourceforge.stripes.controller.LifecycleStage;
+import nl.b3p.viewer.util.AuditTrailLogger;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.io.WKTReader;
 import java.io.IOException;
@@ -155,13 +156,18 @@ public class EditFeatureActionBean extends LocalizableApplicationActionBean impl
 
     @DefaultHandler
     public Resolution edit() throws JSONException {
+        JSONObject response = editResponse();
+        return new StreamingResolution("application/json", new StringReader(response.toString(4)));
+    }
+
+    public JSONObject editResponse() throws JSONException {
         JSONObject json = new JSONObject();
 
         json.put("success", Boolean.FALSE);
         String error = null;
 
         FeatureSource fs = null;
-        EntityManager em = Stripersist.getEntityManager();
+        EntityManager em = getEntityManager();
         try {
             do {
                 if(appLayer == null) {
@@ -229,16 +235,20 @@ public class EditFeatureActionBean extends LocalizableApplicationActionBean impl
 
         this.auditMessageObject.addMessage(json);
 
-        return new StreamingResolution("application/json", new StringReader(json.toString(4)));
+        return json;
     }
-    
+
+    protected EntityManager getEntityManager() {
+        return Stripersist.getEntityManager();
+    }
+
     public Resolution saveRelatedFeatures() throws JSONException {
         JSONObject json = new JSONObject();
         json.put("success", Boolean.FALSE);
         String error = null;
 
         FeatureSource fs = null;
-        EntityManager em = Stripersist.getEntityManager();
+        EntityManager em = getEntityManager();
         if (appLayer == null) {
             error = getBundle().getString("viewer.editfeatureactionbean.7");
 
@@ -334,7 +344,7 @@ public class EditFeatureActionBean extends LocalizableApplicationActionBean impl
 
         FeatureSource fs = null;
 
-        EntityManager em = Stripersist.getEntityManager();
+        EntityManager em = getEntityManager();
         try {
             do {
                 if(appLayer == null) {
@@ -417,7 +427,7 @@ public class EditFeatureActionBean extends LocalizableApplicationActionBean impl
         json.put("success", Boolean.FALSE);
         String error = null;
         FeatureSource fs = null;
-        EntityManager em = Stripersist.getEntityManager();
+        EntityManager em = getEntityManager();
         
         if (appLayer == null) {
             error = getBundle().getString("viewer.editfeatureactionbean.16");
@@ -593,37 +603,11 @@ public class EditFeatureActionBean extends LocalizableApplicationActionBean impl
         return true;
     }
 
-    /**
-     * Method to query the datastore with a dummy query, containing the username. This is used for an audittrail.
-     * A query is composed using the
-     * first attribute from the type, and constructing a Query with it:
-     * {@code <firstattribute> = 'username is <username>'}.
-     */
     private void addAuditTrailLog() {
-        try{
-            List<AttributeDescriptor> attributeDescriptors = store.getSchema().getAttributeDescriptors();
-            String typeName = null;
-            for (AttributeDescriptor ad : attributeDescriptors) {
-                // Get an attribute of type string. This because the username is almost always a string, and passing it to a Integer/Double will result in a invalid
-                // query which will not log the passed values (possibly because the use of geotools).
-                if (ad.getType().getBinding() == String.class) {
-                    typeName = ad.getLocalName();
-                    break;
-                }
-            }
-
-            if (typeName == null) {
-                typeName = store.getSchema().getAttributeDescriptors().get(0).getLocalName();
-                log.warn("Audittrail: cannot find attribute of type double/integer or string. Take the first attribute.");
-            }
-            String username = context.getRequest().getRemoteUser();
-            String[] dummyValues = new String[]{"a", "b"}; // use these values for creating a statement which will always fail: attribute1 = a AND attribute1 = b.
-            String valueToInsert = "username = " + username;
-            store.modifyFeatures(typeName, valueToInsert, CQL.toFilter(typeName + " = '" + dummyValues[0] + "' and " + typeName + " = '" + dummyValues[1] + "'"));
-
-        } catch (Exception ex) {
-            // Swallow all exceptions, because this inherently fails. It's only use is to log the application username, so it can be matched (via the database process id
-            // to the following insert/update/delete statement.
-        }
+        AuditTrailLogger logger = new AuditTrailLogger();
+        logger.setContext(context);
+        logger.setStore(store);
+        logger.setLog(log);
+        logger.addAuditTrailLog();
     }
 }
