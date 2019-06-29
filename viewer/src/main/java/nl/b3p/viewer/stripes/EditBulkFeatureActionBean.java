@@ -337,7 +337,7 @@ public class EditBulkFeatureActionBean extends LocalizableApplicationActionBean 
      * @return {@code true} when the configured attribute is flagged as
      * "readOnly"
      */
-    protected boolean isAttributeUserEditingDisabled(String attrName) {
+    private boolean isAttributeUserEditingDisabled(String attrName) {
         ConfiguredAttribute attribute = this.getAppLayer().getAttribute(this.getLayer().getFeatureType(), attrName);
         return (attribute != null) && attribute.isDisableUserEdit();
     }
