@@ -10,12 +10,16 @@ addons:
   apt:
     packages:
       - haveged
+      - nodejs
       # - git-lfs should be installed on trusty images
 
 services:
   - haveged
+  - docker
 
 before_install:
+  - docker-compose -f viewer-commons/docker/geoserver/docker-compose.yml up -d
+  - npm install -g wait-on
   - unset _JAVA_OPTIONS
   - echo $JAVA_HOME
   - export PAGER=cat
@@ -52,6 +56,7 @@ before_script:
 script:
   - ulimit -a
   - free -m
+  - wait-on -t 120000 http-get://localhost:8600/geoserver && echo "docker geoserver is up" || true
   # execute unit tests
   - mvn -e clean test -B
   # run integration tests on all modules except viewer-admin

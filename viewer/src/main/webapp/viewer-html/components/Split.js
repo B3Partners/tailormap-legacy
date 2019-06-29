@@ -48,7 +48,7 @@ Ext.define("viewer.components.Split", {
         iconUrl: "",
         layers: null,
         label: "",
-        cancelOtherControls: ["viewer.components.Edit", "viewer.components.Merge"],
+        cancelOtherControls: ["viewer.components.Edit", "viewer.components.EditBulk", "viewer.components.Merge"],
         details: {
             minWidth: 400,
             minHeight: 250

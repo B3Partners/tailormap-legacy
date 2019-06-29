@@ -1,0 +1,15 @@
+<layer>
+  <name>meaningless_unittest_table</name>
+  <id>LayerInfoImpl--7e791a08:16b65703d40:-7fbc</id>
+  <type>VECTOR</type>
+  <defaultStyle>
+    <id>StyleInfoImpl--6c9527a7:16b652c6790:-8000</id>
+  </defaultStyle>
+  <resource class="featureType">
+    <id>FeatureTypeInfoImpl--7e791a08:16b65703d40:-7fbd</id>
+  </resource>
+  <attribution>
+    <logoWidth>0</logoWidth>
+    <logoHeight>0</logoHeight>
+  </attribution>
+</layer>

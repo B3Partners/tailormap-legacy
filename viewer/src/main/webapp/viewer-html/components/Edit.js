@@ -43,6 +43,7 @@ Ext.define("viewer.components.Edit", {
     afterLoadAttributes: null,
     filterFeatureId: null,
     lastUsedValues:null,
+    formValuesAreBeingUpdated: false,
     // Boolean to check if window is hidden temporarily for mobile mode
     mobileHide: false,
     config: {
@@ -56,7 +57,7 @@ Ext.define("viewer.components.Edit", {
         allowCopy: false,
         allowNew: true,
         allowEdit: true,
-        cancelOtherControls: ["viewer.components.Merge", "viewer.components.Split"],
+        cancelOtherControls: ["viewer.components.Merge", "viewer.components.Split", "viewer.components.EditBulk"],
         formLayout: 'anchor',
         showEditLinkInFeatureInfo: false,
         editHelpText: "",
@@ -919,7 +920,11 @@ Ext.define("viewer.components.Edit", {
             value: fieldText,
             disabled: !this.allowedEditable(attribute),
             labelClsExtra: this.editLblClass,
-            allowBlank: !disallowNull
+            allowBlank: !disallowNull,
+            listeners: {
+                scope: this,
+                change: this.validateFormFieldChange
+            }
         };
         var input;
         if (attribute.editHeight) {
@@ -1037,7 +1042,11 @@ Ext.define("viewer.components.Edit", {
             allowBlank: !disallowNull,
             disabled: !this.allowedEditable(attribute),
             editable: !(attribute.hasOwnProperty('allowValueListOnly') && attribute.allowValueListOnly),
-            labelClsExtra: this.editLblClass
+            labelClsExtra: this.editLblClass,
+            listeners: {
+                scope: this,
+                change: this.validateFormFieldChange
+            }
         });
         
         //when device is mobile dont allow the touchend event. This will activate a field that is lying under the dropdown picker(ul)
@@ -1076,8 +1085,21 @@ Ext.define("viewer.components.Edit", {
 
         return input;
     },
-    setInputPanel: function (feature) {
+    validateFormFieldChange: function (input, newValue, oldValue) {
+        if (this.isChangeTriggeredByUserAction()) {
+            this.onFormFieldChange(input, newValue, oldValue)
+        }
+    },
+    isChangeTriggeredByUserAction: function () {
+        return !this.formValuesAreBeingUpdated && this.mode === 'edit'
+    },
+    setFormValues: function (feature) {
+        this.formValuesAreBeingUpdated = true;
         this.inputContainer.getForm().setValues(feature);
+        this.formValuesAreBeingUpdated = false;
+    },
+    setInputPanel: function (feature) {
+        this.setFormValues(feature);
     },
     selectedContentChanged: function () {
         if (this.vectorLayer === null) {
@@ -1136,7 +1158,7 @@ Ext.define("viewer.components.Edit", {
     },
     handleFeature: function (feature) {
         if (feature != null) {
-            this.inputContainer.getForm().setValues(feature);
+            this.setFormValues(feature);
             if (this.mode === "copy") {
                 this.currentFID = null;
             } else {
@@ -1277,7 +1299,7 @@ Ext.define("viewer.components.Edit", {
     },
     populateFormWithPreviousValues: function(){
         var feature = this.lastUsedValues[this.layerSelector.getValue().id];
-        this.inputContainer.getForm().setValues(feature);
+        this.setFormValues(feature);
     },
     edit: function () {
         this.hideMobilePopup();
@@ -1724,5 +1746,7 @@ Ext.define("viewer.components.Edit", {
             }
         }
         return map;
+    },
+    onFormFieldChange: function (input, newValue, oldValue) {
     }
 });

@@ -324,6 +324,7 @@
                                 <param>${viewerhtml.path}/common/ajax/CombineImage.js</param>
                                 <param>${viewerhtml.path}/common/ajax/FeatureInfo.js</param>
                                 <param>${viewerhtml.path}/common/ajax/EditFeature.js</param>
+                                <param>${viewerhtml.path}/common/ajax/EditBulkFeature.js</param>
                                 <param>${viewerhtml.path}/common/ajax/ArcQueryUtil.js</param>
                                 <param>${viewerhtml.path}/common/ajax/FeatureExtent.js</param>
                                 <!-- Abstracts MapComponent -->

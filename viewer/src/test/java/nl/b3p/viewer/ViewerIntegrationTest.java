@@ -94,7 +94,9 @@ public class ViewerIntegrationTest {
      */
     @AfterClass
     public static void tearDownClass() throws IOException {
-        client.close();
+        if (client != null) {
+            client.close();
+        }
     }
 
     /**

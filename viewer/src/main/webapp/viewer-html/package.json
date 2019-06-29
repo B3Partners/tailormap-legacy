@@ -1,9 +1,20 @@
 {
     "name": "flamingo-mc",
-    "version": "4.5.7",
-    "homepage": "https://github.com/flamingo-geocms/flamingo",
+    "version": "1.0.0",
+    "repository": "https://github.com/flamingo-geocms/flamingo",
+    "license": " AGPL-3.0-only",
+    "scripts": {
+        "test": "jasmine"
+    },
     "devDependencies": {
         "grunt": "1.0.0",
-        "grunt-svgstore": "1.0.0"
+        "grunt-svgstore": "1.0.0",
+        "http-server": "^0.11.1",
+        "jasmine-core": "^3.4.0",
+        "jsdom": "^15.1.1",
+        "karma": "^4.1.0",
+        "karma-chrome-launcher": "^2.2.0",
+        "karma-firefox-launcher": "^1.1.0",
+        "karma-jasmine": "^2.0.1"
     }
 }
