@@ -22,10 +22,10 @@ More about the versioning schema can be found in the wiki: [releases and contrib
 
 Please contact the team by email through `support@b3partners.nl` with all details 
 of the vulnerability, if you have a Github account, please provide that as well. 
-Optionally you can make a PR to provide a fix of the vulnerability. 
+Optionally you can make a Pull Request to provide a fix of the vulnerability. 
 
-Please be responsible in your disclosure by and try to prevent disclosing 
+Please be responsible in your disclosure and try to prevent disclosing 
 through Github issues or commit messages.
 
 Your mail should be notified within 1 working day (monday-friday) by the 
-support team and/or a depveloper.
+support team and/or a developer.
