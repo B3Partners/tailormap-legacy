@@ -619,6 +619,18 @@
         "showHelp": true
     },
     {
+        "className": "viewer.components.EditBulk",
+        "name": "Edit Bulk",
+        "shortName": "EdB",
+        "group": "Component",
+        "sources": ["Edit.js", "SelectedFeatures.js", "EditBulk.js"],
+        "configSource": ["ConfigObject.js","SelectionWindowConfig.js","EditBulk-config.js"],
+        "restrictions": ["rightmargin_top", "leftmargin_top","leftmargin_bottom","rightmargin_bottom","popupwindow","left_menu"],
+        "type": "popup",
+        "singleton": true,
+        "showHelp": true
+    },
+    {
         "className": "viewer.components.Split",
         "name": "Split",
         "shortName": "Sp",

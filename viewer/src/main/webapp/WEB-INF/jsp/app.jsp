@@ -139,6 +139,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <script type="text/javascript" src="${scriptDir}/CombineImage.js"></script>
                 <script type="text/javascript" src="${scriptDir}/FeatureInfo.js"></script>
                 <script type="text/javascript" src="${scriptDir}/EditFeature.js"></script>
+                <script type="text/javascript" src="${scriptDir}/EditBulkFeature.js"></script>
                 <script type="text/javascript" src="${scriptDir}/ArcQueryUtil.js"></script>
 
                 <c:set var="scriptDir" value="${contextPath}/viewer-html/common/viewercontroller/controller"/>
@@ -249,6 +250,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 "print":              <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.PrintActionBean"/></js:quote>,
                 "featureinfo":        <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.FeatureInfoActionBean"/></js:quote>,
                 "editfeature":        <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.EditFeatureActionBean"/></js:quote>,
+                "editbulkfeature":    <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.EditBulkFeatureActionBean"/></js:quote>,
                 "csw":                <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.CatalogSearchActionBean"/></js:quote>,
                 "advancedcsw":        <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.CatalogSearchActionBean" event="advancedSearch"/></js:quote>,
                 "unique":             <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.UniqueValuesActionBean"/></js:quote>,

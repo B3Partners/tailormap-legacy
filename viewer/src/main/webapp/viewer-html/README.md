@@ -13,3 +13,9 @@ After this command is completed the grunt task can be executed, simply run
     grunt
 
 This command combines all the SVG files in the svg folder to sprite.svg
+
+# Run unit tests with Karma
+
+    $(npm bin)/karma start
+
+Or if you use IntelliJ, you can run the tests after installing the Karma plugin.
