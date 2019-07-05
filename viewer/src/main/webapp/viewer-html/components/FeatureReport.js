@@ -114,10 +114,10 @@ Ext.define("viewer.components.FeatureReport", {
                     me.legendLayerList[l],
                     function (a, b) {
                         legendsToPrint.push(b);
-                    }),
+                    },
                     function () {
                         Ext.MessageBox.alert(i18next.t('viewer_components_featurereport_5'), i18next.t('viewer_components_featurereport_6'));
-                    };
+                    });
         }
         return legendsToPrint;
     },
