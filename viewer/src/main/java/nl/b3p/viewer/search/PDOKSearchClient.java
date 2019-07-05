@@ -66,7 +66,7 @@ public class PDOKSearchClient extends SearchClient {
     }
     
     public PDOKSearchClient(String filter){
-        server = new HttpSolrServer("http://geodata.nationaalgeoregister.nl/locatieserver");
+        server = new HttpSolrServer("http://geodata.nationaalgeoregister.nl/locatieserver/v3");
         wkt = new WKTReader2();
         this.filter = filter;
     }
@@ -80,7 +80,7 @@ public class PDOKSearchClient extends SearchClient {
             // add asterisk to make it match partial queries (for autosuggest)
             term += "*";
             if(this.filter != null){
-                term += " " + this.filter;
+                query.setFilterQueries(this.filter);
             }
             query.setQuery(term);
             // specify fields to retrieve (null values wil be omitted in the response),
