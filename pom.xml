@@ -317,7 +317,7 @@
                         <artifactId>commons-fileupload</artifactId>
                     </exclusion>
                     <exclusion>
-                    <!-- exclude java 6 tools.jar system scoped dependency 
+                    <!-- exclude java 6 tools.jar system scoped dependency
                          a transitive from org.apache.hadoop:hadoop-annotations:jar:2.2.0 -->
                         <groupId>jdk.tools</groupId>
                         <artifactId>jdk.tools</artifactId>
@@ -923,6 +923,8 @@
             </activation>
             <properties>
                 <java.version>11</java.version>
+                <project.build.targetVersion>1.8</project.build.targetVersion>
+                <maven.compiler.target>1.8</maven.compiler.target>
             </properties>
             <dependencyManagement>
                 <dependencies>
