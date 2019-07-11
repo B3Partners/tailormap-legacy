@@ -288,6 +288,13 @@
                 <groupId>org.geotools</groupId>
                 <artifactId>gt-wmts</artifactId>
                 <version>${geotools.version}</version>
+                <exclusions>
+                    <!-- GEOT-6341 (https://osgeo-org.atlassian.net/browse/GEOT-6341) -->
+                    <exclusion>
+                        <groupId>org.geotools</groupId>
+                        <artifactId>gt-epsg-hsql</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
 
             <!-- Solr dependencies for indexing and searching -->
