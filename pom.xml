@@ -170,6 +170,10 @@
                         <groupId>javax.persistence</groupId>
                         <artifactId>persistence-api</artifactId>
                     </exclusion>
+                    <exclusion>
+                        <groupId>org.geotools</groupId>
+                        <artifactId>gt-epsg-hsql</artifactId>
+                    </exclusion>
                 </exclusions>
             </dependency>
             <dependency>
