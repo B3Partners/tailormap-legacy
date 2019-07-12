@@ -421,7 +421,7 @@ public class AttributesActionBean extends LocalizableApplicationActionBean imple
         }
     }
 
-    private void setFilter(Query q,SimpleFeatureType ft, ApplicationLayer al, EntityManager em) throws Exception {
+    protected void setFilter(Query q, SimpleFeatureType ft, ApplicationLayer al, EntityManager em) throws Exception {
         if(filter != null && filter.trim().length() > 0) {
             Filter f = FlamingoCQL.toFilter(filter, em);
             f = (Filter)f.accept(new RemoveDistanceUnit(), null);
@@ -429,8 +429,6 @@ public class AttributesActionBean extends LocalizableApplicationActionBean imple
             f = FeatureToJson.reformatFilter(f, ft, includeRelations);
             q.setFilter(f);
         }
-
-        setAttributesNotNullFilters(q, al, ft, em);
     }
 
     private static final int MAX_CACHE_SIZE = 50;
@@ -512,7 +510,8 @@ public class AttributesActionBean extends LocalizableApplicationActionBean imple
                 final Query q = new Query(fs.getName().toString());
                 //List<String> propertyNames = FeatureToJson.setPropertyNames(appLayer,q,ft,false);
 
-                setFilter(q,ft, appLayer, em);
+                setFilter(q, ft, appLayer, em);
+                setAttributesNotNullFilters(q, appLayer, ft, em);
 
                 final FeatureSource fs2 = fs;
                 total = lookupTotalCountCache(new Callable<Integer>() {
