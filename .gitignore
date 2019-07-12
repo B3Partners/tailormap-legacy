@@ -14,3 +14,5 @@ vuln-check.log
 /.idea/
 *.iml
 target/
+# GH-issue 1493
+viewer/src/main/webapp/viewer-html/package-lock.json
