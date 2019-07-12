@@ -386,7 +386,7 @@ public class DownloadFeaturesActionBean extends LocalizableApplicationActionBean
         return featureTypeAttributes;
     }
 
-    private void setFilter(String filter, Query q, SimpleFeatureType ft, EntityManager em) throws Exception {
+    protected void setFilter(String filter, Query q, SimpleFeatureType ft, EntityManager em) throws Exception {
         if (filter != null && filter.trim().length() > 0) {
             Filter f = FlamingoCQL.toFilter(filter, em);
             f = (Filter) f.accept(new RemoveDistanceUnit(), null);
