@@ -656,6 +656,12 @@
                     <groupId>org.owasp</groupId>
                     <artifactId>dependency-check-maven</artifactId>
                     <version>5.1.0</version>
+                    <configuration>
+                        <skipSystemScope>true</skipSystemScope>
+                        <format>ALL</format>
+                        <suppressionFile>${project.basedir}/.mvn/owasp-suppression.xml</suppressionFile>
+                        <hintsFile>${project.basedir}/.mvn/owasp-hints.xml</hintsFile>
+                    </configuration>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.tomcat.maven</groupId>

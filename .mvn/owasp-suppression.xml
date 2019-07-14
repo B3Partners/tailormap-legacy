@@ -1,25 +1,47 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<suppressions xmlns="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.1.xsd">
-    <suppress>
-        <notes><![CDATA[
-      ignore postgresql-42.1.4.jar, false positive, CVE concerns perl scripts.
-      ]]></notes>
-        <gav regex="true">^org\.postgresql:postgresql:.*$</gav>
-        <cve>CVE-2017-8806</cve>
-    </suppress>
+<suppressions xmlns="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.3.xsd">
     <suppress>
         <notes><![CDATA[
       ignore gt-coverage jar, false positive wrt jpeg thumbnail disclosure.
       ]]></notes>
         <gav regex="true">^org\.geotools:gt-coverage:.*$</gav>
-        <!-- <cpe>cpe:/a:image_processing_software:image_processing_software</cpe> -->
-        <cve>CVE-2005-0406</cve>
+        <cpe>cpe:/a:image_processing_software:image_processing_software</cpe>
+        <cpe>cpe:/a:processing:processing</cpe>
+        <!--<cve>CVE-2005-0406</cve>-->
     </suppress>
     <suppress>
         <notes><![CDATA[
-      ignore gt-swing jar, false positive
+      ignore gt-jdbc jar false positive for "data-tools"
       ]]></notes>
-        <gav regex="true">^org\.geotools:gt-swing:.*$</gav>
-        <cve>CVE-2015-6737</cve>
+        <gav regex="true">^org\.geotools:gt-jdbc:.*$</gav>
+        <cpe>cpe:/a:data-tools_project:data_tools</cpe>
     </suppress>
+    <suppress>
+        <notes><![CDATA[
+      ignore gt-jdbc-sqlserver jar false positive "data-tools"
+      ]]></notes>
+        <gav regex="true">^org\.geotools\.jdbc:gt-jdbc-sqlserver:.*$</gav>
+        <cpe>cpe:/a:data-tools_project:data_tools</cpe>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+      ignore gt-main jar false positive "data-tools"
+      ]]></notes>
+        <gav regex="true">^org\.geotools:gt-main:.*$</gav>
+        <cpe>cpe:/a:data-tools_project:data_tools</cpe>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+      ignore gt-data jar false positive "data-tools"
+        ]]></notes>
+        <gav regex="true">^org\.geotools:gt-data:.*$</gav>
+        <cpe>cpe:/a:data-tools_project:data_tools</cpe>
+    </suppress>
+    <!--<suppress>-->
+    <!--<notes><![CDATA[-->
+    <!--ignore gt-swing jar, false positive-->
+    <!--]]></notes>-->
+    <!--<gav regex="true">^org\.geotools:gt-swing:.*$</gav>-->
+    <!--<cve>CVE-2015-6737</cve>-->
+    <!--</suppress>-->
 </suppressions>
