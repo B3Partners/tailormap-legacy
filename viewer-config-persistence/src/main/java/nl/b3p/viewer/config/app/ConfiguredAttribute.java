@@ -79,6 +79,10 @@ public class ConfiguredAttribute {
     private boolean disableUserEdit;
     
     private String label;
+    
+    private boolean automaticValue;
+    
+    private String automaticValueType;
 
     //<editor-fold defaultstate="collapsed" desc="getters and setters">
     public String getAttributeName() {
@@ -240,6 +244,22 @@ public class ConfiguredAttribute {
     public void setLabel(String label) {
         this.label = label;
     }
+
+    public boolean isAutomaticValue() {
+        return automaticValue;
+    }
+
+    public void setAutomaticValue(boolean automaticValue) {
+        this.automaticValue = automaticValue;
+    }
+
+    public String getAutomaticValueType() {
+        return automaticValueType;
+    }
+
+    public void setAutomaticValueType(String automaticValueType) {
+        this.automaticValueType = automaticValueType;
+    }
     //</editor-fold>
     
     public JSONObject toJSONObject() throws JSONException {
@@ -255,6 +275,8 @@ public class ConfiguredAttribute {
         o.put("editHeight", editHeight);
         o.put("allowValueListOnly", allowValueListOnly);
         o.put("disallowNullValue", disallowNullValue);
+        o.put("automaticValueType", automaticValueType);
+        o.put("automaticValue", automaticValue);
         o.put("folder_label", label);
         if(editValues != null) {
             try {
