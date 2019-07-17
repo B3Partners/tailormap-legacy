@@ -345,7 +345,7 @@ INSERT INTO START_LAYER (ID, CHECKED, SELECTED_INDEX, APPLICATION, APPLICATION_L
 INSERT INTO START_LAYER (ID, CHECKED, SELECTED_INDEX, APPLICATION, APPLICATION_LAYER, REMOVED) VALUES (27, false, null, 1, 4, false);
 INSERT INTO START_LAYER (ID, CHECKED, SELECTED_INDEX, APPLICATION, APPLICATION_LAYER, REMOVED) VALUES (28, false, null, 1, 5, false);
 
-INSERT INTO metadata (id, config_key, config_value) VALUES (1, 'database_version', '36');
+INSERT INTO metadata (id, config_key, config_value) VALUES (1, 'database_version', '37');
 
 INSERT INTO user_ (username, password) VALUES ('admin', '14c06474bec5e7def0304925d09f2b977af3146a');
 INSERT INTO user_ (username, password) VALUES ('pietje', '14c06474bec5e7def0304925d09f2b977af3146a');
