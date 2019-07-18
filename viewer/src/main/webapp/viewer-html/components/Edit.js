@@ -919,6 +919,7 @@ Ext.define("viewer.components.Edit", {
             fieldLabel: attribute.editAlias || attribute.alias || attribute.name,
             value: fieldText,
             disabled: !this.allowedEditable(attribute),
+            readOnly:  attribute.automaticValue,
             labelClsExtra: this.editLblClass,
             allowBlank: !disallowNull,
             listeners: {
@@ -933,12 +934,12 @@ Ext.define("viewer.components.Edit", {
         } else {
             input = Ext.create("Ext.form.field.Text", options);
         }
-        if (attribute.type === 'date') {
+        if (attribute.type === 'date' || attribute.type === 'timestamp' ) {
             // Flamingo uses new SimpleDateFormat("dd-MM-yyyy HH:mm:ss") in
             // FeatureToJson#formatValue eg. 14-11-2013 00:00:00
             // Ext uses PHP conventions! see:
-            // https://docs.sencha.com/extjs/5.1/5.1.0-apidocs/#!/api/Ext.Date
-            options.format = 'd-m-Y';
+            // https://docs.sencha.com/extjs/6.2.1/classic/Ext.Date.html
+            options.format = attribute.type === 'date' ? 'd-m-Y' : 'd-m-Y H:i:s';
             options.altFormats = 'd-m-y|d-M-Y';
             // ISO 8601 (local time + UTC offset)
             options.submitFormat = 'c';
@@ -952,6 +953,25 @@ Ext.define("viewer.components.Edit", {
 
         return input;
     },
+    
+    getAutomaticValue: function (type, attributeType) {
+        switch (type) {
+            case "user":
+                var user = FlamingoAppLoader.get("user");
+                if (user) {
+                    return user.name;
+                } else {
+                    return "";
+                }
+            case "dateTime":
+                var today = new Date();
+                var dateTime = Ext.Date.format(today, attributeType === 'timestamp' ? 'd-m-Y H:i:s' : 'd-m-Y');
+                return dateTime;
+                break;
+        }
+        return "";
+    },
+    
     createDynamicInput: function (attribute, values) {
         var disallowNull = attribute.hasOwnProperty('disallowNullValue') && attribute.disallowNullValue;
         var valueStore = Ext.create('Ext.data.Store', {
@@ -1095,6 +1115,7 @@ Ext.define("viewer.components.Edit", {
     },
     setFormValues: function (feature) {
         this.formValuesAreBeingUpdated = true;
+        this.setAutomaticValuesToFeature(feature);
         this.inputContainer.getForm().setValues(feature);
         this.formValuesAreBeingUpdated = false;
     },
@@ -1278,6 +1299,7 @@ Ext.define("viewer.components.Edit", {
     createNew: function () {
         this.hideMobilePopup();
         this.clearFeatureAndForm();
+        this.setFormValues({}); // setting the form to an empty object, fills the automatic fields
         this.config.viewerController.mapComponent.getMap().removeMarker("edit");
         this.mode = "new";
         var trace = this.showGeomType === "linestringtrace";
@@ -1464,7 +1486,18 @@ Ext.define("viewer.components.Edit", {
      * @return the changed feature
      */
     changeFeatureBeforeSave: function (feature) {
+        this.setAutomaticValuesToFeature(feature);
         return feature;
+    },
+    
+    setAutomaticValuesToFeature: function(feature){
+        for(var i = 0 ; i < this.appLayer.attributes.length ;i++){
+            var attr = this.appLayer.attributes[i];
+            if(attr.automaticValue){
+                var value = this.getAutomaticValue(attr.automaticValueType, attr.type);
+                feature[attr.name] = value;
+            }
+        }
     },
     /**
      * Can be overwritten to disable editing in the component/js
