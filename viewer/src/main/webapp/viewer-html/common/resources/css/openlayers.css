@@ -91,8 +91,11 @@
     background-image: url("../../openlayers/theme/default/img/default_off.png");
 }
 
-div.olControlMousePosition{
+div.olControlMousePosition:not(.anchored-coordinates) {
     right: 10px !important;
+}
+
+.olControlMousePosition {
     font-size: small !important;
 }
 

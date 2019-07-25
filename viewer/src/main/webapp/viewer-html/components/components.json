@@ -383,18 +383,11 @@
         "name": "Coordinates",
         "shortName": "Coörd",
         "sources": ["Coordinates.js"],
+        "configSource": ["ConfigObject.js", "Coordinates-config.js"],
         "group": "Map",
         "closureCompilerSafe": true,
-        "extPropertyGridConfigs": {
-            "propertyNames": {
-                "decimals": "Decimalen"
-            },
-            "source": {
-                "decimals": 2
-            }
-        },
         "singleton": true,
-        "restrictions": ["content_bottom"]
+        "restrictions": ["content_bottom", "content"]
     },
     {
         "className": "viewer.components.TOC",
