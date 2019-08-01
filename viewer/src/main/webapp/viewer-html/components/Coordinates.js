@@ -1,5 +1,5 @@
 /* 
- * Copyright (C) 2012-2013 B3Partners B.V.
+ * Copyright (C) 2012-2019 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -21,7 +21,7 @@
  * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
  */
 Ext.define ("viewer.components.Coordinates",{
-    extend: "viewer.components.Component",    
+    extend: "viewer.components.Component",
     constructor: function (conf){
         if (!conf){
             conf={};            
@@ -36,8 +36,32 @@ Ext.define ("viewer.components.Coordinates",{
         
         var comp = this.config.viewerController.mapComponent.createComponent(conf);
         this.config.viewerController.mapComponent.addComponent(comp);
+        this.alignComponent();
         
         return this;
+    },
+    alignComponent : function () {
+        var left = Number(this.config.left || 10);
+        var top = Number(this.config.top || 10);
+        var pos = [left, top];
+        var align = this.config.alignposition || 'br';
+        if (left === 10 && top === 10 && align === "br") {
+            // Keep current behaviour when defaults are set
+            return;
+        }
+
+        var divEl = Ext.select(".olControlMousePosition");
+        // We need a fixed width/height here because div is hidden when starting the application and width/height is needed for alignment
+        divEl.setStyle({ "min-width": "150px", "min-height": "25px", "bottom": "auto", "right": "auto" });
+        divEl.addCls("anchored-coordinates");
+        if(align.substr(0, 1) === 'b') {
+            pos[1] = pos[1] * -1;
+        }
+        if(align.substr(1) === 'r') {
+            pos[0] = pos[0] * -1;
+        }
+        divEl.alignTo(this.config.viewerController.getMapId(), [align, align].join('-'), pos);
+        this.config.viewerController.anchorTo(divEl, this.config.viewerController.getMapId(), [align, align].join('-'), pos);
     },
     getExtComponents: function() {
         return [];
