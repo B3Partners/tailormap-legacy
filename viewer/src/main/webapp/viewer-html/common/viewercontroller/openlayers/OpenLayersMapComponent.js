@@ -474,8 +474,8 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
             var options = { numDigits: config.decimals};
             if(this.contentBottom){
                 options.div = this.contentBottom;
-                config.cssClass = "olControlMousePosition";
             }
+            config.cssClass = "olControlMousePosition";
             comp = Ext.create("viewer.viewercontroller.openlayers.OpenLayersComponent",config, new OpenLayers.Control.MousePosition(options));
         }else if(type == viewer.viewercontroller.controller.Component.SCALEBAR){
             var frameworkOptions={}
