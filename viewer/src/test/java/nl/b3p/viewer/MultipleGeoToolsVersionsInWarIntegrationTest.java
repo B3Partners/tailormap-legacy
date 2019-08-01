@@ -21,8 +21,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
 /**
- * Check content of viewer war for duplicate van GeoTools.
- * Use
+ * Check content of viewer war for duplicate versions of GeoTools by checking if there are mre than
+ * one {@code gt-main} artifacts. Use:
  * {@code mvn -pl viewer clean verify -Dit.test=MultipleGeoToolsVersionsInWarIntegrationTest -Dtest.skip.integrationtests=true}
  * to run just this test.
  */
@@ -66,7 +66,6 @@ public class MultipleGeoToolsVersionsInWarIntegrationTest {
             while (e.hasMoreElements()) {
                 ZipEntry entry = e.nextElement();
                 if (!entry.isDirectory()) {
-                    LOG.debug(entry.getName());
                     if (entry.getName().contains("gt-main")) {
                         result.add(entry);
                     }
@@ -80,6 +79,5 @@ public class MultipleGeoToolsVersionsInWarIntegrationTest {
             LOG.error(e);
             fail(e.getLocalizedMessage());
         }
-
     }
 }
