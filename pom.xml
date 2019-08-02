@@ -48,7 +48,7 @@
         <hsqldb.version>2.5.0</hsqldb.version>
         <test.persistence.unit>viewer-config-hsqldb</test.persistence.unit>
         <postgresql.version>42.2.6</postgresql.version>
-        <mssql.version>7.2.2.jre8</mssql.version>
+        <mssql.version>7.4.0.jre8</mssql.version>
         <oracle.version>19.3.0.0</oracle.version>
         <apache.poi.version>4.1.0</apache.poi.version>
         <jakarta.mail.version>1.6.3</jakarta.mail.version>
@@ -60,7 +60,7 @@
         or as part of a profile, see eg. 'travis-ci' profile in viewer -->
         <test.skip.integrationtests>false</test.skip.integrationtests>
         <maven-surefire-plugin.version>3.0.0-M3</maven-surefire-plugin.version>
-        <tomcat.version>7.0.94</tomcat.version>
+        <tomcat.version>7.0.96</tomcat.version>
         <jacoco-maven-plugin.version>0.8.4</jacoco-maven-plugin.version>
         <!--<jacoco.it.execution.data.file>${project.build.directory}/jacoco-it.exec</jacoco.it.execution.data.file>-->
         <!--<jacoco.ut.execution.data.file>${project.build.directory}/jacoco-ut.exec</jacoco.ut.execution.data.file>-->
@@ -541,7 +541,7 @@
             <dependency>
                 <groupId>org.apache.tika</groupId>
                 <artifactId>tika-core</artifactId>
-                <version>1.21</version>
+                <version>1.22</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
