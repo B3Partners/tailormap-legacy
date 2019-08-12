@@ -17,7 +17,6 @@
 package nl.b3p.viewer.stripes;
 
 import net.sourceforge.stripes.controller.LifecycleStage;
-import nl.b3p.viewer.util.AuditTrailLogger;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.io.WKTReader;
 import java.io.IOException;
@@ -160,7 +159,7 @@ public class EditFeatureActionBean extends LocalizableApplicationActionBean impl
         return new StreamingResolution("application/json", new StringReader(response.toString(4)));
     }
 
-    public JSONObject editResponse() throws JSONException {
+    /* no modifier - for unit testing */ JSONObject editResponse() throws JSONException {
         JSONObject json = new JSONObject();
 
         json.put("success", Boolean.FALSE);
@@ -198,7 +197,6 @@ public class EditFeatureActionBean extends LocalizableApplicationActionBean impl
                     break;
                 }
                 store = (SimpleFeatureStore)fs;
-                addAuditTrailLog();
                 jsonFeature = getJsonFeature(feature);
                 if (!this.isFeatureWriteAuthorized(appLayer,jsonFeature,context.getRequest())){
                      error = getBundle().getString("viewer.editfeatureactionbean.6");
@@ -601,13 +599,5 @@ public class EditFeatureActionBean extends LocalizableApplicationActionBean impl
             }
         }
         return true;
-    }
-
-    private void addAuditTrailLog() {
-        AuditTrailLogger logger = new AuditTrailLogger();
-        logger.setContext(context);
-        logger.setStore(store);
-        logger.setLog(log);
-        logger.addAuditTrailLog();
     }
 }
