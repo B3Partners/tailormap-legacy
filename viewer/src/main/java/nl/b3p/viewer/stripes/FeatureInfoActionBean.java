@@ -238,7 +238,7 @@ public class FeatureInfoActionBean extends LocalizableApplicationActionBean impl
         return new StreamingResolution("application/json", new StringReader(responses.toString(4)));
     }
 
-    public JSONArray infoResponses() throws JSONException {
+    /* no modifier - for unit testing */ JSONArray infoResponses() throws JSONException {
         JSONArray queries = new JSONArray(queryJSON);
 
         JSONArray responses = new JSONArray();
