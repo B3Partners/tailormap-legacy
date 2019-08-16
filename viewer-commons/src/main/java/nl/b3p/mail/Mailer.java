@@ -72,9 +72,11 @@ public class Mailer {
         Address from = new InternetAddress(fromEmail, fromName);
         MimeMessage msg = new MimeMessage(getMailSession());
         msg.setFrom(from);
-        msg.addRecipient(Message.RecipientType.TO, new InternetAddress(email));
+        InternetAddress[] emailAddresses = InternetAddress.parse(email);
+        msg.addRecipients(Message.RecipientType.TO, emailAddresses);
         if(cc != null){
-            msg.addRecipient(Message.RecipientType.CC, new InternetAddress(cc));
+            InternetAddress[] ccAddresses = InternetAddress.parse(cc);
+            msg.addRecipients(Message.RecipientType.CC, ccAddresses);
         }
         msg.setSubject(subject);
         msg.setSentDate(new Date());
@@ -99,7 +101,8 @@ public class Mailer {
         Address from = new InternetAddress(fromEmail, fromName);
         Message msg = new MimeMessage(getMailSession());
         msg.setFrom(from);
-        msg.addRecipient(Message.RecipientType.TO, new InternetAddress(email));
+        InternetAddress[] emailAddresses = InternetAddress.parse(email);
+        msg.addRecipients(Message.RecipientType.TO, emailAddresses);
         msg.setSubject(subject);
         msg.setSentDate(new Date());        
         
