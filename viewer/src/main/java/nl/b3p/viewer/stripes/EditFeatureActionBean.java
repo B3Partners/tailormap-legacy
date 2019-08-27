@@ -21,7 +21,9 @@ import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.io.WKTReader;
 import java.io.IOException;
 import java.io.StringReader;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import javax.persistence.EntityManager;
@@ -86,6 +88,8 @@ public class EditFeatureActionBean extends LocalizableApplicationActionBean impl
     protected JSONObject jsonFeature;
 
     private AuditMessageObject auditMessageObject;
+    private final SimpleDateFormat datetime = new SimpleDateFormat("dd-MM-yyy HH:mm:ss");
+    private final SimpleDateFormat date = new SimpleDateFormat("dd-MM-yyy");
 
     //<editor-fold defaultstate="collapsed" desc="getters and setters">
     @Override
@@ -467,6 +471,17 @@ public class EditFeatureActionBean extends LocalizableApplicationActionBean impl
                     g = new WKTReader().read(wkt);
                 }
                 f.setDefaultGeometry(g);
+            } else if(ad.getType().getBinding().equals(java.sql.Date.class) || ad.getType().getBinding().equals(java.sql.Timestamp.class)){
+                String v = jsonFeature.optString(ad.getLocalName());
+                Date d = null;
+                if (v != null) {
+                    if (ad.getType().getBinding().equals(java.sql.Timestamp.class)) {
+                        d = datetime.parse(v); 
+                   }else{
+                        d = date.parse(v);
+                    }
+                }
+                f.setAttribute(ad.getLocalName(), d);
             } else {
                 String v = jsonFeature.optString(ad.getLocalName());
                 f.setAttribute(ad.getLocalName(), StringUtils.defaultIfBlank(v, null));

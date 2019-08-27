@@ -895,6 +895,36 @@ Ext.define('vieweradmin.components.ApplicationTreeLayer', {
             },
             {
                 fieldLabel: i18next.t('viewer_admin_applicationtreelayer_58'), name: 'disallowNullValue', inputValue: 1, checked: attribute.disallowNullValue || 0, xtype: 'checkbox'
+            },
+            {
+                xtype: 'container',
+                layout: 'hbox',
+                items: [
+                    {
+                        fieldLabel: i18next.t('viewer_admin_applicationtreelayer_automaticValue'), name: 'automaticValue', 
+                        inputValue: false, 
+                        checked: attribute.automaticValue || false, 
+                        xtype: 'checkbox',
+                        listeners:{
+                            change:{
+                                scope:this,
+                                fn: function(comp, value){
+                                    this.getComponentByItemId("#automaticValueType" + attribute.id).setDisabled (!value);
+                                }
+                            }
+                        }
+                    },
+                    {
+                        value: attribute.automaticValueType, 
+                        itemId: 'automaticValueType' + attribute.id,
+                        name: 'automaticValueType',
+                        margin: "0 0 0 10",
+                        disabled: !attribute.automaticValue,
+                        store: [['dateTime', i18next.t('viewer_admin_applicationtreelayer_automaticValueDateTime')],
+                            ['user', i18next.t('viewer_admin_applicationtreelayer_automaticValueUser')]], 
+                        xtype: 'combobox'
+                    }
+                ]
             }
         ];
     },
@@ -1016,8 +1046,8 @@ Ext.define('vieweradmin.components.ApplicationTreeLayer', {
     },
 
     getAttributeEditHeight: function(type) {
-        var STATIC_HEIGHT = 370;
-        var DYNAMIC_HEIGHT = 505;
+        var STATIC_HEIGHT = 415;
+        var DYNAMIC_HEIGHT = 550;
         return type === 'dynamic' ? DYNAMIC_HEIGHT : STATIC_HEIGHT;
     },
 

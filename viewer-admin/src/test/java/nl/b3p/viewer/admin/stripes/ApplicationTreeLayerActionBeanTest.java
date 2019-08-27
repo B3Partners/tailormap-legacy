@@ -119,6 +119,8 @@ public class ApplicationTreeLayerActionBeanTest extends TestUtil {
         config.put("name", "id");
         config.put("selectable", true);
         config.put("valueList", "static");
+        config.put("automaticValue", false);
+        config.put("automaticValueType", "string");
         attributesConfig = new JSONArray();
         attributesConfig.put(config);
     }

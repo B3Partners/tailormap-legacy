@@ -490,6 +490,17 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
                 if (configObject.has("disallowNullValue")) {
                     appAttribute.setDisallowNullValue(configObject.getBoolean("disallowNullValue"));
                 }
+                
+                boolean automaticValue = configObject.getBoolean("automaticValue");
+                if (configObject.has("automaticValue")) {
+                    appAttribute.setAutomaticValue(automaticValue);
+                }
+                
+                if (configObject.has("automaticValueType") && automaticValue ){
+                    appAttribute.setAutomaticValueType(configObject.optString("automaticValueType"));
+                }else{
+                    appAttribute.setAutomaticValueType(null);
+                }
                 if (configObject.has("disableUserEdit")) {
                     appAttribute.setDisableUserEdit(configObject.getBoolean("disableUserEdit"));
                 }
