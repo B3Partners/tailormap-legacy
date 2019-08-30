@@ -425,6 +425,18 @@
                             </sourceFiles>
                             <outputFile>${minify.outputdir}/components.json</outputFile>
                         </compilation>
+                        <compilation>
+                            <compilationLevel>SIMPLE_OPTIMIZATIONS</compilationLevel>
+                            <compilerOptions>
+                                <prettyPrint>true</prettyPrint>
+                            </compilerOptions>
+                            <externFiles />
+                            <sourceFiles>
+                                <param>${viewerhtml.path}/components/Edit.js</param>
+                                <param>${viewerhtml.path}/components/CurrentLocation.js</param>
+                            </sourceFiles>
+                            <outputFile>${minify.outputdir}/components-min.js</outputFile>
+                        </compilation>
                     </compilations>
                 </configuration>
             </plugin>
@@ -565,7 +577,7 @@
                             </execution>
                         </executions>
                         <dependencies>
-                           <dependency>
+                            <dependency>
                                 <groupId>com.sun.mail</groupId>
                                 <artifactId>jakarta.mail</artifactId>
                                 <version>${jakarta.mail.version}</version>
@@ -669,7 +681,7 @@
                             </execution>
                         </executions>
                         <dependencies>
-                           <dependency>
+                            <dependency>
                                 <groupId>com.sun.mail</groupId>
                                 <artifactId>jakarta.mail</artifactId>
                                 <version>${jakarta.mail.version}</version>
