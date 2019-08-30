@@ -252,7 +252,7 @@ Ext.define("viewer.components.Edit", {
                     {
                         html: i18next.t("viewer_components_edit_geomtoggle_label"),
                         xtype: "container",
-                        margin: '0 0 5 0',
+                        margin: '0 0 5 0'
                     },
                     {
                         xtype: "segmentedbutton",
@@ -270,10 +270,10 @@ Ext.define("viewer.components.Edit", {
                         listeners: {
                             toggle: function(container, button, pressed) {
                                 if (button.getItemId() === "geomToggle_polygon") {
-                                    this.newGeomType = "Polygon"
+                                    this.newGeomType = "Polygon";
                                 }
                                 if (button.getItemId() === "geomToggle_circle") {
-                                    this.newGeomType = "Circle"
+                                    this.newGeomType = "Circle";
                                 }
                                 this.vectorLayer.removeAllFeatures();
                                 this.vectorLayer.drawFeature(this.newGeomType);
@@ -1107,11 +1107,11 @@ Ext.define("viewer.components.Edit", {
     },
     validateFormFieldChange: function (input, newValue, oldValue) {
         if (this.isChangeTriggeredByUserAction()) {
-            this.onFormFieldChange(input, newValue, oldValue)
+            this.onFormFieldChange(input, newValue, oldValue);
         }
     },
     isChangeTriggeredByUserAction: function () {
-        return !this.formValuesAreBeingUpdated && this.mode === 'edit'
+        return !this.formValuesAreBeingUpdated && this.mode === 'edit';
     },
     setFormValues: function (feature) {
         this.formValuesAreBeingUpdated = true;
