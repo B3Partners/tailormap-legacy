@@ -294,9 +294,6 @@ Ext.define("viewer.components.Legend", {
         if (legendScale < mapResolution) {
             return;
         }
-        if(curScale > legendScale){
-            return null;
-        }
 
         this.config.viewerController.getLayerLegendInfo(
             appLayer,
