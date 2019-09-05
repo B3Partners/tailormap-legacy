@@ -435,7 +435,7 @@
                                 <param>${viewerhtml.path}/components/Edit.js</param>
                                 <param>${viewerhtml.path}/components/CurrentLocation.js</param>
                             </sourceFiles>
-                            <outputFile>${minify.outputdir}/components-min.js</outputFile>
+                            <outputFile>${project.build.directory}/compiled-components-temp.js</outputFile>
                         </compilation>
                     </compilations>
                 </configuration>
