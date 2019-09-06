@@ -98,8 +98,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     <script type="text/javascript" src="${contextPath}/viewer-html/common/openlayers/OpenLayers.js"></script>
                 </c:otherwise>
             </c:choose>
+            <script type="text/javascript" src="${contextPath}/viewer-html/common/overrides.js"></script>
         </c:if>
-                         
+                    
         <c:if test="${actionBean.viewerType == 'openlayers5'}">
                <link href="${contextPath}/viewer-html/common/ol/ol.css" rel="stylesheet">  
                <link href="${contextPath}/viewer-html/common/resources/css/openlayers.css" rel="stylesheet">
@@ -178,6 +179,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <c:choose>
                     <c:when test="${actionBean.viewerType == 'openlayers'}">
                         <c:set var="scriptDir" value="${contextPath}/viewer-html/common/viewercontroller/openlayers"/>
+                        <script type="text/javascript" src="${contextPath}/viewer-html/common/overrides.js"></script>
                         <script type="text/javascript" src="${scriptDir}/OpenLayersLayer.js"></script>
                         <script type="text/javascript" src="${scriptDir}/OpenLayersArcLayer.js"></script>
                         <script type="text/javascript" src="${scriptDir}/OpenLayersArcIMSLayer.js"></script>

@@ -384,6 +384,8 @@
                             </compilerOptions>
                             <externFiles />
                             <sourceFiles>
+                                <!-- openlayers overrides -->
+                                <param>${viewerhtml.path}/common/overrides.js</param>
                                 <!-- OpenLayers -->
                                 <param>${viewerhtml.path}/common/viewercontroller/openlayers/OpenLayersLayer.js</param>
                                 <param>${viewerhtml.path}/common/viewercontroller/openlayers/OpenLayersArcLayer.js</param>
