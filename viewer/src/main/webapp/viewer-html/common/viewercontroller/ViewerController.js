@@ -131,7 +131,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             }
             var component = comps[c];
             if(component.className == "viewer.mapcomponents.FlamingoMap" ||
-                component.className == "viewer.mapcomponents.OpenLayersMap" || component.className == "viewer.mapcomponents.OlMap"){
+                component.className == "viewer.mapcomponents.OpenLayersMap" || component.className == "viewer.mapcomponents.OpenLayers5Map"){
                 config = component.config;
                 break;
             }
@@ -145,7 +145,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             this.mapComponent = new viewer.viewercontroller.FlamingoMapComponent(this, mapId,config);
         }else if(viewerType === "openlayers") {
             this.mapComponent = new viewer.viewercontroller.OpenLayersMapComponent(this, mapId,config);
-        }else if(viewerType === "ol"){
+        }else if(viewerType === "openlayers5"){
             this.mapComponent = new viewer.viewercontroller.OlMapComponent(this, mapId, config);
             
         }else{
@@ -158,7 +158,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         this.mapComponent.addListener(viewer.viewercontroller.controller.Event.ON_CONFIG_COMPLETE,this.onMapContainerLoaded,this);
         this.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE, this.onSelectedContentChanged,this);
 
-        if(viewerType === "openlayers" || viewerType == "ol") {
+        if(viewerType === "openlayers" || viewerType == "openlayers5") {
             this.mapComponent.fireEvent(viewer.viewercontroller.controller.Event.ON_CONFIG_COMPLETE);
         }
 
@@ -330,7 +330,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         }
 
         // XXX
-        if(className == "viewer.mapcomponents.FlamingoMap" || className == "viewer.mapcomponents.OpenLayersMap" || className == "viewer.mapcomponents.OlMap") {
+        if(className == "viewer.mapcomponents.FlamingoMap" || className == "viewer.mapcomponents.OpenLayersMap" || className == "viewer.mapcomponents.OpenLayers5Map") {
             return null;
         }
 

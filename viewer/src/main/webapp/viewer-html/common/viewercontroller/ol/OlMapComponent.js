@@ -124,8 +124,8 @@ Ext.define("viewer.viewercontroller.OlMapComponent",{
         options.mapComponent=this;
         options.viewerController = this.viewerController;
         options.domId=this.domId;
-        var olMap = Ext.create("viewer.viewercontroller.ol.OlMap",options);
-        return olMap;
+        var openLayers5Map = Ext.create("viewer.viewercontroller.ol.OpenLayers5Map",options);
+        return openLayers5Map;
     },
     
     createTilingLayer : function (name,url, options){
@@ -203,7 +203,7 @@ Ext.define("viewer.viewercontroller.OlMapComponent",{
     },
     
     addMap : function(map) {
-        if (!(map instanceof viewer.viewercontroller.ol.OlMap)){
+        if (!(map instanceof viewer.viewercontroller.ol.OpenLayers5Map)){
             Ext.Error.raise({msg: "The given map is not of the type 'OlMap'"});
         }
         if (this.maps.length>=1)

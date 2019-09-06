@@ -423,7 +423,7 @@
                             <externFiles />
                             <sourceFiles>
                                 <param>${viewerhtml.path}/common/viewercontroller/ol/OlLayer.js</param>
-                                <param>${viewerhtml.path}/common/viewercontroller/ol/OlMap.js</param>
+                                <param>${viewerhtml.path}/common/viewercontroller/ol/OpenLayers5Map.js</param>
                                 <param>${viewerhtml.path}/common/viewercontroller/ol/Utils.js</param>
                                 <param>${viewerhtml.path}/common/viewercontroller/ol/OlTilingLayer.js</param>
                                 <param>${viewerhtml.path}/common/viewercontroller/ol/OlMapComponent.js</param>

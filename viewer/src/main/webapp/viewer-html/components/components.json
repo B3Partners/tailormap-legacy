@@ -33,9 +33,9 @@
     },
 
     {
-        "className": "viewer.mapcomponents.OlMap",
-        "name": "Ol-Map",
-        "shortName": "OL",
+        "className": "viewer.mapcomponents.OpenLayers5Map",
+        "name": "OpenLayer5",
+        "shortName": "OL5",
         "group": "Map",
         "singleton": true,
         "restrictions": ["content"],

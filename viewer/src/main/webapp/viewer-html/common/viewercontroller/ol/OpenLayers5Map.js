@@ -6,7 +6,7 @@
 
 /* global ol */
 
-Ext.define ("viewer.viewercontroller.ol.OlMap",{
+Ext.define ("viewer.viewercontroller.ol.OpenLayers5Map",{
     extend: "viewer.viewercontroller.controller.Map",
     layersLoading : null,
     utils:null,
@@ -17,7 +17,7 @@ Ext.define ("viewer.viewercontroller.ol.OlMap",{
      * @see viewer.viewercontroller.controller.Map#constructor
      */  
     constructor: function(config){
-        viewer.viewercontroller.ol.OlMap.superclass.constructor.call(this, config);
+        viewer.viewercontroller.ol.OpenLayers5Map.superclass.constructor.call(this, config);
         this.initConfig(config);
         this.utils = Ext.create("viewer.viewercontroller.ol.Utils");
         var maxBounds=null;
@@ -275,7 +275,7 @@ Ext.define ("viewer.viewercontroller.ol.OlMap",{
                 this.frameworkMap.on(olSpecificEvent,function(args){me.handleEvent(args)},me);
             }
         }
-        viewer.viewercontroller.ol.OlMap.superclass.addListener.call(this,event,handler,scope);
+        viewer.viewercontroller.ol.OpenLayers5Map.superclass.addListener.call(this,event,handler,scope);
     },
     
     removeListener : function (event,handler,scope){
@@ -294,7 +294,7 @@ Ext.define ("viewer.viewercontroller.ol.OlMap",{
                     this.frameworkMap.un(olSpecificEvent,this.handleEvent,this);
                 }
             }            
-            viewer.viewercontroller.ol.OlMap.superclass.removeListener.call(this,event,handler,scope);
+            viewer.viewercontroller.ol.OpenLayers5Map.superclass.removeListener.call(this,event,handler,scope);
         }else{
             this.viewerController.logger.warning("Event not listed in OpenLayersMapComponent >"+ event + "<. The application  might not work correctly.");
         }
