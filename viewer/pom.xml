@@ -455,7 +455,7 @@
                                 <param>${viewerhtml.path}/common/viewercontroller/ol/tools/DragPan.js</param>
                                 <param>${viewerhtml.path}/common/viewercontroller/ol/tools/StreetViewButton.js</param>
                             </sourceFiles>
-                            <outputFile>${minify.outputdir}/ol-min.js</outputFile>
+                            <outputFile>${minify.outputdir}/openlayers5-min.js</outputFile>
                         </compilation>
                         <compilation>
                             <compilationLevel>WHITESPACE_ONLY</compilationLevel>
