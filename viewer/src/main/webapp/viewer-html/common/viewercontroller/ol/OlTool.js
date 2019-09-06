@@ -30,7 +30,9 @@ Ext.define("viewer.viewercontroller.ol.OlTool",{
       this.panelTool.className = "svg-tool "+conf.class+'ItemInactive';
       this.panelTool.title = (conf.tooltip) ? conf.tooltip : "";
       this.panelTool.id = conf.id;
-      var spriteLink = "/viewer/viewer-html/sprite.svg#icon-"+conf.class.toLowerCase();
+      if(conf.id !== "defaultTool"){
+          var spriteLink = "/viewer/viewer-html/sprite.svg#icon-"+conf.class.toLowerCase();
+        }
       this.panelTool.innerHTML = [
                     '<div class="svg-click-area"></div>', // An extra transparent DIV is added to fix issue where button could not be clicked in IE
                     '<svg role="img" title=""><use xlink:href="'+spriteLink+'"/></svg>'

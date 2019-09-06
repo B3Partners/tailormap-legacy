@@ -41,8 +41,7 @@ Ext.define ("viewer.viewercontroller.ol.OpenLayers5Map",{
         config.restrictedExtent = maxBounds;
         this.frameworkMap = new ol.Map({
         target: config.domId,
-        controls: [],
-        interactions: [new ol.interaction.MouseWheelZoom()],
+        controls: ol.control.defaults({zoom:false}),
         keyboardEventTarget: document,
         view: new ol.View({
             projection: config.projection,

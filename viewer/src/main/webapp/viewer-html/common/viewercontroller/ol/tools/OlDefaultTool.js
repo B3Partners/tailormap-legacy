@@ -17,16 +17,13 @@ Ext.define("viewer.viewercontroller.ol.tools.OlDefaultTool",{
 
      var controlOptions = {
             displayClass: "olControlDefault",
-            type: "hallo",
-            target: "mart",
+            type: "default",
             title: conf.tooltip
         };
       var olTool = new ol.control.Control(controlOptions);
-      for(var i in controlOptions){
-          olTool.set(i,controlOptions[i],true);
-      }
+
       viewer.viewercontroller.ol.tools.OlIdentifyTool.superclass.constructor.call(this,conf,olTool);
-      
+
       this.setType(viewer.viewercontroller.controller.Tool.DEFAULT);
       
       this.map=this.config.viewerController.mapComponent.getMap();
@@ -49,10 +46,7 @@ Ext.define("viewer.viewercontroller.ol.tools.OlDefaultTool",{
         this.getViewerController().mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_REMOVED,this.onRemoveLayer,this);
         
         
-        this.getFrameworkTool().on("activate",this.activate,this);
-        this.getFrameworkTool().on("deactivate",this.deactivate,this);
         
-        //this.setUseWMSGetFeatureInfo(true);
       
       return this;
       },
@@ -60,10 +54,6 @@ Ext.define("viewer.viewercontroller.ol.tools.OlDefaultTool",{
       activate: function(){
         this.active=true;
         this.mapClick.activateTool();
-        //this.getFrameworkObject().activate();
-        if (this.wmsGetFeatureInfoControl!=null){
-            this.wmsGetFeatureInfoControl.activate();
-        }
          
       },
       
@@ -71,10 +61,6 @@ Ext.define("viewer.viewercontroller.ol.tools.OlDefaultTool",{
       deactivate: function(){  
         this.active=false;
         this.mapClick.deactivateTool();
-        //this.getFrameworkObject().deactivate();
-        if (this.wmsGetFeatureInfoControl!=null){
-            this.wmsGetFeatureInfoControl.deactivate();
-        }
     }
 
 
