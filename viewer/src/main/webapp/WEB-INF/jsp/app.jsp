@@ -100,7 +100,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             </c:choose>
             <script type="text/javascript" src="${contextPath}/viewer-html/common/overrides.js"></script>
         </c:if>
-                    
+        <script type="text/javascript" src="${contextPath}/resources/js/FileSaver.js"></script>
+            
         <c:if test="${actionBean.viewerType == 'openlayers5'}">
                <link href="${contextPath}/viewer-html/common/ol/ol.css" rel="stylesheet">  
                <link href="${contextPath}/viewer-html/common/resources/css/openlayers.css" rel="stylesheet">
