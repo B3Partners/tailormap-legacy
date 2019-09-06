@@ -225,11 +225,16 @@ Ext.define("viewer.components.sf.SimpleFilter",{
             return;
         }
         this.reset();
-        var extraFilter = reset ? "" : this.parentFilterInstance.getCQL(this.config.filterConfig.linkedFilterAttribute, this.parentFilterInstance.getValue(),true);
+        var extraFilter = "";
+        if (!reset) {
+            var isCombo = this.parentFilterInstance instanceof viewer.components.sf.Combo;
+            extraFilter = isCombo
+                ? this.parentFilterInstance.getCQL(this.config.filterConfig.linkedFilterAttribute, this.parentFilterInstance.getValue(), true)
+                : this.parentFilterInstance.getCQL();
+        }
         this.initCalculatedValues(extraFilter);
-        
         this.addListener(viewer.viewercontroller.controller.Event.ON_FILTER_VALUES_UPDATED,function(){
-            this.setFilter(extraFilter,true,reset);
+            this.setFilter(extraFilter,true, reset);
         }, this,{single:true});
         
     },
@@ -424,7 +429,9 @@ Ext.define("viewer.components.sf.Radio", {
         var cql = "";
         var mustEscape = this.mustEscapeAttribute();
         if (checkbox.getGroupValue()) {
-            cql = this.config.attributeName + " = " + (mustEscape ? "'" : "") + this.sanitizeValue(checkbox.getGroupValue(),mustEscape) + (mustEscape ? "'" : "");
+            var value = checkbox.getGroupValue();
+            var operator = value.indexOf('%') === -1 ? ' = ' : ' ILIKE ';
+            cql = this.config.attributeName + operator + (mustEscape ? "'" : "") + this.sanitizeValue(value,mustEscape) + (mustEscape ? "'" : "");
         }
         return cql;
     }
@@ -875,14 +882,14 @@ Ext.define("viewer.components.sf.Slider", {
             }
         }
 
-        if(c.min === "min"){
+        if(c.min === "min" || c.min === ""){
             min = 0;
             this.retrieveMinVal = true;
         }else{
             min = c.min;
         }
 
-        if(c.max === "max"){
+        if(c.max === "max" || c.max === ""){
             max = 0;
             this.retrieveMaxVal = true;
         }else{
@@ -1027,6 +1034,9 @@ Ext.define("viewer.components.sf.Slider", {
     reset: function () {
         this.slider.setValue(this.startValues);
         this.callParent();
+    },
+    getValue:function(){
+        return this.slider.getValue();
     }
 });
 
@@ -1189,6 +1199,8 @@ Ext.define("viewer.components.sf.Date", {
             start = new Date(curr.setDate(first));
             end = new Date(curr.setDate(last));
 
+        }else if (this.config.filterConfig.start){
+            start = Ext.Date.parse(this.config.filterConfig.start, 'd-m-Y');    
         }
         if (this.config.filterConfig.datepickerType === "gt" || this.config.filterConfig.datepickerType === "bt"){
             this.from = Ext.create({
@@ -1197,10 +1209,16 @@ Ext.define("viewer.components.sf.Date", {
                 fieldLabel: i18next.t('viewer_components_sf_simplefilterbase_0'),
                 name: 'from_date',
                 format:'d-m-Y',
+                enableKeyEvents:true,
                 value: start,
                 listeners: {
                     scope: this,
-                    select: this.applyFilter
+                    select: this.applyFilter,
+                    keypress:function(field, event){
+                        if(event.keyCode === 13){
+                            this.applyFilter();
+                        }
+                    }
                 }
             });
             pickers.push(this.from);
@@ -1213,10 +1231,16 @@ Ext.define("viewer.components.sf.Date", {
                 fieldLabel: i18next.t('viewer_components_sf_simplefilterbase_1'),
                 name: 'to_date',
                 value: end,
+                enableKeyEvents:true,
                 format:'d-m-Y',
                 listeners: {
                     scope: this,
-                    select: this.applyFilter
+                    select: this.applyFilter,
+                    keypress:function(field, event){
+                        if(event.keyCode === 13){
+                            this.applyFilter();
+                        }
+                    }
                 }
             });
             pickers.push(this.to);
@@ -1237,21 +1261,35 @@ Ext.define("viewer.components.sf.Date", {
         var mustEscape = this.mustEscapeAttribute();
 
         if(this.from){
-            var val = Ext.Date.format(this.from.getValue(), "Y-m-d") + "T00:00:00";
-            var c = this.config.attributeName + " >= " + val;
-            cql.push(c);
+            var val = Ext.Date.format(this.from.getValue(), "Y-m-d");
+            if(val){
+                val += "T00:00:00";
+                var c = this.config.attributeName + " >= " + val;
+                cql.push(c);
+            }
         }
 
         if(this.to){
-            var val = Ext.Date.format(this.to.getValue(), "Y-m-d") + "T00:00:00";
-            var c = this.config.attributeName + " <= " + val;
-            cql.push(c);
+            var val = Ext.Date.format(this.to.getValue(), "Y-m-d");
+            if(val){
+                val += "T00:00:00";
+                var c = this.config.attributeName + " <= " + val;
+                cql.push(c);
+            }
         }
-        return cql.join(" AND ");
+        if(cql.length > 0 ){
+            return cql.join(" AND ");
+        }else{
+            return "";
+        }
     },
     reset : function(){
-        this.minField.setValue(this.config.defaultValues.Min);
-        this.maxField.setValue(this.config.defaultValues.Max);
+        if(this.from){
+            this.from.setValue(this.config.defaultValues ? this.config.defaultValues.Min : null);
+        }
+        if(this.to){
+            this.to.setValue(this.config.defaultValues ? this.config.defaultValues.Max : null);
+        }
         this.callParent();
         this.applyFilter();
     }

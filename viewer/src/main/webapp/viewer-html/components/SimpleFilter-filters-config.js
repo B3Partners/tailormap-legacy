@@ -79,7 +79,10 @@ Ext.define("viewer.components.sf.Config", {
         console.log("Error: getTitle() not yet implemented");
     },
     getOtherFilters: function(){
-         var filters = [];
+         var filters = [{
+                label:  i18next.t('viewer_components_sf_config_81'),
+                id: -1
+            }];
         var currentConfig = null;
         for(var i = 0 ; i <this.configurator.filterConfigs.length; i++){
             var f = this.configurator.filterConfigs[i];
@@ -93,34 +96,19 @@ Ext.define("viewer.components.sf.Config", {
             }
         }
         return filters;
-        if(currentConfig){
-            var currentAppLayer = this.configurator.getAppConfig().appLayers[currentConfig.appLayerId];
-            var attrs = [];
-            Ext.Array.each(currentAppLayer.attributes, function(attr) {
-                attrs.push({
-                    name : attr.name,
-                    label : attr.alias || attr.name,
-                    type : attr.type
-                });
-            });
-        }
     },
-    getAttributes: function(){
-        for (var i = 0; i < this.configurator.filterConfigs.length; i++) {
-            var f = this.configurator.filterConfigs[i];
-            if (f.config.id === this.id) {
-                var currentAppLayer = this.configurator.getAppConfig().appLayers[f.appLayerId];
-                var attrs = [];
-                Ext.Array.each(currentAppLayer.attributes, function (attr) {
-                    attrs.push({
-                        name: attr.name,
-                        label: attr.alias || attr.name,
-                        type: attr.type
-                    });
-                });
-                return attrs;
-            }
-        }
+    getAttributes: function() {
+        var ac = Ext.ComponentQuery.query("#attributeCombo")[0];
+        var store = ac.getStore();
+        var atts = [];
+        store.each(function(record) {
+            atts.push({
+                name: record.get('name'),
+                label: record.get('alias'),
+                type: record.get('type')
+            });
+        });
+        return atts;
     }
 });
 
@@ -463,6 +451,12 @@ Ext.define("viewer.components.sf.ComboConfig", {
                         text: c.qtip
                     });
                 },
+                change: function (record, value) {
+                    if (value === -1) {
+                        Ext.getCmp("linkedFilterAttribute").setValue(null);
+                        Ext.getCmp("linkedFilter").setValue(null);
+                    }
+                },
                 scope:this
             }
         },
@@ -488,6 +482,10 @@ Ext.define("viewer.components.sf.ComboConfig", {
                         target: c.getEl(),
                         text: c.qtip
                     });
+                    this.configurator.on("simpleFilterLayerChanged", this.updateAttributes, this);
+                },
+                removed: function() {
+                    this.configurator.un("simpleFilterLayerChanged", this.updateAttributes, this);
                 },
                 scope:this
             }
@@ -524,6 +522,14 @@ Ext.define("viewer.components.sf.ComboConfig", {
             linkedFilter.hide();
             linkedFilterAttribute.hide();
         }
+    },
+    updateAttributes: function() {
+        var combo = Ext.getCmp("linkedFilterAttribute");
+        if (!combo) {
+            return;
+        }
+        combo.setValue("");
+        combo.getStore() && combo.getStore().setData(this.getAttributes());
     },
     getDefaultStartValue : function (){
         return "max";
@@ -761,11 +767,23 @@ Ext.define("viewer.components.sf.SliderConfig", {
                         target: c.getEl(),
                         text: c.qtip
                     });
+                    this.configurator.on("simpleFilterLayerChanged", this.updateAttributes, this);
+                },
+                removed: function() {
+                    this.configurator.un("simpleFilterLayerChanged", this.updateAttributes, this);
                 },
                 scope:this
             }
         }]);
         return items;
+    },
+    updateAttributes: function() {
+        var combo = Ext.getCmp("linkedFilterAttribute");
+        if (!combo) {
+            return;
+        }
+        combo.setValue("");
+        combo.getStore() && combo.getStore().setData(this.getAttributes());
     },
     getDefaultStartValue : function (){
         return "min,max";

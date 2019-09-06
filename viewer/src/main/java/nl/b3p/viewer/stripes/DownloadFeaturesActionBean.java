@@ -30,7 +30,6 @@ import java.util.Map;
 import javax.activation.MimetypesFileTypeMap;
 import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletResponse;
-import net.sourceforge.stripes.action.ActionBean;
 import net.sourceforge.stripes.action.ActionBeanContext;
 import net.sourceforge.stripes.action.After;
 import net.sourceforge.stripes.action.Before;
@@ -41,6 +40,8 @@ import net.sourceforge.stripes.action.UrlBinding;
 import net.sourceforge.stripes.controller.LifecycleStage;
 import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.geotools.filter.visitor.RemoveDistanceUnit;
+import nl.b3p.viewer.audit.AuditMessageObject;
+import nl.b3p.viewer.audit.Auditable;
 import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.ApplicationLayer;
 import nl.b3p.viewer.config.app.ConfiguredAttribute;
@@ -70,7 +71,7 @@ import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.data.simple.SimpleFeatureSource;
 import org.geotools.data.wfs.WFSDataStoreFactory;
 import org.geotools.factory.CommonFactoryFinder;
-import org.geotools.factory.GeoTools;
+import org.geotools.util.factory.GeoTools;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.opengis.feature.simple.SimpleFeature;
@@ -86,7 +87,7 @@ import org.stripesstuff.stripersist.Stripersist;
  */
 @UrlBinding("/action/downloadfeatures")
 @StrictBinding
-public class DownloadFeaturesActionBean extends LocalizableApplicationActionBean implements ActionBean {
+public class DownloadFeaturesActionBean extends LocalizableApplicationActionBean implements Auditable {
 
     private static final Log log = LogFactory.getLog(DownloadFeaturesActionBean.class);
 
@@ -115,6 +116,8 @@ public class DownloadFeaturesActionBean extends LocalizableApplicationActionBean
 
     @Validate
     private String params;
+
+    private AuditMessageObject auditMessageObject;
 
     //<editor-fold defaultstate="collapsed" desc="getters and setters">
     @Override
@@ -198,6 +201,10 @@ public class DownloadFeaturesActionBean extends LocalizableApplicationActionBean
     public void setParams(String params) {
         this.params = params;
     }
+
+    public AuditMessageObject getAuditMessageObject() {
+        return this.auditMessageObject;
+    }
     // </editor-fold>
 
     @After(stages=LifecycleStage.BindingAndValidation)
@@ -211,6 +218,7 @@ public class DownloadFeaturesActionBean extends LocalizableApplicationActionBean
                 || !Authorizations.isAppLayerReadAuthorized(application, appLayer, context.getRequest(),Stripersist.getEntityManager())) {
             unauthorized = true;
         }
+        auditMessageObject = new AuditMessageObject();
     }
 
     public Resolution download() throws JSONException, FileNotFoundException {
@@ -253,6 +261,11 @@ public class DownloadFeaturesActionBean extends LocalizableApplicationActionBean
                 output = convert(ft, fs, q, type, attributes,featureTypeAttributes);
 
                 json.put("success", true);
+
+                // TODO see what is useful
+                this.auditMessageObject.addMessage(ft);
+                this.auditMessageObject.addMessage(q);
+                this.auditMessageObject.addMessage(fs);
             }
         } catch (Exception e) {
             log.error("Error loading features", e);
@@ -373,7 +386,7 @@ public class DownloadFeaturesActionBean extends LocalizableApplicationActionBean
         return featureTypeAttributes;
     }
 
-    private void setFilter(String filter, Query q, SimpleFeatureType ft, EntityManager em) throws Exception {
+    protected void setFilter(String filter, Query q, SimpleFeatureType ft, EntityManager em) throws Exception {
         if (filter != null && filter.trim().length() > 0) {
             Filter f = FlamingoCQL.toFilter(filter, em);
             f = (Filter) f.accept(new RemoveDistanceUnit(), null);

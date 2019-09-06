@@ -100,7 +100,8 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
         this.drawFeatureControls.push(this.freehandLine);
 
         // The modifyfeature control allows us to edit and select features.
-        this.modifyFeature = new OpenLayers.Control.ModifyFeature(this.frameworkLayer,{createVertices : false,vertexRenderIntent: "select"});
+        var createVertices = config.mustCreateVertices !== undefined && config.mustCreateVertices !== null ? config.mustCreateVertices : true;
+        this.modifyFeature = new OpenLayers.Control.ModifyFeature(this.frameworkLayer,{createVertices : createVertices,vertexRenderIntent: "select"});
 
         map.addControl(this.point);
         map.addControl(this.line);
@@ -110,15 +111,21 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
         map.addControl(this.freehand);
         map.addControl(this.freehandLine);
         map.addControl(this.modifyFeature);
-
+        var me = this;
+        this.modifyFeature.selectControl.onBeforeSelect = function(){ me.beforeSelect();};
         this.modifyFeature.selectControl.events.register("featurehighlighted", this, this.activeFeatureChanged);
         this.frameworkLayer.events.register("afterfeaturemodified", this, this.featureModified);
         this.frameworkLayer.events.register("featuremodified", this, this.featureModified);
         this.frameworkLayer.events.register("featureadded", this, this.featureAdded);
 
-        if(this.allowSelection()) this.modifyFeature.activate();
+        if(this.allowSelection()) {
+            this.modifyFeature.activate();
+        }
     },
 
+    beforeSelect:function(){
+        this.config.viewerController.mapComponent.deselectAllOtherFeatures(this);
+    },
     allowSelection: function() {
         return !this.config.hasOwnProperty('allowselection') || this.config.allowselection;
     },
@@ -293,8 +300,8 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
     },
 
     drawFeature: function (type) {
-// call superclass method to register keydown events
-
+        // call superclass method to register keydown events
+        this.bringToFront();
         this.superclass.drawFeature.call(this, type);
         
         if (type === "Point") {
@@ -385,11 +392,15 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
             this.activeDrawFeatureControl.cancel();
         }
     },
-
+    bringToFront: function(){
+        var map = this.config.viewerController.mapComponent.maps[0];
+        map.setLayerIndex(this, map.layers.length);
+    },
     /**
      * Called when a feature is selected
      */
     activeFeatureChanged : function (object){
+        this.bringToFront();
         var feature = this.fromOpenLayersFeature (object.feature);
         this.fireEvent(viewer.viewercontroller.controller.Event.ON_ACTIVE_FEATURE_CHANGED,this,feature);
     },
@@ -417,7 +428,9 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
             object.feature.style = this.getCurrentStyleHash();
         }
         this.removeMeasures();
-        this.editFeature(object.feature);
+        if(this.allowSelection()){
+            this.editFeature(object.feature);
+        }
         this.fireEvent(viewer.viewercontroller.controller.Event.ON_FEATURE_ADDED,this,feature);
     },
     

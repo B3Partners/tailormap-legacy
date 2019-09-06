@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.flamingo-mc</groupId>
+    <artifactId>viewer-audit-noplogger</artifactId>
+    <packaging>jar</packaging>
+
+    <parent>
+        <groupId>org.flamingo-mc</groupId>
+        <artifactId>flamingo-mc</artifactId>
+        <version>5.5.5-SNAPSHOT</version>
+    </parent>
+    <name>viewer auditing NOP logger module</name>
+    <description>This module primarily serves the testcase of having multiple
+        LoggingService proviers on the classpath
+    </description>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.flamingo-mc</groupId>
+            <artifactId>viewer-audit</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>

@@ -508,7 +508,7 @@ Ext.define("viewer.components.Print", {
                                 labelAlign: "top",
                                 fieldLabel: i18next.t('viewer_components_print_16'),
                                 tipText: function(tumb){
-                                    return tumb.value+"º";
+                                    return tumb.value + "&deg;";
                                 },
                                 listeners: {
                                     changecomplete: {

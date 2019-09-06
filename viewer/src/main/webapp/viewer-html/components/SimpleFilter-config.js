@@ -18,6 +18,8 @@
 Ext.define("viewer.components.CustomConfiguration",{
     extend: "viewer.components.ConfigObject",
 
+    mixins: ['Ext.mixin.Observable'],
+
     filterTypes: null,
     filterStore: null,
     filterConfigs: null,
@@ -28,6 +30,7 @@ Ext.define("viewer.components.CustomConfiguration",{
 
     constructor: function (parentId, configObject, configPage) {
         viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId, configObject, configPage);
+        this.mixins.observable.constructor.call(this, config);
 
         Ext.tip.QuickTipManager.init();  // enable tooltips
 
@@ -117,7 +120,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                             select: function (combo, record, eOpts) {
                                 me.resetConfig();
                                 var type = record.get("type");
-                                me.createFilterConfig(type,me);
+                                me.createFilterConfig(type,{});
                             }
                         }
                     },{
@@ -162,6 +165,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                                         });
                                     });
 
+                                    me.fireEvent("simpleFilterLayerChanged", appLayer);
                                 }
                             }
                         },{
@@ -234,13 +238,8 @@ Ext.define("viewer.components.CustomConfiguration",{
 
                                     if(record.length > 0){
                                         var id = record[0].data.id;
-                                        var me = this;
-                                        Ext.MessageBox.confirm(i18next.t('simplefilter_config_20'), i18next.t('simplefilter_config_21'), function(btn, text){
-                                            if (btn === 'yes') {
-                                                me.removeConfig(id);
-                                                me.resetConfig(true);
-                                            }
-                                        });
+                                        this.removeConfig(id);
+                                        this.resetConfig(true);
                                     }else{
                                         Ext.MessageBox.alert(i18next.t('simplefilter_config_22'), i18next.t('simplefilter_config_23'));
                                     }

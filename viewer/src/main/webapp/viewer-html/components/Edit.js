@@ -43,6 +43,7 @@ Ext.define("viewer.components.Edit", {
     afterLoadAttributes: null,
     filterFeatureId: null,
     lastUsedValues:null,
+    formValuesAreBeingUpdated: false,
     // Boolean to check if window is hidden temporarily for mobile mode
     mobileHide: false,
     config: {
@@ -56,7 +57,7 @@ Ext.define("viewer.components.Edit", {
         allowCopy: false,
         allowNew: true,
         allowEdit: true,
-        cancelOtherControls: ["viewer.components.Merge", "viewer.components.Split"],
+        cancelOtherControls: ["viewer.components.Merge", "viewer.components.Split", "viewer.components.EditBulk"],
         formLayout: 'anchor',
         showEditLinkInFeatureInfo: false,
         editHelpText: "",
@@ -115,23 +116,22 @@ Ext.define("viewer.components.Edit", {
             viewerController: this.config.viewerController
         });
         this.schema = new Ext.data.schema.Schema();
-        this.lastUsedValues = {};
+        this.lastUsedValues = {};        
         this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_COMPONENTS_FINISHED_LOADING,this.loadWindow,this);
         this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE, this.selectedContentChanged, this);
+        this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_LAYERS_INITIALIZED,this.createVectorLayer, this);
         return this;
     },
-    selectedContentChanged: function () {
-        if (this.vectorLayer === null) {
-            this.createVectorLayer();
-        } else {
-            this.config.viewerController.mapComponent.getMap().addLayer(this.vectorLayer);
-        }
+    activate: function(){
+        this.vectorLayer.bringToFront();
     },
     createVectorLayer: function () {
         this.vectorLayer = this.config.viewerController.mapComponent.createVectorLayer({
             name: this.name + 'VectorLayer',
             geometrytypes: ["Circle", "Polygon", "MultiPolygon", "Point", "LineString"],
             showmeasures: false,
+            mustCreateVertices:true,
+            allowselection:true,
             viewerController: this.config.viewerController,
             style: {
                 fillcolor: "FF0000",
@@ -148,7 +148,7 @@ Ext.define("viewer.components.Edit", {
     },
     showWindow: function () {
         if (this.vectorLayer === null) {
-            this.createVectorLayer();
+           this.createVectorLayer();
         }
         this.mobileHide = false;
         this.layerSelector.initLayers();
@@ -163,6 +163,7 @@ Ext.define("viewer.components.Edit", {
             buttons[0].fireEvent("click", buttons[0]);
         }
         if(this.config.isPopup) {
+            this.vectorLayer.bringToFront();
             this.popup.show();
             this.popup.popupWin.addListener('hide', function () {
                 this.cancel();
@@ -198,9 +199,6 @@ Ext.define("viewer.components.Edit", {
         this.buttonPanel = this.maincontainer.down("#buttonPanel");
         this.savebutton = this.maincontainer.down("#saveButton");
         this.editHelpLabel = this.maincontainer.down("#editHelpLabel");
-        if (!this.config.isPopup && this.vectorLayer == null) {
-            this.createVectorLayer();
-        }
     },
     getFormItems: function() {
         this.createLayerSelector();
@@ -246,6 +244,46 @@ Ext.define("viewer.components.Edit", {
                 xtype: "container"
             },
             {
+                itemId: "geomToggle",
+                margin: '5 0',
+                xtype: "container",
+                hidden: true,
+                items: [
+                    {
+                        html: i18next.t("viewer_components_edit_geomtoggle_label"),
+                        xtype: "container",
+                        margin: '0 0 5 0'
+                    },
+                    {
+                        xtype: "segmentedbutton",
+                        allowMultiple: false,
+                        items: [{
+                            itemId: "geomToggle_polygon",
+                            text: i18next.t("viewer_components_edit_geomtoggle_polygon"),
+                            tooltip: i18next.t("viewer_components_edit_geomtoggle_polygontooltip"),
+                            pressed: true
+                        },{
+                            itemId: "geomToggle_circle",
+                            text: i18next.t("viewer_components_edit_geomtoggle_circle"),
+                            tooltip: i18next.t("viewer_components_edit_geomtoggle_circletooltip")
+                        }],
+                        listeners: {
+                            toggle: function(container, button, pressed) {
+                                if (button.getItemId() === "geomToggle_polygon") {
+                                    this.newGeomType = "Polygon";
+                                }
+                                if (button.getItemId() === "geomToggle_circle") {
+                                    this.newGeomType = "Circle";
+                                }
+                                this.vectorLayer.removeAllFeatures();
+                                this.vectorLayer.drawFeature(this.newGeomType);
+                            },
+                            scope: this
+                        }
+                    }
+                ]
+            },
+            {
                 itemId: 'inputPanel',
                 border: 0,
                 xtype: "form",
@@ -257,10 +295,6 @@ Ext.define("viewer.components.Edit", {
             {
                 itemId: 'savePanel',
                 xtype: "container",
-                layout: {
-                    type: 'hbox',
-                    pack: 'end'
-                },
                 defaults: {
                     xtype: 'button'
                 },
@@ -565,6 +599,7 @@ Ext.define("viewer.components.Edit", {
         }
         this.showMobilePopup();
         this.setFormVisible(true);
+        this.toggleGeomToggleForm(false);
         var firstField = this.inputContainer.down("field");
         if(firstField) {
             firstField.focus();
@@ -884,8 +919,13 @@ Ext.define("viewer.components.Edit", {
             fieldLabel: attribute.editAlias || attribute.alias || attribute.name,
             value: fieldText,
             disabled: !this.allowedEditable(attribute),
+            readOnly:  attribute.automaticValue,
             labelClsExtra: this.editLblClass,
-            allowBlank: !disallowNull
+            allowBlank: !disallowNull,
+            listeners: {
+                scope: this,
+                change: this.validateFormFieldChange
+            }
         };
         var input;
         if (attribute.editHeight) {
@@ -894,12 +934,12 @@ Ext.define("viewer.components.Edit", {
         } else {
             input = Ext.create("Ext.form.field.Text", options);
         }
-        if (attribute.type === 'date') {
+        if (attribute.type === 'date' || attribute.type === 'timestamp' ) {
             // Flamingo uses new SimpleDateFormat("dd-MM-yyyy HH:mm:ss") in
             // FeatureToJson#formatValue eg. 14-11-2013 00:00:00
             // Ext uses PHP conventions! see:
-            // https://docs.sencha.com/extjs/5.1/5.1.0-apidocs/#!/api/Ext.Date
-            options.format = 'd-m-Y';
+            // https://docs.sencha.com/extjs/6.2.1/classic/Ext.Date.html
+            options.format = attribute.type === 'date' ? 'd-m-Y' : 'd-m-Y H:i:s';
             options.altFormats = 'd-m-y|d-M-Y';
             // ISO 8601 (local time + UTC offset)
             options.submitFormat = 'c';
@@ -913,6 +953,25 @@ Ext.define("viewer.components.Edit", {
 
         return input;
     },
+    
+    getAutomaticValue: function (type, attributeType) {
+        switch (type) {
+            case "user":
+                var user = FlamingoAppLoader.get("user");
+                if (user) {
+                    return user.name;
+                } else {
+                    return "";
+                }
+            case "dateTime":
+                var today = new Date();
+                var dateTime = Ext.Date.format(today, attributeType === 'timestamp' ? 'd-m-Y H:i:s' : 'd-m-Y');
+                return dateTime;
+                break;
+        }
+        return "";
+    },
+    
     createDynamicInput: function (attribute, values) {
         var disallowNull = attribute.hasOwnProperty('disallowNullValue') && attribute.disallowNullValue;
         var valueStore = Ext.create('Ext.data.Store', {
@@ -1003,9 +1062,29 @@ Ext.define("viewer.components.Edit", {
             allowBlank: !disallowNull,
             disabled: !this.allowedEditable(attribute),
             editable: !(attribute.hasOwnProperty('allowValueListOnly') && attribute.allowValueListOnly),
-            labelClsExtra: this.editLblClass
+            labelClsExtra: this.editLblClass,
+            listeners: {
+                scope: this,
+                change: this.validateFormFieldChange
+            }
         });
-
+        
+        //when device is mobile dont allow the touchend event. This will activate a field that is lying under the dropdown picker(ul)
+        if (viewer.components.MobileManager.isMobile()) {
+            input.on('focusenter', function () {
+                if (!input.eventInit) {
+                    var pickerList = document.getElementById(attribute.name + "-picker-listEl");
+                    if (!pickerList) {
+                        return;
+                    }
+                    pickerList.addEventListener('touchend', function (e) {
+                        e.preventDefault();
+                    }, false);
+                    input.eventInit = true;
+                }
+            });
+        }
+        
         if (disallowNull) {
             try {
                 if (valueStore.loadCount !== 0) { // if store is loaded already load event is not fired anymore
@@ -1026,8 +1105,29 @@ Ext.define("viewer.components.Edit", {
 
         return input;
     },
-    setInputPanel: function (feature) {
+    validateFormFieldChange: function (input, newValue, oldValue) {
+        if (this.isChangeTriggeredByUserAction()) {
+            this.onFormFieldChange(input, newValue, oldValue);
+        }
+    },
+    isChangeTriggeredByUserAction: function () {
+        return !this.formValuesAreBeingUpdated && this.mode === 'edit';
+    },
+    setFormValues: function (feature) {
+        this.formValuesAreBeingUpdated = true;
+        this.setAutomaticValuesToFeature(feature);
         this.inputContainer.getForm().setValues(feature);
+        this.formValuesAreBeingUpdated = false;
+    },
+    setInputPanel: function (feature) {
+        this.setFormValues(feature);
+    },
+    selectedContentChanged: function () {
+        if (this.vectorLayer === null) {
+            this.createVectorLayer();
+        } else {
+            this.config.viewerController.mapComponent.getMap().addLayer(this.vectorLayer);
+        }
     },
     mapClicked: function (toolMapClick, comp) {
         this.deactivateMapClick();
@@ -1079,7 +1179,7 @@ Ext.define("viewer.components.Edit", {
     },
     handleFeature: function (feature) {
         if (feature != null) {
-            this.inputContainer.getForm().setValues(feature);
+            this.setFormValues(feature);
             if (this.mode === "copy") {
                 this.currentFID = null;
             } else {
@@ -1190,6 +1290,7 @@ Ext.define("viewer.components.Edit", {
      * clear any loaded feature from the form and the map.
      */
     clearFeatureAndForm: function () {
+        this.toggleGeomToggleForm(false);
         this.vectorLayer.removeAllFeatures();
         this.inputContainer.getForm().reset();
         this.currentFID = null;
@@ -1198,6 +1299,7 @@ Ext.define("viewer.components.Edit", {
     createNew: function () {
         this.hideMobilePopup();
         this.clearFeatureAndForm();
+        this.setFormValues({}); // setting the form to an empty object, fills the automatic fields
         this.config.viewerController.mapComponent.getMap().removeMarker("edit");
         this.mode = "new";
         var trace = this.showGeomType === "linestringtrace";
@@ -1206,6 +1308,7 @@ Ext.define("viewer.components.Edit", {
         }else if (this.newGeomType !== null && this.geometryEditable) {
             this.geomlabel.setHtml(i18next.t('viewer_components_edit_26', {tekstGeom: this.tekstGeom}));
             this.vectorLayer.drawFeature(this.newGeomType);
+            this.toggleGeomToggleForm(this.newGeomType === "Circle" || this.newGeomType === "Polygon");
         }
         this.savebutton.setText(i18next.t('viewer_components_edit_27'));
         this.untoggleButtons("newButton");
@@ -1213,9 +1316,12 @@ Ext.define("viewer.components.Edit", {
             this.populateFormWithPreviousValues();
         }
     },
+    toggleGeomToggleForm: function(show) {
+        Ext.ComponentQuery.query("#geomToggle")[0].setVisible(show);
+    },
     populateFormWithPreviousValues: function(){
         var feature = this.lastUsedValues[this.layerSelector.getValue().id];
-        this.inputContainer.getForm().setValues(feature);
+        this.setFormValues(feature);
     },
     edit: function () {
         this.hideMobilePopup();
@@ -1380,7 +1486,18 @@ Ext.define("viewer.components.Edit", {
      * @return the changed feature
      */
     changeFeatureBeforeSave: function (feature) {
+        this.setAutomaticValuesToFeature(feature);
         return feature;
+    },
+    
+    setAutomaticValuesToFeature: function(feature){
+        for(var i = 0 ; i < this.appLayer.attributes.length ;i++){
+            var attr = this.appLayer.attributes[i];
+            if(attr.automaticValue){
+                var value = this.getAutomaticValue(attr.automaticValueType, attr.type);
+                feature[attr.name] = value;
+            }
+        }
     },
     /**
      * Can be overwritten to disable editing in the component/js
@@ -1396,7 +1513,7 @@ Ext.define("viewer.components.Edit", {
                 msg += " " + extratext;
             }
             if(!skipSuccessMessage) {
-                Ext.Msg.alert("Gelukt", msg);
+                me.showSuccessToast(msg, i18next.t('viewer_components_edit_40'));
             }
             me.cancel();
         };
@@ -1457,7 +1574,7 @@ Ext.define("viewer.components.Edit", {
         this.editingLayer.reload();
         this.currentFID = null;
         if(!skipSuccessMessage) {
-            Ext.MessageBox.alert(i18next.t('viewer_components_edit_40'), i18next.t('viewer_components_edit_41'));
+            this.showSuccessToast(msg, i18next.t('viewer_components_edit_41'));
         }
         this.cancel();
     },
@@ -1480,6 +1597,7 @@ Ext.define("viewer.components.Edit", {
         this.setFormVisible(false);
         this.buttonPanel.setVisible(true);
         this.config.viewerController.mapComponent.getMap().removeMarker("edit");
+        this.toggleGeomToggleForm(false);
         if (this.vectorLayer) {
             // vector layer may be null when cancel() is called
             this.vectorLayer.removeAllFeatures();
@@ -1661,5 +1779,7 @@ Ext.define("viewer.components.Edit", {
             }
         }
         return map;
+    },
+    onFormFieldChange: function (input, newValue, oldValue) {
     }
 });

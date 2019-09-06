@@ -22,16 +22,14 @@ import java.io.Reader;
 import java.net.URISyntaxException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.persistence.EntityManager;
 import javax.persistence.Persistence;
-import nl.b3p.viewer.config.app.Application;
-import nl.b3p.viewer.config.app.ApplicationLayer;
-import nl.b3p.viewer.config.app.ConfiguredComponent;
-import nl.b3p.viewer.config.app.Level;
-import nl.b3p.viewer.config.app.StartLayer;
-import nl.b3p.viewer.config.app.StartLevel;
+
+import nl.b3p.viewer.config.app.*;
 import nl.b3p.viewer.config.metadata.Metadata;
 import nl.b3p.viewer.config.services.FeatureSource;
 import nl.b3p.viewer.config.services.GeoService;
@@ -70,6 +68,11 @@ public abstract class TestUtil extends LoggingTestUtil {
     public Application app;
 
     private static final Log log = LogFactory.getLog(TestUtil.class);
+
+    protected String layerName = "Test_omgeving:unittest";
+    protected String geometryAttribute = "geom";
+    protected String url = "https://flamingo5.b3p.nl/geoserver/Test_omgeving/ows";
+    protected List<ConfiguredAttribute> attributes = new ArrayList<ConfiguredAttribute>();
 
     /**
      * initialisatie van EntityManager {@link #entityManager} en starten
@@ -196,16 +199,13 @@ public abstract class TestUtil extends LoggingTestUtil {
             
             FeatureSource fs = new WFSFeatureSource();
             fs.setName("pietje");
-            
-            String layerName = "Test_omgeving:unittest";
-            
-            String url = "https://flamingo5.b3p.nl/geoserver/Test_omgeving/ows";
+
             fs.setUrl(url);
             persistEntityTest(fs, FeatureSource.class);
             
             SimpleFeatureType sft = new SimpleFeatureType();
             sft.setTypeName(layerName);
-            sft.setGeometryAttribute("geom");
+            sft.setGeometryAttribute(geometryAttribute);
             sft.setFeatureSource(fs);
             
             persistEntityTest(sft, SimpleFeatureType.class);
@@ -239,6 +239,7 @@ public abstract class TestUtil extends LoggingTestUtil {
             testAppLayer = new ApplicationLayer();
             testAppLayer.setLayerName(layerName);
             testAppLayer.setService(gs);
+            testAppLayer.setAttributes(attributes);
 
             testLevel.getLayers().add(testAppLayer);
 

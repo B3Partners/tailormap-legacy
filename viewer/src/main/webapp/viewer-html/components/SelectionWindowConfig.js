@@ -34,8 +34,16 @@ Ext.define("viewer.components.SelectionWindowConfig",{
         var iconurl = config.iconUrl;
         var label = config.label;
         var showLabelconfig = config.showLabelconfig === true;
+        var hidePopupConfig = config.hidePopupConfig === true;
+        var hideTooltipConfig = config.hideTooltipConfig === true;
+        var hideIconConfig = config.hideIconConfig === true;
         if(Ext.isEmpty(iconurl) || !Ext.isDefined(iconurl)) iconurl = null;
         if(Ext.isEmpty(label) || !Ext.isDefined(label)) label = "";
+        var hidden = {};
+        if(this.configPage._metadata.hidden){
+            hidden = this.configPage._metadata.hidden;
+        }
+        var emptycontainer = { xtype: 'container' };
         this.form=new Ext.form.FormPanel({
             frame: false,
             bodyPadding: me.formPadding,
@@ -43,24 +51,25 @@ Ext.define("viewer.components.SelectionWindowConfig",{
             /*defaults: {
                 anchor: '100%'
             },*/
-            items: [{ 
+            items: hidePopupConfig ? [] : [{
                 xtype: 'container',
                 layout: {type: 'hbox'},
                 items: [{
                         xtype: 'container',
                         //layout: {type: 'vbox'},
-                        items: [{                     
+                        items: [{
                             xtype: 'textfield',
                             fieldLabel: i18next.t('general_components_selectionwindowconfig_0'),
                             name: 'title',
                             value: config.title,
                             labelWidth:me.labelWidth,
                             width: 700
-                        },{                        
+                        }, hideIconConfig ? emptycontainer : {
                             xtype: 'textfield',
                             fieldLabel: i18next.t('general_components_selectionwindowconfig_1'),
                             name: 'iconUrl',
                             value: config.iconUrl,
+                            hidden: hidden.iconUrl === "true" ? true:false,
                             labelWidth:me.labelWidth,
                             width: 700,
                             listeners: {
@@ -68,29 +77,34 @@ Ext.define("viewer.components.SelectionWindowConfig",{
                                     me.onIconChange(textField,options);
                                 }
                             }
-                        }]                    
-                    },{
+                        }]
+                    }, hideIconConfig ? emptycontainer : {
                         xtype: "image",
                         id: "iconImage",
                         src: iconurl,
                         style: {"margin-left": "100px"}
                     }]
-            },{ 
+            }],
+            renderTo: this.parentId//(2)
+        });
+        if (!hideTooltipConfig && !hidePopupConfig) {
+            this.form.add({
                 xtype: 'textfield',
                 fieldLabel: i18next.t('general_components_selectionwindowconfig_2'),
                 name: 'tooltip',
                 value: config.tooltip,
+                hidden: hidden.tooltip === "true" ? true:false,
                 labelWidth:me.labelWidth,
                 width: 700
-            }],
-            renderTo: this.parentId//(2)
-        });
+            });
+        }
         if(showLabelconfig) {
             this.form.add({ 
                 xtype: 'textfield',
                 fieldLabel: i18next.t('general_components_selectionwindowconfig_3'),
                 name: 'label',
                 value: label,
+                hidden: hidden.label === "true" ? true:false,
                 labelWidth: me.labelWidth,
                 width: 700
             });

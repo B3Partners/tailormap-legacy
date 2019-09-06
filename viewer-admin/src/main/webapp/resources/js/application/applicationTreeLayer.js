@@ -33,6 +33,7 @@ Ext.define('vieweradmin.components.ApplicationTreeLayer', {
         applicationLayerFeatureType: "",
         displayName: "",
         stylesTitleJson: {},
+        styleDetails: {},
         imagePath: "",
         actionBeans: {
             imageupload: "",
@@ -47,6 +48,7 @@ Ext.define('vieweradmin.components.ApplicationTreeLayer', {
     tabComponents: [],
     namedLayerTitle: "",
     styleTitle: "",
+    stylesOrder:null,
     htmlEditorRendered: false,
     contextHtmlEditorRendered: false,
 
@@ -101,8 +103,10 @@ Ext.define('vieweradmin.components.ApplicationTreeLayer', {
 
         var filterItems = this.getFilterTabItems();
         var editItems = this.getEditTabItems();
+        
 
-        var tabconfig = [{
+        var tabconfig = [
+            {
             itemId:'settings-tab',
             contentEl:'settings-tab',
             title: i18next.t('viewer_admin_applicationtreelayer_0')
@@ -110,8 +114,22 @@ Ext.define('vieweradmin.components.ApplicationTreeLayer', {
             itemId:'rights-tab',
             contentEl:'rights-tab',
             title: i18next.t('viewer_admin_applicationtreelayer_1')
-        }];
-     if(this.config.attributes.length !== 0) {
+            }];
+
+        this.stylesOrder = Ext.create("vieweradmin.components.ApplicationTreeLayerStyles", {
+            styles: this.config.stylesTitleJson,
+            imagePath: this.config.imagePath,
+            savedState: this.config.styleDetails
+        });
+        
+        tabconfig.push({
+            xtype: 'container',
+            width: '100%',
+            title: i18next.t('viewer_admin_applicationtreelayer_59'),
+            layout: {type: 'hbox', align: "stretch"},
+            items: this.stylesOrder.getItems()
+        });
+        if(this.config.attributes.length !== 0) {
             var attributeOrder = Ext.create("vieweradmin.components.ApplicationTreeLayerAttributes", {
                 attributes: this.config.attributes,
                 imagePath: this.config.imagePath
@@ -877,6 +895,36 @@ Ext.define('vieweradmin.components.ApplicationTreeLayer', {
             },
             {
                 fieldLabel: i18next.t('viewer_admin_applicationtreelayer_58'), name: 'disallowNullValue', inputValue: 1, checked: attribute.disallowNullValue || 0, xtype: 'checkbox'
+            },
+            {
+                xtype: 'container',
+                layout: 'hbox',
+                items: [
+                    {
+                        fieldLabel: i18next.t('viewer_admin_applicationtreelayer_automaticValue'), name: 'automaticValue', 
+                        inputValue: false, 
+                        checked: attribute.automaticValue || false, 
+                        xtype: 'checkbox',
+                        listeners:{
+                            change:{
+                                scope:this,
+                                fn: function(comp, value){
+                                    this.getComponentByItemId("#automaticValueType" + attribute.id).setDisabled (!value);
+                                }
+                            }
+                        }
+                    },
+                    {
+                        value: attribute.automaticValueType, 
+                        itemId: 'automaticValueType' + attribute.id,
+                        name: 'automaticValueType',
+                        margin: "0 0 0 10",
+                        disabled: !attribute.automaticValue,
+                        store: [['dateTime', i18next.t('viewer_admin_applicationtreelayer_automaticValueDateTime')],
+                            ['user', i18next.t('viewer_admin_applicationtreelayer_automaticValueUser')]], 
+                        xtype: 'combobox'
+                    }
+                ]
             }
         ];
     },
@@ -957,6 +1005,7 @@ Ext.define('vieweradmin.components.ApplicationTreeLayer', {
 
     doSave: function() {
         document.getElementById('attributesJSON').value = this.getJson();
+        document.getElementById('stylesJSON').value = Ext.JSON.encode(this.stylesOrder.getJson());
         var settingsHtmlEditor = this.getComponentByItemId('#extSettingsHtmlEditor');
         var toggle = document.querySelector('.use-plain-text-editor');
         if(settingsHtmlEditor && !toggle.checked) {
@@ -997,8 +1046,8 @@ Ext.define('vieweradmin.components.ApplicationTreeLayer', {
     },
 
     getAttributeEditHeight: function(type) {
-        var STATIC_HEIGHT = 370;
-        var DYNAMIC_HEIGHT = 505;
+        var STATIC_HEIGHT = 415;
+        var DYNAMIC_HEIGHT = 550;
         return type === 'dynamic' ? DYNAMIC_HEIGHT : STATIC_HEIGHT;
     },
 

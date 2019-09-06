@@ -72,7 +72,7 @@ Ext.define('Ext.ux.b3p.FilterableCheckboxes', {
      */
     constructor: function (config) {
         Ext.apply(this, config || {});
-        this.createdefaultCheckboxes = (config.checkedDefaultOn) ? true : false;
+        this.createDefaultCheckboxes = (config.checkedDefaultOn) ? true : false;
         if (this.requestUrl != '' && (this.renderTo != '' || this.parentContainer)) {
             this.getList();
         }
@@ -84,7 +84,7 @@ Ext.define('Ext.ux.b3p.FilterableCheckboxes', {
         var checkboxes = '<div id="' + checkboxContainerId + '">';
         
         checkboxes +='<table><th>Aan/uit</th>';
-        if(this.createdefaultCheckboxes){
+        if(this.createDefaultCheckboxes){
             checkboxes += '<th>Standaard aan</th>';
         }
         checkboxes += '<th>Naam</th>';
@@ -192,7 +192,7 @@ Ext.define('Ext.ux.b3p.FilterableCheckboxes', {
             label = this.renderLabel(id, name);
         }
         var d = '<tr id="' + id +'"><td><input type="checkbox" id="checkbox-' + id + '" value="' + value + '" /></td>';
-        if(this.createdefaultCheckboxes){
+        if(this.createDefaultCheckboxes){
             d += '<td><input type="checkbox" id="checkbox-' + defaultId + '" value="' + value + '" /></td>';
         }
         d += '<td><label for="checkbox-' + id + '">' + label + '</label></td></tr>';
@@ -249,7 +249,7 @@ Ext.define('Ext.ux.b3p.FilterableCheckboxes', {
     getDefaultChecked: function() {
         var me = this;
         var checked = [];
-        if(this.createdefaultCheckboxes){
+        if(this.createDefaultCheckboxes){
             Ext.Array.each(me.itemList, function (item) {
                 if (document.getElementById('checkbox-' + item.htmlDefaultId).checked) {
                     checked.push(item[me.valueField]);

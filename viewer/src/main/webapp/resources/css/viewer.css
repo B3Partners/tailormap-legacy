@@ -20,7 +20,10 @@ b {
     text-align: left;
     width: 100px
 }
-
+.featureinfo_highlighted{
+    background-color:rgba(0,0,255,0.2);
+    border: 1px solid rgba(0,0,255,0.4);
+}
 #loader {
     position: absolute;
 
@@ -144,8 +147,23 @@ input.error[type="radio"], input.error[type="checkbox"], select.error {
     content: "\f0c8";
 }
 
-.toc-outofscale {
+.theme-triton .radionode .x-tree-checkbox:before {
+    content: "\f10c";
+}
+
+.theme-triton .radionode .x-tree-checkbox-checked:before {
+    content: "\f192";
+}
+
+.toc-outofscale,
+.node-disabled,
+.node-disabled .x-tree-checkbox {
     color : gray;
+}
+.node-disabled img {
+    filter: gray;
+    -webkit-filter: grayscale(1);
+    filter: grayscale(1);
 }
 .toc-zoomtoscale{
     height: 36px !important;
@@ -215,7 +233,9 @@ body > .legend {
     background-color: #f5f5f5 !important;
     border-color: #d8d8d8 !important;
 }
-.x-tab-active.x-tab-default {
+.x-tab-active.x-tab-default,
+.x-btn.x-btn-menu-active.x-btn-default-small,
+.x-btn.x-btn-pressed.x-btn-default-small{
     background-color: #E5E5E5 !important;
     border-color: #C8C8C8 !important;
 }
@@ -268,6 +288,9 @@ body > .legend {
 .theme-crisp .x-tree-checkbox {
     background-image: url(../images/extjs-overrides/crisp/checkbox.png);
 }
+.theme-crisp .radionode .x-tree-checkbox {
+    background-image: url(../images/extjs-overrides/touch-crisp/radio.png);
+}
 .theme-crisp .x-btn-wrap-default-small.x-btn-split-right:after {
     background-image: url(../images/extjs-overrides/crisp/default-small-s-arrow.png);
 }
@@ -316,6 +339,9 @@ html {
 /* ExtJS override images */
 .theme-crisp-touch .x-tree-checkbox {
     background-image: url(../images/extjs-overrides/touch-crisp/checkbox.png);
+}
+.theme-crisp .radionode .x-tree-checkbox {
+    background-image: url(../images/extjs-overrides/touch-crisp/radio.png);
 }
 .theme-crisp-touch .x-btn-wrap-default-small.x-btn-split-right:after {
     background-image: url(../images/extjs-overrides/touch-crisp/default-small-s-arrow.png);
@@ -499,13 +525,20 @@ TODO: check if we always need to do this, not only mobile, only on mobile are we
     background-color: rgb(255, 243, 205);
     border-color: rgb(255, 238, 186);
 }
-.alert-message.success {
+.alert-message.success,
+.success-toast.x-window-default,
+.success-toast .x-window-header {
     color: rgb(21, 87, 36);
     background-color: rgb(212, 237, 218);
     border-color: rgb(195, 230, 203);
 }
-.icon-green {
+.icon-green,
+.success-toast .x-title-text,
+.success-toast .x-window-header-title-default > .x-title-icon-wrap-default > .x-title-icon-default {
     color: rgb(21, 87, 36);
+}
+.success-toast {
+    border-width: 2px;
 }
 
 /* Override font-face declarations form Ext to fix IE errors (embedded-opentype) */
@@ -617,3 +650,10 @@ TODO: check if we always need to do this, not only mobile, only on mobile are we
     overflow-x: auto !important;
     overflow-y: auto !important;
 }
+
+/** Fixes resize handles overlappng the scrollbars (https://www.sencha.com/forum/showthread.php?339346-Resize-Handler-Overlap-Scrollbars-in-the-Triton-Theme)
+    This fix moves the resize-handles on the right and the bottom to outside of the popup,
+    preventing them from overlapping the scrollbar inside the popup */
+.screen-popup { overflow: visible; }
+.x-resizable-handle-east { right: -10px; }
+.x-resizable-handle-south { bottom: -10px; }

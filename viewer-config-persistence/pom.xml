@@ -9,7 +9,7 @@
     <parent>
         <groupId>org.flamingo-mc</groupId>
         <artifactId>flamingo-mc</artifactId>
-        <version>5.5.0-SNAPSHOT</version>
+        <version>5.5.5-SNAPSHOT</version>
     </parent>
     <name>viewer-config-persistence</name>
 
@@ -167,6 +167,12 @@
     </build>
 
     <dependencies>
+        
+        <dependency>
+            <groupId>xalan</groupId>
+            <artifactId>xalan</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -177,7 +183,7 @@
         </dependency>
         <dependency>
             <groupId>commons-beanutils</groupId>
-            <artifactId>commons-beanutils-core</artifactId>
+            <artifactId>commons-beanutils</artifactId>
         </dependency>
         <dependency>
             <groupId>org.json</groupId>
@@ -203,6 +209,7 @@
             <groupId>org.geotools</groupId>
             <artifactId>gt-wfs-ng</artifactId>
         </dependency>
+
         <dependency>
             <groupId>org.geotools.jdbc</groupId>
             <artifactId>gt-jdbc-oracle</artifactId>

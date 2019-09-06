@@ -16,6 +16,7 @@
  */
 package nl.b3p.viewer.stripes;
 
+import net.sourceforge.stripes.controller.LifecycleStage;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
@@ -29,6 +30,8 @@ import javax.persistence.EntityManager;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.geotools.filter.visitor.RemoveDistanceUnit;
+import nl.b3p.viewer.audit.AuditMessageObject;
+import nl.b3p.viewer.audit.Auditable;
 import nl.b3p.viewer.config.ClobElement;
 import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.ApplicationLayer;
@@ -48,7 +51,6 @@ import org.apache.commons.logging.LogFactory;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
 import org.geotools.factory.CommonFactoryFinder;
-import org.geotools.filter.text.cql2.CQL;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -62,7 +64,7 @@ import org.stripesstuff.stripersist.Stripersist;
  */
 @UrlBinding("/action/featureinfo")
 @StrictBinding
-public class FeatureInfoActionBean extends LocalizableApplicationActionBean implements ActionBean {
+public class FeatureInfoActionBean extends LocalizableApplicationActionBean implements Auditable {
     private static final Log log = LogFactory.getLog(FeatureInfoActionBean.class);
 
     public static final String FID = "__fid";
@@ -108,6 +110,8 @@ public class FeatureInfoActionBean extends LocalizableApplicationActionBean impl
     private boolean ordered = false;
 
     private Layer layer;
+
+    private AuditMessageObject auditMessageObject;
 
     //<editor-fold defaultstate="collapsed" desc="getters and setters">
     public ActionBeanContext getContext() {
@@ -217,7 +221,16 @@ public class FeatureInfoActionBean extends LocalizableApplicationActionBean impl
     public Layer getLayer() {
         return this.layer;
     }
+
+    public AuditMessageObject getAuditMessageObject() {
+        return this.auditMessageObject;
+    }
     //</editor-fold>
+
+    @Before(stages = LifecycleStage.EventHandling)
+    public void initAudit(){
+        auditMessageObject = new AuditMessageObject();
+    }
 
     @DefaultHandler
     public Resolution info() throws JSONException {
@@ -313,7 +326,7 @@ public class FeatureInfoActionBean extends LocalizableApplicationActionBean impl
                         spatialFilter = ff.intersects(ff.property(geomAttribute), ff.literal(p));
                     }
 
-                    Filter currentFilter = filter != null && filter.trim().length() > 0 ? CQL.toFilter(filter) : null;
+                    Filter currentFilter = filter != null && filter.trim().length() > 0 ? FlamingoCQL.toFilter(filter,em) : null;
 
                     if (currentFilter!=null){
                         currentFilter = (Filter) currentFilter.accept(new ChangeMatchCase(false), null);
@@ -356,7 +369,7 @@ public class FeatureInfoActionBean extends LocalizableApplicationActionBean impl
                 }
             }
         }
-
+        this.auditMessageObject.addMessage(responses);
         return new StreamingResolution("application/json", new StringReader(responses.toString(4)));
     }
     
@@ -532,6 +545,7 @@ public class FeatureInfoActionBean extends LocalizableApplicationActionBean impl
                 }
             }
         }
+        this.auditMessageObject.addMessage(responses);
         return new StreamingResolution("application/json", new StringReader(responses.toString(4)));
     }
     

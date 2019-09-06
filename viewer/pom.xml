@@ -9,7 +9,7 @@
     <parent>
         <groupId>org.flamingo-mc</groupId>
         <artifactId>flamingo-mc</artifactId>
-        <version>5.5.0-SNAPSHOT</version>
+        <version>5.5.5-SNAPSHOT</version>
     </parent>
     <name>viewer</name>
 
@@ -55,6 +55,14 @@
         <dependency>
             <groupId>org.geotools</groupId>
             <artifactId>gt-shapefile</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.geotools.xsd</groupId>
+            <artifactId>gt-xsd-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.geotools.xsd</groupId>
+            <artifactId>gt-xsd-gml3</artifactId>
         </dependency>
         <dependency>
             <groupId>org.json</groupId>
@@ -151,8 +159,8 @@
         </dependency>
 
         <dependency>
-            <groupId>javax.mail</groupId>
-            <artifactId>javax.mail-api</artifactId>
+            <groupId>jakarta.mail</groupId>
+            <artifactId>jakarta.mail-api</artifactId>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -184,7 +192,11 @@
             <artifactId>powermock-api-mockito2</artifactId>
             <scope>test</scope>
         </dependency>
-
+        <dependency>
+            <groupId>org.apache.tika</groupId>
+            <artifactId>tika-core</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -312,6 +324,7 @@
                                 <param>${viewerhtml.path}/common/ajax/CombineImage.js</param>
                                 <param>${viewerhtml.path}/common/ajax/FeatureInfo.js</param>
                                 <param>${viewerhtml.path}/common/ajax/EditFeature.js</param>
+                                <param>${viewerhtml.path}/common/ajax/EditBulkFeature.js</param>
                                 <param>${viewerhtml.path}/common/ajax/ArcQueryUtil.js</param>
                                 <param>${viewerhtml.path}/common/ajax/FeatureExtent.js</param>
                                 <!-- Abstracts MapComponent -->
@@ -453,6 +466,18 @@
                             </sourceFiles>
                             <outputFile>${minify.outputdir}/components.json</outputFile>
                         </compilation>
+                        <compilation>
+                            <compilationLevel>SIMPLE_OPTIMIZATIONS</compilationLevel>
+                            <compilerOptions>
+                                <prettyPrint>true</prettyPrint>
+                            </compilerOptions>
+                            <externFiles />
+                            <sourceFiles>
+                                <param>${viewerhtml.path}/components/Edit.js</param>
+                                <param>${viewerhtml.path}/components/CurrentLocation.js</param>
+                            </sourceFiles>
+                            <outputFile>${project.build.directory}/compiled-components-temp.js</outputFile>
+                        </compilation>
                     </compilations>
                 </configuration>
             </plugin>
@@ -482,6 +507,30 @@
                         <forceLongFormat>false</forceLongFormat>
                     </gitDescribe>
                 </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <configuration>
+                    <includes>
+                        <include>**/*IntegrationTest.java</include>
+                    </includes>
+                    <trimStackTrace>false</trimStackTrace>
+                    <testFailureIgnore>!${test.skip.integrationtests}</testFailureIgnore>
+                    <skipTests>!${test.skip.integrationtests}</skipTests>
+                    <systemPropertyVariables>
+                        <flamingo.version>${flamingo.version}</flamingo.version>
+                    </systemPropertyVariables>
+                    <useFile>false</useFile>
+                    <argLine>${failsafeArgLine}</argLine>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>integration-test</goal>
+                            <goal>verify</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
@@ -526,6 +575,7 @@
                             <systemPropertyVariables>
                                 <test.persistence.unit>${test.persistence.unit}</test.persistence.unit>
                                 <database.properties.file>postgres.properties</database.properties.file>
+                                <flamingo.version>${flamingo.version}</flamingo.version>
                             </systemPropertyVariables>
                             <useFile>false</useFile>
                             <argLine>${failsafeArgLine}</argLine>
@@ -568,10 +618,10 @@
                             </execution>
                         </executions>
                         <dependencies>
-                           <dependency>
+                            <dependency>
                                 <groupId>com.sun.mail</groupId>
-                                <artifactId>javax.mail</artifactId>
-                                <version>${javax.mail.version}</version>
+                                <artifactId>jakarta.mail</artifactId>
+                                <version>${jakarta.mail.version}</version>
                             </dependency>
                             <dependency>
                                 <groupId>org.postgresql</groupId>
@@ -592,9 +642,9 @@
             <id>jenkins</id>
             <dependencies>
                 <dependency>
-                    <groupId>com.oracle</groupId>
-                    <artifactId>ojdbc7</artifactId>
-                    <version>12.1.0.2.0</version>
+                    <groupId>com.oracle.jdbc</groupId>
+                    <artifactId>ojdbc8_g</artifactId>
+                    <version>${oracle.version}</version>
                     <scope>test</scope>
                 </dependency>
             </dependencies>
@@ -629,6 +679,7 @@
                             <systemPropertyVariables>
                                 <test.persistence.unit>${test.persistence.unit}</test.persistence.unit>
                                 <database.properties.file>oracle.properties</database.properties.file>
+                                <flamingo.version>${flamingo.version}</flamingo.version>
                             </systemPropertyVariables>
                             <useFile>false</useFile>
                             <rerunFailingTestsCount>3</rerunFailingTestsCount>
@@ -671,15 +722,15 @@
                             </execution>
                         </executions>
                         <dependencies>
-                           <dependency>
+                            <dependency>
                                 <groupId>com.sun.mail</groupId>
-                                <artifactId>javax.mail</artifactId>
-                                <version>${javax.mail.version}</version>
+                                <artifactId>jakarta.mail</artifactId>
+                                <version>${jakarta.mail.version}</version>
                             </dependency>
                             <dependency>
-                                <groupId>com.oracle</groupId>
-                                <artifactId>ojdbc7</artifactId>
-                                <version>12.1.0.2.0</version>
+                                <groupId>com.oracle.jdbc</groupId>
+                                <artifactId>ojdbc8_g</artifactId>
+                                <version>${oracle.version}</version>
                             </dependency>
                             <dependency>
                                 <groupId>org.jacoco</groupId>
@@ -726,7 +777,7 @@
                                 <include>**/*IntegrationTest.java</include>
                             </includes>
                             <excludes>
-                                <exclude>**/TilingIntegrationTest.java</exclude>
+                                <!--<exclude>**/TilingIntegrationTest.java</exclude>-->
                             </excludes>
                             <trimStackTrace>false</trimStackTrace>
                             <testFailureIgnore>!${test.skip.integrationtests}</testFailureIgnore>
@@ -734,6 +785,7 @@
                             <systemPropertyVariables>
                                 <test.persistence.unit>${test.persistence.unit}</test.persistence.unit>
                                 <database.properties.file>ms_sql_server.properties</database.properties.file>
+                                <flamingo.version>${flamingo.version}</flamingo.version>
                             </systemPropertyVariables>
                             <useFile>false</useFile>
                             <!--<argLine>${failsafeArgLine}</argLine>-->
@@ -778,8 +830,8 @@
                         <dependencies>
                             <dependency>
                                 <groupId>com.sun.mail</groupId>
-                                <artifactId>javax.mail</artifactId>
-                                <version>${javax.mail.version}</version>
+                                <artifactId>jakarta.mail</artifactId>
+                                <version>${jakarta.mail.version}</version>
                             </dependency>
                             <dependency>
                                 <groupId>com.microsoft.sqlserver</groupId>

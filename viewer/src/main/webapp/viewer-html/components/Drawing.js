@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-/* global Ext, contextPath, MobileManager, actionBeans, i18next, viewer */
+/* global Ext, contextPath, MobileManager, actionBeans, i18next, viewer, FlamingoAppLoader */
 
 /**
  * Drawing component
@@ -44,6 +44,7 @@ Ext.define ("viewer.components.Drawing",{
     mobileHide: false,
     pointType:"circle",
     defaultProps:null,
+    updateFormLayoutTimer: null,
     config:{
         title: "",
         reactivateTools:null,
@@ -85,26 +86,26 @@ Ext.define ("viewer.components.Drawing",{
 
 
         this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE,this.selectedContentChanged,this );
-        this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_COMPONENTS_FINISHED_LOADING,this.init,this);
+        this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_LAYERS_INITIALIZED,this.createVectorLayer, this);
         this.iconPath=FlamingoAppLoader.get('contextPath')+"/viewer-html/components/resources/images/drawing/";
         this.loadWindow();
-        if(this.config.reactivateTools){
-            this.popup.addListener("hide", this.hideWindow, this);
+        if (!this.isPopup) {
+            this.deActivatedTools = this.config.viewerController.mapComponent.deactivateTools();
+        } else {
+            if (this.config.reactivateTools) {
+                this.popup.addListener("hide", this.hideWindow, this);
+            }
         }
-        
         return this;
     },
-    init:function(){
-        this.createVectorLayer();
-        if(this.config.dummyUser){
-            setTimeout(this.drawFreeHand.bind(this),0);
-            
-        }
+    activate: function(){
+        this.vectorLayer.bringToFront();
     },
     showWindow : function (){
         this.deActivatedTools = this.config.viewerController.mapComponent.deactivateTools();
         this.mobileHide = false;
         this.popup.show();
+        this.vectorLayer.bringToFront();
     },
     hideWindow: function () {
         if(this.mobileHide) {
@@ -140,18 +141,22 @@ Ext.define ("viewer.components.Drawing",{
         };
         this.defaultStyle = Ext.create('viewer.viewercontroller.controller.FeatureStyle', this.defaultProps);
         this.vectorLayer=this.config.viewerController.mapComponent.createVectorLayer({
-            name:'drawingVectorLayer',
+            name:'drawingVectorLayer' + this.config.name,
             geometrytypes:["Circle","Polygon","Point","LineString"],
             showmeasures:true,
             viewerController: this.config.viewerController,
             defaultFeatureStyle: this.defaultStyle,
-            addStyleToFeature: true
+            addStyleToFeature: true,
+            mustCreateVertices: !this.config.dummyUser
         });
         this.config.viewerController.registerSnappingLayer(this.vectorLayer);
         this.config.viewerController.mapComponent.getMap().addLayer(this.vectorLayer);
 
         this.vectorLayer.addListener (viewer.viewercontroller.controller.Event.ON_ACTIVE_FEATURE_CHANGED,this.activeFeatureChanged,this);
         this.vectorLayer.addListener (viewer.viewercontroller.controller.Event.ON_FEATURE_ADDED,this.activeFeatureFinished,this);
+        if(this.config.dummyUser){
+            this.drawFreeHand();
+        }
     },
     /**
      * Create the GUI
@@ -714,8 +719,12 @@ Ext.define ("viewer.components.Drawing",{
      * @param feature the feature which has been activated
      * Event handlers
      **/
-    activeFeatureChanged : function (vectorLayer,feature){
+    activeFeatureChanged : function (vectorLayer,feature, evt){
         this.toggleSelectForm(true);
+        if (evt && evt.type && evt.type === 'afterfeaturemodified') {
+            this.activeFeature = null;
+            return;
+        }
         this.activeFeature = this.features[feature.config.id];
         if (!this.features.hasOwnProperty(feature.config.id)) {
             feature.color = feature.color || (feature.style || {}).color || this.colorPicker.getColor();
@@ -723,7 +732,10 @@ Ext.define ("viewer.components.Drawing",{
             this.featureStyleChanged();
         } else {
             if (this.activeFeature.getId() === feature.getId()) {
-                this.changeFormToCurrentFeature(feature);
+                this.updateFormLayoutTimer = window.setTimeout((function() {
+                    this.changeFormToCurrentFeature(feature);
+                }).bind(this), 0);
+
             }
         }
         if (this.activeFeature) {
@@ -739,6 +751,9 @@ Ext.define ("viewer.components.Drawing",{
         });
         this.showMobilePopup();
         this.featureStyleChanged();
+        if (this.updateFormLayoutTimer) {
+            window.clearTimeout(this.updateFormLayoutTimer);
+        }
         if(this.config.dummyUser){
             this.drawFreeHand();
         }
@@ -976,11 +991,17 @@ Ext.define ("viewer.components.Drawing",{
         for ( var i = 0 ; i < features.length;i++){
             var feature = features[i];
             var featureObject = Ext.create("viewer.viewercontroller.controller.Feature",feature);
-            this.vectorLayer.style.fillcolor = featureObject._color;
-            this.vectorLayer.style.strokecolor = featureObject._color;
-            this.vectorLayer.adjustStyle();
+            var featureStyle = this.vectorLayer.frameworkStyleToFeatureStyle({});
+            
+            featureStyle.set('strokeColor',  featureObject.getStyle().getFillColor());
+            featureStyle.set('fillColor', featureObject.getStyle().getStrokeColor());
+            this.vectorLayer.setDefaultFeatureStyle(featureStyle);
+            
             this.vectorLayer.addFeature(featureObject);
             this.vectorLayer.setLabel(this.activeFeature.getId(),featureObject._label);
+            
+            this.features[this.activeFeature.getId()].setStyle(featureStyle);
+            this.vectorLayer.setFeatureStyle(this.activeFeature.getId(), featureStyle);
         }
 
     },

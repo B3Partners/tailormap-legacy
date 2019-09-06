@@ -36,6 +36,10 @@
         <listener-class>nl.b3p.viewer.components.ComponentRegistryInitializer</listener-class>
     </listener>
     <listener>
+        <description>scan for audit logging providers</description>
+        <listener-class>nl.b3p.web.stripes.AuditLogginingInitializer</listener-class>
+    </listener>
+    <listener>
         <listener-class>nl.b3p.web.stripes.StripersistCleanupListener</listener-class>
     </listener>
     <listener>
@@ -102,7 +106,7 @@
         </init-param>
         <init-param>
             <param-name>Extension.Packages</param-name>
-            <param-value>org.stripesstuff.stripersist</param-value>
+            <param-value>org.stripesstuff.stripersist, nl.b3p.web.stripes</param-value>
         </init-param>
         <init-param>
             <param-name>MultipartWrapper.Class</param-name>
@@ -114,7 +118,7 @@
         </init-param>
         <init-param>
             <param-name>LocalePicker.Locales</param-name>
-            <param-value>nl_NL,en_US</param-value>
+            <param-value>nl</param-value>
         </init-param>
         <init-param>
             <param-name>LocalizationBundleFactory.ErrorMessageBundle</param-name>

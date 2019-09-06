@@ -151,7 +151,7 @@
         "group": "Map",
         "singleton": true,
         "restrictions": ["content"],
-        "configSource": ["ConfigObject.js","SelectionWindowConfig.js","FeatureInfo-config.js"]
+        "configSource": ["ConfigObject.js","SelectionWindowConfig.js","FeatureInfo-config.js","FeatureInfo-configwrapper.js"]
     },
     {
         "className": "viewer.components.ExtendedFeatureInfo",
@@ -163,7 +163,7 @@
         "group": "Map",
         "singleton": false,
         "restrictions": ["rightmargin_top", "leftmargin_top","leftmargin_bottom","rightmargin_bottom","popupwindow","left_menu"],
-        "configSource": ["ConfigObject.js","SelectionWindowConfig.js","FeatureInfo-config.js"],
+        "configSource": ["ConfigObject.js","SelectionWindowConfig.js","FeatureInfo-config.js","ExtendedFeatureInfo-config.js"],
         "showHelp": true
     },
     {
@@ -402,34 +402,11 @@
         "name": "Coordinates",
         "shortName": "Coörd",
         "sources": ["Coordinates.js"],
+        "configSource": ["ConfigObject.js", "Coordinates-config.js"],
         "group": "Map",
         "closureCompilerSafe": true,
-        "extPropertyGridConfigs": {
-            "propertyNames": {
-                "decimals": "Decimalen"
-            },
-            "source": {
-                "decimals": 2
-            }
-        },
         "singleton": true,
-        "restrictions": ["content_bottom"]
-    },
-    {
-        "className": "viewer.components.FlamingoComponent",
-        "name": "Flamingo Component",
-        "shortName": "fmc",
-        "sources": ["FlamingoComponent.js"],
-        "closureCompilerSafe": true,
-
-        "singleton": true,
-        "restrictions": ["content"],
-        "notInCombinationWith": ["OpenLayersMap"],
-
-        "extPropertyGridConfigs": {
-            "propertyNames": {"xml": "Xml Configuratie"},
-            "source": {"xml": ""}
-        }
+        "restrictions": ["content_bottom", "content"]
     },
     {
         "className": "viewer.components.TOC",
@@ -645,9 +622,22 @@
         "name": "Extended Edit",
         "shortName": "EEd",
         "group": "Component",
+        "hidden":{"tooltip":"true","label":"true","iconUrl":"true","showEditLinkInFeatureInfo":"true"},
         "sources": ["Edit.js", "ExtendedEdit.js"],
         "configSource": ["ConfigObject.js","SelectionWindowConfig.js","Edit-config.js"],
         "restrictions": ["rightmargin_top", "leftmargin_top","leftmargin_bottom","rightmargin_bottom"],
+        "type": "popup",
+        "singleton": true,
+        "showHelp": true
+    },
+    {
+        "className": "viewer.components.EditBulk",
+        "name": "Edit Bulk",
+        "shortName": "EdB",
+        "group": "Component",
+        "sources": ["Edit.js", "SelectedFeatures.js", "EditBulk.js"],
+        "configSource": ["ConfigObject.js","SelectionWindowConfig.js","EditBulk-config.js"],
+        "restrictions": ["rightmargin_top", "leftmargin_top","leftmargin_bottom","rightmargin_bottom","popupwindow","left_menu"],
         "type": "popup",
         "singleton": true,
         "showHelp": true
@@ -994,5 +984,16 @@
         "singleton": true,
         "configSource": ["ConfigObject.js","SelectionWindowConfig.js", "Contactform-config.js"],
         "restrictions": ["rightmargin_top", "leftmargin_top","rightmargin_bottom", "leftmargin_bottom", "header","footer", "popupwindow"]
+    },
+
+    {
+        "className": "viewer.components.Highlight",
+        "name": "Highlight",
+        "group": "Map",
+        "shortName": "Highlight",
+        "sources": ["Highlight.js"],
+        "singleton": true,
+        "configSource": ["ConfigObject.js","SelectionWindowConfig.js", "Highlight-config.js"],
+        "restrictions": ["content"]
     }
 ]

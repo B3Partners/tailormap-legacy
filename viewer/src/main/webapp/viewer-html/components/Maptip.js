@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-/* global Ext */
+/* global Ext, i18next, contextPath, FlamingoAppLoader, actionBeans */
 
 /**
  * Maptip component
@@ -286,7 +286,7 @@ Ext.define ("viewer.components.Maptip",{
             this.lastPosition.x = options.x;
             this.lastPosition.y = options.y;
             this.worldPosition = options.coord;
-       
+            
             components = this.createInfoHtmlElements(data, options);
             if (!Ext.isEmpty(components)){
                 var x= options.x;
@@ -311,6 +311,7 @@ Ext.define ("viewer.components.Maptip",{
     createInfoHtmlElements: function (data, options){
         var me = this;
         var components=[];
+        var shouldHighlight = this.$className !== "viewer.components.ExtendedFeatureInfo" && this.config.viewerController.getComponentsByClassName("viewer.components.Highlight").length > 0;
         for (var layerIndex = 0 ; layerIndex < data.length ;layerIndex ++ ){
             var layer=data[layerIndex];
             if (layer.error){
@@ -357,32 +358,36 @@ Ext.define ("viewer.components.Maptip",{
                         leftColumnDiv.appendChild(titleDiv);
                     }
                     //description
-                    if (details && details["summary.description"]){
-                        var descriptionDiv = new Ext.Element(document.createElement("div"));
+                    if (details && details["summary.description"]) {
+                        var descriptionDiv = new Ext.Element( document.createElement("div"));
                         descriptionDiv.addCls("feature_summary_description");
-                        if (this.config.heightDescription){
+                        if (this.config.heightDescription) {
                             descriptionDiv.setHeight(Number(this.config.heightDescription));
                         }
-                        var desc = this.replaceByAttributes(details["summary.description"],feature,noHtmlEncode,nl2br, appLayer);
-                        descriptionDiv.insertHtml("beforeEnd",desc);
-                        if(appLayer.details["summary.retrieveUploads"]){
-                            var indexedAttrs= feature.getIndexedAttributes();
+                        if (shouldHighlight) {
+                            this.createHighlight(descriptionDiv, appLayer, feature);
+                        }
+
+                        var desc = this.replaceByAttributes(details["summary.description"], feature, noHtmlEncode, nl2br, appLayer);
+                        descriptionDiv.insertHtml("beforeEnd", desc);
+                        if (appLayer.details["summary.retrieveUploads"]) {
+                            var indexedAttrs = feature.getIndexedAttributes();
                             var uploads = indexedAttrs["__UPLOADS__"];
-                            for(var key in uploads){
-                                if(uploads.hasOwnProperty(key)){
+                            for (var key in uploads) {
+                                if (uploads.hasOwnProperty(key)) {
                                     var files = uploads[key];
-                                    for(var i = 0 ; i < files.length ;i++){
+                                    for (var i = 0; i < files.length; i++) {
                                         var f = files[i];
                                         var uploadDiv = new Ext.Element(document.createElement("div"));
-                                        var link = actionBeans["file"] +"?view=true&upload="+ f.id + "&appLayer=" + appLayer.id + "&application=" +FlamingoAppLoader.get("appId");
+                                        var link = actionBeans["file"] + "?view=true&upload=" + f.id + "&appLayer=" + appLayer.id + "&application=" + FlamingoAppLoader.get("appId");
                                         var linkText;
-                                        if(f.mimetype.indexOf("image") !== -1){
-                                            linkText = "<img src='"+ link + "'/>";
+                                        if (f.mimetype.indexOf("image") !== -1) {
+                                            linkText = "<img src='" + link + "'/>";
                                             uploadDiv.addCls("feature_upload_image");
-                                        }else{
+                                        } else {
                                             linkText = f.filename;
                                         }
-                                        uploadDiv.insertHtml("beforeEnd","<a href='" + link + "' target='_blank'>"+ linkText +"</a>")
+                                        uploadDiv.insertHtml("beforeEnd", "<a href='" + link + "' target='_blank'>" + linkText + "</a>");
                                         descriptionDiv.appendChild(uploadDiv);
                                     }
                                 }
@@ -450,6 +455,40 @@ Ext.define ("viewer.components.Maptip",{
         }
         return components;
     },
+    createHighlight: function (descriptionElement, appLayer, feature) {
+        var highlightElem = document.createElement("img");
+        highlightElem.src = contextPath + '/resources/images/wand.png';
+        var attributes = feature.feature;
+        var featureId = null;
+        for (var i = 0; i < attributes.length; i++) {
+            if (attributes[i].__fid !== undefined) {
+                featureId = attributes[i];
+                break;
+            }
+        }
+        highlightElem.featureId = featureId;
+        highlightElem.appLayer = appLayer;
+        var detailLink = new Ext.Element(highlightElem);
+        detailLink.addListener("click",this.highlight,this);
+
+       /*   descriptionElement.dom.featureId = featureId;
+         descriptionElement.dom.appLayer = appLayer;
+         descriptionElement.addListener("mouseover",
+         this.highlight,
+         this);*/
+
+        descriptionElement.appendChild(detailLink);
+    },
+    highlight: function(evt,el){
+        evt.stopPropagation();
+        var otherEls = document.getElementsByClassName("featureinfo_highlighted");
+        for (var i = 0; i < otherEls.length; i++){
+            var elem = otherEls[i];
+            elem.classList.remove("featureinfo_highlighted");
+        }
+        el.parentElement.parentElement.classList.add("featureinfo_highlighted");
+        this.config.viewerController.fireEvent(viewer.viewercontroller.controller.Event.ON_FEATURE_HIGHLIGHTED, el.featureId, el.appLayer);
+    },
     /**
      * Return the browser zoom ratio.
      * @return ratio of zoom (in or out)
@@ -463,7 +502,7 @@ Ext.define ("viewer.components.Maptip",{
      * @param {viewer.FeatureInfoWrapper} feature the feature that must be shown
      */
     showDetails: function(appLayer,feature){
-        var cDiv=Ext.get(this.getContentDiv());
+        var cDiv = Ext.get(this.getContentDiv());
         var childs = cDiv.query('*', false);
         var len = childs.length;
         for(var i = len-1; i >= 0; i--) {
@@ -530,13 +569,14 @@ Ext.define ("viewer.components.Maptip",{
                 var filteredAttributes = ["related_featuretypes", "__fid"];
                 if (this.detailHideGeomAttr) {
                     filteredAttributes.push(appLayer.geometryAttribute);
-                }
-                for (var n = 0; n < geomFields.length; n++) {
-                    filteredAttributes.push(geomFields[n].name);
-                    filteredAttributes.push(geomFields[n].alias);
+                    for (var n = 0; n < geomFields.length; n++) {
+                        filteredAttributes.push(geomFields[n].name);
+                        filteredAttributes.push(geomFields[n].alias);
+                    }
                 }
                 var html = "<table>";
                 feature.forEachAttribute(function(key, value) {
+                    value = "" + value;
                     html+="<tr>";
                     html+="<td class='feature_detail_attr_key'>"+key+"</td>";
                     if(!noHtmlEncode) {
@@ -560,7 +600,9 @@ Ext.define ("viewer.components.Maptip",{
         }
         featureDiv.selectable();
         cDiv.appendChild(featureDiv);
-        this.popup.show();
+        if (this.popup) {
+            this.popup.show();
+        }
     },
     /**
      * Handle failure of ajax requests.

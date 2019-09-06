@@ -361,6 +361,7 @@ Ext.define ("viewer.components.Search",{
         if(data.location){
             this.handleSearchResult(data);
             this.searchField.collapse();
+            this.resultPanel.removeAll();
         }else{
             this.search();
         }
@@ -619,9 +620,11 @@ Ext.define ("viewer.components.Search",{
         this.config.viewerController.mapComponent.getMap().setMarker("searchmarker",result.x,result.y, this.config.marker);
         
         var type = this.getCurrentSearchType(result);
-        if(type === "solr"){
-
-            var searchconfig = this.getCurrentSearchconfig();
+        var searchconfig = this.getCurrentSearchconfig();
+        if(type === "attributesource" || type === "solr"){
+            this.config.viewerController.fireEvent(viewer.viewercontroller.controller.Event.ON_FEATURE_HIGHLIGHTED, result.id, null, result.sft, result.searchConfig);
+        }
+        if(type === "solr"){ 
             if(searchconfig ){
                 var solrConfig = searchconfig.solrConfig[result.searchConfig];
                 var switchOnLayers = solrConfig.switchOnLayers;
@@ -634,26 +637,30 @@ Ext.define ("viewer.components.Search",{
                             continue;
                         }
                         // Suppress logmessages for non-existing layers
-                        var logLevel = this.config.viewerController.logger.logLevel;
-                        this.config.viewerController.logger.logLevel = viewer.components.Logger.LEVEL_ERROR;
+                        var logLevel = this.config.viewerController.logger.config.logLevel;
+                        this.config.viewerController.logger.config.logLevel = viewer.components.Logger.LEVEL_ERROR;
                         var layer = this.config.viewerController.getLayer(appLayer);
-                        this.config.viewerController.logger.logLevel = logLevel;
+                        this.config.viewerController.logger.config.logLevel = logLevel;
+                        var level = this.config.viewerController.getAppLayerParent(appLayerId);
                         if(!layer){
-                            var level = this.config.viewerController.getAppLayerParent(appLayerId);
                             if(!this.config.viewerController.doesLevelExist(level)){ 
                                 this.config.viewerController.app.selectedContent.push({
                                     id: level.id,
                                     type: "level"
                                 });
                             }
-                            selectedContentChanged = true;
+                            level.removed = false;
+                            appLayer.removed = false;
                             layer = this.config.viewerController.createLayer(appLayer);
                         }
+                        level.removed = false;
+                        this.config.viewerController.app.levels[level.id].removed = false;
+                        appLayer.removed = false;
                         this.config.viewerController.setLayerVisible(appLayer,true);
-                        
+                        selectedContentChanged = true;
                     }
                     if(selectedContentChanged){
-                        this.config.viewerController.fireEvent(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE);
+                        this.config.viewerController.setSelectedContent(this.config.viewerController.app.selectedContent);
                     }
                 }
             }
@@ -804,7 +811,9 @@ Ext.define ("viewer.components.Search",{
             url: null,
             urlOnly: false
         });
-        this.currentSeachId = component.name;
+        if (this.searchconfigs.length === 1) {
+            this.currentSeachId = component.name;
+        }
         this.loadWindow();
     },
     /**

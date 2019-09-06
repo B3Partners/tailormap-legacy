@@ -199,15 +199,25 @@ public class TileService extends GeoService {
                 log.error("Check request; Failed to retrieve getcapabilities: " + e.getLocalizedMessage());
                 return null;
             }
-
-            XPathFactory xPathfactory = XPathFactory.newInstance();
+            // Hack: when using the correct XpathFactory.newInstance() it sometimes returned JSTLXPathFactoryImpl, which was incorrect and
+            // couldn't compile valid xpathexpressions
+            XPathFactory xPathfactory = new org.apache.xpath.jaxp.XPathFactoryImpl();
             XPath xpath = xPathfactory.newXPath();
-            
+            log.error("Parsing wmts getcap with following objects:");
+            log.error("Xpath: " + xpath.getClass().toGenericString());
+            log.error("xPathfactory: " + xPathfactory.getClass().toGenericString());
+            /*
+            log welke xpath implementatie er is
+            log of xpathconstants.string er is
+            */
             // Service info
             s = new TileService();
             s.setTilingProtocol(TILING_PROTOCOL_WMTS);
             
             XPathExpression expr = xpath.compile("/Capabilities/ServiceIdentification/Title");
+            log.error("XPathExpression: " + expr);
+            log.error("XPathConstants: " + XPathConstants.class.toGenericString());
+            log.error("XPathConstants.STRING: " + XPathConstants.STRING);
             String serviceName = (String)expr.evaluate(doc, XPathConstants.STRING);
             s.setName(serviceName);
             

@@ -29,6 +29,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -36,13 +37,20 @@ import java.util.List;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
 import javax.imageio.stream.ImageInputStream;
+import javax.persistence.EntityManager;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+import net.sourceforge.stripes.action.ActionBeanContext;
+import nl.b3p.commons.HttpClientConfigured;
+import nl.b3p.viewer.stripes.ProxyActionBean;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpUriRequest;
 import org.opengis.geometry.BoundingBox;
 
 @XmlRootElement(name="info")
@@ -214,7 +222,10 @@ public class PrintInfo {
         this.units = units;
     }
 
-    public void cacheLegendImagesAndReadDimensions() {
+    public void cacheLegendImagesAndReadDimensions(ActionBeanContext context, EntityManager em) {
+        
+        ProxyActionBean pab = new ProxyActionBean();
+        pab.setContext(context);
         for(Legend l: legendUrls) {
             for(LegendPart lp: l.getLegendParts()) {
                 File legendFile = null;
@@ -223,16 +234,11 @@ public class PrintInfo {
                 FileOutputStream fos = null;
                 try {
                     log.debug("Loading legend from URL: " + lp.getUrl());
-                    URL u = new URL(lp.getUrl());
-                    in = u.openStream();
-                    IOUtils.copy(in, legendMemoryCache);
                     
+                    URL u = new URL(lp.getUrl());
                     legendFile = File.createTempFile("legend_img_", null);
-                    tempFiles.add(legendFile);
-                    legendFile.deleteOnExit();
-                    fos = new FileOutputStream(legendFile);
-                    IOUtils.copy(new ByteArrayInputStream(legendMemoryCache.toByteArray()), fos);
-                    fos.flush();
+                    loadLegend(u, legendMemoryCache, fos, legendFile, pab, em, lp.getServiceId());
+                    
                     lp.setUrl(legendFile.toURI().toString());
                     log.debug("Legend part url changed to point to temporary file: " + lp.getUrl());
                     
@@ -244,7 +250,7 @@ public class PrintInfo {
                         lp.setHeight((int)dim.getHeight());
                         log.debug(String.format("Dimensions: %d x %d", lp.getWidth(), lp.getHeight()));
                     }
-                } catch (IOException e) {
+                } catch (IOException | URISyntaxException e) {
                     log.warn("Exception loading legend dimensions from URL " + lp.getUrl(), e);
                 } finally {
                     if(in != null) {
@@ -264,6 +270,38 @@ public class PrintInfo {
         }
     }
     
+    private void loadLegend(URL u, ByteArrayOutputStream legendMemoryCache, FileOutputStream fos, File legendFile, ProxyActionBean pab, EntityManager em, Integer serviceId) throws IOException, URISyntaxException {
+        tempFiles.add(legendFile);
+        legendFile.deleteOnExit();
+        fos = new FileOutputStream(legendFile);
+        pab.setMustLogin(true);
+        pab.setServiceId(new Long(serviceId));
+        
+        HttpClientConfigured client = pab.getHttpClient(u, em);
+
+        HttpUriRequest req = pab.getHttpRequest(u);
+        HttpResponse response = null;
+        try {
+            response = client.execute(req);
+
+            int statusCode = response.getStatusLine().getStatusCode();
+            if (statusCode >= 200 && statusCode < 300) {
+                HttpEntity entity = response.getEntity();
+                entity.writeTo(legendMemoryCache);
+            }else{
+                
+            }
+        } finally {
+            if (response != null) {
+                client.close(response);
+            }
+            client.close();
+        }
+
+        IOUtils.copy(new ByteArrayInputStream(legendMemoryCache.toByteArray()), fos);
+        fos.flush();
+    }
+
     /**
      * Load image dimensions, ideally without decoding the entire image.
      */

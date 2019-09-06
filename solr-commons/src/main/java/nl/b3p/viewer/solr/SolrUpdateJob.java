@@ -38,7 +38,7 @@ import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.common.SolrInputDocument;
 import org.geotools.data.Query;
 import org.geotools.factory.CommonFactoryFinder;
-import org.geotools.factory.GeoTools;
+import org.geotools.util.factory.GeoTools;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
 import org.opengis.feature.simple.SimpleFeature;
@@ -243,7 +243,7 @@ public class SolrUpdateJob implements Job {
                         doc.addField("maxy", env.getMaxY());
                     }
                     
-                    doc.addField("id", feature.getID());
+                    doc.addField("id", id + "-" + feature.getID());
                     doc.addField("searchConfig", id);
                     docs.add(doc);
                 }

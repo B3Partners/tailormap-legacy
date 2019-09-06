@@ -48,7 +48,7 @@ public class Mailer {
      * Sends a mail with an attachment enclosed
      * @param fromName The name which should be display as the sender.
      * @param fromEmail The replyaddress
-     * @param email To which address the mail should be sent
+     * @param email To which address(es) the mail should be sent, comma separated string for multiple addresses
      * @param subject Subject of the mail
      * @param mailContent The content of the message
      * @throws Exception if any
@@ -61,10 +61,10 @@ public class Mailer {
      * Sends a mail with an attachment enclosed
      * @param fromName The name which should be display as the sender.
      * @param fromEmail The replyaddress
-     * @param email To which address the mail should be sent
+     * @param email To which address(es) the mail should be sent, comma separated string for multiple addresses
      * @param subject Subject of the mail
      * @param mailContent The content of the message
-     * @param cc A cc address
+     * @param cc A cc address, comma separated string for multiple cc addresses
      * @throws Exception if any
      */
     public static void sendMail(String fromName, String fromEmail, String email, String subject, String mailContent, String cc) throws Exception {
@@ -72,9 +72,11 @@ public class Mailer {
         Address from = new InternetAddress(fromEmail, fromName);
         MimeMessage msg = new MimeMessage(getMailSession());
         msg.setFrom(from);
-        msg.addRecipient(Message.RecipientType.TO, new InternetAddress(email));
+        InternetAddress[] emailAddresses = InternetAddress.parse(email);
+        msg.addRecipients(Message.RecipientType.TO, emailAddresses);
         if(cc != null){
-            msg.addRecipient(Message.RecipientType.CC, new InternetAddress(cc));
+            InternetAddress[] ccAddresses = InternetAddress.parse(cc);
+            msg.addRecipients(Message.RecipientType.CC, ccAddresses);
         }
         msg.setSubject(subject);
         msg.setSentDate(new Date());
@@ -87,7 +89,7 @@ public class Mailer {
      * Sends a mail with an attachment enclosed
      * @param fromName The name which should be display as the sender.
      * @param fromEmail The replyaddress
-     * @param email To which address the mail should be sent
+     * @param email To which address(es) the mail should be sent, comma separated string for multiple addresses
      * @param subject Subject of the mail
      * @param mailContent The content of the message
      * @param attachment The attachment to be sent
@@ -99,7 +101,8 @@ public class Mailer {
         Address from = new InternetAddress(fromEmail, fromName);
         Message msg = new MimeMessage(getMailSession());
         msg.setFrom(from);
-        msg.addRecipient(Message.RecipientType.TO, new InternetAddress(email));
+        InternetAddress[] emailAddresses = InternetAddress.parse(email);
+        msg.addRecipients(Message.RecipientType.TO, emailAddresses);
         msg.setSubject(subject);
         msg.setSentDate(new Date());        
         

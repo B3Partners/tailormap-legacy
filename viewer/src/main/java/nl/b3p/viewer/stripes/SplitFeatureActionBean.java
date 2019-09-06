@@ -30,7 +30,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import net.sourceforge.stripes.action.ActionBean;
 import net.sourceforge.stripes.action.ActionBeanContext;
 import net.sourceforge.stripes.action.After;
 import net.sourceforge.stripes.action.Before;
@@ -40,6 +39,8 @@ import net.sourceforge.stripes.action.StrictBinding;
 import net.sourceforge.stripes.action.UrlBinding;
 import net.sourceforge.stripes.controller.LifecycleStage;
 import net.sourceforge.stripes.validation.Validate;
+import nl.b3p.viewer.audit.AuditMessageObject;
+import nl.b3p.viewer.audit.Auditable;
 import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.ApplicationLayer;
 import nl.b3p.viewer.config.security.Authorizations;
@@ -55,7 +56,7 @@ import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.filter.identity.FeatureIdImpl;
 import org.geotools.util.Converter;
-import org.geotools.util.GeometryTypeConverterFactory;
+import org.geotools.data.util.GeometryTypeConverterFactory;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.opengis.feature.simple.SimpleFeature;
@@ -76,7 +77,7 @@ import org.stripesstuff.stripersist.Stripersist;
  */
 @UrlBinding("/action/feature/split")
 @StrictBinding
-public class SplitFeatureActionBean extends LocalizableApplicationActionBean implements ActionBean {
+public class SplitFeatureActionBean extends LocalizableApplicationActionBean implements Auditable {
 
     private static final Log log = LogFactory.getLog(SplitFeatureActionBean.class);
 
@@ -113,6 +114,8 @@ public class SplitFeatureActionBean extends LocalizableApplicationActionBean imp
 
     private boolean unauthorized;
 
+    private AuditMessageObject auditMessageObject;
+
     @After(stages = LifecycleStage.BindingAndValidation)
     public void loadLayer() {
         this.layer = appLayer.getService().getSingleLayer(appLayer.getLayerName(), Stripersist.getEntityManager());
@@ -124,6 +127,7 @@ public class SplitFeatureActionBean extends LocalizableApplicationActionBean imp
                 || !Authorizations.isLayerGeomWriteAuthorized(layer, context.getRequest(), Stripersist.getEntityManager())) {
             unauthorized = true;
         }
+        auditMessageObject = new AuditMessageObject();
     }
 
     public Resolution split() throws JSONException {
@@ -179,6 +183,7 @@ public class SplitFeatureActionBean extends LocalizableApplicationActionBean imp
         if (error != null) {
             json.put("error", error);
         }
+        this.auditMessageObject.addMessage(json);
         return new StreamingResolution("application/json", new StringReader(json.toString()));
     }
 
@@ -462,6 +467,10 @@ public class SplitFeatureActionBean extends LocalizableApplicationActionBean imp
 
     public Layer getLayer() {
         return this.layer;
+    }
+
+    public AuditMessageObject getAuditMessageObject() {
+        return this.auditMessageObject;
     }
     //</editor-fold>
 }

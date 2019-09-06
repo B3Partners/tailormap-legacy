@@ -948,7 +948,7 @@ OpenLayers.Renderer.SVG.prototype.getFeatureIdFromEvent = function(evt) {
                 var cn = childnodes[i];
                 if(cn._featureId){
                     var feat = evt.l.getFeatureById(cn._featureId);
-                    if (feat.atPoint(lonlat)) {
+                    if (feat.atPoint(lonlat) && feat.geometry.containsPoint && feat.geometry.containsPoint({x: lonlat.lon,y: lonlat.lat})) {
                         featureId = cn._featureId;
                         break;
                     }

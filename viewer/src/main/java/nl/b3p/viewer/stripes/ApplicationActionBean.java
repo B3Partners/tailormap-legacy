@@ -16,15 +16,22 @@
  */
 package nl.b3p.viewer.stripes;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.StringReader;
+import java.io.StringWriter;
 import java.security.Principal;
 import java.util.*;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.criteria.*;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.util.HtmlUtil;
 import net.sourceforge.stripes.util.StringUtil;
@@ -42,6 +49,7 @@ import nl.b3p.viewer.config.metadata.Metadata;
 import nl.b3p.viewer.config.security.Authorizations;
 import nl.b3p.viewer.config.security.User;
 import nl.b3p.viewer.util.SelectedContentCache;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -297,11 +305,17 @@ public class ApplicationActionBean extends LocalizableApplicationActionBean impl
         return view;
     }
 
-    public Resolution retrieveAppConfigJSON(){
+    public Resolution retrieveAppConfigJSON() throws IOException {
         EntityManager em = Stripersist.getEntityManager();
         JSONObject response = new JSONObject();
         response.put("success", false);
-        appConfigJSON = application.toJSON(context.getRequest(),false, false,em);
+        JSONObject obj = application.toJSON(context.getRequest(), false, false, em);
+        JSONObject details = obj.optJSONObject("details");
+        if (details != null) {
+            details.remove(SelectedContentCache.DETAIL_CACHED_EXPANDED_SELECTED_CONTENT);
+            details.remove(SelectedContentCache.DETAIL_CACHED_SELECTED_CONTENT);
+        }
+        appConfigJSON = obj.toString();
         response.put("config", appConfigJSON);
         response.put("success", true);
         return new StreamingResolution("application/json", new StringReader(response.toString()));
@@ -363,7 +377,7 @@ public class ApplicationActionBean extends LocalizableApplicationActionBean impl
 
         buildComponentSourceHTML(em);
 
-        appConfigJSON = application.toJSON(context.getRequest(),false, false,em);
+        appConfigJSON = application.toJSON(context.getRequest(),false, false,em).toString();
         this.viewerType = retrieveViewerType();
         if(StringUtils.isBlank(title)) {
             this.title = application.getName();

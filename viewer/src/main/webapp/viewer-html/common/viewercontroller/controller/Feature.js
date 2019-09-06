@@ -24,7 +24,11 @@ Ext.define("viewer.viewercontroller.controller.Feature",{
             this.label = "";
         }
         if(config.style){
-            this.style = Ext.create("viewer.viewercontroller.controller.FeatureStyle", config.style);
+            if(config.style.$className === "viewer.viewercontroller.controller.FeatureStyle"){
+                this.style = config.style;
+            }else{
+                this.style = Ext.create("viewer.viewercontroller.controller.FeatureStyle", config.style);
+            }
         }
     },
     
@@ -52,7 +56,7 @@ Ext.define("viewer.viewercontroller.controller.Feature",{
         json.id = this._id;
         json.wktgeom = this._wktgeom;
         json.label = this.label;
-        json.style = this.style.getProperties();
+        json.style = this.style.getProperties ? this.style.getProperties() : this.style;
         return json;
     },
     /**

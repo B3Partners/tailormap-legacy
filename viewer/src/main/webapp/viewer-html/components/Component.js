@@ -248,6 +248,7 @@ Ext.define("viewer.components.Component",{
         if(this.config && this.config.hasOwnProperty('showHelpButton') && this.config.showHelpButton !== "false") {
             tools = [{
                 type: 'help',
+                tooltip: i18next.t('viewer_components_svgheader_1'),
                 scope: this,
                 handler: function(event, toolEl, panel){
                     this.config.viewerController.showHelp(this.config);
@@ -546,6 +547,22 @@ Ext.define("viewer.components.Component",{
             return;
         }
         this.currentDeferred.reject("timeout");
+    },
+    
+    activate: function(){
+        
+    },
+
+    showSuccessToast: function(msg, title) {
+        Ext.toast({
+            title: title,
+            html: msg,
+            width: 300,
+            align: 'tr',
+            autoCloseDelay: 5000,
+            iconCls: 'x-fa fa-info-circle',
+            cls: "success-toast"
+        });
     }
 
 });

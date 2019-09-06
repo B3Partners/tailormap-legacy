@@ -16,18 +16,22 @@
  */
 package nl.b3p.viewer.stripes;
 
+import net.sourceforge.stripes.controller.LifecycleStage;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.io.WKTReader;
 import java.io.IOException;
-import net.sourceforge.stripes.action.ActionBean;
 import java.io.StringReader;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletRequest;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.Validate;
+import nl.b3p.viewer.audit.AuditMessageObject;
+import nl.b3p.viewer.audit.Auditable;
 import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.ApplicationLayer;
 import nl.b3p.viewer.config.security.Authorizations;
@@ -45,7 +49,6 @@ import org.geotools.data.simple.SimpleFeatureStore;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.filter.identity.FeatureIdImpl;
 import org.geotools.filter.text.cql2.CQL;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.opengis.feature.simple.SimpleFeature;
@@ -62,7 +65,7 @@ import org.stripesstuff.stripersist.Stripersist;
  */
 @UrlBinding("/action/feature/edit")
 @StrictBinding
-public class EditFeatureActionBean extends LocalizableApplicationActionBean implements ActionBean {
+public class EditFeatureActionBean extends LocalizableApplicationActionBean implements Auditable {
     private static final Log log = LogFactory.getLog(EditFeatureActionBean.class);
 
     private static final String FID = FeatureInfoActionBean.FID;
@@ -83,6 +86,10 @@ public class EditFeatureActionBean extends LocalizableApplicationActionBean impl
     protected SimpleFeatureStore store;
 
     protected JSONObject jsonFeature;
+
+    private AuditMessageObject auditMessageObject;
+    private final SimpleDateFormat datetime = new SimpleDateFormat("dd-MM-yyy HH:mm:ss");
+    private final SimpleDateFormat date = new SimpleDateFormat("dd-MM-yyy");
 
     //<editor-fold defaultstate="collapsed" desc="getters and setters">
     @Override
@@ -139,7 +146,16 @@ public class EditFeatureActionBean extends LocalizableApplicationActionBean impl
         return FID;
     }
 
+    public AuditMessageObject getAuditMessageObject() {
+        return this.auditMessageObject;
+    }
     //</editor-fold>
+
+
+    @Before(stages = LifecycleStage.EventHandling)
+    public void initAudit(){
+        auditMessageObject = new AuditMessageObject();
+    }
 
     @DefaultHandler
     public Resolution edit() throws JSONException {
@@ -214,6 +230,8 @@ public class EditFeatureActionBean extends LocalizableApplicationActionBean impl
             json.put("error", error);
             log.error("Returned error message editing feature: " + error);
         }
+
+        this.auditMessageObject.addMessage(json);
 
         return new StreamingResolution("application/json", new StringReader(json.toString(4)));
     }
@@ -307,6 +325,7 @@ public class EditFeatureActionBean extends LocalizableApplicationActionBean impl
                 }
             }
         }
+        this.auditMessageObject.addMessage(json);
 
         return new StreamingResolution("application/json", new StringReader(json.toString(4)));
     }   
@@ -389,6 +408,7 @@ public class EditFeatureActionBean extends LocalizableApplicationActionBean impl
             log.error("Returned error message editing feature: " + error);
         }
 
+        this.auditMessageObject.addMessage(json);
         return new StreamingResolution("application/json", new StringReader(json.toString(4)));
     }
     
@@ -432,8 +452,8 @@ public class EditFeatureActionBean extends LocalizableApplicationActionBean impl
             }
             fs.getDataStore().dispose();
         }
+        this.auditMessageObject.addMessage(json);
         return new StreamingResolution("application/json", new StringReader(json.toString(4)));
-
     }
     
     protected String addNewFeature() throws Exception {
@@ -451,6 +471,17 @@ public class EditFeatureActionBean extends LocalizableApplicationActionBean impl
                     g = new WKTReader().read(wkt);
                 }
                 f.setDefaultGeometry(g);
+            } else if(ad.getType().getBinding().equals(java.sql.Date.class) || ad.getType().getBinding().equals(java.sql.Timestamp.class)){
+                String v = jsonFeature.optString(ad.getLocalName());
+                Date d = null;
+                if (v != null) {
+                    if (ad.getType().getBinding().equals(java.sql.Timestamp.class)) {
+                        d = datetime.parse(v); 
+                   }else{
+                        d = date.parse(v);
+                    }
+                }
+                f.setAttribute(ad.getLocalName(), d);
             } else {
                 String v = jsonFeature.optString(ad.getLocalName());
                 f.setAttribute(ad.getLocalName(), StringUtils.defaultIfBlank(v, null));

@@ -474,8 +474,8 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
             var options = { numDigits: config.decimals};
             if(this.contentBottom){
                 options.div = this.contentBottom;
-                config.cssClass = "olControlMousePosition";
             }
+            config.cssClass = "olControlMousePosition";
             comp = Ext.create("viewer.viewercontroller.openlayers.OpenLayersComponent",config, new OpenLayers.Control.MousePosition(options));
         }else if(type == viewer.viewercontroller.controller.Component.SCALEBAR){
             var frameworkOptions={}
@@ -838,6 +838,16 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
     }
 
     /****************************************************************Event handling***********************************************************/
+    
+    deselectAllOtherFeatures: function(layer){
+        var vectorLayers = this.viewerController.mapComponent.getMap().getAllVectorLayers();
+        for(var i = 0 ; i < vectorLayers.length; i++){
+            var vl = vectorLayers[i];
+            if(vl.getId() !== layer.getId()){
+                vl.unselectAll();
+            }
+        }
+    }
 
 });
 

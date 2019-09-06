@@ -126,6 +126,13 @@ Ext.define("viewer.viewercontroller.controller.Event",{
          */
         TOC_EXPANDED                            : "TOC_EXPANDED",
         /**
+         * @field
+         * Occurs when a style is selected for a certain layer
+         * @param {Object} layerObject the layer object
+         * @param {Object} style the style object
+         */
+        ON_STYLE_SELECTED                       : "ON_STYLE_SELECTED",
+        /**
          *@field
          *occures when a mouse is moved and the maptip must be cancelled
          *@param map the map object that called this event.
@@ -226,6 +233,7 @@ Ext.define("viewer.viewercontroller.controller.Event",{
         ON_COMPONENTS_FINISHED_LOADING           : "ON_COMPONENTS_FINISHED_LOADING",
         ON_SELECTEDCONTENT_CHANGE             : "ON_SELECTEDCONTENT_CHANGE",
         ON_MAP_CLICKED                        :  "ON_MAP_CLICKED",
+        ON_FEATURE_HIGHLIGHTED                  : "ON_FEATURE_HIGHLIGHTED",
         /** @field
          *  Occurs when the active feature is changed. Note: Alse fired when the first point of a polygon is set, so the WKT may be incorrect
          */

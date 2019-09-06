@@ -10,13 +10,18 @@ addons:
   apt:
     packages:
       - haveged
+      - nodejs
       # - git-lfs should be installed on trusty images
 
 services:
   - haveged
+  - docker
 
 before_install:
+  - docker-compose -f viewer-commons/docker/geoserver/docker-compose.yml up -d
+  - npm install -g wait-on
   - unset _JAVA_OPTIONS
+  - echo $JAVA_HOME
   - export PAGER=cat
   # create Flamingo database
   - psql --version
@@ -30,11 +35,18 @@ before_install:
   - ls -la ~
 
 install:
-  # load pki-overheid G2/G3 certificates
   - wget http://cert.pkioverheid.nl/RootCA-G3.cer
-  - sudo keytool -importcert -file ./RootCA-G3.cer -alias G3 -keystore $JAVA_HOME/jre/lib/security/cacerts -storepass 'changeit' -v -noprompt -trustcacerts
   - wget http://cert.pkioverheid.nl/RootCA-G2.cer
-  - sudo keytool -importcert -file ./RootCA-G2.cer -alias G2 -keystore $JAVA_HOME/jre/lib/security/cacerts -storepass 'changeit' -v -noprompt -trustcacerts
+  # load pki-overheid G2/G3 certificates on java 8
+  - if [ "$TRAVIS_JDK_VERSION" == oraclejdk8 ] || [ "$TRAVIS_JDK_VERSION" == openjdk8 ]; then
+       sudo keytool -importcert -file ./RootCA-G3.cer -alias G3 -keystore $JAVA_HOME/jre/lib/security/cacerts -storepass 'changeit' -v -noprompt -trustcacerts;
+       sudo keytool -importcert -file ./RootCA-G2.cer -alias G2 -keystore $JAVA_HOME/jre/lib/security/cacerts -storepass 'changeit' -v -noprompt -trustcacerts;
+    fi
+  # load pki-overheid G2/G3 certificates on java 11
+  - if [ "$TRAVIS_JDK_VERSION" == openjdk11 ]; then
+       sudo keytool -importcert -file ./RootCA-G3.cer -alias G3 -keystore $JAVA_HOME/lib/security/cacerts -storepass 'changeit' -v -noprompt -trustcacerts;
+       sudo keytool -importcert -file ./RootCA-G2.cer -alias G2 -keystore $JAVA_HOME/lib/security/cacerts -storepass 'changeit' -v -noprompt -trustcacerts;
+    fi
   # install without testing
   - travis_wait 40 mvn --settings .travis/settings.xml -Ptravis-ci-prebuild install -U -DskipTests -Dtest.skip.integrationtests=true -B -V -fae
 
@@ -44,6 +56,7 @@ before_script:
 script:
   - ulimit -a
   - free -m
+  - wait-on -t 120000 http-get://localhost:8600/geoserver && echo "docker geoserver is up" || true
   # execute unit tests
   - mvn -e clean test -B
   # run integration tests on all modules except viewer-admin
@@ -68,6 +81,7 @@ after_success:
 jdk:
   - oraclejdk8
   - openjdk8
+  - openjdk11
 
 os:
   - linux

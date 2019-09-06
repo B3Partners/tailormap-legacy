@@ -29,13 +29,13 @@ Ext.define ("viewer.components.ExtendedFeatureInfo",{
     pagination:null,
     content:null,
     
-    constructor: function (conf){  
+    constructor: function (conf) {
+        conf.useOrderedAttributes = true;
         //don't call maptip constructor but that of super maptip.
         this.initConfig(conf);
         viewer.components.Maptip.superclass.constructor.call(this, this.config);
         this.showMaxFeaturesText = false;
         this.config.clickRadius = this.config.clickRadius ? this.config.clickRadius : 4;
-        this.config.moreLink = null;
 
         this.navigateBackButton = this.createButton('left', i18next.t('viewer_components_extendedfeatureinfo_0'));
         this.navigateForwardButton = this.createButton('right', i18next.t('viewer_components_extendedfeatureinfo_1'));
@@ -63,6 +63,9 @@ Ext.define ("viewer.components.ExtendedFeatureInfo",{
             },
             tools: this.getHelpToolConfig()
         });
+
+        this.getContentContainer().setHtml('');
+        this.getContentContainer().removeAll();
         this.getContentContainer().add(this.panel);
         
         this.getViewerController().mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,this.onAddLayer,this);
@@ -172,15 +175,25 @@ Ext.define ("viewer.components.ExtendedFeatureInfo",{
             cls: 'feature-info-page',
             hidden: false,
             featureId: featureId,
+            appLayer: data.appLayer,
             listeners: {
                 beforedestroy: function() {
                     // Manually destroy element: solves errors from Ext's garbage collector
                     contentEl.destroy();
                     this.setHtml('');
                 }
-            }
+            },
+            scrollable: true
         });
         this.panel.add(container);
+    },
+    getContentDiv: function() {
+        var pages = this.panel.query('[cls=feature-info-page]');
+        if (pages[this.currentIndex]) {
+            return pages[this.currentIndex].getEl();
+        }
+        // Prevent JS error by returning empty DIV if for some reason the current page is not available
+        return new Ext.Element(document.createElement('div'));
     },
     showPage: function(index, currentFeatureId){
         var pages = this.panel.query('[cls=feature-info-page]');
@@ -197,10 +210,14 @@ Ext.define ("viewer.components.ExtendedFeatureInfo",{
             index = 0;
         }
         for(var i = 0; i < pages.length; i++) {
-            if(i === index && pages[i].isHidden()) {
-                pages[i].setHidden(false);
+            var page = pages[i];
+            if(i === index ) {
+                if( page.isHidden()){
+                    page.setHidden(false);
+                }
+                this.config.viewerController.fireEvent(viewer.viewercontroller.controller.Event.ON_FEATURE_HIGHLIGHTED, page.featureId, page.appLayer);
             } else if(i !== index) {
-                pages[i].setHidden(true);
+                page.setHidden(true);
             }
         }
         this.createPagination();

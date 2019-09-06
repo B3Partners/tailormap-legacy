@@ -1,0 +1,62 @@
+<featureType>
+  <id>FeatureTypeInfoImpl--7e791a08:16b65703d40:-7fbd</id>
+  <name>meaningless_unittest_table</name>
+  <nativeName>meaningless_unittest_table</nativeName>
+  <namespace>
+    <id>NamespaceInfoImpl--7e791a08:16b65703d40:-7ffb</id>
+  </namespace>
+  <title>meaningless_unittest_table</title>
+  <keywords>
+    <string>features</string>
+    <string>meaningless_unittest_table</string>
+  </keywords>
+  <nativeCRS class="projected">PROJCS[&quot;Amersfoort / RD New&quot;, 
+  GEOGCS[&quot;Amersfoort&quot;, 
+    DATUM[&quot;Amersfoort&quot;, 
+      SPHEROID[&quot;Bessel 1841&quot;, 6377397.155, 299.1528128, AUTHORITY[&quot;EPSG&quot;,&quot;7004&quot;]], 
+      TOWGS84[565.2369, 50.0087, 465.658, -0.4068573303223975, -0.3507326765425626, 1.8703473836067956, 4.0812], 
+      AUTHORITY[&quot;EPSG&quot;,&quot;6289&quot;]], 
+    PRIMEM[&quot;Greenwich&quot;, 0.0, AUTHORITY[&quot;EPSG&quot;,&quot;8901&quot;]], 
+    UNIT[&quot;degree&quot;, 0.017453292519943295], 
+    AXIS[&quot;Geodetic longitude&quot;, EAST], 
+    AXIS[&quot;Geodetic latitude&quot;, NORTH], 
+    AUTHORITY[&quot;EPSG&quot;,&quot;4289&quot;]], 
+  PROJECTION[&quot;Oblique_Stereographic&quot;, AUTHORITY[&quot;EPSG&quot;,&quot;9809&quot;]], 
+  PARAMETER[&quot;central_meridian&quot;, 5.387638888888891], 
+  PARAMETER[&quot;latitude_of_origin&quot;, 52.15616055555556], 
+  PARAMETER[&quot;scale_factor&quot;, 0.9999079], 
+  PARAMETER[&quot;false_easting&quot;, 155000.0], 
+  PARAMETER[&quot;false_northing&quot;, 463000.0], 
+  UNIT[&quot;m&quot;, 1.0], 
+  AXIS[&quot;Easting&quot;, EAST], 
+  AXIS[&quot;Northing&quot;, NORTH], 
+  AUTHORITY[&quot;EPSG&quot;,&quot;28992&quot;]]</nativeCRS>
+  <srs>EPSG:28992</srs>
+  <nativeBoundingBox>
+    <minx>-1.0</minx>
+    <maxx>0.0</maxx>
+    <miny>-1.0</miny>
+    <maxy>0.0</maxy>
+    <crs class="projected">EPSG:28992</crs>
+  </nativeBoundingBox>
+  <latLonBoundingBox>
+    <minx>3.31459569317924</minx>
+    <maxx>3.3146094347893746</maxx>
+    <miny>47.97495103090916</miny>
+    <maxy>47.97496025808999</maxy>
+    <crs>EPSG:4326</crs>
+  </latLonBoundingBox>
+  <projectionPolicy>FORCE_DECLARED</projectionPolicy>
+  <enabled>true</enabled>
+  <store class="dataStore">
+    <id>DataStoreInfoImpl--7e791a08:16b65703d40:-7ffa</id>
+  </store>
+  <serviceConfiguration>false</serviceConfiguration>
+  <maxFeatures>0</maxFeatures>
+  <numDecimals>0</numDecimals>
+  <padWithZeros>false</padWithZeros>
+  <forcedDecimal>false</forcedDecimal>
+  <overridingServiceSRS>false</overridingServiceSRS>
+  <skipNumberMatched>false</skipNumberMatched>
+  <circularArcPresent>false</circularArcPresent>
+</featureType>
