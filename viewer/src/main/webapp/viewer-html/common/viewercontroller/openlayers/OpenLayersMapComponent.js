@@ -835,7 +835,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
     
     compareExtent: function(ext1, ext2){
         return ext1.equals(ext2);
-    }
+    },
 
     /****************************************************************Event handling***********************************************************/
     
