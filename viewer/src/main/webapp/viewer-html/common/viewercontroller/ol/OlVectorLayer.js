@@ -270,6 +270,9 @@ Ext.define("viewer.viewercontroller.ol.OlVectorLayer", {
     cancelSketch: function () {
         Ext.Error.raise({msg: "VectorLayer.cancelSketch() Not implemented! Must be implemented in sub-class"});
     },
+    bringToFront: function () {
+        this.frameworkLayer.setZIndex(99);
+    },
 
     /**
      * Helper function: Converts the given OpenLayers Feature to the generic feature.
