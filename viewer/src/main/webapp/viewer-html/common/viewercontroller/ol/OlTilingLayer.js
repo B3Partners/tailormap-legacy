@@ -15,8 +15,8 @@ Ext.define("viewer.viewercontroller.ol.OlTilingLayer",{
     constructor : function(config){
         viewer.viewercontroller.ol.OlTilingLayer.superclass.constructor.call(this, config);
         
-        if(!Ext.Array.contains(["TMS", "ArcGisRest","WMTS"/*,"OSM"*/], this.getProtocol())) {
-            throw new Error("OpenLayersTilingLayer currently does not support tiling protocol " + this.getProtocol());
+        if(!Ext.Array.contains(["TMS", "WMTS"/*,"OSM"*/], this.getProtocol())) {
+            throw new Error("OpenLayers 5 TilingLayer currently does not support tiling protocol " + this.getProtocol());
         }
         
         this.mixins.olLayer.constructor.call(this,config);
