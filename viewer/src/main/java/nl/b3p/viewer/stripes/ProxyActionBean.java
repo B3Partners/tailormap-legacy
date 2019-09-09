@@ -210,6 +210,8 @@ public class ProxyActionBean implements ActionBean, Auditable {
         allowedParams.add("SLD_BODY");
         //vendor
         allowedParams.add("MAP");
+        allowedParams.add("VIEWPARAMS");
+        allowedParams.add("ENV");
         // wmts
         allowedParams.add("TILEMATRIXSET");
         allowedParams.add("TILEMATRIX");

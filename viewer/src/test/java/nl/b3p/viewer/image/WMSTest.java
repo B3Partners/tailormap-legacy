@@ -79,6 +79,6 @@ public class WMSTest {
     public void wmsTest() throws Exception {
         CombineImageSettings settings = CombineImageSettings.fromJson(new JSONObject(JSONCONFIG));
         FileOutputStream fos = new FileOutputStream(DEST_DIR + File.separator + "WMS_split.png");
-        CombineImagesHandler.combineImage(fos, settings,null);
+        CombineImagesHandler.combineImage(fos, settings, null, null, null);
     }
 }
