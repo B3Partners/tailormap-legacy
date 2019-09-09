@@ -18,7 +18,7 @@ timestamps {
         jdks.eachWithIndex { jdk, indexOfJdk ->
             final String jdkTestName = jdk.toString()
 
-            withEnv(["JAVA_HOME=${ tool jdkTestName }", "PATH+MAVEN=${tool 'Maven 3.6.0'}/bin:${env.JAVA_HOME}/bin"]) {
+            withEnv(["JAVA_HOME=${ tool jdkTestName }", "PATH+MAVEN=${tool 'Maven CURRENT'}/bin:${env.JAVA_HOME}/bin"]) {
 
                 echo "Using JDK: ${jdkTestName}"
 
@@ -68,7 +68,7 @@ timestamps {
             jacoco exclusionPattern: '**/*Test.class', execPattern: '**/target/**.exec'
         }
 
-        withEnv(["JAVA_HOME=${ tool 'JDK8' }", "PATH+MAVEN=${tool 'Maven 3.6.0'}/bin:${env.JAVA_HOME}/bin"]) {
+        withEnv(["JAVA_HOME=${ tool 'JDK8' }", "PATH+MAVEN=${tool 'Maven CURRENT'}/bin:${env.JAVA_HOME}/bin"]) {
             stage('Check Javadocs') {
                 sh "mvn javadoc:javadoc"
             }
