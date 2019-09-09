@@ -75,7 +75,7 @@ Ext.define ("viewer.components.Search",{
     constructor: function (conf){
         conf.details.useExtLayout = true;
         this.initConfig(conf);
-		viewer.components.Search.superclass.constructor.call(this, this.config);
+	viewer.components.Search.superclass.constructor.call(this, this.config);
         this.renderButton(); 
         var notUrlConfigs = [];
         this.onlyUrlConfig = [];
@@ -397,6 +397,8 @@ Ext.define ("viewer.components.Search",{
         this.searchResult = [];
         if (this.getCurrentSearchType() === "simplelist") {
             this.simpleListSearch(searchText);
+        }else if(this.getCurrentSearchType() === "coordinate"){
+             this.coordinateSearch(searchText);
         } else if (this.getCurrentSearchType() === "dynamic") {
             
             var config = this.getCurrentSearchconfig();
@@ -692,8 +694,8 @@ Ext.define ("viewer.components.Search",{
                     
                     params["searchName"]=searchConfig;
                     params["appId"]= FlamingoAppLoader.get("appId");
-                    params["componentName"]=this.name;
-                }else{
+                    params["componentName"]=this.name; 
+               }else{
                     this.searchField.queryMode = "local";
                     this.searchField.getStore().removeAll();
                 }
@@ -743,7 +745,27 @@ Ext.define ("viewer.components.Search",{
             var appLayers = this.config.viewerController.getVisibleLayers();
             params["visibleLayers"] = appLayers.join(", ");
         }
-    }, 
+    },
+    coordinateSearch: function(term){
+        var config = this.getCurrentSearchconfig();
+        var buffer = config.buffer ? parseInt(config.buffer) : 200;
+        var coords = term.split(" ");
+        var x = parseInt(coords [0]);
+        var y = parseInt(coords[1]);
+        var result = {
+            label: "x: " + x + " y:" + y,
+            type: "Coordinaat",
+            location:{
+                minx:x - buffer,
+                maxx:x + buffer,
+                miny: y + buffer,
+                maxy:y - buffer
+            }
+        };
+        this.searchResult = [result];
+        this.showSearchResults();
+        this.loadingContainer.setLoading(false);
+    },
     simpleListSearch:function(term){
         var config = this.getCurrentSearchconfig();
         var values = config.simpleSearchConfig;
@@ -768,24 +790,41 @@ Ext.define ("viewer.components.Search",{
         this.loadingContainer.setLoading(false);
     },
     loadVariables: function(param){
-        var searchConfigId = param.substring(0,param.indexOf(":"));
+        var searchKey = param.substring(0,param.indexOf(":"));
         var term = param.substring(param.indexOf(":") +1, param.length);
-        var config = this.getSearchconfigById(searchConfigId);
-        
+        var config;
+        if(searchKey === "coord"){
+            for(var key in this.searchconfigs){
+                if(this.searchconfigs.hasOwnProperty(key)){
+                    if(this.searchconfigs[key].type === "coordinate"){
+                        config = this.searchconfigs[key];
+                        searchKey = config.id;
+                        break;
+                    }
+                }
+            }
+        } else {
+            config = this.getSearchconfigById(searchKey);
+        }
+        if(!config){
+            this.config.viewerController.logger.warning("Search component error: queryparameter incorrect: " + searchKey +". Only allowed values are: 'coord' or the searchconfigid");
+            return;
+        }
         this.searchField.setValue(term);
-        if(!config.urlOnly){
-            this.searchName.setValue(searchConfigId);
-        }else{
-            this.searchConfigChanged(searchConfigId);
+        if (!config.urlOnly) {
+            this.searchName.setValue(searchKey);
+        } else {
+            this.searchConfigChanged(searchKey);
         }
         var me = this;
-        this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_LAYERS_INITIALIZED, function() {
+        this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_LAYERS_INITIALIZED, function () {
             me.executeSearch(term, config.id);
             if (config.urlOnly) {
                 me.searchName.setValue("");
             }
         }, this);
         return;
+        
     },
     /**
      * Register the calling component for providing extra searchentries.
