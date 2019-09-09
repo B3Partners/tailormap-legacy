@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-/* global Ext, FlamingoAppLoader, actionBeans */
+/* global Ext, FlamingoAppLoader, actionBeans, i18next */
 
 /**
  * Print component
@@ -46,6 +46,7 @@ Ext.define ("viewer.components.Search",{
     results: null,
     autosuggestStore:null,
     searchField:null,
+    searchFieldCoordinate:null,
     searchName:null,
     resultPanelId: '',
     searchRequestId: 0,
@@ -232,8 +233,34 @@ Ext.define ("viewer.components.Search",{
                         }
                     }
                 });
+                this.searchFieldCoordinate = Ext.create('Ext.container.Container', {
+                    name:"searchFieldCoordinate",
+                    layout: {
+                        type:  'hbox'
+                    },
+                    hidden: this.getCurrentSearchType() !== "coordinate" ,
+                    scrollable: false,
+                    items: [
+                       {
+                          xtype: 'textfield',
+                          fieldLabel: "x",
+                          name: 'xcoord',
+                          value:"" ,
+                          labelWidth: 20
+                       },
+                   {
+                                xtype: 'textfield',
+                          fieldLabel: "y",
+                          name: 'ycoord',
+                          value:"" ,
+                          padding: "0 0 0 5",
+                          labelWidth: 20
+                       }]
+               });
+               
                 this.searchField = Ext.create( Ext.form.field.ComboBox,{ 
                     name: 'searchfield',
+                    hidden: this.getCurrentSearchType() === "coordinate" ,
                     hideTrigger: me.searchFieldTriggers === null,
                     triggers: me.searchFieldTriggers === null ? {} : me.searchFieldTriggers,
                     flex: 1,
@@ -301,7 +328,7 @@ Ext.define ("viewer.components.Search",{
                     scrollable: false,
                     padding: '0 1 0 0',
                     items: [
-                        this.searchField,
+                        this.searchFieldCoordinate, this.searchField,
                         {
                             xtype: 'button',
                             text: i18next.t('viewer_components_search_3'),
@@ -385,8 +412,8 @@ Ext.define ("viewer.components.Search",{
         }
         
         if(searchName !== null && searchText !== ""){
-            this.executeSearch(searchText, searchName);
             this.form.query("#cancel"+ this.name)[0].setVisible(true);
+            this.executeSearch(searchText, searchName);
         } else {
             Ext.MessageBox.alert(i18next.t('viewer_components_search_6'), i18next.t('viewer_components_search_7'));
             // search request is not complete
@@ -699,6 +726,13 @@ Ext.define ("viewer.components.Search",{
                     this.searchField.queryMode = "local";
                     this.searchField.getStore().removeAll();
                 }
+                if(this.getCurrentSearchType() === "coordinate" ){
+                    this.searchField.setHidden(true);
+                    this.searchFieldCoordinate.setHidden(false);
+                }else{
+                    this.searchField.setHidden(false);
+                    this.searchFieldCoordinate.setHidden(true);
+                }
                 break;
             }
         }
@@ -746,12 +780,12 @@ Ext.define ("viewer.components.Search",{
             params["visibleLayers"] = appLayers.join(", ");
         }
     },
-    coordinateSearch: function(term){
+    coordinateSearch: function (term) {
         var config = this.getCurrentSearchconfig();
         var buffer = config.buffer ? parseInt(config.buffer) : 200;
-        var coords = term.split(" ");
-        var x = parseInt(coords [0]);
-        var y = parseInt(coords[1]);
+        var items = this.searchFieldCoordinate.items.items;
+        var x = parseInt(items[0].getValue());
+        var y = parseInt(items[1].getValue());
         var result = {
             label: "x: " + x + " y:" + y,
             type: "Coordinaat",
@@ -803,14 +837,24 @@ Ext.define ("viewer.components.Search",{
                     }
                 }
             }
+            var coords = term.split(" ");
+            var x = parseInt(coords [0]);
+            var y = parseInt(coords[1]);
+            var items = this.searchFieldCoordinate.items.items;
+            items[0].setValue(x);
+            items[1].setValue(y);
+            if (!config) {
+                this.config.viewerController.logger.warning("Search component error: queryparameter incorrect: " + searchKey + ". Only allowed values are: 'coord' or the searchconfigid");
+                return;
+            }
         } else {
             config = this.getSearchconfigById(searchKey);
+            if (!config) {
+                this.config.viewerController.logger.warning("Search component error: queryparameter incorrect: " + searchKey + ". Only allowed values are: 'coord' or the searchconfigid");
+                return;
+            }
+            this.searchField.setValue(term);
         }
-        if(!config){
-            this.config.viewerController.logger.warning("Search component error: queryparameter incorrect: " + searchKey +". Only allowed values are: 'coord' or the searchconfigid");
-            return;
-        }
-        this.searchField.setValue(term);
         if (!config.urlOnly) {
             this.searchName.setValue(searchKey);
         } else {
