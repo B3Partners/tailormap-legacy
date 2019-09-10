@@ -1,11 +1,21 @@
 /* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright (C) 2019 B3Partners B.V.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
-/* global ol */
+/* global ol, Ext */
 
 Ext.define("viewer.viewercontroller.ol.OlTilingLayer",{
     extend: "viewer.viewercontroller.controller.TilingLayer",
@@ -15,122 +25,107 @@ Ext.define("viewer.viewercontroller.ol.OlTilingLayer",{
     constructor : function(config){
         viewer.viewercontroller.ol.OlTilingLayer.superclass.constructor.call(this, config);
         
-        if(!Ext.Array.contains(["TMS", "WMTS"/*,"OSM"*/], this.getProtocol())) {
+        if(!Ext.Array.contains(["TMS", "WMTS"], this.getProtocol())) {
             throw new Error("OpenLayers 5 TilingLayer currently does not support tiling protocol " + this.getProtocol());
         }
         
-        this.mixins.olLayer.constructor.call(this,config);
-         
-        this.type=viewer.viewercontroller.controller.Layer.TILING_TYPE;
+        this.mixins.olLayer.constructor.call(this, config);
+
+        this.type = viewer.viewercontroller.controller.Layer.TILING_TYPE;
         this.utils = Ext.create("viewer.viewercontroller.ol.Utils");
-         
-         var opacity = this.config.opacity != undefined ? this.config.opacity : 1;
-         //var serviceEnvelopeTokens=this.serviceEnvelope.split(",");
-         var options={
-            //tileOrigin: new OpenLayers.LonLat(x,y),
+
+        var opacity = this.config.opacity !== undefined ? this.config.opacity : 1;
+        var options = {
             serverResolutions: this.resolutions,
-            //tileSize: new OpenLayers.Size(this.getTileWidth(),this.getTileHeight()),
             type: this.extension,
-            transitionEffect: opacity == 1 ? "resize" : null,
-            //maxExtent: [Number(serviceEnvelopeTokens[0]),Number(serviceEnvelopeTokens[1]),Number(serviceEnvelopeTokens[2]),Number(serviceEnvelopeTokens[3])],
-            //maxResolution: this.resolutions[0],
-            visibility: this.visible==undefined ? true : this.visible,
-            opacity: this.config.opacity != undefined ? this.config.opacity : 1,
+            transitionEffect: opacity === 1 ? "resize" : null,
+            visibility: this.visible === undefined ? true : this.visible,
+            opacity: this.config.opacity !== undefined ? this.config.opacity : 1,
             attribution: this.config.attribution
         };
-        if(this.getTileWidth() && this.getTileHeight()){
-            options.tileSize = [this.getTileWidth(),this.getTileHeight()];
+        if (this.getTileWidth() && this.getTileHeight()) {
+            options.tileSize = [this.getTileWidth(), this.getTileHeight()];
         }
-        if(this.serviceEnvelope){
-            var serviceEnvelopeTokens=this.serviceEnvelope.split(",");
-            var x=Number(serviceEnvelopeTokens[0]);
-            var y=Number(serviceEnvelopeTokens[1]);
+        if (this.serviceEnvelope) {
+            var serviceEnvelopeTokens = this.serviceEnvelope.split(",");
+            var x = Number(serviceEnvelopeTokens[0]);
+            var y = Number(serviceEnvelopeTokens[1]);
             //if arcgisrest/wmts the origin y is top left. (maxy)
-            if (this.getProtocol()==="ArcGisRest" || this.getProtocol() === "WMTS"){
-                y=Number(serviceEnvelopeTokens[3]);
+            if (this.getProtocol() === "ArcGisRest" || this.getProtocol() === "WMTS") {
+                y = Number(serviceEnvelopeTokens[3]);
             }
-            options.maxExtent = [Number(serviceEnvelopeTokens[0]),Number(serviceEnvelopeTokens[1]),Number(serviceEnvelopeTokens[2]),Number(serviceEnvelopeTokens[3])];
-            
+            options.maxExtent = [Number(serviceEnvelopeTokens[0]), Number(serviceEnvelopeTokens[1]), Number(serviceEnvelopeTokens[2]), Number(serviceEnvelopeTokens[3])];
+
             var projExt = config.viewerController.mapComponent.mapOptions.projection.getExtent();
             options.tileOrigin = ol.extent.getTopLeft(projExt);
-            
+
         }
-        if(this.resolutions){
+        if (this.resolutions) {
             options.maxResolution = this.resolutions[0];
         }
-        if (this.getProtocol()=="TMS"){
-            var t= this.url;
-            //fix the url: example: "http://tilecache.kaartenbalie.nl/tilecache.cgi/1.0.0/osm/"
-            
-            var version=null;
-            var layerName=null;
-            if (this.url.lastIndexOf("/")==this.url.length-1){
-                this.url=this.url.substring(0,this.url.length-1);
+        if (this.getProtocol() === "TMS") {
+            var t = this.url;
+            var version = null;
+            var layerName = null;
+            if (this.url.lastIndexOf("/") === this.url.length - 1) {
+                this.url = this.url.substring(0, this.url.length - 1);
             }
-            var urlTokens=this.url.split("/");
-            layerName=urlTokens[urlTokens.length-1];
-            version= urlTokens[urlTokens.length-2];
-            urlTokens.splice(urlTokens.length-2,2);
-            this.url=urlTokens.join("/")+"/";
-            
+            var urlTokens = this.url.split("/");
+            layerName = urlTokens[urlTokens.length - 1];
+            version = urlTokens[urlTokens.length - 2];
+            urlTokens.splice(urlTokens.length - 2, 2);
+            this.url = urlTokens.join("/") + "/";
+
             //set TMS tiling options.
-            options.serviceVersion= version;
-            options.layername= layerName;
+            options.serviceVersion = version;
+            options.layername = layerName;
             var openbasiskaartSource = new ol.source.XYZ({
-            crossOrigin: null,
-            attributions: options.attribution,
-            maxZoom:15,
-            minZoom:1,
-            projection: "EPSG:28992",
-            url: t+'/{z}/{x}/{-y}.png'
-        });
-        this.frameworkLayer = new ol.layer.Tile({
-            source: openbasiskaartSource,
-            opacity: options.opacity,
-            extent: options.maxExtent,
-            //maxResolution: options.maxResolution,
-            visible: options.visibility
-            
-            
-        },options); 
-        }else if (this.getProtocol()==="WMTS"){
-            var convertRatio = 1/0.00028;
+                crossOrigin: null,
+                attributions: options.attribution,
+                maxZoom: 15,
+                minZoom: 1,
+                projection: "EPSG:28992",
+                url: t + '/{z}/{x}/{-y}.png'
+            });
+            this.frameworkLayer = new ol.layer.Tile({
+                source: openbasiskaartSource,
+                opacity: options.opacity,
+                extent: options.maxExtent,
+                visible: options.visibility
+
+
+            }, options);
+        } else if (this.getProtocol() === "WMTS") {
+            var convertRatio = 1 / 0.00028;
             options.url = this.url;
             options.style = this.config.style;
             options.layer = this.config.name;
             options.matrixSet = this.config.matrixSet.identifier;
             options.matrixIds = this.getMatrixIdsm(config.viewerController.mapComponent.mapOptions.resolutions);
             options.format = this.extension;
-            options.maxResolution = this.config.matrixSet.matrices[0].scaleDenominator /convertRatio;
-            options.minResolution = this.config.matrixSet.matrices[this.config.matrixSet.matrices.length -1].scaleDenominator /convertRatio;
-            //var wmts = new OpenLayers.Layer.WMTS(options);
+            options.maxResolution = this.config.matrixSet.matrices[0].scaleDenominator / convertRatio;
+            options.minResolution = this.config.matrixSet.matrices[this.config.matrixSet.matrices.length - 1].scaleDenominator / convertRatio;
             var grid = new ol.tilegrid.WMTS({
                 extent: options.maxExtent,
                 origin: options.tileOrigin,
                 resolutions: config.viewerController.mapComponent.mapOptions.resolutions,
-                matrixIds: options.matrixIds            
+                matrixIds: options.matrixIds
             });
             var source = new ol.source.WMTS({
                 tileGrid: grid,
                 projection: config.viewerController.mapComponent.mapOptions.projection,
                 layer: options.layer,
                 style: options.style,
-                format:options.format,
+                format: options.format,
                 matrixSet: options.matrixSet,
                 url: options.url
             });
             this.frameworkLayer = new ol.layer.Tile({
-            source: source,
-            opacity: options.opacity,
-            extent: options.maxExtent,
-            //maxResolution: options.maxResolution,
-            visible: options.visibility
-            
-        });   
+                source: source,
+                opacity: options.opacity,
+                extent: options.maxExtent,
+                visible: options.visibility
 
-        }else if (this.getProtocol() == 'OSM'){
-            this.frameworkLayer = new ol.layer.Tile({
-                source: new ol.source.OSM()
             });
         }
     },
@@ -204,6 +199,5 @@ Ext.define("viewer.viewercontroller.ol.OlTilingLayer",{
     getLayers: function (){
         return this.frameworkLayer.options.layername;
     }
-    
 });
         
