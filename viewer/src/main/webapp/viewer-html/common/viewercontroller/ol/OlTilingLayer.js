@@ -46,6 +46,8 @@ Ext.define("viewer.viewercontroller.ol.OlTilingLayer",{
         if (this.getTileWidth() && this.getTileHeight()) {
             options.tileSize = [this.getTileWidth(), this.getTileHeight()];
         }
+        var projExtent = config.viewerController.mapComponent.mapOptions.projection.getExtent();
+        options.tileOrigin = ol.extent.getTopLeft(projExtent);
         if (this.serviceEnvelope) {
             var serviceEnvelopeTokens = this.serviceEnvelope.split(",");
             var x = Number(serviceEnvelopeTokens[0]);
@@ -160,7 +162,7 @@ Ext.define("viewer.viewercontroller.ol.OlTilingLayer",{
     getMatrixIdsm: function(matrices){
         var matrixIds =[];
         for (var z = 0; z < matrices.length; ++z) {		
-            matrixIds[z] = 'EPSG:28992:' + z;
+            matrixIds[z] =  z;
         }
         return matrixIds;
     },
