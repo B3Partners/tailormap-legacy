@@ -24,6 +24,7 @@ import javax.xml.bind.Marshaller;
 import net.sourceforge.stripes.action.RedirectResolution;
 import nl.b3p.viewer.stripes.CombineImageActionBean;
 import nl.b3p.viewer.stripes.PrintActionBean;
+import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.PostMethod;
@@ -46,11 +47,12 @@ public class PrintUtil {
      * @param params the value of params
      * @param url url to get
      * @param sessionID sessionid to use
+     * @param ssosessionID the SSO session id to use (can be null)
      * @return url for overview map
      * @throws JSONException if any
      * @throws Exception if any
      */
-    public static String getOverviewUrl(String params, String url, String sessionID) throws JSONException, Exception {
+    public static String getOverviewUrl(String params, String url, String sessionID, String ssosessionID) throws JSONException, Exception {
         JSONObject info = new JSONObject(params);
         info.remove("requests"); // Remove old requests, to replace them with overview-only parameters
         info.remove("geometries");
@@ -65,7 +67,7 @@ public class PrintUtil {
         image.put("extent", overview.get("extent"));
         reqs.put(image);
         info.put("requests", reqs);
-        String overviewUrl = PrintUtil.getImageUrl(info.toString(), url, sessionID);
+        String overviewUrl = PrintUtil.getImageUrl(info.toString(), url, sessionID, ssosessionID);
         return overviewUrl;
     }
 
@@ -75,10 +77,11 @@ public class PrintUtil {
      * @param param the json as string with params needed to create the image
      * @param url url to replace with CombineImageAction url
      * @param sessionID sessionid to use
+     * @param ssosessionID the SSO session id to use (can be null)
      * @return url to (combined)image.
      * @throws java.lang.Exception if any
      */
-    public static String getImageUrl(String param, String url, String sessionID) throws Exception {
+    public static String getImageUrl(String param, String url, String sessionID, String ssosessionID) throws Exception {
         RedirectResolution cia = new RedirectResolution(CombineImageActionBean.class);
         RedirectResolution pa = new RedirectResolution(PrintActionBean.class);
         // url van print actionbean naar combineimage action bean, kopieer de sessionid naar de url
@@ -92,6 +95,12 @@ public class PrintUtil {
             method = new PostMethod(url);
             method.addParameter("params", param);
             method.addParameter("JSESSIONID", sessionID);
+            method.addParameter("JSESSIONIDSSO", ssosessionID);
+            if (ssosessionID != null) {
+                Header cookieHeader = new Header("Cookie", null);
+                cookieHeader.setValue("JSESSIONIDSSO=" + ssosessionID);
+                method.setRequestHeader(cookieHeader);
+            }
             int statusCode = client.executeMethod(method);
             if (statusCode != HttpStatus.SC_OK) {
                 LOG.debug("Connection error for " + url);

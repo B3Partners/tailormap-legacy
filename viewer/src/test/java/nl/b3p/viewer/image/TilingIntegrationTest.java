@@ -83,7 +83,7 @@ public class TilingIntegrationTest {
         CombineImageSettings settings = CombineImageSettings.fromJson(new JSONObject(JSONCONFIG));
         // this will produce a png because CombineImagesHandler#defaultReturnMime is image/png
         try (FileOutputStream fos = new FileOutputStream(DEST_DIR + File.separator + "WMSc.pngtest")) {
-            CombineImagesHandler.combineImage(fos, settings, null);
+            CombineImagesHandler.combineImage(fos, settings, null, null, null);
         }
 
         File f = new File(DEST_DIR + File.separator + "WMSc.pngtest");

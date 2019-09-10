@@ -22,6 +22,7 @@ import nl.b3p.viewer.image.CombineImageWkt;
 import java.io.OutputStream;
 import java.io.StringReader;
 import java.util.*;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.Validate;
@@ -38,17 +39,18 @@ import org.json.JSONObject;
 @UrlBinding("/action/combineimage")
 @StrictBinding
 public class CombineImageActionBean extends LocalizableActionBean implements ActionBean {
+
     private static final Log log = LogFactory.getLog(CombineImageActionBean.class);
-    private static final LinkedHashMap<String,CombineImageSettings> imageSettings = new LinkedHashMap<String,CombineImageSettings>();
+    private static final LinkedHashMap<String, CombineImageSettings> imageSettings = new LinkedHashMap<String, CombineImageSettings>();
 
     public static final String WMS = "WMS";
     public static final String ARCIMS = "ARCIMS";
     public static final String ARCSERVER = "ARCSERVER";
-    public static final String IMAGE="IMAGE";
+    public static final String IMAGE = "IMAGE";
     public static final String ARCSERVERREST = "ARCSERVERREST";
 
-    private static int maxStoredSettings= 500;
-    private static int minStoredSettings=400;
+    private static int maxStoredSettings = 500;
+    private static int minStoredSettings = 400;
 
     private ActionBeanContext context;
 
@@ -62,17 +64,17 @@ public class CombineImageActionBean extends LocalizableActionBean implements Act
     private String keepAlive;
     //These settings can overwrite the earlier setttings (these depends on how big the image must be)
     @Validate
-    private Integer width=null;
+    private Integer width = null;
     @Validate
-    private Integer height=null;
+    private Integer height = null;
     @Validate
-    private String bbox=null;
+    private String bbox = null;
     @Validate
     private String geom = null;
 
     //<editor-fold defaultstate="collapsed" desc="Getters and Setters">
     public void setContext(ActionBeanContext context) {
-        this.context=context;
+        this.context = context;
     }
 
     public ActionBeanContext getContext() {
@@ -140,24 +142,24 @@ public class CombineImageActionBean extends LocalizableActionBean implements Act
     public Resolution create() throws JSONException, Exception {
         JSONObject jRequest = new JSONObject(params);
         JSONObject jResponse = new JSONObject();
-        String error=null;
+        String error = null;
         String pageFormat = jRequest.has("pageformat") ? jRequest.getString("pageformat") : PrintActionBean.A4;
         String orientation = jRequest.has("orientation") ? jRequest.getString("orientation") : PrintActionBean.PORTRAIT;
 
-        if (orientation==null || pageFormat ==null){
+        if (orientation == null || pageFormat == null) {
             error = getBundle().getString("viewer.combineimageactionbean.1");
-        }else{
-            try{
+        } else {
+            try {
 
-                CombineImageSettings cis =CombineImageSettings.fromJson(jRequest);
+                CombineImageSettings cis = CombineImageSettings.fromJson(jRequest);
                 //if no imageId is set, create a new one.
-                if (imageId==null){
-                    imageId= uniqueId();
+                if (imageId == null) {
+                    imageId = uniqueId();
                 }
                 //this.getContext().getRequest().getSession().setAttribute(imageId, cis);
                 //TODO: better fix....
-                if (imageSettings.size()>maxStoredSettings){
-                    Set<String> keyset=imageSettings.keySet();
+                if (imageSettings.size() > maxStoredSettings) {
+                    Set<String> keyset = imageSettings.keySet();
                     for (Iterator<String> iterator = keyset.iterator(); iterator.hasNext();) {
                         iterator.next();
                         iterator.remove();
@@ -167,30 +169,39 @@ public class CombineImageActionBean extends LocalizableActionBean implements Act
                     }
                 }
                 imageSettings.put(imageId, cis);
-                String url=this.context.getRequest().getRequestURL().toString();
-                url+="?getImage=t&imageId="+imageId;
+                String url = this.context.getRequest().getRequestURL().toString();
+                url += "?getImage=t&imageId=" + imageId;
                 String jsessionId = null;
                 String j = "jsessionid";
                 int index = url.toLowerCase().indexOf(j);
-                if( index != -1){
-                    index += j.length() +1;
+                if (index != -1) {
+                    index += j.length() + 1;
                     jsessionId = url.substring(index, index + 32);
-                }else{
+                } else {
                     jsessionId = context.getRequest().getSession().getId();
                 }
                 url += "&JSESSIONID=" + jsessionId;
-                jResponse.put("imageUrl", url );
+                Cookie[] cookies = context.getRequest().getCookies();
+                if (cookies != null) {
+                    for (Cookie cookie : cookies) {
+                        if (cookie != null && cookie.getName().equalsIgnoreCase("JSESSIONIDSSO")) {
+                            url += "&JSESSIONIDSSO=" + cookie.getValue();
+                        }
+                    }
+                }
+                jResponse.put("imageUrl", url);
                 jResponse.put("success", Boolean.TRUE);
-            }catch(Exception e){
-                log.error("",e);
+            } catch (Exception e) {
+                log.error("", e);
             }
         }
-        if(error != null) {
+        if (error != null) {
             jResponse.put("error", error);
 
         }
         return new StreamingResolution("application/json", new StringReader(jResponse.toString()));
     }
+
     /**
      * Combines the image settings to a new image.
      *
@@ -198,7 +209,7 @@ public class CombineImageActionBean extends LocalizableActionBean implements Act
      * @throws Exception if any
      */
     public Resolution getImage() throws Exception {
-        if (imageId==null || imageSettings.get(imageId)==null){
+        if (imageId == null || imageSettings.get(imageId) == null) {
             throw new Exception("No imageId provided");
         }
         //final CombineImageSettings settings = (CombineImageSettings) getContext().getRequest().getSession().getAttribute(imageId);
@@ -235,11 +246,14 @@ public class CombineImageActionBean extends LocalizableActionBean implements Act
             }
             CombineImageWkt ciw = new CombineImageWkt(geom);
             ciw.setStrokeWidth(8f);
-            if(settings.getWktGeoms() == null){
-               settings.setWktGeoms(new ArrayList());
+            if (settings.getWktGeoms() == null) {
+                settings.setWktGeoms(new ArrayList());
             }
             settings.getWktGeoms().add(ciw);
         }
+
+        String ssojessionid = context.getRequest().getParameter("JSESSIONIDSSO");
+        String jessionid = context.getRequest().getParameter("JSESSIONID");
 
         //stream the result.
         StreamingResolution res = new StreamingResolution(settings.getMimeType()) {
@@ -247,7 +261,7 @@ public class CombineImageActionBean extends LocalizableActionBean implements Act
             public void stream(HttpServletResponse response) throws Exception {
                 OutputStream out = response.getOutputStream();
                 response.setDateHeader("Expires", System.currentTimeMillis() + (1000 * 60 * 60 * 24));
-                CombineImagesHandler.combineImage(out, settings,settings.getMimeType(),maxResponseTime, context.getRequest());
+                CombineImagesHandler.combineImage(out, settings, settings.getMimeType(), maxResponseTime, context.getRequest(), jessionid, ssojessionid);
             }
         };
         return res;
@@ -255,6 +269,7 @@ public class CombineImageActionBean extends LocalizableActionBean implements Act
 
     /**
      * Create unique number.
+     *
      * @return a unique number
      */
     public static String uniqueId() {

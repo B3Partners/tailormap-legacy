@@ -113,10 +113,19 @@ public class ImageCollector implements Callable<ImageCollector> {
                 Cookie[] cookies = req.getCookies();
                 String jsessionid = null;
                 String key = "JSESSIONID";
+                String ssojsessionid = null;
+                String ssokey = "JSESSIONIDSSO";
+
                 if (cookies != null) {
                     for (Cookie cookie : cookies) {
                         if (cookie != null && cookie.getName().equalsIgnoreCase(key)) {
                             jsessionid = cookie.getValue();
+                            break;
+                        }
+                    }
+                    for (Cookie cookie : cookies) {
+                        if (cookie != null && cookie.getName().equalsIgnoreCase(ssokey)) {
+                            ssojsessionid = cookie.getValue();
                             break;
                         }
                     }
@@ -126,6 +135,22 @@ public class ImageCollector implements Callable<ImageCollector> {
                 if(jsessionid != null){
                     Header cookieHeader = new Header("Cookie", null);
                     cookieHeader.setValue(key + "=" + jsessionid);
+                    method.setRequestHeader(cookieHeader);
+                }
+                if (ssojsessionid == null) {
+                    org.apache.commons.httpclient.Cookie[] biscuits = client.getState().getCookies();
+                    if (biscuits != null) {
+                        for (org.apache.commons.httpclient.Cookie biscuit : biscuits) {
+                            if (biscuit != null && biscuit.getName().equalsIgnoreCase(ssokey)) {
+                                ssojsessionid = biscuit.getValue();
+                                break;
+                            }
+                        }
+                    }
+                }
+                if (ssojsessionid != null) {
+                    Header cookieHeader = new Header("Cookie", null);
+                    cookieHeader.setValue(ssokey + "=" + ssojsessionid);
                     method.setRequestHeader(cookieHeader);
                 }
             }

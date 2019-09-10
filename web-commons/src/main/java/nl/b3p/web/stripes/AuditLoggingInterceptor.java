@@ -61,7 +61,7 @@ public class AuditLoggingInterceptor implements Interceptor {
                 ls.log(((Auditable) actionbean), amo);
             }
         } catch (Exception e) {
-            LOG.error("Failed to write audi log: " + e);
+            LOG.error("Failed to write audit log for auditable: " + actionbean + ", event " + event, e);
         }
         return resolution;
     }
