@@ -225,6 +225,7 @@ public class PrintInfo {
     public void cacheLegendImagesAndReadDimensions(ActionBeanContext context, EntityManager em) {
         
         ProxyActionBean pab = new ProxyActionBean();
+        pab.initAudit();
         pab.setContext(context);
         for(Legend l: legendUrls) {
             for(LegendPart lp: l.getLegendParts()) {
