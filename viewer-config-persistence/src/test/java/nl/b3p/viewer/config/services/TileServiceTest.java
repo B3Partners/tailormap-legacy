@@ -108,7 +108,7 @@ public class TileServiceTest extends TestUtil{
         GeoService result = instance.loadFromUrl(url, params, status, entityManager);
         assertEquals("https://geodata.nationaalgeoregister.nl/tiles/service/wmts?",result.getUrl());
         Layer topLayer = result.getTopLayer();
-        assertEquals(45, topLayer.getChildren().size());
+        assertEquals(44, topLayer.getChildren().size());
         
         Layer brt = topLayer.getChildren().get(0);
         assertEquals("brtachtergrondkaart", brt.getName());
@@ -189,7 +189,7 @@ public class TileServiceTest extends TestUtil{
         
         GeoService result = instance.loadFromUrl(url, params, status, entityManager);
         Layer topLayer = result.getTopLayer();
-        assertEquals(45, topLayer.getChildren().size());
+        assertEquals(44, topLayer.getChildren().size());
         assertEquals("https://geodata.nationaalgeoregister.nl/tiles/service/wmts?", result.getUrl());
         
         Layer brt = topLayer.getChildren().get(0);
