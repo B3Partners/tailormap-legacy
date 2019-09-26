@@ -475,6 +475,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
             if(this.contentBottom){
                 options.div = this.contentBottom;
             }
+            config.defaultAlignPosition = "br";
             config.cssClass = "olControlMousePosition";
             comp = Ext.create("viewer.viewercontroller.openlayers.OpenLayersComponent",config, new OpenLayers.Control.MousePosition(options));
         }else if(type == viewer.viewercontroller.controller.Component.SCALEBAR){

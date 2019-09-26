@@ -17,11 +17,25 @@
 
 /* global ol, Ext */
 
-Ext.define("viewer.viewercontroller.ol.Utils",{
-    createBounds : function(extent){
-        return [Number(extent.minx),Number(extent.miny),Number(extent.maxx),Number(extent.maxy)];
+var DOTS_PER_INCH = 72;
+var INCHES_PER_UNIT = {
+    m: 39.3701
+};
+
+Ext.define("viewer.viewercontroller.ol.Utils", {
+    createBounds: function (extent) {
+        return [Number(extent.minx), Number(extent.miny), Number(extent.maxx), Number(extent.maxy)];
     },
-    createExtent : function(bounds){
-        return new viewer.viewercontroller.controller.Extent(bounds.left,bounds.bottom,bounds.right,bounds.top);
+    createExtent: function (bounds) {
+        return new viewer.viewercontroller.controller.Extent(bounds[0], bounds[1], bounds[2], bounds[3]);
+    },
+    getScaleFromResolution: function (resolution, units) {
+        if (units === null) {
+            units = "degrees";
+        }
+        var scale = resolution * INCHES_PER_UNIT[units] *
+                DOTS_PER_INCH;
+        return scale;
+
     }
 });
