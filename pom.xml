@@ -289,13 +289,6 @@
                 <groupId>org.geotools</groupId>
                 <artifactId>gt-wmts</artifactId>
                 <version>${geotools.version}</version>
-                <exclusions>
-                    <!-- GEOT-6341 (https://osgeo-org.atlassian.net/browse/GEOT-6341) -->
-                    <exclusion>
-                        <groupId>org.geotools</groupId>
-                        <artifactId>gt-epsg-hsql</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
 
             <!-- Solr dependencies for indexing and searching -->
@@ -437,6 +430,20 @@
                 <groupId>org.geotools</groupId>
                 <artifactId>gt-referencing</artifactId>
                 <version>${geotools.version}</version>
+                <exclusions>
+                    <!-- exclude transitive dependencies of jgridshift 1.1
+                    workaround for https://osgeo-org.atlassian.net/projects/GEOT/issues/GEOT-6379
+                    these shoud be removed after upgrading geotools to 22.1
+                    -->
+                    <exclusion>
+                        <groupId>javax</groupId>
+                        <artifactId>javaee-api</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.apache.axis</groupId>
+                        <artifactId>axis</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.geotools</groupId>
