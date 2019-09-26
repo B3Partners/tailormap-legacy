@@ -150,6 +150,9 @@ Ext.define("viewer.viewercontroller.OlMapComponent",{
     },
     
     createImageLayer : function (name,url, bounds){
+        if (bounds.minx) {
+            bounds = [bounds.minx, bounds.miny, bounds.maxx, bounds.maxy];
+        }
         var imageLayer = Ext.create("viewer.viewercontroller.ol.OlImageLayer",{
             id: name,
             url: url,
@@ -323,9 +326,10 @@ Ext.define("viewer.viewercontroller.OlMapComponent",{
         else if(type === viewer.viewercontroller.controller.Component.COORDINATES){
             var options = { numDigits: config.decimals};
             if(this.contentBottom){
-                options.target = this.contentBottom;
-                config.cssClass = "ol-mouse-position";
+                options.div = this.contentBottom;
             }
+            config.cssClass = "ol-mouse-position";
+            config.defaultAlignPosition = "tr";
             comp = Ext.create("viewer.viewercontroller.ol.OlComponent",config, new ol.control.MousePosition({projection: config.projection,
             target:options.target,
             undefinedHTML: 'outside',
