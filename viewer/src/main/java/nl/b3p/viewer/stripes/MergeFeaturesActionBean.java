@@ -55,7 +55,6 @@ import org.geotools.data.util.GeometryTypeConverterFactory;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.opengis.feature.simple.SimpleFeature;
-import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.feature.type.GeometryType;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory2;
@@ -351,7 +350,7 @@ public class MergeFeaturesActionBean extends LocalizableApplicationActionBean im
             featureA.setAttribute(geomAttrName, c.convert(newGeom, type.getBinding()));
             featureA = this.handleExtraData(featureA);
             Object[] attributevalues = featureA.getAttributes().toArray(new Object[featureA.getAttributeCount()]);
-            AttributeDescriptor[] attributes = featureA.getFeatureType().getAttributeDescriptors().toArray(new AttributeDescriptor[featureA.getAttributeCount()]);
+            String[] attributes = DataUtilities.attributeNames(featureA.getFeatureType());
             localStore.modifyFeatures(attributes, attributevalues, filterA);
             localStore.removeFeatures(filterB);
             ids.add(new FeatureIdImpl(this.fidA));
