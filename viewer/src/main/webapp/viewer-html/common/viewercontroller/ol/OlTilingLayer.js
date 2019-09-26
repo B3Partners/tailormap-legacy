@@ -97,21 +97,26 @@ Ext.define("viewer.viewercontroller.ol.OlTilingLayer",{
 
 
             }, options);
-        } else if (this.getProtocol() === "WMTS") {
-            var convertRatio = 1 / 0.00028;
+        } else if (this.getProtocol() === "WMTS") {         
             options.url = this.url;
             options.style = this.config.style;
             options.layer = this.config.name;
             options.matrixSet = this.config.matrixSet.identifier;
-            options.matrixIds = this.getMatrixIdsm(config.viewerController.mapComponent.mapOptions.resolutions);
+            var matrix = this.getMatrix(this.config.matrixSet.matrices);
             options.format = this.extension;
-            options.maxResolution = this.config.matrixSet.matrices[0].scaleDenominator / convertRatio;
-            options.minResolution = this.config.matrixSet.matrices[this.config.matrixSet.matrices.length - 1].scaleDenominator / convertRatio;
+			
+            //needed for print
+            if(this.config.matrixSet.bbox){
+                var bbox = this.config.matrixSet.bbox;
+                this.serviceEnvelope = bbox.minx+","+bbox.miny+","+bbox.maxx+","+bbox.maxy;
+            }
+			
             var grid = new ol.tilegrid.WMTS({
                 extent: options.maxExtent,
-                origin: options.tileOrigin,
-                resolutions: config.viewerController.mapComponent.mapOptions.resolutions,
-                matrixIds: options.matrixIds
+                origins: matrix.origins,
+                resolutions: matrix.serverRes,
+                matrixIds: matrix.matrixIds,
+                tileSizes: matrix.tileSizes
             });
             var source = new ol.source.WMTS({
                 tileGrid: grid,
@@ -127,7 +132,6 @@ Ext.define("viewer.viewercontroller.ol.OlTilingLayer",{
                 opacity: options.opacity,
                 extent: options.maxExtent,
                 visible: options.visibility
-
             });
         }
     },
@@ -139,32 +143,30 @@ Ext.define("viewer.viewercontroller.ol.OlTilingLayer",{
     getVisible: function(){
         return this.mixins.olLayer.getVisible.call(this);
     },
-        
-    getMatrixIds: function(matrices){
-        var newMatrixIds = [];
-        for(var i = 0 ; i<matrices.length;i++){
+          
+    getMatrix: function(matrices){
+        var convertRatio = 1 / 0.00028;
+        var serverRes  = [];
+        var matrixIds = [];
+        var origins = [];
+        var tileSizes = [];
+        for (var i = 0; i < matrices.length; i++) {	
             var matrix = matrices[i];
             var topLeft = matrix.topLeftCorner;
             var x = topLeft.substring(0, topLeft.indexOf(" "));
             var y = topLeft.substring(topLeft.indexOf(" ") +1);
-            var newMatrix = {
-               identifier : matrix.identifier,
-               scaleDenominator: parseFloat(matrix.scaleDenominator),
-               topLeftCorner: [x,y],
-               tileWidth: matrix.tileWidth,
-               tileHeight: matrix.tileHeight
-            };
-            newMatrixIds.push(newMatrix);
+            matrixIds[i] = matrix.identifier;
+            serverRes.push(parseFloat(matrix.scaleDenominator)/convertRatio);
+            origins[i] = [parseFloat(x),parseFloat(y)];
+            tileSizes[i] = [matrix.tileWidth,matrix.tileHeight];
         }
-        return newMatrixIds;
-    },
-    
-    getMatrixIdsm: function(matrices){
-        var matrixIds =[];
-        for (var z = 0; z < matrices.length; ++z) {		
-            matrixIds[z] =  z;
-        }
-        return matrixIds;
+        return {
+            matrixIds: matrixIds,
+            serverRes: serverRes,
+            origins: origins,
+            tileSizes: tileSizes
+            
+        };
     },
     addListener: function (event,handler,scope){
         this.mixins.olLayer.addListener.call(this,event,handler,scope);
