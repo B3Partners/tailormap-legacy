@@ -62,7 +62,6 @@ import java.io.StringWriter;
 import java.net.URL;
 import java.util.*;
 import nl.b3p.i18n.LocalizableActionBean;
-import nl.b3p.viewer.config.app.StartLayer;
 
 /**
  *
@@ -429,10 +428,7 @@ public class GeoServiceActionBean extends LocalizableActionBean {
         if (service != null) {
             protocol = service.getProtocol();
             url = service.getUrl();
-            if (protocol.equals(ArcIMSService.PROTOCOL)) {
-                ArcIMSService ser = (ArcIMSService) service;
-                serviceName = ser.getServiceName();
-            } else if(protocol.equals(ArcGISService.PROTOCOL)) {
+            if (protocol.equals(ArcGISService.PROTOCOL)) {
                 ClobElement assumeVersion = service.getDetails().get(ArcGISService.DETAIL_ASSUME_VERSION);
                 agsVersion = assumeVersion == null ? null : assumeVersion.getValue();
             } else if (protocol.equals(TileService.PROTOCOL)) {
@@ -755,7 +751,7 @@ public class GeoServiceActionBean extends LocalizableActionBean {
     }
     @ValidationMethod(on = "add")
     public void validateParams(ValidationErrors errors) {
-        if (protocol.equals(ArcIMSService.PROTOCOL) || protocol.equals(TileService.PROTOCOL)) {
+        if (protocol.equals(TileService.PROTOCOL)) {
             if (serviceName == null && (protocol.equals(TileService.PROTOCOL) && !tilingProtocol.equalsIgnoreCase(TileService.TILING_PROTOCOL_WMTS))) {
                 errors.add("serviceName", new LocalizableError("validation.required.valueNotPresent"));
             }
@@ -818,9 +814,6 @@ public class GeoServiceActionBean extends LocalizableActionBean {
         } else if (protocol.equals(ArcGISService.PROTOCOL)) {
             params.put(ArcGISService.PARAM_ASSUME_VERSION, agsVersion);
             service = new ArcGISService().loadFromUrl(url, params, status, em);
-        } else if (protocol.equals(ArcIMSService.PROTOCOL)) {
-            params.put(ArcIMSService.PARAM_SERVICENAME, serviceName);
-            service = new ArcIMSService().loadFromUrl(url, params, status, em);
         } else if (protocol.equals(TileService.PROTOCOL)) {
             params.put(TileService.PARAM_SERVICENAME, serviceName);
             params.put(TileService.PARAM_RESOLUTIONS, resolutions);

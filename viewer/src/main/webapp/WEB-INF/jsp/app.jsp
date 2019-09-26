@@ -165,7 +165,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         <c:set var="scriptDir" value="${contextPath}/viewer-html/common/viewercontroller/openlayers"/>
                         <script type="text/javascript" src="${scriptDir}/OpenLayersLayer.js"></script>
                         <script type="text/javascript" src="${scriptDir}/OpenLayersArcLayer.js"></script>
-                        <script type="text/javascript" src="${scriptDir}/OpenLayersArcIMSLayer.js"></script>
                         <script type="text/javascript" src="${scriptDir}/OpenLayersArcServerLayer.js"></script>
                         <script type="text/javascript" src="${scriptDir}/OpenLayersWMSLayer.js"></script>
                         <script type="text/javascript" src="${scriptDir}/OpenLayersVectorLayer.js"></script>
@@ -197,7 +196,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         <script type="text/javascript" src="${scriptDir}/FlamingoLayer.js"></script>
                         <script type="text/javascript" src="${scriptDir}/FlamingoArcLayer.js"></script>
                         <script type="text/javascript" src="${scriptDir}/FlamingoArcServerLayer.js"></script>
-                        <script type="text/javascript" src="${scriptDir}/FlamingoArcIMSLayer.js"></script>
                         <script type="text/javascript" src="${scriptDir}/FlamingoWMSLayer.js"></script>
                         <script type="text/javascript" src="${scriptDir}/FlamingoVectorLayer.js"></script>
                         <script type="text/javascript" src="${scriptDir}/FlamingoMap.js"></script>

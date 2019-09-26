@@ -88,17 +88,6 @@ Ext.define("viewer.viewercontroller.MapComponent",{
         Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_mapcomponent_2')});
     },    
     /**
-    * @description Creates a Arc IMS layer.
-    * @param id the id of the layer
-    * @param name the showable name of the layer
-    * @param url the url to the tms service
-    * @param options extra options for this TMS layer
-    * @returns Returns the ArcIMSLayer
-    */
-    createArcIMSLayer: function(){
-        Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_mapcomponent_3')});
-    },      
-    /**
     * @description Creates a Arc Server layer.
     * @param name the showable name of the layer
     * @param url the url to the ArcGis service

@@ -1003,20 +1003,14 @@ Ext.define("viewer.viewercontroller.ViewerController", {
 
                 Ext.apply(layerObj.config, layerConfig);
 
-            }else if(service.protocol == "arcims" || service.protocol == "arcgis"){
+            } else if (sservice.protocol == "arcgis") {
                 options.layers= layer.name;
                 if(layer.details && layer.details.all_children) {
                     options.layers = layer.details.all_children;
                 }
-                if (service.protocol == "arcims"){
-                    options.type= "ArcIMS";
-                    options.mapservice=service.serviceName;
-                    layerObj = this.mapComponent.createArcIMSLayer(appLayer.layerName,service.url, options,this);
-                }else{
-                    options.type= "ArcGIS";
-                    layerObj = this.mapComponent.createArcServerLayer(appLayer.layerName,service.url, options,this);
-                }
-            }else if (service.protocol == "tiled"){
+                options.type = "ArcGIS";
+                layerObj = this.mapComponent.createArcServerLayer(appLayer.layerName, service.url, options, this);
+            } else if (service.protocol == "tiled") {
                 if(layer.resolutions){
                     var res=layer.resolutions.split(",");
                     for (var i=0; res.length > i; i++){

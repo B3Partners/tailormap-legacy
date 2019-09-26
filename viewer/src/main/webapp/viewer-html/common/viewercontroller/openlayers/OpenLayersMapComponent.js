@@ -340,24 +340,6 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
         return tmsLayer;
     },
     /**
-     *see {@link MapComponent.createArcIMSLayer}
-     */
-    createArcIMSLayer : function (name,url, options, viewerController){
-        options.name=name;
-
-        // Set URL to proxy
-        options.url = Ext.urlAppend(actionBeans.proxy, Ext.Object.toQueryString({ url: url, mode: 'arcims'}));
-
-        if(options.alpha != undefined) {
-            options.opacity = options.alpha / 100;
-        }
-        options.serviceName = options.mapservice;
-        options.viewerController=this.viewerController;
-
-        var arcIMS= Ext.create("viewer.viewercontroller.openlayers.OpenLayersArcIMSLayer",options);
-        return arcIMS;
-    },
-    /**
      *see @link MapComponent#createArcServerLayer
      */
     createArcServerLayer : function(name,url,options,viewerController){

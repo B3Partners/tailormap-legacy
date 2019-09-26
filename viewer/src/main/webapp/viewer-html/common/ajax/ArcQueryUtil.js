@@ -25,54 +25,7 @@ Ext.define("viewer.ArcQueryUtil", {
             this.config.actionbeanUrl = actionBeans["arcqueryutil"];
         }        
     },
-    cqlToArcXMLSpatialQuery: function(cql, successFunction, failureFunction) {
-        
-        Ext.Ajax.request({
-            url: this.config.actionbeanUrl,
-            params: { cql: cql },
-            success: function(result) {
-                var response = Ext.JSON.decode(result.responseText);
-                
-                if(response.success) {
-                    successFunction(response.SPATIALQUERY);
-                } else {
-                    if(failureFunction != undefined) {
-                        failureFunction(response.error);
-                    }
-                }
-            },
-            failure: function(result) {
-                if(failureFunction != undefined) {
-                    failureFunction("Ajax request failed with status " + result.status + " " + result.statusText + ": " + result.responseText);
-                }
-            }
-        });
-    },
-    
-    cqlToArcXMLWhere: function(cql, successFunction, failureFunction) {
-        Ext.Ajax.request({
-            url: this.config.actionbeanUrl,
-            params: { cql: cql, whereOnly: true },
-            success: function(result) {
-                var response = Ext.JSON.decode(result.responseText);
-                
-                if(response.success) {
-                    successFunction(response.where);
-                } else {
-                    if(failureFunction != undefined) {
-                        failureFunction(response.error);
-                    }
-                }
-            },
-            failure: function(result) {
-                if(failureFunction != undefined) {
-                    failureFunction("Ajax request failed with status " + result.status + " " + result.statusText + ": " + result.responseText);
-                }
-            }
-        });
-    },
-    
-    cqlToArcFIDS : function (cql, appLayer, successFunction, failureFunction){
+    cqlToArcFIDS: function (cql, appLayer, successFunction, failureFunction) {
         Ext.Ajax.request({
             url: this.config.actionbeanUrl,
             params: { cql: cql, getObjectIds : true,appLayer: appLayer, application: appId },

@@ -384,12 +384,11 @@ public class Layer implements Cloneable, Serializable {
     /**
      * Checks if the layer is bufferable.
      *
-     * @return {@code true} if service type of this layer is ArcIms or ArcGis or
-     * if the layer has a featuretype, {@code false} otherwise
+     * @return {@code true} if the layer has a featuretype, {@code false}
+     * otherwise
      */
     public boolean isBufferable(){
-        return getService().getProtocol().equals(ArcIMSService.PROTOCOL) ||
-                this.getFeatureType() != null;
+        return this.getFeatureType() != null;
     }
 
     public interface Visitor {
