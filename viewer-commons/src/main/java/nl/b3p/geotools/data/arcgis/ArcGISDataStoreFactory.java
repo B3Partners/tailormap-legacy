@@ -20,8 +20,6 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.net.URL;
 import java.util.Map;
-//import org.codehaus.httpcache4j.cache.HTTPCache;
-import org.geotools.data.AbstractDataStoreFactory;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFactorySpi;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -29,8 +27,9 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 /**
  *
  * @author Matthijs Laan
+ * @author mprins
  */
-public class ArcGISDataStoreFactory extends AbstractDataStoreFactory {
+public class ArcGISDataStoreFactory implements DataStoreFactorySpi {
 
     public static final DataStoreFactorySpi.Param URL = new Param("url", URL.class, "ArcGIS Server REST URL ending in /MapServer or /FeatureServer");
     public static final DataStoreFactorySpi.Param USER = new Param("user", String.class, "Username", false);    
@@ -40,7 +39,6 @@ public class ArcGISDataStoreFactory extends AbstractDataStoreFactory {
     public static final DataStoreFactorySpi.Param CRS = new Param("crs", CoordinateReferenceSystem.class, "Coordinate reference system", false);
     public static final DataStoreFactorySpi.Param AGS_ASSUME_VERSION = new Param("ags_assume_version", String.class, "Assume this ArcGIS Server version (e.g. 10.x, 9.x)", false);
     //public static final DataStoreFactorySpi.Param HTTP_CACHE = new Param("http_cache", HTTPCache.class, "HTTPCache instance to enable HTTP caching", false);
-    
     // TODO: add CURRENT_VERSION param
     
     @Override
@@ -70,5 +68,15 @@ public class ArcGISDataStoreFactory extends AbstractDataStoreFactory {
     @Override
     public Param[] getParametersInfo() {
         return new Param[] { URL, USER, PASSWD, TIMEOUT, TRY_GZIP, CRS, AGS_ASSUME_VERSION /*, HTTP_CACHE*/ };
-    }    
+    }
+
+    @Override
+    public String getDisplayName() {
+        return "ArcGISDataStore";
+    }
+
+    @Override
+    public boolean isAvailable() {
+        return true;
+    }
 }
