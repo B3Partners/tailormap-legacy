@@ -15,7 +15,7 @@ Ext.define("viewer.viewercontroller.ol.tools.OlIdentifyTool",{
     wmsGetFeatureInfoFormat: "application/vnd.ogc.gml",
     useWMSGetFeatureInfo:null,
     active: false,
-    layersToAdd:null,
+    layersToAdd:[],
     config: {
         maxFeatures: 1000
     },
@@ -41,11 +41,72 @@ Ext.define("viewer.viewercontroller.ol.tools.OlIdentifyTool",{
         this.getViewerController().mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,this.onAddLayer,this);
         this.getViewerController().mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_REMOVED,this.onRemoveLayer,this);
         
-        //this.setUseWMSGetFeatureInfo(this.useWMSGetFeatureInfo);
-        
         return this;
     },
     
+    setUseWMSGetFeatureInfo: function (layer, options) {
+        var me = this;
+        if (this.useWMSGetFeatureInfo) {
+            var frameworkLayer = layer.getFrameworkLayer();
+            if (frameworkLayer.getVisible()) {
+                var frameworkMap = this.config.viewerController.mapComponent.getMap().getFrameworkMap();
+                var url = frameworkLayer.getSource().getGetFeatureInfoUrl([options.coord.x, options.coord.y],
+                        frameworkMap.getView().getResolution(),
+                        frameworkMap.getView().getProjection(),
+                        {INFO_FORMAT: this.wmsGetFeatureInfoFormat, REQUEST: 'GetFeatureInfo', FEATURE_COUNT: 1000});
+            }
+
+            var url = actionBeans.proxy+"/wms?url="+url+"&serviceId="+layer.serviceId;
+            var parser = new ol.format.WFS();
+            Ext.Ajax.request({
+                url: url,
+
+                success: function (response, opts) {
+                    var features  = parser.readFeatures(response.responseText);
+                    if(features.length > 0){
+                        options.features = features;
+                        options.response = response;
+                        options.layer = layer;
+                        me.raiseOnDataEvent(options);
+                    }
+                },
+
+                failure: function (response, opts) {
+                    console.log('server-side failure with status code ' + response.status);
+                }
+            })
+        }
+    },
+    /**
+     * Called when a layer is added
+     */
+    onAddLayer: function(map,options){        
+        var mapLayer=options.layer;
+        if (mapLayer==null || !(mapLayer instanceof viewer.viewercontroller.controller.WMSLayer)){
+            return;
+        }
+        var details = mapLayer.getDetails();
+        //something to show?
+        if (details !=undefined &&
+            (!Ext.isEmpty(details["summary.description"]) ||
+                !Ext.isEmpty(details["summary.image"]) ||
+                !Ext.isEmpty(details["summary.link"]) ||
+                !Ext.isEmpty(details["summary.title"]))){
+            var doClientWms=true;
+            if (mapLayer.appLayerId){
+                var appLayer=this.config.viewerController.app.appLayers[mapLayer.appLayerId];
+                var confServiceLayer = this.config.viewerController.app.services[appLayer.serviceId].layers[appLayer.layerName];
+                //do server side getFeature.
+                if (confServiceLayer.hasFeatureType){
+                    doClientWms=false;
+                }
+            }
+            if (doClientWms){
+                this.layersToAdd.push(mapLayer);
+            }
+            
+        }
+    },
     activate: function(){
         var me = this;
         this.conf.actives =true;
@@ -75,131 +136,30 @@ Ext.define("viewer.viewercontroller.ol.tools.OlIdentifyTool",{
         return this.conf.actives;
     },
     
-    handleClick: function(tool,options){    
+    handleClick: function(tool,options){
+        if(this.layersToAdd .length > 0){
+            for(var i = 0; i<this.layersToAdd.length; i++){
+                this.setUseWMSGetFeatureInfo(this.layersToAdd[i],options);
+            }
+        }
         this.map.fire(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO,options);
     },
     
-    
-    setUseWMSGetFeatureInfo: function (val){
-        this.useWMSGetFeatureInfo=val;
-        if (this.useWMSGetFeatureInfo){
-            if (this.wmsGetFeatureInfoControl==null){
-                // add wms get featureInfo
-                if (this.layersToAdd==null){
-                    this.layersToAdd=[];
-                }
-                this.wmsGetFeatureInfoControl = new ol.format.WMSGetFeatureInfo({
-                        layers : this.layersToAdd
-                    });  
-                    
-                //this.wmsGetFeatureInfoControl.handleResponse = handleResponse;
-                //this.wmsGetFeatureInfoControl.buildWMSOptions = buildWMSOtions;
-                //this.wmsGetFeatureInfoControl.request = requestWmsGFI;
-                //this.wmsGetFeatureInfoControl.events.register("getfeatureinfo",this,this.raiseOnDataEvent);   
-                //deegree handler:
-                this.wmsGetFeatureInfoControl.format.read_FeatureCollection = this.readFeatureCollection;
-                //this.map.getFrameworkMap().addControl(this.wmsGetFeatureInfoControl);
-                
-                //set proxy for getFeatureInfoRequests:
-                ol.ProxyHost = contextPath+"/action/proxy/wms?url=";
-            }
-            if (this.active){
-                this.wmsGetFeatureInfoControl.activate();
-            }else{
-                this.wmsGetFeatureInfoControl.deactivate();
-            }
-        }else{
-            if (this.wmsGetFeatureInfoControl!=null){
-                this.wmsGetFeatureInfoControl.deactivate();
-            }
-        }
-    },
-    /**
-     * Called when a layer is added
-     */
-    onAddLayer: function(map,options){ 
-        var mapLayer=options.layer;
-        if (mapLayer==null || !(mapLayer instanceof viewer.viewercontroller.controller.WMSLayer)){
-            return;
-        }
-        var details = mapLayer.getDetails();
-        //something to show?
-        if (details !=undefined &&
-            (!Ext.isEmpty(details["summary.description"]) ||
-                !Ext.isEmpty(details["summary.image"]) ||
-                !Ext.isEmpty(details["summary.link"]) ||
-                !Ext.isEmpty(details["summary.title"]))){
-            var doClientWms=true;
-            if (mapLayer.appLayerId){
-                var appLayer=this.config.viewerController.app.appLayers[mapLayer.appLayerId];
-                var confServiceLayer = this.config.viewerController.app.services[appLayer.serviceId].layers[appLayer.layerName];
-                //do server side getFeature.
-                if (confServiceLayer.hasFeatureType){
-                    doClientWms=false;
-                }
-            }
-            if (doClientWms){
-                this.addWmsClientLayer(mapLayer);
-            }
-            
-        }
-    },
-    /**
-     * Called when a layer is removed
-     */
-    onRemoveLayer: function(map,options) {
-        var mapLayer=options.layer;
-        if (mapLayer==null 
-                || !(mapLayer instanceof viewer.viewercontroller.controller.WMSLayer)){
-            return;
-        }
-        this.removeWmsClientLayer(mapLayer);
-        
-    },
-    addWmsClientLayer: function(mapLayer){
-        var layer = mapLayer.getFrameworkLayer();
-        if (this.wmsGetFeatureInfoControl != null){
-            if (this.wmsGetFeatureInfoControl.layers==null){
-                this.wmsGetFeatureInfoControl.layers=[];
-            }
-            this.wmsGetFeatureInfoControl.layers.push(layer);
-        }else{
-            if (this.layersToAdd ==null){
-                this.layersToAdd=[];
-            }
-            this.layersToAdd.push(layer);
-        }
-    },
-    removeWmsClientLayer: function(mapLayer){
-        var layer = mapLayer.getFrameworkLayer();
-        if (this.wmsGetFeatureInfoControl != null){
-            if (this.wmsGetFeatureInfoControl.layers!=null){
-                this.wmsGetFeatureInfoControl.layers= Ext.Array.remove(this.wmsGetFeatureInfoControl.layers,layer);
-            }
-        }else if (this.layersToAdd!=null){
-            this.layersToAdd=Ext.Array.remove(this.layersToAdd,layer);
-        }
-    },
-    
+    //called when wms layers return data.           
     raiseOnDataEvent: function(evt){
         var options = new Object();
-        options.x = evt.xy.x;
-        options.y = evt.xy.y;
+        options.x = evt.x;
+        options.y = evt.y;
         var coord = new Object();
-        var c = this.map.pixelToCoordinate(options.x, options.y);
-        coord.x = c.x;
-        coord.y = c.y;
+        coord.x = evt.coord.x;
+        coord.y = evt.coord.y;
         options.coord = coord;
         var featuresByLayer = new Object();
         for (var i = 0; i < evt.features.length; i++) {
 
             var feature = evt.features[i];
-            var layerName = feature.type ? feature.type : feature.layerNames;
-            var appLayer = this.getAppLayerByOpenLayersLayer(feature.url, layerName);
-            if (appLayer === null) {
-                // If appLayer is null, perhaps the OpenLayersWMSLayers has multiple layerNames in the layers parameter, so try it again with the layerNames
-                appLayer = this.getAppLayerByOpenLayersLayer(feature.url, feature.layerNames);
-            }
+            var appLayer = evt.layer;
+            var layerName = appLayer.config.options.name;
             if (!featuresByLayer.hasOwnProperty(appLayer.id)) {
                 featuresByLayer[appLayer.id] = new Object();
             }
@@ -208,7 +168,7 @@ Ext.define("viewer.viewercontroller.ol.tools.OlIdentifyTool",{
                 featuresByLayer[appLayer.id][layerName].appLayerObj = appLayer;
                 featuresByLayer[appLayer.id][layerName].features = new Array();
             }
-            featuresByLayer[appLayer.id][layerName].features.push(feature.attributes);
+            featuresByLayer[appLayer.id][layerName].features.push(feature.values_);
         }
         for (var applayer in featuresByLayer) {
             options.data = [];
@@ -223,78 +183,24 @@ Ext.define("viewer.viewercontroller.ol.tools.OlIdentifyTool",{
                     },
                     features: features,
                     appLayer: groupedLayers[lName].appLayerObj
-                }
+                };
                 appLayer = groupedLayers[lName].appLayerObj;
                 options.data.push(response);
             }
             appLayer.fire(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO_DATA, options);
         }
     },
-    getAppLayerByOpenLayersLayer : function(url, layerNames){
-        var layers = this.map.layers;
-        for (var i = 0; i < layers.length; i++) {
-            var layer = layers[i];
-            if (layer.url === url) {
-                var mapLayers= layer.getLayers();
-                if (!(mapLayers instanceof Array)){
-                    var array = [];
-                    array.push(mapLayers);
-                    mapLayers = array;
-                }
-                if (mapLayers.length === layerNames.length){
-                    var allFound = true;
-                    for (var j = 0; j < layerNames.length; j++) {
-                        var found=false;
-                        for (var l=0; l < mapLayers.length; l++){
-                            if (mapLayers[l]=== layerNames[j]) {
-                                found=true;
-                                break;
-                            }
-                        }
-                        if (!found){
-                            allFound=false;
-                            break;
-                        }                        
-                    }
-                    var hasSummary = this.viewerController.isSummaryLayer(layer);
-                    if (allFound && hasSummary){
-                        return layer;
-                    }
-                }
-            }
-        }
-        return null;
-    },
     
     /**
-     * Is called by the .format from the OpenLayers GetFeatureInfoControl to parse the xml
-     * This parses the deegree
-     * @param {DOMElement} Root DOM element
+     * Called when a layer is removed
      */
-    readFeatureCollection: function (data){
-        var featureIdentifier = "featureMember";
-        var layerNodes = this.getSiblingNodesByTagCriteria(data,
-            featureIdentifier);
-        var response = [];
-        if (layerNodes) {
-            for (var i=0, len=layerNodes.length; i<len; ++i) {
-                if (layerNodes.hasOwnProperty(i)){
-                    var featureNode = layerNodes[i].firstElementChild || layerNodes[i].firstChild || layerNodes[i].children[0] ||{};
-                    if (featureNode){
-                        var attributes = this.parseAttributes(featureNode);
-                        var geomAttr = this.parseGeometry(featureNode);
-                        var feature = new OpenLayers.Feature.Vector(geomAttr.geometry,
-                            attributes,null);
-                        feature.type = featureNode.localName || featureNode.baseName;
-                        response.push(feature);
-                    }
-                }
-            }
+    onRemoveLayer: function(map,options) {
+        var mapLayer=options.layer;
+        if (mapLayer==null 
+                || !(mapLayer instanceof viewer.viewercontroller.controller.WMSLayer)){
+            return;
         }
-        return response;
+        this.removeWmsClientLayer(mapLayer);
+        
     }
-    
-   
-    
-    
 });
