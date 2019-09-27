@@ -202,5 +202,13 @@ Ext.define("viewer.viewercontroller.ol.tools.OlIdentifyTool",{
         }
         this.removeWmsClientLayer(mapLayer);
         
-    }
+    },
+    
+    removeWmsClientLayer: function(mapLayer){
+        var layer = mapLayer.getFrameworkLayer();
+
+        if (this.layersToAdd!=null){
+            this.layersToAdd=Ext.Array.remove(this.layersToAdd,layer);
+        }
+    },
 });
