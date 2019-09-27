@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global ol, Ext */
+/* global ol, Ext, proj4 */
 
 Ext.define("viewer.viewercontroller.OlMapComponent",{
     extend: "viewer.viewercontroller.MapComponent",
@@ -56,9 +56,9 @@ Ext.define("viewer.viewercontroller.OlMapComponent",{
         var extentAr = [-285401.0,22598.0,595401.0,903401.0];
         var maxExtent = [7700,304000,280000,62000];
     
-        proj4.defs("EPSG:28992","+proj=sterea +lat_0=52.15616055555555 +lon_0=5.38763888888889 +k=0.9999079 +x_0=155000 +y_0=463000 +ellps=bessel +towgs84=565.237,50.0087,465.658,-0.406857,0.350733,-1.87035,4.0812 +units=m +no_defs ");
+        proj4.defs(this.projection,this.projectionString);
         ol.proj.proj4.register(proj4);
-        var projection = ol.proj.get('EPSG:28992');
+        var projection = ol.proj.get(this.projection);
        
         projection.setExtent(extentAr);
 
