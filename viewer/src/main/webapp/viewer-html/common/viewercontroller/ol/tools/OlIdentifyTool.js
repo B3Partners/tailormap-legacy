@@ -53,7 +53,7 @@ Ext.define("viewer.viewercontroller.ol.tools.OlIdentifyTool",{
                 var url = frameworkLayer.getSource().getGetFeatureInfoUrl([options.coord.x, options.coord.y],
                         frameworkMap.getView().getResolution(),
                         frameworkMap.getView().getProjection(),
-                        {INFO_FORMAT: this.wmsGetFeatureInfoFormat, REQUEST: 'GetFeatureInfo', FEATURE_COUNT: 1000});
+                        {INFO_FORMAT: this.wmsGetFeatureInfoFormat, REQUEST: 'GetFeatureInfo', FEATURE_COUNT: me.config.maxFeatures});
             }
 
             var url = actionBeans.proxy+"/wms?url="+url+"&serviceId="+layer.serviceId;
