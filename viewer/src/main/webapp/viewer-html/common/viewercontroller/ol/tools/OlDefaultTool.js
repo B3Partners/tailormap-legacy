@@ -25,14 +25,13 @@ Ext.define("viewer.viewercontroller.ol.tools.OlDefaultTool", {
     mapClick: null,
 
     constructor: function (conf) {
-
+        var me = this;
         var controlOptions = {
-            displayClass: "olControlDefault",
             type: "default",
             title: conf.tooltip
         };
         var olTool = new ol.control.Control(controlOptions);
-
+        conf.displayClass = "olControlDefault";
         viewer.viewercontroller.ol.tools.OlIdentifyTool.superclass.constructor.call(this, conf, olTool);
 
         this.setType(viewer.viewercontroller.controller.Tool.DEFAULT);
@@ -43,8 +42,8 @@ Ext.define("viewer.viewercontroller.ol.tools.OlDefaultTool", {
             id: "mapclick_" + this.id,
             viewerController: this.config.viewerController,
             handler: {
-                fn: this.handleClick,
-                scope: this
+                fn: me.handleClick,
+                scope: me
             }
         });
 
@@ -57,7 +56,7 @@ Ext.define("viewer.viewercontroller.ol.tools.OlDefaultTool", {
         this.getViewerController().mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_REMOVED, this.onRemoveLayer, this);
 
 
-
+        this.useWMSGetFeatureInfo = true;
 
         return this;
     },
@@ -65,12 +64,19 @@ Ext.define("viewer.viewercontroller.ol.tools.OlDefaultTool", {
     activate: function () {
         this.active = true;
         this.mapClick.activateTool();
-
+        viewer.viewercontroller.ol.tools.OlIdentifyTool.superclass.overwriteStyle.call(this, {
+            active: true,
+            displayClass: "olControlDefault"
+        });
     },
 
     deactivate: function () {
         this.active = false;
         this.mapClick.deactivateTool();
+        viewer.viewercontroller.ol.tools.OlIdentifyTool.superclass.overwriteStyle.call(this, {
+            active: false,
+            displayClass: "olControlDefault"
+        });
     }
 
 
