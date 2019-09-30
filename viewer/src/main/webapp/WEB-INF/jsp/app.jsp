@@ -246,6 +246,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         <script type="text/javascript" src="${scriptDir}/tools/ToolButton.js"></script> 
                         <script type="text/javascript" src="${scriptDir}/tools/DragPan.js"></script>
                         <script type="text/javascript" src="${scriptDir}/tools/StreetViewButton.js"></script>
+                        <script type="text/javascript" src="${scriptDir}/tools/PrevExtent.js"></script>
+                        <script type="text/javascript" src="${scriptDir}/tools/NextExtent.js"></script>
                     </c:when>
                     <c:otherwise>
                         <c:set var="scriptDir" value="${contextPath}/viewer-html/common/viewercontroller/flamingo"/>

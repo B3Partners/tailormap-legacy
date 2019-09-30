@@ -19,7 +19,8 @@
 
 Ext.define("viewer.viewercontroller.OlMapComponent", {
     extend: "viewer.viewercontroller.MapComponent",
-
+    
+    historyExtents: null,
     mapOptions: null,
     // References to the dom object of the content top and -bottom.
     contentTop: null,
@@ -37,7 +38,10 @@ Ext.define("viewer.viewercontroller.OlMapComponent", {
         container.style.height = '100%';
         container.style.width = '100%';
         document.getElementById(domId).appendChild(container);
-
+        historyExtents = {index:0,
+            extents:[],
+            update:true
+        };
 
         viewer.viewercontroller.OlMapComponent.superclass.constructor.call(this, viewerController, domId, config);
         var resolutions;
@@ -104,26 +108,26 @@ Ext.define("viewer.viewercontroller.OlMapComponent", {
     },
 
     initEvents: function () {
-        this.eventList[viewer.viewercontroller.controller.Event.ON_EVENT_DOWN] = "activate";
-        this.eventList[viewer.viewercontroller.controller.Event.ON_EVENT_UP] = "deactivate";
-        this.eventList[viewer.viewercontroller.controller.Event.ON_GET_CAPABILITIES] = "onGetCapabilities";
-        this.eventList[viewer.viewercontroller.controller.Event.ON_CONFIG_COMPLETE] = "onConfigComplete";
-        this.eventList[viewer.viewercontroller.controller.Event.ON_FEATURE_ADDED] = "addfeature";
-        this.eventList[viewer.viewercontroller.controller.Event.ON_CLICK] = "click";
-        this.eventList[viewer.viewercontroller.controller.Event.ON_SET_TOOL] = "activate";
-        this.eventList[viewer.viewercontroller.controller.Event.ON_ALL_LAYERS_LOADING_COMPLETE] = "onUpdateComplete";
-        this.eventList[viewer.viewercontroller.controller.Event.ON_LOADING_START] = "loadstart";
-        this.eventList[viewer.viewercontroller.controller.Event.ON_LOADING_END] = "loadend";
-        this.eventList[viewer.viewercontroller.controller.Event.ON_MEASURE] = "measure";
-        this.eventList[viewer.viewercontroller.controller.Event.ON_FINISHED_CHANGE_EXTENT] = "moveend";
-        this.eventList[viewer.viewercontroller.controller.Event.ON_CHANGE_EXTENT] = "move";
-        this.eventList[viewer.viewercontroller.controller.Event.ON_LAYER_REMOVED] = "remove";
-        this.eventList[viewer.viewercontroller.controller.Event.ON_LAYER_ADDED] = "add";
-        this.eventList[viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO] = "getfeatureinfo";
-        this.eventList[viewer.viewercontroller.controller.Event.ON_LAYER_VISIBILITY_CHANGED] = "change:visible";
-        this.eventList[viewer.viewercontroller.controller.Event.ON_ACTIVATE] = "activate";
-        this.eventList[viewer.viewercontroller.controller.Event.ON_DEACTIVATE] = "deactivate";
-        this.eventList[viewer.viewercontroller.controller.Event.ON_ZOOM_END] = "zoomend";
+        this.eventList[viewer.viewercontroller.controller.Event.ON_EVENT_DOWN]                                      = "activate";
+        this.eventList[viewer.viewercontroller.controller.Event.ON_EVENT_UP]                                        = "deactivate";
+        this.eventList[viewer.viewercontroller.controller.Event.ON_GET_CAPABILITIES]                                = "onGetCapabilities";
+        this.eventList[viewer.viewercontroller.controller.Event.ON_CONFIG_COMPLETE]                                 = "onConfigComplete";
+        this.eventList[viewer.viewercontroller.controller.Event.ON_FEATURE_ADDED]                                   = "addfeature";
+        this.eventList[viewer.viewercontroller.controller.Event.ON_CLICK]                                           = "click";
+        this.eventList[viewer.viewercontroller.controller.Event.ON_SET_TOOL]                                        = "activate";
+        this.eventList[viewer.viewercontroller.controller.Event.ON_ALL_LAYERS_LOADING_COMPLETE]                     = "onUpdateComplete";
+        this.eventList[viewer.viewercontroller.controller.Event.ON_LOADING_START]                                   = "loadstart";
+        this.eventList[viewer.viewercontroller.controller.Event.ON_LOADING_END]                                     = "loadend";
+        this.eventList[viewer.viewercontroller.controller.Event.ON_MEASURE]                                         = "measure";
+        this.eventList[viewer.viewercontroller.controller.Event.ON_FINISHED_CHANGE_EXTENT]                          = "moveend";
+        this.eventList[viewer.viewercontroller.controller.Event.ON_CHANGE_EXTENT]                                   = "move";
+        this.eventList[viewer.viewercontroller.controller.Event.ON_LAYER_REMOVED]                                   = "remove";
+        this.eventList[viewer.viewercontroller.controller.Event.ON_LAYER_ADDED]                                     = "add";
+        this.eventList[viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO]                                = "getfeatureinfo";
+        this.eventList[viewer.viewercontroller.controller.Event.ON_LAYER_VISIBILITY_CHANGED]                        = "change:visible";
+        this.eventList[viewer.viewercontroller.controller.Event.ON_ACTIVATE]                                        = "activate";
+        this.eventList[viewer.viewercontroller.controller.Event.ON_DEACTIVATE]                                      = "deactivate";
+        this.eventList[viewer.viewercontroller.controller.Event.ON_ZOOM_END]                                        = "zoomend";
     },
 
     getPanel: function () {
@@ -370,6 +374,7 @@ Ext.define("viewer.viewercontroller.OlMapComponent", {
     },
 
     createTool: function (conf) {
+        var me = this;
         var type = conf.type;
         conf.viewerController = this.viewerController;
         var frameworkOptions = {};
@@ -409,6 +414,14 @@ Ext.define("viewer.viewercontroller.OlMapComponent", {
             return new viewer.viewercontroller.ol.tools.OlDefaultTool(conf);
         } else if (conf.type === viewer.viewercontroller.controller.Tool.MAP_TOOL) {
             return new viewer.viewercontroller.ol.OlTool(conf, new viewer.viewercontroller.ol.tools.StreetViewButton(conf));
+        } else if (type === viewer.viewercontroller.controller.Tool.PREVIOUS_EXTENT) {//19, 20
+            conf.displayClass  = "olcontrolnavigationhistoryprevious";
+            me.getMap().addListener(viewer.viewercontroller.controller.Event.ON_FINISHED_CHANGE_EXTENT, me.addExtentForHistory, me);
+            return new viewer.viewercontroller.ol.OlTool(conf, new viewer.viewercontroller.ol.tools.PrevExtent(conf));
+        }  else if (type === viewer.viewercontroller.controller.Tool.NEXT_EXTENT) {//19, 20
+            conf.displayClass  = "olcontrolnavigationhistorynext";
+            me.getMap().addListener(viewer.viewercontroller.controller.Event.ON_FINISHED_CHANGE_EXTENT, me.addExtentForHistory, me);
+            return new viewer.viewercontroller.ol.OlTool(conf, new viewer.viewercontroller.ol.tools.NextExtent(conf));
         }
     },
 
@@ -489,7 +502,20 @@ Ext.define("viewer.viewercontroller.OlMapComponent", {
 
     compareExtent: function (ext1, ext2) {
         return ol.extent.equals(ext1, ext2);
+    },
+
+    addExtentForHistory: function (map, options) {
+        if (!this.historyExtents) {
+            this.historyExtents = {index: 0,
+                extents: []
+            };
+        }
+        this.getMap().getExtent();
+        if (this.historyExtents.update) {
+            this.historyExtents.extents.push(options.extent);
+            this.historyExtents.index = this.historyExtents.extents.length - 1;
+        } else {
+            this.historyExtents.update = true;
+        }
     }
-
-
 });
