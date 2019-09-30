@@ -29,7 +29,7 @@ Ext.define("viewer.viewercontroller.ol.OlTool", {
         this.controls = new Array();
         this.enabledEvents = new Object();
         this.setTool(conf);
-        conf.active  = true;
+        conf.active = true;
         this.overwriteStyle(conf);
         return this;
     },
@@ -41,8 +41,9 @@ Ext.define("viewer.viewercontroller.ol.OlTool", {
         this.panelTool.className = "svg-tool " + conf.displayClass + 'ItemInactive';
         this.panelTool.title = (conf.tooltip) ? conf.tooltip : "";
         this.panelTool.id = conf.id;
+        var appSprite = this.viewerController.getApplicationSprite();
         if (conf.displayClass) {
-            var spriteLink = "/viewer/viewer-html/sprite.svg#icon-" + conf.displayClass.toLowerCase();
+            var spriteLink = appSprite + "#icon-" + conf.displayClass.toLowerCase();
         }
         this.panelTool.innerHTML = [
             '<div class="svg-click-area"></div>', // An extra transparent DIV is added to fix issue where button could not be clicked in IE
