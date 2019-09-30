@@ -86,7 +86,7 @@ Ext.define("viewer.viewercontroller.ol.OlTilingLayer", {
                 attributions: options.attribution,
                 maxZoom: 15,
                 minZoom: 1,
-                projection: "EPSG:28992",
+                projection: config.viewerController.mapComponent.mapOptions.projection,
                 url: t + '/{z}/{x}/{-y}.png'
             });
             this.frameworkLayer = new ol.layer.Tile({
