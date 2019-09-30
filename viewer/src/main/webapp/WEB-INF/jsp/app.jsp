@@ -105,7 +105,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <c:if test="${actionBean.viewerType == 'openlayers5'}">
                <link href="${contextPath}/viewer-html/common/ol/ol.css" rel="stylesheet">  
                <link href="${contextPath}/viewer-html/common/resources/css/openlayers.css" rel="stylesheet">
-               <script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.3.6/proj4.js" type="text/javascript"></script>
+               <script src="${contextPath}/viewer-html/common/ol/proj4.js" type="text/javascript"></script>
                <c:set var="olStylesheet"><stripes:url beanclass="nl.b3p.viewer.stripes.CSSActionBean" /></c:set>
                <link href="${olStylesheet}?theme=flamingo&app=${actionBean.application.id}" rel="stylesheet">
                
