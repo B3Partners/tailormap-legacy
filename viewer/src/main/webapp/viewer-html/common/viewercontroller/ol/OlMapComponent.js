@@ -506,14 +506,18 @@ Ext.define("viewer.viewercontroller.OlMapComponent", {
 
     addExtentForHistory: function (map, options) {
         if (!this.historyExtents) {
-            this.historyExtents = {index: 0,
-                extents: []
+            this.historyExtents = {index: -1,
+                extents: [],
+                update: true
             };
         }
-        this.getMap().getExtent();
         if (this.historyExtents.update) {
-            this.historyExtents.extents.push(options.extent);
-            this.historyExtents.index = this.historyExtents.extents.length - 1;
+            this.historyExtents.extents = this.historyExtents.extents.slice(0, this.historyExtents.index + 1);
+            this.historyExtents.extents.push({
+                center: map.getFrameworkMap().getView().getCenter(),
+                resolution: map.getFrameworkMap().getView().getResolution()
+            });
+            this.historyExtents.index++;
         } else {
             this.historyExtents.update = true;
         }

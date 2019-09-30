@@ -25,12 +25,12 @@ Ext.define("viewer.viewercontroller.ol.tools.PrevExtent", {
     },
 
     activate: function () {
-        var index = this.viewerController.mapComponent.historyExtents.index;
-        this.viewerController.mapComponent.historyExtents.update = false;
-        var extent = this.viewerController.mapComponent.historyExtents.extents[index];
-        this.viewerController.mapComponent.getMap().zoomToExtent(extent);
-        if (index !== 0) {
-            this.viewerController.mapComponent.historyExtents.index = index - 1;
+        if (this.viewerController.mapComponent.historyExtents.index > 0) {
+            var frameworkMap = this.viewerController.mapComponent.getMap().frameworkMap;
+            this.viewerController.mapComponent.historyExtents.update = false;
+            this.viewerController.mapComponent.historyExtents.index--;
+            frameworkMap.getView().setCenter(this.viewerController.mapComponent.historyExtents.extents[this.viewerController.mapComponent.historyExtents.index].center);
+            frameworkMap.getView().setResolution(this.viewerController.mapComponent.historyExtents.extents[this.viewerController.mapComponent.historyExtents.index].resolution);
         }
     },
 
