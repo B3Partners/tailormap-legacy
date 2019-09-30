@@ -17,14 +17,14 @@
 
 /* global Ext */
 
-Ext.define("viewer.viewercontroller.ol.OlArcLayer",{
+Ext.define("viewer.viewercontroller.ol.OlArcLayer", {
     extend: "viewer.viewercontroller.controller.ArcLayer",
     mixins: {
         openLayersLayer: "viewer.viewercontroller.ol.OlLayer"
     },
-    constructor: function(config){
+    constructor: function (config) {
         viewer.viewercontroller.ol.OlArcLayer.superclass.constructor.call(this, config);
-        this.mixins.openLayersLayer.constructor.call(this,config);
+        this.mixins.openLayersLayer.constructor.call(this, config);
         this.initConfig(config);
         return this;
     },
@@ -32,87 +32,87 @@ Ext.define("viewer.viewercontroller.ol.OlArcLayer",{
     /**
      *Get the id of this layer
      */
-    getId :function (){
+    getId: function () {
         return this.id;
     },
 
-    getName : function (){
+    getName: function () {
         return this.options["name"];
     },
 
-    getServer :function (){
+    getServer: function () {
         return this.options["server"];
     },
 
-    getService : function (){
+    getService: function () {
         return this.options["service"];
     },
 
-    getServlet : function (){
+    getServlet: function () {
         return this.options["servlet"];
     },
 
-    getMapservice : function (){
+    getMapservice: function () {
         return this.options["mapservice"];
     },
-    getLayers : function(){
+    getLayers: function () {
         return this.options["layers"];
-    }, 
-    getLegendGraphic: function (){
+    },
+    getLegendGraphic: function () {
         //console.log("getLegendGraphic still needs to be implemented in ArcLayer");
         return null;
     },
-    setBuffer : function (radius,layer){
+    setBuffer: function (radius, layer) {
         console.log("OpenLayersArcLayer.setBuffer: .setBuffer() must be made!");
     },
-    removeBuffer: function(layer){        
+    removeBuffer: function (layer) {
         console.log("OpenLayersArcLayer.removeBuffer: .removeBuffer() must be made!");
     },
-    getType : function (){
+    getType: function () {
         return this.mixins.openLayersLayer.getType.call(this);
     },
-    
-    /******** overwrite functions to make use of the mixin functions **********/    
+
+    /******** overwrite functions to make use of the mixin functions **********/
     /**
      * @see viewer.viewercontroller.openlayers.OpenLayersLayer#setVisible
      */
-    setVisible: function(vis){
-        this.mixins.openLayersLayer.setVisible.call(this,vis);
+    setVisible: function (vis) {
+        this.mixins.openLayersLayer.setVisible.call(this, vis);
     },
     /**
      * @see viewer.viewercontroller.openlayers.OpenLayersLayer#setVisible
      */
-    getVisible: function(){
+    getVisible: function () {
         return this.mixins.openLayersLayer.getVisible.call(this);
     },
     /**
      * @see viewer.viewercontroller.OpenLayers.OpenLayersLayer#setAlpha
      */
-    setAlpha: function (alpha){
-        this.mixins.openLayersLayer.setAlpha.call(this,alpha);
+    setAlpha: function (alpha) {
+        this.mixins.openLayersLayer.setAlpha.call(this, alpha);
     },
     /**
      * @see viewer.viewercontroller.OpenLayers.OpenLayersLayer#reload
      */
-    reload: function (){
+    reload: function () {
         this.mixins.openLayersLayer.reload.call(this);
     },
     /**
      * @see viewer.viewercontroller.OpenLayers.OpenLayersLayer#addListener
      */
-    addListener: function (event,handler,scope){
-        this.mixins.openLayersLayer.addListener.call(this,event,handler,scope);
+    addListener: function (event, handler, scope) {
+        this.mixins.openLayersLayer.addListener.call(this, event, handler, scope);
     },
     /**
      * @see viewer.viewercontroller.OpenLayers.OpenLayersLayer#removeListener
      */
-    removeListener: function (event,handler,scope){
-        this.mixins.openLayersLayer.removeListener.call(this,event,handler,scope);
+    removeListener: function (event, handler, scope) {
+        this.mixins.openLayersLayer.removeListener.call(this, event, handler, scope);
     },
     /**
      * @see viewer.viewercontroller.OpenLayers.OpenLayersLayer#destroy
      */
-    destroy: function (){
+    destroy: function () {
         this.mixins.openLayersLayer.destroy.call(this);
     }
 });

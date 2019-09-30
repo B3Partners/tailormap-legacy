@@ -1,32 +1,45 @@
 /* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright (C) 2019 B3Partners B.V.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 
-Ext.define("viewer.viewercontroller.ol.tools.ZoomOutButton",{
+/* global Ext, ol */
 
-    constructor : function(conf){
+Ext.define("viewer.viewercontroller.ol.tools.ZoomOutButton", {
+
+    constructor: function (conf) {
         this.initConfig(conf);
         this.conf = conf;
         conf.tool = "zoom-out";
-        conf.class = "olControlZoomOut";
+        conf.displayClass = "olControlZoomOut";
         conf.id = "ol-zoom-out";
         conf.active = false;
-        conf.onlyClick =true;
+        conf.onlyClick = true;
         this.mapComponent = conf.viewerController.mapComponent;
         this.frameworkObject = new ol.control.Zoom();
     },
 
-    activate : function(){
-            this.mapComponent.maps[0].getFrameworkMap().getView().setZoom( this.mapComponent.maps[0].getFrameworkMap().getView().getZoom()-1);        
+    activate: function () {
+        this.mapComponent.maps[0].getFrameworkMap().getView().setZoom(this.mapComponent.maps[0].getFrameworkMap().getView().getZoom() - 1);
     },
 
-    deactivate : function() {
+    deactivate: function () {
         //only click can't be deactivated
     },
-    isActive : function(){
+    isActive: function () {
         return false;
     }
 

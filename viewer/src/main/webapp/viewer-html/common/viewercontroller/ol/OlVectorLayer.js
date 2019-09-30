@@ -203,7 +203,7 @@ Ext.define("viewer.viewercontroller.ol.OlVectorLayer", {
             var feature = features[i];
             var olFeature = this.toOpenLayersFeature(feature);
             olFeatures.push(olFeature);
-            
+
             if (feature.config.label) {
                 olFeature.getStyle().setText(new ol.style.Text({text: feature.config.label}));
             }
@@ -360,7 +360,7 @@ Ext.define("viewer.viewercontroller.ol.OlVectorLayer", {
         if (featureStyle.strokeColor) {
             var opacity = featureStyle.strokeOpacity || 0.5;
             var width = featureStyle.strokeWidth || 3;
-            var color  = ol.color.asArray(featureStyle.strokeColor);
+            var color = ol.color.asArray(featureStyle.strokeColor);
             var colorFinal = 'rgba(' + color[0] + ',' + color[1] + ',' + color[2] + ',' + opacity + ')';
             strokeStyle = new ol.style.Stroke({
                 color: colorFinal,
@@ -371,7 +371,7 @@ Ext.define("viewer.viewercontroller.ol.OlVectorLayer", {
 
         if (featureStyle.fillColor) {
             var opacity = featureStyle.fillOpacity || 0.5;
-            var color  = ol.color.asArray(featureStyle.fillColor);
+            var color = ol.color.asArray(featureStyle.fillColor);
             var colorFinal = 'rgba(' + color[0] + ',' + color[1] + ',' + color[2] + ',' + opacity + ')';
             fillStyle = new ol.style.Fill({
                 color: colorFinal
@@ -383,7 +383,7 @@ Ext.define("viewer.viewercontroller.ol.OlVectorLayer", {
                 fill: fillStyle,
                 stroke: strokeStyle,
                 radius: pointRadius
-            })
+            });
         }
 
         var style = new ol.style.Style({
@@ -391,7 +391,7 @@ Ext.define("viewer.viewercontroller.ol.OlVectorLayer", {
             fill: fillStyle,
             image: imageStyle
         });
-        
+
         return style;
     },
 
@@ -403,7 +403,7 @@ Ext.define("viewer.viewercontroller.ol.OlVectorLayer", {
         var feature = this.fromOpenLayersFeature(object.feature);
 
         // If no stylehash is set for the feature, set it to the current settings
-        if(!object.feature.getStyle()){
+        if (!object.feature.getStyle()) {
             object.feature.setStyle(this.toOpenLayersStyle(this.getCurrentStyleHash()));
         }
         this.editFeature(object.feature);
@@ -469,14 +469,14 @@ Ext.define("viewer.viewercontroller.ol.OlVectorLayer", {
         var olFeature = this.getFrameworkLayer().getSource().getFeatureById(id);
         if (olFeature) {
             var c = ol.color.asArray(featureStyle.config.fillColor);
-            var colorFinal = 'rgba('+c[0]+','+ c[1]+','+ c[2]+','+featureStyle.config.fillOpacity+')';
+            var colorFinal = 'rgba(' + c[0] + ',' + c[1] + ',' + c[2] + ',' + featureStyle.config.fillOpacity + ')';
             var lineDash;
-            if(featureStyle.config.strokeDashstyle === "solid"){
+            if (featureStyle.config.strokeDashstyle === "solid") {
                 lineDash = null;
-            } else if(featureStyle.config.strokeDashstyle === "dot"){
-                lineDash = [1,8];
-            } else if(featureStyle.config.strokeDashstyle === "dash"){
-                lineDash = [10,10];
+            } else if (featureStyle.config.strokeDashstyle === "dot") {
+                lineDash = [1, 8];
+            } else if (featureStyle.config.strokeDashstyle === "dash") {
+                lineDash = [10, 10];
             }
 
             var strokeStyle = new ol.style.Stroke({

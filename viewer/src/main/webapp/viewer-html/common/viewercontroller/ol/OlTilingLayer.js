@@ -17,18 +17,18 @@
 
 /* global ol, Ext */
 
-Ext.define("viewer.viewercontroller.ol.OlTilingLayer",{
+Ext.define("viewer.viewercontroller.ol.OlTilingLayer", {
     extend: "viewer.viewercontroller.controller.TilingLayer",
     mixins: {
         olLayer: "viewer.viewercontroller.ol.OlLayer"
     },
-    constructor : function(config){
+    constructor: function (config) {
         viewer.viewercontroller.ol.OlTilingLayer.superclass.constructor.call(this, config);
-        
-        if(!Ext.Array.contains(["TMS", "WMTS"], this.getProtocol())) {
+
+        if (!Ext.Array.contains(["TMS", "WMTS"], this.getProtocol())) {
             throw new Error("OpenLayers 5 TilingLayer currently does not support tiling protocol " + this.getProtocol());
         }
-        
+
         this.mixins.olLayer.constructor.call(this, config);
 
         this.type = viewer.viewercontroller.controller.Layer.TILING_TYPE;
@@ -97,20 +97,20 @@ Ext.define("viewer.viewercontroller.ol.OlTilingLayer",{
 
 
             }, options);
-        } else if (this.getProtocol() === "WMTS") {         
+        } else if (this.getProtocol() === "WMTS") {
             options.url = this.url;
             options.style = this.config.style;
             options.layer = this.config.name;
             options.matrixSet = this.config.matrixSet.identifier;
             var matrix = this.getMatrix(this.config.matrixSet.matrices);
             options.format = this.extension;
-			
+
             //needed for print
-            if(this.config.matrixSet.bbox){
+            if (this.config.matrixSet.bbox) {
                 var bbox = this.config.matrixSet.bbox;
-                this.serviceEnvelope = bbox.minx+","+bbox.miny+","+bbox.maxx+","+bbox.maxy;
+                this.serviceEnvelope = bbox.minx + "," + bbox.miny + "," + bbox.maxx + "," + bbox.maxy;
             }
-			
+
             var grid = new ol.tilegrid.WMTS({
                 extent: options.maxExtent,
                 origins: matrix.origins,
@@ -135,72 +135,72 @@ Ext.define("viewer.viewercontroller.ol.OlTilingLayer",{
             });
         }
     },
-    
-    setVisible: function(vis){
-        this.mixins.olLayer.setVisible.call(this,vis);
+
+    setVisible: function (vis) {
+        this.mixins.olLayer.setVisible.call(this, vis);
     },
-    
-    getVisible: function(){
+
+    getVisible: function () {
         return this.mixins.olLayer.getVisible.call(this);
     },
-          
-    getMatrix: function(matrices){
+
+    getMatrix: function (matrices) {
         var convertRatio = 1 / 0.00028;
-        var serverRes  = [];
+        var serverRes = [];
         var matrixIds = [];
         var origins = [];
         var tileSizes = [];
-        for (var i = 0; i < matrices.length; i++) {	
+        for (var i = 0; i < matrices.length; i++) {
             var matrix = matrices[i];
             var topLeft = matrix.topLeftCorner;
             var x = topLeft.substring(0, topLeft.indexOf(" "));
-            var y = topLeft.substring(topLeft.indexOf(" ") +1);
+            var y = topLeft.substring(topLeft.indexOf(" ") + 1);
             matrixIds[i] = matrix.identifier;
-            serverRes.push(parseFloat(matrix.scaleDenominator)/convertRatio);
-            origins[i] = [parseFloat(x),parseFloat(y)];
-            tileSizes[i] = [matrix.tileWidth,matrix.tileHeight];
+            serverRes.push(parseFloat(matrix.scaleDenominator) / convertRatio);
+            origins[i] = [parseFloat(x), parseFloat(y)];
+            tileSizes[i] = [matrix.tileWidth, matrix.tileHeight];
         }
         return {
             matrixIds: matrixIds,
             serverRes: serverRes,
             origins: origins,
             tileSizes: tileSizes
-            
+
         };
     },
-    addListener: function (event,handler,scope){
-        this.mixins.olLayer.addListener.call(this,event,handler,scope);
+    addListener: function (event, handler, scope) {
+        this.mixins.olLayer.addListener.call(this, event, handler, scope);
     },
     /**
      * @see viewer.viewercontroller.OpenLayers.OpenLayersLayer#removeListener
      */
-    removeListener: function (event,handler,scope){
-        this.mixins.olLayer.removeListener.call(this,event,handler,scope);
+    removeListener: function (event, handler, scope) {
+        this.mixins.olLayer.removeListener.call(this, event, handler, scope);
     },
-    
-    getType : function (){
+
+    getType: function () {
         return this.mixins.olLayer.getType.call(this);
     },
-    
-    getLastMapRequest : function(){
+
+    getLastMapRequest: function () {
         var map = this.config.viewerController.mapComponent.getMap().getFrameworkMap();
         var r = this.getFrameworkLayer().getSource().getTileUrlFunction();
-        var mapcenter =map.getView().getCenter();
-        var crd = this.getFrameworkLayer().getSource().getTileGrid().getTileCoordForCoordAndResolution(mapcenter,map.getView().getResolution());
-        var request=[{
-            extent: this.getFrameworkLayer().getSource().getTileGrid().getTileCoordExtent(crd),
-            url: r(crd,1, map.getView().getProjection())
-        }];
+        var mapcenter = map.getView().getCenter();
+        var crd = this.getFrameworkLayer().getSource().getTileGrid().getTileCoordForCoordAndResolution(mapcenter, map.getView().getResolution());
+        var request = [{
+                extent: this.getFrameworkLayer().getSource().getTileGrid().getTileCoordExtent(crd),
+                url: r(crd, 1, map.getView().getProjection())
+            }];
         return request;
 
     },
-    setAlpha: function (alpha){
-        if(this.frameworkLayer) {
+    setAlpha: function (alpha) {
+        if (this.frameworkLayer) {
             this.frameworkLayer.transitionEffect = alpha < 100 ? null : "resize";
         }
-        this.mixins.olLayer.setAlpha.call(this,alpha);
+        this.mixins.olLayer.setAlpha.call(this, alpha);
     },
-    getLayers: function (){
+    getLayers: function () {
         return this.frameworkLayer.options.layername;
     }
 });

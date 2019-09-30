@@ -1,49 +1,59 @@
 /* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright (C) 2019 B3Partners B.V.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 
-/* global handleResponse, requestWmsGFI, buildWMSOtions */
+/* global Ext, ol, actionBeans */
 
-Ext.define("viewer.viewercontroller.ol.tools.OlIdentifyTool",{
+Ext.define("viewer.viewercontroller.ol.tools.OlIdentifyTool", {
     extend: "viewer.viewercontroller.ol.OlTool",
     map: null,
     deactivatedControls: null,
-    wmsGetFeatureInfoControl:null,
+    wmsGetFeatureInfoControl: null,
     wmsGetFeatureInfoFormat: "application/vnd.ogc.gml",
-    useWMSGetFeatureInfo:null,
+    useWMSGetFeatureInfo: null,
     active: false,
-    layersToAdd:[],
+    layersToAdd: [],
     config: {
         maxFeatures: 1000
     },
+
     /**
      * Constructor
      * @param conf the configuration object
-     * @param frameworkTool the openlayers control
-     * @param map the viewer.viewercontroller.openlayers.OpenLayersMap
      */
-    constructor : function (conf){
-        this.useWMSGetFeatureInfo=true;
-        
+    constructor: function (conf) {
+        this.useWMSGetFeatureInfo = true;
+
         conf.id = conf.tooltip;
-        conf.class = "olControlIdentify";
+        conf.displayClass = "olControlIdentify";
         conf.onlyClick = false;
-        conf.actives =false;
+        conf.actives = false;
 
 
         this.mapComponent = conf.viewerController.mapComponent;
-        viewer.viewercontroller.ol.tools.OlIdentifyTool.superclass.constructor.call(this,conf,this);
-        this.map=this.config.viewerController.mapComponent.getMap();
-        
-        this.getViewerController().mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,this.onAddLayer,this);
-        this.getViewerController().mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_REMOVED,this.onRemoveLayer,this);
-        
+        viewer.viewercontroller.ol.tools.OlIdentifyTool.superclass.constructor.call(this, conf, this);
+        this.map = this.config.viewerController.mapComponent.getMap();
+
+        this.getViewerController().mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED, this.onAddLayer, this);
+        this.getViewerController().mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_REMOVED, this.onRemoveLayer, this);
+
         return this;
     },
-    
+
     setUseWMSGetFeatureInfo: function (layer, options) {
         var me = this;
         if (this.useWMSGetFeatureInfo) {
@@ -56,14 +66,14 @@ Ext.define("viewer.viewercontroller.ol.tools.OlIdentifyTool",{
                         {INFO_FORMAT: this.wmsGetFeatureInfoFormat, REQUEST: 'GetFeatureInfo', FEATURE_COUNT: me.config.maxFeatures});
             }
 
-            var url = actionBeans.proxy+"/wms?url="+url+"&serviceId="+layer.serviceId;
+            var url = actionBeans.proxy + "/wms?url=" + url + "&serviceId=" + layer.serviceId;
             var parser = new ol.format.WFS();
             Ext.Ajax.request({
                 url: url,
 
                 success: function (response, opts) {
-                    var features  = parser.readFeatures(response.responseText);
-                    if(features.length > 0){
+                    var features = parser.readFeatures(response.responseText);
+                    if (features.length > 0) {
                         options.features = features;
                         options.response = response;
                         options.layer = layer;
@@ -74,79 +84,81 @@ Ext.define("viewer.viewercontroller.ol.tools.OlIdentifyTool",{
                 failure: function (response, opts) {
                     console.log('server-side failure with status code ' + response.status);
                 }
-            })
+            });
         }
     },
     /**
      * Called when a layer is added
+     * @param map
+     * @param options
      */
-    onAddLayer: function(map,options){        
-        var mapLayer=options.layer;
-        if (mapLayer==null || !(mapLayer instanceof viewer.viewercontroller.controller.WMSLayer)){
+    onAddLayer: function (map, options) {
+        var mapLayer = options.layer;
+        if (mapLayer === null || !(mapLayer instanceof viewer.viewercontroller.controller.WMSLayer)) {
             return;
         }
         var details = mapLayer.getDetails();
         //something to show?
-        if (details !=undefined &&
-            (!Ext.isEmpty(details["summary.description"]) ||
-                !Ext.isEmpty(details["summary.image"]) ||
-                !Ext.isEmpty(details["summary.link"]) ||
-                !Ext.isEmpty(details["summary.title"]))){
-            var doClientWms=true;
-            if (mapLayer.appLayerId){
-                var appLayer=this.config.viewerController.app.appLayers[mapLayer.appLayerId];
+        if (details !== undefined &&
+                (!Ext.isEmpty(details["summary.description"]) ||
+                        !Ext.isEmpty(details["summary.image"]) ||
+                        !Ext.isEmpty(details["summary.link"]) ||
+                        !Ext.isEmpty(details["summary.title"]))) {
+            var doClientWms = true;
+            if (mapLayer.appLayerId) {
+                var appLayer = this.config.viewerController.app.appLayers[mapLayer.appLayerId];
                 var confServiceLayer = this.config.viewerController.app.services[appLayer.serviceId].layers[appLayer.layerName];
                 //do server side getFeature.
-                if (confServiceLayer.hasFeatureType){
-                    doClientWms=false;
+                if (confServiceLayer.hasFeatureType) {
+                    doClientWms = false;
                 }
             }
-            if (doClientWms){
+            if (doClientWms) {
                 this.layersToAdd.push(mapLayer);
             }
-            
+
         }
     },
-    activate: function(){
+    activate: function () {
         var me = this;
-        this.conf.actives =true;
-        this.tempKey = this.mapComponent.maps[0].getFrameworkMap().on('singleclick',function(evt){  
+        this.conf.actives = true;
+        this.tempKey = this.mapComponent.maps[0].getFrameworkMap().on('singleclick', function (evt) {
             var crd = evt.coordinate;
             var pix = evt.pixel;
-            
-            var options ={
-            x:pix[0],
-            y:pix[1],
-            coord: {
-                x:crd[0],
-                y:crd[1]
-            }
-        };
-            me.handleClick(me,options);
-        },this);
+
+            var options = {
+                x: pix[0],
+                y: pix[1],
+                coord: {
+                    x: crd[0],
+                    y: crd[1]
+                }
+            };
+            me.handleClick(me, options);
+        }, this);
     },
-    
-    deactivate: function(){
+
+    deactivate: function () {
         this.conf.actives = false;
         ol.Observable.unByKey(this.tempKey);
-       
+
     },
-    
-    isActive : function(){
+
+    isActive: function () {
         return this.conf.actives;
     },
-    
-    handleClick: function(tool,options){
-        if(this.layersToAdd .length > 0){
-            for(var i = 0; i<this.layersToAdd.length; i++){
-                this.setUseWMSGetFeatureInfo(this.layersToAdd[i],options);
+
+    handleClick: function (tool, options) {
+        if (this.layersToAdd.length > 0) {
+            for (var i = 0; i < this.layersToAdd.length; i++) {
+                this.setUseWMSGetFeatureInfo(this.layersToAdd[i], options);
             }
         }
-        this.map.fire(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO,options);
+        this.map.fire(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO, options);
     },
-    
+
     //called when wms layers return data.           
-    raiseOnDataEvent: function(evt){
+    raiseOnDataEvent: function (evt) {
         var options = new Object();
         options.x = evt.x;
         options.y = evt.y;
@@ -190,25 +202,27 @@ Ext.define("viewer.viewercontroller.ol.tools.OlIdentifyTool",{
             appLayer.fire(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO_DATA, options);
         }
     },
-    
+
     /**
      * Called when a layer is removed
+     * @param map
+     * @param options
      */
-    onRemoveLayer: function(map,options) {
-        var mapLayer=options.layer;
-        if (mapLayer==null 
-                || !(mapLayer instanceof viewer.viewercontroller.controller.WMSLayer)){
+    onRemoveLayer: function (map, options) {
+        var mapLayer = options.layer;
+        if (mapLayer === null
+                || !(mapLayer instanceof viewer.viewercontroller.controller.WMSLayer)) {
             return;
         }
         this.removeWmsClientLayer(mapLayer);
-        
+
     },
-    
-    removeWmsClientLayer: function(mapLayer){
+
+    removeWmsClientLayer: function (mapLayer) {
         var layer = mapLayer.getFrameworkLayer();
 
-        if (this.layersToAdd!=null){
-            this.layersToAdd=Ext.Array.remove(this.layersToAdd,layer);
+        if (this.layersToAdd !== null) {
+            this.layersToAdd = Ext.Array.remove(this.layersToAdd, layer);
         }
-    },
+    }
 });

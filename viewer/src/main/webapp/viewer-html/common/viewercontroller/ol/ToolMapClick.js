@@ -14,15 +14,15 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-/* global Ext */
+/* global Ext, ol */
 
-Ext.define ("viewer.viewercontroller.ol.ToolMapClick",{
+Ext.define("viewer.viewercontroller.ol.ToolMapClick", {
     extend: "viewer.viewercontroller.controller.ToolMapClick",
-    handler:null,
-    scope:null,
-    clickControl:null,
-    config:{
-        id:null,
+    handler: null,
+    scope: null,
+    clickControl: null,
+    config: {
+        id: null,
         name: null,
         handlerOptions: null
     },
@@ -30,55 +30,54 @@ Ext.define ("viewer.viewercontroller.ol.ToolMapClick",{
      * @constructor
      * @see viewer.viewercontroller.controller.ToolMapClick#constructor
      */
-    constructor: function (conf){
+    constructor: function (conf) {
         conf.onlyClick = false;
-        viewer.viewercontroller.ol.ToolMapClick.superclass.constructor.call(this,conf);
+        viewer.viewercontroller.ol.ToolMapClick.superclass.constructor.call(this, conf);
         this.initConfig(conf);
-        this.visible=false;
+        this.visible = false;
         this.type = viewer.viewercontroller.controller.Tool.MAP_CLICK;
         //this.initConfig(conf);
         this.handler = conf.handler.fn;
         this.scope = conf.handler.scope;
-        this.olMap=this.config.viewerController.mapComponent.getMap().getFrameworkMap();
+        this.olMap = this.config.viewerController.mapComponent.getMap().getFrameworkMap();
 
         //create a click control that handles only single click 
-            
+
         /*this.clickControl = new OpenLayers.Control.Click({
-            handlerOptions: me.config.handlerOptions,
-            click: function(evt){
-                me.handleClick(evt);
-            }
-        });
-        */
+         handlerOptions: me.config.handlerOptions,
+         click: function(evt){
+         me.handleClick(evt);
+         }
+         });
+         */
         return this;
     },
-    
-    handleClick: function(evt){
+
+    handleClick: function (evt) {
         var crd = evt.coordinate;
-            var pix = evt.pixel;
-            
-            var options ={
-            x:pix[0],
-            y:pix[1],
+        var pix = evt.pixel;
+
+        var options = {
+            x: pix[0],
+            y: pix[1],
             coord: {
-                x:crd[0],
-                y:crd[1]
+                x: crd[0],
+                y: crd[1]
             }
         };
 
-        this.handler.call(this.scope, this,options);
+        this.handler.call(this.scope, this, options);
         //this.deactivateTool();
     },
-    
-    activateTool : function(){      
+
+    activateTool: function () {
         var me = this;
-        this.clickControl = this.olMap.on("click", function(evt){
+        this.clickControl = this.olMap.on("click", function (evt) {
             me.handleClick(evt);
-        },this);
+        }, this);
     },
-    
-    deactivateTool : function (){
-         ol.Observable.unByKey(this.clickControl);
-         //this.activateTool();
-    }   
+
+    deactivateTool: function () {
+        ol.Observable.unByKey(this.clickControl);
+    }
 });

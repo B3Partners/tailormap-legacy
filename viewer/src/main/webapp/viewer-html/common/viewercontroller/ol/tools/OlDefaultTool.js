@@ -1,65 +1,75 @@
 /* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright (C) 2019 B3Partners B.V.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 
-/* global Ext */
+/* global Ext, ol */
 
-Ext.define("viewer.viewercontroller.ol.tools.OlDefaultTool",{ 
+Ext.define("viewer.viewercontroller.ol.tools.OlDefaultTool", {
     extend: "viewer.viewercontroller.ol.tools.OlIdentifyTool",
     map: null,
     navigationControl: null,
     mapClick: null,
 
-     constructor : function (conf){
+    constructor: function (conf) {
 
-     var controlOptions = {
+        var controlOptions = {
             displayClass: "olControlDefault",
             type: "default",
             title: conf.tooltip
         };
-      var olTool = new ol.control.Control(controlOptions);
+        var olTool = new ol.control.Control(controlOptions);
 
-      viewer.viewercontroller.ol.tools.OlIdentifyTool.superclass.constructor.call(this,conf,olTool);
+        viewer.viewercontroller.ol.tools.OlIdentifyTool.superclass.constructor.call(this, conf, olTool);
 
-      this.setType(viewer.viewercontroller.controller.Tool.DEFAULT);
-      
-      this.map=this.config.viewerController.mapComponent.getMap();
-      
-      this.mapClick = new viewer.viewercontroller.ol.ToolMapClick({
-          id: "mapclick_"+this.id,
-          viewerController: this.config.viewerController,
-          handler: {
-                  fn: this.handleClick,
-                  scope: this
-                }
-      });
-      
-      var layers=this.getViewerController().mapComponent.getMap().getLayers();
-        for (var i=0; i < layers.length; i++){
-            this.onAddLayer(null,{layer: layers[i]});
+        this.setType(viewer.viewercontroller.controller.Tool.DEFAULT);
+
+        this.map = this.config.viewerController.mapComponent.getMap();
+
+        this.mapClick = new viewer.viewercontroller.ol.ToolMapClick({
+            id: "mapclick_" + this.id,
+            viewerController: this.config.viewerController,
+            handler: {
+                fn: this.handleClick,
+                scope: this
+            }
+        });
+
+        var layers = this.getViewerController().mapComponent.getMap().getLayers();
+        for (var i = 0; i < layers.length; i++) {
+            this.onAddLayer(null, {layer: layers[i]});
         }
-        
-        this.getViewerController().mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,this.onAddLayer,this);
-        this.getViewerController().mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_REMOVED,this.onRemoveLayer,this);
-        
-        
-        
-      
-      return this;
-      },
-      
-      activate: function(){
-        this.active=true;
+
+        this.getViewerController().mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED, this.onAddLayer, this);
+        this.getViewerController().mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_REMOVED, this.onRemoveLayer, this);
+
+
+
+
+        return this;
+    },
+
+    activate: function () {
+        this.active = true;
         this.mapClick.activateTool();
-         
-      },
-      
-      
-      deactivate: function(){  
-        this.active=false;
+
+    },
+
+    deactivate: function () {
+        this.active = false;
         this.mapClick.deactivateTool();
     }
 

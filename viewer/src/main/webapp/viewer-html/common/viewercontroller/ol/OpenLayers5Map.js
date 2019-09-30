@@ -67,18 +67,20 @@ Ext.define("viewer.viewercontroller.ol.OpenLayers5Map", {
         this.frameworkMap.setLayerGroup(this.group);
 
 
-        if(config.options.startExtent){
+        if (config.options.startExtent) {
             var me = this;
-            var handler = function(){
-            me.zoomToExtent(config.options.startExtent);
-                me.removeListener(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,handler,handler);
+            var handler = function () {
+                me.zoomToExtent(config.options.startExtent);
+                me.removeListener(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED, handler, handler);
             };
-            this.addListener(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,handler,handler);
-            this.group.getLayers().on("add",function(args){me.handleEvent(args)},me);
+            this.addListener(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED, handler, handler);
+            this.group.getLayers().on("add", function (args) {
+                me.handleEvent(args);
+            }, me);
         }
 
         this.group.getLayers().on('remove', function (args) {
-            me.handleEvent(args)
+            me.handleEvent(args);
         }, me);
 
         this.layersLoading = 0;
@@ -110,7 +112,7 @@ Ext.define("viewer.viewercontroller.ol.OpenLayers5Map", {
         //delete layer.getFrameworkLayer().id;
         var map = this.getFrameworkMap();
         var l = layer.getFrameworkLayer();
-        if (layer.id == undefined) {
+        if (layer.id === undefined) {
             layer.id = layer.name;
         }
         try {
@@ -207,7 +209,7 @@ Ext.define("viewer.viewercontroller.ol.OpenLayers5Map", {
     },
 
     removeMarker: function (markerName) {
-        if (this.markers[markerName] && this.markerLayer != null) {
+        if (this.markers[markerName] && this.markerLayer !== null) {
             this.markerLayer.getSource().removeFeature(this.markers[markerName]);
             //this.markers[markerName].destroy(); 
             delete this.markers[markerName];
@@ -227,32 +229,32 @@ Ext.define("viewer.viewercontroller.ol.OpenLayers5Map", {
         }
         var options = {};
         var genericEvent = this.config.viewerController.mapComponent.getGenericEventName(event);
-        if (genericEvent == viewer.viewercontroller.controller.Event.ON_LAYER_ADDED) {
+        if (genericEvent === viewer.viewercontroller.controller.Event.ON_LAYER_ADDED) {
             args.id = args.element.get('id');
             options.layer = this.getLayerByOpenLayersId(args.id);
-            if (options.layer == undefined) {
+            if (options.layer === undefined) {
                 //if no layer found return, dont fire
                 return;
             }
-        } else if (genericEvent == viewer.viewercontroller.controller.Event.ON_LAYER_VISIBILITY_CHANGED) {
+        } else if (genericEvent === viewer.viewercontroller.controller.Event.ON_LAYER_VISIBILITY_CHANGED) {
 
             options.layer = this.getLayerByOpenLayersId(args.id);
-            if (options.layer == undefined) {
+            if (options.layer === undefined) {
 
                 //if no layer found return, dont fire
                 return;
             }
             options.visible = options.layer.visible;
-        } else if (genericEvent == viewer.viewercontroller.controller.Event.ON_LAYER_REMOVED) {
+        } else if (genericEvent === viewer.viewercontroller.controller.Event.ON_LAYER_REMOVED) {
             args.id = args.element.get('id');
             options.layer = this.getLayerByOpenLayersId(args.id);
-            if (options.layer == undefined) {
+            if (options.layer === undefined) {
                 //if no layer found return, dont fire
                 return;
             }
-        } else if (genericEvent == viewer.viewercontroller.controller.Event.ON_FINISHED_CHANGE_EXTENT ||
-                genericEvent == viewer.viewercontroller.controller.Event.ON_ZOOM_END ||
-                genericEvent == viewer.viewercontroller.controller.Event.ON_CHANGE_EXTENT) {
+        } else if (genericEvent === viewer.viewercontroller.controller.Event.ON_FINISHED_CHANGE_EXTENT ||
+                genericEvent === viewer.viewercontroller.controller.Event.ON_ZOOM_END ||
+                genericEvent === viewer.viewercontroller.controller.Event.ON_CHANGE_EXTENT) {
             options.extent = this.getExtent();
         } else {
             this.config.viewerController.logger.error("The event " + genericEvent + " is not implemented in the OlMap.handleEvent()");
@@ -263,7 +265,7 @@ Ext.define("viewer.viewercontroller.ol.OpenLayers5Map", {
     getLayerByOpenLayersId: function (olId) {
         for (var i = 0; i < this.layers.length; i++) {
             if (this.layers[i].frameworkLayer) {
-                if (this.layers[i].id == olId) {
+                if (this.layers[i].id === olId) {
                     return this.layers[i];
                 }
             }
@@ -274,7 +276,7 @@ Ext.define("viewer.viewercontroller.ol.OpenLayers5Map", {
         var l = options.layer.getFrameworkLayer();
         for (var i = 0; i < this.layers.length; i++) {
             var frameworkLayer = this.layers[i].getFrameworkLayer();
-            if (frameworkLayer.get('id') == l.get('id')) {
+            if (frameworkLayer.get('id') === l.get('id')) {
                 this.layers.splice(i, 1);
                 break;
             }
@@ -296,7 +298,7 @@ Ext.define("viewer.viewercontroller.ol.OpenLayers5Map", {
             } else {
                 this.enabledEvents[olSpecificEvent] = 1;
                 this.frameworkMap.on(olSpecificEvent, function (args) {
-                    me.handleEvent(args)
+                    me.handleEvent(args);
                 }, me);
             }
         }

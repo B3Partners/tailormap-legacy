@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global Ext */
+/* global Ext, ol */
 
 Ext.define("viewer.viewercontroller.ol.OlSnappingController", {
     extend: "viewer.viewercontroller.controller.SnappingController",
@@ -61,7 +61,7 @@ Ext.define("viewer.viewercontroller.ol.OlSnappingController", {
         viewer.viewercontroller.ol.OlSnappingController.superclass.constructor.call(this, config);
 
         this.frameworkMap = this.config.viewerController.mapComponent.getMap().getFrameworkMap();
-        this.frameworkControl = new ol.interaction.Snap({source:this.frameworkLayer});
+        this.frameworkControl = new ol.interaction.Snap({source: this.frameworkLayer});
 
         this.config.viewerController.mapComponent.getMap().addListener(
                 viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,
@@ -75,22 +75,22 @@ Ext.define("viewer.viewercontroller.ol.OlSnappingController", {
 
         return this;
     },
-    getLayer : function(name,map){
+    getLayer: function (name, map) {
         var layers = map.getLayers();
 
-        for(var i =0; i < layers.getLength();i++){
+        for (var i = 0; i < layers.getLength(); i++) {
 
-            if(name == layers.item(i).get('id')){
-                return layers.item(i); 
+            if (name == layers.item(i).get('id')) {
+                return layers.item(i);
             }
         }
     },
     parseFeatures: function (data) {
-           // note the scope here! "this" is actually not "me" but a composite of "me" and "appLayer"
+        // note the scope here! "this" is actually not "me" but a composite of "me" and "appLayer"
         var geometryAttributeIndex = this.appLayer.geometryAttributeIndex;
         var lName = this.me.getlayerName(this.appLayer);
 
-        var rLyrs = this.me.getLayer(lName,this.me.frameworkMap);
+        var rLyrs = this.me.getLayer(lName, this.me.frameworkMap);
         if (rLyrs.length > 0) {
             // there should only be one layer in the rLyr
             this.frameworkLayer = rLyrs[0];
@@ -98,8 +98,8 @@ Ext.define("viewer.viewercontroller.ol.OlSnappingController", {
         } else {
             // create a primitive OL vector layer
             this.frameworkLayer = new ol.layer.Vector({
-                    source: new ol.source.Vector()
-                }                    
+                source: new ol.source.Vector()
+            }
             );
             this.me.snapLayers.push(this.frameworkLayer);
             this.me.frameworkMap.addLayer(this.frameworkLayer);
@@ -126,13 +126,13 @@ Ext.define("viewer.viewercontroller.ol.OlSnappingController", {
         this.frameworkLayer.getSource().addFeatures(feats);
         this.me.activate();
     },
-    
+
     changedExtent: function (map, extent) {
         for (var i = 0; i < this.snapLayers.length; i++) {
             //this.addAppLayer(this.getAppLayer(this.snapLayers[i].name));
         }
     },
-    
+
     addAppLayer: function (appLayer) {
         var me = this;
         // lookup feature source
@@ -147,11 +147,11 @@ Ext.define("viewer.viewercontroller.ol.OlSnappingController", {
         }
 
     },
-    
+
     getlayerName: function (appLayer) {
         return appLayer.id;
     },
-    
+
     loadAttributes: function (geomAttribute, featureService, appLayer) {
         var me = this;
         var extent = me.config.viewerController.mapComponent.getMap().getExtent();
@@ -177,7 +177,7 @@ Ext.define("viewer.viewercontroller.ol.OlSnappingController", {
             appLayer: appLayer
         });
     },
-    
+
     layerAdded: function (map, options) {
         if (options.layer &&
                 Ext.Array.contains(this.config.viewerController.registeredSnappingLayers, options.layer)) {
@@ -186,7 +186,7 @@ Ext.define("viewer.viewercontroller.ol.OlSnappingController", {
             this.activate();
         }
     },
-    
+
     removeLayer: function (appLayer) {
         this.deactivate();
         // look up snappingLayer primitive by name/id...
@@ -199,18 +199,17 @@ Ext.define("viewer.viewercontroller.ol.OlSnappingController", {
         }
         this.activate();
     },
-    
-    toWKT: function (extent){
-        var wkt="POLYGON((";
-        wkt+=extent[0]+" "+extent[1]+", ";
-        wkt+=extent[2]+" "+extent[1]+", ";
-        wkt+=extent[2]+" "+extent[3]+", ";
-        wkt+=extent[0]+" "+extent[3]+", ";
-        wkt+=extent[0]+" "+extent[1]+"))";
+
+    toWKT: function (extent) {
+        var wkt = "POLYGON((";
+        wkt += extent[0] + " " + extent[1] + ", ";
+        wkt += extent[2] + " " + extent[1] + ", ";
+        wkt += extent[2] + " " + extent[3] + ", ";
+        wkt += extent[0] + " " + extent[3] + ", ";
+        wkt += extent[0] + " " + extent[1] + "))";
         return wkt;
     },
 
-    
     removeAll: function () {
         for (var i = 0; i < this.snapLayers.length; i++) {
             this.frameworkControl.removeTargetLayer(this.snapLayers[i]);
@@ -219,7 +218,7 @@ Ext.define("viewer.viewercontroller.ol.OlSnappingController", {
         this.snapLayers = [];
         this.deactivate();
     },
-    
+
     activate: function () {
         if (this.snapLayers.length > 0) {
             this.frameworkControl.setActive(true);
@@ -228,8 +227,8 @@ Ext.define("viewer.viewercontroller.ol.OlSnappingController", {
     deactivate: function () {
         this.frameworkControl.setActive(false);
     },
-    
-     getAppLayer: function (name) {
+
+    getAppLayer: function (name) {
         var id = name.substring(this.snapLayers_prefix.length);
         return (this.config.viewerController.getAppLayerById(id));
     }
