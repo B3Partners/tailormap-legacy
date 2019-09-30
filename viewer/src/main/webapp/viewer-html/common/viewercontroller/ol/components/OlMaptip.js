@@ -38,9 +38,9 @@ Ext.define("viewer.viewercontroller.ol.components.OlMaptip", {
             me.clearTimer();
             me.timerId = window.setTimeout(function () {
                 me.onPause(evt);
-            }, this.delay);
+            }, me.delay);
         }, this);
-
+        
     },
 
     clearTimer: function () {
