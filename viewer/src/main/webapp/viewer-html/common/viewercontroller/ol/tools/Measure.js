@@ -17,7 +17,6 @@
 
 
 /* global ol, Ext */
-xF
 
 Ext.define("viewer.viewercontroller.ol.tools.Measure",{
     extend: "viewer.viewercontroller.ol.OlTool",

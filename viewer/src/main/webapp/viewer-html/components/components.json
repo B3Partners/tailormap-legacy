@@ -34,7 +34,7 @@
 
     {
         "className": "viewer.mapcomponents.OpenLayers5Map",
-        "name": "OpenLayer5",
+        "name": "OpenLayers 5 Map",
         "shortName": "OL5",
         "group": "Map",
         "singleton": true,
