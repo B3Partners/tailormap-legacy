@@ -29,6 +29,7 @@ Ext.define("viewer.viewercontroller.ol.OlTool", {
         this.controls = new Array();
         this.enabledEvents = new Object();
         this.setTool(conf);
+        conf.active  = true;
         this.overwriteStyle(conf);
         return this;
     },
@@ -48,50 +49,20 @@ Ext.define("viewer.viewercontroller.ol.OlTool", {
             '<svg role="img" title=""><use xlink:href="' + spriteLink + '"/></svg>'
         ].join('');
         this.panelTool.addEventListener("click", function () {
-            me.test();
+            me.activateTool();
         }, me);
     },
 
-    test: function () {
+    activateTool: function () {
         this.conf.viewerController.mapComponent.activateTool(this);
     },
 
-    overwriteStylem: function (conf) {
+    overwriteStyle: function (conf) {
         if (conf.active) {
-            this.panelTool.className = "svg-tool " + conf.displayClass + 'ItemActive';
+            this.panelTool.className = "svg-tool " + conf.displayClass + 'ItemActive svg-tool-active';
         } else {
             this.panelTool.className = "svg-tool " + conf.displayClass + 'ItemInactive';
         }
-    },
-
-    overwriteStyle: function (conf) {
-        if (conf.hasOwnProperty("iconUrl") && conf.iconUrl) {
-            this.iconUrl_up = conf.iconUrl;
-            this.iconUrl_over = conf.iconUrl;
-            this.iconUrl_sel = conf.iconUrl;
-            this.iconUrl_dis = conf.iconUrl;
-        }
-        if (this.iconUrl_up !== null || this.iconUrl_sel !== null) {
-            var html = "";
-            if (this.iconUrl_up !== null) {
-                html += ".olControlPanel ." + this.frameworkObject.get("displayClass") + "ItemInactive";
-                html += "{" +
-                        "background-image: url(\"" + this.iconUrl_up + "\");" +
-                        "background-repeat: no-repeat;" +
-                        "background-position: center center;" +
-                        "}";
-            }
-            if (this.iconUrl_sel !== null) {
-                html += ".olControlPanel ." + this.frameworkObject.get("displayClass") + "ItemActive";
-                html += "{" +
-                        "background-image: url(\"" + this.iconUrl_sel + "\");" +
-                        "background-repeat: no-repeat;" +
-                        "background-position: center center;" +
-                        "}";
-            }
-            Ext.util.CSS.createStyleSheet(html);
-        }
-
     },
 
     addListener: function (event, handler, scope) {
@@ -138,7 +109,7 @@ Ext.define("viewer.viewercontroller.ol.OlTool", {
         this.olTool.activate(this);
         if (!this.conf.onlyClick) {
             this.conf.active = true;
-            this.overwriteStylem(this.conf);
+            this.overwriteStyle(this.conf);
         }
     },
 
@@ -146,7 +117,7 @@ Ext.define("viewer.viewercontroller.ol.OlTool", {
         this.olTool.deactivate(this);
         if (!this.conf.onlyClick) {
             this.conf.active = false;
-            this.overwriteStylem(this.conf);
+            this.overwriteStyle(this.conf);
         }
     },
 
