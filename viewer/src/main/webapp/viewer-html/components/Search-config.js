@@ -210,6 +210,11 @@ Ext.define("viewer.components.SearchConfiguration",{
                                 name: 'type' + config.id, 
                                 inputValue: 'simplelist',
                                 checked: config.type === "simplelist"
+                            },{
+                                boxLabel: i18next.t('viewer_components_searchconfiguration_36'), 
+                                name: 'type' + config.id, 
+                                inputValue: 'coordinate',
+                                checked: config.type === "coordinate"
                             }],
                             listeners: {
                                 change: function(radio) {
@@ -243,8 +248,25 @@ Ext.define("viewer.components.SearchConfiguration",{
                                 }
                             ]
                         },
-                        { xtype: 'container', itemId: 'simpleListConfig' + config.id, hidden: true, height: 160, margin: '5 0 5 0', layout: { type: 'vbox', align: 'stretch' } },
                         {
+                            xtype: 'container',
+                            itemId: 'coordinateConfig' + config.id,
+                            hidden: true,
+                            height: 100,
+                            autoScroll: true,
+                            items: [
+                                {   xtype: "textfield",
+                                    value: config.buffer,
+                                    name: "buffer" + config.id,
+                                    itemId: "buffer" + config.id,
+                                    fieldLabel: i18next.t('viewer_components_searchconfiguration_37'),
+                                    labelWidth: 120,
+                                    width: 600
+                                }
+                            ]
+                        },
+                        { xtype: 'container', itemId: 'simpleListConfig' + config.id, hidden: true, height: 160, margin: '5 0 5 0', layout: { type: 'vbox', align: 'stretch' } },
+                          {
                             xtype:'button',
                             iconCls: 'x-fa fa-floppy-o',
                             text: i18next.t('viewer_components_searchconfiguration_21'),
@@ -291,7 +313,7 @@ Ext.define("viewer.components.SearchConfiguration",{
         // When switching radio input type is an array
         if(typeof type !== 'string') return;
         this.hideExtraConfig(configid);
-        if(type === 'solr' || type === 'simplelist' || type === 'pdok' || type === 'attributesource') {
+        if(type === 'solr' || type === 'simplelist' || type === 'pdok' || type === 'attributesource' || type === 'coordinate') {
             if(type === 'solr') {
                 // Show additional Solr configuration
                 this.addSolrconfig(configid);
@@ -304,6 +326,9 @@ Ext.define("viewer.components.SearchConfiguration",{
             }
             if(type === 'attributesource'){
                 this.addAttributeSourceConfig(configid);
+            }
+            if(type === 'coordinate'){
+                this.addCoordinateConfig(configid);
             }
             this.hideUrl(configid);
         } else {
@@ -344,6 +369,9 @@ Ext.define("viewer.components.SearchConfiguration",{
             }
             if(type === 'attributesource') {
                 me.saveASConfig(configid);
+            }
+            if(type === 'coordinate') {
+                me.saveCoordinateConfig(configid);
             }
             newSearchconfigs.push(searchconfig);
         });
@@ -517,6 +545,13 @@ Ext.define("viewer.components.SearchConfiguration",{
         this.panel.updateLayout();
     },
     
+    addCoordinateConfig: function(configid){
+        var coordinate = Ext.ComponentQuery.query('#coordinateConfig' + configid)[0];
+        coordinate.setVisible(true);
+        
+        this.panel.updateLayout();
+    },
+    
     makeFilterableCheckboxesAttributes: function (featureType, configId){
         //Ext.ux.b3p.FilterableCheckboxes  
         var parentcontainer = Ext.ComponentQuery.query('#checkboxes' + configId)[0];
@@ -659,6 +694,12 @@ Ext.define("viewer.components.SearchConfiguration",{
         // Set Solr config to searchconfig object
         searchConfig.asConfig = Config;
     },
+    saveCoordinateConfig: function (searchconfigId) {
+        var searchConfig = this.getConfig(searchconfigId);
+        var buffer = Ext.ComponentQuery.query('#buffer' + searchconfigId)[0].value;
+
+        searchConfig.buffer = buffer;
+    },
     savePDOKConfig:function(searchconfigId){
         var searchConfig = this.getConfig(searchconfigId);
         var filter = Ext.ComponentQuery.query('#filter'+searchconfigId)[0].value;
@@ -719,6 +760,7 @@ Ext.define("viewer.components.SearchConfiguration",{
         Ext.ComponentQuery.query('#simpleListConfig' + searchconfigId)[0].setVisible(false);
         Ext.ComponentQuery.query('#pdokConfig' + searchconfigId)[0].setVisible(false);
         Ext.ComponentQuery.query('#asConfig' + searchconfigId)[0].setVisible(false);
+        Ext.ComponentQuery.query('#coordinateConfig' + searchconfigId)[0].setVisible(false);
         this.panel.updateLayout();
     },
     /**

@@ -41,6 +41,9 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.*;
+import net.sourceforge.stripes.controller.LifecycleStage;
+import nl.b3p.viewer.audit.AuditMessageObject;
+import nl.b3p.viewer.audit.Auditable;
 
 /**
  *
@@ -49,13 +52,15 @@ import java.util.*;
  */
 @UrlBinding("/action/proxy/{mode}")
 @StrictBinding
-public class ProxyActionBean implements ActionBean {
+public class ProxyActionBean implements ActionBean, Auditable {
+
     private static final Log log = LogFactory.getLog(ProxyActionBean.class);
     private ActionBeanContext context;
-    
+    private AuditMessageObject auditMessageObject;
+
     @Validate
     private String url;
-    
+
     @Validate
     private String mode;
 
@@ -109,49 +114,48 @@ public class ProxyActionBean implements ActionBean {
     }
 
     // </editor-fold>
-
     @DefaultHandler
     public Resolution proxy() throws Exception {
 
         HttpServletRequest request = getContext().getRequest();
-        
+
         // Session must exist
         HttpSession sess = request.getSession(false);
-        if(sess == null || url == null) {
+        if (sess == null || url == null) {
             return new ErrorResolution(HttpServletResponse.SC_FORBIDDEN, "Proxy requests forbidden");
         }
-                
-        if(WMSService.PROTOCOL.equals(mode)){
+
+        if (WMSService.PROTOCOL.equals(mode)) {
             return proxyWMS();
-        }else{
+        } else {
             return new ErrorResolution(HttpServletResponse.SC_FORBIDDEN, "Proxy mode unacceptable");
         }
     }
 
-    private Resolution proxyWMS() throws IOException, URISyntaxException{
+    private Resolution proxyWMS() throws IOException, URISyntaxException {
         HttpServletRequest request = getContext().getRequest();
-        
-        if(!"GET".equals(request.getMethod())) {
+
+        if (!"GET".equals(request.getMethod())) {
             return new ErrorResolution(HttpServletResponse.SC_FORBIDDEN);
         }
 
         URL theUrl;
         EntityManager em = Stripersist.getEntityManager();
-        try{
-             theUrl = getRequestRL(em);
-        }catch(IllegalAccessException ex){
+        try {
+            theUrl = getRequestRL(em);
+        } catch (IllegalAccessException ex) {
             return new ErrorResolution(HttpServletResponse.SC_FORBIDDEN);
         }
-   
+
         HttpClientConfigured client = getHttpClient(theUrl, em);
         HttpUriRequest req = getHttpRequest(theUrl);
-        
+
         HttpResponse response;
         try {
             response = client.execute(req);
 
             int statusCode = response.getStatusLine().getStatusCode();
-            if (statusCode >= 200 && statusCode < 300){
+            if (statusCode >= 200 && statusCode < 300) {
                 final HttpResponse finalResponse = response;
                 final HttpEntity entity = response.getEntity();
 
@@ -171,12 +175,12 @@ public class ProxyActionBean implements ActionBean {
             } else {
                 return new ErrorResolution(statusCode, "Service returned: " + response.getStatusLine().getReasonPhrase());
             }
-        } catch(IOException e){
-            log.error("Failed to write output:",e);
+        } catch (IOException e) {
+            log.error("Failed to write output:", e);
             return null;
         }
     }
-    
+
     protected URL getRequestRL(EntityManager em) throws MalformedURLException, UnsupportedEncodingException, IllegalAccessException {
         URL theUrl = new URL(url);
         List<String> allowedParams = new ArrayList<>();
@@ -206,6 +210,8 @@ public class ProxyActionBean implements ActionBean {
         allowedParams.add("SLD_BODY");
         //vendor
         allowedParams.add("MAP");
+        allowedParams.add("VIEWPARAMS");
+        allowedParams.add("ENV");
         // wmts
         allowedParams.add("TILEMATRIXSET");
         allowedParams.add("TILEMATRIX");
@@ -249,7 +255,7 @@ public class ProxyActionBean implements ActionBean {
 
         return theUrl;
     }
-    
+
     public HttpClientConfigured getHttpClient(URL theUrl, EntityManager em) {
         String username = null;
         String password = null;
@@ -270,6 +276,7 @@ public class ProxyActionBean implements ActionBean {
             if (allowed) {
                 username = gs.getUsername();
                 password = gs.getPassword();
+                auditMessageObject.addMessage(String.format("Authenticated request for service '%s'", gs.getName()));
             }
         }
 
@@ -277,20 +284,20 @@ public class ProxyActionBean implements ActionBean {
         return client;
     }
 
-    public HttpUriRequest getHttpRequest(URL url) throws URISyntaxException{
+    public HttpUriRequest getHttpRequest(URL url) throws URISyntaxException {
         return new HttpGet(url.toURI());
     }
 
-    private StringBuilder validateParams (String [] params,List<String> allowedParams) throws UnsupportedEncodingException{
+    private StringBuilder validateParams(String[] params, List<String> allowedParams) throws UnsupportedEncodingException {
         StringBuilder sb = new StringBuilder();
-        for (String param : params){
+        for (String param : params) {
             String[] splitted = param.split("=");
-            if (allowedParams.contains((splitted[0]).toUpperCase())){
-                if(splitted.length > 1){
+            if (allowedParams.contains((splitted[0]).toUpperCase())) {
+                if (splitted.length > 1) {
                     sb.append(param.split("=")[0]);
                     sb.append("=");
                     sb.append(param.split("=")[1]);
-                }else{
+                } else {
                     sb.append(splitted[0]);
                 }
 
@@ -306,16 +313,16 @@ public class ProxyActionBean implements ActionBean {
         return sb;
     }
 
-    private StringBuilder validateParams (Map<String,String[]> params,List<String> allowedParams) throws UnsupportedEncodingException{
+    private StringBuilder validateParams(Map<String, String[]> params, List<String> allowedParams) throws UnsupportedEncodingException {
         StringBuilder sb = new StringBuilder();
-        for (String param : params.keySet()){
-            if (allowedParams.contains((param).toUpperCase())){
+        for (String param : params.keySet()) {
+            if (allowedParams.contains((param).toUpperCase())) {
                 sb.append(URLEncoder.encode(param, "UTF-8"));
                 sb.append("=");
                 String[] paramValue = params.get(param);
                 for (int i = 0; i < paramValue.length; i++) {
                     String val = paramValue[i];
-                    if(i > 0){
+                    if (i > 0) {
                         sb.append(",");
                     }
                     sb.append(URLEncoder.encode(val, "UTF-8"));
@@ -324,5 +331,15 @@ public class ProxyActionBean implements ActionBean {
             }
         }
         return sb;
+    }
+
+    @Override
+    public AuditMessageObject getAuditMessageObject() {
+        return auditMessageObject;
+    }
+
+    @Before(stages = LifecycleStage.EventHandling)
+    public void initAudit() {
+        auditMessageObject = new AuditMessageObject();
     }
 }

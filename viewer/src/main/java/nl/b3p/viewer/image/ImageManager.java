@@ -22,7 +22,6 @@
 package nl.b3p.viewer.image;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CompletionService;
@@ -31,6 +30,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import javax.servlet.http.HttpServletRequest;
+import org.apache.commons.httpclient.Cookie;
 import org.apache.commons.httpclient.Credentials;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
@@ -55,24 +55,29 @@ public class ImageManager {
     protected static final String host = AuthScope.ANY_HOST;
     protected static final int port = AuthScope.ANY_PORT;
 
-    public ImageManager(List urls, int maxResponseTime,HttpServletRequest req) {
-        this(urls, maxResponseTime, null, null,req);
+    public ImageManager(List urls, int maxResponseTime, HttpServletRequest req, String sessionid, String ssosessionid) {
+        this(urls, maxResponseTime, null, null, req, sessionid, ssosessionid);
     }
 
-    public ImageManager(List<CombineImageUrl> urls, int maxResponseTime, String uname, String pw,HttpServletRequest req) {
+    public ImageManager(List<CombineImageUrl> urls, int maxResponseTime, String uname, String pw, HttpServletRequest req, String sessionid, String ssosessionid) {
         
         threadPool = Executors.newFixedThreadPool(MAX_TREADS);
-        pool = new ExecutorCompletionService<ImageCollector>(threadPool);
+        pool = new ExecutorCompletionService<>(threadPool);
         
         this.maxResponseTime = maxResponseTime;
         if (urls == null || urls.size() <= 0) {
             return;
         }
-        MultiThreadedHttpConnectionManager connectionManager = 
-      		new MultiThreadedHttpConnectionManager();
+        MultiThreadedHttpConnectionManager connectionManager = new MultiThreadedHttpConnectionManager();
         HttpClient client = new HttpClient(connectionManager);
-        client.getHttpConnectionManager().
-                getParams().setConnectionTimeout(this.maxResponseTime);
+        client.getHttpConnectionManager().getParams().setConnectionTimeout(this.maxResponseTime);
+
+        if (ssosessionid != null) {
+            client.getState().addCookie(new Cookie(req.getRemoteHost(), "JSESSIONIDSSO", ssosessionid, "/", null, false));
+        }
+        if (sessionid != null) {
+            client.getState().addCookie(new Cookie(req.getRemoteHost(), "JSESSIONID", sessionid, "/", null, false));
+        }
 
         if (uname != null && pw != null) {
             client.getParams().setAuthenticationPreemptive(true);

@@ -57,6 +57,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import javax.servlet.http.Cookie;
 
 /**
  *
@@ -117,8 +118,19 @@ public class PrintActionBean extends LocalizableActionBean implements ActionBean
         Application app = em.find(Application.class, appId);
 
         String baseUrl = context.getRequest().getRequestURL().toString();
+        Cookie[] cookies = context.getRequest().getCookies();
+        String ssojsessionid = null;
+        String ssokey = "JSESSIONIDSSO";
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (cookie != null && cookie.getName().equalsIgnoreCase(ssokey)) {
+                    ssojsessionid = cookie.getValue();
+                    break;
+                }
+            }
+        }
         //get the image url:
-        String imageUrl = PrintUtil.getImageUrl(params, baseUrl, context.getRequest().getSession().getId());
+        String imageUrl = PrintUtil.getImageUrl(params, baseUrl, context.getRequest().getSession().getId(), ssojsessionid);
         
         //get the form settings
         final PrintInfo info = new PrintInfo();
@@ -150,7 +162,7 @@ public class PrintActionBean extends LocalizableActionBean implements ActionBean
         }
         
         if (jRequest.has("overview")){
-            String url = PrintUtil.getOverviewUrl(params, context.getRequest().getRequestURL().toString(), context.getRequest().getSession().getId());
+            String url = PrintUtil.getOverviewUrl(params, context.getRequest().getRequestURL().toString(), context.getRequest().getSession().getId(), ssojsessionid);
             info.setOverviewUrl(url);
         }
         if (jRequest.has("extraTekst")){

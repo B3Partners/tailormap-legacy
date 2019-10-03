@@ -1022,7 +1022,10 @@ Ext.define ("viewer.components.Drawing",{
     },
 
     loadVariables: function (state){
-        state= Ext.decode(state);
+        state= Ext.decode(state);        
+        this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_LAYERS_INITIALIZED,this.loadState, this, state);
+    },
+    loadState: function(state){
         if (state.features){
             this.loadFeatures(state.features);
         }
@@ -1030,7 +1033,6 @@ Ext.define ("viewer.components.Drawing",{
             this.config.viewerController.mapComponent.getMap().zoomToExtent(state.extent);
         }
     },
-
     getExtComponents: function() {
         var compIds = [
             this.mainContainer.getId(),
