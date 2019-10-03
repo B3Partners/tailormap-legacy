@@ -35,6 +35,10 @@ Ext.define("viewer.viewercontroller.ol.tools.PrevExtent", {
     },
 
     deactivate: function () {
+        // tool kan niet uitgezet worden.
+    },
 
+    isActive: function () {
+        return false;
     }
 });
