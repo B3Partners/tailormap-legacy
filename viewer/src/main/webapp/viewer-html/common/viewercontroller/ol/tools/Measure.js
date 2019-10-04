@@ -57,7 +57,7 @@ Ext.define("viewer.viewercontroller.ol.tools.Measure",{
 
         this.conf.actives =false;
         this.frameworkObject.setActive(false);
-        
+
         for(var i=0; i < this.overlay.length;i++){
             this.mapComponent.maps[0].getFrameworkMap().removeOverlay(this.overlay[i]);
         }
@@ -70,24 +70,24 @@ Ext.define("viewer.viewercontroller.ol.tools.Measure",{
     initTool : function(type){
         var index  = this.mapComponent.maps[0].getFrameworkMap().getLayers().getLength() +1;
         var source = new ol.source.Vector();
-        
+
         this.layer = new ol.layer.Vector({
             zIndex:index,
             source: source,
             style: new ol.style.Style({
                 fill: new ol.style.Fill({
-                color: 'rgba(255, 255, 255, 0.2)'
-            }),
-            stroke: new ol.style.Stroke({
-                color: '#ffcc33',
-                width: 2
-            }),
-            image: new ol.style.Circle({
-                radius: 7,
-                fill: new ol.style.Fill({
-                    color: '#ffcc33'
+                    color: 'rgba(255, 255, 255, 0.2)'
+                }),
+                stroke: new ol.style.Stroke({
+                    color: '#ffcc33',
+                    width: 2
+                }),
+                image: new ol.style.Circle({
+                    radius: 7,
+                    fill: new ol.style.Fill({
+                        color: '#ffcc33'
+                    })
                 })
-            })
             })
         });
         this.mapComponent.maps[0].getFrameworkMap().addLayer(this.layer);
@@ -99,20 +99,20 @@ Ext.define("viewer.viewercontroller.ol.tools.Measure",{
                 fill: new ol.style.Fill({
                     color: 'rgba(255, 255, 255, 0.2)'
                 }),
-            stroke: new ol.style.Stroke({
-                color: 'rgba(0, 0, 0, 0.5)',
-                lineDash: [10, 10],
-                width: 2
-            }),
-            image: new ol.style.Circle({
-                radius: 5,
                 stroke: new ol.style.Stroke({
-                    color: 'rgba(0, 0, 0, 0.7)'
+                    color: 'rgba(0, 0, 0, 0.5)',
+                    lineDash: [10, 10],
+                    width: 2
                 }),
-                fill: new ol.style.Fill({
-                    color: 'rgba(255, 255, 255, 0.2)'
+                image: new ol.style.Circle({
+                    radius: 5,
+                    stroke: new ol.style.Stroke({
+                        color: 'rgba(0, 0, 0, 0.7)'
+                    }),
+                    fill: new ol.style.Fill({
+                        color: 'rgba(255, 255, 255, 0.2)'
+                    })
                 })
-            })
             })
         });
         return draw;
@@ -120,89 +120,148 @@ Ext.define("viewer.viewercontroller.ol.tools.Measure",{
 
     createMeasureToolTip : function(){
         if (this.measureTooltipElement) {
-          this.measureTooltipElement.parentNode.removeChild(this.measureTooltipElement);
+            this.measureTooltipElement.parentNode.removeChild(this.measureTooltipElement);
         }
         this.measureTooltipElement = document.createElement('div');
         this.measureTooltipElement.className = 'tooltip tooltip-measure';
         this.measureTooltip = new ol.Overlay({
-          element: this.measureTooltipElement,
-          offset: [0, -15],
-          positioning: 'bottom-center'
+            element: this.measureTooltipElement,
+            offset: [0, -15],
+            positioning: 'bottom-center'
         });
         this.mapComponent.maps[0].getFrameworkMap().addOverlay(this.measureTooltip);
         this.overlay.push(this.measureTooltip);
     },
-    
+
     initEvents : function(){
         var me = this;
         this.frameworkObject.on('drawstart',
             function(evt) {
-              // set sketch
-              this.sketch = evt.feature;
+                    // set sketch
+                    this.sketch = evt.feature;
 
-              /** @type {ol.Coordinate|undefined} */
-              var tooltipCoord = evt.coordinate;
+                    /** @type {ol.Coordinate|undefined} */
+                    var tooltipCoord = evt.coordinate;
 
               this.listener = this.sketch.getGeometry().on('change', function(evt) {
-                var geom = evt.target;
-                var output;
-                if (geom instanceof ol.geom.Polygon) {
-                  output = me.formatArea(geom);
-                  tooltipCoord = geom.getInteriorPoint().getCoordinates();
-                } else if (geom instanceof ol.geom.LineString) {
-                  output = me.formatLength(geom);
-                  tooltipCoord = geom.getLastCoordinate();
-                }
-                me.measureTooltipElement.innerHTML = output;
-                me.measureTooltip.setPosition(tooltipCoord);
-              });
-            }, this);
-        
-        
-        
+                        var geom = evt.target;
+                        var output;
+                        if (geom instanceof ol.geom.Polygon) {
+                            output = me.formatArea(geom);
+                            tooltipCoord = geom.getInteriorPoint().getCoordinates();
+                        } else if (geom instanceof ol.geom.LineString) {
+                            output = me.formatLength(geom);
+                            tooltipCoord = geom.getLastCoordinate();
+                        }
+                        me.measureTooltipElement.innerHTML = output;
+                        me.measureTooltip.setPosition(tooltipCoord);
+                    });
+                }, this);
+
+
+
         this.frameworkObject.on('drawend',
             function() {
-              me.measureTooltipElement.className = 'tooltip tooltip-static';
-              me.measureTooltip.setOffset([0, -7]);
+                    me.measureTooltipElement.className = 'tooltip tooltip-static';
+                    me.measureTooltip.setOffset([0, -7]);
 
-              me.sketch = null;
+                    me.sketch = null;
 
-              me.measureTooltipElement = null;
-              me.createMeasureToolTip();
-              ol.Observable.unByKey(me.listener);
-            }, me);
-      },
-    
+                    me.measureTooltipElement = null;
+                    me.createMeasureToolTip();
+                    ol.Observable.unByKey(me.listener);
+                }, me);
+    },
+
     formatArea : function(polygon){
         var area;
         area = polygon.getArea();
         var output;
+        var result;
         if (area > 10000) {
-          output = (Math.round(area / 1000000 * 100) / 100) +
-              ' ' + 'km<sup>2</sup>';
+            //output = (Math.round(area / 1000000 * 100) / 100);
+            var areaInKM = area / 1000000 * 100 / 100;
+            result = areaInKM.toFixed(this.conf.decimals).replace(".", this.conf.decimalSeparator);
+
+            output = result + ' ' + 'km<sup>2</sup>';
+            
+            if (this.conf.magicnumber.length > 0 && this.conf.units.length > 0) {
+                var result2  = ((this.conf.magicnumber * this.conf.magicnumber) / 100) * areaInKM;
+                result2 = result2.toFixed(this.conf.decimals).replace(".", this.conf.decimalSeparator);
+                var output2 = result2 + ' ' + this.conf.units;
+
+                if (this.conf.addUnit) {
+                    output = output +" - " + output2;
+                } else {
+                    output = output2;
+                }
+            }
+            
         } else {
-          output = (Math.round(area * 100) / 100) +
-              ' ' + 'm<sup>2</sup>';
+            var areaInM = area * 100 / 100;
+            result = areaInM.toFixed(this.conf.decimals).replace(".", this.conf.decimalSeparator);
+
+            output = result + ' ' + 'm<sup>2</sup>';
+            
+            if (this.conf.magicnumber.length > 0 && this.conf.units.length > 0) {
+                var result2  = ((this.conf.magicnumber * this.conf.magicnumber) / 100000000) * areaInM;
+                result2 = result2.toFixed(this.conf.decimals).replace(".", this.conf.decimalSeparator);
+                var output2 = result2 + ' ' + this.conf.units;
+
+                if (this.conf.addUnit) {
+                    output = output +" - " + output2;
+                } else {
+                    output = output2;
+                }
+            }
         }
         return output;
     },
-    
-    formatLength : function(line){
+
+    formatLength: function (line) {
         var length;
-        length = Math.round(line.getLength() * 100) / 100;
+        length = line.getLength();
         var output;
+        var result;
         if (length > 1000) {
-          output = (Math.round(length / 1000 * 100) / 100) +
-              ' ' + 'km';
+            var lengthInKM = length / 1000 * 100 / 100;
+            result = lengthInKM.toFixed(this.conf.decimals).replace(".", this.conf.decimalSeparator);
+            output = result + ' ' + 'km';
+
+            if (this.conf.magicnumber.length > 0 && this.conf.units.length > 0) {
+                var result2  = (this.conf.magicnumber / 10) * lengthInKM;
+                result2 = result2.toFixed(this.conf.decimals).replace(".", this.conf.decimalSeparator);
+                var output2 = result2 + ' ' + this.conf.units;
+
+                if (this.conf.addUnit) {
+                    output = output +" - " + output2;
+                } else {
+                    output = output2;
+                }
+            }
         } else {
-          output = (Math.round(length * 100) / 100) +
-              ' ' + 'm';
+            var lengthInM = length * 100 / 100;
+            result = lengthInM.toFixed(this.conf.decimals).replace(".", this.conf.decimalSeparator);
+            
+            output = result + ' ' + 'm';
+
+            if (this.conf.magicnumber.length > 0 && this.conf.units.length > 0) {
+                var result2  = (this.conf.magicnumber / 10000) * lengthInM;
+                result2 = result2.toFixed(this.conf.decimals).replace(".", this.conf.decimalSeparator);
+                var output2 = result2 + ' ' + this.conf.units;
+
+                if (this.conf.addUnit) {
+                    output = output +" - " + output2;
+                } else {
+                    output = output2;
+                }
+            }
         }
         return output;
     },
-    
-    isActive : function(){
+
+    isActive: function () {
         return this.frameworkObject.getActive();
     }
-    
+
 });
