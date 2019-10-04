@@ -1,11 +1,9 @@
 package nl.b3p.i18n;
 
-import org.apache.commons.lang.StringUtils;
-import org.json.JSONArray;
 import org.json.JSONObject;
-import java.io.StringReader;
 import java.util.Iterator;
 import java.util.ResourceBundle;
+import org.apache.commons.lang3.StringUtils;
 
 public class ResourceBundleToJsProvider {
 
