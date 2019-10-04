@@ -197,10 +197,10 @@ public class TileServiceTest extends TestUtil{
         assertEquals(1, brt.getBoundingBoxes().size());
 
         BoundingBox bbox = brt.getMatrixSets().get(0).getBbox();
-        assertEquals(4046516.59, bbox.getMaxx(), 0.01);
-        assertEquals(8298457.58, bbox.getMaxy(), 0.01);
-        assertEquals(-2404683.40, bbox.getMinx(), 0.01);
-        assertEquals(3997657.58, bbox.getMiny(), 0.01);
+        assertEquals(595401.91, bbox.getMaxx(), 0.01);
+        assertEquals(903402.0, bbox.getMaxy(), 0.01);
+        assertEquals(-285401.92, bbox.getMinx(), 0.01);
+        assertEquals(22598.16, bbox.getMiny(), 0.01);
         
         JSONObject serviceObj = result.toJSONObject(false, entityManager);
         assertTrue(serviceObj.has("matrixSets"));
