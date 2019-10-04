@@ -302,7 +302,7 @@
             <dependency>
                 <groupId>org.apache.solr</groupId>
                 <artifactId>solr-core</artifactId>
-                <version>4.6.0</version>
+                <version>8.2.0</version>
                 <exclusions>
                     <exclusion>
                         <artifactId>jsp-api</artifactId>
