@@ -337,17 +337,26 @@ Ext.define("viewer.viewercontroller.OlMapComponent", {
                 coordinateFormat: ol.coordinate.createStringXY(options.numDigits)}));
         } else if (type === viewer.viewercontroller.controller.Component.SCALEBAR) {
             var frameworkOptions = {};
-            frameworkOptions.bottomOutUnits = '';
-            frameworkOptions.bottomInUnits = '';
             if (!Ext.isEmpty(config.units)) {
                 frameworkOptions.topOutUnits = config.units;
             }
+            
             if (this.contentBottom) {
                 frameworkOptions.target = this.contentBottom;
                 config.cssClass = "olControlScale";
             }
+            
+            if(frameworkOptions.topOutUnits ===  "m" || frameworkOptions.topOutUnits ===  "metric"){
+                frameworkOptions.topOutUnits = "metric";
+            } else if(frameworkOptions.topOutUnits ===  "d" || frameworkOptions.topOutUnits ===  "degrees"){
+                frameworkOptions.topOutUnits = "degrees";
+            } else {
+                console.log("scale units not supported. Falling back to 'm'");
+                frameworkOptions.topOutUnits = "metric";
+            }
+                
             comp = Ext.create("viewer.viewercontroller.ol.OlComponent", config,
-                    new ol.control.ScaleLine());
+                    new ol.control.ScaleLine({units:frameworkOptions.topOutUnits}));
         } else if (type === viewer.viewercontroller.controller.Component.MAPTIP) {
             comp = Ext.create("viewer.viewercontroller.ol.components.OlMaptip", config, this.getMap());
         } else if (type === viewer.viewercontroller.controller.Component.SNAPPING) {
