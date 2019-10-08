@@ -539,7 +539,7 @@ Ext.define('vieweradmin.components.ApplicationTreeLayer', {
 
         var upload = false;
         var types = [];
-        var uploadCategories = [this.createUploadBox("",0, false)];
+        var uploadCategories = [this.createUploadBox("",false,0)];
         if (Ext.get('details_editfeature_uploadDocument')){
             upload = Ext.get('details_editfeature_uploadDocument').getValue();
             upload = (upload ? (upload === 'true') : false);
@@ -607,7 +607,7 @@ Ext.define('vieweradmin.components.ApplicationTreeLayer', {
             xtype: 'textfield'
         };
         if(append){
-            container.insert(index -1,Ext.create("Ext.form.field.Text", config));
+            container.add(Ext.create("Ext.form.field.Text", config));
         }
         return config;
     },
