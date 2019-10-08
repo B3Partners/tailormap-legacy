@@ -514,13 +514,12 @@ Ext.define('vieweradmin.components.ApplicationTreeLayer', {
         if (Ext.get('details_editfeature_usernameAttribute')){
             usernameAttrValue = Ext.get('details_editfeature_usernameAttribute').getValue();
         }
-        editPanelItems.push({
+        editPanelItems.push(Ext.apply(this.getFilterEditDefaults(), {
             xtype: 'panel',
             title: i18next.t('viewer_admin_applicationtreelayer_26'),
             itemId: 'autorisatie-panel',
-            style: {
-                "margin-top": "5px"
-            },
+            iconCls: "x-fa fa-wrench",
+            collapsed: true,
             items: [{
                 xtype: 'label',
                 text: i18next.t('viewer_admin_applicationtreelayer_27')
@@ -535,7 +534,7 @@ Ext.define('vieweradmin.components.ApplicationTreeLayer', {
                 labelWidth: 150,
                 value: usernameAttrValue
             }]
-        });
+        }));
 
 
         var upload = false;
@@ -554,14 +553,13 @@ Ext.define('vieweradmin.components.ApplicationTreeLayer', {
             }
         }
 
-        editPanelItems.push({
+        editPanelItems.push(Ext.apply(this.getFilterEditDefaults(), {
             xtype: 'panel',
             title: i18next.t('viewer_admin_applicationtreelayer_29'),
             itemId: 'upload-panel',
             id: 'upload-panel',
-            style: {
-                "margin-top": "5px"
-            },
+            collapsed: true,
+            iconCls: "x-fa fa-wrench",
             items: [{
                 xtype: 'label',
                 text: i18next.t('viewer_admin_applicationtreelayer_30')
@@ -595,7 +593,7 @@ Ext.define('vieweradmin.components.ApplicationTreeLayer', {
                     }
                 }
             ]
-        });
+        }));
 
         return editPanelItems;
     },
