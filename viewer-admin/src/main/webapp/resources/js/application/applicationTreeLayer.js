@@ -601,13 +601,35 @@ Ext.define('vieweradmin.components.ApplicationTreeLayer', {
         var container = Ext.getCmp("uploadTypes");
         var index = container ? container.items.items.length  : idx;
         var config = {
-            fieldLabel: i18next.t('viewer_admin_applicationtreelayer_33'),
-            name: 'uploadType' + (index),
-            value: value,
-            xtype: 'textfield'
+            xtype: 'container',
+            layout: 'hbox',
+            name: 'typeContainer'+ (index),
+            items: [{
+                    fieldLabel: i18next.t('viewer_admin_applicationtreelayer_33'),
+                    name: 'uploadType' + (index),
+                    value: value,
+                    xtype: 'textfield'
+                },{
+                    xtype: 'button',
+                    text:'-',
+                    style: {
+                        marginTop: '5px',
+                        marginLeft: '10px'
+                    },
+                    listeners: {
+                        click: {
+                            fn: function (button) {
+                                var parent = button.ownerCt;
+                                var uploadItems = parent.ownerCt;
+                                uploadItems.remove(parent);
+                            },
+                            scope: this
+                        }
+                    }
+                }]
         };
         if(append){
-            container.add(Ext.create("Ext.form.field.Text", config));
+            container.add(Ext.create("Ext.container.Container", config));
         }
         return config;
     },
@@ -1023,6 +1045,7 @@ Ext.define('vieweradmin.components.ApplicationTreeLayer', {
             var typeConfig = [];
             for(var i = 0 ; i < items.length;i++){
                 var item = items[i];
+                var item =  item.items.items[0];
                 typeConfig.push(item.getValue());
             }
             document.getElementById('details_editfeature_uploadDocument_types').value = Ext.JSON.encode(typeConfig);

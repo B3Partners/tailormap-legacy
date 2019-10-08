@@ -265,7 +265,7 @@
         <!-- BASIC is useful during development with lots of redeploys, use
              FORM for production
         -->
-        <auth-method>FORM</auth-method>
+        <auth-method>BASIC</auth-method>
         <form-login-config>
             <form-login-page>/login.jsp</form-login-page>
             <form-error-page>/loginfail.jsp</form-error-page>
