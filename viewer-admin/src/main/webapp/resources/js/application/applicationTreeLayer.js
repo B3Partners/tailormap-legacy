@@ -516,7 +516,7 @@ Ext.define('vieweradmin.components.ApplicationTreeLayer', {
         }
         editPanelItems.push(Ext.apply(this.getFilterEditDefaults(), {
             xtype: 'panel',
-            title: i18next.t('viewer_admin_applicationtreelayer_26'),
+            title: i18next.t('viewer_admin_applicationtreelayer_26') + (usernameAttrValue !== '' ? ' (&times;)' : ''),
             itemId: 'autorisatie-panel',
             iconCls: "x-fa fa-wrench",
             collapsed: true,
@@ -555,7 +555,7 @@ Ext.define('vieweradmin.components.ApplicationTreeLayer', {
 
         editPanelItems.push(Ext.apply(this.getFilterEditDefaults(), {
             xtype: 'panel',
-            title: i18next.t('viewer_admin_applicationtreelayer_29'),
+            title: i18next.t('viewer_admin_applicationtreelayer_29') + (upload ?' (&times;)' : ""),
             itemId: 'upload-panel',
             id: 'upload-panel',
             collapsed: true,
