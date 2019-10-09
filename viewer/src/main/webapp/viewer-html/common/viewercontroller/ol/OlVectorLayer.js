@@ -43,7 +43,6 @@ Ext.define("viewer.viewercontroller.ol.OlVectorLayer", {
         this.mixins.olLayer.constructor.call(this, config);
 
         this.defaultFeatureStyle = config.defaultFeatureStyle || this.mapStyleConfigToFeatureStyle();
-        this.draw = new ol.interaction.Draw({type: 'Point'});
         this.drawBox = new ol.interaction.DragBox({
             condition: ol.events.condition.noModifierKeys,
             style: new ol.style.Style({
@@ -107,9 +106,93 @@ Ext.define("viewer.viewercontroller.ol.OlVectorLayer", {
         this.maps.addInteraction(this.modify);
         this.select.setActive(false);
         this.drawBox.setActive(false);
-
+        
+        this.point = new ol.interaction.Draw({type: "Point",
+            source: this.source,
+            freehand: false
+        });
+        this.maps.addInteraction(this.point);
+        this.point.setActive(false);
+        
+        this.line = new ol.interaction.Draw({type: "LineString",
+            source: this.source,
+            freehand: false
+        });
+        this.maps.addInteraction(this.line);
+        this.line.setActive(false);
+        
+        this.polygon = new ol.interaction.Draw({type: "Polygon",
+            source: this.source,
+            freehand: false
+        });
+        this.maps.addInteraction(this.polygon);
+        this.polygon.setActive(false);
+        
+        this.circle = new ol.interaction.Draw({type: "Circle",
+            source: this.source,
+            freehand: false
+        });
+        this.maps.addInteraction(this.circle);
+        this.circle.setActive(false);
+        
+        this.box = new ol.interaction.Draw({type: "Box",
+            source: this.source,
+            freehand: true
+        });
+        this.maps.addInteraction(this.box);
+        this.box.setActive(false);
+        
+        this.freehand = new ol.interaction.Draw({type: "Freehand",
+            source: this.source,
+            freehand: true
+        });
+        this.maps.addInteraction(this.freehand);
+        this.freehand.setActive(false);
+        
+        this.point.on('drawend', function (evt) {
+            me.select.setActive(true);
+            evt.feature.setId("OpenLayers_Feature_Vector_" + me.idNumber);
+            me.idNumber++;
+            me.stopDrawing();
+        }, this);
+        
+        this.line.on('drawend', function (evt) {
+            me.select.setActive(true);
+            evt.feature.setId("OpenLayers_Feature_Vector_" + me.idNumber);
+            me.idNumber++;
+            me.stopDrawing();
+        }, this);
+        
+        this.polygon.on('drawend', function (evt) {
+            me.select.setActive(true);
+            evt.feature.setId("OpenLayers_Feature_Vector_" + me.idNumber);
+            me.idNumber++;
+            me.stopDrawing();
+        }, this);
+        
+        this.circle.on('drawend', function (evt) {
+            me.select.setActive(true);
+            evt.feature.setId("OpenLayers_Feature_Vector_" + me.idNumber);
+            me.idNumber++;
+            me.stopDrawing();
+        }, this);
+        
+        this.box.on('drawend', function (evt) {
+            me.select.setActive(true);
+            evt.feature.setId("OpenLayers_Feature_Vector_" + me.idNumber);
+            me.idNumber++;
+            me.stopDrawing();
+        }, this);
+        
+        this.freehand.on('drawend', function (evt) {
+            me.select.setActive(true);
+            evt.feature.setId("OpenLayers_Feature_Vector_" + me.idNumber);
+            me.idNumber++;
+            me.stopDrawing();
+        }, this);
+        
         this.type = viewer.viewercontroller.controller.Layer.VECTOR_TYPE;
-
+        
     },
 
     getCurrtentStyle: function () {
@@ -238,50 +321,52 @@ Ext.define("viewer.viewercontroller.ol.OlVectorLayer", {
      *
      */
     drawFeature: function (type) {
+        var me = this;
         this.drawBox.setActive(false);
         this.select.setActive(false);
-        this.maps.removeInteraction(this.draw);
+        this.stopDrawing();
         this.type = type;
         this.superclass.drawFeature.call(this, type);
         if (type === "Point") {
-            this.addInteraction(type, false);
+            this.point.setActive(true);
         } else if (type === "LineString") {
-            this.addInteraction(type, false);
+            this.line.setActive(true);
         } else if (type === "Polygon") {
-            this.addInteraction(type, false);
+            this.polygon.setActive(true);
         } else if (type === "Circle") {
-            this.addInteraction(type, false);
+            this.circle.setActive(true);
         } else if (type === "Box") {
-            this.drawBox.setActive(true);
+            this.box.setActive(true);
         } else if (type === "Freehand") {
-            this.addInteraction("Polygon", true);
+            this.freehand.setActive(true);
         } else {
             this.config.viewerController.logger.warning("Feature type >" + type + "< not implemented!");
         }
     },
 
-    addInteraction: function (type, free) {
-        var me = this;
-        this.draw = new ol.interaction.Draw({type: type,
-            source: this.source,
-            freehand: free
-        });
-        this.maps.addInteraction(this.draw);
-        this.draw.on('drawend', function (evt) {
-            me.select.setActive(true);
-            evt.feature.setId("OpenLayers_Feature_Vector_" + me.idNumber);
-            me.idNumber++;
-            me.maps.removeInteraction(me.draw);
-        }, this);
-    },
-
-    /**
-     * Note: subclasses should call this method to remove the added keylistener.
-     */
     stopDrawing: function () {
         // remove the previously added key listener
-        var me = this;
-        Ext.getDoc().un('keydown', me._keyListener, me);
+        this.superclass.stopDrawing.call(this);
+
+        if (this.point.getActive()) {
+            this.point.setActive(false);
+        }
+        if (this.line.getActive()) {
+            this.line.setActive(false);
+        }
+        if (this.polygon.getActive()) {
+            this.polygon.setActive(false);
+        }
+        if (this.circle.getActive()) {
+            this.circle.setActive(false);
+        }
+        if (this.box.getActive()) {
+            this.box.setActive(false);
+        }
+        if (this.freehand.getActive()) {
+            this.freehand.setActive(false);
+        }
+
     },
 
     /** handle CTRL-Z key when drawing. */
