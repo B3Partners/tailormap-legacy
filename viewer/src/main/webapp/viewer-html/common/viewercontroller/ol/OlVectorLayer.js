@@ -220,13 +220,16 @@ Ext.define("viewer.viewercontroller.ol.OlVectorLayer", {
     },
     setLabel: function (id, label) {
         var olFeature = this.source.getFeatureById(id);
-        if (olFeature && olFeature.getStyle()) {
+        if (olFeature && olFeature.getStyle().getText()) {
             if (label) {
-                olFeature.getStyle().setText(new ol.style.Text({text: label}));
+                olFeature.getStyle().getText().setText(label);
             } else {
-                olFeature.getStyle().setText(new ol.style.Text({text: ''}));
+                olFeature.getStyle().getText().setText('');
             }
+            olFeature.setStyle(olFeature.getStyle());
         }
+        
+        
         this.frameworkLayer.getSource().refresh();
     },
     /**
@@ -471,6 +474,8 @@ Ext.define("viewer.viewercontroller.ol.OlVectorLayer", {
             var c = ol.color.asArray(featureStyle.config.fillColor);
             var colorFinal = 'rgba(' + c[0] + ',' + c[1] + ',' + c[2] + ',' + featureStyle.config.fillOpacity + ')';
             var lineDash;
+            var label = "";
+            var offsetX = 0;
             if (featureStyle.config.strokeDashstyle === "solid") {
                 lineDash = null;
             } else if (featureStyle.config.strokeDashstyle === "dot") {
@@ -478,7 +483,19 @@ Ext.define("viewer.viewercontroller.ol.OlVectorLayer", {
             } else if (featureStyle.config.strokeDashstyle === "dash") {
                 lineDash = [10, 10];
             }
-
+            
+            if (featureStyle.config.labelAlign === "cm") {
+                offsetX = 0;
+            } else if (featureStyle.config.labelAlign === "rm") {
+                offsetX = -50;
+            } else if (featureStyle.config.labelAlign === "lm") {
+                offsetX = 50;
+            }
+            
+            if(olFeature.getStyle().getText() !== null){
+                label = olFeature.getStyle().getText().getText();
+            }
+            
             var strokeStyle = new ol.style.Stroke({
                 color: featureStyle.config.strokeColor,
                 width: featureStyle.config.strokeWidth,
@@ -488,10 +505,17 @@ Ext.define("viewer.viewercontroller.ol.OlVectorLayer", {
             var fillStyle = new ol.style.Fill({
                 color: colorFinal
             });
-
+            
+            var text = new ol.style.Text({
+                text: label,
+                offsetX: offsetX,
+                font: featureStyle.config.fontStyle + " " + featureStyle.config.fontWeight + " " + featureStyle.config.fontSize + " sans-serif"
+            });
+            
             var style = new ol.style.Style({
                 stroke: strokeStyle,
                 fill: fillStyle,
+                text:text,
                 image: new ol.style.Circle({
                     fill: fillStyle,
                     stroke: strokeStyle,
