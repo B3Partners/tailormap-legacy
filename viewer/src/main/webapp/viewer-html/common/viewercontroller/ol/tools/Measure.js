@@ -45,9 +45,8 @@ Ext.define("viewer.viewercontroller.ol.tools.Measure",{
     activate : function(){
         this.conf.actives =true;
         this.pan = new ol.interaction.DragPan();
-        this.frameworkObject = this.initTool(this.conf.typ);
+        this.frameworkObject.setActive(true);
         this.initEvents();
-        this.mapComponent.maps[0].getFrameworkMap().addInteraction(this.frameworkObject);
         this.mapComponent.maps[0].getFrameworkMap().addInteraction(this.pan);
         this.frameworkObject.setActive(true);
         this.createMeasureToolTip();
@@ -62,7 +61,6 @@ Ext.define("viewer.viewercontroller.ol.tools.Measure",{
             this.mapComponent.maps[0].getFrameworkMap().removeOverlay(this.overlay[i]);
         }
         this.overlay =[];
-        this.mapComponent.maps[0].getFrameworkMap().removeInteraction(this.frameworkObject);
         this.mapComponent.maps[0].getFrameworkMap().removeInteraction(this.pan);
         this.layer.getSource().clear();
     },
