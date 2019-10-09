@@ -23,10 +23,7 @@ Ext.define("viewer.viewercontroller.ol.OlArcLayer", {
         openLayersLayer: "viewer.viewercontroller.ol.OlLayer"
     },
     constructor: function (config) {
-        viewer.viewercontroller.ol.OlArcLayer.superclass.constructor.call(this, config);
-        this.mixins.openLayersLayer.constructor.call(this, config);
-        this.initConfig(config);
-        return this;
+        Ext.Error.raise({msg: "OlArcLayer not supported yet in OL5"});
     },
 
     /**

@@ -222,7 +222,7 @@ Ext.define("viewer.viewercontroller.OlMapComponent", {
 
     addMap: function (map) {
         if (!(map instanceof viewer.viewercontroller.ol.OpenLayers5Map)) {
-            Ext.Error.raise({msg: "The given map is not of the type 'OlMap'"});
+            Ext.Error.raise({msg: "The given map is not of the type 'Openlayers 5'"});
         }
         if (this.maps.length >= 1)
             Ext.Error.raise({msg: "Multiple maps not supported yet"});

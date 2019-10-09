@@ -20,6 +20,10 @@
 Ext.define("viewer.viewercontroller.ol.OlArcServerLayer", {
     extend: "viewer.viewercontroller.ol.OlArcLayer",
     constructor: function (config) {
+
+        //todo check if this is the right way for arclayer 
+        Ext.Error.raise({msg: "OlArcServerLayer not supported yet in OL5"});
+        
         viewer.viewercontroller.ol.OlArcServerLayer.superclass.constructor.call(this, config);
         var source = new ol.source.TileArcGISRest({
             projection: config.viewerController.mapComponent.mapOptions.projection,
