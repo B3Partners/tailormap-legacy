@@ -57,9 +57,7 @@ Ext.define("viewer.viewercontroller.ol.OlTilingLayer", {
                 y = Number(serviceEnvelopeTokens[3]);
             }
             options.maxExtent = [Number(serviceEnvelopeTokens[0]), Number(serviceEnvelopeTokens[1]), Number(serviceEnvelopeTokens[2]), Number(serviceEnvelopeTokens[3])];
-
-            var projExt = config.viewerController.mapComponent.mapOptions.projection.getExtent();
-            options.tileOrigin = ol.extent.getTopLeft(projExt);
+            options.tileOrigin = [x,y];
 
         }
         if (this.resolutions) {
@@ -81,16 +79,14 @@ Ext.define("viewer.viewercontroller.ol.OlTilingLayer", {
             //set TMS tiling options.
             options.serviceVersion = version;
             options.layername = layerName;
-            var openbasiskaartSource = new ol.source.XYZ({
-                crossOrigin: null,
+            var tmsSource = new ol.source.XYZ({
+                crossOrigin: "Anonymous",
                 attributions: options.attribution,
-                maxZoom: 15,
-                minZoom: 1,
                 projection: config.viewerController.mapComponent.mapOptions.projection,
                 url: t + '/{z}/{x}/{-y}.png'
             });
             this.frameworkLayer = new ol.layer.Tile({
-                source: openbasiskaartSource,
+                source: tmsSource,
                 opacity: options.opacity,
                 extent: options.maxExtent,
                 visible: options.visibility
