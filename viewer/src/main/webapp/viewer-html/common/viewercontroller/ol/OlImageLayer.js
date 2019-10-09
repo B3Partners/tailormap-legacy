@@ -33,20 +33,6 @@ Ext.define("viewer.viewercontroller.ol.OlImageLayer", {
         var width = this.config.viewerController.mapComponent.getMap().getWidth();
         var height = this.config.viewerController.mapComponent.getMap().getHeight();
 
-        if (this.options == null) {
-            this.options = {};
-        }
-        /* set the displayOutsideMaxExtent and alwaysInRange because the extent is the maxextent
-         * and the image is not visible.
-         * @see: http://dev.openlayers.org/docs/files/OpenLayers/Layer/Image-js.html#OpenLayers.Layer.Image.extent
-         */
-        if (this.options.maxExtent == undefined) {
-            this.options.displayOutsideMaxExtent = true;
-            this.options.alwaysInRange = true;
-        }
-        //set the start visibility
-        this.options.visibility = this.visible;
-
         var source = new ol.source.ImageStatic({
             url: this.url,
             imageSize: [width, height],
@@ -56,11 +42,9 @@ Ext.define("viewer.viewercontroller.ol.OlImageLayer", {
         );
         this.frameworkLayer = new ol.layer.Image({
             source: source,
-            visible: this.options.visibility
-        }
-        );
+            visible: this.visible
+        });
 
-        //map.addLayer(this.frameworkLayer);
     },
 
     setExtent: function (extent) {
@@ -69,6 +53,7 @@ Ext.define("viewer.viewercontroller.ol.OlImageLayer", {
             this.frameworkLayer.extent = this.utils.createBounds(extent);
         }
     },
+    
     getLastMapRequest: function () {
         return [{
                 url: this.url,
