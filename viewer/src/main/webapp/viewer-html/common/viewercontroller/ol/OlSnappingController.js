@@ -59,9 +59,8 @@ Ext.define("viewer.viewercontroller.ol.OlSnappingController", {
      */
     constructor: function (config) {
         viewer.viewercontroller.ol.OlSnappingController.superclass.constructor.call(this, config);
-
+        
         this.frameworkMap = this.config.viewerController.mapComponent.getMap().getFrameworkMap();
-        this.frameworkControl = new ol.interaction.Snap({source: this.frameworkLayer});
 
         this.config.viewerController.mapComponent.getMap().addListener(
                 viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,
@@ -72,7 +71,7 @@ Ext.define("viewer.viewercontroller.ol.OlSnappingController", {
         // this.config.viewerController.mapComponent.getMap().addListener(
         //         viewer.viewercontroller.controller.Event.ON_LAYER_REMOVED,
         //         this.layerRemoved, this);
-
+        
         return this;
     },
     getLayer: function (name, map) {
@@ -90,20 +89,14 @@ Ext.define("viewer.viewercontroller.ol.OlSnappingController", {
         var geometryAttributeIndex = this.appLayer.geometryAttributeIndex;
         var lName = this.me.getlayerName(this.appLayer);
 
-        var rLyrs = this.me.getLayer(lName, this.me.frameworkMap);
-        if (rLyrs.length > 0) {
-            // there should only be one layer in the rLyr
-            this.frameworkLayer = rLyrs[0];
-            this.frameworkLayer.removeAllFeatures();
-        } else {
+        if(this.me.frameworkLayer == null){
             // create a primitive OL vector layer
-            this.frameworkLayer = new ol.layer.Vector({
+            this.me.frameworkLayer = new ol.layer.Vector({
                 source: new ol.source.Vector()
             }
             );
-            this.me.snapLayers.push(this.frameworkLayer);
-            this.me.frameworkMap.addLayer(this.frameworkLayer);
-            //this.me.frameworkControl.addTargetLayer(olLyr);
+            this.me.snapLayers.push(this.me.frameworkLayer);
+            this.me.frameworkMap.addLayer(this.me.frameworkLayer);
         }
 
         var feats = [];
@@ -122,8 +115,8 @@ Ext.define("viewer.viewercontroller.ol.OlSnappingController", {
             var olFeature = new ol.Feature();
             olFeature.setGeometry(olGeom);
             feats.push(olFeature);
-        });
-        this.frameworkLayer.getSource().addFeatures(feats);
+        });       
+        this.me.frameworkLayer.getSource().addFeatures(feats);
         this.me.activate();
     },
 
@@ -136,6 +129,7 @@ Ext.define("viewer.viewercontroller.ol.OlSnappingController", {
     addAppLayer: function (appLayer) {
         var me = this;
         // lookup feature source
+        this.snapLayers.push(appLayer);
         var featureService = this.config.viewerController.getAppLayerFeatureService(appLayer);
         if (appLayer.attributes === undefined) {
             // find geom attribute, then load data
@@ -179,50 +173,46 @@ Ext.define("viewer.viewercontroller.ol.OlSnappingController", {
     },
 
     layerAdded: function (map, options) {
-        if (options.layer &&
-                Ext.Array.contains(this.config.viewerController.registeredSnappingLayers, options.layer)) {
-            this.frameworkLayer = options.layer.getFrameworkLayer();
-            //this.frameworkControl.setLayer(this.frameworkLayer);
-            this.activate();
-        }
+            // volgens mij hoeven we hier niets mee in OL 5
     },
 
     removeLayer: function (appLayer) {
-        this.deactivate();
-        // look up snappingLayer primitive by name/id...
-        // there should only be one layer in the rLyr
-        var rLyr = this.frameworkMap.getLayersByName(this.getlayerName(appLayer))[0];
-        if (rLyr) {
-            Ext.Array.remove(this.snapLayers, rLyr);
-            this.frameworkMap.removeLayer(rLyr);
-            this.frameworkControl.removeTargetLayer(rLyr);
-        }
-        this.activate();
+        
+        this.frameworkLayer.getSource().clear();
+        var tempSnapLayers = this.snapLayers;
+        this.snapLayers = [];
+        for(var i = 0; i < tempSnapLayers.length; i++){
+            var layer = tempSnapLayers[i];
+            if(layer.layerName !== appLayer.layerName){
+                this.addAppLayer(layer);
+            }
+        }     
     },
 
     toWKT: function (extent) {
         var wkt = "POLYGON((";
-        wkt += extent[0] + " " + extent[1] + ", ";
-        wkt += extent[2] + " " + extent[1] + ", ";
-        wkt += extent[2] + " " + extent[3] + ", ";
-        wkt += extent[0] + " " + extent[3] + ", ";
-        wkt += extent[0] + " " + extent[1] + "))";
+        wkt += extent.minx + " " + extent.miny + ", ";
+        wkt += extent.maxx + " " + extent.miny + ", ";
+        wkt += extent.maxx + " " + extent.maxy + ", ";
+        wkt += extent.minx + " " + extent.maxy + ", ";
+        wkt += extent.minx + " " + extent.miny + "))";
         return wkt;
     },
 
     removeAll: function () {
-        for (var i = 0; i < this.snapLayers.length; i++) {
-            this.frameworkControl.removeTargetLayer(this.snapLayers[i]);
-            this.frameworkMap.removeLayer(this.snapLayers[i]);
-        }
+        this.frameworkLayer.getSource().clear();
         this.snapLayers = [];
         this.deactivate();
     },
 
     activate: function () {
-        if (this.snapLayers.length > 0) {
-            this.frameworkControl.setActive(true);
+        if(this.frameworkControl == null){
+            this.frameworkControl = new ol.interaction.Snap({source: this.frameworkLayer.getSource()});
+            this.config.viewerController.mapComponent.getMap().getFrameworkMap().addInteraction(this.frameworkControl);
         }
+        
+        this.frameworkControl.setActive(true);
+        
     },
     deactivate: function () {
         this.frameworkControl.setActive(false);
