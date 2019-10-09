@@ -185,7 +185,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         <script type="text/javascript" src="${scriptDir}/OpenLayersArcLayer.js"></script>
                         <script type="text/javascript" src="${scriptDir}/OpenLayersArcIMSLayer.js"></script>
                         <script type="text/javascript" src="${scriptDir}/OpenLayersArcServerLayer.js"></script>
-                        <script type="text/javascript" src="${scriptDir}/OpenLayersMeasure.js"></script>
                         <script type="text/javascript" src="${scriptDir}/OpenLayersWMSLayer.js"></script>
                         <script type="text/javascript" src="${scriptDir}/OpenLayersVectorLayer.js"></script>
                         <script type="text/javascript" src="${scriptDir}/OpenLayersImageLayer.js"></script>

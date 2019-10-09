@@ -402,7 +402,6 @@
                                 <param>${viewerhtml.path}/common/viewercontroller/openlayers/OpenLayersComponent.js</param>
                                 <param>${viewerhtml.path}/common/viewercontroller/openlayers/OpenLayersMapComponent.js</param>
                                 <param>${viewerhtml.path}/common/viewercontroller/openlayers/OpenLayersSnappingController.js</param>
-                                <param>${viewerhtml.path}/common/viewercontroller/openlayers/OpenLayersMeasure.js</param>
                                 <!-- OpenLayers Components -->
                                 <param>${viewerhtml.path}/common/viewercontroller/openlayers/components/LoadingPanel.js</param>
                                 <param>${viewerhtml.path}/common/viewercontroller/openlayers/components/OpenLayersBorderNavigation.js</param>
