@@ -156,7 +156,7 @@ Ext.define("viewer.viewercontroller.ol.tools.Measure",{
                         me.measureTooltipElement.innerHTML = output;
                         me.measureTooltip.setPosition(tooltipCoord);
                     });
-                }, this);
+                }, me);
 
 
 
@@ -185,7 +185,7 @@ Ext.define("viewer.viewercontroller.ol.tools.Measure",{
 
             output = result + ' ' + 'km<sup>2</sup>';
             
-            if (this.conf.magicnumber.length > 0 && this.conf.units.length > 0) {
+            if (this.conf.magicnumber && this.conf.magicnumber.length > 0 && this.conf.units.length > 0) {
                 var result2  = ((this.conf.magicnumber * this.conf.magicnumber) / 100) * areaInKM;
                 result2 = result2.toFixed(this.conf.decimals).replace(".", this.conf.decimalSeparator);
                 var output2 = result2 + ' ' + this.conf.units;
@@ -203,7 +203,7 @@ Ext.define("viewer.viewercontroller.ol.tools.Measure",{
 
             output = result + ' ' + 'm<sup>2</sup>';
             
-            if (this.conf.magicnumber.length > 0 && this.conf.units.length > 0) {
+            if (this.conf.magicnumber && this.conf.magicnumber.length > 0 && this.conf.units.length > 0) {
                 var result2  = ((this.conf.magicnumber * this.conf.magicnumber) / 100000000) * areaInM;
                 result2 = result2.toFixed(this.conf.decimals).replace(".", this.conf.decimalSeparator);
                 var output2 = result2 + ' ' + this.conf.units;
@@ -228,7 +228,7 @@ Ext.define("viewer.viewercontroller.ol.tools.Measure",{
             result = lengthInKM.toFixed(this.conf.decimals).replace(".", this.conf.decimalSeparator);
             output = result + ' ' + 'km';
 
-            if (this.conf.magicnumber.length > 0 && this.conf.units.length > 0) {
+            if (this.conf.magicnumber && this.conf.magicnumber.length > 0 && this.conf.units.length > 0) {
                 var result2  = (this.conf.magicnumber / 10) * lengthInKM;
                 result2 = result2.toFixed(this.conf.decimals).replace(".", this.conf.decimalSeparator);
                 var output2 = result2 + ' ' + this.conf.units;
@@ -245,7 +245,7 @@ Ext.define("viewer.viewercontroller.ol.tools.Measure",{
             
             output = result + ' ' + 'm';
 
-            if (this.conf.magicnumber.length > 0 && this.conf.units.length > 0) {
+            if (this.conf.magicnumber && this.conf.magicnumber.length > 0 && this.conf.units.length > 0) {
                 var result2  = (this.conf.magicnumber / 10000) * lengthInM;
                 result2 = result2.toFixed(this.conf.decimals).replace(".", this.conf.decimalSeparator);
                 var output2 = result2 + ' ' + this.conf.units;
