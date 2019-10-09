@@ -55,7 +55,7 @@ Ext.define("viewer.viewercontroller.ol.OlSnappingController", {
         var strokeColor = 'rgba(' + c[0] + ',' + c[1] + ',' + c[2] + ',' + config.style.strokeOpacity + ')';
         var strokeStyle = new ol.style.Stroke({
             color: strokeColor,
-            width: config.style.strokeWidth,
+            width: config.style.strokeWidth
 
         });
         var fillStyle = new ol.style.Fill({
@@ -122,11 +122,14 @@ Ext.define("viewer.viewercontroller.ol.OlSnappingController", {
     },
 
     changedExtent: function (map, extent) {
-        this.frameworkLayer.getSource().clear();
-        var tempSnapLayers = this.snapLayers;
-        this.snapLayers = [];
-        for (var i = 0; i < tempSnapLayers.length; i++) {
-            this.addAppLayer(tempSnapLayers[i]);
+        //if frameworklayer is null dont update features
+        if (this.frameworkLayer != null) {
+            this.frameworkLayer.getSource().clear();
+            var tempSnapLayers = this.snapLayers;
+            this.snapLayers = [];
+            for (var i = 0; i < tempSnapLayers.length; i++) {
+                this.addAppLayer(tempSnapLayers[i]);
+            }
         }
     },
 
