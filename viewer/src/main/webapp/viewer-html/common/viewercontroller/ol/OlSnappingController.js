@@ -19,14 +19,10 @@
 
 Ext.define("viewer.viewercontroller.ol.OlSnappingController", {
     extend: "viewer.viewercontroller.controller.SnappingController",
-    /**
-     * editable/drawable OpenLayers Vector layer.
-     * @private
-     * TODO refactor to array as each edit & draw control have their own layer
-     */
+
     frameworkLayer: null,
-    /** snapping control.*/
     frameworkControl: null,
+    style:null,
     config: {
         style: {
             strokeColor: '#FF00FF',
@@ -38,25 +34,9 @@ Ext.define("viewer.viewercontroller.ol.OlSnappingController", {
         },
         viewerController: null
     },
-    /**
-     * OpenLayers Vector layers to snap to.
-     * @private
-     */
-    //snapLayers: [],
-    /**
-     * name prefix of the built-in snapLayers
-     */
-    //snapLayers_prefix: "snapping_",
-    /**
-     * OpenLayers Map.
-     * @private
-     */
+
     frameworkMap: null,
-    /**
-     * @constructor
-     * @param {Object} config
-     * @returns {viewer.viewercontroller.openlayers.OpenLayersSnappingController}
-     */
+
     constructor: function (config) {
         viewer.viewercontroller.ol.OlSnappingController.superclass.constructor.call(this, config);
         
@@ -68,9 +48,29 @@ Ext.define("viewer.viewercontroller.ol.OlSnappingController", {
         this.config.viewerController.mapComponent.getMap().addListener(
                 viewer.viewercontroller.controller.Event.ON_FINISHED_CHANGE_EXTENT,
                 this.changedExtent, this);
-        // this.config.viewerController.mapComponent.getMap().addListener(
-        //         viewer.viewercontroller.controller.Event.ON_LAYER_REMOVED,
-        //         this.layerRemoved, this);
+        
+        var c = ol.color.asArray(config.style.fillColor);
+        var fillColor = 'rgba(' + c[0] + ',' + c[1] + ',' + c[2] + ',' + config.style.fillOpacity + ')';
+        c = ol.color.asArray(config.style.strokeColor);
+        var strokeColor = 'rgba(' + c[0] + ',' + c[1] + ',' + c[2] + ',' + config.style.strokeOpacity + ')';
+        var strokeStyle = new ol.style.Stroke({
+            color: strokeColor,
+            width: config.style.strokeWidth,
+
+        });
+        var fillStyle = new ol.style.Fill({
+            color: fillColor
+        });
+        
+        this.style = new ol.style.Style({
+            stroke:strokeStyle,
+            fill:fillStyle,
+            image: new ol.style.Circle({
+                    fill: fillStyle,
+                    stroke: strokeStyle,
+                    radius: 5
+                })
+        });
         
         return this;
     },
@@ -92,7 +92,8 @@ Ext.define("viewer.viewercontroller.ol.OlSnappingController", {
         if(this.me.frameworkLayer == null){
             // create a primitive OL vector layer
             this.me.frameworkLayer = new ol.layer.Vector({
-                source: new ol.source.Vector()
+                source: new ol.source.Vector(),
+                style: this.me.style
             }
             );
             this.me.snapLayers.push(this.me.frameworkLayer);
@@ -121,8 +122,11 @@ Ext.define("viewer.viewercontroller.ol.OlSnappingController", {
     },
 
     changedExtent: function (map, extent) {
-        for (var i = 0; i < this.snapLayers.length; i++) {
-            //this.addAppLayer(this.getAppLayer(this.snapLayers[i].name));
+        this.frameworkLayer.getSource().clear();
+        var tempSnapLayers = this.snapLayers;
+        this.snapLayers = [];
+        for (var i = 0; i < tempSnapLayers.length; i++) {
+            this.addAppLayer(tempSnapLayers[i]);
         }
     },
 
