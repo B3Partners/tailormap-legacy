@@ -33,14 +33,14 @@ Ext.define("viewer.viewercontroller.ol.OlImageLayer", {
         var width = this.config.viewerController.mapComponent.getMap().getWidth();
         var height = this.config.viewerController.mapComponent.getMap().getHeight();
 
-        if (this.options === null) {
+        if (this.options == null) {
             this.options = {};
         }
         /* set the displayOutsideMaxExtent and alwaysInRange because the extent is the maxextent
          * and the image is not visible.
          * @see: http://dev.openlayers.org/docs/files/OpenLayers/Layer/Image-js.html#OpenLayers.Layer.Image.extent
          */
-        if (this.options.maxExtent === undefined) {
+        if (this.options.maxExtent == undefined) {
             this.options.displayOutsideMaxExtent = true;
             this.options.alwaysInRange = true;
         }
