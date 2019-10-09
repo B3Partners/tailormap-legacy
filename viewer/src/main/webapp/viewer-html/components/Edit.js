@@ -1505,7 +1505,7 @@ Ext.define("viewer.components.Edit", {
     allowedEditable: function (attribute) {
         return true;
     },
-    saveSucces: function (fid, skipSuccessMessage) {
+    saveSucces: function (fid, skipSuccessMessage, afterSaveSuccess) {
         var me = this;
         var messageFunction = function(extratext) {
             var msg = i18next.t('viewer_components_edit_34');
@@ -1514,6 +1514,9 @@ Ext.define("viewer.components.Edit", {
             }
             if(!skipSuccessMessage) {
                 me.showSuccessToast(msg, i18next.t('viewer_components_edit_40'));
+            }
+            if(afterSaveSuccess){
+                afterSaveSuccess();
             }
             me.cancel();
         };
@@ -1539,6 +1542,8 @@ Ext.define("viewer.components.Edit", {
                     }
                 }
                 me.messageFunction = messageFunction;
+                me.afterSaveSuccess = afterSaveSuccess;
+            
                 if (hasFile) {
                     isUploading = true;
                     form.submit({
@@ -1559,6 +1564,9 @@ Ext.define("viewer.components.Edit", {
                         },
                         failure: function () {
                             Ext.MessageBox.alert(i18next.t('viewer_components_edit_38'), i18next.t('viewer_components_edit_39'));
+                            if(me.afterSaveSuccess){
+                                me.afterSaveSuccess();
+                            }
                         }
                     });
                 }
