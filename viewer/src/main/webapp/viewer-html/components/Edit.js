@@ -1205,9 +1205,6 @@ Ext.define("viewer.components.Edit", {
                                     type: 'hbox'
                                 },
                                 items: [{
-                                    xtype: 'label',
-                                    text: file.filename
-                                },{
                                     xtype: "button",
                                     text: i18next.t('viewer_components_edit_17'),
                                     listeners:{
@@ -1262,6 +1259,10 @@ Ext.define("viewer.components.Edit", {
                                         }
                                     }
 
+                                },{
+                                    xtype: 'label',
+                                    text: file.filename,
+                                    margin: '6 0 0 5'
                                 }]
                             });
                             container.insert(0,remover);
