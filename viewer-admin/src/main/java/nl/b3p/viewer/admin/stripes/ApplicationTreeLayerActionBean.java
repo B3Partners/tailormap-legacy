@@ -248,7 +248,7 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
                 // default visible if not geometry type
                 // and not a attribute of a related featuretype
                 boolean defaultVisible=true;
-                if (layer.getFeatureType().getId()!=sft.getId() || AttributeDescriptor.GEOMETRY_TYPES.contains(ad.getType())){
+                if (!layer.getFeatureType().getId().equals(sft.getId())|| AttributeDescriptor.GEOMETRY_TYPES.contains(ad.getType())){
                     defaultVisible=false;
                 }
                 ca.setVisible(defaultVisible);
@@ -259,11 +259,11 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
                 
                 if(!"save".equals(getContext().getEventName())) {
                     String message =getBundle().getString("viewer_admin.applicationtreelayeractionbean.newattr") + " ";
-                    if(layer.getFeatureType().getId()!=sft.getId()){
+                    if(!layer.getFeatureType().getId().equals(sft.getId())){
                         message+=getBundle().getString("viewer_admin.applicationtreelayeractionbean.joined") + " ";
                     }
                     message+=getBundle().getString("viewer_admin.applicationtreelayeractionbean.attrsrc") + " ";
-                    if(layer.getFeatureType().getId()==sft.getId()){
+                    if(layer.getFeatureType().getId().equals(sft.getId())){
                         message+=": "+ getBundle().getString("viewer_admin.applicationtreelayeractionbean.visible");
                     }
                     getContext().getMessages().add(new SimpleMessage(message, name));
