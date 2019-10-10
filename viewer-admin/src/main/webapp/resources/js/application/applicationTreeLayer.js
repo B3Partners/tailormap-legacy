@@ -514,13 +514,12 @@ Ext.define('vieweradmin.components.ApplicationTreeLayer', {
         if (Ext.get('details_editfeature_usernameAttribute')){
             usernameAttrValue = Ext.get('details_editfeature_usernameAttribute').getValue();
         }
-        editPanelItems.push({
+        editPanelItems.push(Ext.apply(this.getFilterEditDefaults(), {
             xtype: 'panel',
-            title: i18next.t('viewer_admin_applicationtreelayer_26'),
+            title: i18next.t('viewer_admin_applicationtreelayer_26') + (usernameAttrValue !== '' ? ' (&times;)' : ''),
             itemId: 'autorisatie-panel',
-            style: {
-                "margin-top": "5px"
-            },
+            iconCls: "x-fa fa-wrench",
+            collapsed: true,
             items: [{
                 xtype: 'label',
                 text: i18next.t('viewer_admin_applicationtreelayer_27')
@@ -535,12 +534,12 @@ Ext.define('vieweradmin.components.ApplicationTreeLayer', {
                 labelWidth: 150,
                 value: usernameAttrValue
             }]
-        });
+        }));
 
 
         var upload = false;
         var types = [];
-        var uploadCategories = [this.createUploadBox("",0, false)];
+        var uploadCategories = [this.createUploadBox("",false,0)];
         if (Ext.get('details_editfeature_uploadDocument')){
             upload = Ext.get('details_editfeature_uploadDocument').getValue();
             upload = (upload ? (upload === 'true') : false);
@@ -554,14 +553,13 @@ Ext.define('vieweradmin.components.ApplicationTreeLayer', {
             }
         }
 
-        editPanelItems.push({
+        editPanelItems.push(Ext.apply(this.getFilterEditDefaults(), {
             xtype: 'panel',
-            title: i18next.t('viewer_admin_applicationtreelayer_29'),
+            title: i18next.t('viewer_admin_applicationtreelayer_29') + (upload ?' (&times;)' : ""),
             itemId: 'upload-panel',
             id: 'upload-panel',
-            style: {
-                "margin-top": "5px"
-            },
+            collapsed: true,
+            iconCls: "x-fa fa-wrench",
             items: [{
                 xtype: 'label',
                 text: i18next.t('viewer_admin_applicationtreelayer_30')
@@ -595,7 +593,7 @@ Ext.define('vieweradmin.components.ApplicationTreeLayer', {
                     }
                 }
             ]
-        });
+        }));
 
         return editPanelItems;
     },
@@ -603,13 +601,35 @@ Ext.define('vieweradmin.components.ApplicationTreeLayer', {
         var container = Ext.getCmp("uploadTypes");
         var index = container ? container.items.items.length  : idx;
         var config = {
-            fieldLabel: i18next.t('viewer_admin_applicationtreelayer_33'),
-            name: 'uploadType' + (index),
-            value: value,
-            xtype: 'textfield'
+            xtype: 'container',
+            layout: 'hbox',
+            name: 'typeContainer'+ (index),
+            items: [{
+                    fieldLabel: i18next.t('viewer_admin_applicationtreelayer_33'),
+                    name: 'uploadType' + (index),
+                    value: value,
+                    xtype: 'textfield'
+                },{
+                    xtype: 'button',
+                    text:'-',
+                    style: {
+                        marginTop: '5px',
+                        marginLeft: '10px'
+                    },
+                    listeners: {
+                        click: {
+                            fn: function (button) {
+                                var parent = button.ownerCt;
+                                var uploadItems = parent.ownerCt;
+                                uploadItems.remove(parent);
+                            },
+                            scope: this
+                        }
+                    }
+                }]
         };
         if(append){
-            container.insert(index -1,Ext.create("Ext.form.field.Text", config));
+            container.add(Ext.create("Ext.container.Container", config));
         }
         return config;
     },
@@ -1025,6 +1045,7 @@ Ext.define('vieweradmin.components.ApplicationTreeLayer', {
             var typeConfig = [];
             for(var i = 0 ; i < items.length;i++){
                 var item = items[i];
+                var item =  item.items.items[0];
                 typeConfig.push(item.getValue());
             }
             document.getElementById('details_editfeature_uploadDocument_types').value = Ext.JSON.encode(typeConfig);
