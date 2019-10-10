@@ -36,6 +36,7 @@ public class FileUploadActionBean extends LocalizableApplicationActionBean imple
     private ActionBeanContext context;
     public static final String DATA_DIR = "flamingo.data.dir";
 
+    @Validate
     private List<FileBean> files;
 
     @Validate
@@ -55,7 +56,7 @@ public class FileUploadActionBean extends LocalizableApplicationActionBean imple
 
     private AuditMessageObject auditMessageObject;
 
-    // <editor-fold default-state="collapsed" desc="Getters and setters">
+    // <editor-fold defaultstate="collapsed" desc="Getters and setters">
     @Override
     public ActionBeanContext getContext() {
         return context;

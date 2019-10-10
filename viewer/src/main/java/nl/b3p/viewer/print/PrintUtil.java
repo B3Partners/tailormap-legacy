@@ -95,8 +95,8 @@ public class PrintUtil {
             method = new PostMethod(url);
             method.addParameter("params", param);
             method.addParameter("JSESSIONID", sessionID);
-            method.addParameter("JSESSIONIDSSO", ssosessionID);
             if (ssosessionID != null) {
+                method.addParameter("JSESSIONIDSSO", ssosessionID);
                 Header cookieHeader = new Header("Cookie", null);
                 cookieHeader.setValue("JSESSIONIDSSO=" + ssosessionID);
                 method.setRequestHeader(cookieHeader);

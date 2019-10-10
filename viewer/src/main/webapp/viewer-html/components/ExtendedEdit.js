@@ -257,22 +257,26 @@ Ext.define ("viewer.components.ExtendedEdit",{
         }
     },
     saveSucces: function(fid) {
-        this.callParent([fid, true]);
-        this.savedFeatureId = fid;
-        var feature = this.vectorLayer.getFeature(0);
-        if(feature) {
-            this.currentCoords = this.vectorLayer.getFeatureGeometry(feature.id).getCentroid();
-        }
-        if(this.mode === "new" || this.mode === "edit") {
-            this.addSuccesIconToButton(this.savebutton);
-        }
-        if(this.mode === "copy") {
-            this.addSuccesIconToButton(this.maincontainer.down('#copyButton'));
-        }
-        if(this.currentCoords) {
-            this.startEdit(null, { coord: this.currentCoords });
-        }
-        this.layerSelectorInit();
+        var me = this;
+        var afterSaveSuccessParent = function () {
+            me.savedFeatureId = fid;
+            var feature = me.vectorLayer.getFeature(0);
+            if (feature) {
+                me.currentCoords = me.vectorLayer.getFeatureGeometry(feature.id).getCentroid();
+            }
+            if (me.mode === "new" || me.mode === "edit") {
+                me.addSuccesIconToButton(me.savebutton);
+            }
+            if (me.mode === "copy") {
+                me.addSuccesIconToButton(me.maincontainer.down('#copyButton'));
+            }
+            if (me.currentCoords) {
+                me.startEdit(null, {coord: me.currentCoords});
+            }
+            me.layerSelectorInit();
+        };
+        this.callParent([fid, true, afterSaveSuccessParent]);
+        
     },
     deleteSucces: function() {
         this.callParent([true]);
