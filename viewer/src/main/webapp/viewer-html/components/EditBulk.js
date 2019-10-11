@@ -96,7 +96,7 @@ Ext.define("viewer.components.EditBulk", {
             }
 
             if (viewer.components.Component.parseBooleanValue(this.appLayer.details["editfeature.uploadDocument"])) {
-                this.buildUploadedFilesRemovers(feature);
+            //    this.buildUploadedFilesRemovers(feature);
             }
 
             this.showAndFocusForm();

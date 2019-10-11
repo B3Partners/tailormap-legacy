@@ -44,12 +44,12 @@ Ext.define ("viewer.components.ExtendedEdit",{
         this.lastUsedValues = {};
         viewer.components.Edit.superclass.constructor.call(this, this.config);
         
-        this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_COMPONENTS_FINISHED_LOADING,this.initComponent,this);
+        this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_LAYERS_INITIALIZED,this.initComponent,this);
         this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE, this.selectedContentChanged, this);
-        this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_LAYERS_INITIALIZED,this.createVectorLayer, this);
         return this;
     },
     initComponent: function () {
+        this.createVectorLayer();
         this.schema = new Ext.data.schema.Schema();
 
         this.navigateBackButton = this.createPaginationButton('left', i18next.t('viewer_components_extendededit_0'));
@@ -124,6 +124,11 @@ Ext.define ("viewer.components.ExtendedEdit",{
             if(this.config.allowEdit) {
                 this.edit();
             }
+        }
+    },
+    createVectorLayer: function(){
+        if (!this.vectorLayer){
+            this.callParent([]);
         }
     },
     selectedLayerChanged: function(layer) {

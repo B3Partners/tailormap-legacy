@@ -852,10 +852,18 @@ Ext.define("viewer.components.Edit", {
             var useUpload = viewer.components.Component.parseBooleanValue(appLayer.details["editfeature.uploadDocument"]);
             if(useUpload && appLayer.details["editfeature.uploadDocument.types"]){
                 var types = Ext.JSON.decode(appLayer.details["editfeature.uploadDocument.types"]);
+                var n = "filesuploadContainer" + this.config.name;
+                this.filescontainer = Ext.create("Ext.panel.Panel", {
+                    id: n,
+                    name: n,
+                    border:0,
+                    items: []
+                });
+                nonGrouped.push(this.filescontainer);
                 for(var i = 0 ; i < types.length ; i++){
                     var t = types[i];
                     var container = this.createFileForm(t,true);
-                    nonGrouped.push(container);
+                    this.filescontainer.add(container);
                 }
                 this.setButtonDisabled("editButton", false);
             }
@@ -1187,14 +1195,27 @@ Ext.define("viewer.components.Edit", {
             }
 
             if(viewer.components.Component.parseBooleanValue(this.appLayer.details["editfeature.uploadDocument"])){
+                var n = "filesuploadContainer" + this.config.name;
+                this.filescontainer = Ext.getCmp(n);
+                if(!this.filescontainer){
+                     this.filescontainer = Ext.create("Ext.panel.Panel",{
+                        id: n,
+                        name:n,
+                        border:0,
+                        items: []
+                     });
+                     this.inputContainer.add(this.filescontainer);
+                }else{
+                   this.filescontainer.removeAll();
+                }
                 var uploads = feature["__UPLOADS__"];
                 for(var key in uploads){
                     if(uploads.hasOwnProperty(key)){
                         var files = uploads[key];
                         var container = Ext.getCmp("uploadContainer" + key);
                         if(!container){
-                            container = this.createFileForm(key, false);
-                            this.inputContainer.add(container);
+                           container = this.createFileForm(key, false);
+                           this.filescontainer.add(container);
                         }
                         for(var i = 0 ; i <files.length;i++){
                             var file = files[i];
