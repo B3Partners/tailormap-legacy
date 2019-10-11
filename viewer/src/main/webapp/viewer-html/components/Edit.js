@@ -854,7 +854,6 @@ Ext.define("viewer.components.Edit", {
                 var types = Ext.JSON.decode(appLayer.details["editfeature.uploadDocument.types"]);
                 var n = "filesuploadContainer" + this.config.name;
                 this.filescontainer = Ext.create("Ext.panel.Panel", {
-                    id: n,
                     name: n,
                     border:0,
                     items: []
@@ -887,8 +886,8 @@ Ext.define("viewer.components.Edit", {
         var container =new Ext.form.FormPanel({
             title: t,
             border: 0,
-            id: "uploadContainer" + t,
-            name: "uploadContainer" + t,
+            id: "uploadContainer" + this.name + t,
+            name: "uploadContainer" + this.name + t,
             collapsable: false,
             items:items
         });
@@ -900,13 +899,12 @@ Ext.define("viewer.components.Edit", {
             label: i18next.t('viewer_components_edit_15'),
             name: 'files[' + index + "]",
             width: "70%",
-            id: "uploadedFile" + t + index,
             labelClsExtra: this.editLblClass,
             listeners:{
                 change: function(fld,value){
                     var newValue = value.replace(/C:\\fakepath\\/g, '');
                     fld.setRawValue(newValue);
-                    var container = Ext.getCmp("uploadContainer" + t);
+                    var container = Ext.getCmp("uploadContainer" + this.name + t);
                     var size = container.items.length;
                     var upload = this.createUploadBox(t,size);
                     container.insert(size,upload);
@@ -1065,7 +1063,6 @@ Ext.define("viewer.components.Edit", {
             queryMode: 'local',
             displayField: 'label',
             name: attribute.name,
-            id: attribute.name,
             valueField: 'id',
             allowBlank: !disallowNull,
             disabled: !this.allowedEditable(attribute),
@@ -1208,7 +1205,7 @@ Ext.define("viewer.components.Edit", {
                 for(var key in uploads){
                     if(uploads.hasOwnProperty(key)){
                         var files = uploads[key];
-                        var container = Ext.getCmp("uploadContainer" + key);
+                        var container = Ext.getCmp("uploadContainer" + this.name + key);
                         if(!container){
                            container = this.createFileForm(key, false);
                            this.filescontainer.add(container);
@@ -1218,7 +1215,7 @@ Ext.define("viewer.components.Edit", {
                             var file = files[i];
                             var remover = Ext.create('Ext.container.Container', {
                                 name: "fileremover-"+file.id,
-                                id: "fileremover-"+file.id,
+                                id: "fileremover-"+ this.name + file.id,
                                 layout: {
                                     type: 'hbox'
                                 },
@@ -1229,7 +1226,7 @@ Ext.define("viewer.components.Edit", {
                                         scope:this,
                                         click:function(button){
                                             var owner = button.ownerCt;
-                                            var id = owner.id;
+                                            var id = owner.name;
                                             var fileId = id.substring(id.lastIndexOf("-")+1);
 
                                             Ext.Msg.show({
@@ -1249,7 +1246,7 @@ Ext.define("viewer.components.Edit", {
                                                             success: function(result) {
                                                                 var response = Ext.JSON.decode(result.responseText);
                                                                 if (response.success) {
-                                                                    var removerId = "fileremover-" + response.uploadid;
+                                                                    var removerId = "fileremover-" + this.name + response.uploadid;
                                                                     var remover = Ext.getCmp(removerId);
                                                                     remover.ownerCt.remove(remover);
                                                                 } else {
@@ -1547,7 +1544,7 @@ Ext.define("viewer.components.Edit", {
             var types = Ext.JSON.decode(this.appLayer.details["editfeature.uploadDocument.types"]);
             for (var i = 0; i < types.length; i++) {
                 var t = types[i];
-                var form = Ext.getCmp("uploadContainer" + t);
+                var form = Ext.getCmp("uploadContainer" + this.name + t);
                 var hasFile = false;
                 for (var j = 0; j < form.items.length; j++) {
                     var inputEl = form.items.get(j).fileInputEl;

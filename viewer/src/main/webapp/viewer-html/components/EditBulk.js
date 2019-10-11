@@ -99,7 +99,9 @@ Ext.define("viewer.components.EditBulk", {
 
             if (viewer.components.Component.parseBooleanValue(this.appLayer.details["editfeature.uploadDocument"])) {
                 var uploadedFilesContainer = Ext.getCmp("filesuploadContainer" + this.config.name);
-                uploadedFilesContainer.setVisible(false);
+                if(uploadedFilesContainer){
+                    uploadedFilesContainer.setVisible(false);
+                }
             }
 
             this.showAndFocusForm();

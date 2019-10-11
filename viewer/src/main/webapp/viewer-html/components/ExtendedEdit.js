@@ -131,6 +131,19 @@ Ext.define ("viewer.components.ExtendedEdit",{
             this.callParent([]);
         }
     },
+    activate: function(){
+        var toolsForIdentify = ["viewer.viewercontroller.openlayers.tools.OpenLayersDefaultTool"];
+        for (var i = 0; i < toolsForIdentify.length; i++) {
+            var className = toolsForIdentify[i];
+            var tools = this.config.viewerController.mapComponent.tools;
+            for (var j = 0; j < tools.length; j++) {
+                var tool = tools[j];
+                if (tool.$className === className) {
+                    tool.activate();
+                }
+            }
+        }
+    },
     selectedLayerChanged: function(layer) {
         this.currentLayer = layer;
         if(this.config.allowEdit) {
