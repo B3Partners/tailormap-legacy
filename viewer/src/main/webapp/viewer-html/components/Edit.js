@@ -1195,18 +1195,14 @@ Ext.define("viewer.components.Edit", {
             }
 
             if(viewer.components.Component.parseBooleanValue(this.appLayer.details["editfeature.uploadDocument"])){
-                var n = "filesuploadContainer" + this.config.name;
-                this.filescontainer = Ext.getCmp(n);
-                if(!this.filescontainer){
-                     this.filescontainer = Ext.create("Ext.panel.Panel",{
-                        id: n,
-                        name:n,
-                        border:0,
-                        items: []
-                     });
-                     this.inputContainer.add(this.filescontainer);
-                }else{
-                   this.filescontainer.removeAll();
+                this.filescontainer.removeAll();
+                if ( this.appLayer.details["editfeature.uploadDocument.types"]) {
+                    var types = Ext.JSON.decode(this.appLayer.details["editfeature.uploadDocument.types"]);
+                    for (var i = 0; i < types.length; i++) {
+                        var t = types[i];
+                        var container = this.createFileForm(t, true);
+                        this.filescontainer.add(container);
+                    }
                 }
                 var uploads = feature["__UPLOADS__"];
                 for(var key in uploads){
@@ -1217,6 +1213,7 @@ Ext.define("viewer.components.Edit", {
                            container = this.createFileForm(key, false);
                            this.filescontainer.add(container);
                         }
+                        
                         for(var i = 0 ; i <files.length;i++){
                             var file = files[i];
                             var remover = Ext.create('Ext.container.Container', {
