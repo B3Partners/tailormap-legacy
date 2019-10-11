@@ -165,12 +165,35 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                 this.resizeComponents(true);
             }).bind(this), false);
             window.addEventListener('resize', (function() {
-                this.resizeComponents(true);
+                if (this.hasSizeChanged()) {
+                    this.resizeComponents(true);
+                }
             }).bind(this));
         }
         Ext.on('resize', function () {
-            this.resizeComponents(true);
+            if (this.hasSizeChanged()) {
+                this.resizeComponents(true);
+            }
         }, this);
+    },
+
+    /**
+     * iOS keeps firing resize events in when Flamingo is running inside an iframe.
+     * Here we check if the screen is actually resized
+     * @returns {boolean}
+     */
+    hasSizeChanged: function() {
+        var doc = window.top || window;
+        if (!this.windowWidth || !this.windowHeight) {
+            this.windowWidth = doc.innerWidth;
+            this.windowHeight = doc.innerHeight;
+        }
+        var sizeChanged = this.windowWidth !== doc.innerWidth || this.windowHeight !== doc.innerHeight;
+        if (sizeChanged) {
+            this.windowWidth = doc.innerWidth;
+            this.windowHeight = doc.innerHeight;
+        }
+        return sizeChanged;
     },
 
     showLoading: function(msg) {
