@@ -21,6 +21,7 @@ environment:
       INSTANCENAME: SQL2017
 
 install:
+  - choco install codecov
   - cmd: echo %PATH%
   - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-http-proxy.ps1'))
   - ps: .\.appveyor\set-maven-proxy.ps1
@@ -46,3 +47,4 @@ test_script:
   - mvn -e clean test -B
   - mvn -e verify -B -Pappveyor -pl "!viewer-admin"
   - mvn -e verify -B -Pappveyor -pl "viewer-admin"
+  - codecov -v -f target/site/jacoco-it/jacoco.xml target/site/jacoco/jacoco.xml
