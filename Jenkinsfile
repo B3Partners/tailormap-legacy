@@ -66,6 +66,7 @@ timestamps {
         }
         stage('Publish Test Coverage results') {
             jacoco exclusionPattern: '**/*Test.class', execPattern: '**/target/**.exec'
+            sh "curl -s https://codecov.io/bash | bash"
         }
 
         withEnv(["JAVA_HOME=${ tool 'JDK8' }", "PATH+MAVEN=${tool 'Maven CURRENT'}/bin:${env.JAVA_HOME}/bin"]) {
