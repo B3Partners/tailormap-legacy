@@ -1061,7 +1061,18 @@ Ext.define("viewer.components.Edit", {
             valueField: 'id',
             allowBlank: !disallowNull,
             disabled: !this.allowedEditable(attribute),
-            editable: !(attribute.hasOwnProperty('allowValueListOnly') && attribute.allowValueListOnly),
+            /* false to prevent the user from typing text directly into the field; the field can only have its value
+             set via selecting a value from the picker
+             (default: true) */
+            // editable: !(attribute.hasOwnProperty('allowValueListOnly') && attribute.allowValueListOnly),
+            /* true to populate and autoselect the remainder of the text being typed
+             after a configurable delay (typeAheadDelay) if it matches a known value.
+             typeAhead can only be enabled when editable is (also) true */
+            typeAhead: true,
+            /* true to restrict the selected value to one of the values in the list,
+             false to allow the user to set arbitrary text into the field.
+             (default: false)  */
+            forceSelection: (attribute.hasOwnProperty('allowValueListOnly') && attribute.allowValueListOnly),
             labelClsExtra: this.editLblClass,
             listeners: {
                 scope: this,
