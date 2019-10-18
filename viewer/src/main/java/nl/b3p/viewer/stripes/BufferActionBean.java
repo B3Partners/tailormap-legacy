@@ -51,6 +51,7 @@ import org.geotools.geometry.jts.WKTReader2;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.locationtech.jts.geom.GeometryCollection;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.filter.FilterFactory2;
 import org.stripesstuff.stripersist.Stripersist;
@@ -230,16 +231,22 @@ public class BufferActionBean implements ActionBean {
         json.put("success", Boolean.FALSE);
         json.put("features", featureArray);
         FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2();
-        GeometryFactory gf = new GeometryFactory(new PrecisionModel(), 28992);
+        GeometryFactory gf = new GeometryFactory(new PrecisionModel(100), 28992);
         WKTReader reader = new WKTReader2(gf);
         Geometry geom;
+        
         try {
+            Geometry[] geometries = new Geometry[features.length];
+            int index =0;
             for (String feature : features) {
-
                 geom = reader.read(feature);
                 Geometry buffered = geom.buffer(buffer);
-                featureArray.put(buffered.toText());
+                geometries[index] = buffered;
+                index++;
             }
+            GeometryCollection collection = new GeometryCollection(geometries, gf);
+            Geometry unioned = collection.union();
+            featureArray.put(unioned.toText());
             json.put("success",Boolean.TRUE);
         } catch (ParseException ex) {
             log.error("could not parse: ", ex);
@@ -263,7 +270,7 @@ public class BufferActionBean implements ActionBean {
         String geomAttribute = fs.getSchema().getGeometryDescriptor().getLocalName();
 
         FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2();
-        GeometryFactory gf = new GeometryFactory(new PrecisionModel(), 28992);
+        GeometryFactory gf = new GeometryFactory(new PrecisionModel(100), 28992);
         WKTReader reader = new WKTReader2(gf);
         Polygon p = (Polygon) reader.read(bbox.toWKT());
         Filter featureFilter = ff.intersects(ff.property(geomAttribute),ff.literal(p));

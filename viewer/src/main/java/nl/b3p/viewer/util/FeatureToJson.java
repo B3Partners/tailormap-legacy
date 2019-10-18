@@ -62,7 +62,7 @@ import javax.servlet.http.HttpServletRequest;
 
 
 public class FeatureToJson {
-    public static final int MAX_FEATURES = 1000;
+    public static final int MAX_FEATURES = 2500;
     private boolean arrays = false;
     private boolean edit = false;
     private boolean graph = false;

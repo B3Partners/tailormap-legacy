@@ -151,7 +151,7 @@ public class DrawingActionBean implements ActionBean {
             }
         }
         if (polys != null) {
-            GeometryFactory gf = new GeometryFactory(new PrecisionModel(), 28992);
+            GeometryFactory gf = new GeometryFactory(new PrecisionModel(100), 28992);
             GeometryCollection mg = new GeometryCollection(polys.toArray(new Geometry[polys.size()]), gf);
             Envelope envelope = mg.getEnvelopeInternal();
             // Maak wat groter, zodat omliggende terreinen/percelen ook te zien zijn.

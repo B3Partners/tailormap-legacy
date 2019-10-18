@@ -134,7 +134,7 @@ public class FlamingoCQL {
             }
 
             FeatureSource fs = l.getFeatureType().openGeoToolsFeatureSource();
-            GeometryFactory gf = new GeometryFactory(new PrecisionModel(), 28992);
+            GeometryFactory gf = new GeometryFactory(new PrecisionModel(100), 28992);
 
             Query q = new Query(fs.getName().toString());
             if (filter != null && !filter.isEmpty()) {
