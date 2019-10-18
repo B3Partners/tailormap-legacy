@@ -44,12 +44,12 @@ Ext.define ("viewer.components.ExtendedEdit",{
         this.lastUsedValues = {};
         viewer.components.Edit.superclass.constructor.call(this, this.config);
         
-        this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_COMPONENTS_FINISHED_LOADING,this.initComponent,this);
+        this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_LAYERS_INITIALIZED,this.initComponent,this);
         this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE, this.selectedContentChanged, this);
-        this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_LAYERS_INITIALIZED,this.createVectorLayer, this);
         return this;
     },
     initComponent: function () {
+        this.createVectorLayer();
         this.schema = new Ext.data.schema.Schema();
 
         this.navigateBackButton = this.createPaginationButton('left', i18next.t('viewer_components_extendededit_0'));
@@ -123,6 +123,24 @@ Ext.define ("viewer.components.ExtendedEdit",{
             this.initialLoad = true;
             if(this.config.allowEdit) {
                 this.edit();
+            }
+        }
+    },
+    createVectorLayer: function(){
+        if (!this.vectorLayer){
+            this.callParent([]);
+        }
+    },
+    activate: function(){
+        var toolsForIdentify = ["viewer.viewercontroller.openlayers.tools.OpenLayersDefaultTool"];
+        for (var i = 0; i < toolsForIdentify.length; i++) {
+            var className = toolsForIdentify[i];
+            var tools = this.config.viewerController.mapComponent.tools;
+            for (var j = 0; j < tools.length; j++) {
+                var tool = tools[j];
+                if (tool.$className === className) {
+                    tool.activate();
+                }
             }
         }
     },

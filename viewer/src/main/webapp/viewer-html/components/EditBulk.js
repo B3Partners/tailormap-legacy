@@ -1,3 +1,5 @@
+/* global Ext, i18next */
+
 Ext.define("viewer.components.EditBulk", {
     extend: "viewer.components.Edit",
     lastClickCoords: null,
@@ -43,7 +45,7 @@ Ext.define("viewer.components.EditBulk", {
             me.originalFormProperties[attributeName] = {
                 allowBlank: input.allowBlank,
                 emptyText: input.emptyText
-            }
+            };
         });
     },
     initSelectedFeatures: function () {
@@ -96,7 +98,10 @@ Ext.define("viewer.components.EditBulk", {
             }
 
             if (viewer.components.Component.parseBooleanValue(this.appLayer.details["editfeature.uploadDocument"])) {
-                this.buildUploadedFilesRemovers(feature);
+                var uploadedFilesContainer = Ext.getCmp("filesuploadContainer" + this.config.name);
+                if(uploadedFilesContainer){
+                    uploadedFilesContainer.setVisible(false);
+                }
             }
 
             this.showAndFocusForm();
@@ -167,7 +172,7 @@ Ext.define("viewer.components.EditBulk", {
         var values = this.selectedFeatures.getCombinedValuesForAllSelectedFeatures(attributeName);
         values = values.map(function (value) {
             if (typeof value === 'undefined' || value === null) {
-                return EMPTY
+                return EMPTY;
             } else {
                 return '"' + value + '"';
             }
