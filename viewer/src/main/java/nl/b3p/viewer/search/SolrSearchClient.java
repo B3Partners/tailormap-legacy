@@ -75,13 +75,14 @@ public class SolrSearchClient extends SearchClient {
             }
             SolrServer server = SolrInitializer.getServerInstance();
             String extraQuery = createAttributeSourceQuery();
-            if(!extraQuery.isEmpty()){
-                 term += extraQuery + ")";
-            }else{
-                term += "searchConfig:\\-1)"; // Dummy expression to always evaluate to false and return no results
+            if (extraQuery.isEmpty()) {
+                extraQuery = "searchConfig:\\-1"; // Dummy expression to always evaluate to false and return no results
             }
+              
             SolrQuery query = new SolrQuery();
             query.setQuery(term);
+            query.setFilterQueries(extraQuery);
+          
             
             query.setRequestHandler("/select");
             QueryResponse rsp = server.query(query);
