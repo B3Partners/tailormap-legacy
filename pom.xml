@@ -34,7 +34,7 @@
         </license>
     </licenses>
     <properties>
-        <flamingo.version>5.5.7</flamingo.version>
+        <flamingo.version>5.5.7-SNAPSHOT</flamingo.version>
         <java.version>1.8</java.version>
         <project.build.sourceVersion>${java.version}</project.build.sourceVersion>
         <project.build.targetVersion>${java.version}</project.build.targetVersion>
