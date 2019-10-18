@@ -112,10 +112,6 @@
         </dependency>
         <!-- Solr dependencies for indexing and searching -->
         <dependency>
-            <groupId>org.apache.solr</groupId>
-            <artifactId>solr-core</artifactId>
-        </dependency>
-        <dependency>
                <artifactId>solr-solrj</artifactId>
                <groupId>org.apache.solr</groupId>
         </dependency>
