@@ -15,6 +15,15 @@ install:
   - cmd: echo %PATH%
   - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-http-proxy.ps1'))
   - ps: .\.appveyor\set-maven-proxy.ps1
+  - ps: Invoke-WebRequest http://cert.pkioverheid.nl/RootCA-G2.cer -OutFile .\RootCA-G2.cer
+  - ps: Invoke-WebRequest http://cert.pkioverheid.nl/RootCA-G3.cer -OutFile .\RootCA-G3.cer
+  # load pki-overheid G2/G3 certificates on java 8
+  - cmd: if "%JDK%"=="JDK8" keytool -importcert -file .\RootCA-G2.cer -alias G2 -keystore "%JAVA_HOME%\jre\lib\security\cacerts" -storepass changeit -v -noprompt -trustcacerts
+  - cmd: if "%JDK%"=="JDK8" keytool -importcert -file .\RootCA-G3.cer -alias G3 -keystore "%JAVA_HOME%\jre\lib\security\cacerts" -storepass changeit -v -noprompt -trustcacerts
+  # load pki-overheid G2/G3 certificates on java 11
+  - cmd: if "%JDK%"=="JDK11" keytool -importcert -file .\RootCA-G2.cer -alias G2 -keystore "%JAVA_HOME%\lib\security\cacerts" -storepass changeit -v -noprompt -trustcacerts
+  - cmd: if "%JDK%"=="JDK11" keytool -importcert -file .\RootCA-G3.cer -alias G3 -keystore "%JAVA_HOME%\lib\security\cacerts" -storepass changeit -v -noprompt -trustcacerts
+
   - mvn install -U -DskipTests -pl "web-commons,viewer-commons,viewer-config-persistence" -B -V -fae -q
   
 cache:
