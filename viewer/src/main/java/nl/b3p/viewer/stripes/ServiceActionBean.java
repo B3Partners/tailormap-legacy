@@ -23,17 +23,14 @@ import java.util.Map;
 import javax.persistence.EntityManager;
 import net.sourceforge.stripes.action.ActionBean;
 import net.sourceforge.stripes.action.ActionBeanContext;
-import net.sourceforge.stripes.action.Before;
 import net.sourceforge.stripes.action.Resolution;
 import net.sourceforge.stripes.action.StreamingResolution;
 import net.sourceforge.stripes.action.StrictBinding;
 import net.sourceforge.stripes.action.UrlBinding;
 import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.viewer.config.services.ArcGISService;
-import nl.b3p.viewer.config.services.ArcIMSService;
 import nl.b3p.viewer.config.services.GeoService;
 import nl.b3p.viewer.config.services.WMSService;
-import nl.b3p.web.stripes.ErrorMessageResolution;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.stripesstuff.stripersist.Stripersist;
@@ -109,9 +106,6 @@ public class ServiceActionBean extends LocalizableActionBean implements ActionBe
                     service = new WMSService().loadFromUrl(url, params, em);
                 } else if(protocol.equals(ArcGISService.PROTOCOL)) {
                     service = new ArcGISService().loadFromUrl(url, params, em);
-                } else if(protocol.equals(ArcIMSService.PROTOCOL)) {
-                    params.put(ArcIMSService.PARAM_SERVICENAME, serviceName);
-                    service = new ArcIMSService().loadFromUrl(url, params, em);
                 } else {
                     error = getBundle().getString("viewer.serviceactionbean.2");
                 }            

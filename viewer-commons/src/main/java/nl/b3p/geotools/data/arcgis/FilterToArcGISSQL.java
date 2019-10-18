@@ -23,7 +23,6 @@ import java.io.Writer;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import nl.b3p.geotools.data.arcims.FilterToArcXMLSQL;
 import org.geotools.data.jdbc.FilterToSQL;
 import org.geotools.filter.FilterCapabilities;
 import org.geotools.filter.IsNullImpl;
@@ -37,8 +36,7 @@ import org.opengis.filter.expression.PropertyName;
 import org.opengis.filter.spatial.*;
 
 /**
- * Convert a Filter to a where statement and separate spatial operator. See 
- * {@link FilterToArcXMLSQL}.
+ * Convert a Filter to a where statement and separate spatial operator.
  * 
  * @author Matthijs Laan
  */

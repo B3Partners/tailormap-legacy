@@ -17,22 +17,14 @@
 package nl.b3p.viewer.stripes;
 
 import java.io.StringReader;
-import java.io.StringWriter;
 import java.text.MessageFormat;
 import java.util.List;
 import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.Marshaller;
-import javax.xml.namespace.QName;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.controller.LifecycleStage;
 import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.geotools.data.arcgis.ArcGISFeatureReader;
 import nl.b3p.geotools.data.arcgis.ArcGISFeatureSource;
-import nl.b3p.geotools.data.arcims.FilterToArcXMLSQL;
-import nl.b3p.geotools.data.arcims.axl.ArcXML;
-import nl.b3p.geotools.data.arcims.axl.AxlSpatialQuery;
 import nl.b3p.geotools.filter.visitor.RemoveDistanceUnit;
 import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.ApplicationLayer;
@@ -43,7 +35,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
-import org.geotools.filter.text.cql2.CQL;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.opengis.filter.Filter;
@@ -131,56 +122,6 @@ public class ArcQueryUtilActionBean extends LocalizableApplicationActionBean imp
     }
 
     @DefaultHandler
-    public Resolution arcXML() throws JSONException {
-        JSONObject json = new JSONObject();
-        if (unauthorized) {
-            json.put("success", false);
-            json.put("message", getBundle().getString("viewer.general.noauth"));
-            return new StreamingResolution("application/json", new StringReader(json.toString(4)));
-        }
-        try {
-            AxlSpatialQuery aq = new AxlSpatialQuery();
-            FilterToArcXMLSQL visitor = new FilterToArcXMLSQL(aq);
-
-            Filter filter = FlamingoCQL.toFilter(cql, Stripersist.getEntityManager());
-            String where = visitor.encodeToString(filter);
-            
-            if(whereOnly) {
-                json.put("where", where);
-            } else {
-                if (where.trim().length() > 0 && !where.trim().equals("1=1")) {
-                    aq.setWhere(where);
-                }
-
-                StringWriter sw = new StringWriter();
-
-                Marshaller m = ArcXML.getJaxbContext().createMarshaller();
-                m.setProperty(javax.xml.bind.Marshaller.JAXB_ENCODING, "UTF-8");
-                m.setProperty(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-                m.setProperty(javax.xml.bind.Marshaller.JAXB_FRAGMENT, Boolean.TRUE);
-                m.marshal(new JAXBElement(
-                        new QName(null, "SPATIALQUERY"),
-                        AxlSpatialQuery.class, aq), sw);
-                sw.close();
-
-                json.put("SPATIALQUERY", sw.toString());
-            }
-            json.put("success", true);
-        } catch (Exception e) {
-            json.put("success", false);
-
-            String message = MessageFormat.format(getBundle().getString("viewer.arcqueryutilactionbean.sq"), e.toString());
-            Throwable cause = e.getCause();
-            while (cause != null) {
-                message += "; " + cause.toString();
-                cause = cause.getCause();
-            }
-            json.put("error", message);
-        }
-
-        return new StreamingResolution("application/json", new StringReader(json.toString(4)));
-    }
-
     public Resolution getObjectIds() throws JSONException, Exception {
         JSONObject json = new JSONObject();
 

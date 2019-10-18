@@ -390,8 +390,6 @@ public class AttributeSourceActionBean extends LocalizableActionBean {
                 protocolType = "JDBC";
             } else if (source instanceof ArcGISFeatureSource) {
                 protocolType = "ArcGIS";
-            } else if (source instanceof ArcXMLFeatureSource) {
-                protocolType = "ArcXML";
             }
             JSONObject j = this.getGridRow(source.getId().intValue(), source.getName(), source.getUrl(), protocolType);
             jsonData.put(j);

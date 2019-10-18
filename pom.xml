@@ -43,7 +43,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <!-- when updating geotools also check jts and b3p-commons-csw or you will end up in transitive dependency hell -->
-        <geotools.version>21.3</geotools.version>
+        <geotools.version>22.0</geotools.version>
         <powermock.version>2.0.4</powermock.version>
         <hsqldb.version>2.5.0</hsqldb.version>
         <test.persistence.unit>viewer-config-hsqldb</test.persistence.unit>
@@ -165,7 +165,7 @@
             <dependency>
                 <groupId>nl.b3p</groupId>
                 <artifactId>b3p-commons-csw</artifactId>
-                <version>6.0.3</version>
+                <version>6.1.0-SNAPSHOT</version>
                 <exclusions>
                     <exclusion>
                         <groupId>javax.persistence</groupId>
@@ -289,13 +289,6 @@
                 <groupId>org.geotools</groupId>
                 <artifactId>gt-wmts</artifactId>
                 <version>${geotools.version}</version>
-                <exclusions>
-                    <!-- GEOT-6341 (https://osgeo-org.atlassian.net/browse/GEOT-6341) -->
-                    <exclusion>
-                        <groupId>org.geotools</groupId>
-                        <artifactId>gt-epsg-hsql</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.quartz-scheduler</groupId>
@@ -397,6 +390,20 @@
                 <groupId>org.geotools</groupId>
                 <artifactId>gt-referencing</artifactId>
                 <version>${geotools.version}</version>
+                <exclusions>
+                    <!-- exclude transitive dependencies of jgridshift 1.1
+                    workaround for https://osgeo-org.atlassian.net/projects/GEOT/issues/GEOT-6379
+                    these shoud be removed after upgrading geotools to 22.1
+                    -->
+                    <exclusion>
+                        <groupId>javax</groupId>
+                        <artifactId>javaee-api</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.apache.axis</groupId>
+                        <artifactId>axis</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.geotools</groupId>

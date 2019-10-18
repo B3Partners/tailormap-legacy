@@ -184,16 +184,16 @@ public class Layer implements Cloneable, Serializable {
         minScale = l.getScaleDenominatorMin();
         this.service = service;
         if(Double.isNaN(minScale)) {
-            if(!Double.isNaN( l.getScaleHintMin())){
-                minScale = l.getScaleHintMin();
+            if(!Double.isNaN( l.getScaleDenominatorMin())){
+                minScale = l.getScaleDenominatorMin();
             }else{
                 minScale = null;
             }
         }
         maxScale = l.getScaleDenominatorMax();
         if(Double.isNaN(maxScale)) {
-            if(!Double.isNaN(l.getScaleHintMax())){
-                maxScale = l.getScaleHintMax();
+            if(!Double.isNaN(l.getScaleDenominatorMax())){
+                maxScale = l.getScaleDenominatorMax();
             }else{
                 maxScale = null;
             }
@@ -384,12 +384,11 @@ public class Layer implements Cloneable, Serializable {
     /**
      * Checks if the layer is bufferable.
      *
-     * @return {@code true} if service type of this layer is ArcIms or ArcGis or
-     * if the layer has a featuretype, {@code false} otherwise
+     * @return {@code true} if the layer has a featuretype, {@code false}
+     * otherwise
      */
     public boolean isBufferable(){
-        return getService().getProtocol().equals(ArcIMSService.PROTOCOL) ||
-                this.getFeatureType() != null;
+        return this.getFeatureType() != null;
     }
 
     public interface Visitor {

@@ -185,12 +185,7 @@ Ext.define("viewer.viewercontroller.FlamingoMapComponent",{
         };
         return config;
     },
-    //createArcIMSLayer : function(name,server,servlet,mapservice,options,viewerController){
-    createArcIMSLayer: function(name,url,options,viewerController){
-        var config=this.createArcConfig(name,url,options,viewerController);
-        return new viewer.viewercontroller.flamingo.FlamingoArcIMSLayer(config);
-    },
-    createArcServerLayer : function(name,url,options,viewerController){            
+    createArcServerLayer: function (name, url, options, viewerController) {
         var config=this.createArcConfig(name,url,options,viewerController);
         options.mapservice=options.servlet.substring(21,options.servlet.toLowerCase().indexOf("/mapserver"));        
         //xxx for REST remove the next line.

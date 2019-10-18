@@ -60,7 +60,6 @@ import org.geotools.data.util.GeometryTypeConverterFactory;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.opengis.feature.simple.SimpleFeature;
-import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.feature.type.GeometryType;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory2;
@@ -315,7 +314,7 @@ public class SplitFeatureActionBean extends LocalizableApplicationActionBean imp
                     feature.setAttribute(geomAttribute, c.convert(newGeom, type.getBinding()));
                     feature = this.handleExtraData(feature);
                     Object[] attributevalues = feature.getAttributes().toArray(new Object[feature.getAttributeCount()]);
-                    AttributeDescriptor[] attributes = feature.getFeatureType().getAttributeDescriptors().toArray(new AttributeDescriptor[feature.getAttributeCount()]);
+                    String[] attributes = DataUtilities.attributeNames(feature.getFeatureType());
                     localStore.modifyFeatures(attributes, attributevalues, filter);
                     firstFeature = false;
                     continue;

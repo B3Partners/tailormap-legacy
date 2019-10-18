@@ -354,7 +354,6 @@
                                 <param>${viewerhtml.path}/common/viewercontroller/flamingo/FlamingoLayer.js</param>
                                 <param>${viewerhtml.path}/common/viewercontroller/flamingo/FlamingoArcLayer.js</param>
                                 <param>${viewerhtml.path}/common/viewercontroller/flamingo/FlamingoArcServerLayer.js</param>
-                                <param>${viewerhtml.path}/common/viewercontroller/flamingo/FlamingoArcIMSLayer.js</param>
                                 <param>${viewerhtml.path}/common/viewercontroller/flamingo/FlamingoWMSLayer.js</param>
                                 <param>${viewerhtml.path}/common/viewercontroller/flamingo/FlamingoVectorLayer.js</param>
                                 <param>${viewerhtml.path}/common/viewercontroller/flamingo/FlamingoMap.js</param>
@@ -383,7 +382,6 @@
                                 <!-- OpenLayers -->
                                 <param>${viewerhtml.path}/common/viewercontroller/openlayers/OpenLayersLayer.js</param>
                                 <param>${viewerhtml.path}/common/viewercontroller/openlayers/OpenLayersArcLayer.js</param>
-                                <param>${viewerhtml.path}/common/viewercontroller/openlayers/OpenLayersArcIMSLayer.js</param>
                                 <param>${viewerhtml.path}/common/viewercontroller/openlayers/OpenLayersArcServerLayer.js</param>
                                 <param>${viewerhtml.path}/common/viewercontroller/openlayers/OpenLayersWMSLayer.js</param>
                                 <param>${viewerhtml.path}/common/viewercontroller/openlayers/OpenLayersVectorLayer.js</param>
