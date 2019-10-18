@@ -1006,7 +1006,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
 
                 Ext.apply(layerObj.config, layerConfig);
 
-            } else if (sservice.protocol == "arcgis") {
+            } else if (service.protocol == "arcgis") {
                 options.layers= layer.name;
                 if(layer.details && layer.details.all_children) {
                     options.layers = layer.details.all_children;
