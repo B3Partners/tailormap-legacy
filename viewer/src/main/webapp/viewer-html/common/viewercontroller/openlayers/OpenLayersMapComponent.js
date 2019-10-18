@@ -455,6 +455,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
             if(this.contentBottom){
                 options.div = this.contentBottom;
             }
+            config.defaultAlignPosition = "br";
             config.cssClass = "olControlMousePosition";
             comp = Ext.create("viewer.viewercontroller.openlayers.OpenLayersComponent",config, new OpenLayers.Control.MousePosition(options));
         }else if(type == viewer.viewercontroller.controller.Component.SCALEBAR){
@@ -514,7 +515,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
             return new viewer.viewercontroller.openlayers.OpenLayersTool(conf,new OpenLayers.Control.DragPan(frameworkOptions));
         }else if (type == viewer.viewercontroller.controller.Tool.GET_FEATURE_INFO) {
             return new viewer.viewercontroller.openlayers.tools.OpenLayersIdentifyTool(conf);
-        }else if(type === viewer.viewercontroller.controller.Tool.MEASURELINE ||type === viewer.viewercontroller.controller.Tool.MEASUREAREA ){
+        }else if(type === viewer.viewercontroller.controller.Tool.MEASURELINE  ||type === viewer.viewercontroller.controller.Tool.MEASUREAREA ){
             conf.frameworkOptions = frameworkOptions;
             var measureTool = new viewer.viewercontroller.openlayers.tools.OpenLayersMeasureTool(conf);
             return measureTool;
@@ -800,6 +801,10 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
         } else {
             Ext.get(this.domId).dom.style.cursor = "default";
         }
+    },
+    
+    compareExtent: function(ext1, ext2){
+        return ext1.equals(ext2);
     },
 
     /****************************************************************Event handling***********************************************************/

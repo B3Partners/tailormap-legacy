@@ -36,21 +36,21 @@ Ext.define ("viewer.components.Coordinates",{
         
         var comp = this.config.viewerController.mapComponent.createComponent(conf);
         this.config.viewerController.mapComponent.addComponent(comp);
-        this.alignComponent();
+        this.alignComponent(comp);
         
         return this;
     },
-    alignComponent : function () {
+    alignComponent : function (comp) {
         var left = Number(this.config.left || 10);
         var top = Number(this.config.top || 10);
         var pos = [left, top];
-        var align = this.config.alignposition || 'br';
-        if (left === 10 && top === 10 && align === "br") {
+        var align = this.config.alignposition || comp.defaultAlignPosition;
+        if (left === 10 && top === 10 && align === comp.defaultAlignPosition) {
             // Keep current behaviour when defaults are set
             return;
         }
 
-        var divEl = Ext.select(".olControlMousePosition");
+        var divEl = Ext.select("."+comp.cssClass);
         // We need a fixed width/height here because div is hidden when starting the application and width/height is needed for alignment
         divEl.setStyle({ "min-width": "150px", "min-height": "25px", "bottom": "auto", "right": "auto" });
         divEl.addCls("anchored-coordinates");

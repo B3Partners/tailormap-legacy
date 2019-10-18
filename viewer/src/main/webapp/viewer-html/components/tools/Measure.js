@@ -102,7 +102,9 @@ Ext.define ("viewer.components.tools.Measure.Line",{
         viewer.components.tools.Measure.Line.superclass.constructor.call(this, this.config);
         this.config.type = viewer.viewercontroller.controller.Tool.MEASURELINE;
         this.initTool(this.config);
-        this.initEvents();
+        if(viewer.viewercontroller.openlayers){
+            this.initEvents();
+        }
         return this;
     }
 });
@@ -118,7 +120,9 @@ Ext.define ("viewer.components.tools.Measure.Area",{
         viewer.components.tools.Measure.Area.superclass.constructor.call(this, this.config);
         this.config.type = viewer.viewercontroller.controller.Tool.MEASUREAREA;
         this.initTool(this.config);
-        this.initEvents();
+        if(viewer.viewercontroller.openlayers){
+            this.initEvents();
+        }            
         return this;
     }
 });

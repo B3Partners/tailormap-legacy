@@ -31,6 +31,25 @@
             }
         }
     },
+
+    {
+        "className": "viewer.mapcomponents.OpenLayers5Map",
+        "name": "OpenLayers 5 Map",
+        "shortName": "OL5",
+        "group": "Map",
+        "singleton": true,
+        "restrictions": ["content"],
+        "notInCombinationWith": ["viewer.mapcomponents.FlamingoMap", "viewer.mapcomponents.OpenLayersMap"],
+        "extPropertyGridConfigs": {
+            "propertyNames": {
+                "resolutions": "Resoluties (komma gescheiden)"
+            },
+            "source": {
+                "resolutions": ""
+            }
+        }
+    },
+    
     {
         "className": "viewer.components.Ontbrandingsaanvraag",
         "name": "Fireworks Permit",
