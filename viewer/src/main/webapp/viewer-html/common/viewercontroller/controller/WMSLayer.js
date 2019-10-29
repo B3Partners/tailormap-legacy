@@ -62,7 +62,7 @@ Ext.define("viewer.viewercontroller.controller.WMSLayer",{
             "REQUEST": "GetLegendGraphic",
             "LAYER": this.getAppLayerName(),
             "VERSION": "1.1.1",
-            "STYLE": this.getStyle(),
+            "STYLE": this.getStyles(),
             "FORMAT": "image/png"
         };
         
