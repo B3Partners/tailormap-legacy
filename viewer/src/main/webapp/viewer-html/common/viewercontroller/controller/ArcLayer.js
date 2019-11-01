@@ -70,11 +70,7 @@ Ext.define("viewer.viewercontroller.controller.ArcLayer",{
             );
             
         } else {
-            /* ArcXML legends not yet supported, needs server side support for a
-             * cross-domain POST
-             */
             this.getViewerController().logger.warn(i18next.t('viewer_viewercontroller_controller_arclayer_0', {appLayerId: this.getAppLayerId()}));
-
             failure();
         }
     },
