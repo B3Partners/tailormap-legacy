@@ -44,7 +44,6 @@ public class CombineImageActionBean extends LocalizableActionBean implements Act
     private static final LinkedHashMap<String, CombineImageSettings> imageSettings = new LinkedHashMap<String, CombineImageSettings>();
 
     public static final String WMS = "WMS";
-    public static final String ARCIMS = "ARCIMS";
     public static final String ARCSERVER = "ARCSERVER";
     public static final String IMAGE = "IMAGE";
     public static final String ARCSERVERREST = "ARCSERVERREST";
