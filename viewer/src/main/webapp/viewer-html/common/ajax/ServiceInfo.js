@@ -21,8 +21,6 @@
  * 
  * It is not a vulnerability that the user can cause the server to load a 
  * user-inputted URL: only service info according to the protocol is requested.
- * Only "arcims" protocol causes a POST request but the user cannot control the 
- * request body.
  * 
  * A downside is that the user cannot use a service in his LAN or a service for 
  * which he is on a whitelist because the service info is requested by the server.
@@ -67,5 +65,3 @@ Ext.define("viewer.ServiceInfo", {
         });
     }
 });
-
-

@@ -173,6 +173,6 @@ public class FilterToArcGISSQL extends FilterToSQL {
     protected Object visitBinarySpatialOperator(BinarySpatialOperator filter, Expression e1, 
         Expression e2, Object extraData) {
         throw new RuntimeException(
-            "ArcXML spatial operators only supported for default geometry and a literal operand");
+            "ArcGIS spatial operators only supported for default geometry and a literal operand");
     }        
 }

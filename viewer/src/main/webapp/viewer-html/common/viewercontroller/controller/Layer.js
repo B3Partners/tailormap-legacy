@@ -11,7 +11,6 @@ Ext.define("viewer.viewercontroller.controller.Layer",{
         WMS_TYPE: "WMS",
         ARCSERVER_TYPE: "ARCSERVER",
         ARCSERVERREST_TYPE: "ARCSERVERREST",
-        ARCIMS_TYPE: "ARCIMS",
         VECTOR_TYPE: "VECTOR",
         IMAGE_TYPE: "IMAGE",
         TILING_TYPE: "TILING"
@@ -129,7 +128,7 @@ Ext.define("viewer.viewercontroller.controller.Layer",{
         }
     },
     /**
-     * Gets the layer type (WMS, ArcServer, ArcIms, Vector etc.)
+     * Gets the layer type (WMS, ArcServer, Vector etc.)
      */
     getType: function (){
         Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_layer_0')});

@@ -107,7 +107,7 @@ public class ArcQueryUtilActionBean extends LocalizableApplicationActionBean imp
     }
     // </editor-fold>
 
-    @After(stages = LifecycleStage.BindingAndValidation, on="!arcXML")
+    @After(stages = LifecycleStage.BindingAndValidation)
     public void loadLayer() {
         layer = appLayer.getService().getSingleLayer(appLayer.getLayerName(), Stripersist.getEntityManager());
     }
