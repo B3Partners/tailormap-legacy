@@ -530,7 +530,7 @@ Ext.define ("viewer.components.SelectionModule",{
                                 defaultType: 'textfield',
                                 items: [
                                     {hidden: true, itemId: 'customServiceUrlTextfield', flex: 1, emptyText: i18next.t('viewer_components_selectionmodule_12')},
-                                    {xtype: "combobox", store: [ ['wms','WMS'], ['arcims','ArcIMS'], ['arcgis','ArcGIS'] ], hidden: true, itemId: 'customServiceUrlSelect', width: 100, emptyText: i18next.t('viewer_components_selectionmodule_13')},
+                                    {xtype: "combobox", store: [ ['wms','WMS'], ['arcgis','ArcGIS'] ], hidden: true, itemId: 'customServiceUrlSelect', width: 100, emptyText: i18next.t('viewer_components_selectionmodule_13')},
                                     {xtype: 'button', text: i18next.t('viewer_components_selectionmodule_14'), hidden: true, itemId: 'customServiceUrlButton', handler: function() {
                                             me.loadCustomService();
                                     }},

@@ -33,7 +33,6 @@ public class CombineImageSettings {
     private static final Log log = LogFactory.getLog(CombineImageSettings.class);
     
     public static final String WMS_PROTOCOL = "WMS";
-    public static final String ARCIMS_PROTOCOL = "ARCIMS";
     public static final String ARCSERVER_PROTOCOL = "ARCSERVER";
     public static final String ARCSERVERREST_PROTOCOL = "ARCSERVERREST";
     public static final String IMAGE_PROTOCOL="IMAGE";
@@ -378,8 +377,6 @@ public class CombineImageSettings {
                 }
                 if (ARCSERVER_PROTOCOL.equals(protocol)){
                     ciu= new CombineArcServerUrl();
-                }else if (ARCIMS_PROTOCOL.equals(protocol)){
-                    ciu= new CombineArcIMSUrl();
                 }else if (WMS_PROTOCOL.equals(protocol)){
                     ciu = new CombineWmsUrl();
                 }else if (IMAGE_PROTOCOL.equals(protocol)) {                            

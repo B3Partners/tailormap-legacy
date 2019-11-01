@@ -89,8 +89,6 @@ public class ImageManager {
             ImageCollector ic = null;
             if (ciu instanceof CombineWmsUrl){
                 ic = new ImageCollector(ciu, maxResponseTime, client,uname, pw,req);
-            }else if (ciu instanceof CombineArcIMSUrl){
-                ic = new ArcImsImageCollector(ciu, maxResponseTime,client, req);
             }else if (ciu instanceof CombineArcServerUrl){
                 ic = new ArcServerImageCollector(ciu, maxResponseTime,client,req);
             }else {
