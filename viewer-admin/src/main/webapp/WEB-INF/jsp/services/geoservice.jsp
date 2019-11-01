@@ -74,7 +74,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             Ext.fly('useUrlTr').setVisibilityMode(Ext.Element.DISPLAY).setVisible(protocol === "wms");
             Ext.fly('useWFSTr').setVisibilityMode(Ext.Element.DISPLAY).setVisible(protocol === "wms");
             Ext.fly('wmsExcTr').setVisibilityMode(Ext.Element.DISPLAY).setVisible(protocol === "wms");
-            Ext.fly('serviceNameTr').setVisibilityMode(Ext.Element.DISPLAY).setVisible(protocol === "arcims" || protocol === "tiled" &&  tilingProtocol !== "WMTS");
+            Ext.fly('serviceNameTr').setVisibilityMode(Ext.Element.DISPLAY).setVisible(protocol === "tiled" &&  tilingProtocol !== "WMTS");
             Ext.fly('tileSizeTr').setVisibilityMode(Ext.Element.DISPLAY).setVisible(protocol === "tiled" &&  tilingProtocol !== "WMTS");
             Ext.fly('resolutionsTr').setVisibilityMode(Ext.Element.DISPLAY).setVisible(protocol === "tiled" &&  tilingProtocol !== "WMTS");
             Ext.fly('tilingProtocolTr').setVisibilityMode(Ext.Element.DISPLAY).setVisible(protocol === "tiled" );
@@ -98,7 +98,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <stripes:select name="protocol" disabled="${edit}" onchange="checkProtocol()" onkeyup="checkProtocol()">
                     <stripes:option value="wms">WMS</stripes:option>
                     <stripes:option value="arcgis">ArcGIS MapServer (REST)</stripes:option>
-                    <stripes:option value="arcims">ArcIMS</stripes:option>
                     <stripes:option value="tiled">Tiled</stripes:option>
                 </stripes:select>
             </td>
