@@ -128,7 +128,7 @@ Ext.define("viewer.viewercontroller.controller.Layer",{
         }
     },
     /**
-     * Gets the layer type (WMS, ArcServer, ArcIms, Vector etc.)
+     * Gets the layer type (WMS, ArcServer, Vector etc.)
      */
     getType: function (){
         Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_layer_0')});
