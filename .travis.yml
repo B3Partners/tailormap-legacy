@@ -1,4 +1,3 @@
-dist: trusty
 sudo: required
 language: java
 
@@ -11,7 +10,6 @@ addons:
     packages:
       - haveged
       - nodejs
-      # - git-lfs should be installed on trusty images
 
 services:
   - haveged
@@ -38,7 +36,7 @@ install:
   - wget http://cert.pkioverheid.nl/RootCA-G3.cer
   - wget http://cert.pkioverheid.nl/RootCA-G2.cer
   # load pki-overheid G2/G3 certificates on java 8
-  - if [ "$TRAVIS_JDK_VERSION" == oraclejdk8 ] || [ "$TRAVIS_JDK_VERSION" == openjdk8 ]; then
+  - if [ "$TRAVIS_JDK_VERSION" == openjdk8 ]; then
        sudo keytool -importcert -file ./RootCA-G3.cer -alias G3 -keystore $JAVA_HOME/jre/lib/security/cacerts -storepass 'changeit' -v -noprompt -trustcacerts;
        sudo keytool -importcert -file ./RootCA-G2.cer -alias G2 -keystore $JAVA_HOME/jre/lib/security/cacerts -storepass 'changeit' -v -noprompt -trustcacerts;
     fi
@@ -67,11 +65,11 @@ script:
   #- mvn cobertura:cobertura -Ptravis-ci
   #- mvn cobertura:cobertura-integration-test -Ptravis-ci
   # on oracle java 8 run a javadoc build to check for errors
-  - if [ "$TRAVIS_JDK_VERSION" == oraclejdk8 ]; then
+  - if [ "$TRAVIS_JDK_VERSION" == openjdk8 ]; then
          mvn javadoc:javadoc;
     fi
-  # on oracle java 8 run a test-javadoc build to check for errors
-  - if [ "$TRAVIS_JDK_VERSION" == oraclejdk8 ]; then
+  # on java 8 run a test-javadoc build to check for errors
+  - if [ "$TRAVIS_JDK_VERSION" == openjdk8 ]; then
          mvn javadoc:test-javadoc;
     fi
 
@@ -79,7 +77,6 @@ after_success:
   - bash <(curl -s https://codecov.io/bash)
   
 jdk:
-  - oraclejdk8
   - openjdk8
   - openjdk11
 
