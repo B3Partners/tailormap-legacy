@@ -1,25 +1,12 @@
 [
     {
-        "className": "viewer.mapcomponents.FlamingoMap",
-        "name": "Flamingo Map",
-        "shortName": "Fm",
-        "restrictions": ["content"],
-        "group": "Map",
-        "singleton": true,
-        "notInCombinationWith": ["viewer.mapcomponents.OpenLayersMap"],
-        "extPropertyGridConfigs": {
-            "propertyNames": {"resolutions": "Resoluties", "movetime": "Move time", "movesteps": "Move Steps" },
-            "source": {"resolutions": "", "movetime": "", "movesteps": ""}
-        }
-    },
-    {
         "className": "viewer.mapcomponents.OpenLayersMap",
         "name": "OpenLayers Map",
         "shortName": "Om",
         "group": "Map",
         "singleton": true,
         "restrictions": ["content"],
-        "notInCombinationWith": ["viewer.mapcomponents.FlamingoMap"],
+        "notInCombinationWith": ["viewer.mapcomponents.OpenLayers5Map"],
         "extPropertyGridConfigs": {
             "propertyNames": {
                 "resolutions": "Resoluties (komma gescheiden)",
@@ -39,7 +26,7 @@
         "group": "Map",
         "singleton": true,
         "restrictions": ["content"],
-        "notInCombinationWith": ["viewer.mapcomponents.FlamingoMap", "viewer.mapcomponents.OpenLayersMap"],
+        "notInCombinationWith": ["viewer.mapcomponents.OpenLayersMap"],
         "extPropertyGridConfigs": {
             "propertyNames": {
                 "resolutions": "Resoluties (komma gescheiden)"
@@ -96,7 +83,7 @@
         "group": "Tools",
         "shortName": "Zm",
         "sources": ["tools/Tool.js","tools/Zoom.js"],
-        "notInCombinationWith": ["viewer.mapcomponents.FlamingoMap"],
+        "notInCombinationWith": [],
         "closureCompilerSafe": true,
         "singleton": true,
         "restrictions": ["content"],
@@ -168,9 +155,7 @@
     },
     {
         "className": "viewer.components.FeatureReport",
-        "notInCombinationWith": [
-            "viewer.mapcomponents.FlamingoMap"
-        ],
+        "notInCombinationWith": [],
         "name": "Feature Report",
         "group": "Map",
         "shortName": "FR",
@@ -650,7 +635,7 @@
         "sources": ["Split.js"],
         "configSource": ["ConfigObject.js","SelectionWindowConfig.js","Split-config.js"],
         "restrictions": ["left_menu"],
-        "notInCombinationWith": ["viewer.mapcomponents.FlamingoMap"],
+        "notInCombinationWith": [],
         "type": "popup",
         "singleton": true,
         "showHelp": true
@@ -663,7 +648,7 @@
         "sources": ["Merge.js"],
         "configSource": ["ConfigObject.js","SelectionWindowConfig.js","Merge-config.js"],
         "restrictions": ["left_menu"],
-        "notInCombinationWith": ["viewer.mapcomponents.FlamingoMap"],
+        "notInCombinationWith": [],
         "type": "popup",
         "singleton": true,
         "showHelp": true
@@ -685,7 +670,7 @@
         "name": "Snapping",
         "shortName": "Sn",
         "group": "Component",
-        "notInCombinationWith": ["viewer.mapcomponents.FlamingoMap"],
+        "notInCombinationWith": [],
         "sources": ["Snapping.js"],
         "configSource": ["ConfigObject.js","SelectionWindowConfig.js","Snapping-config.js"],
         "restrictions": ["left_menu"],
@@ -897,7 +882,7 @@
         "name": "Keyboard Navigation",
         "shortName": "Kn",
         "group": "Map",
-        "notInCombinationWith": ["viewer.mapcomponents.FlamingoMap"],
+        "notInCombinationWith": [],
         "sources": ["Keyboard.js"],
         "closureCompilerSafe": true,
 
