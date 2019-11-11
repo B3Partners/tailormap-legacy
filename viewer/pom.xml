@@ -347,34 +347,6 @@
                             <compilationLevel>SIMPLE_OPTIMIZATIONS</compilationLevel>
                             <compilerOptions>
                                 <prettyPrint>true</prettyPrint>
-                            </compilerOptions>
-                            <externFiles />
-                            <sourceFiles>
-                                <!-- Flamingo -->
-                                <param>${viewerhtml.path}/common/viewercontroller/flamingo/FlamingoLayer.js</param>
-                                <param>${viewerhtml.path}/common/viewercontroller/flamingo/FlamingoArcLayer.js</param>
-                                <param>${viewerhtml.path}/common/viewercontroller/flamingo/FlamingoArcServerLayer.js</param>
-                                <param>${viewerhtml.path}/common/viewercontroller/flamingo/FlamingoWMSLayer.js</param>
-                                <param>${viewerhtml.path}/common/viewercontroller/flamingo/FlamingoVectorLayer.js</param>
-                                <param>${viewerhtml.path}/common/viewercontroller/flamingo/FlamingoMap.js</param>
-                                <param>${viewerhtml.path}/common/viewercontroller/flamingo/FlamingoTool.js</param>
-                                <param>${viewerhtml.path}/common/viewercontroller/flamingo/FlamingoImageLayer.js</param>
-                                <param>${viewerhtml.path}/common/viewercontroller/flamingo/FlamingoTilingLayer.js</param>
-                                <param>${viewerhtml.path}/common/viewercontroller/flamingo/ToolMapClick.js</param>
-                                <param>${viewerhtml.path}/common/viewercontroller/flamingo/FlamingoComponent.js</param>
-                                <param>${viewerhtml.path}/common/viewercontroller/flamingo/FlamingoMapComponent.js</param>
-                                <!-- Flamingo Components-->
-                                <param>${viewerhtml.path}/common/viewercontroller/flamingo/components/Overview.js</param>
-                                <!-- Flamingo Tools -->
-                                <param>${viewerhtml.path}/common/viewercontroller/flamingo/tools/JSButton.js</param>
-                                <param>${viewerhtml.path}/common/viewercontroller/flamingo/tools/FlamingoMeasureArea.js</param>
-                            </sourceFiles>
-                            <outputFile>${minify.outputdir}/flamingo-min.js</outputFile>
-                        </compilation>
-                        <compilation>
-                            <compilationLevel>SIMPLE_OPTIMIZATIONS</compilationLevel>
-                            <compilerOptions>
-                                <prettyPrint>true</prettyPrint>
                                 <languageIn>ECMASCRIPT3</languageIn>
                             </compilerOptions>
                             <externFiles />
