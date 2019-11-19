@@ -130,8 +130,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                 continue;
             }
             var component = comps[c];
-            if(component.className == "viewer.mapcomponents.FlamingoMap" ||
-                component.className == "viewer.mapcomponents.OpenLayersMap" || component.className == "viewer.mapcomponents.OpenLayers5Map"){
+            if( component.className == "viewer.mapcomponents.OpenLayersMap" || component.className == "viewer.mapcomponents.OpenLayers5Map"){
                 config = component.config;
                 break;
             }
@@ -141,9 +140,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         this.initialiseProjectionSupport();
         
         Ext.apply(config, mapConfig || {});
-        if(viewerType === "flamingo") {
-            this.mapComponent = new viewer.viewercontroller.FlamingoMapComponent(this, mapId,config);
-        }else if(viewerType === "openlayers") {
+        if(viewerType === "openlayers") {
             this.mapComponent = new viewer.viewercontroller.OpenLayersMapComponent(this, mapId,config);
         }else if(viewerType === "openlayers5"){
             this.mapComponent = new viewer.viewercontroller.OlMapComponent(this, mapId, config);
@@ -158,9 +155,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         this.mapComponent.addListener(viewer.viewercontroller.controller.Event.ON_CONFIG_COMPLETE,this.onMapContainerLoaded,this);
         this.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE, this.onSelectedContentChanged,this);
 
-        if(viewerType === "openlayers" || viewerType == "openlayers5") {
-            this.mapComponent.fireEvent(viewer.viewercontroller.controller.Event.ON_CONFIG_COMPLETE);
-        }
+        this.mapComponent.fireEvent(viewer.viewercontroller.controller.Event.ON_CONFIG_COMPLETE);
 
         // Listen for resize & orientation changes
         if(window.addEventListener) {
@@ -353,7 +348,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         }
 
         // XXX
-        if(className == "viewer.mapcomponents.FlamingoMap" || className == "viewer.mapcomponents.OpenLayersMap" || className == "viewer.mapcomponents.OpenLayers5Map") {
+        if(className == "viewer.mapcomponents.OpenLayersMap" || className == "viewer.mapcomponents.OpenLayers5Map") {
             return null;
         }
 
