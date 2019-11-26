@@ -43,7 +43,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <!-- when updating geotools also check jts and b3p-commons-csw or you will end up in trabnsitive dependency hell -->
-        <geotools.version>20.3</geotools.version>
+        <geotools.version>20.5</geotools.version>
         <powermock.version>2.0.2</powermock.version>
         <hsqldb.version>2.4.1</hsqldb.version>
         <test.persistence.unit>viewer-config-hsqldb</test.persistence.unit>
@@ -55,9 +55,9 @@
         <!-- skip integration tests by default, override this property from commandline
         or as part of a profile, see eg. 'travis-ci' profile in viewer -->
         <test.skip.integrationtests>false</test.skip.integrationtests>
-        <maven-surefire-plugin.version>3.0.0-M3</maven-surefire-plugin.version>
-        <tomcat.version>7.0.92</tomcat.version>
-        <jacoco-maven-plugin.version>0.8.4</jacoco-maven-plugin.version>
+        <maven-surefire-plugin.version>3.0.0-M4</maven-surefire-plugin.version>
+        <tomcat.version>7.0.96</tomcat.version>
+        <jacoco-maven-plugin.version>0.8.5</jacoco-maven-plugin.version>
         <!--<jacoco.it.execution.data.file>${project.build.directory}/jacoco-it.exec</jacoco.it.execution.data.file>-->
         <!--<jacoco.ut.execution.data.file>${project.build.directory}/jacoco-ut.exec</jacoco.ut.execution.data.file>-->
     </properties>
