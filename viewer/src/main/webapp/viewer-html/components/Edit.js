@@ -1609,7 +1609,7 @@ Ext.define("viewer.components.Edit", {
         this.editingLayer.reload();
         this.currentFID = null;
         if(!skipSuccessMessage) {
-            this.showSuccessToast(i18next.t('viewer_components_edit_51'), i18next.t('viewer_components_edit_41'));
+            this.showSuccessToast(i18next.t('viewer_components_edit_40'), i18next.t('viewer_components_edit_41'));
         }
         this.cancel();
     },
