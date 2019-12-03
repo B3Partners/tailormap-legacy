@@ -575,7 +575,7 @@ public class ApplicationActionBean extends LocalizableApplicationActionBean impl
     }
 
     private String retrieveViewerType (){
-        String type = "FlamingoMap";
+        String type = "openlayers";
         String typePrefix = "viewer.mapcomponents";
         Set<ConfiguredComponent> components = application.getComponents();
         for (ConfiguredComponent component : components) {

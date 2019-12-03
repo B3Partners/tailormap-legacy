@@ -483,7 +483,7 @@ Ext.define('LayoutManager', {
     
     createToolbox: function() {
         var groups = {};
-        var filteredComponents = ['viewer.mapcomponents.FlamingoMap', 'viewer.components.BrowserCheck'];
+        var filteredComponents = ['viewer.components.BrowserCheck'];
         for(var i = 0 ; i < this.config.components.length;i++){
             var component = this.config.components[i];
             if(Ext.Array.contains(filteredComponents, component.className)) {

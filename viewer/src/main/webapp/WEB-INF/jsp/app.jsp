@@ -247,29 +247,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         <script type="text/javascript" src="${scriptDir}/tools/PrevExtent.js"></script>
                         <script type="text/javascript" src="${scriptDir}/tools/NextExtent.js"></script>
                     </c:when>
-                    <c:otherwise>
-                        <c:set var="scriptDir" value="${contextPath}/viewer-html/common/viewercontroller/flamingo"/>
-                        <script type="text/javascript" src="${scriptDir}/FlamingoLayer.js"></script>
-                        <script type="text/javascript" src="${scriptDir}/FlamingoArcLayer.js"></script>
-                        <script type="text/javascript" src="${scriptDir}/FlamingoArcServerLayer.js"></script>
-                        <script type="text/javascript" src="${scriptDir}/FlamingoWMSLayer.js"></script>
-                        <script type="text/javascript" src="${scriptDir}/FlamingoVectorLayer.js"></script>
-                        <script type="text/javascript" src="${scriptDir}/FlamingoMap.js"></script>
-                        <script type="text/javascript" src="${scriptDir}/FlamingoTool.js"></script>
-                        <script type="text/javascript" src="${scriptDir}/FlamingoImageLayer.js"></script>
-                        <script type="text/javascript" src="${scriptDir}/FlamingoTilingLayer.js"></script>
-                        <script type="text/javascript" src="${scriptDir}/ToolMapClick.js"></script>
-
-                        <script type="text/javascript" src="${scriptDir}/FlamingoComponent.js"></script>
-
-                        <script type="text/javascript" src="${scriptDir}/FlamingoMapComponent.js"></script>
-
-                        <!-- The components -->
-                        <script type="text/javascript" src="${scriptDir}/components/Overview.js"></script>
-
-                        <script type="text/javascript" src="${scriptDir}/tools/JSButton.js"></script>
-                        <script type="text/javascript" src="${scriptDir}/tools/FlamingoMeasureArea.js"></script>
-                    </c:otherwise>
                 </c:choose>
 
             </c:otherwise>
