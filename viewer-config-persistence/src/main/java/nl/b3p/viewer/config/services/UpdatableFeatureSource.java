@@ -93,6 +93,7 @@ public abstract class UpdatableFeatureSource extends FeatureSource{
                 }
                 if(!stillExists){
                     it.remove();
+                    em.remove(oldFt);
                 }
                 if(processed == updatebatchsize){
                     processed = 0;
