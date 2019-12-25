@@ -9,7 +9,7 @@ For security related information please check the [security policy](./.github/SE
 ![Flamingo logo](https://raw.githubusercontent.com/flamingo-geocms/flamingo/master/viewer/src/main/webapp/WEB-INF/xsl/print/logo.png)
 
 
-[![Travis Build Status](https://travis-ci.org/flamingo-geocms/flamingo.svg?branch=master)](https://travis-ci.org/flamingo-geocms/flamingo)
+[![Travis-CI Build Status](https://travis-ci.com/flamingo-geocms/flamingo.svg?branch=master)](https://travis-ci.com/flamingo-geocms/flamingo)
 [![AppVeyor Build status](https://ci.appveyor.com/api/projects/status/msxqhcpp8f0bjixk/branch/master?svg=true)](https://ci.appveyor.com/project/mtoonen/flamingo-e1jns/branch/master)
 [![GitHub issues](https://img.shields.io/github/issues/flamingo-geocms/flamingo.svg)](https://github.com/flamingo-geocms/flamingo/issues)
 [![GitHub forks](https://img.shields.io/github/forks/flamingo-geocms/flamingo.svg)](https://github.com/flamingo-geocms/flamingo/network)
