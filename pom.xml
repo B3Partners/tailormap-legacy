@@ -52,7 +52,7 @@
         <hsqldb.version>2.5.0</hsqldb.version>
         <test.persistence.unit>viewer-config-hsqldb</test.persistence.unit>
         <postgresql.version>42.2.9</postgresql.version>
-        <mssql.version>8.1.0.jre8-preview</mssql.version>
+        <mssql.version>8.1.1.jre8-preview</mssql.version>
         <oracle.version>19.3.0.0</oracle.version>
         <apache.poi.version>4.1.1</apache.poi.version>
         <jakarta.mail.version>1.6.4</jakarta.mail.version>
@@ -64,7 +64,7 @@
         or as part of a profile, see eg. 'travis-ci' profile in viewer -->
         <test.skip.integrationtests>false</test.skip.integrationtests>
         <maven-surefire-plugin.version>3.0.0-M4</maven-surefire-plugin.version>
-        <tomcat.version>7.0.96</tomcat.version>
+        <tomcat.version>7.0.99</tomcat.version>
         <jacoco-maven-plugin.version>0.8.5</jacoco-maven-plugin.version>
         <!--<jacoco.it.execution.data.file>${project.build.directory}/jacoco-it.exec</jacoco.it.execution.data.file>-->
         <!--<jacoco.ut.execution.data.file>${project.build.directory}/jacoco-ut.exec</jacoco.ut.execution.data.file>-->
@@ -544,7 +544,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-release-plugin</artifactId>
-                    <version>2.5.3</version>
+                    <version>3.0.0-M1</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
