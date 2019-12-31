@@ -351,13 +351,22 @@ public class HeaderAuthenticationFilter implements Filter {
                 log.info("Extra headers saved from auth request: " + extraHeaders);
             }
 
-            String returnTo = (String)session.getAttribute(ATTR_RETURN_TO);
+            String returnTo = request.getParameter("returnTo");
             if(returnTo != null) {
-                log.info("Redirecting after successful login to: " + returnTo);
+                // When directly logged in using a redirect to /mellon/login
+                // from outside the filter, accept a returnTo URL parameter.
+                // This can be used for AutnRequests with IsPassive=true.
+                log.info("Redirecting to returnTo from URL parameter: " + returnTo);
                 response.sendRedirect(returnTo);
             } else {
-                log.info("Redirecting to default page after successful login");
-                response.sendRedirect(request.getContextPath());
+                returnTo = (String)session.getAttribute(ATTR_RETURN_TO);
+                if(returnTo != null) {
+                    log.info("Redirecting after successful login to: " + returnTo);
+                    response.sendRedirect(returnTo);
+                } else {
+                    log.info("Redirecting to default page after successful login");
+                    response.sendRedirect(request.getContextPath());
+                }
             }
             return;
         }
