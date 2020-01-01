@@ -138,6 +138,7 @@
                 <artifactId>fop</artifactId>
                 <version>2.4</version>
                 <exclusions>
+                    <!-- fop-core come with a load of deps we don't want -->
                     <!-- exclusion>
                         <groupId>javax.media</groupId>
                         <artifactId>jai-core</artifactId>
@@ -145,6 +146,10 @@
                     <exclusion>
                         <groupId>com.sun.media</groupId>
                         <artifactId>jai-codec</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>javax.servlet</groupId>
+                        <artifactId>servlet-api</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>
