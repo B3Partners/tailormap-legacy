@@ -71,6 +71,7 @@
             <properties>
                 <netbeans.deploy>true</netbeans.deploy>
                 <test.skip.integrationtests>true</test.skip.integrationtests>
+                <skipTests>true</skipTests>
             </properties>
         </action>
         <action>

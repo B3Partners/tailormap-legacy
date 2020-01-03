@@ -105,7 +105,7 @@ public class PrintGenerator  implements Runnable{
             ResourceBundle bundle = ResourceBundleProvider.getResourceBundle(locale);
             String subject = bundle.getString("viewer.printgenerator.subject_success");
             String mailContent = bundle.getString("viewer.printgenerator.mailContent_success");
-            Mailer.sendMail(fromName, fromMail, toMail, subject, mailContent, temp, filename);
+            Mailer.sendMailWithAttachment(fromName, fromMail, toMail, subject, mailContent, temp, filename);
         } finally {
             temp.delete();
         }

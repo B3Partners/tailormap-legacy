@@ -54,7 +54,7 @@ public class Mailer {
      * @throws Exception if any
      */
     public static void sendMail(String fromName, String fromEmail, String email, String subject, String mailContent) throws Exception {
-        sendMail(fromName, fromEmail, email, subject, mailContent, null);
+        sendMail(fromName, fromEmail, email, subject, mailContent, null, "text/plain");
     }
 
     /**
@@ -68,6 +68,10 @@ public class Mailer {
      * @throws Exception if any
      */
     public static void sendMail(String fromName, String fromEmail, String email, String subject, String mailContent, String cc) throws Exception {
+        sendMail(fromName, fromEmail, email, subject, mailContent, cc, "text/plain");
+    }
+    
+    public static void sendMail(String fromName, String fromEmail, String email, String subject, String mailContent, String cc, String mimetype) throws Exception {
 
         Address from = new InternetAddress(fromEmail, fromName);
         MimeMessage msg = new MimeMessage(getMailSession());
@@ -80,7 +84,7 @@ public class Mailer {
         }
         msg.setSubject(subject);
         msg.setSentDate(new Date());
-        msg.setContent(mailContent, "text/plain");
+        msg.setContent(mailContent, mimetype != null ?  mimetype : "text/plain");
 
         Transport.send(msg);
     }
@@ -96,7 +100,7 @@ public class Mailer {
      * @param filename Give that attachment a naem.
      * @throws Exception if any
      */
-    public static void sendMail(String fromName, String fromEmail, String email, String subject, String mailContent, File attachment, String filename) throws Exception {
+    public static void sendMailWithAttachment(String fromName, String fromEmail, String email, String subject, String mailContent, File attachment, String filename) throws Exception {
     
         Address from = new InternetAddress(fromEmail, fromName);
         Message msg = new MimeMessage(getMailSession());
