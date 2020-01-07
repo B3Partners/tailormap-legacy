@@ -18,6 +18,7 @@ package nl.b3p.viewer.audit.strategy;
 
 import nl.b3p.viewer.audit.AuditMessageObject;
 import nl.b3p.viewer.audit.Auditable;
+import nl.b3p.viewer.audit.LoggingServiceFactory;
 
 /**
  *
@@ -27,7 +28,7 @@ public class EditLogging implements LoggingStrategy{
 
     @Override
     public void log(Auditable ab, AuditMessageObject amo) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        LoggingServiceFactory.getInstance().logMessage(amo.getUsername(), amo.getMessagesAsString());
     }
     
 }
