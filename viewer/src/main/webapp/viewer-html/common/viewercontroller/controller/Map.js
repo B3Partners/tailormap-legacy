@@ -147,6 +147,12 @@ Ext.define("viewer.viewercontroller.controller.Map",{
         var newLayerArray= new Array();
         var oldLayerArray = this.getLayers();
         var size = oldLayerArray.length;
+        // Check if newIndex is within bounds of the layersarray. If larger, move layer to the end of the array. If smaller, move layer to the start of the array
+        if(size <= newIndex){
+            newIndex = size -1;
+        }else if(newIndex < 0){
+            newIndex = 0;
+        }
         var count=0;
         // Delete layer from the old array
         oldLayerArray.splice(currentIndex   ,1);
