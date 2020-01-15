@@ -195,6 +195,13 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
         options.viewerController = this.viewerController;
         options.domId=this.domId;
         var olMap = Ext.create("viewer.viewercontroller.openlayers.OpenLayersMap",options);
+        olMap.Z_INDEX_BASE ={
+            BaseLayer: 100,
+            Overlay: 3250,
+            Feature: 7250,
+            Popup: 7500,
+            Control: 10000
+        };
         return olMap;
     },
 
