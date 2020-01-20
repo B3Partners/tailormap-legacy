@@ -214,6 +214,10 @@
     <welcome-file-list>
         <welcome-file>index.jsp</welcome-file>
     </welcome-file-list>
+    <error-page>
+        <exception-type>java.lang.Exception</exception-type>
+        <location>/error.jsp</location>
+    </error-page>
     <!-- Stel mime type in voor .js zodat bij Tomcat in server.xml in het
          compressableMimeType attribuut voor het Connector element kan worden opgenomen:
 
