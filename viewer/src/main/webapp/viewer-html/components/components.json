@@ -979,6 +979,17 @@
         "sources": ["Highlight.js"],
         "singleton": true,
         "configSource": ["ConfigObject.js","SelectionWindowConfig.js", "Highlight-config.js"],
+	"restrictions": ["content", "left_menu"]
+    },
+
+    {
+        "className": "viewer.components.GBI",
+        "name": "GBI",
+        "group": "Map",
+        "shortName": "GBI",
+        "sources": ["GBI.js"],
+        "singleton": true,
+        "configSource": ["ConfigObject.js","GBI-config.js"],
         "restrictions": ["content", "left_menu"]
     }
 ]

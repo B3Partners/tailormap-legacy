@@ -28,6 +28,29 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
         <link rel="stylesheet" type="text/css" href="${contextPath}/extjs/resources/css/triton/theme-triton-all_1.css">
         <link rel="stylesheet" type="text/css" href="${contextPath}/extjs/resources/css/triton/theme-triton-all_2.css">
+        
+        <c:if test="${(param.debug == true)}">
+            <script src="http://localhost:3200/runtime.js" type="module"></script>
+            <script src="http://localhost:3200/polyfills.js" type="module"></script>
+            <script src="http://localhost:3200/styles.js" type="module"></script>
+            <script src="http://localhost:3200/scripts.js" defer></script>
+            <script src="http://localhost:3200/vendor.js" type="module"></script>
+            <script src="http://localhost:3200/main.js" type="module"></script>
+        </c:if>
+        <c:if test="${(param.debug != true)}">
+            <script src="${contextPath}/flamingo-components/dist/bridge/runtime-es2015.js" type="module"></script>
+            <script src="${contextPath}/flamingo-components/dist/bridge/runtime-es5.js" nomodule defer></script>
+            <script src="${contextPath}/flamingo-components/dist/bridge/polyfills-es5.js" nomodule defer></script>
+            <script src="${contextPath}/flamingo-components/dist/bridge/polyfills-es2015.js" type="module"></script>
+            <script src="${contextPath}/flamingo-components/dist/bridge/styles-es2015.js" type="module"></script>
+            <script src="${contextPath}/flamingo-components/dist/bridge/styles-es5.js" nomodule defer></script>
+            <script src="${contextPath}/flamingo-components/dist/bridge/scripts.js" defer></script>
+            <script src="${contextPath}/flamingo-components/dist/bridge/vendor-es2015.js" type="module"></script>
+            <script src="${contextPath}/flamingo-components/dist/bridge/vendor-es5.js" nomodule defer></script>
+            <script src="${contextPath}/flamingo-components/dist/bridge/main-es2015.js" type="module"></script>
+            <script src="${contextPath}/flamingo-components/dist/bridge/main-es5.js" nomodule defer></script>
+        </c:if>
+        
         <script type="text/javascript" src="${contextPath}/viewer-html/common/FlamingoErrorLogger.js"></script>
         <script type="text/javascript">
             var FlamingoErrorLogger = createFlamingoErrorLogger(
