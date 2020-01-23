@@ -1,9 +1,18 @@
 <p>wegvakken-form works!</p>
 <div>
-<flamingo-wegvakken-tree></flamingo-wegvakken-tree>
-</div>
-<p>
-hier komt pietje {{data.pietje}} pep
-</p>
 
+</div>
+
+<mat-grid-list cols="2">
+    <mat-grid-tile><flamingo-wegvakken-tree></flamingo-wegvakken-tree></mat-grid-tile>
+    <mat-grid-tile>
+        hier komt pietje {{data.pietje}} pep 
+        
+        Featuretype: {{data.formFeature.featureType}}. Heeft attributen:
+        
+        <div *ngFor="let attribute of data.formFeature.attributes">
+            {{attribute.key}} - {{attribute.value}}
+        </div>
+        </mat-grid-tile>
+  </mat-grid-list>
 <button mat-raised-button (click)="closeDialog();"> Sluit popup</button>

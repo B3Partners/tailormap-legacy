@@ -47,6 +47,25 @@ Ext.define("viewer.components.GBI", {
     }  ,
     showWindow: function(){
         this.resolveDeferred();
-        this.div.setAttribute("popup-open", "true");
+        this.div.setAttribute("feature-clicked", JSON.stringify(this.getData()));
+    },
+    getData: function(){
+        return {
+            id: '16',
+            featureType: "Planning",
+            featureSource: 'orakel',
+            attributes: [
+              {
+                key: 'datum',
+                value: 'dan',
+              },{
+                key: 'wat',
+                value: 'wegopbreken',
+              },{
+                key: 'door',
+                value: 'Bob de Bouwer',
+              },
+            ]
+          };
     }
 });

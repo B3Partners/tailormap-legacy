@@ -28,7 +28,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
         <link rel="stylesheet" type="text/css" href="${contextPath}/extjs/resources/css/triton/theme-triton-all_1.css">
         <link rel="stylesheet" type="text/css" href="${contextPath}/extjs/resources/css/triton/theme-triton-all_2.css">
-        
+        <link rel="stylesheet" href="${contextPath}/flamingo-components/node_modules/material-design-icons/iconfont/material-icons.css">
         <c:if test="${(param.debug == true)}">
             <script src="http://localhost:3200/runtime.js" type="module"></script>
             <script src="http://localhost:3200/polyfills.js" type="module"></script>

@@ -7,6 +7,7 @@ import { CoreModule } from 'projects/core/src';
 import { WegvakkenFormComponent } from 'projects/core/src/lib/gbi/wegvakken-form/wegvakken-form.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { WegvakPopupComponent } from 'projects/core/src/lib/gbi/wegvak-popup/wegvak-popup.component';
+import { MatGridListModule } from '@angular/material';
 
 @NgModule({
   declarations: [
