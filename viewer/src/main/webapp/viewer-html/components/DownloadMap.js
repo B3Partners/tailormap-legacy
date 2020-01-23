@@ -52,68 +52,43 @@ Ext.define ("viewer.components.tools.DownloadMap",{
                     viewerController: this.config.viewerController
                 });
                 this.config.viewerController.mapComponent.addTool(this.button);
-
-                this.button.addListener(viewer.viewercontroller.controller.Event.ON_EVENT_DOWN,this.buttonDown, this);
+                this.button.addListener(viewer.viewercontroller.controller.Event.ON_EVENT_DOWN, this.buttonDown, this);
             }
         }
         return this;
     },
     /**
      * When the button is hit 
-     * @param button the button
-     * @param object the options.        
      */
-    buttonDown : function(button,object){        
+    buttonDown: function () {
         var properties = this.getProperties();
-        this.combineImageService.getImageUrl(Ext.JSON.encode(properties),this.imageSuccess.bind(this),this.imageFailure);
+        this.combineImageService.downloadImage(Ext.JSON.encode(properties), this.imageSuccess.bind(this), this.imageFailure);
     },
-    imageSuccess: function(imageUrl){        
-        if(Ext.isEmpty(imageUrl) || !Ext.isDefined(imageUrl)) imageUrl = null;
-        if(imageUrl === null) document.getElementById('previewImg').innerHTML = 'Afbeelding laden mislukt'; //___(
-        else {
-            this.lastImageUrl = imageUrl;
-            var result = window.open(imageUrl, '_blank');
-            if(!result) {
-                // Popup is probably blocked, show message box to show URL and button to open image
-                this.showDownloadWindow();
-            }
-        }
-    },
-    showDownloadWindow: function() {
-        var imageUrl = this.lastImageUrl;
-        Ext.Msg.show({
-            title: i18next.t('viewer_components_tools_downloadmap_0'),
-            message: [
-                i18next.t('viewer_components_tools_downloadmap_1'),
-                '<br /><br />',
-                '<input type="text" value="', imageUrl, '" style="width: 100%;" class="ext-style" />',
-                '<br /><br />',
-                i18next.t('viewer_components_tools_downloadmap_2')
-            ].join(''),
-            buttonText: { ok: i18next.t('viewer_components_tools_downloadmap_3'), cancel: i18next.t('viewer_components_tools_downloadmap_4') },
-            icon: Ext.Msg.INFO,
-            fn: function(btn) {
-                if (btn === 'ok') {
-                    window.open(imageUrl, '_blank');
-                }
-            }
-        });
-
+    /**
+     * Download image with given filename.
+     * @param {type} blob image
+     * @param {type} filename name to save
+     */
+    imageSuccess: function (blob, filename) {
+        var link = document.createElement('a');
+        link.href = window.URL.createObjectURL(blob);
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
     },
     getProperties: function() {
         var properties = {};
-        /*properties.angle = this.rotateSlider.getValue();
-        properties.quality = this.qualitySlider.getValue();*/
         properties.appId = this.config.viewerController.app.id;
         var mapProperties = this.getMapValues();
         Ext.apply(properties, mapProperties);
         return properties;
     },
     /**
-     *Called when the imageUrl is unsuccesfully returned
-     *@param error the error message
+     * Called when the image download errors.
+     * @param error the error message
      */
     imageFailure: function(error){
-        console.log(error);
+        Ext.Msg.alert('Error', error);
     }
 });
