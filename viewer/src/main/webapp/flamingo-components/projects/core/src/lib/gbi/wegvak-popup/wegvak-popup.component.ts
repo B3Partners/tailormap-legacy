@@ -36,7 +36,8 @@ export class WegvakPopupComponent implements OnInit {
   }
   public openDialog(): void {
     const dialogRef = this.dialog.open(WegvakkenFormComponent, {
-      width: '250px',
+      width: '750px',
+      height: '800px',
       data: {pietje: this.pietje},
     });
     // tslint:disable-next-line: rxjs-no-ignored-subscription
