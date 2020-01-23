@@ -111,6 +111,11 @@
         <param-name>flamingo.projections.epsgnames</param-name>
         <param-value>RD</param-value>
     </context-param>
+    <context-param>
+        <description>minimum length of password</description>
+        <param-name>password.length</param-name>
+        <param-value>12</param-value>
+    </context-param>
     <listener>
         <listener-class>nl.b3p.viewer.components.ComponentRegistryInitializer</listener-class>
     </listener>
