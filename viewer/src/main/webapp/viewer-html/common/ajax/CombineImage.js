@@ -36,7 +36,8 @@ Ext.define("viewer.CombineImage", {
     getImageUrl: function(params, successFunction, failureFunction) {        
         Ext.Ajax.request({
             url: this.config.actionbeanUrl,
-            params: {create: true, "params": params}, 
+            params: {create: true, "params": params},
+            method: 'POST',
             success: function(result) {
                 var response = Ext.JSON.decode(result.responseText);                
                 if(response.success) {
