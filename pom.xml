@@ -47,7 +47,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <!-- when updating geotools also check jts and b3p-commons-csw or you will end up in transitive dependency hell -->
-        <geotools.version>22.1</geotools.version>
+        <geotools.version>22.2</geotools.version>
+        <b3p-commons-csw.version>6.1.2</b3p-commons-csw.version>
         <powermock.version>2.0.4</powermock.version>
         <hsqldb.version>2.5.0</hsqldb.version>
         <test.persistence.unit>viewer-config-hsqldb</test.persistence.unit>
@@ -169,7 +170,7 @@
             <dependency>
                 <groupId>nl.b3p</groupId>
                 <artifactId>b3p-commons-csw</artifactId>
-                <version>6.1.1</version>
+                <version>${b3p-commons-csw.version}</version>
                 <exclusions>
                     <exclusion>
                         <groupId>javax.persistence</groupId>
