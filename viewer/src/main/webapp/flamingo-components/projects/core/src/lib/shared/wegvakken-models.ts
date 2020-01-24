@@ -17,6 +17,10 @@ export interface FeatureAttribute extends Attribute {
     value: string;
 }
 
+export interface IndexedFeatureAttributes {
+  attrs: Map<string, FeatureAttribute>;
+}
+
 export interface FormConfigurations {
   config: Map <string, FormConfiguration> ;
 }
@@ -29,6 +33,7 @@ export interface FormConfiguration {
 
 export interface DialogData {
   formFeature: Feature;
+  indexedAttributes: IndexedFeatureAttributes;
   formConfig: FormConfigurations;
 }
 

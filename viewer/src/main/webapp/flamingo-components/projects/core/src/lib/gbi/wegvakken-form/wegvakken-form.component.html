@@ -7,7 +7,7 @@
     </div>
     <div class="form">
       <span *ngFor="let attr of data.formConfig.config[data.formFeature.id].fields">
-        <flamingo-wegvak-formfield [attribute]=attr></flamingo-wegvak-formfield>
+        <flamingo-wegvak-formfield [featureAttribute]=data.indexedAttributes.attrs.get(attr.key) [attribute]=attr></flamingo-wegvak-formfield>
       </span>
     </div>
   </div>

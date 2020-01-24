@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { WegvakkenFormComponent } from '../wegvakken-form/wegvakken-form.component';
 import { MatDialog } from '@angular/material';
-import { Feature, DialogClosedData, FormConfigurations } from '../../shared/wegvakken-models';
+import { Feature, DialogClosedData, FormConfigurations, IndexedFeatureAttributes, FeatureAttribute } from '../../shared/wegvakken-models';
 
 @Component({
   selector: 'flamingo-wegvak-popup',
@@ -42,12 +42,14 @@ export class WegvakPopupComponent implements OnInit {
 
   public openDialog(formFeature ?: Feature): void {
     this.popupOpen = true;
+
     const dialogRef = this.dialog.open(WegvakkenFormComponent, {
       width: '750px',
       height: '800px',
       data: {
         formConfig: this.formConfig,
         formFeature,
+        indexedAttributes:  this.convertFeatureToIndexed(formFeature),
       },
     });
     // tslint:disable-next-line: rxjs-no-ignored-subscription
@@ -66,5 +68,13 @@ export class WegvakPopupComponent implements OnInit {
 
   private convertToFomConfig(config: string): FormConfigurations {
     return JSON.parse(config);
+  }
+
+  private convertFeatureToIndexed(feat: Feature): IndexedFeatureAttributes {
+    const m = new Map<string, FeatureAttribute>();
+    for (const attr of feat.attributes) {
+      m.set(attr.key, attr);
+    }
+    return {attrs: m};
   }
 }
