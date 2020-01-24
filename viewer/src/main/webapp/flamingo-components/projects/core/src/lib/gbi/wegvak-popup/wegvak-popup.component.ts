@@ -44,7 +44,6 @@ export class WegvakPopupComponent implements OnInit {
   public wanneerPopupClosed = new EventEmitter<DialogClosedData>();
 
   public ngOnInit() {
-    //this.openDialog();
   }
   public openDialog(formFeature ?: FormFeature): void {
     this.popupOpen = true;
