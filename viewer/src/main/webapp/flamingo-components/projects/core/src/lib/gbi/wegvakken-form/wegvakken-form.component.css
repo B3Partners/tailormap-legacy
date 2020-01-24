@@ -1,0 +1,18 @@
+.container{
+  display: flex;
+  flex-direction: row;
+}
+.tree{
+  order: 1;
+  width: 200px;
+}
+
+.form{
+  order: 2;
+  min-width: 200px;
+  width: 360px;
+  min-height: 400px;
+  height: 450px;
+  display: flex;
+  flex-direction: column;
+}

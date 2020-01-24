@@ -1,6 +1,7 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import {  MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { DialogData } from '../wegvak-popup/wegvak-popup.component';
+import { FormConfigurations, DialogData, FeatureAttribute, FormConfiguration } from '../../shared/wegvakken-models';
+import { FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'flamingo-wegvakken-form',
@@ -9,12 +10,14 @@ import { DialogData } from '../wegvak-popup/wegvak-popup.component';
 })
 export class WegvakkenFormComponent implements OnInit {
 
+  public formConfig: FormConfiguration;
+
   constructor( public dialogRef: MatDialogRef<WegvakkenFormComponent>,
                @Inject(MAT_DIALOG_DATA) public data: DialogData,
     ) { }
 
-  public ngOnInit() {
-  }
+  public ngOnInit() {  }
+
   public closeDialog() {
     this.dialogRef.close();
   }

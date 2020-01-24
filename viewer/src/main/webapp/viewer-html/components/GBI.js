@@ -42,12 +42,13 @@ Ext.define("viewer.components.GBI", {
         this.div.addEventListener('wanneerPopupClosed', function(evt){
             console.log("wanneerPopupClosed", evt.detail);
         });
+        this.div.setAttribute("config", JSON.stringify(this.getConfig()));
         document.body.appendChild(this.div);
         return this;
     }  ,
     showWindow: function(){
-        this.resolveDeferred();
         this.div.setAttribute("feature-clicked", JSON.stringify(this.getData()));
+        this.resolveDeferred();
     },
     getData: function(){
         return {
@@ -56,16 +57,40 @@ Ext.define("viewer.components.GBI", {
             featureSource: 'orakel',
             attributes: [
               {
-                key: 'datum',
-                value: 'dan',
+                key: 'id',
+                value: '123'
               },{
-                key: 'wat',
-                value: 'wegopbreken',
+                key: 'type',
+                value: 'WEGOPBREKING'
               },{
-                key: 'door',
-                value: 'Bob de Bouwer',
-              },
+                key: 'naam',
+                value: 'Bob de Bouwer'
+              }
             ]
           };
+    },
+
+    getConfig: function () {
+        return {config: {
+                '16': // featureTypeId
+                        {
+                            fields: [
+                                {
+                                    key: 'id',
+                                    type: 'textfield'
+                                },
+                                {
+                                    key: 'naam',
+                                    type: 'textfield'
+                                }, {
+                                    key: 'type',
+                                    type: 'combo'
+                                }
+                            ],
+                            tabs: 12,
+                            name: "Wegvakkuh"
+                        }
+            }
+        };
     }
 });

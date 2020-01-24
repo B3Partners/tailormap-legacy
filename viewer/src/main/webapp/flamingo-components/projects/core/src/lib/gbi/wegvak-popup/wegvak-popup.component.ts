@@ -1,16 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { WegvakkenFormComponent } from '../wegvakken-form/wegvakken-form.component';
 import { MatDialog } from '@angular/material';
-import { FormFeature } from '../../shared/wegvakken-models';
-
-export interface DialogData {
-  pietje: string;
-  formFeature: FormFeature;
-}
-
-export interface DialogClosedData {
-  iets: string;
-}
+import { Feature, DialogClosedData, FormConfigurations } from '../../shared/wegvakken-models';
 
 @Component({
   selector: 'flamingo-wegvak-popup',
@@ -23,12 +14,15 @@ export class WegvakPopupComponent implements OnInit {
 
   private popupOpen = false;
 
-  @Input()
-  public pietje: string;
+  private formConfig: FormConfigurations;
 
   @Input()
-  public set featureClicked(data:string){
-    // convert data to FormFeature
+  public set config(config: string) {
+    this.formConfig = this.convertToFomConfig(config);
+  }
+
+  @Input()
+  public set featureClicked(data: string) {
     const ff = this.convertToFormFeature(data);
     this.openDialog(ff);
   }
@@ -45,12 +39,16 @@ export class WegvakPopupComponent implements OnInit {
 
   public ngOnInit() {
   }
-  public openDialog(formFeature ?: FormFeature): void {
+
+  public openDialog(formFeature ?: Feature): void {
     this.popupOpen = true;
     const dialogRef = this.dialog.open(WegvakkenFormComponent, {
       width: '750px',
       height: '800px',
-      data: {pietje: this.pietje, formFeature},
+      data: {
+        formConfig: this.formConfig,
+        formFeature,
+      },
     });
     // tslint:disable-next-line: rxjs-no-ignored-subscription
     dialogRef.afterClosed().subscribe(result => {
@@ -62,7 +60,11 @@ export class WegvakPopupComponent implements OnInit {
     });
   }
 
-  private convertToFormFeature(data: string) : FormFeature{
+  private convertToFormFeature(data: string): Feature {
     return JSON.parse(data);
+  }
+
+  private convertToFomConfig(config: string): FormConfigurations {
+    return JSON.parse(config);
   }
 }

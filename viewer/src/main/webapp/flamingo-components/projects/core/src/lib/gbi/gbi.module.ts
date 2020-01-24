@@ -4,11 +4,12 @@ import { WegvakkenFormComponent } from './wegvakken-form/wegvakken-form.componen
 import { SharedModule } from '../shared/shared.module';
 import { WegvakPopupComponent } from './wegvak-popup/wegvak-popup.component';
 import { WegvakkenTreeComponent } from './wegvakken-tree/wegvakken-tree.component';
+import { WegvakFormfieldComponent } from './wegvak-formfield/wegvak-formfield.component';
 
 
 
 @NgModule({
-  declarations: [WegvakkenFormComponent, WegvakPopupComponent, WegvakkenTreeComponent],
+  declarations: [WegvakkenFormComponent, WegvakPopupComponent, WegvakkenTreeComponent, WegvakFormfieldComponent],
   imports: [
     CommonModule,
     SharedModule,
