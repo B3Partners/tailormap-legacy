@@ -34,6 +34,7 @@ import nl.b3p.viewer.config.security.*;
 import nl.b3p.viewer.config.security.Authorizations.ApplicationCache;
 import nl.b3p.viewer.config.services.GeoService;
 import nl.b3p.viewer.config.services.Layer;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.hibernate.*;
 import org.hibernate.criterion.*;
 import org.json.*;
@@ -267,8 +268,10 @@ public class UserActionBean extends LocalizableActionBean {
         }
 
         if (password != null) {
-            if (password.length() < User.MIN_PASSWORD_LENGTH) {
-                errors.add("password", new SimpleError( MessageFormat.format(getBundle().getString("viewer_admin.useractionbean.pwshort"), User.MIN_PASSWORD_LENGTH)));
+            int passwordLength = NumberUtils.toInt(this.getContext().getServletContext().getInitParameter("password.length"), 0);
+            passwordLength = Math.max(passwordLength, User.MIN_PASSWORD_LENGTH);
+            if (password.length() < passwordLength) {
+                errors.add("password", new SimpleError(MessageFormat.format(getBundle().getString("viewer_admin.useractionbean.pwshort"), passwordLength)));
                 return;
             }
         }
