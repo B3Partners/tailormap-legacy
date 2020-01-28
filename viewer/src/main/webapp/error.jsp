@@ -15,17 +15,18 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 --%>
 
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page contentType="text/html" pageEncoding="UTF-8" isErrorPage="true"%>
 <%@include file="/WEB-INF/jsp/taglibs.jsp"%>
 
 <!DOCTYPE html>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title><fmt:message key="viewer.error.header" /></title>
+        <title><fmt:message key="viewer.error.header" />:<%=response.getStatus()%></title>
     </head>
     <body>
         <h1><fmt:message key="viewer.error.title" /></h1>
         <p><fmt:message key="viewer.error.msg" /></p>
+        <p><%=response.getStatus()%>:<%=response.getMessage()%>
     </body>
 </html>

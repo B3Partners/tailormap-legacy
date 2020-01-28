@@ -230,7 +230,7 @@ public class ComponentActionBean implements ActionBean {
         // TODO conditional HTTP request
         // TODO send a resource from the subdirectory "resources" from the components.json dir for the component
 
-        getContext().getResponse().sendError(404);
+        getContext().getResponse().sendError(HttpServletResponse.SC_NOT_FOUND);
         return null;
     }
 
