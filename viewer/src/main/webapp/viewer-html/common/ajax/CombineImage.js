@@ -36,7 +36,8 @@ Ext.define("viewer.CombineImage", {
     getImageUrl: function(params, successFunction, failureFunction) {        
         Ext.Ajax.request({
             url: this.config.actionbeanUrl,
-            params: {create: true, "params": params}, 
+            params: {create: true, "params": params},
+            method: 'POST',
             success: function(result) {
                 var response = Ext.JSON.decode(result.responseText);                
                 if(response.success) {
@@ -53,7 +54,43 @@ Ext.define("viewer.CombineImage", {
                 }
             }
         });
-    }    
+    },
+    /**
+     * submits the params to the image action and downloads the image.
+     * @param params the params
+     * @param succesFunction the function that is called when success
+     * @param failureFunction the function that is called when failed
+     */
+    downloadImage: function (params, successFunction, failureFunction) {
+        Ext.Ajax.request({
+            url: this.config.actionbeanUrl,
+            params: {
+                download: true,
+                "params": params
+            },
+            method: 'POST',
+            binary: true,
+            success: function (result) {
+                if (successFunction !== undefined) {
+                    var blob = new Blob([result.responseBytes], {type: 'image/png'});
+                    // get filename
+                    var disposition = result.getResponseHeader('content-disposition');
+                    var matches = /"([^"]*)"/.exec(disposition);
+                    var filename = (matches !== null && matches[1] ? matches[1] : 'kaart.png');
+                    successFunction(blob, filename);
+                } else {
+                    if (failureFunction !== undefined) {
+                        failureFunction("Ajax request failed with status " + result.status + " " + result.statusText);
+                    }
+                }
+            },
+            failure: function (result) {
+                if (failureFunction != undefined) {
+                    failureFunction("Ajax request failed with status " + result.status + " " + result.statusText);
+                }
+            }
+        });
+    }
 });
 
 
