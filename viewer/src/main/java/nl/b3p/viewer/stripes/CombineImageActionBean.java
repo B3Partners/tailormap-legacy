@@ -21,12 +21,14 @@ import nl.b3p.viewer.image.CombineImageSettings;
 import nl.b3p.viewer.image.CombineImageWkt;
 import java.io.OutputStream;
 import java.io.StringReader;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.viewer.image.*;
+import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.json.JSONException;
@@ -137,6 +139,18 @@ public class CombineImageActionBean extends LocalizableActionBean implements Act
     }
     //</editor-fold>
 
+    /**
+     *
+     * <strong>NB</strong> this is an unsafe method as it exposes sessionid in
+     * the download url
+     *
+     * @return image url as JSON
+     * @throws JSONException if any
+     * @throws Exception if any
+     * @deprecated prefer to use a safe method to get an image eg.
+     * {@link #download()}
+     */
+    @Deprecated
     @DefaultHandler
     public Resolution create() throws JSONException, Exception {
         JSONObject jRequest = new JSONObject(params);
@@ -149,25 +163,7 @@ public class CombineImageActionBean extends LocalizableActionBean implements Act
             error = getBundle().getString("viewer.combineimageactionbean.1");
         } else {
             try {
-
-                CombineImageSettings cis = CombineImageSettings.fromJson(jRequest);
-                //if no imageId is set, create a new one.
-                if (imageId == null) {
-                    imageId = uniqueId();
-                }
-                //this.getContext().getRequest().getSession().setAttribute(imageId, cis);
-                //TODO: better fix....
-                if (imageSettings.size() > maxStoredSettings) {
-                    Set<String> keyset = imageSettings.keySet();
-                    for (Iterator<String> iterator = keyset.iterator(); iterator.hasNext();) {
-                        iterator.next();
-                        iterator.remove();
-                        if (imageSettings.size() < minStoredSettings) {
-                            break;
-                        }
-                    }
-                }
-                imageSettings.put(imageId, cis);
+                this.prepareImageSettings(jRequest);
                 String url = this.context.getRequest().getRequestURL().toString();
                 url += "?getImage=t&imageId=" + imageId;
                 String jsessionId = null;
@@ -259,11 +255,125 @@ public class CombineImageActionBean extends LocalizableActionBean implements Act
             @Override
             public void stream(HttpServletResponse response) throws Exception {
                 OutputStream out = response.getOutputStream();
-                response.setDateHeader("Expires", System.currentTimeMillis() + (1000 * 60 * 60 * 24));
+                response.setDateHeader("Expires", System.currentTimeMillis() + (1000 * context.getServletContext().getSessionCookieConfig().getMaxAge()));
+
                 CombineImagesHandler.combineImage(out, settings, settings.getMimeType(), maxResponseTime, context.getRequest(), jessionid, ssojessionid);
             }
         };
         return res;
+    }
+
+    public Resolution download() throws Exception {
+        JSONObject jRequest = new JSONObject(params);
+        String pageFormat = jRequest.has("pageformat") ? jRequest.getString("pageformat") : PrintActionBean.A4;
+        String orientation = jRequest.has("orientation") ? jRequest.getString("orientation") : PrintActionBean.PORTRAIT;
+
+        if (orientation == null || pageFormat == null) {
+            return new ErrorResolution(500, getBundle().getString("viewer.combineimageactionbean.1"));
+        } else {
+            this.prepareImageSettings(jRequest);
+
+            final CombineImageSettings settings = imageSettings.get(imageId);
+            //if these settings are given then overwrite those in the CombineImageSettings
+            if (this.getWidth() != null && this.getWidth() > 0) {
+                settings.setWidth(getWidth());
+            }
+            if (this.getHeight() != null && this.getHeight() > 0) {
+                settings.setHeight(getHeight());
+            }
+            if (bbox != null) {
+                settings.setBbox(bbox);
+            }
+            if (this.getGeom() != null) {
+                String firstChar = geom.substring(0, 1);
+                try {
+                    int test = Integer.parseInt(firstChar);
+                    // This is a bounding box, so parse it into a linestring
+                    String[] tokens = geom.split(",");
+                    String minx = tokens[0];
+                    String miny = tokens[1];
+                    String maxx = tokens[2];
+                    String maxy = tokens[3];
+                    String wkt = "LINESTRING(";
+                    wkt += minx + " " + miny + ", ";
+                    wkt += maxx + " " + miny + ", ";
+                    wkt += maxx + " " + maxy + ", ";
+                    wkt += minx + " " + maxy + ", ";
+                    wkt += minx + " " + miny + ")";
+                    this.geom = wkt;
+                } catch (NumberFormatException e) {
+                    // this is not a boundingbox
+                }
+                CombineImageWkt ciw = new CombineImageWkt(geom);
+                ciw.setStrokeWidth(8f);
+                if (settings.getWktGeoms() == null) {
+                    settings.setWktGeoms(new ArrayList());
+                }
+                settings.getWktGeoms().add(ciw);
+            }
+
+            String ssojessionidC = null;
+            String jessionidC = null;
+            Cookie[] cookies = context.getRequest().getCookies();
+            if (cookies != null) {
+                for (Cookie cookie : cookies) {
+                    if (cookie != null && cookie.getName().equalsIgnoreCase("JSESSIONIDSSO")) {
+                        ssojessionidC = cookie.getValue();
+                        break;
+                    }
+                }
+                for (Cookie cookie : cookies) {
+                    if (cookie != null && cookie.getName().equalsIgnoreCase("JSESSIONID")) {
+                        jessionidC = cookie.getValue();
+                        break;
+                    }
+                }
+            }
+
+            final String ssojessionid = ssojessionidC;
+            final String jessionid = jessionidC;
+            final String filename = "Kaart_" + (new SimpleDateFormat("d-M-yyyy")).format(new Date()) + ".png";
+
+            StreamingResolution res = new StreamingResolution(settings.getMimeType()) {
+                @Override
+                public void stream(HttpServletResponse response) throws Exception {
+                    // 30 minutes
+                    response.setDateHeader("Expires", System.currentTimeMillis() + (1000 * 30 * 60));
+                    response.setContentType(settings.getMimeType());
+                    response.setHeader("Content-Disposition", "attachment; filename=\"" + filename + "\"");
+
+                    // Setup output stream for image
+                    ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+                    CombineImagesHandler.combineImage(out, settings, settings.getMimeType(), maxResponseTime, context.getRequest(), jessionid, ssojessionid);
+                    response.getOutputStream().write(out.toByteArray());
+                    response.setContentLength(out.size());
+                    response.getOutputStream().flush();
+                }
+            };
+            return res;
+        }
+    }
+
+    private void prepareImageSettings(JSONObject jRequest) throws Exception {
+        CombineImageSettings cis = CombineImageSettings.fromJson(jRequest);
+        //if no imageId is set, create a new one.
+        if (imageId == null) {
+            imageId = uniqueId();
+        }
+        //this.getContext().getRequest().getSession().setAttribute(imageId, cis);
+        //TODO: better fix....
+        if (imageSettings.size() > maxStoredSettings) {
+            Set<String> keyset = imageSettings.keySet();
+            for (Iterator<String> iterator = keyset.iterator(); iterator.hasNext();) {
+                iterator.next();
+                iterator.remove();
+                if (imageSettings.size() < minStoredSettings) {
+                    break;
+                }
+            }
+        }
+        imageSettings.put(imageId, cis);
     }
 
     /**
