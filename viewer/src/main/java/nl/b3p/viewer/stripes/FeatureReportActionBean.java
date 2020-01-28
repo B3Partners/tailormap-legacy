@@ -51,6 +51,7 @@ import org.opengis.geometry.BoundingBox;
 import org.stripesstuff.stripersist.Stripersist;
 
 import javax.persistence.EntityManager;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.text.MessageFormat;
@@ -129,9 +130,9 @@ public class FeatureReportActionBean extends LocalizableApplicationActionBean im
     public Resolution print() throws URISyntaxException, IOException, Exception {
         LOG.debug("Start processing feature report request voor FID: " + this.fid);
         if (appLayer == null) {
-            return new ErrorResolution(500, "Invalid parameters");
+            return new ErrorResolution(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Invalid parameters");
         } else if (unauthorized) {
-            return new ErrorResolution(403, "Not authorized");
+            return new ErrorResolution(HttpServletResponse.SC_FORBIDDEN, "Not authorized");
         } else {
             JSONObject params = new JSONObject(printparams);
 
