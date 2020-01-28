@@ -70,12 +70,17 @@ Ext.define ("viewer.components.tools.DownloadMap",{
      * @param {type} filename name to save
      */
     imageSuccess: function (blob, filename) {
-        var link = document.createElement('a');
-        link.href = window.URL.createObjectURL(blob);
-        link.download = filename;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+        // IE 11
+        if (window.navigator && window.navigator.msSaveBlob) {
+            window.navigator.msSaveBlob(blob, filename);
+        } else { //standard browsers
+            var link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.download = filename;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
     },
     getProperties: function() {
         var properties = {};
