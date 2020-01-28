@@ -3,7 +3,7 @@ export interface Feature {
   id: string;
   featureType: string;
   featureSource: string;
-  attributes: FeatureAttribute[];
+   attributes: FeatureAttribute[];
   children?: Feature[];
 }
 
@@ -18,7 +18,7 @@ export interface FeatureAttribute extends Attribute {
 }
 
 export interface IndexedFeatureAttributes {
-  attrs: Map<string, FeatureAttribute>;
+  attrs: Map<string, Attribute>;
 }
 
 export interface FormConfigurations {
@@ -34,7 +34,7 @@ export interface FormConfiguration {
 export interface DialogData {
   formFeature: Feature;
   indexedAttributes: IndexedFeatureAttributes;
-  formConfig: FormConfigurations;
+  formConfigs: FormConfigurations;
 }
 
 export interface DialogClosedData {

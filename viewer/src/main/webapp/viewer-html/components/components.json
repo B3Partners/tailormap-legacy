@@ -989,7 +989,7 @@
         "shortName": "GBI",
         "sources": ["GBI.js"],
         "singleton": true,
-        "configSource": ["ConfigObject.js","GBI-config.js"],
+        "configSource": ["ConfigObject.js","SelectionWindowConfig.js", "GBI-config.js"],
         "restrictions": ["content", "left_menu"]
     }
 ]

@@ -6,7 +6,7 @@
       <flamingo-wegvakken-tree></flamingo-wegvakken-tree>
     </div>
     <div class="form">
-      <span *ngFor="let attr of data.formConfig.config[data.formFeature.id].fields">
+      <span *ngFor="let attr of data.formConfigs.config[data.formFeature.featureType].fields">
         <flamingo-wegvak-formfield [featureAttribute]=data.indexedAttributes.attrs.get(attr.key) [attribute]=attr></flamingo-wegvak-formfield>
       </span>
     </div>

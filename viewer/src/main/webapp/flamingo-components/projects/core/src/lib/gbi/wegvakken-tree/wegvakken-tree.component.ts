@@ -12,7 +12,7 @@ interface FeatureNode {
 const TREE_DATA: FeatureNode[] = [
   {
     id: '1',
-    name: 'Inspecties', 
+    name: 'Inspecties',
     children: [
       {name: 'Nieuwe inspectie', id: '2'},
       {name: 'Inspectie 1', id: '3'},
@@ -62,10 +62,13 @@ export class WegvakkenTreeComponent implements OnInit {
 
   constructor() {
     this.dataSource.data = TREE_DATA; }
-e
+
   ngOnInit() {
   }
-  
+
+  ngAfterViewInit(): void {
+    this.treeControl.expandAll();
+  }
   hasChild = (_: number, node: ExampleFlatNode) => node.expandable;
 
 }
