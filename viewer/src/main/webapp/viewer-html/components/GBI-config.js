@@ -25,10 +25,13 @@ Ext.define("viewer.components.CustomConfiguration",{
         viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId, configObject, configPage);
 
         this.form.add({
-            xtype: 'container',
-            html: i18next.t('attributelist_config_6')
+            xtype: 'textfield',
+            fieldLabel: i18next.t('gbi_config_configURL'),
+            name: 'configURL',
+            value: this.configObject.configURL,
+            labelWidth: this.labelWidth,
+            width: 700
         });
-
 
         this.createCheckBoxes(this.configObject.layers,{editable:true});
     },

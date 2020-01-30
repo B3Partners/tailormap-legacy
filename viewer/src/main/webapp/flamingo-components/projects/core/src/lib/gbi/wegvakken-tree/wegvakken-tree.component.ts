@@ -11,25 +11,31 @@ interface FeatureNode {
 
 const TREE_DATA: FeatureNode[] = [
   {
-    id: '1',
-    name: 'Inspecties',
-    children: [
-      {name: 'Nieuwe inspectie', id: '2'},
-      {name: 'Inspectie 1', id: '3'},
-      {name: 'Inspectie 2', id: '4'},
-      {name: 'Inspectie 3', id: '5'},
-    ]
-  }, {
-    id: '6',
-    name: 'Planning',
-    children: [
+    id: '0',
+    name: 'Wegvakonderdeel',
+    children:[
+      {
+        id: '1',
+        name: 'Inspecties',
+        children: [
+          {name: 'Nieuwe inspectie', id: '2'},
+          {name: 'Inspectie 1', id: '3'},
+          {name: 'Inspectie 2', id: '4'},
+          {name: 'Inspectie 3', id: '5'},
+        ]
+      }, {
+        id: '6',
+        name: 'Planning',
+        children: [
 
-      {name: 'Nieuwe planning', id: '7'},
-      {name: 'Planning 1', id: '8'},
-      {name: 'Planning 2', id: '9'},
-      {name: 'Planning 3', id: '10'}
-    ]
-  },
+          {name: 'Nieuwe planning', id: '7'},
+          {name: 'Planning 1', id: '8'},
+          {name: 'Planning 2', id: '9'},
+          {name: 'Planning 3', id: '10'}
+        ]
+      }
+    ],
+  }
 ];
 
 /** Flat node with expandable and level information */

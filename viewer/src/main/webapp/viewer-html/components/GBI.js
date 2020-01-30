@@ -24,8 +24,10 @@ Ext.define("viewer.components.GBI", {
     extend: "viewer.components.Component",
     div: null,
     toolMapClick:null,
+    formConfigs:null,
     config: {
-        layers:[]
+        layers:[],
+        configUrl:null
     },
     constructor: function (conf) {
         this.initConfig(conf);
@@ -41,15 +43,11 @@ Ext.define("viewer.components.GBI", {
             text: "me.config.title"
         });
         this.initialize();
-        this.div = document.createElement("flamingo-wegvak-popup");
-        this.div.addEventListener('wanneerPopupClosed', function(evt){
-            console.log("wanneerPopupClosed", evt.detail);
-        });
-        this.div.setAttribute("config", JSON.stringify(this.getConfig()));
-        document.body.appendChild(this.div);
+        
         return this;
     },
     initialize: function(){
+        this.loadConfig();
         this.toolMapClick =  this.config.viewerController.mapComponent.createTool({
             type: viewer.viewercontroller.controller.Tool.MAP_CLICK,
             id: this.config.name + "toolMapClick",
@@ -60,6 +58,29 @@ Ext.define("viewer.components.GBI", {
             viewerController: this.config.viewerController
         });
         this.toolMapClick.activateTool();
+    },
+    initializeForm: function(){
+        this.div = document.createElement("flamingo-wegvak-popup");
+        this.div.addEventListener('wanneerPopupClosed', function(evt){
+            console.log("wanneerPopupClosed", evt.detail);
+        });
+        this.div.setAttribute("config", JSON.stringify(this.formConfigs));
+        document.body.appendChild(this.div);
+    },
+    loadConfig: function(){
+        Ext.Ajax.request({
+            url: this.config.configURL,
+            scope: this,
+            success: function(result) {
+                var text = result.responseText;
+                var response = Ext.JSON.decode(text);
+                this.formConfigs = response;
+                this.initializeForm();
+            },
+            failure: function(result) {
+               this.config.viewerController.logger.error(result);
+            }
+        });
     },
     mapClicked : function(tool, comp){
        //this.deactivateMapClick();
@@ -216,7 +237,11 @@ Ext.define("viewer.components.GBI", {
                                 }
                             ],
                             tabs: 2,
-                            name: "Wegvakonderdeel"
+                            name: "Wegvakonderdeel",
+                            tabConfig:{
+                                1: "Eerste",
+                                2: "Tweede"
+                            }
                         }
             }
         };

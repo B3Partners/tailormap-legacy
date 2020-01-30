@@ -31,6 +31,7 @@ export interface FormConfiguration {
   fields: Attribute[];
   tabs: number;
   name: string;
+  tabConfig: Map<number, string>;
 }
 
 export interface DialogData {

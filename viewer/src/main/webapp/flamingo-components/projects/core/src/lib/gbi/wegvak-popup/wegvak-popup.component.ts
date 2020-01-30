@@ -45,7 +45,7 @@ export class WegvakPopupComponent implements OnInit {
     this.popupOpen = true;
 
     const dialogRef = this.dialog.open(WegvakkenFormComponent, {
-      width: '750px',
+      width: '1050px',
       height: '800px',
       data: {
         formConfigs: this.formConfigs,

@@ -38,8 +38,11 @@ export class WegvakkenFormComponent implements OnInit {
   }
 
   private getColumizedFields (attrs: Attribute[]) : ColumnizedFields{
-    let numCols = attrs.reduce((max, b) => Math.max(max,b.column), attrs[0].column);
     let columnizedFields : ColumnizedFields = {columns: new Map<number, Attribute[]>()};
+    if(attrs.length === 0){
+      return columnizedFields;
+    }
+    let numCols = attrs.reduce((max, b) => Math.max(max,b.column), attrs[0].column);
     for(let col = 1 ; col <= numCols ; col++){
       const fields : Attribute[] = [];
       attrs.forEach(attr=>{
