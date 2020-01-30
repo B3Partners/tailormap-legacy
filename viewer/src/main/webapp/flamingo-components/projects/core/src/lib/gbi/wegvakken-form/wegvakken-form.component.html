@@ -2,15 +2,14 @@
 <form>
   <div class="container">
     <div class="tree">
-      <flamingo-wegvakken-tree></flamingo-wegvakken-tree>
+      <flamingo-wegvakken-tree [feature]=feature [formConfigs]=data.formConfigs></flamingo-wegvakken-tree>
     </div>
     <div class="form">
       <h1>{{formConfig.name}}</h1>
-
       <mat-tab-group>
-        <mat-tab *ngFor="let tab of tabbedConfig.tabs | keyvalue" label="{{formConfig.tabConfig[tab.key]}}"  class="tab">
+        <mat-tab *ngFor="let tab of tabbedConfig.tabs | keyvalue" label="{{formConfig.tabConfig[tab.key]}}" class="tab">
               <div *ngFor="let column of tab.value.columns | keyvalue" class="column">
-                <span *ngFor="let attr of column.value">
+                <span *ngFor="let attr of column.value" class="cellfield">
                   <flamingo-wegvak-formfield [featureAttribute]=data.indexedAttributes.attrs.get(attr.key) [attribute]=attr></flamingo-wegvak-formfield>
                 </span>
               </div>

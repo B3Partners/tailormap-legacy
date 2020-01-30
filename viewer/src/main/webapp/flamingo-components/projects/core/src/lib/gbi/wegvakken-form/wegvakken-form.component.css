@@ -21,11 +21,9 @@
 .tab{
   display: flex;
   flex-direction: row;
-  width: 100%;
 }
 
 .column{
-  min-width: 150px;
   display: flex;
-  flex-direction: column; 
+  flex-direction: column;
 }

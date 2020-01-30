@@ -24,7 +24,7 @@ export class WegvakPopupComponent implements OnInit {
 
   @Input()
   public set featureClicked(data: string) {
-    const ff = this.convertToFormFeature(data);
+    const ff = this.convertToFormFeature(JSON.parse(data));
     this.openDialog(ff);
   }
 
@@ -63,16 +63,23 @@ export class WegvakPopupComponent implements OnInit {
     });
   }
 
-  private convertToFormFeature(data: string): Feature {
-    const f = JSON.parse(data);
+  private convertToFormFeature(f: any): Feature {
+    
     const id = f.id;
     const ft = id.substring(0, id.indexOf('.') );
     const formConfig = this.formConfigs.config[ft];
     const featureAttributes: FeatureAttribute[] = this.convertFeatureAttributes(formConfig, f.attributes);
+    const children : Feature[] = [];
+    if(f.children){
+      f.children.forEach((f) =>{
+        children.push(this.convertToFormFeature(f));
+      });
+    }
     const feature: Feature = {
         id,
         featureType: ft,
         featureSource: '16',
+        children,
          attributes: featureAttributes,
     };
     return feature;

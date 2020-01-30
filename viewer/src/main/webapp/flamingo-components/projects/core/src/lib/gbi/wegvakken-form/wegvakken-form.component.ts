@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import {  MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { FormConfigurations, DialogData, Attribute, FormConfiguration, TabbedFields, ColumnizedFields } from '../../shared/wegvakken-models';
+import { FormConfigurations, DialogData, Attribute, FormConfiguration, TabbedFields, ColumnizedFields, Feature } from '../../shared/wegvakken-models';
 import { FormGroup } from '@angular/forms';
 
 @Component({
@@ -12,11 +12,13 @@ export class WegvakkenFormComponent implements OnInit {
 
   public formConfig: FormConfiguration;
   public tabbedConfig: TabbedFields;
+  public feature: Feature;
 
   constructor( public dialogRef: MatDialogRef<WegvakkenFormComponent>,
                @Inject(MAT_DIALOG_DATA) public data: DialogData ) {
       this.formConfig = data.formConfigs.config[data.formFeature.featureType];
       this.tabbedConfig = this.prepareFormConfig();
+      this.feature = data.formFeature;
   }
 
   public ngOnInit() { 

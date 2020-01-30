@@ -31,6 +31,7 @@ export interface FormConfiguration {
   fields: Attribute[];
   tabs: number;
   name: string;
+  treeNodeColumn: string;
   tabConfig: Map<number, string>;
 }
 

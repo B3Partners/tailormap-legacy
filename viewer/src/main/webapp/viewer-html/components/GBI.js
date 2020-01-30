@@ -83,8 +83,6 @@ Ext.define("viewer.components.GBI", {
         });
     },
     mapClicked : function(tool, comp){
-       //this.deactivateMapClick();
-        //Ext.get(this.getContentDiv()).mask("Haalt features op...")
         var coords = comp.coord;
         var x = coords.x;
         var y = coords.y;
@@ -100,7 +98,6 @@ Ext.define("viewer.components.GBI", {
                     return;
                 }
 
-                var attributes = [];
 
                 var extraParams = {
                     graph: false,
@@ -113,49 +110,57 @@ Ext.define("viewer.components.GBI", {
                 });
                 featureInfo.editFeatureInfo(x, y, me.config.viewerController.mapComponent.getMap().getResolution() * 4, appLayer, function (response) {
                     var features = response.features;
-                    me.featuresReceived(features, attributes, appLayer);
+                    me.featuresReceived(features, appLayer);
                 }, function (msg) {
                     me.failed(msg);
                 }, extraParams);
             }
         }
     },
-    featuresReceived : function (features,attributes, appLayer){
+    relatedFeatureCounter: {},
+    featuresReceived : function (features, appLayer){
         var json = {};
         for (var i = 0 ; i < features.length ;i++){
             var feature = features[i];
-            json.id = feature["__fid"];
-            json.attributes = feature;
-            if(json.related_featuretypes){
-                for (var j = 0 ; j < json.related_featuretypes.length ;j++){
-                    var linked = this.getLinkedData(json.related_featuretypes[j], attributes, config);
-                    json.linkedData = linked;
-                    break;
+            json = this.convertFeature(feature);
+                        
+            if(feature.related_featuretypes){
+                json.children = [];
+                this.relatedFeatureCounter[json.id] ={
+                    totalRelated :feature.related_featuretypes.length,
+                    totalRetrieved: 0
+                };
+                for (var j = 0 ; j < feature.related_featuretypes.length ;j++){
+                    this.getLinkedData(feature.related_featuretypes[j], json, appLayer.id);
                 }
                 break;
+            }else{
+                this.div.setAttribute("feature-clicked", JSON.stringify(json));
             }
-            this.div.setAttribute("feature-clicked", JSON.stringify(json));
             break;// for now only open the first one
         }
     },
-    getLinkedData : function (related_feature,attributes, appLayerId){
-        
+    convertFeature: function(feature){
+        var json = {};
+        json.id = feature["__fid"];
+        json.attributes = feature;
+        return json;
+    },
+    getLinkedData : function (related_featuretype, feature, appLayerId){
         var appLayer = this.config.viewerController.getAppLayerById(appLayerId);
         var options = {};
 
-        var filter = "&filter="+encodeURIComponent(related_feature.filter);
+        var filter = "&filter="+encodeURIComponent(related_featuretype.filter);
 
-        var featureType="&featureType="+related_feature.id;
+        var featureType="&featureType="+related_featuretype.id;
 
         options.application = this.appId;
-        options.appLayer = appLayer;
+        options.appLayer = appLayerId;
         options.limit = 1000;
         options.filter = filter;
-        options.graph = true;
+        options.graph = false;
+        options.edit = false;
         options.arrays = false;
-     //   options.sort = this.getAttributeTitleName(appLayer, config.categoryAttribute, false);
-        options.attributesToInclude = attributes;
-        options.attributesNotNull = attributes;
         Ext.Ajax.request({
             url: appLayer.featureService.getStoreUrl() + featureType+filter,
             params: options,
@@ -163,13 +168,23 @@ Ext.define("viewer.components.GBI", {
             success: function(result) {
                 var response = Ext.JSON.decode(result.responseText);
                 var features = response.features;
-                console.log("related features:", features)
-                //this.createGraph(appLayer, features, config);
+                var childs = [];
+                for(var i = 0 ; i < features.length ;i++){
+                    childs.push(this.convertFeature(features[i]));
+                }
+                feature.children = [...childs];
+                this.relatedFeatureFinishedLoading(feature);
             },
             failure: function(result) {
                this.config.viewerController.logger.error(result);
             }
         });
+    },
+    relatedFeatureFinishedLoading: function(feature){
+        this.relatedFeatureCounter[feature.id]["totalRetrieved"] = this.relatedFeatureCounter[feature.id]["totalRetrieved"]+1;
+        if(this.relatedFeatureCounter[feature.id]["totalRetrieved"] === this.relatedFeatureCounter[feature.id]["totalRelated"]){
+            this.div.setAttribute("feature-clicked", JSON.stringify(feature));
+        }
     },
     showWindow: function(){
         this.div.setAttribute("feature-clicked", JSON.stringify(this.getData()));
