@@ -10,6 +10,8 @@ export interface Feature {
 export interface Attribute {
   key: string;
   type: string;
+  column: number;
+  tab: number;
 }
 export interface FeatureAttribute extends Attribute {
     key: string;
@@ -39,4 +41,13 @@ export interface DialogData {
 
 export interface DialogClosedData {
   iets: string;
+}
+
+
+export interface TabbedFields{
+  tabs: Map<number, ColumnizedFields>;
+}
+
+export interface ColumnizedFields{
+  columns: Map<number, Attribute[]>;
 }

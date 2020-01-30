@@ -181,30 +181,42 @@ Ext.define("viewer.components.GBI", {
                             fields: [
                                 {
                                     key: 'id',
-                                    type: 'textfield'
+                                    type: 'textfield',
+                                    column: 1,
+                                    tab: 1
                                 },
                                 {
                                     key: 'woonplaats',
-                                    type: 'textfield'
+                                    type: 'textfield',
+                                    column: 1,
+                                    tab: 1
                                 },
                                 {
                                     key: 'verhardingsfunctie',
-                                    type: 'textfield'
+                                    type: 'textfield',
+                                    column: 2,
+                                    tab: 1
                                 },
                                 {
                                     key: 'buurt',
-                                    type: 'textfield'
+                                    type: 'textfield',
+                                    column: 2,
+                                    tab: 1
                                 },
                                 {
                                     key: 'std_domein',
-                                    type: 'textfield'
+                                    type: 'textfield',
+                                    column: 1,
+                                    tab: 2
                                 }, {
                                     key: 'type',
-                                    type: 'combo'
+                                    type: 'combo',
+                                    column: 2,
+                                    tab: 2
                                 }
                             ],
-                            tabs: 12,
-                            name: "Wegvakkuh"
+                            tabs: 2,
+                            name: "Wegvakonderdeel"
                         }
             }
         };
