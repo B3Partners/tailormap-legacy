@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import {FlatTreeControl} from '@angular/cdk/tree';
 import {MatTreeFlatDataSource, MatTreeFlattener} from '@angular/material/tree';
 import { Feature, FeatureAttribute, FormConfigurations} from '../../shared/wegvakken-models';
@@ -14,6 +14,9 @@ export class WegvakkenTreeComponent implements OnInit {
 
   constructor() {
   }
+
+  @Output()
+  public nodeClicked = new EventEmitter<Feature>();
 
   @Input()
   public feature: Feature;
@@ -33,11 +36,9 @@ export class WegvakkenTreeComponent implements OnInit {
     this.treeControl.expandAll();
   }
 
-
   public setNodeSelected(node: FlatNode) {
-    console.log("clicked node", node);
-    const a = 0;
-    }
+    this.nodeClicked.emit(node.feature);
+  }
 
   private convertFeatureToNode(feature: Feature): FeatureNode {
       const children: FeatureNode[] = [];
@@ -65,6 +66,7 @@ export class WegvakkenTreeComponent implements OnInit {
         name: this.getFeatureValue(feature, this.formConfigs.config[feature.featureType].treeNodeColumn),
         children,
         id: feature.id,
+        feature,
       };
       return node;
   }

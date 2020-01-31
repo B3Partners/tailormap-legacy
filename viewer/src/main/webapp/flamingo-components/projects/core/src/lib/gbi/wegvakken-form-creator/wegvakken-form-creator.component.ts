@@ -1,12 +1,13 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Injectable, OnChanges } from '@angular/core';
 import { FormConfiguration, TabbedFields, Feature, ColumnizedFields, Attribute, IndexedFeatureAttributes } from '../../shared/wegvakken-models';
+import { FlatNode } from '../wegvakken-tree/wegvakken-tree-models';
 
 @Component({
   selector: 'flamingo-wegvakken-form-creator',
   templateUrl: './wegvakken-form-creator.component.html',
   styleUrls: ['./wegvakken-form-creator.component.css'],
 })
-export class WegvakkenFormCreatorComponent implements OnInit {
+export class WegvakkenFormCreatorComponent implements OnChanges {
 
   @Input()
   public formConfig: FormConfiguration;
@@ -16,13 +17,13 @@ export class WegvakkenFormCreatorComponent implements OnInit {
   public indexedAttributes: IndexedFeatureAttributes;
 
   public tabbedConfig: TabbedFields;
+
   constructor() {
   }
 
-  public ngOnInit() {
+  public ngOnChanges() {
     this.tabbedConfig = this.prepareFormConfig();
-  }
-
+}
   private prepareFormConfig(): TabbedFields {
     const tabbedFields: TabbedFields = {tabs: new Map<number, ColumnizedFields>()};
     const attrs = this.formConfig.fields;

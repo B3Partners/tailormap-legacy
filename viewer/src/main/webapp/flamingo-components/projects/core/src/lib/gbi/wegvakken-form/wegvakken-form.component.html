@@ -2,10 +2,17 @@
 <form>
   <div class="container">
     <div class="tree">
-      <flamingo-wegvakken-tree [feature]=feature [formConfigs]=data.formConfigs></flamingo-wegvakken-tree>
+      <flamingo-wegvakken-tree
+      (nodeClicked)='openForm($event)'
+      [feature]=feature
+      [formConfigs]=formConfigs></flamingo-wegvakken-tree>
     </div>
     <div class="form">
-      <flamingo-wegvakken-form-creator  [feature]=feature [formConfig]=formConfig [indexedAttributes]=data.indexedAttributes></flamingo-wegvakken-form-creator>
+      <flamingo-wegvakken-form-creator
+      [feature]=feature
+      [formConfig]=formConfig
+      [indexedAttributes]=indexedAttributes>
+    </flamingo-wegvakken-form-creator>
     </div>
   </div>
 </form>

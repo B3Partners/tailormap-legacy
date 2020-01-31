@@ -3,7 +3,7 @@ export interface Feature {
   id: string;
   featureType: string;
   featureSource: string;
-   attributes: FeatureAttribute[];
+  attributes: FeatureAttribute[];
   children?: Feature[];
 }
 
@@ -14,9 +14,9 @@ export interface Attribute {
   tab: number;
 }
 export interface FeatureAttribute extends Attribute {
-    key: string;
-    type: string;
-    value: string;
+  key: string;
+  type: string;
+  value: string;
 }
 
 export interface IndexedFeatureAttributes {
@@ -37,14 +37,12 @@ export interface FormConfiguration {
 
 export interface DialogData {
   formFeature: Feature;
-  indexedAttributes: IndexedFeatureAttributes;
   formConfigs: FormConfigurations;
 }
 
 export interface DialogClosedData {
   iets: string;
 }
-
 
 export interface TabbedFields {
   tabs: Map<number, ColumnizedFields>;

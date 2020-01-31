@@ -10,7 +10,13 @@ import { WegvakkenFormCreatorComponent } from './wegvakken-form-creator/wegvakke
 
 
 @NgModule({
-  declarations: [WegvakkenFormComponent, WegvakPopupComponent, WegvakkenTreeComponent, WegvakFormfieldComponent, WegvakkenFormCreatorComponent],
+  declarations: [
+    WegvakkenFormComponent,
+    WegvakPopupComponent,
+    WegvakkenTreeComponent,
+    WegvakFormfieldComponent,
+    WegvakkenFormCreatorComponent,
+  ],
   imports: [
     CommonModule,
     SharedModule,

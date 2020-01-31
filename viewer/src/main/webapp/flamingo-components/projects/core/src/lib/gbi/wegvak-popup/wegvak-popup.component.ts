@@ -50,7 +50,6 @@ export class WegvakPopupComponent implements OnInit {
       data: {
         formConfigs: this.formConfigs,
         formFeature,
-        indexedAttributes:  this.convertFeatureToIndexed(formFeature),
       },
     });
     // tslint:disable-next-line: rxjs-no-ignored-subscription
@@ -64,14 +63,13 @@ export class WegvakPopupComponent implements OnInit {
   }
 
   private convertToFormFeature(f: any): Feature {
-    
     const id = f.id;
     const ft = id.substring(0, id.indexOf('.') );
     const formConfig = this.formConfigs.config[ft];
     const featureAttributes: FeatureAttribute[] = this.convertFeatureAttributes(formConfig, f.attributes);
-    const children : Feature[] = [];
-    if(f.children){
-      f.children.forEach((f) =>{
+    const children: Feature[] = [];
+    if (f.children) {
+      f.children.forEach((f) => {
         children.push(this.convertToFormFeature(f));
       });
     }
@@ -103,11 +101,4 @@ export class WegvakPopupComponent implements OnInit {
     return JSON.parse(config);
   }
 
-  private convertFeatureToIndexed(feat: Feature): IndexedFeatureAttributes {
-    const m = new Map<string, FeatureAttribute>();
-    for (const attr of feat.attributes) {
-      m.set(attr.key, attr);
-    }
-    return {attrs: m};
-  }
 }
