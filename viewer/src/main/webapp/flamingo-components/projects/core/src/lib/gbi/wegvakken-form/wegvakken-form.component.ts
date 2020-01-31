@@ -21,7 +21,7 @@ export class WegvakkenFormComponent implements OnInit {
       this.feature = data.formFeature;
   }
 
-  public ngOnInit() { 
+  public ngOnInit() {
   }
 
   private prepareFormConfig () : TabbedFields{

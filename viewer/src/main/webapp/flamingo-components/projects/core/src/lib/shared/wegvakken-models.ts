@@ -46,10 +46,24 @@ export interface DialogClosedData {
 }
 
 
-export interface TabbedFields{
+export interface TabbedFields {
   tabs: Map<number, ColumnizedFields>;
 }
 
-export interface ColumnizedFields{
+export interface ColumnizedFields {
   columns: Map<number, Attribute[]>;
+}
+
+
+export interface FeatureNode {
+  name: string;
+  children?: FeatureNode[];
+  id: string;
+}
+
+/** Flat node with expandable and level information */
+export interface ExampleFlatNode {
+  expandable: boolean;
+  name: string;
+  level: number;
 }
