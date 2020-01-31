@@ -1,7 +1,9 @@
 import { Component, OnInit, Input } from '@angular/core';
 import {FlatTreeControl} from '@angular/cdk/tree';
 import {MatTreeFlatDataSource, MatTreeFlattener} from '@angular/material/tree';
-import { Feature, FeatureAttribute, FormConfigurations, ExampleFlatNode, FeatureNode } from '../../shared/wegvakken-models';
+import { Feature, FeatureAttribute, FormConfigurations} from '../../shared/wegvakken-models';
+import { WegvakkenTreeHelpers } from './wegvakken-tree-helpers';
+import { FlatNode, FeatureNode } from './wegvakken-tree-models';
 
 @Component({
   selector: 'flamingo-wegvakken-tree',
@@ -9,7 +11,6 @@ import { Feature, FeatureAttribute, FormConfigurations, ExampleFlatNode, Feature
   styleUrls: ['./wegvakken-tree.component.css'],
 })
 export class WegvakkenTreeComponent implements OnInit {
-
 
   constructor() {
   }
@@ -20,33 +21,23 @@ export class WegvakkenTreeComponent implements OnInit {
   @Input()
   public formConfigs: FormConfigurations;
 
-  public treeControl = new FlatTreeControl<ExampleFlatNode>(
-      node => node.level, node => node.expandable);
+  public treeControl = new FlatTreeControl<FlatNode>(node => node.level, node => node.expandable);
+
   public treeFlattener = new MatTreeFlattener(
-      this._transformer, node => node.level, node => node.expandable, node => node.children);
+    WegvakkenTreeHelpers.transformer, node => node.level, node => node.expandable, node => node.children);
 
   public dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
 
-
-      private _transformer = (node: FeatureNode, level: number): ExampleFlatNode => {
-        return {
-          expandable: !!node.children && node.children.length > 0,
-          name: node.name,
-          level,
-        };
-      }
-
   public ngOnInit() {
-    console.log('ngOnInit:', this.formConfigs);
     this.dataSource.data = [this.convertFeatureToNode(this.feature)];
     this.treeControl.expandAll();
   }
 
 
-  ngAfterViewInit(): void {
-    // this.treeControl.expandAll();
-  }
-
+  public setNodeSelected(node: FlatNode) {
+    console.log("clicked node", node);
+    const a = 0;
+    }
 
   private convertFeatureToNode(feature: Feature): FeatureNode {
       const children: FeatureNode[] = [];
@@ -67,10 +58,8 @@ export class WegvakkenTreeComponent implements OnInit {
           if (fts.hasOwnProperty(key)) {
             const child = fts[key];
             children.push(child);
-
           }
         }
-
       }
       const node: FeatureNode = {
         name: this.getFeatureValue(feature, this.formConfigs.config[feature.featureType].treeNodeColumn),
@@ -90,6 +79,5 @@ export class WegvakkenTreeComponent implements OnInit {
     return val;
   }
 
-  public hasChild = (_: number, node: ExampleFlatNode) => node.expandable;
-
+  public hasChild = (_: number, node: FlatNode) => node.expandable;
 }

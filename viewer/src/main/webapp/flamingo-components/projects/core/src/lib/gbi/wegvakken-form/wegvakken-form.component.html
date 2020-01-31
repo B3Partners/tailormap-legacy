@@ -5,19 +5,7 @@
       <flamingo-wegvakken-tree [feature]=feature [formConfigs]=data.formConfigs></flamingo-wegvakken-tree>
     </div>
     <div class="form">
-      <h1>{{formConfig.name}}</h1>
-      <mat-tab-group>
-        <mat-tab *ngFor="let tab of tabbedConfig.tabs | keyvalue" label="{{formConfig.tabConfig[tab.key]}}">
-            <div class="tab">
-              <div *ngFor="let column of tab.value.columns | keyvalue" class="column">
-                <span *ngFor="let attr of column.value" class="cellfield">
-                  <flamingo-wegvak-formfield [featureAttribute]=data.indexedAttributes.attrs.get(attr.key)
-                   [attribute]=attr></flamingo-wegvak-formfield>
-                </span>
-              </div>
-            </div>
-        </mat-tab>
-      </mat-tab-group>
+      <flamingo-wegvakken-form-creator  [feature]=feature [formConfig]=formConfig [indexedAttributes]=data.indexedAttributes></flamingo-wegvakken-form-creator>
     </div>
   </div>
 </form>
