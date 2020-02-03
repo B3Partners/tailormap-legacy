@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { WegvakkenFormComponent } from '../wegvakken-form/wegvakken-form.component';
 import { MatDialog } from '@angular/material';
-import { Feature, DialogClosedData, FormConfigurations, IndexedFeatureAttributes,
+import { Feature, DialogClosedData, FormConfigurations,
         FeatureAttribute, FormConfiguration } from '../../shared/wegvakken-models';
 
 @Component({

@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { Attribute, FeatureAttribute } from '../../shared/wegvakken-models';
+import { Attribute, FeatureAttribute, FormFieldType } from '../../shared/wegvakken-models';
 
 @Component({
   selector: 'flamingo-wegvak-formfield',
@@ -19,6 +19,9 @@ export class WegvakFormfieldComponent implements OnInit {
   public featureAttribute: FeatureAttribute;
 
   constructor() { }
+
+  public isTextAttribute = (attr: Attribute): boolean => attr.type === FormFieldType.TEXTFIELD;
+  public isSelectAttribute = (attr: Attribute): boolean => attr.type === FormFieldType.SELECT;
 
   public ngOnInit() {
   }

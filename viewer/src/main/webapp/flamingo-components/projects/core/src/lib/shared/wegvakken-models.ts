@@ -9,13 +9,34 @@ export interface Feature {
 
 export interface Attribute {
   key: string;
-  type: string;
+  type: FormFieldType;
+  options ?: SelectOption[];
   column: number;
   tab: number;
 }
+
+export interface TextAttribute extends Attribute {
+  key: string;
+  type: FormFieldType.TEXTFIELD;
+  column: number;
+  tab: number;
+}
+export interface SelectAttribute extends Attribute {
+  key: string;
+  type: FormFieldType.SELECT;
+  options: SelectOption[];
+  column: number;
+  tab: number;
+}
+
+export interface SelectOption {
+  label: string;
+  val: string;
+}
+
 export interface FeatureAttribute extends Attribute {
   key: string;
-  type: string;
+  type: FormFieldType;
   value: string;
 }
 
@@ -50,4 +71,9 @@ export interface TabbedFields {
 
 export interface ColumnizedFields {
   columns: Map<number, Attribute[]>;
+}
+
+export enum FormFieldType {
+  TEXTFIELD = 'textfield',
+  SELECT = 'select',
 }

@@ -1,3 +1,14 @@
 <mat-form-field>
-  <input placeholder="{{attribute.key}}" type="textfield" matInput name={{attribute.key}} value="{{featureAttribute ? featureAttribute.value : ''}}" />
+
+  <input *ngIf="isTextAttribute(attribute)"
+  placeholder="{{attribute.key}}" type="textfield"
+  matInput name={{attribute.key}}
+  value="{{featureAttribute ? featureAttribute.value : ''}}" />
+
+  <mat-select *ngIf="isSelectAttribute(attribute)" [value]="featureAttribute.value" >
+    <mat-option *ngFor="let opt of attribute.options" [value]="opt.val">
+      {{opt.label}}
+    </mat-option>
+  </mat-select>
+
 </mat-form-field>
