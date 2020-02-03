@@ -657,3 +657,8 @@ TODO: check if we always need to do this, not only mobile, only on mobile are we
 .screen-popup { overflow: visible; }
 .x-resizable-handle-east { right: -10px; }
 .x-resizable-handle-south { bottom: -10px; }
+
+
+.cdk-overlay-container {
+  z-index: 16000 !important;
+}
