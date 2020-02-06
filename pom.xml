@@ -136,7 +136,26 @@
             <dependency>
                 <groupId>org.apache.xmlgraphics</groupId>
                 <artifactId>fop</artifactId>
+                <!-- when upgrading > 2.4 the exclusions should probably be removed -->
                 <version>2.4</version>
+                <exclusions>
+                    <!-- fop-core come with a load of deps we don't want, 
+                    while these are compile time dependencies, exclude those.
+                    see also https://issues.apache.org/jira/browse/FOP-2889
+                    -->
+                    <exclusion>
+                        <groupId>javax.media</groupId>
+                        <artifactId>jai-core</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>com.sun.media</groupId>
+                        <artifactId>jai-codec</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>javax.servlet</groupId>
+                        <artifactId>servlet-api</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>commons-io</groupId>
