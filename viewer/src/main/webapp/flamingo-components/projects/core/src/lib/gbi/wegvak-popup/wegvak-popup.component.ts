@@ -15,7 +15,14 @@ export class WegvakPopupComponent implements OnInit {
 
   private popupOpen = false;
 
+  private applicationId: string;
+
   private formConfigs: FormConfigurations;
+
+  @Input()
+  public set application(id: string) {
+    this.applicationId = id;
+  }
 
   @Input()
   public set config(config: string) {
@@ -24,7 +31,7 @@ export class WegvakPopupComponent implements OnInit {
 
   @Input()
   public set featureClicked(data: string) {
-    const ff = this.convertToFormFeature(JSON.parse(data));
+    const ff = this.convertToFormFeature(JSON.parse(data), false);
     this.openDialog(ff);
   }
 
@@ -50,6 +57,7 @@ export class WegvakPopupComponent implements OnInit {
       data: {
         formConfigs: this.formConfigs,
         formFeature,
+        applicationId: this.applicationId,
       },
     });
     // tslint:disable-next-line: rxjs-no-ignored-subscription
@@ -62,7 +70,7 @@ export class WegvakPopupComponent implements OnInit {
     });
   }
 
-  private convertToFormFeature(f: any): Feature {
+  private convertToFormFeature(f: any, isRelated: boolean): Feature {
     const id = f.id;
     const ft = id.substring(0, id.indexOf('.') );
     const formConfig = this.formConfigs.config[ft];
@@ -70,7 +78,7 @@ export class WegvakPopupComponent implements OnInit {
     const children: Feature[] = [];
     if (f.children) {
       f.children.forEach((f) => {
-        children.push(this.convertToFormFeature(f));
+        children.push(this.convertToFormFeature(f, true));
       });
     }
     const feature: Feature = {
@@ -78,7 +86,9 @@ export class WegvakPopupComponent implements OnInit {
         featureType: ft,
         featureSource: '16',
         children,
-         attributes: featureAttributes,
+        appLayer: f.appLayer,
+        isRelated,
+        attributes: featureAttributes,
     };
     return feature;
   }

@@ -287,7 +287,7 @@ public class EditFeatureActionBean extends LocalizableApplicationActionBean impl
                                     if (ad != null) {
                                         attributes.add(attribute);
                                         //System.out.println(attribute);
-                                        String v = jsonFeature.getString(attribute);
+                                        String v = jsonFeature.optString(attribute);
                                         //System.out.println(v);
                                         values.add(StringUtils.defaultIfBlank(v, null));
                                     }

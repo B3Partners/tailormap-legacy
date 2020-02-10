@@ -5,6 +5,8 @@ export interface Feature {
   featureSource: string;
   attributes: FeatureAttribute[];
   children?: Feature[];
+  appLayer: string;
+  isRelated: boolean;
 }
 
 export interface Attribute {
@@ -59,6 +61,7 @@ export interface FormConfiguration {
 export interface DialogData {
   formFeature: Feature;
   formConfigs: FormConfigurations;
+  applicationId: string;
 }
 
 export interface DialogClosedData {

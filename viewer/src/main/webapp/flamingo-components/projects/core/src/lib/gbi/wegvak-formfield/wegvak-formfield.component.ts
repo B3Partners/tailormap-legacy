@@ -18,6 +18,9 @@ export class WegvakFormfieldComponent implements OnInit {
   @Input()
   public featureAttribute: FeatureAttribute;
 
+  @Input()
+  public groep: FormGroup;
+
   constructor() { }
 
   public isTextAttribute = (attr: Attribute): boolean => attr.type === FormFieldType.TEXTFIELD;

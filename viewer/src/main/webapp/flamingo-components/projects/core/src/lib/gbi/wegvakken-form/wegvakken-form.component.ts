@@ -10,6 +10,7 @@ import { DialogData, Feature, FormConfiguration, IndexedFeatureAttributes, Featu
 export class WegvakkenFormComponent implements OnInit {
 
   public feature: Feature;
+  public applicationId: string;
   public formConfig: FormConfiguration;
   public formConfigs: FormConfigurations;
   public indexedAttributes: IndexedFeatureAttributes;
@@ -17,6 +18,7 @@ export class WegvakkenFormComponent implements OnInit {
   constructor( public dialogRef: MatDialogRef<WegvakkenFormComponent>,
                @Inject(MAT_DIALOG_DATA) public data: DialogData ) {
       this.formConfigs = data.formConfigs;
+      this.applicationId = data.applicationId;
       this.feature = data.formFeature;
       this.initForm();
   }

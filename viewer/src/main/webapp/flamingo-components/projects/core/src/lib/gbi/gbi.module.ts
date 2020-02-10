@@ -6,6 +6,7 @@ import { WegvakPopupComponent } from './wegvak-popup/wegvak-popup.component';
 import { WegvakkenTreeComponent } from './wegvakken-tree/wegvakken-tree.component';
 import { WegvakFormfieldComponent } from './wegvak-formfield/wegvak-formfield.component';
 import { WegvakkenFormCreatorComponent } from './wegvakken-form-creator/wegvakken-form-creator.component';
+import { ReactiveFormsModule } from '@angular/forms';
 
 
 
@@ -20,6 +21,7 @@ import { WegvakkenFormCreatorComponent } from './wegvakken-form-creator/wegvakke
   imports: [
     CommonModule,
     SharedModule,
+    ReactiveFormsModule,
   ],
   exports: [
     WegvakPopupComponent,

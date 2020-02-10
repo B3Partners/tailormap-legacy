@@ -65,6 +65,7 @@ Ext.define("viewer.components.GBI", {
             console.log("wanneerPopupClosed", evt.detail);
         });
         this.div.setAttribute("config", JSON.stringify(this.formConfigs));
+        this.div.setAttribute("application", this.config.viewerController.app.id);
         document.body.appendChild(this.div);
     },
     loadConfig: function(){
@@ -122,7 +123,7 @@ Ext.define("viewer.components.GBI", {
         var json = {};
         for (var i = 0 ; i < features.length ;i++){
             var feature = features[i];
-            json = this.convertFeature(feature);
+            json = this.convertFeature(feature, appLayer.id);
                         
             if(feature.related_featuretypes){
                 json.children = [];
@@ -140,10 +141,11 @@ Ext.define("viewer.components.GBI", {
             break;// for now only open the first one
         }
     },
-    convertFeature: function(feature){
+    convertFeature: function(feature, appLayer){
         var json = {};
         json.id = feature["__fid"];
         json.attributes = feature;
+        json.appLayer = appLayer;
         return json;
     },
     getLinkedData : function (related_featuretype, feature, appLayerId){
@@ -170,7 +172,7 @@ Ext.define("viewer.components.GBI", {
                 var features = response.features;
                 var childs = [];
                 for(var i = 0 ; i < features.length ;i++){
-                    childs.push(this.convertFeature(features[i]));
+                    childs.push(this.convertFeature(features[i],appLayerId));
                 }
                 feature.children = [...childs];
                 this.relatedFeatureFinishedLoading(feature);

@@ -1,6 +1,8 @@
 import { Component, OnInit, Input, Injectable, OnChanges } from '@angular/core';
-import { FormConfiguration, TabbedFields, Feature, ColumnizedFields, Attribute, IndexedFeatureAttributes } from '../../shared/wegvakken-models';
-import { FlatNode } from '../wegvakken-tree/wegvakken-tree-models';
+import { FormConfiguration, TabbedFields, Feature, ColumnizedFields, Attribute,
+  IndexedFeatureAttributes } from '../../shared/wegvakken-models';
+import { WegvakkenFormSaveService } from '../wegvakken-form-save.service';
+import { FormGroup, FormControl } from '@angular/forms';
 
 @Component({
   selector: 'flamingo-wegvakken-form-creator',
@@ -15,14 +17,19 @@ export class WegvakkenFormCreatorComponent implements OnChanges {
   public feature: Feature;
   @Input()
   public indexedAttributes: IndexedFeatureAttributes;
+  @Input()
+  public applicationId: string;
 
   public tabbedConfig: TabbedFields;
 
-  constructor() {
+  public formgroep = new FormGroup({});
+
+  constructor(private saveService: WegvakkenFormSaveService) {
   }
 
   public ngOnChanges() {
     this.tabbedConfig = this.prepareFormConfig();
+    this.createFormControls();
 }
   private prepareFormConfig(): TabbedFields {
     const tabbedFields: TabbedFields = {tabs: new Map<number, ColumnizedFields>()};
@@ -55,6 +62,33 @@ export class WegvakkenFormCreatorComponent implements OnChanges {
       columnizedFields.columns.set(col, fields);
     }
     return columnizedFields;
+  }
+
+  private createFormControls() {
+    const lookup = {};
+    this.feature.attributes.forEach(a => {
+      lookup [a.key] = a;
+    });
+    const attrs = this.formConfig.fields;
+    const formControls = {};
+    for ( const attr of attrs) {
+      formControls[attr.key] = new FormControl(lookup[attr.key] ? lookup[attr.key].value : '');
+    }
+    this.formgroep = new FormGroup(formControls);
+  }
+
+  public save() {
+    console.log('asdfsdf', this.formgroep.value);
+    const feature = this.formgroep.value;
+    feature.__fid = this.feature.id;
+    this.saveService.save( this.feature, feature, this.feature.appLayer, this.applicationId).subscribe(
+      (d) => {
+        const a = 0;
+      }, // success path
+      error => {
+        const b = 0;
+      }, // error path
+    );
   }
 
 }

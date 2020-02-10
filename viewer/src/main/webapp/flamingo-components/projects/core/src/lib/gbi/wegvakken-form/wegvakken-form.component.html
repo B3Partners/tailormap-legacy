@@ -1,5 +1,4 @@
 <h1>Paspoort</h1>
-<form>
   <div class="container">
     <div class="tree">
       <flamingo-wegvakken-tree
@@ -11,9 +10,10 @@
       <flamingo-wegvakken-form-creator
       [feature]=feature
       [formConfig]=formConfig
-      [indexedAttributes]=indexedAttributes>
+      [indexedAttributes]=indexedAttributes
+      applicationId={{applicationId}}
+      >
     </flamingo-wegvakken-form-creator>
     </div>
   </div>
-</form>
 <button mat-raised-button (click)="closeDialog();"> Sluit popup</button>
