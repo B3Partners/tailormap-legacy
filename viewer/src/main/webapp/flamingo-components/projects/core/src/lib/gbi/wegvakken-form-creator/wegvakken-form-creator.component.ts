@@ -3,6 +3,7 @@ import { FormConfiguration, TabbedFields, Feature, ColumnizedFields, Attribute,
   IndexedFeatureAttributes } from '../../shared/wegvakken-models';
 import { WegvakkenFormSaveService } from '../wegvakken-form-save.service';
 import { FormGroup, FormControl } from '@angular/forms';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'flamingo-wegvakken-form-creator',
@@ -24,7 +25,9 @@ export class WegvakkenFormCreatorComponent implements OnChanges {
 
   public formgroep = new FormGroup({});
 
-  constructor(private saveService: WegvakkenFormSaveService) {
+  constructor(
+    private saveService: WegvakkenFormSaveService,
+    private _snackBar: MatSnackBar) {
   }
 
   public ngOnChanges() {
@@ -83,11 +86,21 @@ export class WegvakkenFormCreatorComponent implements OnChanges {
     feature.__fid = this.feature.id;
     this.saveService.save( this.feature, feature, this.feature.appLayer, this.applicationId).subscribe(
       (d) => {
-        const a = 0;
-      }, // success path
+          if (d.success) {
+            this._snackBar.open('Opgeslagen', '', {
+              duration: 5000,
+            });
+          } else {
+            this._snackBar.open('Fout: Niet opgeslagen: ' + d.error, '', {
+              duration: 5000,
+            });
+          }
+      },
       error => {
-        const b = 0;
-      }, // error path
+        this._snackBar.open('Fout: Niet opgeslagen: ' + error, '', {
+          duration: 5000,
+        });
+      },
     );
   }
 
