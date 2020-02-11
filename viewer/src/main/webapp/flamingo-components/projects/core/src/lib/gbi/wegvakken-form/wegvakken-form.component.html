@@ -1,5 +1,7 @@
-<h1>Paspoort</h1>
-  <div class="container">
+<div class="container">
+
+  <h1>Paspoort</h1>
+  <div class="form-container">
     <div class="tree">
       <flamingo-wegvakken-tree
       (nodeClicked)='openForm($event)'
@@ -14,7 +16,23 @@
       [indexedAttributes]=indexedAttributes
       applicationId={{applicationId}}
       >
-    </flamingo-wegvakken-form-creator>
+      </flamingo-wegvakken-form-creator>
     </div>
   </div>
-<button mat-raised-button (click)="closeDialog();"> Sluit popup</button>
+  <div class="bottom-bar">
+    <button mat-raised-button  mat-fab color="warn" (click)="closeDialog();">
+      <mat-icon>close</mat-icon>
+    </button>
+    <button color="primary" mat-raised-button mat-fab aria-label="Voeg paspoort toe" class="add-button" [matMenuTriggerFor]="menu">
+      <mat-icon>add</mat-icon>
+    </button>
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item (click)="newItem($event);">
+        <span>Planning</span>
+      </button>
+      <button mat-menu-item>
+        <span>Inspectie</span>
+      </button>
+    </mat-menu>
+  </div>
+</div>

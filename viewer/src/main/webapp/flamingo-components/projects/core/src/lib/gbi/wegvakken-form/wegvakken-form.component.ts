@@ -49,6 +49,10 @@ export class WegvakkenFormComponent implements OnInit {
     return {attrs: m};
   }
 
+  public newItem(e){
+    const a= 0;
+  }
+
   public closeDialog() {
     this.dialogRef.close();
   }
