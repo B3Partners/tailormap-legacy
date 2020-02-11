@@ -141,7 +141,12 @@ Ext.define ("viewer.components.AttributeList",{
                     hidden: !this.config.addZoomTo
                 },
                 { xtype: 'container', flex: 1 },
-                {xtype: 'button', style: { marginRight: '5px' }, id:"downloadButton",text: i18next.t('viewer_components_attributelist_1'),disabled:true, scope:this, handler:function(){
+                {xtype: 'button', style: { marginRight: '5px' }, id:"editButton",
+                    text: i18next.t('viewer_components_attributelist_15'), scope:this, handler:function(){
+                        this.edit();
+                    }},
+                {xtype: 'button', style: { marginRight: '5px' }, id:"downloadButton",
+                    text: i18next.t('viewer_components_attributelist_1'),disabled:true, scope:this, handler:function(){
                         this.download();
                     }},
                 {
@@ -843,6 +848,11 @@ Ext.define ("viewer.components.AttributeList",{
         });
         w.show();
         setTimeout(function(){w.hide();}, 8000);
+    },
+    edit: function(){
+        this.config.viewerController.fireEvent(viewer.viewercontroller.controller.Event.ON_EDIT_MULTIPLE_FEATURES_START, 
+        this.layerSelector.getValue());
+        this.popup.popupWin.close();
     }
 });
 

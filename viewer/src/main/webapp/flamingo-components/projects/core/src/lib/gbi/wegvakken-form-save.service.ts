@@ -22,4 +22,12 @@ export class WegvakkenFormSaveService {
     return this.http.post<Feature>('/viewer/action/feature/edit', params);
   }
 
+  public savebulk(features: Feature[], appLayer: string, applicationId): Observable<any> {
+    let params =  new HttpParams();
+    const fs = features.map(f => ({...f.attributes, __fid: f.id}) );
+    params = params.append('appLayer', '' + appLayer);
+    params = params.append('application', applicationId);
+    params = params.append('features', JSON.stringify(fs));
+    return this.http.post<Feature>('/viewer/action/feature/editbulk', params);
+  }
 }

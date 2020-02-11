@@ -187,6 +187,8 @@ Ext.define("viewer.viewercontroller.controller.Event",{
          * @param feature the feature that was removed
          */
         ON_EDIT_REMOVE_SUCCESS                : "ON_EDIT_REMOVE_SUCCESS",
+        
+        ON_EDIT_MULTIPLE_FEATURES_START         : "ON_EDIT_MULTIPLE_FEATURES_START",
         // Tool events:                             100 - 150
         ON_EVENT_DOWN                         : "ON_EVENT_DOWN",
         /** @field */

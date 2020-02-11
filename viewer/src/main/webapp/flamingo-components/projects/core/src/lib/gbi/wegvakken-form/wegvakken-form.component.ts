@@ -1,6 +1,7 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import {  MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { DialogData, Feature, FormConfiguration, IndexedFeatureAttributes, FeatureAttribute, FormConfigurations } from '../../shared/wegvakken-models';
+import { DialogData, Feature, FormConfiguration, IndexedFeatureAttributes,
+   FeatureAttribute, FormConfigurations } from '../../shared/wegvakken-models';
 
 @Component({
   selector: 'flamingo-wegvakken-form',
@@ -9,6 +10,7 @@ import { DialogData, Feature, FormConfiguration, IndexedFeatureAttributes, Featu
 })
 export class WegvakkenFormComponent implements OnInit {
 
+  public features: Feature[];
   public feature: Feature;
   public applicationId: string;
   public formConfig: FormConfiguration;
@@ -19,7 +21,8 @@ export class WegvakkenFormComponent implements OnInit {
                @Inject(MAT_DIALOG_DATA) public data: DialogData ) {
       this.formConfigs = data.formConfigs;
       this.applicationId = data.applicationId;
-      this.feature = data.formFeature;
+      this.features = data.formFeatures;
+      this.feature = this.features[0];
       this.initForm();
   }
 
@@ -32,7 +35,7 @@ export class WegvakkenFormComponent implements OnInit {
   }
 
   public openForm(feature) {
-    if (feature) {
+    if (feature && this.features.length === 1) {
       this.feature = feature;
       this.initForm();
     }

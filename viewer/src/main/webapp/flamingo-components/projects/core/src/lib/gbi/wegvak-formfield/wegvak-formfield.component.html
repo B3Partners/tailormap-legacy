@@ -6,10 +6,10 @@
     [formControlName]="attribute.key"
     matInput
     name={{attribute.key}}
-    [value]="featureAttribute?.value"
+    [value]="!isBulk ? featureAttribute?.value : ''"
     />
 
-  <mat-select *ngIf="isSelectAttribute(attribute)" [value]="featureAttribute.value" >
+  <mat-select placeholder="{{attribute.key}}" *ngIf="isSelectAttribute(attribute)" [value]="!isBulk ?  featureAttribute.value : ''" >
     <mat-option *ngFor="let opt of attribute.options" [value]="opt.val">{{opt.label}}</mat-option>
   </mat-select>
 

@@ -59,7 +59,7 @@ export interface FormConfiguration {
 }
 
 export interface DialogData {
-  formFeature: Feature;
+  formFeatures: Feature[];
   formConfigs: FormConfigurations;
   applicationId: string;
 }

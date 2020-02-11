@@ -3,12 +3,13 @@
     <div class="tree">
       <flamingo-wegvakken-tree
       (nodeClicked)='openForm($event)'
-      [feature]=feature
+      [features]=features
       [formConfigs]=formConfigs></flamingo-wegvakken-tree>
     </div>
     <div class="form">
       <flamingo-wegvakken-form-creator
       [feature]=feature
+      [features]=features
       [formConfig]=formConfig
       [indexedAttributes]=indexedAttributes
       applicationId={{applicationId}}

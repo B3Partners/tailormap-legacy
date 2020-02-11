@@ -48,7 +48,7 @@ export class WegvakPopupComponent implements OnInit {
   public ngOnInit() {
   }
 
-  public openDialog(formFeature ?: Feature): void {
+  public openDialog(formFeatures ?: Feature[]): void {
     this.popupOpen = true;
 
     const dialogRef = this.dialog.open(WegvakkenFormComponent, {
@@ -56,7 +56,7 @@ export class WegvakPopupComponent implements OnInit {
       height: '800px',
       data: {
         formConfigs: this.formConfigs,
-        formFeature,
+        formFeatures,
         applicationId: this.applicationId,
       },
     });
@@ -70,27 +70,35 @@ export class WegvakPopupComponent implements OnInit {
     });
   }
 
-  private convertToFormFeature(f: any, isRelated: boolean): Feature {
-    const id = f.id;
-    const ft = id.substring(0, id.indexOf('.') );
-    const formConfig = this.formConfigs.config[ft];
-    const featureAttributes: FeatureAttribute[] = this.convertFeatureAttributes(formConfig, f.attributes);
-    const children: Feature[] = [];
-    if (f.children) {
-      f.children.forEach((f) => {
-        children.push(this.convertToFormFeature(f, true));
+  private convertToFormFeature(f: any, isRelated: boolean): Feature[] {
+    if (Array.isArray(f)) {
+      const features = [];
+      f.forEach(feat => {
+        features.push(this.convertToFormFeature(feat, false)[0]);
       });
+      return features;
+    } else {
+      const id = f.id;
+      const ft = id.substring(0, id.indexOf('.') );
+      const formConfig = this.formConfigs.config[ft];
+      const featureAttributes: FeatureAttribute[] = this.convertFeatureAttributes(formConfig, f.attributes);
+      const children: Feature[] = [];
+      if (f.children) {
+        f.children.forEach((feat) => {
+          children.push(this.convertToFormFeature(feat, true)[0]);
+        });
+      }
+      const feature: Feature = {
+          id,
+          featureType: ft,
+          featureSource: '16',
+          children,
+          appLayer: f.appLayer,
+          isRelated,
+          attributes: featureAttributes,
+      };
+      return [feature];
     }
-    const feature: Feature = {
-        id,
-        featureType: ft,
-        featureSource: '16',
-        children,
-        appLayer: f.appLayer,
-        isRelated,
-        attributes: featureAttributes,
-    };
-    return feature;
   }
 
   private convertFeatureAttributes(formConfig: FormConfiguration, attributes: []): FeatureAttribute[] {

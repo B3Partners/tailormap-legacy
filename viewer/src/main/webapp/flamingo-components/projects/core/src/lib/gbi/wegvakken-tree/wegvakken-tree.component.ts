@@ -19,7 +19,7 @@ export class WegvakkenTreeComponent implements OnInit {
   public nodeClicked = new EventEmitter<Feature>();
 
   @Input()
-  public feature: Feature;
+  public features: Feature[];
 
   @Input()
   public formConfigs: FormConfigurations;
@@ -32,7 +32,7 @@ export class WegvakkenTreeComponent implements OnInit {
   public dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
 
   public ngOnInit() {
-    this.dataSource.data = [this.convertFeatureToNode(this.feature)];
+    this.dataSource.data = this.convertFeatureToNode(this.features);
     this.treeControl.expandAll();
   }
 
@@ -40,35 +40,38 @@ export class WegvakkenTreeComponent implements OnInit {
     this.nodeClicked.emit(node.feature);
   }
 
-  private convertFeatureToNode(feature: Feature): FeatureNode {
-      const children: FeatureNode[] = [];
-      if (feature.children ) {
-        const fts = {};
-        feature.children.forEach((child: Feature) => {
-          const featureType = child.featureType;
-          if (!fts.hasOwnProperty(featureType)) {
-            fts[featureType] = {
-              name: featureType,
-              children: [],
-              id: featureType,
-            };
-          }
-          fts[featureType].children.push(this.convertFeatureToNode(child));
-        });
-        for (const key in fts) {
-          if (fts.hasOwnProperty(key)) {
-            const child = fts[key];
-            children.push(child);
+  private convertFeatureToNode(features: Feature[]): FeatureNode[] {
+      const nodes: FeatureNode[] = [];
+      features.forEach(feature => {
+        const children: FeatureNode[] = [];
+        if (feature.children ) {
+          const fts = {};
+          feature.children.forEach((child: Feature) => {
+            const featureType = child.featureType;
+            if (!fts.hasOwnProperty(featureType)) {
+              fts[featureType] = {
+                name: featureType,
+                children: [],
+                id: featureType,
+              };
+            }
+            fts[featureType].children.push(this.convertFeatureToNode([child])[0]);
+          });
+          for (const key in fts) {
+            if (fts.hasOwnProperty(key)) {
+              const child = fts[key];
+              children.push(child);
+            }
           }
         }
-      }
-      const node: FeatureNode = {
-        name: this.getFeatureValue(feature, this.formConfigs.config[feature.featureType].treeNodeColumn),
-        children,
-        id: feature.id,
-        feature,
-      };
-      return node;
+        nodes.push({
+            name: this.getFeatureValue(feature, this.formConfigs.config[feature.featureType].treeNodeColumn),
+            children,
+            id: feature.id,
+            feature,
+          });
+      });
+      return nodes;
   }
 
   private getFeatureValue(feature: Feature, key: string): any {

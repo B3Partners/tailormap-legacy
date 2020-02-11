@@ -58,6 +58,7 @@ Ext.define("viewer.components.GBI", {
             viewerController: this.config.viewerController
         });
         this.toolMapClick.activateTool();
+        this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_EDIT_MULTIPLE_FEATURES_START,this.editMultiple,this);
     },
     initializeForm: function(){
         this.div = document.createElement("flamingo-wegvak-popup");
@@ -140,6 +141,33 @@ Ext.define("viewer.components.GBI", {
             }
             break;// for now only open the first one
         }
+    },
+    editMultiple: function(appLayer, a, b,c ){
+        var options = {};
+        options.application = this.appId;
+        options.appLayer = appLayer.id;
+        options.limit = 1000;
+        options.filter = appLayer.filter.getCQL();
+        options.graph = false;
+        options.edit = false;
+        options.arrays = false;
+        Ext.Ajax.request({
+            url: appLayer.featureService.getStoreUrl(),
+            params: options,
+            scope: this,
+            success: function(result) {
+                var response = Ext.JSON.decode(result.responseText);
+                var fs = response.features;
+                var features = [];
+                for(var i = 0 ; i < fs.length ;i++){
+                    features.push(this.convertFeature(fs[i],appLayer.id));
+                }
+                this.div.setAttribute("feature-clicked", JSON.stringify(features));
+            },
+            failure: function(result) {
+               this.config.viewerController.logger.error(result);
+            }
+        });
     },
     convertFeature: function(feature, appLayer){
         var json = {};

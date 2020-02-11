@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Attribute, FeatureAttribute, FormFieldType } from '../../shared/wegvakken-models';
 
@@ -7,7 +7,7 @@ import { Attribute, FeatureAttribute, FormFieldType } from '../../shared/wegvakk
   templateUrl: './wegvak-formfield.component.html',
   styleUrls: ['./wegvak-formfield.component.css'],
 })
-export class WegvakFormfieldComponent implements OnInit {
+export class WegvakFormfieldComponent {
 
   @Input()
   public attribute: Attribute;
@@ -21,12 +21,11 @@ export class WegvakFormfieldComponent implements OnInit {
   @Input()
   public groep: FormGroup;
 
+  @Input()
+  public isBulk: boolean;
+
   constructor() { }
 
   public isTextAttribute = (attr: Attribute): boolean => attr.type === FormFieldType.TEXTFIELD;
   public isSelectAttribute = (attr: Attribute): boolean => attr.type === FormFieldType.SELECT;
-
-  public ngOnInit() {
-  }
-
 }
