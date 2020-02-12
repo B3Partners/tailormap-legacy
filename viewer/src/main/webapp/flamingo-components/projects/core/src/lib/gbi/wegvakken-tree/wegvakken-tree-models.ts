@@ -5,6 +5,7 @@ export interface FeatureNode {
   children?: FeatureNode[];
   id: string;
   feature?: Feature;
+  selected: boolean;
 }
 
 /** Flat node with expandable and level information */
@@ -13,4 +14,5 @@ export interface FlatNode {
   name: string;
   level: number;
   feature?: Feature;
+  selected: boolean;
 }

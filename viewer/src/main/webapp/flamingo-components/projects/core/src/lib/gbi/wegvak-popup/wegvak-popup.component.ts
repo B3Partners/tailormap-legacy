@@ -17,6 +17,8 @@ export class WegvakPopupComponent implements OnInit {
 
   private applicationId: string;
 
+  private isBulk: string;
+
   private formConfigs: FormConfigurations;
 
   @Input()
@@ -27,6 +29,11 @@ export class WegvakPopupComponent implements OnInit {
   @Input()
   public set config(config: string) {
     this.formConfigs = this.convertToFomConfig(config);
+  }
+
+  @Input()
+  public set bulk(isBulk: string){
+    this.isBulk = isBulk;
   }
 
   @Input()
@@ -57,6 +64,7 @@ export class WegvakPopupComponent implements OnInit {
       data: {
         formConfigs: this.formConfigs,
         formFeatures,
+        isBulk: this.isBulk,
         applicationId: this.applicationId,
       },
     });

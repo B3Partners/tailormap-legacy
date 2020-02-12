@@ -8,6 +8,7 @@
 .tree{
   order: 1;
   width: 550px;
+  overflow: auto;
 }
 
 .form{

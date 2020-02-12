@@ -28,4 +28,5 @@ export class WegvakFormfieldComponent {
 
   public isTextAttribute = (attr: Attribute): boolean => attr.type === FormFieldType.TEXTFIELD;
   public isSelectAttribute = (attr: Attribute): boolean => attr.type === FormFieldType.SELECT;
+  public isHiddenAttribute = (attr: Attribute): boolean => attr.type === FormFieldType.HIDDEN;
 }

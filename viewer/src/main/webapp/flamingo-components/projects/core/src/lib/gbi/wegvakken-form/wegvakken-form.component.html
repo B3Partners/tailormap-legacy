@@ -6,6 +6,7 @@
       <flamingo-wegvakken-tree
       (nodeClicked)='openForm($event)'
       [features]=features
+      [feature]=feature
       [formConfigs]=formConfigs></flamingo-wegvakken-tree>
     </div>
     <div class="form">
@@ -13,6 +14,7 @@
       [feature]=feature
       [features]=features
       [formConfig]=formConfig
+      [isBulk]=isBulk
       [indexedAttributes]=indexedAttributes
       applicationId={{applicationId}}
       >
@@ -27,11 +29,8 @@
       <mat-icon>add</mat-icon>
     </button>
     <mat-menu #menu="matMenu">
-      <button mat-menu-item (click)="newItem($event);">
-        <span>Planning</span>
-      </button>
-      <button mat-menu-item>
-        <span>Inspectie</span>
+      <button *ngFor="let co of formsForNew" [id]="co.featureType" mat-menu-item (click)="newItem($event);">
+       {{co.name}}
       </button>
     </mat-menu>
   </div>

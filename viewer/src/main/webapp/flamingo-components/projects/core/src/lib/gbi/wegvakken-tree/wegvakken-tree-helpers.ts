@@ -9,6 +9,7 @@ export class WegvakkenTreeHelpers {
       name: node.name,
       level,
       feature: node.feature,
+      selected: node.selected,
     };
   }
 }

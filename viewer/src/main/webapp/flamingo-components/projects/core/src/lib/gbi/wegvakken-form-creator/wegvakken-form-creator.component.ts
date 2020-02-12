@@ -23,7 +23,7 @@ export class WegvakkenFormCreatorComponent implements OnChanges, OnDestroy {
   public indexedAttributes: IndexedFeatureAttributes;
   @Input()
   public applicationId: string;
-
+  @Input()
   public isBulk = false;
 
   public tabbedConfig: TabbedFields;
@@ -38,7 +38,6 @@ export class WegvakkenFormCreatorComponent implements OnChanges, OnDestroy {
   }
 
   public ngOnChanges() {
-    this.isBulk = this.features.length > 1;
     this.tabbedConfig = this.prepareFormConfig();
     this.createFormControls();
   }

@@ -23,6 +23,14 @@ export interface TextAttribute extends Attribute {
   column: number;
   tab: number;
 }
+
+export interface HiddenAttribute extends Attribute {
+  key: string;
+  type: FormFieldType.HIDDEN;
+  column: number;
+  tab: number;
+}
+
 export interface SelectAttribute extends Attribute {
   key: string;
   type: FormFieldType.SELECT;
@@ -55,13 +63,27 @@ export interface FormConfiguration {
   tabs: number;
   name: string;
   treeNodeColumn: string;
+  newPossible:boolean;
+  featureType: string;
   tabConfig: Map<number, string>;
+  relation ?: FormRelation;
+}
+
+export interface FormRelation{
+  relatedFeatureType: string;
+  relation: RelatedColumn[];
+}
+
+export interface RelatedColumn{
+  mainFeatureColumn: string;
+  relatedFeatureColumn: string;
 }
 
 export interface DialogData {
   formFeatures: Feature[];
   formConfigs: FormConfigurations;
   applicationId: string;
+  isBulk: boolean;
 }
 
 export interface DialogClosedData {
@@ -79,4 +101,5 @@ export interface ColumnizedFields {
 export enum FormFieldType {
   TEXTFIELD = 'textfield',
   SELECT = 'select',
+  HIDDEN = 'hidden',
 }

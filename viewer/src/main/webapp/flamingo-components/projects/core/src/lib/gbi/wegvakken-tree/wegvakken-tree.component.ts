@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
 import {FlatTreeControl} from '@angular/cdk/tree';
 import {MatTreeFlatDataSource, MatTreeFlattener} from '@angular/material/tree';
 import { Feature, FeatureAttribute, FormConfigurations} from '../../shared/wegvakken-models';
@@ -10,7 +10,7 @@ import { FlatNode, FeatureNode } from './wegvakken-tree-models';
   templateUrl: './wegvakken-tree.component.html',
   styleUrls: ['./wegvakken-tree.component.css'],
 })
-export class WegvakkenTreeComponent implements OnInit {
+export class WegvakkenTreeComponent implements OnInit,  OnChanges {
 
   constructor() {
   }
@@ -20,6 +20,9 @@ export class WegvakkenTreeComponent implements OnInit {
 
   @Input()
   public features: Feature[];
+
+  @Input()
+  public feature: Feature;
 
   @Input()
   public formConfigs: FormConfigurations;
@@ -32,6 +35,9 @@ export class WegvakkenTreeComponent implements OnInit {
   public dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
 
   public ngOnInit() {
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
     this.dataSource.data = this.convertFeatureToNode(this.features);
     this.treeControl.expandAll();
   }
@@ -69,6 +75,7 @@ export class WegvakkenTreeComponent implements OnInit {
             children,
             id: feature.id,
             feature,
+            selected: feature === this.feature,
           });
       });
       return nodes;
@@ -82,6 +89,14 @@ export class WegvakkenTreeComponent implements OnInit {
         }
     });
     return val;
+  }
+
+  public getNodeClassName(node: FlatNode): string{
+    let cls = 'tree-node-wrapper';
+    if(node.selected){
+      cls += ' tree-node-wrapper--selected';
+    }
+    return cls
   }
 
   public hasChild = (_: number, node: FlatNode) => node.expandable;

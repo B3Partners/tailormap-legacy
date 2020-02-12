@@ -147,7 +147,7 @@ Ext.define("viewer.components.GBI", {
         options.application = this.appId;
         options.appLayer = appLayer.id;
         options.limit = 1000;
-        options.filter = appLayer.filter.getCQL();
+        options.filter =  appLayer.filter ? appLayer.filter.getCQL() : null;
         options.graph = false;
         options.edit = false;
         options.arrays = false;
@@ -216,82 +216,6 @@ Ext.define("viewer.components.GBI", {
             this.div.setAttribute("feature-clicked", JSON.stringify(feature));
         }
     },
-    showWindow: function(){
-        this.div.setAttribute("feature-clicked", JSON.stringify(this.getData()));
-        this.resolveDeferred();
-    },
-    getData: function(){
-        return {
-            id: 'wegvakaonderdeel',
-            featureType: "Planning",
-            featureSource: 'orakel',
-            attributes: [
-              {
-                key: 'id',
-                value: '123'
-              },{
-                key: 'type',
-                value: 'WEGOPBREKING'
-              },{
-                key: 'naam',
-                value: 'Bob de Bouwer'
-              }
-            ]
-          };
-    },
-
-    getConfig: function () {
-        return {config: {
-                'wegvakonderdeel': // featureTypeId
-                        {
-                            fields: [
-                                {
-                                    key: 'id',
-                                    type: 'textfield',
-                                    column: 1,
-                                    tab: 1
-                                },
-                                {
-                                    key: 'woonplaats',
-                                    type: 'textfield',
-                                    column: 1,
-                                    tab: 1
-                                },
-                                {
-                                    key: 'verhardingsfunctie',
-                                    type: 'textfield',
-                                    column: 2,
-                                    tab: 1
-                                },
-                                {
-                                    key: 'buurt',
-                                    type: 'textfield',
-                                    column: 2,
-                                    tab: 1
-                                },
-                                {
-                                    key: 'std_domein',
-                                    type: 'textfield',
-                                    column: 1,
-                                    tab: 2
-                                }, {
-                                    key: 'type',
-                                    type: 'combo',
-                                    column: 2,
-                                    tab: 2
-                                }
-                            ],
-                            tabs: 2,
-                            name: "Wegvakonderdeel",
-                            tabConfig:{
-                                1: "Eerste",
-                                2: "Tweede"
-                            }
-                        }
-            }
-        };
-    },
-    
     failed: function(msg) {
         Ext.MessageBox.alert(i18next.t('viewer_components_graph_5'), i18next.t('viewer_components_graph_6'));
     }

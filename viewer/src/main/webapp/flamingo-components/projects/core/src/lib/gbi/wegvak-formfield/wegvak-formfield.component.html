@@ -1,6 +1,6 @@
-<mat-form-field [formGroup]="groep">
-
-  <input *ngIf="isTextAttribute(attribute)"
+<mat-form-field [formGroup]="groep" [hidden]="isHiddenAttribute(attribute)" >
+  
+  <input *ngIf="isHiddenAttribute(attribute) || isTextAttribute(attribute)"
     placeholder="{{attribute.key}}"
     type="textfield"
     [formControlName]="attribute.key"
@@ -9,7 +9,7 @@
     [value]="!isBulk ? featureAttribute?.value : ''"
     />
 
-  <mat-select placeholder="{{attribute.key}}" *ngIf="isSelectAttribute(attribute)" [value]="!isBulk ?  featureAttribute.value : ''" >
+  <mat-select placeholder="{{attribute.key}}" *ngIf="isSelectAttribute(attribute)" [value]="!isBulk ?  featureAttribute?.value : ''" >
     <mat-option *ngFor="let opt of attribute.options" [value]="opt.val">{{opt.label}}</mat-option>
   </mat-select>
 
