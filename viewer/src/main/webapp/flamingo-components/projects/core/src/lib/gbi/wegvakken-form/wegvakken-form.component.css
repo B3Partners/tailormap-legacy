@@ -29,10 +29,14 @@
 
 .close-button{
   float: right;
-  bottom: 30px;
+  bottom: 20px;
 }
 
 .add-button{
   float: right;
-  margin-left: 5px;
+  margin-left: 15px;
+}
+
+.save-button{
+  background-color: #10893E;
 }

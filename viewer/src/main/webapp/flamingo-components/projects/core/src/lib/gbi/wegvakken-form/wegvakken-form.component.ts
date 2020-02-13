@@ -103,6 +103,7 @@ export class WegvakkenFormComponent implements OnDestroy {
   private removeSuccess() {
     this._snackBar.open('Verwijderd', '', {duration: 5000});
     this.features = this.removeFeature(this.features);
+    this.feature = this.features[0];
   }
 
   private removeFeature(features: Feature[]): Feature[] {

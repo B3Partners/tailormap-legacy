@@ -1,4 +1,4 @@
-import { Component,  Input, OnChanges, OnDestroy } from '@angular/core';
+import { Component,  Input, OnChanges, OnDestroy} from '@angular/core';
 import { FormConfiguration, TabbedFields, Feature, ColumnizedFields, Attribute,
    IndexedFeatureAttributes} from '../../shared/wegvakken-models';
 import { WegvakkenFormSaveService } from '../wegvakken-form-save.service';

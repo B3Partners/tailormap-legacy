@@ -14,7 +14,7 @@
       [formConfigs]=formConfigs></flamingo-wegvakken-tree>
     </div>
     <div class="form">
-      <flamingo-wegvakken-form-creator
+      <flamingo-wegvakken-form-creator #formCreator
       [feature]=feature
       [features]=features
       [lookup]=lookup
@@ -31,9 +31,11 @@
     <button color="primary" mat-raised-button mat-fab aria-label="Voeg paspoort toe" class="add-button" [matMenuTriggerFor]="menu">
       <mat-icon>add</mat-icon>
     </button>
-
-    <button color="warn" mat-raised-button mat-fab aria-label="Voeg paspoort toe" class="add-button" (click)="remove();">
+    <button color="warn" mat-raised-button mat-fab aria-label="Verwijder paspoort" class="add-button" (click)="remove();">
       <mat-icon>delete</mat-icon>
+    </button>
+    <button mat-raised-button mat-fab aria-label="Sla paspoort op" class="add-button save-button" (click)="formCreator.save();">
+      <mat-icon>save</mat-icon>
     </button>
     <mat-menu #menu="matMenu">
       <button *ngFor="let co of formsForNew" [id]="co.featureType" mat-menu-item (click)="newItem($event);">
