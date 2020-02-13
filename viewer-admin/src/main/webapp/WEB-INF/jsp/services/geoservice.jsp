@@ -213,7 +213,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <td><stripes-dynattr:password name="password" autocomplete="new-password" maxlength="255" size="30"/></td>
         </tr>
         <tr id="geofenceHeader">
-            <td><fmt:message key="viewer_admin.geoservice.52" />:</td>
+            <td><fmt:message key="viewer_admin.geoservice.51" />:</td>
             <td><stripes-dynattr:text name="geofenceHeader" maxlength="255" size="30">${geofenceHeader}</stripes-dynattr:text></td>
         </tr>
         <tr>
