@@ -100,13 +100,9 @@ export class WegvakkenFormCreatorComponent implements OnChanges, OnDestroy {
       this.subscriptions.add(this.saveService.savebulk( features, this.feature.appLayer, this.applicationId).subscribe(
         (d) => {
             if (d.success) {
-              this._snackBar.open('Opgeslagen', '', {
-                duration: 5000,
-              });
+              this._snackBar.open('Opgeslagen', '', {duration: 5000});
             } else {
-              this._snackBar.open('Fout: Niet opgeslagen: ' + d.error, '', {
-                duration: 5000,
-              });
+              this._snackBar.open('Fout: Niet opgeslagen: ' + d.error, '', {duration: 5000});
             }
         },
         error => {
@@ -121,19 +117,13 @@ export class WegvakkenFormCreatorComponent implements OnChanges, OnDestroy {
       this.subscriptions.add(this.saveService.save( this.feature, feature, this.feature.appLayer, this.applicationId).subscribe(
         (d) => {
             if (d.success) {
-              this._snackBar.open('Opgeslagen', '', {
-                duration: 5000,
-              });
+              this._snackBar.open('Opgeslagen', '', {duration: 5000});
             } else {
-              this._snackBar.open('Fout: Niet opgeslagen: ' + d.error, '', {
-                duration: 5000,
-              });
+              this._snackBar.open('Fout: Niet opgeslagen: ' + d.error, '', {duration: 5000});
             }
         },
         error => {
-          this._snackBar.open('Fout: Niet opgeslagen: ' + error, '', {
-            duration: 5000,
-          });
+          this._snackBar.open('Fout: Niet opgeslagen: ' + error, '', {duration: 5000});
         },
       ));
     }

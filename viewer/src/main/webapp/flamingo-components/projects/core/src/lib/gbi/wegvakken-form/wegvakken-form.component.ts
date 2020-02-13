@@ -1,15 +1,17 @@
-import { Component, OnInit, Inject, Output } from '@angular/core';
-import {  MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { Component, Inject, OnDestroy } from '@angular/core';
+import {  MatDialogRef, MAT_DIALOG_DATA, MatSnackBar } from '@angular/material';
 import { DialogData, Feature, FormConfiguration, IndexedFeatureAttributes,
    FeatureAttribute, FormConfigurations, FormFieldType } from '../../shared/wegvakken-models';
 import { ConfirmDialogService } from '../confirm-dialog/confirm-dialog.service';
-import { debounceTime, filter, take } from 'rxjs/operators';
+import { filter, take } from 'rxjs/operators';
+import { WegvakkenFormSaveService } from '../wegvakken-form-save.service';
+import { Subscription } from 'rxjs';
 @Component({
   selector: 'flamingo-wegvakken-form',
   templateUrl: './wegvakken-form.component.html',
   styleUrls: ['./wegvakken-form.component.css'],
 })
-export class WegvakkenFormComponent implements OnInit {
+export class WegvakkenFormComponent implements OnDestroy {
 
   public features: Feature[];
   public feature: Feature;
@@ -22,9 +24,12 @@ export class WegvakkenFormComponent implements OnInit {
   public formsForNew: FormConfiguration[] = [];
   public lookup: Map<string, string>;
 
+  private subscriptions = new Subscription();
   constructor( public dialogRef: MatDialogRef<WegvakkenFormComponent>,
                @Inject(MAT_DIALOG_DATA) public data: DialogData,
-               private confirmDialogService: ConfirmDialogService ) {
+               private confirmDialogService: ConfirmDialogService ,
+               private saveService: WegvakkenFormSaveService,
+               private _snackBar: MatSnackBar) {
       this.formConfigs = data.formConfigs;
       this.applicationId = data.applicationId;
       this.features = data.formFeatures;
@@ -44,7 +49,8 @@ export class WegvakkenFormComponent implements OnInit {
       this.initForm();
   }
 
-  public ngOnInit() {
+  public ngOnDestroy() {
+    this.subscriptions.unsubscribe();
   }
 
   private initForm() {
@@ -69,16 +75,43 @@ export class WegvakkenFormComponent implements OnInit {
 
   public remove() {
     const attribute = this.feature.attributes.find(a => a.key === this.formConfig.treeNodeColumn);
-
-
-    const message = 'Wilt u ' + this.formConfig.name + ' - ' + attribute.value +' verwijderen?';
+    const message = 'Wilt u ' + this.formConfig.name + ' - ' + attribute.value + ' verwijderen?';
     this.confirmDialogService.confirm('Verwijderen',
     message, true)
       .pipe(take(1), filter(remove => remove))
       // tslint:disable-next-line: rxjs-no-ignored-subscription
       .subscribe(() => {
-        const a =0;
+        this.removeFeatureFromDb();
       });
+  }
+
+  private removeFeatureFromDb() {
+    this.subscriptions.add(this.saveService.delete( this.feature, this.feature.appLayer, this.applicationId).subscribe(
+        (d) => {
+            if (d.success) {
+              this.removeSuccess();
+            } else {
+              this._snackBar.open('Fout: Niet verwijderd: ' + d.error, '', {duration: 5000});
+            }
+        },
+        error => {
+          this._snackBar.open('Fout: Niet verwijderd: ' + error, '', {duration: 5000});
+        },
+      ));
+  }
+
+  private removeSuccess() {
+    this._snackBar.open('Verwijderd', '', {duration: 5000});
+    this.features = this.removeFeature(this.features);
+  }
+
+  private removeFeature(features: Feature[]): Feature[] {
+    let fs = [];
+    fs = [...features.filter(f => f !== this.feature)];
+    fs.forEach(f=>{
+      f.children = this.removeFeature(f.children);
+    });
+    return fs;
   }
 
   public newItem(evt) {

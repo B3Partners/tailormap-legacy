@@ -30,4 +30,24 @@ export class WegvakkenFormSaveService {
     params = params.append('features', JSON.stringify(fs));
     return this.http.post<Feature>('/viewer/action/feature/editbulk', params);
   }
+
+
+  public delete(f: Feature, appLayer: string, applicationId): Observable<any> {
+    const feature = {
+      __fid: f.id,
+    };
+
+    let params =  new HttpParams();
+
+    if (f.isRelated) {
+      params = params.append('removeRelatedFeatures', 'true');
+    } else {
+      params = params.append('delete', 'true');
+    }
+
+    params = params.append('appLayer', '' + appLayer);
+    params = params.append('application', applicationId);
+    params = params.append('feature', JSON.stringify(feature));
+    return this.http.post<Feature>('/viewer/action/feature/edit', params);
+  }
 }
