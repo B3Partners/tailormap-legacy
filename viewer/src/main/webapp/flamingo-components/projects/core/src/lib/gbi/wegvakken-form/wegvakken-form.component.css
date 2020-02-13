@@ -1,29 +1,30 @@
+.container, :host{
+  height:100%;
+}
 .container{
+  display: flex;
+  flex-direction: column;
 }
 .form-container{
   display: flex;
   flex-direction: row;
   width: 100%;
+  flex:1;
+  justify-content: stretch;
+  overflow: hidden;
 }
 .tree{
-  order: 1;
-  width: 550px;
+  width: 350px;
   overflow: auto;
+  margin-right: 10px;
 }
 
 .form{
-  order: 2;
-  min-width: 300px;
-  min-height: 400px;
-  width: 100%;
-  height: 450px;
+  flex: 1;
   display: flex;
   flex-direction: column;
-}
-
-.bottom-bar{
-  position: relative;
-  bottom: -200px;
+  width: 100%;
+  overflow: auto;
 }
 
 .add-button{
