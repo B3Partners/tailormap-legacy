@@ -44,6 +44,8 @@ import java.util.*;
 import net.sourceforge.stripes.controller.LifecycleStage;
 import nl.b3p.viewer.audit.AuditMessageObject;
 import nl.b3p.viewer.audit.Auditable;
+import nl.b3p.viewer.config.security.Group;
+import nl.b3p.viewer.config.security.User;
 
 /**
  *
@@ -149,7 +151,22 @@ public class ProxyActionBean implements ActionBean, Auditable {
 
         HttpClientConfigured client = getHttpClient(theUrl, em);
         HttpUriRequest req = getHttpRequest(theUrl);
-
+        
+        GeoService gs = em.find(GeoService.class, serviceId);
+        if(gs.getGeofenceHeader() != null ){
+            User user = em.find(User.class, context.getRequest().getUserPrincipal().getName());
+            String headerValue = "";
+            for(Group g : user.getGroups()){
+                if (g.getDescription() != null) {
+                    if (g.getDescription().equals("geofence")) {
+                        headerValue = g.getName();
+                        break;
+                    }
+                }
+            }
+            req.addHeader(gs.getGeofenceHeader(),headerValue);
+        }
+        
         HttpResponse response;
         try {
             response = client.execute(req);
