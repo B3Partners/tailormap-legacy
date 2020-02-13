@@ -37,7 +37,7 @@ export class WegvakkenTreeComponent implements OnInit,  OnChanges {
   public ngOnInit() {
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
+  public ngOnChanges(changes: SimpleChanges): void {
     this.dataSource.data = this.convertFeatureToNode(this.features);
     this.treeControl.expandAll();
   }
@@ -91,12 +91,20 @@ export class WegvakkenTreeComponent implements OnInit,  OnChanges {
     return val;
   }
 
-  public getNodeClassName(node: FlatNode): string{
-    let cls = 'tree-node-wrapper';
-    if(node.selected){
-      cls += ' tree-node-wrapper--selected';
+  public getNodeClassName(node: FlatNode) {
+    const treeNodeBaseClass = 'tree-node-wrapper';
+
+    const cls = [
+      treeNodeBaseClass,
+      node.expandable ? `${treeNodeBaseClass}--folder` : `${treeNodeBaseClass}--leaf`,
+      `${treeNodeBaseClass}--level-${node.level}`,
+    ];
+
+    if (node.selected) {
+      cls.push(`${treeNodeBaseClass}--selected`);
     }
-    return cls
+
+    return cls.join(' ');
   }
 
   public hasChild = (_: number, node: FlatNode) => node.expandable;

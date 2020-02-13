@@ -1,6 +1,9 @@
 <div class="container">
 
-  <h1>Paspoort - {{formConfig.name}}</h1>
+  <h1>Paspoort - {{formConfig.name}}
+  <button mat-flat-button  mat-mini-fab color="warn" (click)="closeDialog();" class="add-button" >
+    <mat-icon>close</mat-icon>
+  </button></h1>
   <div class="form-container">
     <div class="tree">
       <flamingo-wegvakken-tree
@@ -23,11 +26,13 @@
     </div>
   </div>
   <div class="bottom-bar">
-    <button mat-raised-button  mat-fab color="warn" (click)="closeDialog();">
-      <mat-icon>close</mat-icon>
-    </button>
+
     <button color="primary" mat-raised-button mat-fab aria-label="Voeg paspoort toe" class="add-button" [matMenuTriggerFor]="menu">
       <mat-icon>add</mat-icon>
+    </button>
+
+    <button color="warn" mat-raised-button mat-fab aria-label="Voeg paspoort toe" class="add-button" (click)="remove();">
+      <mat-icon>delete</mat-icon>
     </button>
     <mat-menu #menu="matMenu">
       <button *ngFor="let co of formsForNew" [id]="co.featureType" mat-menu-item (click)="newItem($event);">

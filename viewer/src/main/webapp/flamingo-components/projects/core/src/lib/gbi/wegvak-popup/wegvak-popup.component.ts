@@ -71,6 +71,7 @@ export class WegvakPopupComponent implements OnInit {
     const dialogRef = this.dialog.open(WegvakkenFormComponent, {
       width: '1050px',
       height: '800px',
+      disableClose: true,
       data: {
         formConfigs: this.formConfigs,
         formFeatures,
@@ -88,6 +89,7 @@ export class WegvakPopupComponent implements OnInit {
       });
     });
   }
+
 
   private convertToFormFeature(f: any, isRelated: boolean): Feature[] {
     if (Array.isArray(f)) {

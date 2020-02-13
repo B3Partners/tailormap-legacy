@@ -8,6 +8,8 @@ import { WegvakFormfieldComponent } from './wegvak-formfield/wegvak-formfield.co
 import { WegvakkenFormCreatorComponent } from './wegvakken-form-creator/wegvakken-form-creator.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatSnackBarModule } from '@angular/material';
+import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.component';
+import { ConfirmDialogService } from './confirm-dialog/confirm-dialog.service';
 
 
 
@@ -18,6 +20,7 @@ import { MatSnackBarModule } from '@angular/material';
     WegvakkenTreeComponent,
     WegvakFormfieldComponent,
     WegvakkenFormCreatorComponent,
+    ConfirmDialogComponent,
   ],
   imports: [
     CommonModule,
@@ -30,6 +33,10 @@ import { MatSnackBarModule } from '@angular/material';
   ],
   entryComponents: [
     WegvakkenFormComponent,
+    ConfirmDialogComponent,
+  ],
+  providers: [
+    ConfirmDialogService,
   ],
 })
 export class GbiModule { }

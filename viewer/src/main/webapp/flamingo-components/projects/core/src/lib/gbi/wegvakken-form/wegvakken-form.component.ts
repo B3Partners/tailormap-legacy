@@ -2,7 +2,8 @@ import { Component, OnInit, Inject, Output } from '@angular/core';
 import {  MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { DialogData, Feature, FormConfiguration, IndexedFeatureAttributes,
    FeatureAttribute, FormConfigurations, FormFieldType } from '../../shared/wegvakken-models';
-
+import { ConfirmDialogService } from '../confirm-dialog/confirm-dialog.service';
+import { debounceTime, filter, take } from 'rxjs/operators';
 @Component({
   selector: 'flamingo-wegvakken-form',
   templateUrl: './wegvakken-form.component.html',
@@ -22,7 +23,8 @@ export class WegvakkenFormComponent implements OnInit {
   public lookup: Map<string, string>;
 
   constructor( public dialogRef: MatDialogRef<WegvakkenFormComponent>,
-               @Inject(MAT_DIALOG_DATA) public data: DialogData ) {
+               @Inject(MAT_DIALOG_DATA) public data: DialogData,
+               private confirmDialogService: ConfirmDialogService ) {
       this.formConfigs = data.formConfigs;
       this.applicationId = data.applicationId;
       this.features = data.formFeatures;
@@ -63,6 +65,20 @@ export class WegvakkenFormComponent implements OnInit {
       m.set(attr.key, attr);
     }
     return {attrs: m};
+  }
+
+  public remove() {
+    const attribute = this.feature.attributes.find(a => a.key === this.formConfig.treeNodeColumn);
+
+
+    const message = 'Wilt u ' + this.formConfig.name + ' - ' + attribute.value +' verwijderen?';
+    this.confirmDialogService.confirm('Verwijderen',
+    message, true)
+      .pipe(take(1), filter(remove => remove))
+      // tslint:disable-next-line: rxjs-no-ignored-subscription
+      .subscribe(() => {
+        const a =0;
+      });
   }
 
   public newItem(evt) {
@@ -107,6 +123,12 @@ export class WegvakkenFormComponent implements OnInit {
   }
 
   public closeDialog() {
-    this.dialogRef.close();
+    this.confirmDialogService.confirm('Paspoort sluiten',
+    'Wilt u het paspoort sluiten? Niet opgeslagen wijzigingen gaan verloren.', true)
+    .pipe(take(1), filter(remove => remove))
+    // tslint:disable-next-line: rxjs-no-ignored-subscription
+    .subscribe(() => {
+      this.dialogRef.close();
+    });
   }
 }
