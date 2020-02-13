@@ -2,7 +2,6 @@ import { Component, OnInit, Inject, Output } from '@angular/core';
 import {  MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { DialogData, Feature, FormConfiguration, IndexedFeatureAttributes,
    FeatureAttribute, FormConfigurations, FormFieldType } from '../../shared/wegvakken-models';
-import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 
 @Component({
   selector: 'flamingo-wegvakken-form',
@@ -19,7 +18,8 @@ export class WegvakkenFormComponent implements OnInit {
   public indexedAttributes: IndexedFeatureAttributes;
 
   public isBulk: boolean;
-  public formsForNew : FormConfiguration[] = [];
+  public formsForNew: FormConfiguration[] = [];
+  public lookup: Map<string, string>;
 
   constructor( public dialogRef: MatDialogRef<WegvakkenFormComponent>,
                @Inject(MAT_DIALOG_DATA) public data: DialogData ) {
@@ -28,11 +28,14 @@ export class WegvakkenFormComponent implements OnInit {
       this.features = data.formFeatures;
       this.feature = this.features[0];
       this.isBulk = !!data.isBulk;
+      this.lookup = data.lookup;
 
-      for(const key in this.formConfigs.config){
-        const cf : FormConfiguration = this.formConfigs.config[key];
-        if(cf.newPossible){
-          this.formsForNew.push(cf);
+      for (const key in this.formConfigs.config) {
+        if (this.formConfigs.config.hasOwnProperty(key)) {
+          const cf: FormConfiguration = this.formConfigs.config[key];
+          if (cf.newPossible) {
+            this.formsForNew.push(cf);
+          }
         }
       }
 
@@ -62,11 +65,11 @@ export class WegvakkenFormComponent implements OnInit {
     return {attrs: m};
   }
 
-  public newItem(evt){
+  public newItem(evt) {
     const type = evt.srcElement.id;
     this.formConfig = this.formConfigs.config[type];
     const name = 'Nieuwe '  + this.formConfig.name;
-    const labelAttribute : FeatureAttribute = {
+    const labelAttribute: FeatureAttribute = {
       key: this.formConfig.treeNodeColumn,
       type: FormFieldType.TEXTFIELD,
       value: name,
@@ -82,7 +85,7 @@ export class WegvakkenFormComponent implements OnInit {
       const relatedColumn = {
         key:  relatedKey,
         type: FormFieldType.HIDDEN,
-        value: parentFeature.attributes.find(a => a.key ===mainKey).value,
+        value: parentFeature.attributes.find(a => a.key === mainKey).value,
         column: 1,
         tab: 1,
       };
@@ -91,11 +94,11 @@ export class WegvakkenFormComponent implements OnInit {
     });
     const newFeature = {
       id: null,
-      featureType:type,
-      featureSource:null,
-      attributes: [...relatedColumns,labelAttribute],
-      appLayer:this.feature.appLayer,
-      isRelated: true
+      featureType: type,
+      featureSource: null,
+      attributes: [...relatedColumns, labelAttribute],
+      appLayer: this.feature.appLayer,
+      isRelated: true,
     };
     parentFeature.children.push(newFeature);
     this.feature = newFeature;

@@ -2,7 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { WegvakkenFormComponent } from '../wegvakken-form/wegvakken-form.component';
 import { MatDialog } from '@angular/material';
 import { Feature, DialogClosedData, FormConfigurations,
-        FeatureAttribute, FormConfiguration } from '../../shared/wegvakken-models';
+        FeatureAttribute, FormConfiguration, FlamingoApplayer } from '../../shared/wegvakken-models';
 
 @Component({
   selector: 'flamingo-wegvak-popup',
@@ -21,6 +21,10 @@ export class WegvakPopupComponent implements OnInit {
 
   private formConfigs: FormConfigurations;
 
+  private flamingoAppLayer: FlamingoApplayer;
+
+  public lookup: Map<string, string>;
+
   @Input()
   public set application(id: string) {
     this.applicationId = id;
@@ -32,7 +36,7 @@ export class WegvakPopupComponent implements OnInit {
   }
 
   @Input()
-  public set bulk(isBulk: string){
+  public set bulk(isBulk: string) {
     this.isBulk = isBulk;
   }
 
@@ -40,6 +44,12 @@ export class WegvakPopupComponent implements OnInit {
   public set featureClicked(data: string) {
     const ff = this.convertToFormFeature(JSON.parse(data), false);
     this.openDialog(ff);
+  }
+
+  @Input()
+  public set appLayer(appLayer: string) {
+    this.flamingoAppLayer = JSON.parse(appLayer);
+    this.lookup = this.createColumnLookup();
   }
 
   @Input()
@@ -66,6 +76,7 @@ export class WegvakPopupComponent implements OnInit {
         formFeatures,
         isBulk: this.isBulk,
         applicationId: this.applicationId,
+        lookup: this.lookup,
       },
     });
     // tslint:disable-next-line: rxjs-no-ignored-subscription
@@ -113,7 +124,7 @@ export class WegvakPopupComponent implements OnInit {
     const attrs = [];
     for (const attr of formConfig.fields) {
       for (const key in attributes) {
-        if (attr.key === key) {
+        if (this.lookup[attr.key] === key) {
           const attribute = {...attr, value : attributes[key]};
           attrs.push(attribute);
           break;
@@ -121,6 +132,18 @@ export class WegvakPopupComponent implements OnInit {
       }
     }
     return attrs;
+  }
+
+  public createColumnLookup(): Map<string, string> {
+    const lookup = new Map<string, string>();
+    this.flamingoAppLayer.attributes.forEach(a => {
+      const index = a.longname.indexOf('.');
+      const featureType = a.longname.substring(0, index);
+      const originalName = a.longname.substring(index + 1);
+      const alias = a.editAlias || a.alias;
+      lookup[originalName] = (alias || a.name);
+    });
+    return lookup;
   }
 
   private convertToFomConfig(config: string): FormConfigurations {

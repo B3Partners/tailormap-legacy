@@ -1,6 +1,6 @@
 <div class="container">
 
-  <h1>Paspoort</h1>
+  <h1>Paspoort - {{formConfig.name}}</h1>
   <div class="form-container">
     <div class="tree">
       <flamingo-wegvakken-tree
@@ -13,6 +13,7 @@
       <flamingo-wegvakken-form-creator
       [feature]=feature
       [features]=features
+      [lookup]=lookup
       [formConfig]=formConfig
       [isBulk]=isBulk
       [indexedAttributes]=indexedAttributes

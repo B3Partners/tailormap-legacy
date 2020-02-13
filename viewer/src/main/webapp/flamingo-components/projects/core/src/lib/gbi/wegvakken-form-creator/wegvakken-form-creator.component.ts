@@ -25,6 +25,8 @@ export class WegvakkenFormCreatorComponent implements OnChanges, OnDestroy {
   public applicationId: string;
   @Input()
   public isBulk = false;
+  @Input()
+  public lookup: Map<string, string>;
 
   public tabbedConfig: TabbedFields;
 

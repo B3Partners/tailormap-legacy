@@ -1,4 +1,3 @@
-<h1>{{formConfig.name}}</h1>
 <form [formGroup]="formgroep">
   <mat-tab-group>
       <mat-tab *ngFor="let tab of tabbedConfig.tabs | keyvalue" label="{{formConfig.tabConfig[tab.key]}}">
@@ -9,6 +8,7 @@
                 <flamingo-wegvak-formfield [featureAttribute]=indexedAttributes.attrs.get(attr.key)
                   [attribute]=attr
                   [groep]="formgroep"
+                  [lookup]=lookup
                   [isBulk]=isBulk
                    ></flamingo-wegvak-formfield>
               </span>

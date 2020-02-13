@@ -63,18 +63,18 @@ export interface FormConfiguration {
   tabs: number;
   name: string;
   treeNodeColumn: string;
-  newPossible:boolean;
+  newPossible: boolean;
   featureType: string;
   tabConfig: Map<number, string>;
   relation ?: FormRelation;
 }
 
-export interface FormRelation{
+export interface FormRelation {
   relatedFeatureType: string;
   relation: RelatedColumn[];
 }
 
-export interface RelatedColumn{
+export interface RelatedColumn {
   mainFeatureColumn: string;
   relatedFeatureColumn: string;
 }
@@ -84,6 +84,7 @@ export interface DialogData {
   formConfigs: FormConfigurations;
   applicationId: string;
   isBulk: boolean;
+  lookup: Map<string, string>;
 }
 
 export interface DialogClosedData {
@@ -102,4 +103,33 @@ export enum FormFieldType {
   TEXTFIELD = 'textfield',
   SELECT = 'select',
   HIDDEN = 'hidden',
+}
+
+export interface FlamingoApplayer {
+  id: number;
+  layername: string;
+  attributes: FlamingoAttribute[];
+  serviceId: number;
+}
+
+export interface FlamingoAttribute {
+  filterable: boolean;
+  longname: string;
+  folder_label: string;
+  visible: boolean;
+  editable: boolean;
+  defaultValue: string;
+  selectable: boolean;
+  disallowNullValue: boolean;
+  type: string;
+  disableUserEdit: boolean;
+  allowValueListOnly: boolean;
+  editHeight: string;
+  automaticValue: boolean;
+  valueList: string;
+  name: string;
+  featureType: number;
+  editAlias: string;
+  alias: string;
+  id: number;
 }

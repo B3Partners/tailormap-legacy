@@ -25,6 +25,7 @@ Ext.define("viewer.components.GBI", {
     div: null,
     toolMapClick:null,
     formConfigs:null,
+    relatedFeatureCounter: {},
     config: {
         layers:[],
         configUrl:null
@@ -119,7 +120,7 @@ Ext.define("viewer.components.GBI", {
             }
         }
     },
-    relatedFeatureCounter: {},
+
     featuresReceived : function (features, appLayer){
         var json = {};
         for (var i = 0 ; i < features.length ;i++){
@@ -133,10 +134,11 @@ Ext.define("viewer.components.GBI", {
                     totalRetrieved: 0
                 };
                 for (var j = 0 ; j < feature.related_featuretypes.length ;j++){
-                    this.getLinkedData(feature.related_featuretypes[j], json, appLayer.id);
+                    this.getLinkedData(feature.related_featuretypes[j], json, appLayer);
                 }
                 break;
             }else{
+                this.div.setAttribute("app-layer", this.stringifyAppLayer(appLayer));
                 this.div.setAttribute("feature-clicked", JSON.stringify(json));
             }
             break;// for now only open the first one
@@ -162,6 +164,7 @@ Ext.define("viewer.components.GBI", {
                 for(var i = 0 ; i < fs.length ;i++){
                     features.push(this.convertFeature(fs[i],appLayer.id));
                 }
+                this.div.setAttribute("app-layer", this.stringifyAppLayer(appLayer));
                 this.div.setAttribute("feature-clicked", JSON.stringify(features));
             },
             failure: function(result) {
@@ -176,8 +179,8 @@ Ext.define("viewer.components.GBI", {
         json.appLayer = appLayer;
         return json;
     },
-    getLinkedData : function (related_featuretype, feature, appLayerId){
-        var appLayer = this.config.viewerController.getAppLayerById(appLayerId);
+    getLinkedData : function (related_featuretype, feature, appLayer){
+        var appLayer = this.config.viewerController.getAppLayerById(appLayer.id);
         var options = {};
 
         var filter = "&filter="+encodeURIComponent(related_featuretype.filter);
@@ -185,7 +188,7 @@ Ext.define("viewer.components.GBI", {
         var featureType="&featureType="+related_featuretype.id;
 
         options.application = this.appId;
-        options.appLayer = appLayerId;
+        options.appLayer = appLayer.id;
         options.limit = 1000;
         options.filter = filter;
         options.graph = false;
@@ -200,21 +203,33 @@ Ext.define("viewer.components.GBI", {
                 var features = response.features;
                 var childs = [];
                 for(var i = 0 ; i < features.length ;i++){
-                    childs.push(this.convertFeature(features[i],appLayerId));
+                    childs.push(this.convertFeature(features[i],appLayer.id));
                 }
                 feature.children = [...childs];
-                this.relatedFeatureFinishedLoading(feature);
+                this.relatedFeatureFinishedLoading(feature, appLayer);
             },
             failure: function(result) {
                this.config.viewerController.logger.error(result);
             }
         });
     },
-    relatedFeatureFinishedLoading: function(feature){
+    relatedFeatureFinishedLoading: function(feature, appLayer){
         this.relatedFeatureCounter[feature.id]["totalRetrieved"] = this.relatedFeatureCounter[feature.id]["totalRetrieved"]+1;
         if(this.relatedFeatureCounter[feature.id]["totalRetrieved"] === this.relatedFeatureCounter[feature.id]["totalRelated"]){
+            this.div.setAttribute("app-layer", this.stringifyAppLayer(appLayer));
             this.div.setAttribute("feature-clicked", JSON.stringify(feature));
         }
+    },
+    
+    stringifyAppLayer: function(al){
+        var culledObject = {
+            id: al.id,
+            layername: al.layername,
+            serviceId: al.serviceId,
+            attributes: al.attributes
+        };
+        var stringified = JSON.stringify(culledObject);
+        return stringified;
     },
     failed: function(msg) {
         Ext.MessageBox.alert(i18next.t('viewer_components_graph_5'), i18next.t('viewer_components_graph_6'));
