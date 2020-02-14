@@ -1,8 +1,16 @@
-sudo: required
 language: java
 
+jdk:
+  - openjdk8
+  - openjdk11
+
+os: linux
+
+jobs:
+  fast_finish: true
+
 addons:
-  postgresql: "9.6"
+  postgresql: "10"
   hostname: flamingo
   hosts:
     - flamingo
@@ -12,7 +20,6 @@ addons:
       - nodejs
 
 services:
-  - haveged
   - docker
 
 before_install:
@@ -27,10 +34,6 @@ before_install:
   - psql -U postgres -a -c "CREATE ROLE flamingo4 LOGIN PASSWORD 'flamingo4' SUPERUSER CREATEDB;"
   - psql -U postgres -a -c 'create database flamingo4;'
   - psql -U postgres -a -c 'ALTER DATABASE flamingo4 OWNER TO flamingo4;'
-  # see https://github.com/travis-ci/travis-ci/issues/9309#issuecomment-371492492
-  - ls -la ~
-  - sudo chown travis:travis ~/.gitconfig
-  - ls -la ~
 
 install:
   - wget http://cert.pkioverheid.nl/RootCA-G3.cer
@@ -46,7 +49,7 @@ install:
        sudo keytool -importcert -file ./RootCA-G2.cer -alias G2 -keystore $JAVA_HOME/lib/security/cacerts -storepass 'changeit' -v -noprompt -trustcacerts;
     fi
   # install without testing
-  - travis_wait 40 mvn --settings .travis/settings.xml -Ptravis-ci-prebuild install -U -DskipTests -Dtest.skip.integrationtests=true -B -V -fae
+  - travis_wait 40 mvn --settings .travis/settings.xml -Ptravis-ci-prebuild install -DskipTests -Dtest.skip.integrationtests=true -B -V -fae
 
 before_script:
   - unset _JAVA_OPTIONS
@@ -61,10 +64,7 @@ script:
   - mvn -e verify -B -Ptravis-ci -pl '!viewer-admin'
   # run integration tests on viewer-admin module only
   - mvn -e verify -B -Ptravis-ci -pl 'viewer-admin'
-  # run code coverage
-  #- mvn cobertura:cobertura -Ptravis-ci
-  #- mvn cobertura:cobertura-integration-test -Ptravis-ci
-  # on oracle java 8 run a javadoc build to check for errors
+  # on java 8 run a javadoc build to check for errors
   - if [ "$TRAVIS_JDK_VERSION" == openjdk8 ]; then
          mvn javadoc:javadoc;
     fi
@@ -76,16 +76,6 @@ script:
 after_success:
   - bash <(curl -s https://codecov.io/bash)
   
-jdk:
-  - openjdk8
-  - openjdk11
-
-os:
-  - linux
-
-matrix:
-  fast_finish: true
-
 cache:
   directories:
   - $HOME/.m2
