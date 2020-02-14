@@ -198,6 +198,44 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>com.github.eirslett</groupId>
+                <artifactId>frontend-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <!-- optional: you don't really need execution ids, but it looks nice in your build log. -->
+                        <id>install node and npm</id>
+                        <goals>
+                            <goal>install-node-and-npm</goal>
+                        </goals>
+                        <!-- optional: default phase is "generate-resources" -->
+                        <phase>generate-resources</phase>
+                    </execution>
+                    <execution>
+                        <id>npm install</id>
+                        <goals>
+                            <goal>npm</goal>
+                        </goals>
+
+                        <!-- optional: default phase is "generate-resources" -->
+                        <phase>generate-resources</phase>
+
+                        <configuration>
+                            <!-- optional: The default argument is actually
+                            "install", so unless you need to run some other npm command,
+                            you can remove this whole <configuration> section.
+                            -->
+                            <arguments>run build-prod</arguments>
+                        </configuration>
+                    </execution>
+                </executions>
+                <configuration>
+                    <workingDirectory>src/main/webapp/flamingo-components</workingDirectory>
+                    <installDirectory>target</installDirectory>
+                    <nodeVersion>v13.8.0</nodeVersion>
+                    <npmVersion>6.13.6</npmVersion>
+                </configuration>
+            </plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
@@ -218,6 +256,10 @@
                         <resource>
                             <directory>src/main/webapp</directory>
                             <filtering>true</filtering>
+                            <excludes>
+                                <exclude>flamingo-components/</exclude>
+                                <exclude>src/main/webapp/flamingo-components/</exclude>
+                            </excludes>
                             <includes>
                                 <include>about.jsp</include>
                             </includes>
@@ -225,6 +267,7 @@
                     </webResources>
                     <attachClasses>true</attachClasses>
                     <classesClassifier>classes</classesClassifier>
+                    <packagingExcludes>flamingo-components/node_modules/,/flamingo-components/projects/</packagingExcludes>
                 </configuration>
             </plugin>
             <plugin>
