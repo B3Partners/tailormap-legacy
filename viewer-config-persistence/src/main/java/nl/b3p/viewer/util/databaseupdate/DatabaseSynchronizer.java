@@ -171,6 +171,9 @@ public class DatabaseSynchronizer implements Servlet {
         
         // 5.6.0
         updates.put("38", new UpdateElement(Collections.singletonList("delete_orphan_featuretypes.sql"), String.class, true));
+        
+        // 5.7.3
+        updates.put("39", new UpdateElement(Collections.singletonList("add_geoservice_geofence_header.sql"), String.class, true));
         // 
         // NB when adding an update also update the metadata version in the testdata.sql file around line 348
         // that is: /src/test/resources/nl/b3p/viewer/util/testdata.sql
