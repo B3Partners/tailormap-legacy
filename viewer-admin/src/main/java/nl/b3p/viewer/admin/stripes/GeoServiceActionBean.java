@@ -122,7 +122,9 @@ public class GeoServiceActionBean extends LocalizableActionBean {
     private WMSExceptionType exception_type;
     @Validate
     private boolean skipDiscoverWFS = false;
-
+    @Validate
+    private String geofenceHeader;
+    
     private WaitPageStatus status;
     private JSONObject newService;
     private JSONObject updatedService;
@@ -419,6 +421,14 @@ public class GeoServiceActionBean extends LocalizableActionBean {
         this.skipDiscoverWFS = skipDiscoverWFS;
     }
 
+    public String getGeofenceHeader() {
+        return geofenceHeader;
+    }
+
+    public void setGeofenceHeader(String geofenceHeader) {
+        this.geofenceHeader = geofenceHeader;
+    }
+
     //</editor-fold>
 
     private JSONArray layersInApplications = new JSONArray();
@@ -486,7 +496,8 @@ public class GeoServiceActionBean extends LocalizableActionBean {
             if(service.getDetails().containsKey(GeoService.DETAIL_USE_PROXY)){
                 ClobElement ce =service.getDetails().get(GeoService.DETAIL_USE_PROXY);
                 useProxy = Boolean.parseBoolean(ce.getValue());
-            }
+            }            
+            geofenceHeader = service.getGeofenceHeader();
             name = service.getName();
             username = service.getUsername();
             password = service.getPassword();
@@ -603,7 +614,8 @@ public class GeoServiceActionBean extends LocalizableActionBean {
         }
         service.getDetails().put(GeoService.DETAIL_USE_INTERSECT, new ClobElement(""+useIntersect));
         service.getDetails().put(GeoService.DETAIL_USE_PROXY, new ClobElement(""+useProxy));
-
+        
+        service.setGeofenceHeader(geofenceHeader);      
         service.setUsername(username);
         if (password != null) {
             service.setPassword(password);

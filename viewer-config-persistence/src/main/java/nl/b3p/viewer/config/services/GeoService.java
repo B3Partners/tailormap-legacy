@@ -59,7 +59,7 @@ public abstract class GeoService implements Serializable {
      * authentication.
      */
     public static final String PARAM_PASSWORD = "password";
-
+    
     @Id
     private Long id;
 
@@ -74,7 +74,9 @@ public abstract class GeoService implements Serializable {
 
     private String username;
     private String password;
-
+    
+    private String geofenceHeader;
+    
     private boolean monitoringEnabled;
     
     private boolean monitoringStatusOK = true;
@@ -222,6 +224,14 @@ public abstract class GeoService implements Serializable {
 
     public void setReaders(Set<String> readers) {
         this.readers = readers;
+    }
+
+    public String getGeofenceHeader() {
+        return geofenceHeader;
+    }
+
+    public void setGeofenceHeader(String geofenceHeader) {
+        this.geofenceHeader = geofenceHeader;
     }
     //</editor-fold>
       
