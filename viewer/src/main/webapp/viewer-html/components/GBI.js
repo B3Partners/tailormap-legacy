@@ -101,11 +101,11 @@ Ext.define("viewer.components.GBI", {
                     return;
                 }
 
-
                 var extraParams = {
                     graph: false,
                     edit:false,
-                    arrays: false
+                    arrays: false,
+                    attributesToInclude: this.getAttributesToInclude(this.formConfigs.config, appLayer)
                 };
                 me.config.viewerController.mapComponent.getMap().setMarker("gbi", x, y);
                 var featureInfo = Ext.create("viewer.FeatureInfo", {
@@ -153,6 +153,7 @@ Ext.define("viewer.components.GBI", {
         options.graph = false;
         options.edit = false;
         options.arrays = false;
+        options.attributesToInclude = this.getAttributesToInclude(this.formConfigs.config, appLayer);
         Ext.Ajax.request({
             url: appLayer.featureService.getStoreUrl(),
             params: options,
@@ -191,8 +192,9 @@ Ext.define("viewer.components.GBI", {
         options.appLayer = appLayer.id;
         options.limit = 1000;
         options.filter = filter;
-        options.graph = false;
+        options.graph = true;
         options.edit = false;
+        options.attributesToInclude = this.getAttributesToInclude(this.formConfigs.config, appLayer);
         options.arrays = false;
         Ext.Ajax.request({
             url: appLayer.featureService.getStoreUrl() + featureType+filter,
@@ -219,6 +221,26 @@ Ext.define("viewer.components.GBI", {
             this.div.setAttribute("app-layer", this.stringifyAppLayer(appLayer));
             this.div.setAttribute("feature-clicked", JSON.stringify(feature));
         }
+    },
+    
+    getAttributesToInclude: function(formConfigs, appLayer){
+        var attributes = [];
+        for(var key in formConfigs){
+            if(formConfigs.hasOwnProperty(key)){
+                var formConfig = formConfigs[key];
+                for (var i = 0 ; i< formConfig.fields.length ;i++){
+                    var field = formConfig.fields[i];
+                    for(var j = 0 ; j < appLayer.attributes.length ;j++){
+                        var attr = appLayer.attributes[j];
+                        if(attr.name === field.key){
+                            attributes.push(attr.id);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        return attributes;
     },
     
     stringifyAppLayer: function(al){
