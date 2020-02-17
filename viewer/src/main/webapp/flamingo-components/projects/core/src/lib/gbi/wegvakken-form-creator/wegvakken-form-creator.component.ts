@@ -1,4 +1,4 @@
-import { Component,  Input, OnChanges, OnDestroy} from '@angular/core';
+import { Component,  Input, OnChanges, OnDestroy, Output, EventEmitter} from '@angular/core';
 import { FormConfiguration, TabbedFields, Feature, ColumnizedFields, Attribute,
    IndexedFeatureAttributes} from '../../shared/wegvakken-models';
 import { WegvakkenFormSaveService } from '../wegvakken-form-save.service';
@@ -27,6 +27,8 @@ export class WegvakkenFormCreatorComponent implements OnChanges, OnDestroy {
   public isBulk = false;
   @Input()
   public lookup: Map<string, string>;
+  @Output()
+  public formChanged = new EventEmitter<boolean>();
 
   public tabbedConfig: TabbedFields;
 
@@ -42,6 +44,7 @@ export class WegvakkenFormCreatorComponent implements OnChanges, OnDestroy {
   public ngOnChanges() {
     this.tabbedConfig = this.prepareFormConfig();
     this.createFormControls();
+    this.formgroep.valueChanges.subscribe(s=>{this.formChanged.emit(true);});
   }
 
   public ngOnDestroy() {
@@ -101,6 +104,7 @@ export class WegvakkenFormCreatorComponent implements OnChanges, OnDestroy {
         (d) => {
             if (d.success) {
               this._snackBar.open('Opgeslagen', '', {duration: 5000});
+              this.formChanged.emit(false);
             } else {
               this._snackBar.open('Fout: Niet opgeslagen: ' + d.error, '', {duration: 5000});
             }
@@ -118,6 +122,7 @@ export class WegvakkenFormCreatorComponent implements OnChanges, OnDestroy {
         (d) => {
             if (d.success) {
               this._snackBar.open('Opgeslagen', '', {duration: 5000});
+              this.formChanged.emit(false);
             } else {
               this._snackBar.open('Fout: Niet opgeslagen: ' + d.error, '', {duration: 5000});
             }

@@ -1,4 +1,4 @@
-import { Component, Inject, OnDestroy } from '@angular/core';
+import { Component, Inject, OnDestroy, Input } from '@angular/core';
 import {  MatDialogRef, MAT_DIALOG_DATA, MatSnackBar } from '@angular/material';
 import { DialogData, Feature, FormConfiguration, IndexedFeatureAttributes,
    FeatureAttribute, FormConfigurations, FormFieldType } from '../../shared/wegvakken-models';
@@ -23,6 +23,7 @@ export class WegvakkenFormComponent implements OnDestroy {
   public isBulk: boolean;
   public formsForNew: FormConfiguration[] = [];
   public lookup: Map<string, string>;
+  public formDirty: boolean;
 
   private subscriptions = new Subscription();
   constructor( public dialogRef: MatDialogRef<WegvakkenFormComponent>,
@@ -54,15 +55,27 @@ export class WegvakkenFormComponent implements OnDestroy {
   }
 
   private initForm() {
+    this.formDirty = false;
     this.formConfig = this.formConfigs.config[this.feature.featureType];
     this.indexedAttributes = this.convertFeatureToIndexed(this.feature);
   }
 
   public openForm(feature) {
     if (feature && !this.isBulk) {
-      this.feature = feature;
-      this.initForm();
+      if(this.formDirty){
+        this.closeNotification(function(){
+          this.feature = feature;
+          this.initForm();
+        });
+      }else{
+        this.feature = feature;
+        this.initForm();
+      }
     }
+  }
+
+  public formChanged(changed: boolean){
+    this.formDirty = changed;
   }
 
   private convertFeatureToIndexed(feat: Feature): IndexedFeatureAttributes {
@@ -157,12 +170,21 @@ export class WegvakkenFormComponent implements OnDestroy {
   }
 
   public closeDialog() {
+    if(this.formDirty){
+      this.closeNotification(function(){this.dialogRef.close();});
+    }else{
+      this.dialogRef.close();
+    }
+  }
+
+  private closeNotification(afterAction){
     this.confirmDialogService.confirm('Paspoort sluiten',
     'Wilt u het paspoort sluiten? Niet opgeslagen wijzigingen gaan verloren.', true)
     .pipe(take(1), filter(remove => remove))
     // tslint:disable-next-line: rxjs-no-ignored-subscription
     .subscribe(() => {
-      this.dialogRef.close();
+      afterAction.call(this);
     });
   }
+
 }

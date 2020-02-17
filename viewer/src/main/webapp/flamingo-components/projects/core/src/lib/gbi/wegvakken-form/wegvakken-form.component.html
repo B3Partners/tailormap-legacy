@@ -1,6 +1,6 @@
 <div class="container">
 
-  <h1>Paspoort - {{formConfig.name}}
+  <h1>Paspoort - {{formConfig.name}} {{formDirty ? '*' : ''}}
     <button mat-button  mat-mini-fab color="" (click)="closeDialog();" class="close-button" >
       <mat-icon>close</mat-icon>
     </button>
@@ -21,6 +21,7 @@
       [formConfig]=formConfig
       [isBulk]=isBulk
       [indexedAttributes]=indexedAttributes
+      (formChanged)="formChanged($event)"
       applicationId={{applicationId}}
       >
       </flamingo-wegvakken-form-creator>
@@ -34,7 +35,7 @@
     <button color="warn" mat-raised-button mat-fab aria-label="Verwijder paspoort" class="add-button" (click)="remove();">
       <mat-icon>delete</mat-icon>
     </button>
-    <button mat-raised-button mat-fab aria-label="Sla paspoort op" class="add-button save-button" (click)="formCreator.save();">
+    <button [disabled]="!formDirty" mat-raised-button mat-fab aria-label="Sla paspoort op" class="add-button save-button" (click)="formCreator.save();">
       <mat-icon>save</mat-icon>
     </button>
     <mat-menu #menu="matMenu">
