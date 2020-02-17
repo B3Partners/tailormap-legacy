@@ -118,6 +118,7 @@ export class WegvakkenFormCreatorComponent implements OnChanges, OnDestroy {
     } else {
       const feature = this.formgroep.value;
       feature.__fid = this.feature.id;
+      this.mergeFromToFeature(feature);
       this.subscriptions.add(this.saveService.save( this.feature, feature, this.feature.appLayer, this.applicationId).subscribe(
         (d) => {
             if (d.success) {
@@ -132,6 +133,17 @@ export class WegvakkenFormCreatorComponent implements OnChanges, OnDestroy {
         },
       ));
     }
+  }
+
+  private mergeFromToFeature(form){
+    this.feature.attributes.forEach(attr=>{
+      for(const key in form){
+        if(form.hasOwnProperty(key) && key === attr.key){
+          attr.value = form[key];
+          break;
+        }
+      }
+    });
   }
 
   public getChangedValues(): Feature[] {

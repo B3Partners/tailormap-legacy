@@ -76,6 +76,9 @@ export class WegvakkenFormComponent implements OnDestroy {
 
   public formChanged(changed: boolean){
     this.formDirty = changed;
+    if(!changed){
+      this.features = [...this.features];
+    }
   }
 
   private convertFeatureToIndexed(feat: Feature): IndexedFeatureAttributes {

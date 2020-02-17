@@ -207,7 +207,7 @@ Ext.define("viewer.components.GBI", {
                 for(var i = 0 ; i < features.length ;i++){
                     childs.push(this.convertFeature(features[i],appLayer.id));
                 }
-                feature.children = [...childs];
+                feature.children = feature.children.concat(childs);
                 this.relatedFeatureFinishedLoading(feature, appLayer);
             },
             failure: function(result) {
