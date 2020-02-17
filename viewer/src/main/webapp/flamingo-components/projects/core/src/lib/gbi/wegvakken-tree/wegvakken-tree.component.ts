@@ -59,6 +59,7 @@ export class WegvakkenTreeComponent implements OnInit,  OnChanges {
                 name: featureType,
                 children: [],
                 id: featureType,
+                isFeatureType: true,
               };
             }
             fts[featureType].children.push(this.convertFeatureToNode([child])[0]);
@@ -76,6 +77,7 @@ export class WegvakkenTreeComponent implements OnInit,  OnChanges {
             id: feature.id,
             feature,
             selected: feature === this.feature,
+            isFeatureType: false,
           });
       });
       return nodes;

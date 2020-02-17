@@ -5,6 +5,7 @@ export interface FeatureNode {
   children?: FeatureNode[];
   id: string;
   feature?: Feature;
+  isFeatureType: boolean;
   selected: boolean;
 }
 
@@ -14,5 +15,6 @@ export interface FlatNode {
   name: string;
   level: number;
   feature?: Feature;
+  isFeatureType: boolean;
   selected: boolean;
 }

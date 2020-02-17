@@ -95,18 +95,25 @@ export class WegvakPopupComponent implements OnInit {
     if (Array.isArray(f)) {
       const features = [];
       f.forEach(feat => {
-        features.push(this.convertToFormFeature(feat, false)[0]);
+        const featureObject = this.convertToFormFeature(feat, false);
+        if(featureObject){
+          features.push(featureObject[0]);
+        }
       });
       return features;
     } else {
       const id = f.id;
       const ft = id.substring(0, id.indexOf('.') );
       const formConfig = this.formConfigs.config[ft];
+      if(!formConfig){
+        return null;
+      }
       const featureAttributes: FeatureAttribute[] = this.convertFeatureAttributes(formConfig, f.attributes);
       const children: Feature[] = [];
       if (f.children) {
         f.children.forEach((feat) => {
-          children.push(this.convertToFormFeature(feat, true)[0]);
+          const featureObject = this.convertToFormFeature(feat, true);
+          children.push(featureObject[0]);
         });
       }
       const feature: Feature = {

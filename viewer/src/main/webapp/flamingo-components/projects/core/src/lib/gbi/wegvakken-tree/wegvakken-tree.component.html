@@ -15,7 +15,7 @@
           {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
         </mat-icon>
       </button>
-      <span class="{{node.selected ? 'selected' : ''}} {{node.feature?.id ? '' : 'newNode'}}">{{node.name}}</span>
+      <span class="{{node.selected ? 'selected' : ''}} {{node.feature?.id || node.isFeatureType ? '' : 'newNode'}}">{{node.name}}</span>
     </div>
     </mat-tree-node>
   </mat-tree>
