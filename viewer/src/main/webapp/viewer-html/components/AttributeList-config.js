@@ -23,7 +23,7 @@ Ext.define("viewer.components.CustomConfiguration",{
     constructor: function (parentId, configObject, configPage) {
         configObject.showLabelconfig =true;
         viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId, configObject, configPage);
-
+        configObject.willLoadLayers = true;
         this.form.add({
             xtype: 'combobox',
             store: [[ "CSV", i18next.t('attributelist_config_0') ], [ "XLS", i18next.t('attributelist_config_1') ], [ "SHP", i18next.t('attributelist_config_2') ]],

@@ -133,7 +133,7 @@ Ext.define("vieweradmin.components.ConfigPage", {
             bbar: ["->", {
                 xtype: 'button',
                 text: i18next.t('viewer_admin_configpage_5'),
-                id: 'cancalConfigButton',
+                id: 'cancelConfigButton',
                 iconCls: 'x-fa fa-times',
                 listeners: {
                     click: {
@@ -147,6 +147,7 @@ Ext.define("vieweradmin.components.ConfigPage", {
                 xtype: 'button',
                 text: i18next.t('viewer_admin_configpage_6'),
                 id: 'saveConfigButton',
+                disabled: this.config.configObject.willLoadLayers,
                 iconCls: 'x-fa fa-floppy-o',
                 listeners: {
                     click: {

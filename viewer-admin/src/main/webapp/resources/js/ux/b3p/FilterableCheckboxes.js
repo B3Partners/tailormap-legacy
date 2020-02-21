@@ -137,11 +137,15 @@ Ext.define('Ext.ux.b3p.FilterableCheckboxes', {
             width: '100%',
             layout: 'vbox'
         });
+        var parent = null;
         if(me.parentContainer) {
-            me.parentContainer.add(container);
+            parent = me.parentContainer;
         } else {
-            Ext.getCmp(me.renderTo).add(container);
+            parent = Ext.getCmp(me.renderTo);
         }
+        parent.add(container);
+        parent.setLoading(false);
+        Ext.getCmp('saveConfigButton').setDisabled(false);
         me.setChecked();
         // Add click listener to checkboxes if configured
         if(me.labelClick !== null) {

@@ -96,7 +96,8 @@ Ext.define("viewer.components.ConfigObject",{
             width: me.formWidth,
             height: me.checkPanelHeight,
             renderTo: this.parentId
-        });        
+        });
+        this.checkPanel.setLoading(i18next.t('viewer_components_configobject_1'),);
         this.checkBoxes=Ext.create("Ext.ux.b3p.FilterableCheckboxes",{
             requestUrl: me.requestPath,
             requestParams: requestParams,
