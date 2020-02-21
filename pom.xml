@@ -521,6 +521,17 @@
                 <version>${oracle.version}</version>
             </dependency>
             <dependency>
+                <groupId>com.oracle.jdbc</groupId>
+                <artifactId>ojdbc8</artifactId>
+                <version>${oracle.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>com.oracle.jdbc</groupId>
+                        <artifactId>ucp</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
                 <groupId>org.skyscreamer</groupId>
                 <artifactId>jsonassert</artifactId>
                 <version>1.5.0</version>
