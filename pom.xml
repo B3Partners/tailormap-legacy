@@ -60,7 +60,7 @@
         <apache.httpcomponents.version>4.5.11</apache.httpcomponents.version>
         <jaxb.api.version>2.3.2</jaxb.api.version>
         <jaxb.impl.version>2.3.2</jaxb.impl.version>
-        <activation.api.version>1.2.1</activation.api.version>
+        <activation.api.version>1.2.2</activation.api.version>
         <!-- skip integration tests by default, override this property from commandline
         or as part of a profile, see eg. 'travis-ci' profile in viewer -->
         <test.skip.integrationtests>false</test.skip.integrationtests>
