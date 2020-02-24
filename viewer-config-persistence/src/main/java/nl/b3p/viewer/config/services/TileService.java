@@ -229,6 +229,7 @@ public class TileService extends GeoService {
             }
             if(getTile.isEmpty()){
                 getTile = url;
+                status.addLog("viewer_admin.geoservice.52");
             }
             s.setUrl(getTile);
             
