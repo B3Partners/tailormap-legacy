@@ -121,7 +121,7 @@ public class ProxyActionBean implements ActionBean, Auditable {
 
         // Session must exist
         HttpSession sess = request.getSession(false);
-        if (sess == null || url == null) {
+        if (sess == null || url == null || serviceId == null) {
             return new ErrorResolution(HttpServletResponse.SC_FORBIDDEN, "Proxy requests forbidden");
         }
 
