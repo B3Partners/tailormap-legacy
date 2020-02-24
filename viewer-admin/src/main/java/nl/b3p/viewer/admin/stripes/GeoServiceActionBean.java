@@ -562,6 +562,11 @@ public class GeoServiceActionBean extends LocalizableActionBean {
         if (status != null) {
             status.setFinished(true);
             status.setProgress(100);
+
+            List<String> logs = status.dequeueLog();
+            for (String log: logs) {
+                context.getValidationErrors().add("Errors",new SimpleError(getBundle().getString(log)));
+            }
         }
         return new ForwardResolution(JSP);
     }
