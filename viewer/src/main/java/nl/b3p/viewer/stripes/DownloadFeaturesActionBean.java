@@ -106,7 +106,7 @@ public class DownloadFeaturesActionBean extends LocalizableApplicationActionBean
     private Layer layer = null;
 
     @Validate
-    private int limit;
+    private int limit = 1000;
 
     @Validate
     private boolean debug;
@@ -250,6 +250,7 @@ public class DownloadFeaturesActionBean extends LocalizableApplicationActionBean
                 }
 
                 final Query q = new Query(fs.getName().toString());
+                q.setMaxFeatures(Math.min(limit,FeatureToJson.MAX_FEATURES));
 
                 setFilter(filter, q, ft, Stripersist.getEntityManager());
 
