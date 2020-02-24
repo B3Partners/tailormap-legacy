@@ -442,37 +442,38 @@ public class GeoServiceActionBean extends LocalizableActionBean {
                 //tiling service has 1 layer with that has the settings.
                 Layer layer = ser.getTilingLayer();
                 //set the resolutions
+                if(layer != null) {
+                    TileSet tileSet = layer.getTileset();
 
-                TileSet tileSet = layer.getTileset();
-
-                if (tileSet != null) {
-                    String res = "";
-                    for (Double resolution : tileSet.getResolutions()) {
-                        if (res.length() > 0) {
-                            res += ",";
+                    if (tileSet != null) {
+                        String res = "";
+                        for (Double resolution : tileSet.getResolutions()) {
+                            if (res.length() > 0) {
+                                res += ",";
+                            }
+                            res += resolution.toString();
                         }
-                        res += resolution.toString();
+                        resolutions = res;
+
+                        //set the tilesize
+                        tileSize = tileSet.getHeight();
                     }
-                    resolutions = res;
 
-                    //set the tilesize
-                    tileSize = tileSet.getHeight();
-                }
+                    //set the service Bbox
+                    if (layer.getBoundingBoxes().size() == 1) {
+                        BoundingBox bb = layer.getBoundingBoxes().values().iterator().next();
+                        serviceBbox = "" + bb.getMinx() + ","
+                                + bb.getMiny() + ","
+                                + bb.getMaxx() + ","
+                                + bb.getMaxy();
+                        crs = bb.getCrs().getName();
+                    }
+                    serviceName = layer.getName();
 
-                //set the service Bbox
-                if (layer.getBoundingBoxes().size() == 1) {
-                    BoundingBox bb = layer.getBoundingBoxes().values().iterator().next();
-                    serviceBbox = "" + bb.getMinx() + ","
-                            + bb.getMiny() + ","
-                            + bb.getMaxx() + ","
-                            + bb.getMaxy();
-                    crs = bb.getCrs().getName();
-                }
-                serviceName = layer.getName();
-
-                if (layer.getDetails().containsKey("image_extension")) {
-                    ClobElement ce = layer.getDetails().get("image_extension");
-                    imageExtension = ce != null ? ce.getValue() : null;
+                    if (layer.getDetails().containsKey("image_extension")) {
+                        ClobElement ce = layer.getDetails().get("image_extension");
+                        imageExtension = ce != null ? ce.getValue() : null;
+                    }
                 }
 
             }else if(protocol.equals(WMSService.PROTOCOL)){
