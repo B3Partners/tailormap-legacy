@@ -110,7 +110,8 @@ Ext.define("viewer.SLD", {
             url = Ext.String.urlAppend(url, "featureTypeName=" + featureTypeName);
         }if (sldId!==null){
             url = Ext.String.urlAppend(url, "id=" + sldId);
-        }if (commonAndFilter){
+        }if (commonAndFilter && commonAndFilter!=="undefined"){
+            // IE11 hack: IE11 thinks commonAndFilter is "undefined" (literal)
             url = Ext.String.urlAppend(url, "commonAndFilter="+encodeURIComponent(commonAndFilter));
         }if(colors){
             if (colors instanceof Array){
