@@ -63,7 +63,7 @@ public class ViewerAdminLockoutIntegrationTest extends LoggingTestUtil {
     /**
      * the viewer url. {@value}
      */
-    private static String BASE_TEST_URL = "http://localhost:9091/viewer-admin/";
+    private static String BASE_TEST_URL = "http://localhost:9090/viewer-admin/";
 
     /**
      * our test client.
