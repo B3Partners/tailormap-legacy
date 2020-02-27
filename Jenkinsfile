@@ -35,17 +35,18 @@ timestamps {
                 try {
                     lock('flamingo-oracle') {
                       timeout(90) {
-                        stage("Prepare Oracle: ${indexOfJdk}") {
-                             sh "sqlplus -l -S JENKINS_FLAMINGO/jenkins_flamingo@192.168.1.11:1521/orcl < ./.jenkins/clear-oracle-schema.sql"
-                        }
+                          stage("Prepare Oracle: ${indexOfJdk}") {
+                              sh "sqlplus -l -S JENKINS_FLAMINGO/jenkins_flamingo@192.168.1.11:1521/orcl < ./.jenkins/clear-oracle-schema.sql"
+                          }
+                          lock('tomcat-tcp9090') {
+                              stage("IntegrationTest: ${jdkTestName}") {
+                                  echo "Running integration tests on all modules except viewer-admin"
+                                  sh "mvn -e verify -B -Pjenkins -pl '!viewer-admin'"
 
-                        stage("IntegrationTest: ${jdkTestName}") {
-                            echo "Running integration tests on all modules except viewer-admin"
-                            sh "mvn -e verify -B -Pjenkins -pl '!viewer-admin'"
-
-                            echo "Running integration tests on viewer-admin module only"
-                            sh "mvn -e verify -B -Pjenkins -pl 'viewer-admin'"
-                        }
+                                  echo "Running integration tests on viewer-admin module only"
+                                  sh "mvn -e verify -B -Pjenkins -pl 'viewer-admin'"
+                              }
+                          }
                       }
                     }
                 } finally {
