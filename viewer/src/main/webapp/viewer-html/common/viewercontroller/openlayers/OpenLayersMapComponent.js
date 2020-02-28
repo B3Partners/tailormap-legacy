@@ -695,8 +695,9 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
     repaintTools: function() {
         if(!Ext.browser.is.IE) {
             return;
-        }
-    ﻿   var tools = document.querySelectorAll('.svg-tool svg use');
+        };
+
+        var tools = document.querySelectorAll('.svg-tool svg use');
         for(var i = 0; i < tools.length; i++) {
             tools[i].setAttribute('href', tools[i].getAttribute('xlink:href'));
         }
