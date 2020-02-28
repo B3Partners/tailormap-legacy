@@ -28,6 +28,7 @@ Ext.define("viewer.components.DigitreeTree", {
     mode: null,
     currentFID:null,
     currentGeom:null,
+    multipleTrees: false,
 
     constructor: function (conf) {
         this.initConfig(conf);
@@ -154,6 +155,8 @@ Ext.define("viewer.components.DigitreeTree", {
         this.toolMapClick.deactivateTool();
         this.config.viewerController.mapComponent.getMap().removeMarker("edit");
         this.vectorLayer.removeAllFeatures();
+        this.inputContainer.form.reset();
+        this.algemeen.setCollapsed(true)
     },
 
     createNew: function () {
@@ -202,7 +205,9 @@ Ext.define("viewer.components.DigitreeTree", {
     },
 
     mapClicked: function (toolMapClick, comp) {
-        //this.toolMapClick.deactivateTool();
+        if(!this.multipleTrees){
+            this.vectorLayer.removeAllFeatures();
+        }
         this.inputContainer.getForm().reset();
         const coords = comp.coord;
         this.config.viewerController.mapComponent.getMap().setMarker("edit", coords.x, coords.y);
@@ -241,6 +246,7 @@ Ext.define("viewer.components.DigitreeTree", {
         if(!feature) {
             return;
         }
+        this.algemeen.setCollapsed(false);
         feature.boomsrt = feature.boomsrt.trim();
         this.currentFID = feature.__fid;
         this.currentGeom = feature["the_geom"];
@@ -303,7 +309,7 @@ Ext.define("viewer.components.DigitreeTree", {
             border:0,
             bodyPadding:10,
             collapsible: true,
-            collapsed:false,
+            collapsed:true,
             title: 'Algemeen',
             items: []
         });
