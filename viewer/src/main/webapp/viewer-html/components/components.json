@@ -980,5 +980,17 @@
         "singleton": true,
         "configSource": ["ConfigObject.js","SelectionWindowConfig.js", "Highlight-config.js"],
         "restrictions": ["content"]
+    },
+
+    {
+        "className": "viewer.components.DigitreeTree",
+        "name": "Digitree Bomen",
+        "group": "Map",
+        "shortName": "Digi",
+        "sources": ["Component.js", "Edit.js", "DigitreeTree.js"],
+        "type": "popup",
+        "singleton": true,
+        "configSource": ["ConfigObject.js","SelectionWindowConfig.js", "Digitree-tree-config.js"],
+        "restrictions": ["rightmargin_top", "content", "left_menu"]
     }
 ]
