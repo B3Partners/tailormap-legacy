@@ -65,7 +65,7 @@
         or as part of a profile, see eg. 'travis-ci' profile in viewer -->
         <test.skip.integrationtests>false</test.skip.integrationtests>
         <maven-surefire-plugin.version>3.0.0-M4</maven-surefire-plugin.version>
-        <tomcat.version>7.0.99</tomcat.version>
+        <tomcat.version>7.0.100</tomcat.version>
         <jacoco-maven-plugin.version>0.8.5</jacoco-maven-plugin.version>
         <!--<jacoco.it.execution.data.file>${project.build.directory}/jacoco-it.exec</jacoco.it.execution.data.file>-->
         <!--<jacoco.ut.execution.data.file>${project.build.directory}/jacoco-ut.exec</jacoco.ut.execution.data.file>-->
