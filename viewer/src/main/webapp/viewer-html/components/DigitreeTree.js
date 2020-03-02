@@ -29,6 +29,7 @@ Ext.define("viewer.components.DigitreeTree", {
     currentFID:null,
     currentGeom:null,
     multipleTrees: false,
+    officialFeature:{},
 
     constructor: function (conf) {
         this.initConfig(conf);
@@ -64,22 +65,6 @@ Ext.define("viewer.components.DigitreeTree", {
         return this;
     },
 
-    getDigitreeConfig: function() {
-        Ext.Ajax.request({
-            url: "/digitree-beheer/Api.action?getConfig=",
-            scope: this,
-            success: function(result) {
-                const text = result.responseText;
-                const response = Ext.JSON.decode(text);
-                this.digitreeConfig = response;
-                this.fillFormContainers();
-            },
-            failure: function(result) {
-                this.config.viewerController.logger.error(result);
-            }
-        });
-    },
-
     loadWindow: function () {
         this.maincontainer = Ext.create('Ext.panel.Panel', {
             id: this.name + 'Container',
@@ -113,7 +98,7 @@ Ext.define("viewer.components.DigitreeTree", {
                             layout: 'anchor',
                             hidden: true
                         },
-                        this.createButton("saveButton", 'Opslaan', this.saveTree, true),
+                        this.createButton("saveButton", 'Opslaan', this.save, true),
                         this.createButton("deleteButton", 'Verwijderen', this.deleteTree,true),
                     ]
 
@@ -157,9 +142,11 @@ Ext.define("viewer.components.DigitreeTree", {
         this.vectorLayer.removeAllFeatures();
         this.inputContainer.form.reset();
         this.algemeen.setCollapsed(true)
+        this.officialFeature = {};
     },
 
     createNew: function () {
+        this.officialFeature = {};
         this.mode = "new";
         console.log("Nieuwe boom");
     },
@@ -170,14 +157,20 @@ Ext.define("viewer.components.DigitreeTree", {
         this.toolMapClick.activateTool();
     },
 
-    saveTree: function() {
+    save: function() {
+        this.getProjectForGeom(this.vectorLayer.getActiveFeature().config.wktgeom);
+    },
+
+    saveTree: function(project) {
         if (!this.inputContainer.form.isValid()){
             Ext.Msg.alert("Velden zijn verplicht", "Niet alle verplichte velden zijn ingevuld");
             return;
         }
-
+        const newGeom = this.vectorLayer.getActiveFeature().config.wktgeom;
         const feature = this.inputContainer.form.getValues();
-
+        const featureToSave = Ext.Object.merge(this.officialFeature,feature);
+        featureToSave.project = project;
+        featureToSave.the_geom = newGeom;
         Ext.Ajax.request({
             url: "/viewer/action/digitree",
             params: {
@@ -197,7 +190,6 @@ Ext.define("viewer.components.DigitreeTree", {
                 this.config.viewerController.logger.error(result);
             }
         });
-        console.log("save");
     },
 
     deleteTree: function() {
@@ -246,6 +238,7 @@ Ext.define("viewer.components.DigitreeTree", {
         if(!feature) {
             return;
         }
+        this.officialFeature = feature;
         this.algemeen.setCollapsed(false);
         feature.boomsrt = feature.boomsrt.trim();
         this.currentFID = feature.__fid;
@@ -334,6 +327,8 @@ Ext.define("viewer.components.DigitreeTree", {
                 this.algemeen.add(this.createDynamicInput(field));
             } else if (field.checkbox){
                 this.algemeen.add(this.createCheckboxInput(field));
+            } else if (field.date){
+                this.algemeen.add(this.createDatepickerInput(field));
             } else {
                 Ext.Msg.alert("Mislukt", "Field moet static, dynamic of een checkbox zijn: " + field.label);
             }
@@ -348,6 +343,8 @@ Ext.define("viewer.components.DigitreeTree", {
                 this.boomveiligheidskenmerken.add(this.createDynamicInput(field));
             } else if (field.checkbox){
                 this.boomveiligheidskenmerken.add(this.createCheckboxInput(field));
+            }else if (field.date) {
+                this.boomveiligheidskenmerken.add(this.createDatepickerInput(field));
             } else if (field.vta){
                 if(this.digitreeConfig) {
                     const obj = {
@@ -369,6 +366,38 @@ Ext.define("viewer.components.DigitreeTree", {
                 }
             } else {
                 Ext.Msg.alert("Mislukt", "Field moet static of dynamic zijn: " + field.label);
+            }
+        }
+
+        //Fill Ziekten en plagen
+        for (let i = 0; i < data.ziektenenplagen.field.length; i++) {
+            const field = data.ziektenenplagen.field[i];
+            if(field.static) {
+                this.ziektenenplagen.add(this.createStaticInput(field));
+            } else if (field.dynamic){
+                this.ziektenenplagen.add(this.createDynamicInput(field));
+            } else if (field.checkbox){
+                this.ziektenenplagen.add(this.createCheckboxInput(field));
+            } else if (field.date){
+                this.ziektenenplagen.add(this.createDatepickerInput(field));
+            } else {
+                Ext.Msg.alert("Mislukt", "Field moet static, dynamic of een checkbox zijn: " + field.label);
+            }
+        }
+
+        //Fill Onderhoudskenmerken
+        for (let i = 0; i < data.onderhoudskenmerken.field.length; i++) {
+            const field = data.onderhoudskenmerken.field[i];
+            if(field.static) {
+                this.onderhoudskenmerken.add(this.createStaticInput(field));
+            } else if (field.dynamic){
+                this.onderhoudskenmerken.add(this.createDynamicInput(field));
+            } else if (field.checkbox){
+                this.onderhoudskenmerken.add(this.createCheckboxInput(field));
+            } else if (field.date){
+                this.onderhoudskenmerken.add(this.createDatepickerInput(field));
+            } else {
+                Ext.Msg.alert("Mislukt", "Field moet static, dynamic of een checkbox zijn: " + field.label);
             }
         }
 
@@ -396,7 +425,6 @@ Ext.define("viewer.components.DigitreeTree", {
             }
         }
     },
-
     createCheckboxInput: function (attribute) {
         const input = Ext.create('Ext.form.field.Checkbox', {
             name: attribute.name,
@@ -408,7 +436,19 @@ Ext.define("viewer.components.DigitreeTree", {
         return input;
     },
 
+    createDatepickerInput: function(attribute) {
+        const input = Ext.create('Ext.form.field.Date', {
+            name: attribute.name,
+            fieldLabel: attribute.label,
+            value: new Date(),
+            format: "d-m-Y"
+        });
+
+        return input;
+    },
+
     createDynamicInput: function (attribute) {
+        const me = this;
         let data = null;
         if (attribute.storeData instanceof Array) {
             data = attribute.storeData;
@@ -427,6 +467,24 @@ Ext.define("viewer.components.DigitreeTree", {
             queryMode: 'local',
             displayField: attribute.labelField,
             valueField: attribute.labelValue,
+            hidden: attribute.hidden,
+            listeners: {
+                change: function(e){
+                    switch (e.name) {
+                        case 'risicoklasse':
+                            me.calculateNextInspectionDate(e);
+                            break;
+                        case 'aantastingen':
+                            me.showStatusZp(e,attribute);
+                            break;
+                        case 'status_zp':
+                            me.showClassificatie(e,attribute);
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
         });
 
         return input;
@@ -454,6 +512,88 @@ Ext.define("viewer.components.DigitreeTree", {
         }
 
         return input;
+    },
+
+    showClassificatie: function(e,attribute) {
+        const value = e.value;
+        const classificatie = this.inputContainer.form.findField('classificatie');
+        const classificatieValue = classificatie.getValue();
+        const store  = classificatie.getStore();
+        if(value == null){
+            classificatie.setValue("");
+            store.setData({});
+            classificatie.setHidden(true);
+            return;
+        }
+
+        if(attribute[value.trim()]){
+            let found = false;
+            for(let i = 0; i < attribute[value.trim()].length; i++){
+                const obj  = attribute[value.trim()][i];
+                if(obj.classificatie === classificatieValue) {
+                    found = true;
+                    break;
+                }
+            }
+            if(!found){
+                classificatie.setValue("");
+            }
+            store.setData(attribute[value.trim()]);
+            classificatie.setHidden(false);
+        } else {
+            classificatie.setValue("");
+            store.setData({});
+            classificatie.setHidden(true);
+        }
+
+
+    },
+
+    showStatusZp: function(e,attribute) {
+        const value = e.value;
+        const status_zp  = this.inputContainer.form.findField('status_zp');
+        if(attribute.statusZpFields.includes(value.trim())){
+            status_zp.setHidden(false);
+        } else {
+            status_zp.setValue("");
+            status_zp.setHidden(true);
+        }
+    },
+
+    calculateNextInspectionDate: function(e) {
+        const value = e.value;
+        const field  = this.inputContainer.form.findField('uitvoerdatum');
+        field.setValue('02-06-2021');
+    },
+
+    getDigitreeConfig: function() {
+        Ext.Ajax.request({
+            url: "/digitree-beheer/Api.action?getConfig=",
+            scope: this,
+            success: function(result) {
+                const text = result.responseText;
+                const response = Ext.JSON.decode(text);
+                this.digitreeConfig = response;
+                this.fillFormContainers();
+            },
+            failure: function(result) {
+                this.config.viewerController.logger.error(result);
+            }
+        });
+    },
+
+    getProjectForGeom: function(wkt) {
+        Ext.Ajax.request({
+            url: "/digitree-beheer/Api.action?getProject=true&point="+wkt,
+            scope: this,
+            success: function(result) {
+                const text = result.responseText;
+                this.saveTree(text);
+            },
+            failure: function(result) {
+                this.config.viewerController.logger.error(result);
+            }
+        });
     },
 
     testConfig: function() {
@@ -703,6 +843,11 @@ Ext.define("viewer.components.DigitreeTree", {
                         ]
                     },
                     {
+                        name: 'uitvoerdatum',
+                        label: 'volgende inspectie:',
+                        date: true
+                    },
+                    {
                         name: 'nader_onderzoek',
                         label: 'Nader onderzoek',
                         checkbox:true,
@@ -711,10 +856,182 @@ Ext.define("viewer.components.DigitreeTree", {
 
             },
             ziektenenplagen: {
+                field: [
+                    {
+                        name: 'aantastingen',
+                        label: 'Aanstastingen:',
+                        text:true,
+                        readOnly: true,
+                        dynamic: true,
+                        allowBlank: true,
+                        statusZpFields: ["massaria","essterfte", "iepziekte", "eikenprocessierups", "bloedingsziekte"],
+                        storeFields: ['aantasting'],
+                        labelField: 'aantasting',
+                        labelValue: 'aantasting',
+                        storeData: [
+                            {'aantasting':'massaria'},
+                            {'aantasting':'essterfte'},
+                            {'aantasting':'iepziekte'},
+                            {'aantasting':'eikenprocessierups'},
+                            {'aantasting':'bloedingsziekte'},
+                            {'aantasting':'Bastwoekerziekte'},
+                            {'aantasting':'Berkendoder'},
+                            {'aantasting':'Berkenweerschijnzwam'},
+                            {'aantasting':'Dikrandtonderzwam'},
+                            {'aantasting':'Echte honingzwam'},
+                            {'aantasting':'Echte tonderzwam'},
+                            {'aantasting':'Eikenweerschijnzwam'},
+                            {'aantasting':'Gesteelde lakzwam'},
+                            {'aantasting':'Gewone oesterzwam'},
+                            {'aantasting':'Goudvliesbundelzwarm'},
+                            {'aantasting':'Harslakzwam'},
+                            {'aantasting':'Kastanjemineermot'},
+                            {'aantasting':'Kogelhoutskoolzwam'},
+                            {'aantasting':'Korsthoutskoolzwam'},
+                            {'aantasting':'Platte tonderzwam'},
+                            {'aantasting':'Prachtkever'},
+                            {'aantasting':'Reuzenzwam'},
+                            {'aantasting':'Roodporiezwam'},
+                            {'aantasting':'Sombere honingzwam'},
+                            {'aantasting':'Verwelkingziekte (Verticilium)'},
+                            {'aantasting':'Waslakzwam'},
+                            {'aantasting':'Watermerkziekte'},
+                            {'aantasting':'Wilgenhoutrups'},
+                            {'aantasting':'Zadelzwam'},
+                            {'aantasting':'Zwavelzwam'}
+                        ]
+                    },
+                    {
+                        name: 'status_zp',
+                        label: 'Status ziekten en plagen',
+                        text:true,
+                        readOnly: true,
+                        dynamic: true,
+                        allowBlank: true,
+                        hidden:true,
+                        storeFields: ['status_zp'],
+                        labelField: 'status_zp',
+                        labelValue: 'status_zp',
+                        storeData: [
+                            {'status_zp':'melding'},
+                            {'status_zp':'monitoring'},
+                            {'status_zp':'registratie'},
+                            {'status_zp':'bestreden'}
+                        ],
+                        melding: [
+                            {'classificatie':'gemeente'},
+                            {'classificatie':'particulier'},
+                            {'classificatie':'provincie'}
+                        ],
+                        monitoring: [
+                            {'classificatie':'spuitlocatie'},
+                            {'classificatie':'feromoonval'},
+                            {'classificatie':'controlelocatie'}
+                        ],
+                        registratie: [
+                            {'classificatie':'prioriteit: urgent'},
+                            {'classificatie':'prioriteit: standaard'},
+                            {'classificatie':'prioriteit: laag'},
+                            {'classificatie':'prioriteit: geen'}
+                        ],
+                        bestreden: [
+                            {'classificatie':'hoge plaagdruk'},
+                            {'classificatie':'matige plaagdruk'},
+                            {'classificatie':'laag plaagdruk'},
+                            {'classificatie':'geen plaagdruk'}
+                        ],
+                    },
+                    {
+                        name: 'classificatie',
+                        label: 'Classificatie',
+                        text:true,
+                        readOnly: true,
+                        dynamic: true,
+                        allowBlank: true,
+                        hidden:true,
+                        storeFields: ['classificatie'],
+                        labelField: 'classificatie',
+                        labelValue: 'classificatie',
+                        storeData: [
+
+                        ]
+                    },
+                ]
 
             },
             onderhoudskenmerken: {
-
+                field: [
+                    {
+                        name: 'maatregelen_kort',
+                        label: 'Maatregel kort termijn:',
+                        text:true,
+                        readOnly: true,
+                        dynamic: true,
+                        allowBlank: true,
+                        storeFields: ['maatregelen_kort'],
+                        labelField: 'maatregelen_kort',
+                        labelValue: 'maatregelen_kort',
+                        storeData: [
+                            {'maatregelen_kort':'BGS beeld'},
+                            {'maatregelen_kort':'BGS achterstallig'},
+                            {'maatregelen_kort':'BGS verwaarloosd'},
+                            {'maatregelen_kort':'OHS beeld'},
+                            {'maatregelen_kort':'OHS achterstallig'},
+                            {'maatregelen_kort':'Rooien'}
+                        ]
+                    },
+                    {
+                        name: 'maatregelen_lang',
+                        label: 'Maatregel lange termijn:',
+                        text:true,
+                        readOnly: true,
+                        dynamic: true,
+                        allowBlank: true,
+                        storeFields: ['maatregelen_lang'],
+                        labelField: 'maatregelen_lang',
+                        labelValue: 'maatregelen_lang',
+                        storeData: [
+                            {'maatregelen_lang':'BGS fase'},
+                            {'maatregelen_lang':'OHS 1x/1 jr'},
+                            {'maatregelen_lang':'OHS 1x/2 jr'},
+                            {'maatregelen_lang':'OHS 1x/3 jr'},
+                            {'maatregelen_lang':'OHS 1x/6 jr'},
+                            {'maatregelen_lang':'OHS 1x/9 jr'},
+                            {'maatregelen_lang':'OHS 1x/12 jr'},
+                        ]
+                    },
+                    {
+                        name: 'bereikbaarheid',
+                        label: 'Bereikbaarheid',
+                        checkbox:true,
+                    },
+                    {
+                        name: 'wegtype',
+                        label: 'Wegtype:',
+                        text:true,
+                        readOnly: true,
+                        dynamic: true,
+                        allowBlank: true,
+                        storeFields: ['wegtype'],
+                        labelField: 'wegtype',
+                        labelValue: 'wegtype',
+                        storeData: [
+                            {'wegtype':'A'},
+                            {'wegtype':'B1'},
+                            {'wegtype':'B2'},
+                            {'wegtype':'C1'},
+                            {'wegtype':'C2'},
+                            {'wegtype':'D'},
+                            {'wegtype':'E'},
+                            {'wegtype':'F1'},
+                            {'wegtype':'F2'},
+                            {'wegtype':'KR'},
+                            {'wegtype':'RO'},
+                            {'wegtype':'FP'},
+                            {'wegtype':'VP'},
+                        ]
+                    }
+                ]
             },
         }
 
