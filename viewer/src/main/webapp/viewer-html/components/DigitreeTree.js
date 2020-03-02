@@ -171,6 +171,9 @@ Ext.define("viewer.components.DigitreeTree", {
         const featureToSave = Ext.Object.merge(this.officialFeature,feature);
         featureToSave.project = project;
         featureToSave.the_geom = newGeom;
+        var xy = newGeom.substring(newGeom.indexOf('(')+1,newGeom.indexOf(')')).split(' ');
+        featureToSave.upload_rdx = xy[0];
+        featureToSave.upload_rdy = xy[1];
         Ext.Ajax.request({
             url: "/viewer/action/digitree",
             params: {
@@ -184,7 +187,14 @@ Ext.define("viewer.components.DigitreeTree", {
             success: function(result) {
                 const text = result.responseText;
                 const response = Ext.JSON.decode(text);
-                console.log(response);
+                if(response.success) {
+                    this.showSuccessToast("Opgeslagen", i18next.t('viewer_components_edit_40'));
+                    this.config.viewerController.mapComponent.getMap().moveTo(xy[0], xy[1]);
+                    this.config.viewerController.mapComponent.getMap().setMarker("edit", xy[0], xy[1]);
+                    this.inputContainer.getForm().setValues(response.newFeature);
+                } else {
+                    Ext.Msg.alert("Mislukt", "Opslaan is niet gelukt");
+                }
             },
             failure: function(result) {
                 this.config.viewerController.logger.error(result);

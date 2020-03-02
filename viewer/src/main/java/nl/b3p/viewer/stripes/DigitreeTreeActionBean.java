@@ -199,14 +199,14 @@ public class DigitreeTreeActionBean extends LocalizableApplicationActionBean imp
             List<FeatureId> ids = store.addFeatures(DataUtilities.collection(f));
 
             transaction.commit();
+            json.put("newFeature", jsonFeature);
             json.put("success", Boolean.TRUE);
         } catch (Exception e){
-
+            json.put("error", "Opslaan is mislukt");
         }finally {
             transaction.close();
         }
 
-        json.put("success", Boolean.TRUE);
         return new StreamingResolution("application/json", json.toString());
     }
 
