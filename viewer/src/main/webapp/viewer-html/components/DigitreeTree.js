@@ -177,7 +177,7 @@ Ext.define("viewer.components.DigitreeTree", {
                 saveTree: true,
                 applayerId: this.config.layers[0],
                 application: this.config.viewerController.app.id,
-                feature: Ext.JSON.encode(feature)
+                feature: Ext.JSON.encode(featureToSave)
             },
             scope: this,
             timeout: 40000,
@@ -861,7 +861,7 @@ risico + 90 dagen */
                         checkbox:true,
                     },
                     {
-                        name: 'opdrukken',
+                        name: 'opdruk',
                         label: 'Opdrukken verharding',
                         checkbox:true,
                     },
@@ -1079,8 +1079,4 @@ risico + 90 dagen */
         }
 
     }
-/*geen verhoogd + 3
-atten + 1
-tijdelijk + 1
-risico + 90 dagen */
 });
