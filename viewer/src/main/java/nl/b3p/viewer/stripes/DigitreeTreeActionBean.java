@@ -19,9 +19,9 @@ import org.json.JSONObject;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
-import org.stripesstuff.stripersist.Stripersist;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory2;
+import org.stripesstuff.stripersist.Stripersist;
 
 import javax.persistence.EntityManager;
 import java.io.IOException;
@@ -118,13 +118,14 @@ public class DigitreeTreeActionBean implements ActionBean {
 
     @DefaultHandler
     public Resolution view() {
-        String session  = context.getRequest().getSession().getId();
         return new StreamingResolution("");
     }
 
     public Resolution saveTree(){
-        System.out.println("saving");
-        return new StreamingResolution("application/json", "{\"success\":\"false\" \"message\":\"error\"}");
+        JSONObject jsonFeature = new JSONObject(feature);
+        jsonFeature = buildFeature(jsonFeature);
+
+        return new StreamingResolution("application/json", "{\"success\":\"false\", \"message\":\"error\"}");
     }
 
     public Resolution featuresForCoords(){
@@ -165,7 +166,6 @@ public class DigitreeTreeActionBean implements ActionBean {
             filter = ff.and(filter,ff.or(statusNew,statusaActual));
             q.setFilter(filter);
             q.setMaxFeatures(20);
-
             JSONArray features = executeQuery(al, layer.getFeatureType(), fs, q);
             if (!features.isEmpty()){
                 SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
@@ -197,6 +197,31 @@ public class DigitreeTreeActionBean implements ActionBean {
             return new StreamingResolution("application/json", "{\"success\":\"false\" \"message\":\"" + error + "\"}");
         }
 
+    }
+
+    private JSONObject buildFeature(JSONObject feature){
+        try {
+            Date dateNow = new Date();
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+            SimpleDateFormat hourFormat = new SimpleDateFormat("HH:mm:ss");
+            feature.put("projectid", getProjectId());
+            feature.put("inspecteur", getFullname());
+            feature.put("mutatietijd", hourFormat.format(dateNow));
+            feature.put("mutatiedatum", dateFormat.format(dateNow));
+            feature.put("status","nieuw");
+            if (!feature.has("digis_guid")) {
+                feature.put("digis_guid", java.util.UUID.randomUUID());
+            }
+        } catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+        return feature;
+    }
+
+    private String getFullname(){
+        EntityManager em = Stripersist.getEntityManager();
+        User user = em.find(User.class, context.getRequest().getUserPrincipal().getName());
+        return user.getDetails().get("name");
     }
 
     private String getProjectId(){
