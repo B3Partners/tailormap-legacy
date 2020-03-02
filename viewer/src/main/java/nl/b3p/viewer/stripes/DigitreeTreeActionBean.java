@@ -287,7 +287,7 @@ public class DigitreeTreeActionBean extends LocalizableApplicationActionBean imp
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
             SimpleDateFormat hourFormat = new SimpleDateFormat("HH:mm:ss");
             feature.put("projectid", getProjectId());
-            feature.put("inspecteur", getFullname());
+            feature.put("inspecteur", getInspecteur());
             feature.put("mutatietijd", hourFormat.format(dateNow));
             feature.put("mutatiedatum", dateFormat.format(dateNow));
             feature.put("status","nieuw");
@@ -300,10 +300,10 @@ public class DigitreeTreeActionBean extends LocalizableApplicationActionBean imp
         return feature;
     }
 
-    private String getFullname(){
+    private String getInspecteur(){
         EntityManager em = Stripersist.getEntityManager();
         User user = em.find(User.class, context.getRequest().getUserPrincipal().getName());
-        return user.getDetails().get("name");
+        return user.getDetails().getOrDefault("name",user.getUsername());
     }
 
     private String getProjectId(){
