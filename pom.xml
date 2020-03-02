@@ -58,7 +58,7 @@
         <apache.poi.version>4.1.2</apache.poi.version>
         <jakarta.mail.version>1.6.4</jakarta.mail.version>
         <apache.httpcomponents.version>4.5.11</apache.httpcomponents.version>
-        <jaxb.api.version>2.3.2</jaxb.api.version>
+        <jaxb.api.version>2.3.3</jaxb.api.version>
         <jaxb.impl.version>2.3.2</jaxb.impl.version>
         <activation.api.version>1.2.2</activation.api.version>
         <!-- skip integration tests by default, override this property from commandline
