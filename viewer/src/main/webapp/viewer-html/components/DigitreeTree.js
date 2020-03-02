@@ -148,7 +148,11 @@ Ext.define("viewer.components.DigitreeTree", {
     createNew: function () {
         this.officialFeature = {};
         this.mode = "new";
-        console.log("Nieuwe boom");
+        this.inputContainer.getForm().reset();
+        this.config.viewerController.mapComponent.getMap().removeMarker("edit");
+        this.vectorLayer.drawFeature("Point");
+        this.toolMapClick.activateTool();
+
     },
 
     editTree: function () {
@@ -207,13 +211,18 @@ Ext.define("viewer.components.DigitreeTree", {
     },
 
     mapClicked: function (toolMapClick, comp) {
-        if(!this.multipleTrees){
+        if(!this.multipleTrees && this.mode !== "new"){
             this.vectorLayer.removeAllFeatures();
         }
         this.inputContainer.getForm().reset();
         const coords = comp.coord;
         this.config.viewerController.mapComponent.getMap().setMarker("edit", coords.x, coords.y);
-        this.getFeaturesForCoord(coords);
+        if(this.mode === "new"){
+            const feature  = this.populateFormForNewTree();
+            this.featureReceived(feature);
+        } else {
+            this.getFeaturesForCoord(coords);
+        }
     },
 
     getFeaturesForCoord: function (coords) {
@@ -240,6 +249,15 @@ Ext.define("viewer.components.DigitreeTree", {
         });
     },
 
+    populateFormForNewTree: function() {
+      let feature = {};
+      feature.inspecteur = "test";
+      feature.mutatiedatum = "02-03-2020";
+      feature.mutatietijd = "17:11:23";
+      feature.project = "test";
+      feature.the_geom = this.vectorLayer.getActiveFeature().config.wktgeom;
+      return feature;
+    },
     showAndFocusForm: function() {
 
     },
@@ -250,7 +268,9 @@ Ext.define("viewer.components.DigitreeTree", {
         }
         this.officialFeature = feature;
         this.algemeen.setCollapsed(false);
-        feature.boomsrt = feature.boomsrt.trim();
+        if(feature.boomsrt) {
+            feature.boomsrt = feature.boomsrt.trim();
+        }
         this.currentFID = feature.__fid;
         this.currentGeom = feature["the_geom"];
         const wkt = this.currentGeom;
@@ -641,7 +661,11 @@ risico + 90 dagen */
             scope: this,
             success: function(result) {
                 const text = result.responseText;
-                this.saveTree(text);
+                if (text === "Boom valt buiten project gebied"){
+                    Ext.Msg.alert(text);
+                } else {
+                    this.saveTree(text);
+                }
             },
             failure: function(result) {
                 this.config.viewerController.logger.error(result);
