@@ -552,6 +552,11 @@ Ext.define("viewer.components.DigitreeTree", {
     showStatusZp: function(e,attribute) {
         const value = e.value;
         const status_zp  = this.inputContainer.form.findField('status_zp');
+        if (value == null) {
+            status_zp.setValue("");
+            status_zp.setHidden(true);
+            return;
+        }
         if(attribute.statusZpFields.includes(value.trim())){
             status_zp.setHidden(false);
         } else {
@@ -560,10 +565,48 @@ Ext.define("viewer.components.DigitreeTree", {
         }
     },
 
+    /*geen verhoogd + 3
+atten + 1
+tijdelijk + 1
+risico + 90 dagen */
+
     calculateNextInspectionDate: function(e) {
         const value = e.value;
+        const date = new Date();
+        let newDate = "";
+        let year;
+        let day;
+        let month;
+        switch (value) {
+            case "geen verhoogd risico":
+                year  = date.getFullYear() + 3;
+                day = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
+                month = date.getMonth() + 1 < 10 ? "0" + (date.getMonth() + 1) : (date.getMonth() + 1);
+                newDate = day + "-" + month + "-" + year;
+                break;
+            case "tijdelijk verhoogd risico":
+                year  = date.getFullYear() + 1;
+                day = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
+                month = date.getMonth() + 1 < 10 ? "0" + (date.getMonth() + 1) : (date.getMonth() + 1);
+                newDate = day + "-" + month + "-" + year;
+                break;
+            case "attentieboom":
+                year  = date.getFullYear() + 1;
+                day = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
+                month = date.getMonth() + 1 < 10 ? "0" + (date.getMonth() + 1) : (date.getMonth() + 1);
+                newDate = day + "-" + month + "-" + year;
+                break;
+            case "risicoboom":
+                year  = date.getFullYear();
+                day = date.getDate() < 10 ? "0"+date.getDate() : date.getDate();
+                month = date.getMonth() + 4 < 10 ? "0" + (date.getMonth() + 4) : (date.getMonth() + 4);
+                newDate = day + "-" + month + "-" + year;
+                break
+            default:
+                break;
+        }
         const field  = this.inputContainer.form.findField('uitvoerdatum');
-        field.setValue('02-06-2021');
+        field.setValue(newDate);
     },
 
     getDigitreeConfig: function() {
@@ -1036,5 +1079,8 @@ Ext.define("viewer.components.DigitreeTree", {
         }
 
     }
-
+/*geen verhoogd + 3
+atten + 1
+tijdelijk + 1
+risico + 90 dagen */
 });
