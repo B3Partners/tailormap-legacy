@@ -9,18 +9,25 @@ import nl.b3p.viewer.config.security.User;
 import nl.b3p.viewer.config.services.Layer;
 import nl.b3p.viewer.config.services.SimpleFeatureType;
 import nl.b3p.viewer.util.FeatureToJson;
-import org.geotools.data.FeatureSource;
-import org.geotools.data.Query;
+import org.apache.commons.lang3.StringUtils;
+import org.geotools.data.*;
+import org.geotools.data.simple.SimpleFeatureStore;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.filter.text.cql2.CQL;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
+import org.locationtech.jts.io.WKTReader;
+import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.type.AttributeDescriptor;
+import org.opengis.feature.type.GeometryType;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory2;
+import org.opengis.filter.identity.FeatureId;
 import org.stripesstuff.stripersist.Stripersist;
 
 import javax.persistence.EntityManager;
@@ -28,14 +35,18 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @UrlBinding("/action/digitree")
 @StrictBinding
-public class DigitreeTreeActionBean implements ActionBean {
+public class DigitreeTreeActionBean extends LocalizableApplicationActionBean implements ActionBean {
 
     private ActionBeanContext context;
 
     private static final int TIMEOUT = 5000;
+
+    private SimpleFeatureStore store;
+    private Layer layer;
 
     @Validate
     private Application application;
@@ -55,6 +66,14 @@ public class DigitreeTreeActionBean implements ActionBean {
     private String feature;
 
     //<editor-fold defaultstate="collapsed" desc="getters and setters">
+    public Layer getLayer() {
+        return layer;
+    }
+
+    public void setLayer(Layer layer) {
+        this.layer = layer;
+    }
+
     public String getFeature() {
         return feature;
     }
@@ -121,11 +140,74 @@ public class DigitreeTreeActionBean implements ActionBean {
         return new StreamingResolution("");
     }
 
-    public Resolution saveTree(){
-        JSONObject jsonFeature = new JSONObject(feature);
-        jsonFeature = buildFeature(jsonFeature);
+    public Resolution saveTree() throws IOException {
+        JSONObject json = new JSONObject();
+        json.put("success", Boolean.FALSE);
 
-        return new StreamingResolution("application/json", "{\"success\":\"false\", \"message\":\"error\"}");
+        JSONObject jsonFeature = new JSONObject(feature);
+        Transaction transaction = null;
+        jsonFeature = buildFeature(jsonFeature);
+        FeatureSource fs  = null;
+        ApplicationLayer al = null;
+        EntityManager em = Stripersist.getEntityManager();
+        try{
+            if(applayerId == -1){
+                json.put("error","Applayerid is unknown");
+                return new StreamingResolution("application/json", json.toString());
+            }
+
+            al = em.find(ApplicationLayer.class, applayerId);
+            layer = al.getService().getLayer(al.getLayerName(), em);
+
+            if(layer == null) {
+                json.put("error", getBundle().getString("viewer.editfeatureactionbean.3"));
+                return new StreamingResolution("application/json", json.toString());
+            }
+
+            if(layer.getFeatureType() == null) {
+                json.put("error", getBundle().getString("viewer.editfeatureactionbean.4"));
+                return new StreamingResolution("application/json", json.toString());
+            }
+
+            fs = layer.getFeatureType().openGeoToolsFeatureSource();
+
+            if(!(fs instanceof SimpleFeatureStore)) {
+                json.put("error", getBundle().getString("viewer.editfeatureactionbean.5"));
+                return new StreamingResolution("application/json", json.toString());
+            }
+
+            store = (SimpleFeatureStore)fs;
+
+            SimpleFeature f = DataUtilities.template(store.getSchema());
+            transaction = new DefaultTransaction("new tree");
+            store.setTransaction(transaction);
+
+            for(AttributeDescriptor ad: store.getSchema().getAttributeDescriptors()) {
+                if(ad.getType() instanceof GeometryType) {
+                    String wkt = jsonFeature.optString(ad.getLocalName(), null);
+                    Geometry g = null;
+                    if(wkt != null) {
+                        g = new WKTReader().read(wkt);
+                    }
+                    f.setDefaultGeometry(g);
+                } else {
+                    String v = jsonFeature.optString(ad.getLocalName());
+                    f.setAttribute(ad.getLocalName(), StringUtils.defaultIfBlank(v, null));
+                }
+            }
+
+            List<FeatureId> ids = store.addFeatures(DataUtilities.collection(f));
+
+            transaction.commit();
+            json.put("success", Boolean.TRUE);
+        } catch (Exception e){
+
+        }finally {
+            transaction.close();
+        }
+
+        json.put("success", Boolean.TRUE);
+        return new StreamingResolution("application/json", json.toString());
     }
 
     public Resolution featuresForCoords(){
