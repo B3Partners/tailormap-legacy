@@ -339,7 +339,7 @@
             <id>jenkins</id>
             <dependencies>
                 <dependency>
-                    <groupId>com.oracle.jdbc</groupId>
+                    <groupId>com.oracle.database.jdbc.debug</groupId>
                     <artifactId>ojdbc8_g</artifactId>
                     <version>${oracle.version}</version>
                     <scope>test</scope>
@@ -426,7 +426,7 @@
                                 <version>${jakarta.mail.version}</version>
                             </dependency>
                             <dependency>
-                                <groupId>com.oracle.jdbc</groupId>
+                                <groupId>com.oracle.database.jdbc.debug</groupId>
                                 <artifactId>ojdbc8_g</artifactId>
                                 <version>${oracle.version}</version>
                             </dependency>
