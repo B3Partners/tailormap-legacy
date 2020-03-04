@@ -256,10 +256,6 @@
                         <resource>
                             <directory>src/main/webapp</directory>
                             <filtering>true</filtering>
-                            <excludes>
-                                <exclude>flamingo-components/</exclude>
-                                <exclude>src/main/webapp/flamingo-components/</exclude>
-                            </excludes>
                             <includes>
                                 <include>about.jsp</include>
                             </includes>

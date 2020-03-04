@@ -13,6 +13,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
+            "extractCss": true,
             "outputPath": "dist/bridge",
             "index": "projects/bridge/src/index.html",
             "main": "projects/bridge/src/main.ts",
@@ -73,7 +74,8 @@
           },
           "configurations": {
             "production": {
-              "browserTarget": "bridge:build:production"
+              "browserTarget": "bridge:build:production",
+              "extractCss": true
             }
           }
         },
