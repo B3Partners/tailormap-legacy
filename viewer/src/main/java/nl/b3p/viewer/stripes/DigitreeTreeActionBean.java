@@ -281,6 +281,10 @@ public class DigitreeTreeActionBean extends LocalizableApplicationActionBean imp
 
     }
 
+    public Resolution projectid() {
+        return new StreamingResolution("application/json","{\"projectid\":\"" + getProjectId() + "\"}");
+    }
+
     private JSONObject buildFeature(JSONObject feature){
         try {
             Date dateNow = new Date();
