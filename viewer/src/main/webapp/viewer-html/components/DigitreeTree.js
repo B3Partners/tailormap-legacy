@@ -30,6 +30,7 @@ Ext.define("viewer.components.DigitreeTree", {
     currentGeom:null,
     multipleTrees: false,
     officialFeature:{},
+    projectid: null,
 
     constructor: function (conf) {
         this.initConfig(conf);
@@ -61,8 +62,23 @@ Ext.define("viewer.components.DigitreeTree", {
             viewerController: this.config.viewerController
         });
 
+        this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_LAYERS_INITIALIZED,this.getProjectId, this);
+
         this.inputContainer.setVisible(true);
         return this;
+    },
+
+    setCqlFilter: function(projectid) {
+        this.projectid = projectid;
+        let appLayer  = this.config.viewerController.getAppLayerById(this.config.layers[0]);
+        let cql = "projectid ='" + projectid + "'";
+        this.config.viewerController.setFilter(
+            Ext.create("viewer.components.CQLFilterWrapper", {
+                id: "filter_digitree",
+                cql: cql,
+                operator: "AND",
+                type: "ATTRIBUTE"
+            }), appLayer);
     },
 
     loadWindow: function () {
@@ -666,6 +682,25 @@ risico + 90 dagen */
                 } else {
                     this.saveTree(text);
                 }
+            },
+            failure: function(result) {
+                this.config.viewerController.logger.error(result);
+            }
+        });
+    },
+
+    getProjectId: function() {
+        Ext.Ajax.request({
+            url: "/viewer/action/digitree",
+            params: {
+                projectid: true,
+            },
+            scope: this,
+            timeout: 40000,
+            success: function(result) {
+                const text = result.responseText;
+                const response = Ext.JSON.decode(text);
+                this.setCqlFilter(response.projectid);
             },
             failure: function(result) {
                 this.config.viewerController.logger.error(result);
