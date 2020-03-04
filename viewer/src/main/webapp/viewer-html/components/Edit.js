@@ -886,7 +886,6 @@ Ext.define("viewer.components.Edit", {
         var container =new Ext.form.FormPanel({
             title: t,
             border: 0,
-            id: "uploadContainer" + this.name + t,
             name: "uploadContainer" + this.name + t,
             collapsable: false,
             items:items

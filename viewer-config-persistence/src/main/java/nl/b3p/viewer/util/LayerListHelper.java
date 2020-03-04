@@ -67,6 +67,10 @@ public class LayerListHelper {
                 continue;
             }
 
+            if(appLayer.getStartLayers().get(application) == null || appLayer.getStartLayers().get(application).isRemoved()){
+                continue;
+            }
+
             if (filterable) {
                 // The value of l.isFilterable() for WMS layers is not meaningful
                 // at the moment... Always assume a WMS layer is filterable if

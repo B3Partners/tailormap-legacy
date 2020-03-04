@@ -260,7 +260,11 @@ Ext.define("viewer.components.Snapping", {
         this.setLayersEnabled(this.config.defaultOnLayers,true);
     },
     enableAllLayers: function(toggle){
-        this.setLayersEnabled(this.config.layers,toggle);
+        var layers = [];
+        this.layerList.forEach(l =>{
+           layers.push(l.id);
+        });
+        this.setLayersEnabled(layers,toggle);
     },
     setLayersEnabled: function (layers,enabled) {
         var checkboxgroup = this.maincontainer.getComponent("snapLayers");
