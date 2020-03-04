@@ -139,7 +139,7 @@ public class FeatureReportActionBean extends LocalizableApplicationActionBean im
             FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2();
             FeatureSource fs = layer.getFeatureType().openGeoToolsFeatureSource(TIMEOUT);
             String geomAttribute = fs.getSchema().getGeometryDescriptor().getLocalName();
-            Filter fidFilter = ff.id(new FeatureIdImpl(this.fid));
+            Filter fidFilter = ff.id(new FeatureIdImpl(this.fid.substring(this.fid.indexOf(".")+1)));
 
             // set (buffered) bbox from feature
             BoundingBox b = this.getExtent(fs, fidFilter);
