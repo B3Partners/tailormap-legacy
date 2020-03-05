@@ -223,7 +223,33 @@ Ext.define("viewer.components.DigitreeTree", {
     },
 
     deleteTree: function() {
-        console.log("deleteTree");
+        const feature = this.inputContainer.form.getValues();
+        const featureToSave = Ext.Object.merge(this.officialFeature,feature);
+
+        Ext.Ajax.request({
+            url: "/viewer/action/digitree",
+            params: {
+                deleteTree: true,
+                applayerId: this.config.layers[0],
+                application: this.config.viewerController.app.id,
+                feature: Ext.JSON.encode(featureToSave)
+            },
+            scope: this,
+            timeout: 40000,
+            success: function(result) {
+                const text = result.responseText;
+                const response = Ext.JSON.decode(text);
+                if(response.success) {
+                    this.showSuccessToast("Boom is verwijderd", i18next.t('viewer_components_edit_40'));
+                    this.inputContainer.getForm().reset();
+                } else {
+                    Ext.Msg.alert("Mislukt", "Verwijderen is niet gelukt");
+                }
+            },
+            failure: function(result) {
+                this.config.viewerController.logger.error(result);
+            }
+        });
     },
 
     mapClicked: function (toolMapClick, comp) {
