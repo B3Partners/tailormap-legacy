@@ -16,46 +16,39 @@
  */
 package nl.b3p.viewer.stripes;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.StringReader;
-import java.io.StringWriter;
-import java.security.Principal;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.zip.GZIPInputStream;
-import java.util.zip.GZIPOutputStream;
-import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
-import javax.persistence.criteria.*;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.util.HtmlUtil;
 import net.sourceforge.stripes.util.StringUtil;
 import net.sourceforge.stripes.validation.LocalizableError;
 import net.sourceforge.stripes.validation.SimpleError;
 import net.sourceforge.stripes.validation.Validate;
+import nl.b3p.i18n.ResourceBundleProvider;
 import nl.b3p.viewer.components.ComponentRegistry;
 import nl.b3p.viewer.components.ComponentRegistryInitializer;
 import nl.b3p.viewer.config.ClobElement;
-import nl.b3p.i18n.ResourceBundleProvider;
-import org.stripesstuff.stripersist.Stripersist;
 import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.ConfiguredComponent;
 import nl.b3p.viewer.config.metadata.Metadata;
 import nl.b3p.viewer.config.security.Authorizations;
 import nl.b3p.viewer.config.security.User;
 import nl.b3p.viewer.util.SelectedContentCache;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.stripesstuff.stripersist.Stripersist;
+
+import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import javax.servlet.http.HttpServletRequest;
+import java.io.File;
+import java.io.IOException;
+import java.io.StringReader;
+import java.security.Principal;
+import java.util.*;
 
 /**
  *
