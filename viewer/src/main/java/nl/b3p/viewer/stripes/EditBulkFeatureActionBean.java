@@ -10,7 +10,6 @@ import nl.b3p.viewer.config.app.ApplicationLayer;
 import nl.b3p.viewer.config.app.ConfiguredAttribute;
 import nl.b3p.viewer.config.security.Authorizations;
 import nl.b3p.viewer.config.services.Layer;
-import nl.b3p.viewer.util.AuditTrailLogger;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -210,7 +209,6 @@ public class EditBulkFeatureActionBean extends LocalizableApplicationActionBean 
                 saveFeatureToStore(feature);
             }
 
-            addAuditTrailLog();
             transaction.commit();
         } catch (FeatureWriteNotAuthorizedException | IOException | ParseException | MissingFeatureIdException e) {
             transaction.rollback();
@@ -351,15 +349,6 @@ public class EditBulkFeatureActionBean extends LocalizableApplicationActionBean 
         }
         return true;
     }
-
-    private void addAuditTrailLog() {
-        AuditTrailLogger logger = new AuditTrailLogger();
-        logger.setContext(context);
-        logger.setStore(store);
-        logger.setLog(log);
-        logger.addAuditTrailLog();
-    }
-
 
     //<editor-fold defaultstate="collapsed" desc="exceptions">
     private class EditBulkFeatureActionBeanException extends RuntimeException {
