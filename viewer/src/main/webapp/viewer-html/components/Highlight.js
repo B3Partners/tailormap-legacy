@@ -34,6 +34,7 @@ Ext.define("viewer.components.Highlight", {
         viewer.components.Highlight.superclass.constructor.call(this, this.config);
         this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_FEATURE_HIGHLIGHTED, this.highlightFeature, this);
         this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_LAYERS_INITIALIZED,this.createVectorLayer, this);
+        this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE,this.createVectorLayer,this);
 
         var me = this;
         this.renderButton({
@@ -43,12 +44,16 @@ Ext.define("viewer.components.Highlight", {
             icon: me.config.iconUrl,
             tooltip: i18next.t('viewer_components_highlight_0')
         });
-        this.button.setDisabled(true);
+        if(this.button){
+            this.button.setDisabled(true);
+        }
         return this;
     },
     buttonClick: function(){
         this.vectorLayer.removeAllFeatures();
-        this.button.setDisabled(true);
+        if(this.button){
+            this.button.setDisabled(true);
+        }
     },
     createVectorLayer: function(){
         this.vectorLayer = this.config.viewerController.mapComponent.createVectorLayer({
@@ -103,8 +108,9 @@ Ext.define("viewer.components.Highlight", {
             wktgeom: feature.geom
         });
         this.vectorLayer.addFeature(f);
-        this.button.setDisabled(false);
-        this.setButtonState('click', true);
+        if(this.button){
+            this.button.setDisabled(false);
+        }
     },
     getExtComponents: function () {
         return [this.maincontainer.getId()];

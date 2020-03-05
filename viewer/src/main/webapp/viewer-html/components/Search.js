@@ -651,7 +651,7 @@ Ext.define ("viewer.components.Search",{
         var type = this.getCurrentSearchType(result);
         var searchconfig = this.getCurrentSearchconfig();
         if(type === "attributesource" || type === "solr"){
-            this.config.viewerController.fireEvent(viewer.viewercontroller.controller.Event.ON_FEATURE_HIGHLIGHTED, result.id, null, result.sft, result.searchConfig);
+            this.config.viewerController.fireEvent(viewer.viewercontroller.controller.Event.ON_FEATURE_HIGHLIGHTED, result.id.substring(result.id.indexOf("-")+1), null, result.sft, result.searchConfig);
         }
         if(type === "solr"){ 
             if(searchconfig ){
