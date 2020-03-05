@@ -415,22 +415,7 @@ public class ApplicationActionBean extends LocalizableApplicationActionBean impl
             }
         }
 
-        // Check if user has expire date
-        Date today = null;
-        Date expire = null;
-        try {
-            DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
-            expire = formatter.parse(u.getDetails().getOrDefault("expiry_date",formatter.format(new Date())));
-            today = formatter.parse(formatter.format(new Date()));
-        } catch (ParseException e){
-            ResourceBundle bundle = ResourceBundleProvider.getResourceBundle(determineLocaleForBundle(context, application));
-            String msg = bundle.getString("viewer.applicationactionbean.expired_parse_error");
-            context.getValidationErrors().addGlobalError(new SimpleError(msg));
-            context.getRequest().getSession().invalidate();
-            return new ForwardResolution("/WEB-INF/jsp/error.jsp");
-        }
-
-        if(today.after(expire)){
+        if(Authorizations.isUserExpired(u, context)){
             ResourceBundle bundle = ResourceBundleProvider.getResourceBundle(determineLocaleForBundle(context, application));
             String msg = bundle.getString("viewer.applicationactionbean.expired");
             context.getValidationErrors().addGlobalError(new SimpleError(msg));

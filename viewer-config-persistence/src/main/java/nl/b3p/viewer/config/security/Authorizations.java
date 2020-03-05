@@ -16,10 +16,18 @@
  */
 package nl.b3p.viewer.config.security;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.servlet.http.HttpServletRequest;
+
+import net.sourceforge.stripes.action.ActionBeanContext;
+import net.sourceforge.stripes.action.ForwardResolution;
+import net.sourceforge.stripes.validation.SimpleError;
+import nl.b3p.i18n.ResourceBundleProvider;
 import nl.b3p.viewer.config.services.*;
 import nl.b3p.viewer.config.app.*;
 import nl.b3p.viewer.util.DB;
@@ -514,7 +522,21 @@ public class Authorizations {
             return cache.protectedLayers.get(l.getId());
         }
     }
-    
+
+    public static boolean isUserExpired(User u, ActionBeanContext context) {
+        Date today = null;
+        Date expire = null;
+        try {
+            DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
+            expire = formatter.parse(u.getDetails().getOrDefault("expiry_date",formatter.format(new Date())));
+            today = formatter.parse(formatter.format(new Date()));
+        } catch (ParseException e){
+
+            return  true;
+        }
+        return today.after(expire);
+    }
+
     /**
      * Apply the security inheritence rules.
      */
