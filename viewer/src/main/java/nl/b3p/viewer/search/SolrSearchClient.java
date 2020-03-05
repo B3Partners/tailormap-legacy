@@ -71,7 +71,6 @@ public class SolrSearchClient extends SearchClient {
                 term = newTerm;
                 
                 term = term.replaceAll("\\:", "\\\\:");
-                term  += " AND (";
             }
             SolrServer server = SolrInitializer.getServerInstance();
             String extraQuery = createAttributeSourceQuery();
