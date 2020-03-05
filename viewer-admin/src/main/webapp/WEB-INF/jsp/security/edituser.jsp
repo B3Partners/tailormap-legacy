@@ -65,6 +65,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                                         <td><stripes:text name="details['phone']" maxlength="255" size="30"/></td>
                                     </tr>
                                     <tr>
+                                        <td><fmt:message key="viewer_admin.edituser.18" />:</td>
+                                        <td><stripes-dynattr:text name="details['expiry_date']" placeholder="dd-mm-yyyy" pattern="[0-9]{2}-[0-9]{2}-[0-9]{4}" maxlength="255" size="30" title="dd-mm-yyyy"/></td>
+                                    </tr>
+                                    <tr>
                                         <td><fmt:message key="viewer_admin.edituser.9" /> *:</td>
                                         <td><stripes-dynattr:text name="username" required="" disabled="${!empty actionBean.user.username}" maxlength="255" size="30">${user.username}</stripes-dynattr:text></td>
                                     </tr>
