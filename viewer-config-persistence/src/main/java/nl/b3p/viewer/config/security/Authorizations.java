@@ -118,7 +118,7 @@ public class Authorizations {
     
     private static final String ROLES_ATTRIBUTE = Authorizations.class.getName() + ".roles";
 
-    private static final Log log = LogFactory.getLog(ScriptRunner.class);
+    private static final Log log = LogFactory.getLog(Authorizations.class);
     
     /**
      * The set of role names which mean nobody has access; a set which only contains
