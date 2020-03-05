@@ -24,6 +24,9 @@ import java.io.OutputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.security.Principal;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
@@ -411,7 +414,30 @@ public class ApplicationActionBean extends LocalizableApplicationActionBean impl
                 u = em.find(User.class, p.getName());
             }
         }
-        if (!Authorizations.isApplicationReadAuthorized(application, context.getRequest(), em) && (username == null || u != null && u.isAuthenticatedByIp())) {
+
+        // Check if user has expire date
+        Date today = null;
+        Date expire = null;
+        try {
+            DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
+            expire = formatter.parse(u.getDetails().getOrDefault("expiry_date",formatter.format(new Date())));
+            today = formatter.parse(formatter.format(new Date()));
+        } catch (ParseException e){
+            ResourceBundle bundle = ResourceBundleProvider.getResourceBundle(determineLocaleForBundle(context, application));
+            String msg = bundle.getString("viewer.applicationactionbean.expired_parse_error");
+            context.getValidationErrors().addGlobalError(new SimpleError(msg));
+            context.getRequest().getSession().invalidate();
+            return new ForwardResolution("/WEB-INF/jsp/error.jsp");
+        }
+
+        if(today.after(expire)){
+            ResourceBundle bundle = ResourceBundleProvider.getResourceBundle(determineLocaleForBundle(context, application));
+            String msg = bundle.getString("viewer.applicationactionbean.expired");
+            context.getValidationErrors().addGlobalError(new SimpleError(msg));
+            context.getRequest().getSession().invalidate();
+            return new ForwardResolution("/WEB-INF/jsp/error.jsp");
+        }
+        else if (!Authorizations.isApplicationReadAuthorized(application, context.getRequest(), em) && (username == null || u != null && u.isAuthenticatedByIp())) {
             RedirectResolution login = new RedirectResolution(LoginActionBean.class)
                     .addParameter("name", application.getName()) // binded parameters not included ?
                     .addParameter("version", application.getVersion())
