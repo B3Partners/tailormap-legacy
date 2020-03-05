@@ -1,5 +1,6 @@
 package nl.b3p.viewer.stripes;
 
+import com.google.gson.JsonObject;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.viewer.config.app.Application;
@@ -10,9 +11,12 @@ import nl.b3p.viewer.config.services.Layer;
 import nl.b3p.viewer.config.services.SimpleFeatureType;
 import nl.b3p.viewer.util.FeatureToJson;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.geotools.data.*;
 import org.geotools.data.simple.SimpleFeatureStore;
 import org.geotools.factory.CommonFactoryFinder;
+import org.geotools.filter.identity.FeatureIdImpl;
 import org.geotools.filter.text.cql2.CQL;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -32,14 +36,18 @@ import org.stripesstuff.stripersist.Stripersist;
 
 import javax.persistence.EntityManager;
 import java.io.IOException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import static nl.b3p.viewer.stripes.FeatureInfoActionBean.FID;
+
 @UrlBinding("/action/digitree")
 @StrictBinding
 public class DigitreeTreeActionBean extends LocalizableApplicationActionBean implements ActionBean {
+    private static final Log log = LogFactory.getLog(DigitreeTreeActionBean.class);
 
     private ActionBeanContext context;
 
@@ -141,43 +149,15 @@ public class DigitreeTreeActionBean extends LocalizableApplicationActionBean imp
     }
 
     public Resolution saveTree() throws IOException {
-        JSONObject json = new JSONObject();
-        json.put("success", Boolean.FALSE);
-
         JSONObject jsonFeature = new JSONObject(feature);
         Transaction transaction = null;
         jsonFeature = buildFeature(jsonFeature);
-        FeatureSource fs  = null;
-        ApplicationLayer al = null;
-        EntityManager em = Stripersist.getEntityManager();
+        JSONObject json = new JSONObject();
         try{
-            if(applayerId == -1){
-                json.put("error","Applayerid is unknown");
+            json = createStore();
+            if(json.has("error")){
                 return new StreamingResolution("application/json", json.toString());
             }
-
-            al = em.find(ApplicationLayer.class, applayerId);
-            layer = al.getService().getLayer(al.getLayerName(), em);
-
-            if(layer == null) {
-                json.put("error", getBundle().getString("viewer.editfeatureactionbean.3"));
-                return new StreamingResolution("application/json", json.toString());
-            }
-
-            if(layer.getFeatureType() == null) {
-                json.put("error", getBundle().getString("viewer.editfeatureactionbean.4"));
-                return new StreamingResolution("application/json", json.toString());
-            }
-
-            fs = layer.getFeatureType().openGeoToolsFeatureSource();
-
-            if(!(fs instanceof SimpleFeatureStore)) {
-                json.put("error", getBundle().getString("viewer.editfeatureactionbean.5"));
-                return new StreamingResolution("application/json", json.toString());
-            }
-
-            store = (SimpleFeatureStore)fs;
-
             SimpleFeature f = DataUtilities.template(store.getSchema());
             transaction = new DefaultTransaction("new tree");
             store.setTransaction(transaction);
@@ -196,7 +176,7 @@ public class DigitreeTreeActionBean extends LocalizableApplicationActionBean imp
                 }
             }
 
-            List<FeatureId> ids = store.addFeatures(DataUtilities.collection(f));
+            store.addFeatures(DataUtilities.collection(f));
 
             transaction.commit();
             json.put("newFeature", jsonFeature);
@@ -267,18 +247,95 @@ public class DigitreeTreeActionBean extends LocalizableApplicationActionBean imp
                             }
                         }
                     }
-
                 }
                 response.put("feature",feature);
             }
-
             return new StreamingResolution("application/json", responses.toString());
         } catch (Exception e){
-            // log.error(e);
+            log.error(e);
             error = "Er is iets fout gegaan tijdens het ophalen van een boom, bekijk de log voor meer informatie";
             return new StreamingResolution("application/json", "{\"success\":\"false\" \"message\":\"" + error + "\"}");
         }
 
+    }
+
+    public Resolution deleteTree() throws IOException {
+        String error = null;
+        JSONObject json;
+        EntityManager em = Stripersist.getEntityManager();
+        FeatureSource fs;
+        JSONObject jsonFeature = new JSONObject(feature);
+        jsonFeature = buildFeature(jsonFeature);
+        Transaction transaction = null;
+        try {
+            ApplicationLayer al;
+            Layer layer;
+            json = createStore();
+            transaction = new DefaultTransaction("Delete tree");
+            store.setTransaction(transaction);
+            if (applayerId > 0) {
+                al = em.find(ApplicationLayer.class, applayerId);
+                layer = al.getService().getLayer(al.getLayerName(), em);
+            } else {
+                error = "ApplicationLayer not found";
+                return new StreamingResolution("application/json", "{\"success\":\"false\" \"message\":\"" + error + "\"}");
+            }
+
+            fs = layer.getFeatureType().openGeoToolsFeatureSource(TIMEOUT);
+            Query q = new Query(fs.getName().toString());
+
+            FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2();
+            Filter filter = CQL.toFilter("projectid = '" + getProjectId() +"'");
+            filter = FeatureToJson.reformatFilter(filter, layer.getFeatureType());
+            Filter boomid = CQL.toFilter("boomid = '" + jsonFeature.getString("boomid") + "'");
+            filter = ff.and(filter,boomid);
+            Filter statusNew = CQL.toFilter("status = 'nieuw'");
+            Filter statusaActual = CQL.toFilter("status = 'actueel'");
+            filter = ff.and(filter,ff.or(statusNew,statusaActual));
+
+            q.setFilter(filter);
+            JSONArray features = executeQuery(al, layer.getFeatureType(), fs, q);
+            // set trees to historisch
+            if (!features.isEmpty()){
+                for (int i = 0; i < features.length(); i++){
+                    JSONObject feature = features.getJSONObject(i);
+                    String fid = feature.optString(FID, null);
+                    if (fid == null) {
+                        throw new NullPointerException("FID niet gevonden voor feature: " + feature.getString("boomid"));
+                    }
+                    FilterFactory2 filterFactory2 = CommonFactoryFinder.getFilterFactory2();
+                    Filter deletefilter = filterFactory2.id(new FeatureIdImpl(fid));
+
+                    store.modifyFeatures("status", "historisch", deletefilter);
+                }
+            }
+
+            // make new tree with status weg
+            SimpleFeature f = DataUtilities.template(store.getSchema());
+            jsonFeature.put("status","weg");
+            for(AttributeDescriptor ad: store.getSchema().getAttributeDescriptors()) {
+                if(ad.getType() instanceof GeometryType) {
+                    String wkt = jsonFeature.optString(ad.getLocalName(), null);
+                    Geometry g = null;
+                    if(wkt != null) {
+                        g = new WKTReader().read(wkt);
+                    }
+                    f.setDefaultGeometry(g);
+                } else {
+                    String v = jsonFeature.optString(ad.getLocalName());
+                    f.setAttribute(ad.getLocalName(), StringUtils.defaultIfBlank(v, null));
+                }
+            }
+            store.addFeatures(DataUtilities.collection(f));
+            transaction.commit();
+            json.put("success",Boolean.TRUE);
+            return new StreamingResolution("application/json", json.toString());
+        } catch (Exception e){
+            transaction.rollback();
+            return new StreamingResolution("application/json", "{\"success\":\"false\" \"message\":\"" + error + "\"}");
+        } finally {
+            transaction.close();
+        }
     }
 
     public Resolution projectid() {
@@ -323,6 +380,43 @@ public class DigitreeTreeActionBean extends LocalizableApplicationActionBean imp
             }
         }
         return projectId;
+    }
+
+    private JSONObject createStore() {
+        FeatureSource fs  = null;
+        ApplicationLayer al = null;
+        EntityManager em = Stripersist.getEntityManager();
+        JSONObject json = new JSONObject();
+        json.put("success", Boolean.FALSE);
+        if(applayerId == -1){
+            json.put("error","Applayerid is unknown");
+            return json;
+        }
+
+        al = em.find(ApplicationLayer.class, applayerId);
+        layer = al.getService().getLayer(al.getLayerName(), em);
+
+        if(layer == null) {
+            json.put("error", getBundle().getString("viewer.editfeatureactionbean.3"));
+            return json;
+        }
+
+        if(layer.getFeatureType() == null) {
+            json.put("error", getBundle().getString("viewer.editfeatureactionbean.4"));
+            return json;
+        }
+        try {
+            fs = layer.getFeatureType().openGeoToolsFeatureSource();
+
+            if (!(fs instanceof SimpleFeatureStore)) {
+                json.put("error", getBundle().getString("viewer.editfeatureactionbean.5"));
+                return json;
+            }
+        } catch (Exception e){
+            json.put("error",e.getMessage());
+        }
+        store = (SimpleFeatureStore)fs;
+        return json;
     }
 
     protected JSONArray executeQuery(ApplicationLayer al, SimpleFeatureType ft, FeatureSource fs, Query q)
