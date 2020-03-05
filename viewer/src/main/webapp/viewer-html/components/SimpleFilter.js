@@ -62,7 +62,7 @@ Ext.define("viewer.components.SimpleFilter", {
             var appLayerId = me.config.layers[filter.appLayerId];
             
             var appLayer = me.config.viewerController.getAppLayerById(appLayerId);
-            if (appLayer) {
+            if (appLayer || !filter.appLayerId) {
                 var newFilter = Ext.create(className, {
                     appLayerId: appLayerId, // convert from index to actual appLayerId
                     attributeName: filter.attributeName,
