@@ -979,6 +979,6 @@
         "sources": ["Highlight.js"],
         "singleton": true,
         "configSource": ["ConfigObject.js","SelectionWindowConfig.js", "Highlight-config.js"],
-        "restrictions": ["content"]
+        "restrictions": ["content", "left_menu"]
     }
 ]
