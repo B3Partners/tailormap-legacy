@@ -31,6 +31,9 @@ import nl.b3p.i18n.ResourceBundleProvider;
 import nl.b3p.viewer.config.services.*;
 import nl.b3p.viewer.config.app.*;
 import nl.b3p.viewer.util.DB;
+import nl.b3p.viewer.util.databaseupdate.ScriptRunner;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -114,6 +117,8 @@ public class Authorizations {
     private static final Object LOCK = new Object();
     
     private static final String ROLES_ATTRIBUTE = Authorizations.class.getName() + ".roles";
+
+    private static final Log log = LogFactory.getLog(ScriptRunner.class);
     
     /**
      * The set of role names which mean nobody has access; a set which only contains
@@ -531,7 +536,7 @@ public class Authorizations {
             expire = formatter.parse(u.getDetails().getOrDefault("expiry_date",formatter.format(new Date())));
             today = formatter.parse(formatter.format(new Date()));
         } catch (ParseException e){
-
+            log.error("Error parsing expiry_date for user: " + u.getUsername(), e);
             return  true;
         }
         return today.after(expire);
