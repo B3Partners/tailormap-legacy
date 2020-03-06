@@ -30,6 +30,7 @@ Ext.define("viewer.components.Print", {
     legends:null,
     extraInfoCallbacks:null,
     extraLayerCallbacks:null,
+    attributesLayer: null,
     config:{
         name: i18next.t('viewer_components_print_0'),
         title: "",
@@ -225,7 +226,21 @@ Ext.define("viewer.components.Print", {
      */
     createForm: function(){
         var me = this;
+        var attributeLists = this.viewerController.getComponentsByClassName("viewer.components.AttributeList");
 
+        this.attributesLayer = Ext.create({
+            xtype: "combobox",
+            hidden: true,
+            queryMode: 'local',
+            displayField: 'alias',
+            fieldLabel: i18next.t('viewer_components_print_32'),
+            name:"attributesLayer",
+            valueField: 'id',
+            style: { marginRight: '5px' },
+            width: '100%',
+            store: Ext.create('Ext.data.ArrayStore', {fields: ['id', "alias"]})
+        });
+        this.retrieveAttributeListLayers();
         var pageFormats = [];
         this.config.useA5 && pageFormats.push(['a5','A5']);
         this.config.useA4 && pageFormats.push(['a4','A4']);
@@ -445,8 +460,16 @@ Ext.define("viewer.components.Print", {
                                 inputValue: true,
                                 checked: false,
                                 disabled: true,
-                                boxLabel: i18next.t('viewer_components_print_11')
-                            }, {
+                                boxLabel: i18next.t('viewer_components_print_11'),
+                                listeners: {
+                                    change: {
+                                        scope:this,
+                                        fn: function(obj,value){
+                                            this.attributesLayer.setVisible(value);
+                                        }
+                                    }
+                                }
+                            },this.attributesLayer, {
                                 name: 'scale',
                                 itemId: 'scale',
                                 fieldLabel: i18next.t('viewer_components_print_12'),
@@ -646,6 +669,33 @@ Ext.define("viewer.components.Print", {
                 id: 'formParams'
             }]
         });
+    },
+
+    retrieveAttributeListLayers: function(){
+        var attributeLists = this.viewerController.getComponentsByClassName("viewer.components.AttributeList");
+        if(attributeLists && attributeLists.length > 0) {
+            var al = attributeLists[0];
+            var me = this;
+            var requestParams = {};
+            requestParams["attribute"] = true;
+            requestParams["appId"] = FlamingoAppLoader.get('appId');
+            requestParams["layers"] = al.config.layers;
+
+            requestParams["hasConfiguredLayers"] = !!al.config.layers && al.config.layers.length > 0;
+            Ext.Ajax.request({
+                url: actionBeans["layerlist"],
+                params: requestParams,
+                scope: this,
+                success: function (result, request) {
+                    var layers = Ext.JSON.decode(result.responseText);
+                    var s = this.attributesLayer.getStore();
+                    s.loadData(layers);
+                },
+                failure: function (a, b, c) {
+                    Ext.MessageBox.alert(i18next.t('viewer_components_featurereport_1'), i18next.t('viewer_components_featurereport_2'));
+                }
+            });
+        }
     },
     /**
     * Call to redraw the preview
@@ -1050,10 +1100,10 @@ Ext.define("viewer.components.Print", {
             }
         }
         if(config.includeAttributes){
+            var selectedLayer = this.attributesLayer.getValue();
             var attributeLists = this.viewerController.getComponentsByClassName("viewer.components.AttributeList");
-            if(attributeLists.length > 0) {
-                var attributeList = attributeLists[0];
-                var appLayer = attributeList.layerSelector.getValue();
+            if(selectedLayer) {
+                var appLayer = this.config.viewerController.getAppLayerById(selectedLayer);
                 if (appLayer) {
                     var appLayerId = appLayer.id;
                     var filter = appLayer.filter ? appLayer.filter.getCQL() : null;
