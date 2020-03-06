@@ -155,32 +155,11 @@
                 <xsl:text>legenda</xsl:text>
         </fo:block>
         <xsl:call-template name="legend" />
-       
-        <!-- overzichtskaart
-        <xsl:call-template name="overview-block">
-                <xsl:with-param name="width" select="'112'" />
-                <xsl:with-param name="height" select="'80'" />
-                <xsl:with-param name="width" select="'112px'" />
-                <xsl:with-param name="height" select="'80px'" />
-        </xsl:call-template>
-        -->
+
     </xsl:template>
 
     <!-- kaartje -->
     <xsl:template name="map-block">
-                <xsl:variable name="local-scale">
-                    <xsl:call-template name="calc-local-scale">
-                        <xsl:with-param name="bbox" select="bbox" />
-                        <xsl:with-param name="scale" select="scale" />
-                        <xsl:with-param name="quality" select="quality" />
-                    </xsl:call-template>
-            </xsl:variable>
-        <xsl:variable name="bbox-corrected">
-            <xsl:call-template name="correct-bbox">
-                <xsl:with-param name="bbox" select="bbox" />
-                <xsl:with-param name="scale" select="$local-scale" />
-            </xsl:call-template>
-        </xsl:variable>
         <xsl:variable name="px-ratio" select="format-number($map-height-px div $map-width-px,'0.##','MyFormat')" />
         <xsl:variable name="map-width-px-corrected" select="quality"/>
         <xsl:variable name="map-height-px-corrected" select="format-number(quality * $px-ratio,'0','MyFormat')"/>
@@ -191,7 +170,7 @@
             <xsl:text>&amp;height=</xsl:text>
             <xsl:value-of select="$map-height-px-corrected"/>
             <xsl:text>&amp;bbox=</xsl:text>
-            <xsl:value-of select="$bbox-corrected"/>
+            <xsl:value-of select="bbox"/>
         </xsl:variable>
 
             <fo:block>
