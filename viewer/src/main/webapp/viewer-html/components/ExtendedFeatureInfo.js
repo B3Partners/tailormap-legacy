@@ -167,8 +167,18 @@ Ext.define ("viewer.components.ExtendedFeatureInfo",{
         var contentEl = new Ext.Element(document.createElement('div'));
         contentEl.append(components);
         var featureId = null;
-        if(data.features[0] && data.features[0].__fid) {
-            featureId = data.features[0].__fid;
+        if(data.features[0]) {
+            if( data.features[0].__fid){
+                featureId = data.features[0].__fid;
+            }else{
+                var attrs = data.features[0];
+                for(var i = 0 ; i< attrs.length; i++){
+                    if(attrs[i].__fid){
+                        featureId = attrs[i].__fid;
+                        break;
+                    }
+                }
+            }
         }
         var container = Ext.create('Ext.container.Container', {
             contentEl: contentEl,
