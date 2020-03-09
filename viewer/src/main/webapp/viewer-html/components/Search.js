@@ -238,6 +238,7 @@ Ext.define ("viewer.components.Search",{
                     layout: {
                         type:  'hbox'
                     },
+                    flex: 1,
                     hidden: this.getCurrentSearchType() !== "coordinate" ,
                     scrollable: false,
                     items: [
@@ -246,7 +247,8 @@ Ext.define ("viewer.components.Search",{
                           fieldLabel: "x",
                           name: 'xcoord',
                           value:"" ,
-                          labelWidth: 20
+                          labelWidth: 20,
+                          flex: 1
                        },
                    {
                                 xtype: 'textfield',
@@ -254,7 +256,8 @@ Ext.define ("viewer.components.Search",{
                           name: 'ycoord',
                           value:"" ,
                           padding: "0 0 0 5",
-                          labelWidth: 20
+                          labelWidth: 20,
+                            flex: 1
                        }]
                });
                
