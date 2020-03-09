@@ -54,7 +54,7 @@ Ext.define("viewer.components.Print", {
         useA5: false,
         details: {
             minWidth: 550,
-            minHeight: 650
+            minHeight: 680
         }
     },
     /**
@@ -235,9 +235,9 @@ Ext.define("viewer.components.Print", {
             displayField: 'alias',
             fieldLabel: i18next.t('viewer_components_print_32'),
             name:"attributesLayer",
+            matchFieldWidth: false,
             valueField: 'id',
             style: { marginRight: '5px' },
-            width: '100%',
             store: Ext.create('Ext.data.ArrayStore', {fields: ['id', "alias"]})
         });
         this.retrieveAttributeListLayers();
