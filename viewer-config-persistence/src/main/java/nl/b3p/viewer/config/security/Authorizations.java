@@ -529,6 +529,9 @@ public class Authorizations {
     }
 
     public static boolean isUserExpired(User u, ActionBeanContext context) {
+        if(u == null){
+            return false;
+        }
         Date today = null;
         Date expire = null;
         try {
