@@ -896,7 +896,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         var id = appLayer.id;
         var service = this.app.services[appLayer.serviceId];
         var layer = service.layers[appLayer.layerName];
-        if(layer === undefined){
+        if(layer === undefined || appLayer.removed){
             return null;
         }
         var options={
