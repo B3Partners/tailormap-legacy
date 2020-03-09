@@ -252,7 +252,7 @@ public class SimplifyFeatureActionBean extends LocalizableApplicationActionBean 
             // Dit kan alleen als er via een zoekopdracht een call wordt gedaan, dus checken of solrconfig is geconfigureerd voor deze applicatie
             Set<ConfiguredComponent> comps = application.getComponents();
             for (ConfiguredComponent comp : comps) {
-                if (comp.getClassName().equals("viewer.components.Search")) {
+                if (comp.getClassName().equals("viewer.components.Search") || comp.getClassName().equals("viewer.components.DirectSearch")) {
                     JSONObject config = new JSONObject(comp.getConfig());
                     JSONArray searchConfigs = config.getJSONArray("searchconfigs");
                     for (Iterator<Object> iterator = searchConfigs.iterator(); iterator.hasNext();) {
