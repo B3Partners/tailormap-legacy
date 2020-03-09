@@ -631,8 +631,7 @@ Ext.define("viewer.components.SearchConfiguration",{
                     appId: this.getApplicationId(),
                     layerlist:true
                 },
-                parentContainer: Ext.ComponentQuery.query('#requiredLayersOn')[0],
-                checked: (searchConfig && searchConfig.hasOwnProperty('requiredLayers')) ? searchConfig.requiredLayers : []
+                parentContainer: Ext.ComponentQuery.query('#requiredLayersOn')[0]
             });
             me.switchLayersOn = Ext.create('Ext.ux.b3p.FilterableCheckboxes', {
                 requestUrl: this.getContextpath() + "/action/componentConfigList",
@@ -661,7 +660,15 @@ Ext.define("viewer.components.SearchConfiguration",{
                 // If any layers are selected, enable checkbox
                 checkbox.checked = true;
             }
-            me.saveSolrconfig(searchconfigId, requiredOn, switchOn);
+            var config = me.getConfig(searchconfigId);
+            config.solrConfig [solrConfigId] = {
+                // Config id
+                'solrConfigid': solrConfigId,
+                // Layers that are required to be on
+                'requiredLayers': requiredOn,
+                // Layers that should be switched on
+                'switchOnLayers': switchOn
+            };
             me.layerSelectionWindow.hide();
         });
         me.requiredLayersOn.resetChecked(requiredLayersChecked);
@@ -683,7 +690,7 @@ Ext.define("viewer.components.SearchConfiguration",{
             // Empty config before creating new config
             Config = {};
             // For each of the checked solr configs we will create a config object
-           Ext.Array.each(checkedASConfigs, function(asConfigId) {
+            Ext.Array.each(checkedASConfigs, function(asConfigId) {
                 // Replace previous config object
                 Config[asConfigId] = {
                     // Config id
@@ -707,12 +714,12 @@ Ext.define("viewer.components.SearchConfiguration",{
         searchConfig.filter = filter;
     },
     // Save Solr configuration
-    saveSolrconfig: function(searchconfigId, requiredOn, switchOn) {
+    saveSolrconfig: function(searchconfigId) {
         var searchConfig = this.getConfig(searchconfigId);
         // Should not happen
         if(searchConfig === null) return;
         // Get old config or create new config object
-        var solrConfig = searchConfig.solrConfig || {};
+        var solrConfig =  {};
         // Check if the solrconfig FilterableCheckboxes object exists
         if(this.solrSearchconfigs.hasOwnProperty(searchconfigId)) {
             // Get the checked solr configs
@@ -723,19 +730,16 @@ Ext.define("viewer.components.SearchConfiguration",{
             }
             // For each of the checked solr configs we will create a config object
             Ext.Array.each(checkedSolrconfigs, function(solrConfigId) {
+                var checkSolrConfig = searchConfig.solrConfig[solrConfigId];
                 // Set required Layers
                 var requiredLayers = [];
-                if(typeof requiredOn !== "undefined") {
-                    requiredLayers = requiredOn;
-                } else if(solrConfig.hasOwnProperty(solrConfigId) && solrConfig[solrConfigId].requiredLayers) {
-                    requiredLayers = solrConfig[solrConfigId].requiredLayers;
+                if(checkSolrConfig && checkSolrConfig.requiredLayers) {
+                    requiredLayers = checkSolrConfig.requiredLayers;
                 }
                 // Set layers that sould be switched on
                 var switchOnLayers = [];
-                if(typeof switchOn !== "undefined") {
-                    switchOnLayers = switchOn;
-                } else if(solrConfig.hasOwnProperty(solrConfigId) && solrConfig[solrConfigId].switchOnLayers) {
-                    switchOnLayers = solrConfig[solrConfigId].switchOnLayers;
+                if(checkSolrConfig && checkSolrConfig.switchOnLayers) {
+                    switchOnLayers = checkSolrConfig.switchOnLayers;
                 }
                 // Replace previous config object
                 solrConfig[solrConfigId] = {
