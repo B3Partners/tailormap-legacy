@@ -162,23 +162,25 @@ Ext.define("viewer.components.DigitreeTree", {
     },
 
     createNew: function () {
+        this.stop();
         this.officialFeature = {};
         this.mode = "new";
         this.inputContainer.getForm().reset();
         this.config.viewerController.mapComponent.getMap().removeMarker("edit");
         this.vectorLayer.drawFeature("Point");
         this.toolMapClick.activateTool();
-
     },
 
     editTree: function () {
+        this.stop();
         this.mode = "edit";
-        console.log("Edit");
+        this.inputContainer.getForm().findField("boomid").setReadOnly(true);
         this.toolMapClick.activateTool();
     },
 
     save: function() {
-        this.getProjectForGeom(this.vectorLayer.getActiveFeature().config.wktgeom);
+        let me = this;
+        this.getProjectForGeom(this.vectorLayer.getActiveFeature().config.wktgeom, function (){me.saveTree()});
     },
 
     saveTree: function(project) {
@@ -200,7 +202,8 @@ Ext.define("viewer.components.DigitreeTree", {
                 saveTree: true,
                 applayerId: this.config.layers[0],
                 application: this.config.viewerController.app.id,
-                feature: Ext.JSON.encode(featureToSave)
+                feature: Ext.JSON.encode(featureToSave),
+                mode: this.mode
             },
             scope: this,
             timeout: 40000,
@@ -212,6 +215,11 @@ Ext.define("viewer.components.DigitreeTree", {
                     this.config.viewerController.mapComponent.getMap().moveTo(xy[0], xy[1]);
                     this.config.viewerController.mapComponent.getMap().setMarker("edit", xy[0], xy[1]);
                     this.inputContainer.getForm().setValues(response.newFeature);
+                    if(this.mode === "new"){
+                        this.vectorLayer.removeAllFeatures();
+                    }
+                } else if(response.boomidInUse){
+                    Ext.Msg.alert("Mislukt", "Boomid is al in gebruik");
                 } else {
                     Ext.Msg.alert("Mislukt", "Opslaan is niet gelukt");
                 }
@@ -241,12 +249,13 @@ Ext.define("viewer.components.DigitreeTree", {
                 const response = Ext.JSON.decode(text);
                 if(response.success) {
                     this.showSuccessToast("Boom is verwijderd", i18next.t('viewer_components_edit_40'));
-                    this.inputContainer.getForm().reset();
+                    this.stop;
                 } else {
                     Ext.Msg.alert("Mislukt", "Verwijderen is niet gelukt");
                 }
             },
             failure: function(result) {
+                Ext.Msg.alert("Mislukt", "Verwijderen is niet gelukt");
                 this.config.viewerController.logger.error(result);
             }
         });
@@ -260,8 +269,7 @@ Ext.define("viewer.components.DigitreeTree", {
         const coords = comp.coord;
         this.config.viewerController.mapComponent.getMap().setMarker("edit", coords.x, coords.y);
         if(this.mode === "new"){
-            const feature  = this.populateFormForNewTree();
-            this.featureReceived(feature);
+            this.createNewTree();
         } else {
             this.getFeaturesForCoord(coords);
         }
@@ -291,17 +299,37 @@ Ext.define("viewer.components.DigitreeTree", {
         });
     },
 
-    populateFormForNewTree: function() {
-      let feature = {};
-      feature.inspecteur = "test";
-      feature.mutatiedatum = "02-03-2020";
-      feature.mutatietijd = "17:11:23";
-      feature.project = "test";
-      feature.the_geom = this.vectorLayer.getActiveFeature().config.wktgeom;
-      return feature;
+    createNewTree: function() {
+      let me = this;
+      this.inputContainer.getForm().findField("boomid").setReadOnly(false);
+      let geom = this.vectorLayer.getActiveFeature().config.wktgeom;
+      this.vectorLayer.removeAllFeatures();
+      this.getProjectForGeom(geom, me.populateFieldsForNewTree);
     },
-    showAndFocusForm: function() {
 
+    populateFieldsForNewTree: function(feature){
+        Ext.Ajax.request({
+            url: "/viewer/action/digitree",
+            params: {
+                populateFieldsForNewTree: true,
+            },
+            scope: feature.scope,
+            timeout: 40000,
+            success: function(result) {
+                const text = result.responseText;
+                const response = Ext.JSON.decode(text);
+                feature = Ext.Object.merge(feature,response);
+                delete feature.scope;
+                this.featureReceived(feature);
+            },
+            failure: function(result) {
+                this.config.viewerController.logger.error(result);
+            }
+        });
+    },
+
+    showAndFocusForm: function() {
+        //do nothing override
     },
 
     featureReceived: function(feature) {
@@ -320,7 +348,9 @@ Ext.define("viewer.components.DigitreeTree", {
             wktgeom: wkt,
             id: "T_0"
         });
-        this.vectorLayer.addFeature(feat);
+
+            this.vectorLayer.addFeature(feat);
+
         this.inputContainer.getForm().setValues(feature);
 
     },
@@ -637,11 +667,6 @@ Ext.define("viewer.components.DigitreeTree", {
         }
     },
 
-    /*geen verhoogd + 3
-atten + 1
-tijdelijk + 1
-risico + 90 dagen */
-
     calculateNextInspectionDate: function(e) {
         const value = e.value;
         const date = new Date();
@@ -697,7 +722,7 @@ risico + 90 dagen */
         });
     },
 
-    getProjectForGeom: function(wkt) {
+    getProjectForGeom: function(wkt,callback) {
         Ext.Ajax.request({
             url: "/digitree-beheer/Api.action?getProject=true&point="+wkt,
             scope: this,
@@ -706,7 +731,7 @@ risico + 90 dagen */
                 if (text === "Boom valt buiten project gebied"){
                     Ext.Msg.alert(text);
                 } else {
-                    this.saveTree(text);
+                    callback({project: text, the_geom: wkt, scope:this});
                 }
             },
             failure: function(result) {
