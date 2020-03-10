@@ -63,6 +63,7 @@ export interface FormConfiguration {
   tabs: number;
   name: string;
   treeNodeColumn: string;
+  idInTreeNodeColumn?: boolean;
   newPossible: boolean;
   featureType: string;
   tabConfig: Map<number, string>;

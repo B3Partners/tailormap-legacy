@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
 import {FlatTreeControl} from '@angular/cdk/tree';
 import {MatTreeFlatDataSource, MatTreeFlattener} from '@angular/material/tree';
-import { Feature, FeatureAttribute, FormConfigurations} from '../../shared/wegvakken-models';
+import {Feature, FeatureAttribute, FormConfiguration, FormConfigurations} from '../../shared/wegvakken-models';
 import { WegvakkenTreeHelpers } from './wegvakken-tree-helpers';
 import { FlatNode, FeatureNode } from './wegvakken-tree-models';
 
@@ -72,7 +72,7 @@ export class WegvakkenTreeComponent implements OnInit,  OnChanges {
           }
         }
         nodes.push({
-            name: this.getFeatureValue(feature, this.formConfigs.config[feature.featureType].treeNodeColumn),
+            name: this.getNodeLabel(feature),
             children,
             id: feature.id,
             feature,
@@ -81,6 +81,17 @@ export class WegvakkenTreeComponent implements OnInit,  OnChanges {
           });
       });
       return nodes;
+  }
+
+  private getNodeLabel (feature:Feature) :string{
+    const config : FormConfiguration = this.formConfigs.config[feature.featureType];
+    let columnName = this.getFeatureValue(feature, config.treeNodeColumn);
+    if(config.idInTreeNodeColumn){
+      let id = feature.id;
+      id = id.substring(id.indexOf('.') +1);
+      columnName = (columnName ? columnName : config.name) + ' (id: ' + id + ')';
+    }
+    return columnName;
   }
 
   private getFeatureValue(feature: Feature, key: string): any {
