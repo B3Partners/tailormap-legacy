@@ -9,7 +9,11 @@
     [value]="!isBulk ? featureAttribute?.value : ''"
     />
 
-  <mat-select placeholder="{{lookup[attribute.key]}}" *ngIf="isSelectAttribute(attribute)" [value]="!isBulk ?  featureAttribute?.value : ''" >
+  <mat-select
+    placeholder="{{lookup[attribute.key]}}"
+    [formControlName]="attribute.key"
+    *ngIf="isSelectAttribute(attribute)"
+    [value]="!isBulk ?  featureAttribute?.value : ''" >
     <mat-option *ngFor="let opt of attribute.options" [value]="opt.val">{{opt.label}}</mat-option>
   </mat-select>
 

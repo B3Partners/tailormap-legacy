@@ -16,7 +16,7 @@
 
 .tree-node-wrapper--level-0.tree-node-wrapper--leaf,
 .tree-node-wrapper--leaf {
-  padding-left: 20px;
+  padding-left: 0;
 }
 
 .tree-node-wrapper--level-0 {
