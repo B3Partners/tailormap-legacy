@@ -272,6 +272,9 @@ Ext.define("viewer.components.sf.Reset", {
             }
         });
     },
+    updateLayout: function() {
+        Ext.getCmp("reset" + this.config.name).updateLayout();
+    },
     reset : function(){
         var filters = this.config.simpleFilter.simpleFilters;
         for (var i = 0 ; i < filters.length ; i++ ){
@@ -290,7 +293,8 @@ Ext.define("viewer.components.sf.Textlabel", {
         new Ext.Template(t).append(this.config.container, {
             label: config.filterConfig.textlabel
         });
-    }
+    },
+    updateLayout: function() {}
 });
 
 Ext.define("viewer.components.sf.Checkbox", {
@@ -317,6 +321,9 @@ Ext.define("viewer.components.sf.Checkbox", {
 
         this.createCheckboxes();
 
+    },
+    updateLayout: function() {
+        Ext.getCmp("checkboxcontainer" + this.config.name).updateLayout();
     },
     createCheckboxes : function(){
         var items = [];
@@ -401,7 +408,6 @@ Ext.define("viewer.components.sf.Radio", {
     extend: "viewer.components.sf.Checkbox",
     constructor : function(config){
         viewer.components.sf.Radio.superclass.constructor.call(this, config);
-
     },
     createElement : function (option){
         var item = {
@@ -505,7 +511,9 @@ Ext.define("viewer.components.sf.Combo", {
             this.applyFilter();
         }
     },
-
+    updateLayout: function() {
+        this.combo.updateLayout();
+    },
     createCombo: function () {
         var filterChangeDelay = 500;
         var data= this.getData();
@@ -653,6 +661,9 @@ Ext.define("viewer.components.sf.Number", {
         });
         this.numberField = this.createElement();
     },
+    updateLayout: function() {
+        this.numberField.updateLayout();
+    },
     createElement : function () {
         var filterChangeDelay = 500;
         return Ext.create("Ext.form.field.Number", {
@@ -728,6 +739,9 @@ Ext.define("viewer.components.sf.Text", {
             name: this.config.name
         });
         this.textField = this.createElement();
+    },
+    updateLayout: function() {
+        this.textField.updateLayout();
     },
     createElement : function () {
         var filterChangeDelay = 500;
@@ -843,7 +857,11 @@ Ext.define("viewer.components.sf.Slider", {
         this.startValues = [];
         this.initCalculatedValues();
     },
-    
+    updateLayout: function() {
+        if (this.slider) {
+            this.slider.updateLayout();
+        }
+    },
     initCalculatedValues: function(filter){
         var c = this.config.filterConfig;
         this.createSlider();
@@ -1082,6 +1100,10 @@ Ext.define("viewer.components.sf.Numberrange", {
         this.minField = this.createElement("Min");
         this.maxField = this.createElement("Max");
     },
+    updateLayout: function() {
+        this.minField.updateLayout();
+        this.maxField.updateLayout();
+    },
     setDefaultValues: function() {
         if(!this.config.filterConfig.start) {
             this.config.filterConfig.start = "";
@@ -1163,6 +1185,7 @@ Ext.define("viewer.components.sf.Date", {
     extend: "viewer.components.sf.SimpleFilter",
     from:null,
     to:null,
+    formPanel: null,
     config: {
         name: "",
         label: "",
@@ -1187,6 +1210,17 @@ Ext.define("viewer.components.sf.Date", {
         });
 
         this.createDates();
+    },
+    updateLayout: function(maxWidth) {
+        if (this.formPanel) {
+            this.formPanel.updateLayout();
+        }
+        if (this.from) {
+            this.from.updateLayout();
+        }
+        if (this.to) {
+            this.to.updateLayout();
+        }
     },
     createDates : function() {
         var pickers = [];
@@ -1245,11 +1279,12 @@ Ext.define("viewer.components.sf.Date", {
             });
             pickers.push(this.to);
         }
-        Ext.create('Ext.form.Panel', {
+        this.formPanel = Ext.create('Ext.form.Panel', {
             renderTo:  this.config.name + "_datefrom",/// Ext.getBody(),
-            width: "100%",
-            bodyPadding: 10,
-            items: pickers
+            items: pickers,
+            bodyStyle: {
+                background: 'transparent'
+            }
         });
     },
     applyFilter : function(){
