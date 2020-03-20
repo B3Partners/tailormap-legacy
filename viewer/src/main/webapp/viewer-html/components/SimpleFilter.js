@@ -133,6 +133,18 @@ Ext.define("viewer.components.SimpleFilter", {
 
     getExtComponents: function() {
         return [ this.container.getId() ];
+    },
+
+    resizeScreenComponent: function() {
+        viewer.components.SimpleFilter.superclass.resizeScreenComponent.call(this);
+        window.setTimeout((function() {
+            for (var i = 0; i < this.allFilters.length; i++) {
+                console.log(this.allFilters[i].filter, this.allFilters[i].filter.updateLayout);
+                if (this.allFilters[i].filter.updateLayout) {
+                    this.allFilters[i].filter.updateLayout();
+                }
+            }
+        }).bind(this), 0);
     }
 });
 
