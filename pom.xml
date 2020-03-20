@@ -350,7 +350,7 @@
                 <!-- override the version provided by hibernate -->
                 <groupId>org.javassist</groupId>
                 <artifactId>javassist</artifactId>
-                <version>3.24.1-GA</version>
+                <version>3.27.0-GA</version>
             </dependency>
             <dependency>
                 <groupId>org.hibernate</groupId>
@@ -364,7 +364,7 @@
                 <exclusions>
                     <exclusion>
                         <!--
-                        exclude old javassist so we can use 3.22.0-CR2, see issue #745
+                        exclude old javassist so we can use 3.27.0-CR2, see issue #745
                         when upgrading hibernate this should be removed
                         -->
                         <groupId>javassist</groupId>
