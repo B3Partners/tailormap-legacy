@@ -139,7 +139,6 @@ Ext.define("viewer.components.SimpleFilter", {
         viewer.components.SimpleFilter.superclass.resizeScreenComponent.call(this);
         window.setTimeout((function() {
             for (var i = 0; i < this.allFilters.length; i++) {
-                console.log(this.allFilters[i].filter, this.allFilters[i].filter.updateLayout);
                 if (this.allFilters[i].filter.updateLayout) {
                     this.allFilters[i].filter.updateLayout();
                 }
