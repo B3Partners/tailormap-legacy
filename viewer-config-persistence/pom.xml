@@ -22,11 +22,10 @@
                 <configuration>
                     <dialects>
                         <param>postgresql</param>
-                        <param>ORACLE10G</param>
-                        <!--param>hsql</param>
-                        <param>sqlserver2012</param-->
+                        <param>ORACLE12c</param>
+                        <param>hsql</param>
+                        <param>sqlserver2012</param>
                     </dialects>
-                    <!--outputDirectory>${project.build.outputDirectory}/db</outputDirectory-->
                     <outputDirectory>${project.build.outputDirectory}/scripts</outputDirectory>
                     <outputFileNameSuffix>-schema-export</outputFileNameSuffix>
                     <persistencePropertiesToUse>
@@ -52,6 +51,40 @@
                     </execution>
                 </executions>
             </plugin>
+            <!--plugin>
+                <groupId>de.jpdigital</groupId>
+                <artifactId>hibernate54-ddl-maven-plugin</artifactId>
+                <version>2.3.0</version>
+                <configuration>
+                    <dialects>
+                        <param>hsql</param>
+                    </dialects>
+                    <outputDirectory>${project.build.outputDirectory}/scripts</outputDirectory>
+                    <outputFileNameSuffix>-schema-export</outputFileNameSuffix>
+                    <persistencePropertiesToUse>
+                        <param>format_sql</param>
+                        <param>use_sql_comments</param>
+                        <param>hibernate.physical_naming_strategy</param>
+                        <param>mapping-file</param>
+                    </persistencePropertiesToUse>
+                    <packages>
+                        <param>nl.b3p.viewer.config.app</param>
+                        <param>nl.b3p.viewer.config.metadata</param>
+                        <param>nl.b3p.viewer.config.security</param>
+                        <param>nl.b3p.viewer.config.services</param>
+                    </packages>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>schema-export</id>
+                        <goals>
+                            <goal>gen-ddl</goal>
+                        </goals>
+                        <phase>process-test-resources</phase>
+                    </execution>
+                </executions>
+            </plugin-->
+
             <!--plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>hibernate3-maven-plugin</artifactId>

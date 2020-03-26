@@ -66,7 +66,11 @@ public class ApplicationLayer {
     private Map<String,ClobElement> details = new HashMap<>();
 
     @ManyToMany(cascade=CascadeType.ALL) // Actually @OneToMany, workaround for HHH-1268    
-    @JoinTable(inverseJoinColumns=@JoinColumn(name="attribute_"))
+    @JoinTable(
+            name="application_layer_attributes",
+            inverseJoinColumns=@JoinColumn(name="attribute_"),
+            joinColumns=@JoinColumn(name = "application_layer", referencedColumnName = "id")
+    )
     @OrderColumn(name="list_index")
     private List<ConfiguredAttribute> attributes = new ArrayList<>();
 

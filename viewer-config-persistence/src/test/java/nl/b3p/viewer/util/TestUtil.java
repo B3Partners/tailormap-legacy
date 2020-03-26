@@ -145,6 +145,8 @@ public abstract class TestUtil extends LoggingTestUtil {
 
         Application app = entityManager.find(Application.class, applicationId);
         if( app == null) {
+            int a = 0;
+            Reader schemaExport = new InputStreamReader(TestUtil.class.getResourceAsStream("hsql-schema-export.sql"));
             Reader f = new InputStreamReader(TestUtil.class.getResourceAsStream("testdata.sql"));
             executeScript(f);
         }

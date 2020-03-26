@@ -58,9 +58,13 @@ public class SimpleFeatureType {
     
     @OneToMany (cascade=CascadeType.ALL, mappedBy="featureType")
     private List<FeatureTypeRelation> relations = new ArrayList<FeatureTypeRelation>();
-    
+
     @ManyToMany(cascade=CascadeType.ALL) // Actually @OneToMany, workaround for HHH-1268 
-    @JoinTable(inverseJoinColumns=@JoinColumn(name="attribute_descriptor"))
+    @JoinTable(
+            inverseJoinColumns=@JoinColumn(name="attribute_descriptor"),
+            name="feature_type_attributes",
+            joinColumns=@JoinColumn(name = "feature_type", referencedColumnName = "id")
+    )
     @OrderColumn(name="list_index")
     private List<AttributeDescriptor> attributes = new ArrayList<AttributeDescriptor>();
     

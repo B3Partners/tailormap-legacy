@@ -39,7 +39,6 @@ public class User implements Principal{
     private static final String DIGEST_CHARSET = "UTF-8";
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String username;
 
     private String password;

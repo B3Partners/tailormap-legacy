@@ -161,7 +161,11 @@ public class Layer implements Cloneable, Serializable {
     public Set<String> preventGeomEditors = new HashSet<>();
 
     @ManyToMany(cascade=CascadeType.PERSIST) // Actually @OneToMany, workaround for HHH-1268
-    @JoinTable(inverseJoinColumns=@JoinColumn(name="child", unique=true))
+    @JoinTable(
+            name = "layer_children",
+            inverseJoinColumns=@JoinColumn(name="child", unique=true),
+            joinColumns=@JoinColumn(name = "layer", referencedColumnName = "id")
+    )
     @OrderColumn(name="list_index")
     private List<Layer> children = new ArrayList<>();
 
@@ -170,9 +174,12 @@ public class Layer implements Cloneable, Serializable {
     // Element wrapper required because of http://opensource.atlassian.com/projects/hibernate/browse/JPA-11
     private Map<String,ClobElement> details = new HashMap<>();
 
-    
     @ManyToMany(cascade=CascadeType.PERSIST) // Actually @OneToMany, workaround for HHH-1268
-    @JoinTable(inverseJoinColumns=@JoinColumn(name="matrix_set"))
+    @JoinTable(
+            name ="layer_matrix_sets",
+            joinColumns=@JoinColumn(name = "layer", referencedColumnName = "id"),
+            inverseJoinColumns=@JoinColumn(name="matrix_set")
+    )
     @OrderColumn(name="list_index")
     private List<TileMatrixSet> matrixSets = new ArrayList<>();
     
