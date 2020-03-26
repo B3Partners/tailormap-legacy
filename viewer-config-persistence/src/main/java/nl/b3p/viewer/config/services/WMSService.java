@@ -95,6 +95,7 @@ public class WMSService extends GeoService implements Updatable {
      * Additional persistent property for this subclass to remember wether to
      * search for and join WFS attribute sources, so type must be nullable.
      */
+    @Column(name="skip_discoverwfs")
     private Boolean skipDiscoverWFS;
     
     @Enumerated(EnumType.STRING)

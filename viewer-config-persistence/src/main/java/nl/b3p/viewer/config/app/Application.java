@@ -142,7 +142,7 @@ public class Application implements Comparable<Application>{
     private boolean authenticatedRequired;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    //@JoinColumn(name = "root_")
+    @JoinColumn(name = "root")
     private Level root;
 
     @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "application")

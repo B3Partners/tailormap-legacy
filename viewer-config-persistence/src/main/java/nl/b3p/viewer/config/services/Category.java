@@ -53,12 +53,20 @@ public class Category {
     private Category parent;
 
     @ManyToMany // Actually @OneToMany, workaround for HHH-1268
-    @JoinTable(inverseJoinColumns=@JoinColumn(name="child"))
+    @JoinTable(
+            name="category_children",
+            inverseJoinColumns=@JoinColumn(name="child"),
+            joinColumns=@JoinColumn(name = "category", referencedColumnName = "id")
+    )
     @OrderColumn(name="list_index")
     private List<Category> children = new ArrayList<Category>();
 
     @ManyToMany // Actually @OneToMany, workaround for HHH-1268
-    @JoinTable(inverseJoinColumns=@JoinColumn(name="service"))
+    @JoinTable(
+            name="category_services",
+            inverseJoinColumns=@JoinColumn(name="service"),
+            joinColumns=@JoinColumn(name = "category", referencedColumnName = "id")
+    )
     @OrderColumn(name="list_index")
     private List<GeoService> services = new ArrayList<GeoService>();
 
