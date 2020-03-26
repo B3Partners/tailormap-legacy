@@ -27,6 +27,7 @@ import javax.persistence.*;
 public class TileSet {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String name;
 
     private int width;

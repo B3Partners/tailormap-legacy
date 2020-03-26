@@ -28,6 +28,7 @@ import javax.persistence.*;
 @Entity
 public class LayarService {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
     @Basic(optional=false)

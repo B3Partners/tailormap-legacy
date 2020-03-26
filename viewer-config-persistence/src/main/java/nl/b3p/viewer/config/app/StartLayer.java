@@ -16,9 +16,8 @@
  */
 package nl.b3p.viewer.config.app;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
+
 import org.apache.commons.beanutils.BeanUtils;
 
 /**
@@ -29,12 +28,15 @@ import org.apache.commons.beanutils.BeanUtils;
 public class StartLayer {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
     @ManyToOne
+    @JoinColumn(name = "application")
     private Application application;
     
     @ManyToOne
+    @JoinColumn(name = "application_layer")
     private ApplicationLayer applicationLayer;
     
     private Integer selectedIndex;

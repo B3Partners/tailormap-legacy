@@ -40,6 +40,7 @@ import org.stripesstuff.stripersist.Stripersist;
 public abstract class FeatureSource {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Basic(optional=false)
@@ -56,6 +57,7 @@ public abstract class FeatureSource {
      * enable updating of both at the same time
      */
     @ManyToOne
+    @JoinColumn(name = "linked_service")
     private GeoService linkedService;
     
     @ManyToMany(cascade=CascadeType.ALL) // Actually @OneToMany, workaround for HHH-1268

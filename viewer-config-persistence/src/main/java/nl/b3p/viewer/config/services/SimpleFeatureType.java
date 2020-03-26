@@ -41,9 +41,11 @@ public class SimpleFeatureType {
     public static final int MAX_FEATURES_UNBOUNDED = -1;
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(cascade=CascadeType.PERSIST)
+    @JoinColumn(name = "feature_source")
     private FeatureSource featureSource;    
     
     private String typeName;

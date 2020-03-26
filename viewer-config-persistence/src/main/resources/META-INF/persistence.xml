@@ -2,13 +2,12 @@
 <persistence version="2.0" xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
 
     <persistence-unit name="viewer-config-oracle" transaction-type="RESOURCE_LOCAL">
-        <provider>org.hibernate.ejb.HibernatePersistence</provider>
         <non-jta-data-source>java:comp/env/jdbc/geo_viewer</non-jta-data-source>
         <mapping-file>META-INF/orm-oracle.xml</mapping-file>
         <class>nl.b3p.viewer.config.services.GeoService</class>
         <class>nl.b3p.viewer.config.services.Category</class>
         <properties>
-            <property name="hibernate.dialect" value="org.hibernate.dialect.Oracle10gDialect"/>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.Oracle12gDialect"/>
 
             <!-- Oracle JDBC driver does not work with
             PreparedStatement.setBlob() of PreparedStatement.setClob()
@@ -23,8 +22,7 @@
                  http://postgresql.1045698.n5.nabble.com/Problems-with-Hibernate-Discriminators-and-9-0-801-jdbc4-td4259788.html
             -->
             <property name="hibernate.jdbc.use_get_generated_keys" value="false"/>
-
-            <property name="hibernate.ejb.naming_strategy" value="org.hibernate.cfg.ImprovedNamingStrategy"/>
+            <property name="hibernate.physical_naming_strategy" value="nl.b3p.viewer.util.SnakeCasePhysicalNamingStrategy" />
             <property name="hibernate.cache.provider_class" value="org.hibernate.cache.NoCacheProvider"/>
             <!-- mitigation for CVE-2020-25638 -->
             <property name="hibernate.use_sql_comments" value="false"/>
@@ -32,7 +30,6 @@
     </persistence-unit>
 
     <persistence-unit name="viewer-config-postgresql" transaction-type="RESOURCE_LOCAL">
-        <provider>org.hibernate.ejb.HibernatePersistence</provider>
         <non-jta-data-source>java:comp/env/jdbc/geo_viewer</non-jta-data-source>
         <mapping-file>META-INF/orm-postgresql.xml</mapping-file>
         <class>nl.b3p.viewer.config.services.GeoService</class>
@@ -47,8 +44,8 @@
                  http://postgresql.1045698.n5.nabble.com/Problems-with-Hibernate-Discriminators-and-9-0-801-jdbc4-td4259788.html
             -->
             <property name="hibernate.jdbc.use_get_generated_keys" value="false"/>
+            <property name="hibernate.physical_naming_strategy" value="nl.b3p.viewer.util.SnakeCasePhysicalNamingStrategy" />
 
-            <property name="hibernate.ejb.naming_strategy" value="org.hibernate.cfg.ImprovedNamingStrategy"/>
             <property name="hibernate.cache.provider_class" value="org.hibernate.cache.NoCacheProvider"/>
             <!-- mitigation for CVE-2020-25638 -->
             <property name="hibernate.use_sql_comments" value="false"/>
@@ -56,7 +53,6 @@
     </persistence-unit>
 
     <persistence-unit name="viewer-config-microsoft_sql_server" transaction-type="RESOURCE_LOCAL">
-        <provider>org.hibernate.ejb.HibernatePersistence</provider>
         <non-jta-data-source>java:comp/env/jdbc/geo_viewer</non-jta-data-source>
         <mapping-file>META-INF/orm-microsoft_sql_server.xml</mapping-file>
         <class>nl.b3p.viewer.config.services.GeoService</class>
@@ -72,7 +68,7 @@
             -->
             <property name="hibernate.jdbc.use_get_generated_keys" value="false"/>
 
-            <property name="hibernate.ejb.naming_strategy" value="org.hibernate.cfg.ImprovedNamingStrategy"/>
+            <property name="hibernate.physical_naming_strategy" value="nl.b3p.viewer.util.SnakeCasePhysicalNamingStrategy" />
             <property name="hibernate.cache.provider_class" value="org.hibernate.cache.NoCacheProvider"/>
             <!-- mitigation for CVE-2020-25638 -->
             <property name="hibernate.use_sql_comments" value="false"/>
@@ -81,13 +77,12 @@
 
      <persistence-unit name="viewer-config-hsqldb" transaction-type="RESOURCE_LOCAL">
         <!-- de hsqldb in-memory of file database wordt gebruikt voor unit tests. -->
-        <provider>org.hibernate.ejb.HibernatePersistence</provider>
         <mapping-file>META-INF/orm-hsqldb.xml</mapping-file>
         <properties>
             <property name="hibernate.archive.autodetection" value="class"/>
             <property name="hibernate.format_sql" value="true"/>
             <property name="hibernate.hbm2ddl.auto" value="update"/>
-            <property name="hibernate.ejb.naming_strategy" value="org.hibernate.cfg.ImprovedNamingStrategy"/>
+            <property name="hibernate.physical_naming_strategy" value="nl.b3p.viewer.util.SnakeCasePhysicalNamingStrategy" />
             <property name="hibernate.cache.provider_class" value="org.hibernate.cache.NoCacheProvider"/>
             <property name="javax.persistence.jdbc.driver" value="org.hsqldb.jdbcDriver"/>
             <property name="javax.persistence.jdbc.url" value="jdbc:hsqldb:file:./target/unittest-hsqldb/db;shutdown=true"/>

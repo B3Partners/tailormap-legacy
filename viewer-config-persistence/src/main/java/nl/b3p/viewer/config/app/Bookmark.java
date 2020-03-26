@@ -20,6 +20,7 @@ import java.util.Date;
 import javax.persistence.*;
 import net.sourceforge.stripes.action.ActionBeanContext;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
 
 /**
  *
@@ -34,13 +35,14 @@ import org.hibernate.annotations.GenericGenerator;
 public class Bookmark {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
     private String code;
     
     @Lob
     @Basic(optional=false)
-    @org.hibernate.annotations.Type(type="org.hibernate.type.StringClobType")
+    @Type(type = "org.hibernate.type.TextType")
     private String params;
     
     @Temporal(TemporalType.TIMESTAMP)
@@ -49,6 +51,7 @@ public class Bookmark {
     private String createdBy;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "application")
     private Application application;
 
     //<editor-fold defaultstate="collapsed" desc="getters & setters">

@@ -61,12 +61,14 @@ public abstract class GeoService implements Serializable {
     public static final String PARAM_PASSWORD = "password";
     
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Basic(optional=false)
     private String name;
 
     @ManyToOne(fetch=FetchType.LAZY)
+    @JoinColumn(name = "category")
     private Category category;
 
     @Basic(optional=false)

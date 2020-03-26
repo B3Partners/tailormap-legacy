@@ -27,6 +27,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.geotools.ows.wms.CRSEnvelope;
 import org.geotools.ows.wms.StyleImpl;
+import org.hibernate.annotations.Type;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -90,12 +91,15 @@ public class Layer implements Cloneable, Serializable {
     }));
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch=FetchType.LAZY)
+    @JoinColumn(name = "service")
     private GeoService service;
 
     @ManyToOne(fetch=FetchType.LAZY)
+    @JoinColumn(name = "parent")
     private Layer parent;
 
     private String name;
@@ -108,7 +112,7 @@ public class Layer implements Cloneable, Serializable {
     private String titleAlias;
 
     @Lob
-    @org.hibernate.annotations.Type(type="org.hibernate.type.StringClobType")
+    @Type(type = "org.hibernate.type.TextType")
     private String legendImageUrl;
 
     private Double minScale;
@@ -121,6 +125,7 @@ public class Layer implements Cloneable, Serializable {
     private Map<CoordinateReferenceSystem,BoundingBox> boundingBoxes = new HashMap<>();
 
     @ManyToOne(fetch=FetchType.LAZY)
+    @JoinColumn(name = "tileset")
     private TileSet tileset;
 
     /**
@@ -136,6 +141,7 @@ public class Layer implements Cloneable, Serializable {
     private Boolean userlayer = false;
 
     @ManyToOne(fetch=FetchType.LAZY, cascade={CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinColumn(name = "feature_type")
     private SimpleFeatureType featureType;
 
     @ElementCollection

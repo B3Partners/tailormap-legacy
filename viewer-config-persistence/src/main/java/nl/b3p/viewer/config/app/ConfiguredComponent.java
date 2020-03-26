@@ -19,6 +19,7 @@ package nl.b3p.viewer.config.app;
 import nl.b3p.viewer.components.ComponentRegistry;
 import nl.b3p.viewer.components.ViewerComponent;
 import org.apache.commons.beanutils.BeanUtils;
+import org.hibernate.annotations.Type;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -41,13 +42,14 @@ public class ConfiguredComponent implements Comparable<ConfiguredComponent> {
     public static final String ADMIN_ONLY = "adminOnly";
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Basic(optional=false)
     private String name;
 
     @Lob
-    @org.hibernate.annotations.Type(type="org.hibernate.type.StringClobType")
+    @Type(type = "org.hibernate.type.TextType")
     private String config;
 
     @Basic(optional=false)
@@ -57,6 +59,7 @@ public class ConfiguredComponent implements Comparable<ConfiguredComponent> {
     private Map<String,String> details = new HashMap<>();
 
     @ManyToOne(optional=false)
+    @JoinColumn(name = "application")
     private Application application;
 
     @ElementCollection
@@ -64,6 +67,7 @@ public class ConfiguredComponent implements Comparable<ConfiguredComponent> {
     private Set<String> readers = new HashSet<>();
 
     @ManyToOne
+    @JoinColumn(name = "mother_component")
     private ConfiguredComponent motherComponent;
 
     @OneToMany(mappedBy = "motherComponent")

@@ -16,11 +16,8 @@
  */
 package nl.b3p.viewer.config.services;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -32,6 +29,7 @@ import org.json.JSONObject;
 public class TileMatrix {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String identifier;
     private String title;
@@ -44,6 +42,7 @@ public class TileMatrix {
     private int matrixHeight;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "matrix_set")
     private TileMatrixSet matrixSet;
 
     public static TileMatrix fromJSONObject(JSONObject tilematrix){

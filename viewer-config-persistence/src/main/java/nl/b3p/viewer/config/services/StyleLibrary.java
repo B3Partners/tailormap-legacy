@@ -16,13 +16,11 @@
  */
 package nl.b3p.viewer.config.services;
 
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Lob;
+import javax.persistence.*;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+
+import org.hibernate.annotations.Type;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.w3c.dom.Node;
@@ -38,6 +36,7 @@ import org.xml.sax.InputSource;
 @Entity
 public class StyleLibrary {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;    
     
     /**
@@ -52,7 +51,7 @@ public class StyleLibrary {
     private String externalUrl;
     
     @Lob
-    @org.hibernate.annotations.Type(type="org.hibernate.type.StringClobType")    
+    @Type(type = "org.hibernate.type.TextType")
     private String sldBody;
     
     /**
@@ -65,7 +64,7 @@ public class StyleLibrary {
      * ApplicationLayer.
      */
     @Lob
-    @org.hibernate.annotations.Type(type="org.hibernate.type.StringClobType")    
+    @Type(type = "org.hibernate.type.TextType")
     private String namedLayerUserStylesJson;
     
     /**

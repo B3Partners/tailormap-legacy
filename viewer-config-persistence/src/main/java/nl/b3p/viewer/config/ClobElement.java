@@ -19,6 +19,7 @@ package nl.b3p.viewer.config;
 import javax.persistence.Embeddable;
 import javax.persistence.Lob;
 import org.apache.commons.lang3.StringUtils;
+import org.hibernate.annotations.Type;
 
 /**
  *
@@ -27,7 +28,7 @@ import org.apache.commons.lang3.StringUtils;
 @Embeddable
 public class ClobElement {
     @Lob
-    @org.hibernate.annotations.Type(type="org.hibernate.type.StringClobType")
+    @Type(type = "org.hibernate.type.TextType")
     private String value;
 
     public ClobElement() {

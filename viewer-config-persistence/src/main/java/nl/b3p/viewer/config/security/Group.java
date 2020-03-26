@@ -16,6 +16,8 @@
  */
 package nl.b3p.viewer.config.security;
 
+import org.hibernate.annotations.Type;
+
 import javax.persistence.*;
 import java.util.*;
 
@@ -42,10 +44,11 @@ public class Group {
             SERVICE_ADMIN));
     
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String name;
 
     @Lob
-    @org.hibernate.annotations.Type(type="org.hibernate.type.StringClobType")
+    @Type(type = "org.hibernate.type.TextType")
     private String description;
 
     @ManyToMany(mappedBy="groups")

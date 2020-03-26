@@ -28,12 +28,15 @@ import nl.b3p.viewer.config.ClobElement;
 @Entity
 public class LayarSource {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
     @ManyToOne
+    @JoinColumn(name = "layar_service")
     private LayarService layarService;
     
     @ManyToOne
+    @JoinColumn(name = "feature_type")
     private SimpleFeatureType featureType;
     
     @ElementCollection

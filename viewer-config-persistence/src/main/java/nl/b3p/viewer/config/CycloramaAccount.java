@@ -16,9 +16,9 @@
  */
 package nl.b3p.viewer.config;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Lob;
+import javax.persistence.*;
+
+import org.hibernate.annotations.Type;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -31,13 +31,14 @@ public class CycloramaAccount {
 
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String username;
     private String password;
     private String filename;
     @Lob
-    @org.hibernate.annotations.Type(type="org.hibernate.type.StringClobType")
+    @Type(type = "org.hibernate.type.TextType")
     private String privateBase64Key;
 
     public Long getId() {

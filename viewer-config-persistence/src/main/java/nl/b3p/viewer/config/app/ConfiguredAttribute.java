@@ -20,6 +20,7 @@ import javax.persistence.*;
 import nl.b3p.viewer.config.services.FeatureSource;
 import nl.b3p.viewer.config.services.SimpleFeatureType;
 import org.apache.commons.beanutils.BeanUtils;
+import org.hibernate.annotations.Type;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -31,6 +32,7 @@ import org.json.JSONObject;
 @Entity
 public class ConfiguredAttribute {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     /**
@@ -41,6 +43,7 @@ public class ConfiguredAttribute {
      * link with feature type
      */
     @ManyToOne
+    @JoinColumn(name = "feature_type")
     private SimpleFeatureType featureType;
     
     private boolean visible;
@@ -55,15 +58,17 @@ public class ConfiguredAttribute {
      * JSON array
      */
     @Lob
-    @org.hibernate.annotations.Type(type="org.hibernate.type.StringClobType")
+    @Type(type = "org.hibernate.type.TextType")
     private String editValues;
 
     private String defaultValue;
 
     @ManyToOne
+    @JoinColumn(name = "value_list_feature_source")
     private FeatureSource valueListFeatureSource;
 
     @ManyToOne
+    @JoinColumn(name = "value_list_feature_type")
     private SimpleFeatureType valueListFeatureType;
 
     private String valueListLabelName;

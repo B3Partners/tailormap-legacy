@@ -18,11 +18,8 @@ package nl.b3p.viewer.config.services;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -37,11 +34,14 @@ public class FeatureTypeRelation {
     public static final String RELATE = "relate";
     
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne    
+    @ManyToOne
+    @JoinColumn(name = "feature_type")
     private SimpleFeatureType featureType;
     
     @ManyToOne
+    @JoinColumn(name = "foreign_feature_type")
     private SimpleFeatureType foreignFeatureType;
         
     @OneToMany(cascade=CascadeType.ALL, mappedBy="relation", orphanRemoval=true)

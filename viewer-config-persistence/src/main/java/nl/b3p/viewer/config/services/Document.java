@@ -16,9 +16,8 @@
  */
 package nl.b3p.viewer.config.services;
 
-import javax.persistence.Basic;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -29,6 +28,7 @@ import org.json.JSONObject;
 @Entity
 public class Document {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
     @Basic(optional=false)

@@ -42,12 +42,14 @@ public class Category {
     private static final Long ROOT_CATEGORY_ID = 0L;
     
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Basic(optional=false)
     private String name;
 
     @ManyToOne
+    @JoinColumn(name = "parent")
     private Category parent;
 
     @ManyToMany // Actually @OneToMany, workaround for HHH-1268

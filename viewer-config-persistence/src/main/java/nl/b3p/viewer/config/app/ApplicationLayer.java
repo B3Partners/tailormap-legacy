@@ -36,9 +36,11 @@ import org.json.JSONObject;
 @Entity
 public class ApplicationLayer {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
+    @JoinColumn(name = "service")
     private GeoService service;
 
     /**

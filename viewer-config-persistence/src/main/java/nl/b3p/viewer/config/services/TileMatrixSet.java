@@ -18,16 +18,8 @@ package nl.b3p.viewer.config.services;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.AttributeOverride;
-import javax.persistence.AttributeOverrides;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -38,6 +30,7 @@ import org.json.JSONObject;
 @Entity
 public class TileMatrixSet {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String identifier;
@@ -48,6 +41,7 @@ public class TileMatrixSet {
     private List<TileMatrix> matrices = new ArrayList<>();
     
     @ManyToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+    @JoinColumn(name = "tile_service")
     private TileService tileService;
     
     

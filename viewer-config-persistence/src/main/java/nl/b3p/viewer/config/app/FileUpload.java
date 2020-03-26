@@ -30,11 +30,13 @@ import java.util.Date;
 public class FileUpload {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String location;
 
     @ManyToOne
+    @JoinColumn(name = "sft")
     private SimpleFeatureType sft;
 
     private String fid;
