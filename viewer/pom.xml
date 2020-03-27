@@ -547,6 +547,7 @@
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>properties-maven-plugin</artifactId>
+                        <version>${properties-maven-plugin.version}</version>
                         <executions>
                             <execution>
                                 <phase>initialize</phase>
@@ -563,6 +564,7 @@
                     </plugin>
                     <plugin>
                         <artifactId>maven-failsafe-plugin</artifactId>
+                        <version>${maven-surefire-plugin.version}</version>
                         <configuration>
                             <includes>
                                 <include>**/*IntegrationTest.java</include>
@@ -590,6 +592,7 @@
                     <plugin>
                         <groupId>org.apache.tomcat.maven</groupId>
                         <artifactId>tomcat7-maven-plugin</artifactId>
+                        <version>${tomcat7-maven-plugin.version}</version>
                         <configuration>
                             <port>9090</port>
                             <contextFile>src/test/tomcatconf/context.xml</contextFile>
@@ -651,6 +654,7 @@
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>properties-maven-plugin</artifactId>
+                        <version>${properties-maven-plugin.version}</version>
                         <executions>
                             <execution>
                                 <phase>initialize</phase>
@@ -667,6 +671,7 @@
                     </plugin>
                     <plugin>
                         <artifactId>maven-failsafe-plugin</artifactId>
+                        <version>${maven-surefire-plugin.version}</version>
                         <configuration>
                             <includes>
                                 <include>**/*IntegrationTest.java</include>
@@ -694,6 +699,7 @@
                     <plugin>
                         <groupId>org.apache.tomcat.maven</groupId>
                         <artifactId>tomcat7-maven-plugin</artifactId>
+                        <version>${tomcat7-maven-plugin.version}</version>
                         <configuration>
                             <port>9090</port>
                             <contextFile>src/test/tomcatconf/jenkinscontext.xml</contextFile>
@@ -754,6 +760,7 @@
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>properties-maven-plugin</artifactId>
+                        <version>${properties-maven-plugin.version}</version>
                         <executions>
                             <execution>
                                 <phase>initialize</phase>
@@ -770,12 +777,12 @@
                     </plugin>
                     <plugin>
                         <artifactId>maven-failsafe-plugin</artifactId>
+                        <version>${maven-surefire-plugin.version}</version>
                         <configuration>
                             <includes>
                                 <include>**/*IntegrationTest.java</include>
                             </includes>
                             <excludes>
-                                <!--<exclude>**/TilingIntegrationTest.java</exclude>-->
                             </excludes>
                             <trimStackTrace>false</trimStackTrace>
                             <testFailureIgnore>!${test.skip.integrationtests}</testFailureIgnore>
@@ -800,6 +807,7 @@
                     <plugin>
                         <groupId>org.apache.tomcat.maven</groupId>
                         <artifactId>tomcat7-maven-plugin</artifactId>
+                        <version>${tomcat7-maven-plugin.version}</version>
                         <configuration>
                             <port>9090</port>
                             <contextFile>src/test/tomcatconf/appveyorcontext.xml</contextFile>
@@ -836,13 +844,6 @@
                                 <artifactId>mssql-jdbc</artifactId>
                                 <version>${mssql.version}</version>
                             </dependency>
-                            <!--
-                            <dependency>
-                                <groupId>org.jacoco</groupId>
-                                <artifactId>org.jacoco.agent</artifactId>
-                                <version>${jacoco-maven-plugin.version}</version>
-                            </dependency>
-                            -->
                         </dependencies>
                     </plugin>
                 </plugins>
