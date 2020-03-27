@@ -65,10 +65,10 @@
         or as part of a profile, see eg. 'travis-ci' profile in viewer -->
         <test.skip.integrationtests>false</test.skip.integrationtests>
         <maven-surefire-plugin.version>3.0.0-M4</maven-surefire-plugin.version>
-        <tomcat.version>7.0.100</tomcat.version>
+        <tomcat.version>7.0.103</tomcat.version>
         <jacoco-maven-plugin.version>0.8.5</jacoco-maven-plugin.version>
-        <!--<jacoco.it.execution.data.file>${project.build.directory}/jacoco-it.exec</jacoco.it.execution.data.file>-->
-        <!--<jacoco.ut.execution.data.file>${project.build.directory}/jacoco-ut.exec</jacoco.ut.execution.data.file>-->
+        <tomcat7-maven-plugin.version>2.2</tomcat7-maven-plugin.version>
+        <properties-maven-plugin.version>1.0.0</properties-maven-plugin.version>
         <netbeans.hint.jdkPlatform>JDK_1.8</netbeans.hint.jdkPlatform>
     </properties>
     <dependencyManagement>
@@ -533,7 +533,7 @@
             <dependency>
                 <groupId>org.apache.tika</groupId>
                 <artifactId>tika-core</artifactId>
-                <version>1.23</version>
+                <version>1.24</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -661,7 +661,7 @@
                 <plugin>
                     <groupId>org.owasp</groupId>
                     <artifactId>dependency-check-maven</artifactId>
-                    <version>5.3.1</version>
+                    <version>5.3.2</version>
                     <configuration>
                         <skipSystemScope>true</skipSystemScope>
                         <format>ALL</format>
@@ -672,7 +672,7 @@
                 <plugin>
                     <groupId>org.apache.tomcat.maven</groupId>
                     <artifactId>tomcat7-maven-plugin</artifactId>
-                    <version>2.2</version>
+                    <version>${tomcat7-maven-plugin.version}</version>
                     <dependencies>
                         <dependency>
                             <groupId>org.apache.tomcat.embed</groupId>
@@ -769,7 +769,7 @@
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>properties-maven-plugin</artifactId>
-                    <version>1.0.0</version>
+                    <version>${properties-maven-plugin.version}</version>
                 </plugin>
                 <plugin>
                     <groupId>org.jacoco</groupId>
