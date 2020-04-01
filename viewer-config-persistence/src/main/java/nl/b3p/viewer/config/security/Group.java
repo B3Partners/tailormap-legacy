@@ -44,7 +44,6 @@ public class Group {
             SERVICE_ADMIN));
     
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String name;
 
     @Lob

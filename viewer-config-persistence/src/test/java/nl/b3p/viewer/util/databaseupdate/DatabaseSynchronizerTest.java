@@ -33,6 +33,11 @@ import org.junit.Test;
 public class DatabaseSynchronizerTest extends DatabaseSynchronizerTestInterface{
 
     @Test
+    public void testCreateDB(){
+        assert(true);
+    }
+
+    @Test
     public void testSQLScriptUpdate(){
 
         DatabaseSynchronizer ds = new DatabaseSynchronizer();

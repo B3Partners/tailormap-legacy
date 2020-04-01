@@ -223,8 +223,11 @@ public class DatabaseSynchronizer implements Servlet {
 
             this.databaseProductName = DynamicStripersistInitializer.databaseProductName;
             if (em!=null){
-                Session session = em.unwrap(Session.class);
-                Transaction trans=session.beginTransaction();
+                Session session = (Session) em.getDelegate();
+                Transaction trans = session.getTransaction();
+                if( trans == null){
+                    trans = session.beginTransaction();
+                }
                 LinkedHashMap<String,UpdateElement> scripts = new LinkedHashMap<String, UpdateElement>();
                 Metadata mdVersion = null;
                 //check if any db exists

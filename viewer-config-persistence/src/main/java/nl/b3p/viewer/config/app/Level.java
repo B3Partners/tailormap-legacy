@@ -58,7 +58,7 @@ public class Level implements Comparable{
     @ManyToMany(cascade=CascadeType.ALL) // Actually @OneToMany, workaround for HHH-1268    
     @JoinTable(
             name="level_layers",
-            joinColumns=@JoinColumn(name = "level", referencedColumnName = "id"),
+            joinColumns=@JoinColumn(name = "level_", referencedColumnName = "id"),
             inverseJoinColumns=@JoinColumn(name="layer"))
     @OrderColumn(name="list_index")
     @org.hibernate.annotations.Cascade(org.hibernate.annotations.CascadeType.DELETE_ORPHAN) // cannot use orphanRemoval=true due to workaround

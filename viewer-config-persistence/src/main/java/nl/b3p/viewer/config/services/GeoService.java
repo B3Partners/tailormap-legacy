@@ -89,6 +89,9 @@ public abstract class GeoService implements Serializable {
     private Layer topLayer;
 
     @ElementCollection
+    @CollectionTable(
+            joinColumns = @JoinColumn(name = "geo_service")
+    )
     @Column(name="keyword")
     private Set<String> keywords = new HashSet<>();
     
@@ -111,10 +114,12 @@ public abstract class GeoService implements Serializable {
     @JoinTable(inverseJoinColumns=@JoinColumn(name="style_library"))
     @OrderColumn(name="list_index")    
     private List<StyleLibrary> styleLibraries = new ArrayList();
-    
-    
+
     @ElementCollection
-    @Column(name="role_name")
+    @CollectionTable(
+        joinColumns = @JoinColumn(name = "geo_service")
+    )
+    @Column(name = "role_name")
     private Set<String> readers = new HashSet<String>();
     
     //<editor-fold defaultstate="collapsed" desc="getters en setters">

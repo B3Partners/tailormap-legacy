@@ -180,7 +180,8 @@ public class ScriptRunner {
             }
         } finally {
             if (!this.autoCommit){
-                conn.rollback();
+              //  conn.rollback();
+                conn.commit();
             }
         }
     }

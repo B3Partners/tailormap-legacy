@@ -31,7 +31,6 @@ import javax.persistence.*;
 public class Resource {
     
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String name;
 
     private String contentType;

@@ -119,9 +119,15 @@ public class Layer implements Cloneable, Serializable {
     private Double maxScale;
 
     @ElementCollection
+    @CollectionTable(
+        joinColumns = @JoinColumn(name = "layer")
+    )
     private Set<CoordinateReferenceSystem> crsList = new HashSet<>();
 
     @ElementCollection
+    @CollectionTable(
+        joinColumns = @JoinColumn(name = "layer")
+    )
     private Map<CoordinateReferenceSystem,BoundingBox> boundingBoxes = new HashMap<>();
 
     @ManyToOne(fetch=FetchType.LAZY)
