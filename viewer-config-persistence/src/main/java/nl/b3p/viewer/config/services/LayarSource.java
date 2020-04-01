@@ -40,6 +40,7 @@ public class LayarSource {
     private SimpleFeatureType featureType;
     
     @ElementCollection
+    @JoinTable(joinColumns = @JoinColumn(name = "layar_source"))
     private Map<String,ClobElement> details = new HashMap<String,ClobElement>();
 
     //<editor-fold defaultstate="collapsed" desc="Getters/Setters">

@@ -111,7 +111,10 @@ public abstract class GeoService implements Serializable {
     private Map<String,ClobElement> details = new HashMap<>();
    
     @OneToMany(cascade=CascadeType.PERSIST) // Actually @OneToMany, workaround for HHH-1268
-    @JoinTable(inverseJoinColumns=@JoinColumn(name="style_library"))
+    @JoinTable(
+            name = "geo_service_style_libraries",
+            joinColumns = @JoinColumn(name ="geo_service" ),
+            inverseJoinColumns=@JoinColumn(name="style_library"))
     @OrderColumn(name="list_index")    
     private List<StyleLibrary> styleLibraries = new ArrayList();
 

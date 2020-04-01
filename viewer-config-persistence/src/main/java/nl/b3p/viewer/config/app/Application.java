@@ -170,6 +170,7 @@ public class Application implements Comparable<Application>{
     private List<StartLevel> startLevels = new ArrayList<>();
 
     @ElementCollection
+    @CollectionTable(joinColumns = @JoinColumn(name = "application"))
     @Column(name = "role_name")
     private Set<String> readers = new HashSet<>();
     private String projectionCode;

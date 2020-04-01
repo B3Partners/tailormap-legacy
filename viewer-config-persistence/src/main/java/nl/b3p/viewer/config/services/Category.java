@@ -71,10 +71,12 @@ public class Category {
     private List<GeoService> services = new ArrayList<GeoService>();
 
     @ElementCollection
+    @CollectionTable(joinColumns = @JoinColumn(name = "category"))
     @Column(name="role_name")
     private Set<String> readers = new HashSet<String>();
 
     @ElementCollection
+    @CollectionTable(joinColumns = @JoinColumn(name = "category"))
     @Column(name="role_name")
     private Set<String> writers = new HashSet<String>();
 

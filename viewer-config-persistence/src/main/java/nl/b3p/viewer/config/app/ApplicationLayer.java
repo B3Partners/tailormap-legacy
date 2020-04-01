@@ -53,10 +53,12 @@ public class ApplicationLayer {
     private String layerName;
     
     @ElementCollection
+    @CollectionTable(joinColumns = @JoinColumn(name = "application_layer"))
     @Column(name="role_name")
     private Set<String> readers = new HashSet<>();
 
     @ElementCollection
+    @CollectionTable(joinColumns = @JoinColumn(name = "application_layer"))
     @Column(name="role_name")
     private Set<String> writers = new HashSet<>();
 
