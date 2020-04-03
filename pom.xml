@@ -56,6 +56,7 @@
         <apache.poi.version>4.0.1</apache.poi.version>
         <javax.mail.version>1.6.2</javax.mail.version>
         <apache.httpcomponents.version>4.5.12</apache.httpcomponents.version>
+        <slf4j.version>1.7.30</slf4j.version>
         <!-- skip integration tests by default, override this property from commandline
         or as part of a profile, see eg. 'travis-ci' profile in viewer -->
         <test.skip.integrationtests>false</test.skip.integrationtests>
@@ -135,6 +136,17 @@
                 <groupId>log4j</groupId>
                 <artifactId>log4j</artifactId>
                 <version>1.2.17</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+            <dependency>
+                <!-- for ao. hibernate, dbunit... -->
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-log4j12</artifactId>
+                <version>${slf4j.version}</version>
             </dependency>
             <dependency>
                 <groupId>jaxen</groupId>
