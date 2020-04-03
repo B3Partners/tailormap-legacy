@@ -256,6 +256,12 @@
             <artifactId>hsqldb</artifactId>
         </dependency>
         <dependency>
+            <!-- for hibernate? and... -->
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>org.skyscreamer</groupId>
             <artifactId>jsonassert</artifactId>
             <exclusions>
