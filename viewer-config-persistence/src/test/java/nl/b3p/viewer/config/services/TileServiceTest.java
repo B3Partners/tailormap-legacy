@@ -47,6 +47,9 @@ public class TileServiceTest extends TestUtil{
     
     private TileService instance = new TileService();
 
+    private static final String PDOK_WMTS = "http://geodata.nationaalgeoregister.nl/tiles/service/wmts?request=getcapabilities";
+    private static final int PDOK_WMTS_LAYERCOUNT = 43;
+
     DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
     DocumentBuilder builder = null;
     XPathFactory xPathfactory = XPathFactory.newInstance();
@@ -98,7 +101,7 @@ public class TileServiceTest extends TestUtil{
     
     @Test
     public void testLoadBRTWMTSFromURL() throws MalformedURLException {
-        URL u = new URL("http://geodata.nationaalgeoregister.nl/tiles/service/wmts?request=getcapabilities");
+        URL u = new URL(PDOK_WMTS);
         String url = u.toString();
         Map params = new HashMap();
         params.put(TileService.PARAM_TILINGPROTOCOL, "WMTS");
@@ -108,7 +111,7 @@ public class TileServiceTest extends TestUtil{
         GeoService result = instance.loadFromUrl(url, params, status, entityManager);
         assertEquals("https://geodata.nationaalgeoregister.nl/tiles/service/wmts?",result.getUrl());
         Layer topLayer = result.getTopLayer();
-        assertEquals(44, topLayer.getChildren().size());
+        assertEquals(PDOK_WMTS_LAYERCOUNT, topLayer.getChildren().size());
         
         Layer brt = topLayer.getChildren().get(0);
         assertEquals("brtachtergrondkaart", brt.getName());
@@ -180,7 +183,7 @@ public class TileServiceTest extends TestUtil{
     
     @Test
     public void testLoadTopoWMTSFromURL() throws MalformedURLException {
-        URL u = new URL("http://geodata.nationaalgeoregister.nl/tiles/service/wmts?request=getcapabilities");
+        URL u = new URL(PDOK_WMTS);
         String url = u.toString();
         Map params = new HashMap();
         params.put(TileService.PARAM_TILINGPROTOCOL, "WMTS");
@@ -189,7 +192,7 @@ public class TileServiceTest extends TestUtil{
         
         GeoService result = instance.loadFromUrl(url, params, status, entityManager);
         Layer topLayer = result.getTopLayer();
-        assertEquals(44, topLayer.getChildren().size());
+        assertEquals(PDOK_WMTS_LAYERCOUNT, topLayer.getChildren().size());
         assertEquals("https://geodata.nationaalgeoregister.nl/tiles/service/wmts?", result.getUrl());
         
         Layer brt = topLayer.getChildren().get(0);
