@@ -261,7 +261,7 @@ Ext.define("viewer.components.Snapping", {
     },
     enableAllLayers: function(toggle){
         var layers = [];
-        this.layerList.forEach(l =>{
+        this.layerList.forEach(function(l) {
            layers.push(l.id);
         });
         this.setLayersEnabled(layers,toggle);

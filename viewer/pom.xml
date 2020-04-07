@@ -347,7 +347,7 @@
                             <compilationLevel>SIMPLE_OPTIMIZATIONS</compilationLevel>
                             <compilerOptions>
                                 <prettyPrint>true</prettyPrint>
-                                <languageIn>ECMASCRIPT3</languageIn>
+                                <languageIn>ECMASCRIPT5</languageIn>
                             </compilerOptions>
                             <externFiles />
                             <sourceFiles>
@@ -386,7 +386,7 @@
                             <compilationLevel>SIMPLE_OPTIMIZATIONS</compilationLevel>
                             <compilerOptions>
                                 <prettyPrint>true</prettyPrint>
-                                <languageIn>ECMASCRIPT3</languageIn>
+                                <languageIn>ECMASCRIPT5</languageIn>
                             </compilerOptions>
                             <externFiles />
                             <sourceFiles>
