@@ -26,11 +26,14 @@ Ext.define("viewer.EditFeature", {
             this.config.actionbeanUrl = actionBeans["editfeature"];
         }        
     },
-    edit: function(appLayer, feature, successFunction, failureFunction) {
-        
+    edit: function(appLayer, feature, successFunction, failureFunction, extraParams) {
+        var params = {application: this.config.viewerController.app.id, appLayer: appLayer.id, feature: Ext.JSON.encode(feature)};
+        if(extraParams){
+            Ext.merge(params, extraParams);
+        }
         Ext.Ajax.request({
             url: this.config.actionbeanUrl,
-            params: {application: this.config.viewerController.app.id, appLayer: appLayer.id, feature: Ext.JSON.encode(feature)},
+            params: params,
             success: function(result) {
                 var response = Ext.JSON.decode(result.responseText);   
                 
@@ -53,10 +56,14 @@ Ext.define("viewer.EditFeature", {
             }
         });        
     },
-    remove: function(appLayer, feature,successFunction, failureFunction){
+    remove: function(appLayer, feature,successFunction, failureFunction, extraParams){
+        var params = {application: this.config.viewerController.app.id, appLayer: appLayer.id, feature: Ext.JSON.encode(feature)};
+        if(extraParams){
+            Ext.merge(params, extraParams);
+        }
         Ext.Ajax.request({
             url: this.config.actionbeanUrl,
-            params: {application: this.config.viewerController.app.id, appLayer: appLayer.id, feature: Ext.JSON.encode(feature)},
+            params: params,
             success: function(result) {
                 var response = Ext.JSON.decode(result.responseText);
                 
