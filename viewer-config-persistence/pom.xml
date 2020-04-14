@@ -46,7 +46,8 @@
                         <goals>
                             <goal>gen-ddl</goal>
                         </goals>
-                        <phase>generate-test-resources</phase>
+                        <!-- needs to be done after "compile" so the SnakeCase naming strategy is compiled -->
+                        <phase>process-classes</phase>
                     </execution>
                 </executions>
             </plugin>
@@ -139,25 +140,27 @@
                     </dependency>
                 </dependencies>
             </plugin-->
-            <!--plugin>
+            <plugin>
                 <artifactId>maven-antrun-plugin</artifactId>
                 <executions>
                     <execution>
                         <phase>process-classes</phase>
                         <configuration>
-                            <tasks>
-
-                                <replace token=" details_key varchar(255) null," value=" details_key varchar(255) not null," file="target/classes/scripts/microsoft_sql_server-schema-export.sql" summary="true" />
-
-                                <replace token="crs varchar(255) null, primary key (layer, crs));" value="crs varchar(255) not null, primary key (layer, crs));" file="target/classes/scripts/microsoft_sql_server-schema-export.sql" summary="true" />
-                            </tasks>
+                            <target>
+                                <!-- run after schema gegeration -->
+                                <move file="target/classes/scripts/sqlserver2012-schema-export.sql" tofile="target/classes/scripts/microsoft_sql_server-schema-export.sql"/>
+                                <move file="target/classes/scripts/oracle12c-schema-export.sql" tofile="target/classes/scripts/oracle-schema-export.sql"/>
+                                <move file="target/classes/scripts/hsql-schema-export.sql" tofile="target/classes/scripts/hsqldb-schema-export.sql"/>
+                                <!-- replace token=" details_key varchar(255) null," value=" details_key varchar(255) not null," file="target/classes/scripts/microsoft_sql_server-schema-export.sql" summary="true" / -->
+                                <!-- replace token="crs varchar(255) null, primary key (layer, crs));" value="crs varchar(255) not null, primary key (layer, crs));" file="target/classes/scripts/microsoft_sql_server-schema-export.sql" summary="true" / -->
+                            </target>
                         </configuration>
                         <goals>
                             <goal>run</goal>
                         </goals>
                     </execution>
                 </executions>
-            </plugin-->
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
@@ -184,7 +187,7 @@
     </build>
 
     <dependencies>
-        
+
         <dependency>
             <groupId>xalan</groupId>
             <artifactId>xalan</artifactId>
