@@ -24,13 +24,7 @@ import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.OneToManyTypeConverter;
 import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.viewer.config.app.*;
-import nl.b3p.viewer.search.ArcGisRestSearchClient;
-import nl.b3p.viewer.search.OpenLSSearchClient;
-import nl.b3p.viewer.search.PDOKSearchClient;
-import nl.b3p.viewer.search.SearchClient;
-import nl.b3p.viewer.search.SearchResult;
-import nl.b3p.viewer.search.SolrSearchClient;
-import nl.b3p.viewer.search.AttributeSourceSearchClient;
+import nl.b3p.viewer.search.*;
 import org.json.*;
 import org.stripesstuff.stripersist.Stripersist;
 
@@ -228,6 +222,8 @@ public class SearchActionBean extends LocalizableActionBean implements ActionBea
                 client = new PDOKSearchClient(filter);
             } else if(type.equalsIgnoreCase("attributesource")){
                 client = new AttributeSourceSearchClient(config);
+            }else if(type.equalsIgnoreCase("digitree")){
+                client = new DigitreeAttributeSearchClient(config,context);
             }else{
                 client = null;
             }

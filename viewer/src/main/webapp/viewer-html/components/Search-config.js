@@ -215,6 +215,11 @@ Ext.define("viewer.components.SearchConfiguration",{
                                 name: 'type' + config.id, 
                                 inputValue: 'coordinate',
                                 checked: config.type === "coordinate"
+                            },{
+                                boxLabel: "Digitree",
+                                name: 'type' + config.id,
+                                inputValue: 'digitree',
+                                checked: config.type === "digitree"
                             }],
                             listeners: {
                                 change: function(radio) {
@@ -313,7 +318,7 @@ Ext.define("viewer.components.SearchConfiguration",{
         // When switching radio input type is an array
         if(typeof type !== 'string') return;
         this.hideExtraConfig(configid);
-        if(type === 'solr' || type === 'simplelist' || type === 'pdok' || type === 'attributesource' || type === 'coordinate') {
+        if(type === 'solr' || type === 'simplelist' || type === 'pdok' || type === 'attributesource' || type === 'coordinate' || type === 'digitree') {
             if(type === 'solr') {
                 // Show additional Solr configuration
                 this.addSolrconfig(configid);
@@ -324,7 +329,7 @@ Ext.define("viewer.components.SearchConfiguration",{
             if(type === "pdok"){
                 this.addPdokConfig(configid);
             }
-            if(type === 'attributesource'){
+            if(type === 'attributesource' || type === 'digitree'){
                 this.addAttributeSourceConfig(configid);
             }
             if(type === 'coordinate'){
