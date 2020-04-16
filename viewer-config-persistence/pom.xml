@@ -80,7 +80,7 @@
                     <execution>
                         <phase>process-classes</phase>
                         <configuration>
-                            <tasks>
+                            <target>
                                 <!--
                                 The ms sql schema export needs tweaking due to a bug in the tooling (should be solved in hib 5 and up)
                                 the problem is that details tables are generated with a nullable field for details_key,
@@ -133,7 +133,7 @@
         <!--crs varchar(255) not null,]]></replacevalue>-->
                                 <!--</replace>-->
                                 <replace token="crs varchar(255) null, primary key (layer, crs));" value="crs varchar(255) not null, primary key (layer, crs));" file="target/classes/scripts/microsoft_sql_server-schema-export.sql" summary="true" />
-                            </tasks>
+                            </target>
                         </configuration>
                         <goals>
                             <goal>run</goal>
