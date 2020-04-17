@@ -258,7 +258,9 @@ public class ConfiguredAttribute {
         o.put("folder_label", label);
         if(editValues != null) {
             try {
-                o.put("editValues", new JSONArray(editValues));
+                if (!valueList.equalsIgnoreCase("dynamic")) {
+                    o.put("editValues", new JSONArray(editValues));
+                }
             } catch(JSONException je) {
             }
         }
