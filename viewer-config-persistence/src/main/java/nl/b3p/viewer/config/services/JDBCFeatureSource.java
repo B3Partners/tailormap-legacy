@@ -207,7 +207,9 @@ public class JDBCFeatureSource extends UpdatableFeatureSource{
         params.put(JDBCDataStoreFactory.PK_METADATA_TABLE.key, "gt_pk_metadata");
         // this key is available in ao. Oracle and MS SQL datastore factories, but not in the common parent..
         // we need this for mssql to determine a featuretype on an empty table
-        params.put(SQLServerDataStoreFactory.GEOMETRY_METADATA_TABLE.key, "geometry_columns");
+        if(!urlObj.get("dbtype").equals("oracle")){
+            params.put(SQLServerDataStoreFactory.GEOMETRY_METADATA_TABLE.key, "geometry_columns");
+        }
         Map logParams = new HashMap(params);
         if(getPassword() != null) {
             logParams.put("passwd", new String(new char[getPassword().length()]).replace("\0", "*"));
