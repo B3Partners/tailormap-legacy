@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 docker version
 
+# Oracle XE 18.0.0.0
 # this docker image has the following users/credentials (user/password = system/oracle)
 docker pull larmic/oracle-xe:18.4.0
 
