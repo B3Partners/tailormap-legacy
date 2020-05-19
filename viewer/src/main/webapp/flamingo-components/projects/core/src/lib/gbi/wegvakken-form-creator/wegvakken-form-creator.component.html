@@ -1,4 +1,8 @@
 <form [formGroup]="formgroep">
+
+    <button mat-button  mat-mini-fab color="" (click)="pietje();" class="close-button" >
+      asdf
+    </button>
   <mat-tab-group>
       <mat-tab *ngFor="let tab of tabbedConfig.tabs | keyvalue" label="{{formConfig.tabConfig[tab.key]}}">
           <div class="tab">

@@ -10,6 +10,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MatSnackBarModule } from '@angular/material';
 import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.component';
 import { ConfirmDialogService } from './confirm-dialog/confirm-dialog.service';
+import {ApiModule} from "../shared/generated";
 
 
 
@@ -27,6 +28,7 @@ import { ConfirmDialogService } from './confirm-dialog/confirm-dialog.service';
     SharedModule,
     ReactiveFormsModule,
     MatSnackBarModule,
+    ApiModule,
   ],
   exports: [
     WegvakPopupComponent,

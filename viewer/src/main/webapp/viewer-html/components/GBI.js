@@ -87,9 +87,20 @@ Ext.define("viewer.components.GBI", {
     },
     mapClicked : function(tool, comp){
         var coords = comp.coord;
-        var x = coords.x;
-        var y = coords.y;
+        var x = parseInt(coords.x);
+        var y = parseInt(coords.y);
+        var scale = 25;
 
+
+        var json = {
+            x: x,
+            y: y,
+            scale: scale
+        };
+
+        this.div.setAttribute("app-layer", this.stringifyAppLayer(this.config.viewerController.getAppLayerById(this.config.layers[0])));
+        this.div.setAttribute("map-clicked", JSON.stringify(json));
+        /*
         var appLayers = this.config.layers;
         for (var key in appLayers) {
             if (appLayers.hasOwnProperty(key)) {
@@ -118,7 +129,7 @@ Ext.define("viewer.components.GBI", {
                     me.failed(msg);
                 }, extraParams);
             }
-        }
+        }*/
     },
 
     featuresReceived : function (features, appLayer){

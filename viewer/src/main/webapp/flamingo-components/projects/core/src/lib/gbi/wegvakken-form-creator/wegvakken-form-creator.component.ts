@@ -5,6 +5,7 @@ import { WegvakkenFormSaveService } from '../wegvakken-form-save.service';
 import { FormGroup, FormControl } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Subscription } from 'rxjs';
+import {WegvakonderdeelControllerService} from "../../shared/generated";
 
 @Component({
   selector: 'flamingo-wegvakken-form-creator',
@@ -38,6 +39,7 @@ export class WegvakkenFormCreatorComponent implements OnChanges, OnDestroy {
 
   constructor(
     private saveService: WegvakkenFormSaveService,
+    private test: WegvakonderdeelControllerService,
     private _snackBar: MatSnackBar) {
   }
 
@@ -64,6 +66,26 @@ export class WegvakkenFormCreatorComponent implements OnChanges, OnDestroy {
       tabbedFields.tabs.set(tabNr, this.getColumizedFields(fields));
     }
     return tabbedFields;
+  }
+
+  public pietje(){
+
+    this.test.get(1).subscribe(
+      (d) => {
+        const b = 0;
+       /* if (d.success) {
+          this._snackBar.open('Opgeslagen', '', {duration: 5000});
+          this.formChanged.emit(false);
+        } else {
+          this._snackBar.open('Fout: Niet opgeslagen: ' + d.error, '', {duration: 5000});
+        }*/
+      },
+      error => {
+        this._snackBar.open('Fout: Niet opgeslagen: ' + error, '', {
+          duration: 5000,
+        });
+      },
+    );
   }
 
   private getColumizedFields(attrs: Attribute[]): ColumnizedFields {

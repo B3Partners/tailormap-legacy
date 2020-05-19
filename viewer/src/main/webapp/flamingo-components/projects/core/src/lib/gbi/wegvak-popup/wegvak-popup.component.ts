@@ -3,6 +3,8 @@ import { WegvakkenFormComponent } from '../wegvakken-form/wegvakken-form.compone
 import { MatDialog } from '@angular/material';
 import { Feature, DialogClosedData, FormConfigurations,
         FeatureAttribute, FormConfiguration, FlamingoApplayer } from '../../shared/wegvakken-models';
+import {Wegvakonderdeel, WegvakonderdeelControllerService} from "../../shared/generated";
+import {MatSnackBar} from "@angular/material/snack-bar";
 
 @Component({
   selector: 'flamingo-wegvak-popup',
@@ -11,7 +13,11 @@ import { Feature, DialogClosedData, FormConfigurations,
 })
 export class WegvakPopupComponent implements OnInit {
 
-  constructor(public dialog: MatDialog) { }
+  constructor(
+    public dialog: MatDialog,
+    private service: WegvakonderdeelControllerService,
+    private _snackBar: MatSnackBar) {
+  }
 
   private popupOpen = false;
 
@@ -44,6 +50,37 @@ export class WegvakPopupComponent implements OnInit {
   public set featureClicked(data: string) {
     const ff = this.convertToFormFeature(JSON.parse(data), false);
     this.openDialog(ff);
+  }
+
+  @Input()
+  public set mapClicked(data: string){
+    const mapClickData = JSON.parse(data);
+    const x = mapClickData.x;
+    const y = mapClickData.y;
+    const scale = mapClickData.scale;
+    this.service.get1(x, y, scale).subscribe(
+      (wegvakonderdelen: Wegvakonderdeel[]) => {
+        const formConfig = this.formConfigs.config['wegvakonderdeel'];
+        wegvakonderdelen.forEach(w=>{
+         // let fa = this.convertFeatureAttributes(formConfig, w as any);
+          let fa = this.convertToFormFeature(w as any, false);
+          this.openDialog(fa);
+        });
+        /* if (d.success) {
+           this._snackBar.open('Opgeslagen', '', {duration: 5000});
+           this.formChanged.emit(false);
+         } else {
+           this._snackBar.open('Fout: Niet opgeslagen: ' + d.error, '', {duration: 5000});
+         }*/
+      },
+      error => {
+        this._snackBar.open('Fout: Niet opgeslagen: ' + error, '', {
+          duration: 5000,
+        });
+      },
+    );
+    //const ff = this.convertToFormFeature(JSON.parse(data), false);
+    //this.openDialog(ff);
   }
 
   @Input()
@@ -103,12 +140,12 @@ export class WegvakPopupComponent implements OnInit {
       return features;
     } else {
       const id = f.id;
-      const ft = id.substring(0, id.indexOf('.') );
+      const ft = "wegvakonderdeel";
       const formConfig = this.formConfigs.config[ft];
       if(!formConfig){
         return null;
       }
-      const featureAttributes: FeatureAttribute[] = this.convertFeatureAttributes(formConfig, f.attributes);
+      const featureAttributes: FeatureAttribute[] = this.convertFeatureAttributes(formConfig, f);
       const children: Feature[] = [];
       if (f.children) {
         f.children.forEach((feat) => {
