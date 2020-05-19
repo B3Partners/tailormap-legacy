@@ -76,9 +76,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     <tr id="voorbeelden" style="display: none;">
                         <td colspan="2" style="border: 1px solid #43a4b1">
                             <i><fmt:message key="viewer_admin.layer.12" />:</i><br/>
-                            <span style="font-family: monospace">&amp;copy; &lt;a href="http://www.openstreetmap.nl" target="_blank"&gt;OpenStreetMap contributors&lt;/a&gt;</span><br/>
+                            <span style="font-family: monospace">&amp;copy; &lt;a href="https://www.openstreetmap.org/copyright" target="_blank"&gt;OpenStreetMap&lt;/a&gt; contributors</span><br/>
                             <i><fmt:message key="viewer_admin.layer.13" />:</i></br>
-                            <span style="font-family: monospace">&amp;copy; &lt;a href="http://www.kadaster.nl" target="_blank"&gt;Kadaster&lt;/a&gt;</span><br/>
+                            <span style="font-family: monospace">&amp;copy; &lt;a href="https://www.kadaster.nl" target="_blank"&gt;Kadaster&lt;/a&gt;</span><br/>
                         </td>
                     </tr>
                     <tr>
