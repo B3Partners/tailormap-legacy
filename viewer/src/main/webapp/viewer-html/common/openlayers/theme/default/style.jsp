@@ -46,6 +46,7 @@ div.olLayerDiv {
     bottom: 4.5em;
     position: absolute;
     display: block;
+    background: rgba(255,255,255,0.6);
 }
 .olControlScale {
     left: 3px;
