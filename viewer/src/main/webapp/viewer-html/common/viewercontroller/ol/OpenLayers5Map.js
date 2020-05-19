@@ -51,7 +51,14 @@ Ext.define("viewer.viewercontroller.ol.OpenLayers5Map", {
         config.restrictedExtent = maxBounds;
         this.frameworkMap = new ol.Map({
             target: config.domId,
-            controls: ol.control.defaults({zoom: false}),
+            controls: ol.control.defaults({
+                zoom: false,
+                attribution: false
+            }).extend([
+                new ol.control.Attribution({
+                    collapsed: false
+                })
+            ]),
             keyboardEventTarget: document,
             view: new ol.View({
                 projection: config.projection,
