@@ -1,5 +1,5 @@
 -- cleanup any spatial data references for this user
-DELETE from user_sdo_geom_metadata;
+-- DELETE from user_sdo_geom_metadata;
 
 -- this will drop any of the listed objects from the users schema
 BEGIN
