@@ -18,6 +18,7 @@
         <minify.outputdir>${project.build.directory}/${project.name}-${project.version}/viewer-html</minify.outputdir>
         <viewerhtml.path>${basedir}/src/main/webapp/viewer-html</viewerhtml.path>
         <test.persistence.unit>viewer-config-hsqldb</test.persistence.unit>
+        <rest.api.outputdoc>${basedir}/src/main/webapp/flamingo-components/projects/core/src/lib/shared/generated</rest.api.outputdoc>
     </properties>
     <dependencies>
         <dependency>
@@ -874,6 +875,54 @@
                                 <version>${mssql.version}</version>
                             </dependency>
                         </dependencies>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <!-- To generate the models/api service:
+        mvn clean validate -Pswagger-codegen -DskipTests -Dtest.skip.integrationtests=true
+        -->
+        <profile>
+            <id>swagger-codegen</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-clean-plugin</artifactId>
+                        <version>3.1.0</version>
+                        <configuration>
+                            <filesets>
+                                <fileset>
+                                    <directory>${rest.api.outputdoc}</directory>
+                                </fileset>
+                            </filesets>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>io.swagger.codegen.v3</groupId>
+                        <artifactId>swagger-codegen-maven-plugin</artifactId>
+                        <version>3.0.20</version>
+                        <executions>
+                            <execution>
+                                <id>angularAPIServiceGeneration</id>
+                                <goals>
+                                    <goal>generate</goal>
+                                </goals>
+                                <phase>validate</phase>
+                                <configuration>
+                                    <inputSpec>${basedir}/../../form-rest-api/target/form-endpoint.yml</inputSpec>
+                                    <language>typescript-angular</language>
+                                    <!--output>${basedir}/src/main/webapp/flamingo-components/projects/core/src/lib/shared/generated</output-->
+                                    <output>${rest.api.outputdoc}</output>
+                                    <configOptions>
+                                        <test.skip.integrationtests>true</test.skip.integrationtests>
+                                    </configOptions>
+                                    <typeMappings>
+                                        <typeMapping>DateTime=string</typeMapping>
+                                    </typeMappings>
+                                </configuration>
+                            </execution>
+                        </executions>
                     </plugin>
                 </plugins>
             </build>
