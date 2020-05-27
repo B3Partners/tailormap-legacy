@@ -24,10 +24,10 @@ export class WegvakFormfieldComponent {
   @Input()
   public isBulk: boolean;
 
-  @Input()
-  public lookup: Map<string, string>;
 
-  constructor() { }
+  constructor() {
+    const a=0;
+  }
 
 
   public isTextAttribute = (attr: Attribute): boolean => attr.type === FormFieldType.TEXTFIELD;

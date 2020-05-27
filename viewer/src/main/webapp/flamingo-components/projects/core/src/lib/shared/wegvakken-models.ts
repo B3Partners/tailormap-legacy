@@ -40,16 +40,6 @@ export interface FeatureAttribute extends Attribute {
 }
 
 
-export interface FormRelation {
-  relatedFeatureType: string;
-  relation: RelatedColumn[];
-}
-
-export interface RelatedColumn {
-  mainFeatureColumn: string;
-  relatedFeatureColumn: string;
-}
-
 
 
 

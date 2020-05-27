@@ -5,10 +5,10 @@
             <div *ngFor="let column of tab.value.columns | keyvalue" class="column">
               <span *ngFor="let attr of column.value" class="cellfield">
 
-                <flamingo-wegvak-formfield [value]=indexedAttributes.attrs.get(attr.key).value
+                <flamingo-wegvak-formfield
+                  [value]=indexedAttributes.attrs.get(attr.key)?.value
                   [attribute]=indexedAttributes.attrs.get(attr.key)
                   [groep]="formgroep"
-                  [lookup]=lookup
                   [isBulk]=isBulk
                    ></flamingo-wegvak-formfield>
               </span>

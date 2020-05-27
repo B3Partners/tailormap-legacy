@@ -17,12 +17,12 @@ export interface PageWegvakonderdeel {
     number?: number;
     size?: number;
     last?: boolean;
-    numberOfElements?: number;
-    totalPages?: number;
+    number_of_elements?: number;
+    total_pages?: number;
     pageable?: Pageable;
     sort?: Sort;
     content?: Array<Wegvakonderdeel>;
     first?: boolean;
-    totalElements?: number;
+    total_elements?: number;
     empty?: boolean;
 }

@@ -87,7 +87,7 @@ export class WegvakkenTreeComponent implements OnInit,  OnChanges {
   }
 
   private getNodeLabel (feature:Feature) :string{
-    const config : FormConfiguration = this.formConfigs.config["wegvakonderdeel"];
+    const config : FormConfiguration = this.formConfigs.config[feature.clazz];
     let columnName = this.getFeatureValue(feature, config.treeNodeColumn);
     if(config.idInTreeNodeColumn){
       let id = feature.id;

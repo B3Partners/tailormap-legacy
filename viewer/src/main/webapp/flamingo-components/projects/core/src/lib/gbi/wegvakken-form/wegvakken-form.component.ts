@@ -9,7 +9,7 @@ import {DialogData} from "../wegvak-popup/wegvak-popup-models";
 import {
   FeatureAttribute,
   FormConfiguration,
-  FormConfigurations,
+  FormConfigurations, FormFieldType,
   IndexedFeatureAttributes
 } from "./wegvakken-form-models";
 import {Feature} from "../../shared/generated";
@@ -131,38 +131,24 @@ export class WegvakkenFormComponent implements OnDestroy {
     const type = evt.srcElement.id;
     this.formConfig = this.formConfigs.config[type];
     const name = 'Nieuwe '  + this.formConfig.name;
-   /* const labelAttribute: FeatureAttribute = {
-      key: this.formConfig.treeNodeColumn,
-      type: FormFieldType.TEXTFIELD,
-      value: name,
-      column: 1,
-      tab: 1,
-    };
+
     const parentFeature = this.features[0];
     const relations = this.formConfig.relation.relation;
-    const relatedColumns = [];
+
+    const newFeature = {
+      id: null,
+      clazz: type,
+      isRelated: true,
+    };
+    newFeature[this.formConfig.treeNodeColumn] = name;
     relations.forEach(r => {
       const relatedKey = r.relatedFeatureColumn;
       const mainKey = r.mainFeatureColumn;
-      const relatedColumn = {
-        key:  relatedKey,
-        type: FormFieldType.HIDDEN,
-        value: parentFeature.attributes.find(a => a.key === mainKey).value,
-        column: 1,
-        tab: 1,
-      };
-      relatedColumns.push(relatedColumn);
-
+      newFeature[relatedKey] = parentFeature[mainKey];
     });
-    const newFeature = {
-      id: null,
-      attributes: [...relatedColumns, labelAttribute],
-      isRelated: true,
-    };
     parentFeature.children.push(newFeature);
     this.feature = newFeature;
-    this.features = [...this.features];*/
-    console.error("to be implemented");
+    this.features = [...this.features];
     this.initForm();
   }
 

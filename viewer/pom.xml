@@ -916,6 +916,7 @@
                                     <output>${rest.api.outputdoc}</output>
                                     <configOptions>
                                         <test.skip.integrationtests>true</test.skip.integrationtests>
+                                        <modelPropertyNaming>snake_case</modelPropertyNaming>
                                     </configOptions>
                                     <typeMappings>
                                         <typeMapping>DateTime=string</typeMapping>

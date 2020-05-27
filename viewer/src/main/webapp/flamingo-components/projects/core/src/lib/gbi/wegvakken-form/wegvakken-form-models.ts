@@ -11,7 +11,7 @@ export interface FormConfiguration {
   newPossible: boolean;
   featureType: string;
   tabConfig: Map<number, string>;
-  //relation ?: FormRelation;
+  relation ?: FormRelation;
 }
 
 export interface Attribute {
@@ -40,6 +40,15 @@ export interface SelectOption {
   val: string;
 }
 
+export interface FormRelation {
+  relatedFeatureType: string;
+  relation: RelatedColumn[];
+}
+
+export interface RelatedColumn {
+  mainFeatureColumn: string;
+  relatedFeatureColumn: string;
+}
 
 export interface IndexedFeatureAttributes {
   attrs: Map<string, FeatureAttribute>;
