@@ -32,25 +32,27 @@ timestamps {
                     sh "mvn -e clean test -B"
                 }
 
-                try {
-                    lock('flamingo-oracle') {
-                      timeout(90) {
-                          stage("Prepare Oracle: ${indexOfJdk}") {
-                              sh "sqlplus -l -S JENKINS_FLAMINGO/jenkins_flamingo@192.168.1.11:1521/orcl < ./.jenkins/clear-oracle-schema.sql"
-                          }
-                          lock('tomcat-tcp9090') {
-                              stage("IntegrationTest: ${jdkTestName}") {
-                                  echo "Running integration tests on all modules except viewer-admin"
-                                  sh "mvn -e verify -B -Pjenkins -pl '!viewer-admin'"
+                lock('flamingo-oracle') {
+                    try {
+                        timeout(90) {
+                            stage("Prepare Oracle: ${indexOfJdk}") {
+                                sh ".jenkins/start-oracle.sh"
+                                /* no need for this as we have a pristine oracle container... */
+                                /* sh "sqlplus -l -S JENKINS_FLAMINGO/jenkins_flamingo@192.168.1.26:15211/XE < ./.jenkins/clear-oracle-schema.sql" */
+                            }
+                            lock('tomcat-tcp9090') {
+                                stage("IntegrationTest: ${jdkTestName}") {
+                                    echo "Running integration tests on all modules except viewer-admin"
+                                    sh "mvn -e verify -B -Pjenkins -pl '!viewer-admin'"
 
-                                  echo "Running integration tests on viewer-admin module only"
-                                  sh "mvn -e verify -B -Pjenkins -pl 'viewer-admin'"
-                              }
-                          }
-                      }
+                                    echo "Running integration tests on viewer-admin module only"
+                                    sh "mvn -e verify -B -Pjenkins -pl 'viewer-admin'"
+                                }
+                            }
+                        }
+                    } finally {
+                        sh "docker stop oracle-flamingo"
                     }
-                } finally {
-
                 }
 
                 if (jdkTestName == 'OpenJDK11') {
