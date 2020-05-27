@@ -90,7 +90,10 @@ export class WegvakkenFormComponent implements OnDestroy {
   private convertFeatureToIndexed(feat: Feature): IndexedFeatureAttributes {
     const m = new Map<string, FeatureAttribute>();
     for (const field of this.formConfig.fields) {
-      m.set(field.key, {...field, value: feat[field.key]});
+      m.set(field.key, {
+        ...field,
+        value: feat[field.key] ? feat[field.key] : ''
+      });
     }
     return {attrs: m};
   }
