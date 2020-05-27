@@ -4,7 +4,7 @@ import {MatTreeFlatDataSource, MatTreeFlattener} from '@angular/material/tree';
 
 import { WegvakkenTreeHelpers } from './wegvakken-tree-helpers';
 import { FlatNode, FeatureNode } from './wegvakken-tree-models';
-import {FormConfiguration, FormConfigurations} from "../wegvakken-form/wegvakken-form-models";
+import {FeatureAttribute, FormConfiguration, FormConfigurations} from "../wegvakken-form/wegvakken-form-models";
 import {Feature} from "../../shared/generated";
 
 @Component({
@@ -40,7 +40,7 @@ export class WegvakkenTreeComponent implements OnInit,  OnChanges {
   }
 
   public ngOnChanges(changes: SimpleChanges): void {
-    this.dataSource.data = [];// this.convertFeatureToNode(this.features);
+    this.dataSource.data = this.convertFeatureToNode(this.features);
     console.log("ngOnchanges");
     this.treeControl.expandAll();
   }
@@ -48,7 +48,7 @@ export class WegvakkenTreeComponent implements OnInit,  OnChanges {
   public setNodeSelected(node: FlatNode) {
     this.nodeClicked.emit(node.feature);
   }
-/*
+
   private convertFeatureToNode(features: Feature[]): FeatureNode[] {
       const nodes: FeatureNode[] = [];
       features.forEach(feature => {
@@ -56,7 +56,7 @@ export class WegvakkenTreeComponent implements OnInit,  OnChanges {
         if (feature.children ) {
           const fts = {};
           feature.children.forEach((child: Feature) => {
-            const featureType = child.featureType;
+            const featureType = child.clazz;
             if (!fts.hasOwnProperty(featureType)) {
               fts[featureType] = {
                 name: featureType,
@@ -84,7 +84,7 @@ export class WegvakkenTreeComponent implements OnInit,  OnChanges {
           });
       });
       return nodes;
-  }*/
+  }
 
   private getNodeLabel (feature:Feature) :string{
     const config : FormConfiguration = this.formConfigs.config["wegvakonderdeel"];
@@ -98,12 +98,7 @@ export class WegvakkenTreeComponent implements OnInit,  OnChanges {
   }
 
   private getFeatureValue(feature: Feature, key: string): any {
-    let val = 'DUMMYVAL';
-   /* feature.attributes.forEach((attr: FeatureAttribute) => {
-        if (attr.key === key) {
-          val = attr.value;
-        }
-    });*/
+    let val = feature[key];
     return val;
   }
 

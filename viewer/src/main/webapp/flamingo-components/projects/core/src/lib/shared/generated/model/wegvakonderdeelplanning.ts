@@ -9,8 +9,10 @@
  * https://github.com/swagger-api/swagger-codegen.git
  * Do not edit the class manually.
  */
+import { Feature } from './feature';
 
 export interface Wegvakonderdeelplanning { 
+    children?: Array<Feature>;
     id?: string;
     clazz?: string;
 }
