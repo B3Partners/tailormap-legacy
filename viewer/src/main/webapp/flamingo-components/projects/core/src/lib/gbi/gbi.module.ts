@@ -11,7 +11,6 @@ import { MatSnackBarModule } from '@angular/material';
 import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.component';
 import { ConfirmDialogService } from './confirm-dialog/confirm-dialog.service';
 import {ApiModule, BASE_PATH} from "../shared/generated";
-import {pietjepukprovider} from "./testprovider";
 
 
 
@@ -41,8 +40,6 @@ import {pietjepukprovider} from "./testprovider";
   providers: [
     ConfirmDialogService,
     {
-     /* provide: BASE_PATH,
-      useValue: 'asdfasfdwer',*/
       provide: BASE_PATH,
       useFactory: ()=>{
         return window.location.origin + '/form-api';

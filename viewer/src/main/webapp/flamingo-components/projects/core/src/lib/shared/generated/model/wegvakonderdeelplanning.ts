@@ -12,7 +12,14 @@
 import { Feature } from './feature';
 
 export interface Wegvakonderdeelplanning { 
+    fid?: number;
+    hoeveelheid?: number;
+    maatregeltype?: string;
+    jaarvanuitvoering?: number;
     children?: Array<Feature>;
+    kosten?: number;
+    wegvakonderdeel_id?: string;
+    maatregel_wvko?: string;
     id?: string;
     clazz?: string;
 }
