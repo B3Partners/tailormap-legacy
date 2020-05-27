@@ -1,4 +1,5 @@
-import { Feature } from '../../shared/wegvakken-models';
+import {Feature} from "../../shared/generated";
+
 
 export interface FeatureNode {
   name: string;

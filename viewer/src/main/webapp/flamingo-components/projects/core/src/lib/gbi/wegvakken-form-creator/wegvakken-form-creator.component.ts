@@ -1,12 +1,16 @@
 import { Component,  Input, OnChanges, OnDestroy, Output, EventEmitter} from '@angular/core';
-import { FormConfiguration, TabbedFields, Feature, ColumnizedFields, Attribute,
-   IndexedFeatureAttributes} from '../../shared/wegvakken-models';
 import { WegvakkenFormSaveService } from '../wegvakken-form-save.service';
-import { FormGroup, FormControl } from '@angular/forms';
+import {FormControl, FormGroup} from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Subscription } from 'rxjs';
-import {WegvakonderdeelControllerService} from "../../shared/generated";
-
+import {Feature, WegvakonderdeelControllerService} from "../../shared/generated";
+import {
+  Attribute,
+  ColumnizedFields,
+  FormConfiguration,
+  IndexedFeatureAttributes,
+  TabbedFields
+} from "../wegvakken-form/wegvakken-form-models";
 @Component({
   selector: 'flamingo-wegvakken-form-creator',
   templateUrl: './wegvakken-form-creator.component.html',
@@ -22,8 +26,7 @@ export class WegvakkenFormCreatorComponent implements OnChanges, OnDestroy {
   public features: Feature[];
   @Input()
   public indexedAttributes: IndexedFeatureAttributes;
-  @Input()
-  public applicationId: string;
+
   @Input()
   public isBulk = false;
   @Input()
@@ -107,65 +110,37 @@ export class WegvakkenFormCreatorComponent implements OnChanges, OnDestroy {
   }
 
   private createFormControls() {
-    const lookup = {};
-    this.feature.attributes.forEach(a => {
-      lookup [a.key] = a;
-    });
     const attrs = this.formConfig.fields;
     const formControls = {};
     for ( const attr of attrs) {
-      formControls[attr.key] = new FormControl(!this.isBulk && lookup[attr.key] ? lookup[attr.key].value : null);
+      formControls[attr.key] = new FormControl(!this.isBulk && this.indexedAttributes.attrs.get(attr.key)
+        ? this.indexedAttributes.attrs.get(attr.key).value : null);
     }
     this.formgroep = new FormGroup(formControls);
   }
 
   public save() {
+    console.error("to be implemented");
     if (this.isBulk) {
       const features = this.getChangedValues();
-      this.subscriptions.add(this.saveService.savebulk( features, this.feature.appLayer, this.applicationId).subscribe(
-        (d) => {
-            if (d.success) {
-              this._snackBar.open('Opgeslagen', '', {duration: 5000});
-              this.formChanged.emit(false);
-            } else {
-              this._snackBar.open('Fout: Niet opgeslagen: ' + d.error, '', {duration: 5000});
-            }
-        },
-        error => {
-          this._snackBar.open('Fout: Niet opgeslagen: ' + error, '', {
-            duration: 5000,
-          });
-        },
-      ));
+
     } else {
       const feature = this.formgroep.value;
       feature.__fid = this.feature.id;
       this.mergeFromToFeature(feature);
-      this.subscriptions.add(this.saveService.save( this.feature, feature, this.feature.appLayer, this.applicationId).subscribe(
-        (d) => {
-            if (d.success) {
-              this._snackBar.open('Opgeslagen', '', {duration: 5000});
-              this.formChanged.emit(false);
-            } else {
-              this._snackBar.open('Fout: Niet opgeslagen: ' + d.error, '', {duration: 5000});
-            }
-        },
-        error => {
-          this._snackBar.open('Fout: Niet opgeslagen: ' + error, '', {duration: 5000});
-        },
-      ));
+
     }
   }
 
   private mergeFromToFeature(form){
-    this.feature.attributes.forEach(attr=>{
+   /* this.feature.attributes.forEach(attr=>{
       for(const key in form){
         if(form.hasOwnProperty(key) && key === attr.key){
           attr.value = form[key];
           break;
         }
       }
-    });
+    });*/
   }
 
   public getChangedValues(): Feature[] {

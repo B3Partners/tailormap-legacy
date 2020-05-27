@@ -27,7 +27,7 @@ import { Configuration }                                     from '../configurat
 @Injectable()
 export class WegvakonderdeelControllerService {
 
-    protected basePath = 'http://localhost:8084/form-api';
+    protected basePath = 'http://localhost:9090';
     public defaultHeaders = new HttpHeaders();
     public configuration = new Configuration();
 
@@ -140,57 +140,6 @@ export class WegvakonderdeelControllerService {
     /**
      * 
      * 
-     * @param x 
-     * @param y 
-     * @param scale 
-     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
-     * @param reportProgress flag to report request and response progress.
-     */
-    public get1(x: number, y: number, scale: number, observe?: 'body', reportProgress?: boolean): Observable<Array<Wegvakonderdeel>>;
-    public get1(x: number, y: number, scale: number, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<Array<Wegvakonderdeel>>>;
-    public get1(x: number, y: number, scale: number, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<Array<Wegvakonderdeel>>>;
-    public get1(x: number, y: number, scale: number, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
-
-        if (x === null || x === undefined) {
-            throw new Error('Required parameter x was null or undefined when calling get1.');
-        }
-
-        if (y === null || y === undefined) {
-            throw new Error('Required parameter y was null or undefined when calling get1.');
-        }
-
-        if (scale === null || scale === undefined) {
-            throw new Error('Required parameter scale was null or undefined when calling get1.');
-        }
-
-        let headers = this.defaultHeaders;
-
-        // to determine the Accept header
-        let httpHeaderAccepts: string[] = [
-            '*/*'
-        ];
-        const httpHeaderAcceptSelected: string | undefined = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-        if (httpHeaderAcceptSelected != undefined) {
-            headers = headers.set('Accept', httpHeaderAcceptSelected);
-        }
-
-        // to determine the Content-Type header
-        const consumes: string[] = [
-        ];
-
-        return this.httpClient.request<Array<Wegvakonderdeel>>('get',`${this.basePath}/wegvakonderdelen/${encodeURIComponent(String(x))}/${encodeURIComponent(String(y))}/${encodeURIComponent(String(scale))}`,
-            {
-                withCredentials: this.configuration.withCredentials,
-                headers: headers,
-                observe: observe,
-                reportProgress: reportProgress
-            }
-        );
-    }
-
-    /**
-     * 
-     * 
      * @param page Zero-based page index (0..N)
      * @param size The size of the page to be returned
      * @param sort Sorting criteria in the format: property(,asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
@@ -236,6 +185,93 @@ export class WegvakonderdeelControllerService {
         return this.httpClient.request<PageWegvakonderdeel>('get',`${this.basePath}/wegvakonderdelen`,
             {
                 params: queryParameters,
+                withCredentials: this.configuration.withCredentials,
+                headers: headers,
+                observe: observe,
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
+     * 
+     * 
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     */
+    public getAllUnpaged(observe?: 'body', reportProgress?: boolean): Observable<Array<Wegvakonderdeel>>;
+    public getAllUnpaged(observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<Array<Wegvakonderdeel>>>;
+    public getAllUnpaged(observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<Array<Wegvakonderdeel>>>;
+    public getAllUnpaged(observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
+
+        let headers = this.defaultHeaders;
+
+        // to determine the Accept header
+        let httpHeaderAccepts: string[] = [
+            '*/*'
+        ];
+        const httpHeaderAcceptSelected: string | undefined = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+        if (httpHeaderAcceptSelected != undefined) {
+            headers = headers.set('Accept', httpHeaderAcceptSelected);
+        }
+
+        // to determine the Content-Type header
+        const consumes: string[] = [
+        ];
+
+        return this.httpClient.request<Array<Wegvakonderdeel>>('get',`${this.basePath}/wegvakonderdelen/unpaged`,
+            {
+                withCredentials: this.configuration.withCredentials,
+                headers: headers,
+                observe: observe,
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
+     * 
+     * 
+     * @param x 
+     * @param y 
+     * @param scale 
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     */
+    public onPoint(x: number, y: number, scale: number, observe?: 'body', reportProgress?: boolean): Observable<Array<Wegvakonderdeel>>;
+    public onPoint(x: number, y: number, scale: number, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<Array<Wegvakonderdeel>>>;
+    public onPoint(x: number, y: number, scale: number, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<Array<Wegvakonderdeel>>>;
+    public onPoint(x: number, y: number, scale: number, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
+
+        if (x === null || x === undefined) {
+            throw new Error('Required parameter x was null or undefined when calling onPoint.');
+        }
+
+        if (y === null || y === undefined) {
+            throw new Error('Required parameter y was null or undefined when calling onPoint.');
+        }
+
+        if (scale === null || scale === undefined) {
+            throw new Error('Required parameter scale was null or undefined when calling onPoint.');
+        }
+
+        let headers = this.defaultHeaders;
+
+        // to determine the Accept header
+        let httpHeaderAccepts: string[] = [
+            '*/*'
+        ];
+        const httpHeaderAcceptSelected: string | undefined = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+        if (httpHeaderAcceptSelected != undefined) {
+            headers = headers.set('Accept', httpHeaderAcceptSelected);
+        }
+
+        // to determine the Content-Type header
+        const consumes: string[] = [
+        ];
+
+        return this.httpClient.request<Array<Wegvakonderdeel>>('get',`${this.basePath}/wegvakonderdelen/${encodeURIComponent(String(x))}/${encodeURIComponent(String(y))}/${encodeURIComponent(String(scale))}`,
+            {
                 withCredentials: this.configuration.withCredentials,
                 headers: headers,
                 observe: observe,

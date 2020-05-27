@@ -18,7 +18,8 @@ import { MatGridListModule } from '@angular/material';
     CoreModule,
     BrowserAnimationsModule,
   ],
-  providers: [],
+  providers: [
+  ],
   entryComponents: [
     WegvakPopupComponent,
   ],

@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Feature } from '../shared/wegvakken-models';
+
 import { Observable } from 'rxjs';
+import {Feature} from "../shared/generated";
 
 @Injectable({
   providedIn: 'root',
@@ -12,9 +13,9 @@ export class WegvakkenFormSaveService {
 
   public save(f: Feature, feature, appLayer: string, applicationId): Observable<any> {
     let params =  new HttpParams();
-    if (f.isRelated) {
+   /* if (f.isRelated) {
       params = params.append('saveRelatedFeatures', 'true');
-    }
+    }*/
 
     params = params.append('appLayer', '' + appLayer);
     params = params.append('application', applicationId);
@@ -24,7 +25,7 @@ export class WegvakkenFormSaveService {
 
   public savebulk(features: Feature[], appLayer: string, applicationId): Observable<any> {
     let params =  new HttpParams();
-    const fs = features.map(f => ({...f.attributes, __fid: f.id}) );
+    const fs = features.map(f => ({...f, __fid: f.id}) );
     params = params.append('appLayer', '' + appLayer);
     params = params.append('application', applicationId);
     params = params.append('features', JSON.stringify(fs));
@@ -33,7 +34,9 @@ export class WegvakkenFormSaveService {
 
 
   public delete(f: Feature, appLayer: string, applicationId): Observable<any> {
-    const feature = {
+    console.error("to be implemented");
+    return null;
+  /*  const feature = {
       __fid: f.id,
     };
 
@@ -48,6 +51,6 @@ export class WegvakkenFormSaveService {
     params = params.append('appLayer', '' + appLayer);
     params = params.append('application', applicationId);
     params = params.append('feature', JSON.stringify(feature));
-    return this.http.post<Feature>('/viewer/action/feature/edit', params);
+    return this.http.post<Feature>('/viewer/action/feature/edit', params);*/
   }
 }

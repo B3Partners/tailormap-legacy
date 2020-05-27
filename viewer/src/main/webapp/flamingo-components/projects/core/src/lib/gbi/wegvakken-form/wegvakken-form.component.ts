@@ -1,11 +1,19 @@
 import { Component, Inject, OnDestroy, Input } from '@angular/core';
 import {  MatDialogRef, MAT_DIALOG_DATA, MatSnackBar } from '@angular/material';
-import { DialogData, Feature, FormConfiguration, IndexedFeatureAttributes,
-   FeatureAttribute, FormConfigurations, FormFieldType } from '../../shared/wegvakken-models';
+
 import { ConfirmDialogService } from '../confirm-dialog/confirm-dialog.service';
 import { filter, take } from 'rxjs/operators';
 import { WegvakkenFormSaveService } from '../wegvakken-form-save.service';
 import { Subscription } from 'rxjs';
+import {DialogData} from "../wegvak-popup/wegvak-popup-models";
+import {
+  FeatureAttribute,
+  FormConfiguration,
+  FormConfigurations,
+  IndexedFeatureAttributes
+} from "./wegvakken-form-models";
+import {Feature} from "../../shared/generated";
+
 @Component({
   selector: 'flamingo-wegvakken-form',
   templateUrl: './wegvakken-form.component.html',
@@ -15,7 +23,6 @@ export class WegvakkenFormComponent implements OnDestroy {
 
   public features: Feature[];
   public feature: Feature;
-  public applicationId: string;
   public formConfig: FormConfiguration;
   public formConfigs: FormConfigurations;
   public indexedAttributes: IndexedFeatureAttributes;
@@ -32,7 +39,6 @@ export class WegvakkenFormComponent implements OnDestroy {
                private saveService: WegvakkenFormSaveService,
                private _snackBar: MatSnackBar) {
       this.formConfigs = data.formConfigs;
-      this.applicationId = data.applicationId;
       this.features = data.formFeatures;
       this.feature = this.features[0];
       this.isBulk = !!data.isBulk;
@@ -56,7 +62,7 @@ export class WegvakkenFormComponent implements OnDestroy {
 
   private initForm() {
     this.formDirty = false;
-    this.formConfig = this.formConfigs.config[this.feature.featureType];
+    this.formConfig = this.formConfigs.config[this.feature.clazz];
     this.indexedAttributes = this.convertFeatureToIndexed(this.feature);
   }
 
@@ -83,14 +89,14 @@ export class WegvakkenFormComponent implements OnDestroy {
 
   private convertFeatureToIndexed(feat: Feature): IndexedFeatureAttributes {
     const m = new Map<string, FeatureAttribute>();
-    for (const attr of feat.attributes) {
-      m.set(attr.key, attr);
+    for (const field of this.formConfig.fields) {
+      m.set(field.key, {...field, value: feat[field.key]});
     }
     return {attrs: m};
   }
 
   public remove() {
-    const attribute = this.feature.attributes.find(a => a.key === this.formConfig.treeNodeColumn);
+    /*const attribute = this.feature.attributes.find(a => a.key === this.formConfig.treeNodeColumn);
     const message = 'Wilt u ' + this.formConfig.name + ' - ' + attribute.value + ' verwijderen?';
     this.confirmDialogService.confirm('Verwijderen',
     message, true)
@@ -98,22 +104,12 @@ export class WegvakkenFormComponent implements OnDestroy {
       // tslint:disable-next-line: rxjs-no-ignored-subscription
       .subscribe(() => {
         this.removeFeatureFromDb();
-      });
+      });*/
+    console.error("to be implemented");
   }
 
   private removeFeatureFromDb() {
-    this.subscriptions.add(this.saveService.delete( this.feature, this.feature.appLayer, this.applicationId).subscribe(
-        (d) => {
-            if (d.success) {
-              this.removeSuccess();
-            } else {
-              this._snackBar.open('Fout: Niet verwijderd: ' + d.error, '', {duration: 5000});
-            }
-        },
-        error => {
-          this._snackBar.open('Fout: Niet verwijderd: ' + error, '', {duration: 5000});
-        },
-      ));
+    console.error("to be implemented");
   }
 
   private removeSuccess() {
@@ -135,7 +131,7 @@ export class WegvakkenFormComponent implements OnDestroy {
     const type = evt.srcElement.id;
     this.formConfig = this.formConfigs.config[type];
     const name = 'Nieuwe '  + this.formConfig.name;
-    const labelAttribute: FeatureAttribute = {
+   /* const labelAttribute: FeatureAttribute = {
       key: this.formConfig.treeNodeColumn,
       type: FormFieldType.TEXTFIELD,
       value: name,
@@ -160,15 +156,13 @@ export class WegvakkenFormComponent implements OnDestroy {
     });
     const newFeature = {
       id: null,
-      featureType: type,
-      featureSource: null,
       attributes: [...relatedColumns, labelAttribute],
-      appLayer: this.feature.appLayer,
       isRelated: true,
     };
     parentFeature.children.push(newFeature);
     this.feature = newFeature;
-    this.features = [...this.features];
+    this.features = [...this.features];*/
+    console.error("to be implemented");
     this.initForm();
   }
 

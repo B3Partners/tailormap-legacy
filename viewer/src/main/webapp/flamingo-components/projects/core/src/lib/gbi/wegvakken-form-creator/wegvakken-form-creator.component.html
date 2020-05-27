@@ -1,16 +1,12 @@
 <form [formGroup]="formgroep">
-
-    <button mat-button  mat-mini-fab color="" (click)="pietje();" class="close-button" >
-      asdf
-    </button>
   <mat-tab-group>
       <mat-tab *ngFor="let tab of tabbedConfig.tabs | keyvalue" label="{{formConfig.tabConfig[tab.key]}}">
           <div class="tab">
             <div *ngFor="let column of tab.value.columns | keyvalue" class="column">
               <span *ngFor="let attr of column.value" class="cellfield">
 
-                <flamingo-wegvak-formfield [featureAttribute]=indexedAttributes.attrs.get(attr.key)
-                  [attribute]=attr
+                <flamingo-wegvak-formfield [value]=indexedAttributes.attrs.get(attr.key).value
+                  [attribute]=indexedAttributes.attrs.get(attr.key)
                   [groep]="formgroep"
                   [lookup]=lookup
                   [isBulk]=isBulk

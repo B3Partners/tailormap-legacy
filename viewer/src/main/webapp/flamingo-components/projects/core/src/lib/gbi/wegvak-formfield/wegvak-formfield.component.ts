@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { Attribute, FeatureAttribute, FormFieldType } from '../../shared/wegvakken-models';
+import {Attribute, FeatureAttribute, FormFieldType} from "../wegvakken-form/wegvakken-form-models";
 
 @Component({
   selector: 'flamingo-wegvak-formfield',
@@ -10,13 +10,13 @@ import { Attribute, FeatureAttribute, FormFieldType } from '../../shared/wegvakk
 export class WegvakFormfieldComponent {
 
   @Input()
-  public attribute: Attribute;
+  public attribute: FeatureAttribute;
 
   @Input()
   public form: FormGroup;
 
   @Input()
-  public featureAttribute: FeatureAttribute;
+  public value: string;
 
   @Input()
   public groep: FormGroup;

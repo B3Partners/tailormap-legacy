@@ -9,34 +9,38 @@
  * https://github.com/swagger-api/swagger-codegen.git
  * Do not edit the class manually.
  */
+import { Feature } from './feature';
 import { Geometry } from './geometry';
+import { Wegvakonderdeelplanning } from './wegvakonderdeelplanning';
 
-export interface Wegvakonderdeel { 
+export interface Wegvakonderdeel extends Feature { 
     fid?: number;
-    verhardingsfunctie?: string;
-    verhardingssoort?: string;
-    binnenKom?: string;
-    breedte?: string;
-    woonplaats?: string;
-    verhardingstype?: string;
-    functieWeg?: string;
-    wegtype?: string;
-    veiligheid?: string;
+    geometrie?: Geometry;
+    planningen?: Array<Wegvakonderdeelplanning>;
     id?: string;
+    objectGuid?: string;
+    woonplaats?: string;
     wijk?: string;
-    fysiekvoorkomenwegplus?: string;
-    beheerder?: string;
+    openbareRuimte?: string;
+    verhardingstype?: string;
+    verhardingssoort?: string;
+    stdStructuurelement?: string;
+    verhardingsfunctie?: string;
+    oppervlakte?: string;
+    rijstrook?: string;
+    aanlegjaar?: string;
     lengte?: string;
+    breedte?: string;
+    beheerder?: string;
+    aanzien?: string;
     comfort?: string;
     duurzaamheid?: string;
-    aanzien?: string;
-    stdStructuurelement?: string;
-    aanlegjaar?: string;
-    rijstrook?: string;
+    veiligheid?: string;
     bestekNr?: string;
-    objectGuid?: string;
+    binnenKom?: string;
+    wegtype?: string;
+    functieWeg?: string;
     functieWegPlus?: string;
-    oppervlakte?: string;
-    geometrie?: Geometry;
-    openbareRuimte?: string;
+    fysiekvoorkomenwegplus?: string;
+    clazz?: string;
 }

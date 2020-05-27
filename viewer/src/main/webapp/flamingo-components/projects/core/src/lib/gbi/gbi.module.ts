@@ -10,7 +10,8 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MatSnackBarModule } from '@angular/material';
 import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.component';
 import { ConfirmDialogService } from './confirm-dialog/confirm-dialog.service';
-import {ApiModule} from "../shared/generated";
+import {ApiModule, BASE_PATH} from "../shared/generated";
+import {pietjepukprovider} from "./testprovider";
 
 
 
@@ -39,6 +40,15 @@ import {ApiModule} from "../shared/generated";
   ],
   providers: [
     ConfirmDialogService,
+    {
+     /* provide: BASE_PATH,
+      useValue: 'asdfasfdwer',*/
+      provide: BASE_PATH,
+      useFactory: ()=>{
+        return window.location.origin + '/form-api';
+      }
+    },
   ],
 })
 export class GbiModule { }
+

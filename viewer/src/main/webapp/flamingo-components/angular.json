@@ -70,6 +70,7 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
             "browserTarget": "bridge:build",
+            "publicHost":"http://localhost:3200",
             "port": 3200
           },
           "configurations": {

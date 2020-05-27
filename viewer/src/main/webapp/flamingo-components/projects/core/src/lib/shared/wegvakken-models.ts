@@ -1,21 +1,14 @@
+import {Wegvakonderdeel, Wegvakonderdeelplanning} from "./generated";
 
+
+/*
 export interface Feature {
   id: string;
-  featureType: string;
-  featureSource: string;
   attributes: FeatureAttribute[];
   children?: Feature[];
-  appLayer: string;
   isRelated: boolean;
 }
 
-export interface Attribute {
-  key: string;
-  type: FormFieldType;
-  options ?: SelectOption[];
-  column: number;
-  tab: number;
-}
 
 export interface TextAttribute extends Attribute {
   key: string;
@@ -39,10 +32,6 @@ export interface SelectAttribute extends Attribute {
   tab: number;
 }
 
-export interface SelectOption {
-  label: string;
-  val: string;
-}
 
 export interface FeatureAttribute extends Attribute {
   key: string;
@@ -50,25 +39,6 @@ export interface FeatureAttribute extends Attribute {
   value: string;
 }
 
-export interface IndexedFeatureAttributes {
-  attrs: Map<string, Attribute>;
-}
-
-export interface FormConfigurations {
-  config: Map <string, FormConfiguration> ;
-}
-
-export interface FormConfiguration {
-  fields: Attribute[];
-  tabs: number;
-  name: string;
-  treeNodeColumn: string;
-  idInTreeNodeColumn?: boolean;
-  newPossible: boolean;
-  featureType: string;
-  tabConfig: Map<number, string>;
-  relation ?: FormRelation;
-}
 
 export interface FormRelation {
   relatedFeatureType: string;
@@ -80,31 +50,9 @@ export interface RelatedColumn {
   relatedFeatureColumn: string;
 }
 
-export interface DialogData {
-  formFeatures: Feature[];
-  formConfigs: FormConfigurations;
-  applicationId: string;
-  isBulk: boolean;
-  lookup: Map<string, string>;
-}
 
-export interface DialogClosedData {
-  iets: string;
-}
 
-export interface TabbedFields {
-  tabs: Map<number, ColumnizedFields>;
-}
 
-export interface ColumnizedFields {
-  columns: Map<number, Attribute[]>;
-}
-
-export enum FormFieldType {
-  TEXTFIELD = 'textfield',
-  SELECT = 'select',
-  HIDDEN = 'hidden',
-}
 
 export interface FlamingoApplayer {
   id: number;
@@ -134,3 +82,4 @@ export interface FlamingoAttribute {
   alias: string;
   id: number;
 }
+*/

@@ -67,7 +67,6 @@ Ext.define("viewer.components.GBI", {
             console.log("wanneerPopupClosed", evt.detail);
         });
         this.div.setAttribute("config", JSON.stringify(this.formConfigs));
-        this.div.setAttribute("application", this.config.viewerController.app.id);
         document.body.appendChild(this.div);
     },
     loadConfig: function(){
@@ -97,8 +96,9 @@ Ext.define("viewer.components.GBI", {
             y: y,
             scale: scale
         };
-
-        this.div.setAttribute("app-layer", this.stringifyAppLayer(this.config.viewerController.getAppLayerById(this.config.layers[0])));
+        var visibleLayers = this.config.viewerController.getAppLayerById(this.config.layers[0]);
+        this.div.setAttribute("visible-layers", this.stringifyAppLayer(visibleLayers));
+        //this.div.setAttribute("app-layer", this.stringifyAppLayer(this.config.viewerController.getAppLayerById(this.config.layers[0])));
         this.div.setAttribute("map-clicked", JSON.stringify(json));
         /*
         var appLayers = this.config.layers;
@@ -261,7 +261,7 @@ Ext.define("viewer.components.GBI", {
             serviceId: al.serviceId,
             attributes: al.attributes
         };
-        var stringified = JSON.stringify(culledObject);
+        var stringified = JSON.stringify([culledObject]);
         return stringified;
     },
     failed: function(msg) {

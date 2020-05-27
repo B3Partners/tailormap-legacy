@@ -1,10 +1,11 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import {Component, OnInit, Input, Output, EventEmitter, Inject} from '@angular/core';
 import { WegvakkenFormComponent } from '../wegvakken-form/wegvakken-form.component';
 import { MatDialog } from '@angular/material';
-import { Feature, DialogClosedData, FormConfigurations,
-        FeatureAttribute, FormConfiguration, FlamingoApplayer } from '../../shared/wegvakken-models';
-import {Wegvakonderdeel, WegvakonderdeelControllerService} from "../../shared/generated";
+import {BASE_PATH, Feature, Wegvakonderdeel, WegvakonderdeelControllerService} from "../../shared/generated";
 import {MatSnackBar} from "@angular/material/snack-bar";
+import {DialogClosedData} from "./wegvak-popup-models";
+import {FormConfiguration, FormConfigurations} from "../wegvakken-form/wegvakken-form-models";
+
 
 @Component({
   selector: 'flamingo-wegvak-popup',
@@ -16,29 +17,22 @@ export class WegvakPopupComponent implements OnInit {
   constructor(
     public dialog: MatDialog,
     private service: WegvakonderdeelControllerService,
-    private _snackBar: MatSnackBar) {
+    private _snackBar: MatSnackBar ) {
   }
 
   private popupOpen = false;
 
-  private applicationId: string;
+  private layers;
 
   private isBulk: string;
 
   private formConfigs: FormConfigurations;
 
-  private flamingoAppLayer: FlamingoApplayer;
-
   public lookup: Map<string, string>;
 
   @Input()
-  public set application(id: string) {
-    this.applicationId = id;
-  }
-
-  @Input()
   public set config(config: string) {
-    this.formConfigs = this.convertToFomConfig(config);
+    this.formConfigs = JSON.parse(config);
   }
 
   @Input()
@@ -47,10 +41,10 @@ export class WegvakPopupComponent implements OnInit {
   }
 
   @Input()
-  public set featureClicked(data: string) {
-    const ff = this.convertToFormFeature(JSON.parse(data), false);
-    this.openDialog(ff);
+  public set visibleLayers(layers: string){
+    this.layers = JSON.parse(layers);
   }
+
 
   @Input()
   public set mapClicked(data: string){
@@ -58,35 +52,17 @@ export class WegvakPopupComponent implements OnInit {
     const x = mapClickData.x;
     const y = mapClickData.y;
     const scale = mapClickData.scale;
-    this.service.get1(x, y, scale).subscribe(
+    this.service.onPoint(x, y, scale).subscribe(
       (wegvakonderdelen: Wegvakonderdeel[]) => {
-        const formConfig = this.formConfigs.config['wegvakonderdeel'];
-        wegvakonderdelen.forEach(w=>{
-         // let fa = this.convertFeatureAttributes(formConfig, w as any);
-          let fa = this.convertToFormFeature(w as any, false);
-          this.openDialog(fa);
-        });
-        /* if (d.success) {
-           this._snackBar.open('Opgeslagen', '', {duration: 5000});
-           this.formChanged.emit(false);
-         } else {
-           this._snackBar.open('Fout: Niet opgeslagen: ' + d.error, '', {duration: 5000});
-         }*/
+
+        this.openDialog(wegvakonderdelen);
       },
       error => {
-        this._snackBar.open('Fout: Niet opgeslagen: ' + error, '', {
+        this._snackBar.open('Fout: Feature niet kunnen ophalen: ' + error, '', {
           duration: 5000,
         });
       },
     );
-    //const ff = this.convertToFormFeature(JSON.parse(data), false);
-    //this.openDialog(ff);
-  }
-
-  @Input()
-  public set appLayer(appLayer: string) {
-    this.flamingoAppLayer = JSON.parse(appLayer);
-    this.lookup = this.createColumnLookup();
   }
 
   @Input()
@@ -113,7 +89,6 @@ export class WegvakPopupComponent implements OnInit {
         formConfigs: this.formConfigs,
         formFeatures,
         isBulk: this.isBulk,
-        applicationId: this.applicationId,
         lookup: this.lookup,
       },
     });
@@ -127,8 +102,8 @@ export class WegvakPopupComponent implements OnInit {
     });
   }
 
-
-  private convertToFormFeature(f: any, isRelated: boolean): Feature[] {
+/*
+  private convertToFormFeature(f: any, isRelated: boolean): Wegvakonderdeel[] {
     if (Array.isArray(f)) {
       const features = [];
       f.forEach(feat => {
@@ -157,18 +132,15 @@ export class WegvakPopupComponent implements OnInit {
       }
       const feature: Feature = {
           id,
-          featureType: ft,
-          featureSource: '16',
           children,
-          appLayer: f.appLayer,
           isRelated,
           attributes: featureAttributes,
       };
       return [feature];
     }
-  }
+  }*/
 
-  private convertFeatureAttributes(formConfig: FormConfiguration, attributes: []): FeatureAttribute[] {
+/*  private convertFeatureAttributes(formConfig: FormConfiguration, attributes: []): FeatureAttribute[] {
     const attrs = [];
     for (const attr of formConfig.fields) {
       for (const key in attributes) {
@@ -181,21 +153,17 @@ export class WegvakPopupComponent implements OnInit {
     }
     return attrs;
   }
-
+*/
   public createColumnLookup(): Map<string, string> {
     const lookup = new Map<string, string>();
-    this.flamingoAppLayer.attributes.forEach(a => {
+   /* this.flamingoAppLayer.attributes.forEach(a => {
       const index = a.longname.indexOf('.');
       const featureType = a.longname.substring(0, index);
       const originalName = a.longname.substring(index + 1);
       const alias = a.editAlias || a.alias;
       lookup[originalName] = (alias || a.name);
-    });
+    });*/
     return lookup;
-  }
-
-  private convertToFomConfig(config: string): FormConfigurations {
-    return JSON.parse(config);
   }
 
 }
