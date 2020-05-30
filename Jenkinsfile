@@ -9,7 +9,7 @@ timestamps {
                 numToKeepStr: '5']
             ]]);
 
-        final def jdks = ['OpenJDK11','JDK8']
+        final def jdks = [/*'OpenJDK11',*/'JDK8']
 
         stage("Prepare") {
              checkout scm
