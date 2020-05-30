@@ -87,7 +87,10 @@ public abstract class TestUtil extends LoggingTestUtil {
         testname = testname.replaceAll(":", "-");
         testname = testname.replaceAll(" ", "");
         String randomizer = RandomStringUtils.randomAlphabetic(8);
-        config.put("javax.persistence.jdbc.url", "jdbc:hsqldb:file:./target/unittest-hsqldb_"+ testname + "_" + randomizer + "/db;shutdown=true");
+        // if you want to keep the database of each test in the target directory use this:
+        // config.put("javax.persistence.jdbc.url", "jdbc:hsqldb:file:./target/unittest-hsqldb_"+ testname + "_" + randomizer + "/db;shutdown=true");
+        // if you want tests to run against in-memory database use:
+        config.put("javax.persistence.jdbc.url", "jdbc:hsqldb:mem:unittest-hsqldb_"+ testname + "_" + randomizer + "/db;shutdown=true");
         entityManager = Persistence.createEntityManagerFactory(persistenceUnit,config).createEntityManager();
         if(!entityManager.getTransaction().isActive()){
             entityManager.getTransaction().begin();
