@@ -61,7 +61,7 @@
         <apache.httpcomponents.version>4.5.13</apache.httpcomponents.version>
         <jaxb.api.version>2.3.3</jaxb.api.version>
         <jaxb.impl.version>2.3.3</jaxb.impl.version>
-        <hibernate.version>5.4.12.Final</hibernate.version>
+        <hibernate.version>5.4.28.Final</hibernate.version>
         <activation.api.version>1.2.2</activation.api.version>
         <slf4j.version>1.7.30</slf4j.version>
         <jackson2.version>2.12.2</jackson2.version>
@@ -347,12 +347,6 @@
                 <version>2.3.2</version>
             </dependency>
             <dependency>
-                <!-- override the version provided by hibernate -->
-                <groupId>org.javassist</groupId>
-                <artifactId>javassist</artifactId>
-                <version>3.27.0-GA</version>
-            </dependency>
-            <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-core</artifactId>
                 <version>${hibernate.version}</version>
@@ -361,16 +355,6 @@
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-entitymanager</artifactId>
                 <version>${hibernate.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <!--
-                        exclude old javassist so we can use 3.26.0-GA, see issue #745
-                        when upgrading hibernate this should be removed
-                        -->
-                        <groupId>javassist</groupId>
-                        <artifactId>javassist</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
             <!-- viewer-config-persistence -->
             <dependency>
