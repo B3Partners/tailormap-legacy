@@ -128,22 +128,25 @@ public class AttributeSourceActionBean extends LocalizableActionBean {
         return new ForwardResolution(EDITJSP);
     }
 
-    protected void deleteFeatureSource(EntityManager em, SolrServer server){
-        if (!featureSource.getFeatureTypes().isEmpty()) {
-            em.createQuery("update Layer set featureType = null where featureType in :fts").setParameter("fts", featureSource.getFeatureTypes()).executeUpdate();
-            em.createQuery("update ConfiguredAttribute set featureType=null where featureType in :fts").setParameter("fts",featureSource.getFeatureTypes()).executeUpdate();
-            em.createQuery("update ConfiguredAttribute set valueListFeatureType=null where valueListFeatureType in :fts").setParameter("fts",featureSource.getFeatureTypes()).executeUpdate();
+    private void deleteFeatureTypes(EntityManager em, SolrServer server, List<SimpleFeatureType> fts){
+        if (!fts.isEmpty()) {
+            em.createQuery("update Layer set featureType = null where featureType in :fts").setParameter("fts", fts).executeUpdate();
+            em.createQuery("update ConfiguredAttribute set featureType=null where featureType in :fts").setParameter("fts",fts).executeUpdate();
+            em.createQuery("update ConfiguredAttribute set valueListFeatureType=null where valueListFeatureType in :fts").setParameter("fts",fts).executeUpdate();
 
-            List<SolrConf> confs = em.createQuery("FROM SolrConf where simpleFeatureType in :fts", SolrConf.class).setParameter("fts",featureSource.getFeatureTypes()).getResultList();
+            List<SolrConf> confs = em.createQuery("FROM SolrConf where simpleFeatureType in :fts", SolrConf.class).setParameter("fts",fts).getResultList();
             for (SolrConf conf : confs) {
                 ConfigureSolrActionBean.deleteSolrConfiguration(em, conf, server);
             }
         }
+    }
+
+    protected void deleteFeatureSource(EntityManager em, SolrServer server){
+       this.deleteFeatureTypes(em, server, featureSource.getFeatureTypes());
 
         em.createQuery("update ConfiguredAttribute set valueListFeatureSource=null, valueListLabelName=null,valueListValueName=null where valueListFeatureSource in :fs").setParameter("fs",featureSource).executeUpdate();
 
         em.remove(featureSource);
-
         em.getTransaction().commit();
     }
 
@@ -261,7 +264,9 @@ public class AttributeSourceActionBean extends LocalizableActionBean {
             byStatus.get(UpdateResult.Status.NEW).size(),
             byStatus.get(UpdateResult.Status.MISSING).size()
         ));
-        
+
+        List<SimpleFeatureType> fts = this.changedFeatureTypes.get(UpdateResult.Status.MISSING);
+        deleteFeatureTypes(em, SolrInitializer.getServerInstance(), fts);
         em.persist(featureSource);
         em.getTransaction().commit();
         
