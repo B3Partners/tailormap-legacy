@@ -14,7 +14,7 @@ import {
 import { FormCreatorHelpers } from './form-creator-helpers';
 
 @Component({
-  selector: 'flamingo-wegvakken-form-creator',
+  selector: 'flamingo-form-creator',
   templateUrl: './form-creator.component.html',
   styleUrls: ['./form-creator.component.css'],
 })

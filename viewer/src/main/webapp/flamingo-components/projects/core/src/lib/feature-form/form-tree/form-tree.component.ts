@@ -9,7 +9,7 @@ import {Feature} from "../../shared/generated";
 import {FormTreeHelpers} from "./form-tree-helpers";
 
 @Component({
-  selector: 'flamingo-wegvakken-tree',
+  selector: 'flamingo-form-tree',
   templateUrl: './form-tree.component.html',
   styleUrls: ['./form-tree.component.css'],
 })

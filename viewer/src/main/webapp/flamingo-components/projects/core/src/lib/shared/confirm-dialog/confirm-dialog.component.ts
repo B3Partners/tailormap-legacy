@@ -8,7 +8,7 @@ export interface ConfirmDialogData {
 }
 
 @Component({
-  selector: 'lcms-confirm-dialog',
+  selector: 'flamingo-confirm-dialog',
   templateUrl: './confirm-dialog.component.html',
   styleUrls: ['./confirm-dialog.component.css'],
 })

@@ -3,7 +3,7 @@ import { FormGroup } from '@angular/forms';
 import {Attribute, FeatureAttribute, FormFieldType} from "../form/form-models";
 
 @Component({
-  selector: 'flamingo-wegvak-formfield',
+  selector: 'flamingo-formfield',
   templateUrl: './formfield.component.html',
   styleUrls: ['./formfield.component.css'],
 })

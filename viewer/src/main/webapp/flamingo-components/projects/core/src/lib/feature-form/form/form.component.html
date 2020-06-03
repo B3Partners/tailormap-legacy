@@ -7,22 +7,22 @@
   </h1>
   <div class="form-container">
     <div class="tree">
-      <flamingo-wegvakken-tree
+      <flamingo-form-tree
       (nodeClicked)='openForm($event)'
       [features]=features
       [feature]=feature
-      [formConfigs]=formConfigs></flamingo-wegvakken-tree>
+      [formConfigs]=formConfigs></flamingo-form-tree>
     </div>
     <div class="form">
-      <flamingo-wegvakken-form-creator #formCreator
-      [feature]=feature
-      [features]=features
-      [lookup]=lookup
-      [formConfig]=formConfig
-      [isBulk]=isBulk
-      (formChanged)="formChanged($event)"
+      <flamingo-form-creator #formCreator
+                             [feature]=feature
+                             [features]=features
+                             [lookup]=lookup
+                             [formConfig]=formConfig
+                             [isBulk]=isBulk
+                             (formChanged)="formChanged($event)"
       >
-      </flamingo-wegvakken-form-creator>
+      </flamingo-form-creator>
     </div>
   </div>
   <div class="bottom-bar">

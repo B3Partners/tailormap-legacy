@@ -1,7 +1,7 @@
 import { Component, Inject, OnDestroy } from '@angular/core';
 import {  MatDialogRef, MAT_DIALOG_DATA, MatSnackBar } from '@angular/material';
 
-import { ConfirmDialogService } from '../confirm-dialog/confirm-dialog.service';
+import { ConfirmDialogService } from '../../shared/confirm-dialog/confirm-dialog.service';
 import { filter, take } from 'rxjs/operators';
 
 import { Subscription } from 'rxjs';
@@ -13,7 +13,7 @@ import {
 import {Feature} from "../../shared/generated";
 
 @Component({
-  selector: 'flamingo-wegvakken-form',
+  selector: 'flamingo-form',
   templateUrl: './form.component.html',
   styleUrls: ['./form.component.css'],
 })

@@ -8,7 +8,7 @@ import {FormConfiguration, FormConfigurations} from "../form/form-models";
 
 
 @Component({
-  selector: 'flamingo-wegvak-popup',
+  selector: 'flamingo-form-popup',
   templateUrl: './form-popup.component.html',
   styleUrls: ['./form-popup.component.css'],
 })
