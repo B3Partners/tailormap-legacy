@@ -2,17 +2,18 @@ import { Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChange
 import {FlatTreeControl} from '@angular/cdk/tree';
 import {MatTreeFlatDataSource, MatTreeFlattener} from '@angular/material/tree';
 
-import { WegvakkenTreeHelpers } from './wegvakken-tree-helpers';
-import { FlatNode, FeatureNode } from './wegvakken-tree-models';
-import { FormConfiguration, FormConfigurations} from "../wegvakken-form/wegvakken-form-models";
+
+import { FlatNode, FeatureNode } from './form-tree-models';
+import { FormConfiguration, FormConfigurations} from "../form/form-models";
 import {Feature} from "../../shared/generated";
+import {FormTreeHelpers} from "./form-tree-helpers";
 
 @Component({
   selector: 'flamingo-wegvakken-tree',
-  templateUrl: './wegvakken-tree.component.html',
-  styleUrls: ['./wegvakken-tree.component.css'],
+  templateUrl: './form-tree.component.html',
+  styleUrls: ['./form-tree.component.css'],
 })
-export class WegvakkenTreeComponent implements OnInit,  OnChanges {
+export class FormTreeComponent implements OnInit,  OnChanges {
 
   constructor() {
   }
@@ -32,7 +33,7 @@ export class WegvakkenTreeComponent implements OnInit,  OnChanges {
   public treeControl = new FlatTreeControl<FlatNode>(node => node.level, node => node.expandable);
 
   public treeFlattener = new MatTreeFlattener(
-    WegvakkenTreeHelpers.transformer, node => node.level, node => node.expandable, node => node.children);
+    FormTreeHelpers.transformer, node => node.level, node => node.expandable, node => node.children);
 
   public dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
 

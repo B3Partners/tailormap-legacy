@@ -1,6 +1,6 @@
 import {Feature} from "../../shared/generated";
 
-import {FormConfigurations} from "../wegvakken-form/wegvakken-form-models";
+import {FormConfigurations} from "../form/form-models";
 
 export interface DialogData {
   formFeatures: Feature[];

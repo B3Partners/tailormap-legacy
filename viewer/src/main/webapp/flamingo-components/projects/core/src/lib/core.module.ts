@@ -1,15 +1,15 @@
 import { NgModule } from '@angular/core';
-import { GbiModule } from './gbi/gbi.module';
+import { FeatureFormModule } from './feature-form/feature-form.module';
 
 
 
 @NgModule({
   declarations: [],
   imports: [
-    GbiModule,
+    FeatureFormModule,
   ],
   exports: [
-    GbiModule,
+    FeatureFormModule,
   ],
 })
 export class CoreModule { }

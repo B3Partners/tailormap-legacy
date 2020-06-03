@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { WegvakkenTreeComponent } from './wegvakken-tree.component';
+import { FormComponent } from './form.component';
 
-describe('WegvakkenTreeComponent', () => {
-  let component: WegvakkenTreeComponent;
-  let fixture: ComponentFixture<WegvakkenTreeComponent>;
+describe('WegvakkenFormComponent', () => {
+  let component: FormComponent;
+  let fixture: ComponentFixture<FormComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ WegvakkenTreeComponent ]
+      declarations: [ FormComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(WegvakkenTreeComponent);
+    fixture = TestBed.createComponent(FormComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

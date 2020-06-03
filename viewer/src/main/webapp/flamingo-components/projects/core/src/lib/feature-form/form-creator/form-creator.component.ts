@@ -1,5 +1,4 @@
 import { Component,  Input, OnChanges, OnDestroy, Output, EventEmitter} from '@angular/core';
-import { WegvakkenFormSaveService } from '../wegvakken-form-save.service';
 import {FormControl, FormGroup} from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Subscription } from 'rxjs';
@@ -11,15 +10,15 @@ import {
   FormConfiguration,
   IndexedFeatureAttributes,
   TabbedFields
-} from "../wegvakken-form/wegvakken-form-models";
-import { WegvakkenFormCreatorHelpers } from './wegvakken-form-creator-helpers';
+} from "../form/form-models";
+import { FormCreatorHelpers } from './form-creator-helpers';
 
 @Component({
   selector: 'flamingo-wegvakken-form-creator',
-  templateUrl: './wegvakken-form-creator.component.html',
-  styleUrls: ['./wegvakken-form-creator.component.css'],
+  templateUrl: './form-creator.component.html',
+  styleUrls: ['./form-creator.component.css'],
 })
-export class WegvakkenFormCreatorComponent implements OnChanges, OnDestroy {
+export class FormCreatorComponent implements OnChanges, OnDestroy {
 
   @Input()
   public formConfig: FormConfiguration;
@@ -50,7 +49,7 @@ export class WegvakkenFormCreatorComponent implements OnChanges, OnDestroy {
 
   public ngOnChanges() {
     this.tabbedConfig = this.prepareFormConfig();
-    this.indexedAttributes = WegvakkenFormCreatorHelpers.convertFeatureToIndexed(this.feature, this.formConfig);
+    this.indexedAttributes = FormCreatorHelpers.convertFeatureToIndexed(this.feature, this.formConfig);
     this.createFormControls();
     this.formgroep.valueChanges.subscribe(s=>{this.formChanged.emit(true);});
   }

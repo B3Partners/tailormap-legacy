@@ -1,7 +1,7 @@
 
-import { FeatureNode, FlatNode } from './wegvakken-tree-models';
+import { FeatureNode, FlatNode } from './form-tree-models';
 
-export class WegvakkenTreeHelpers {
+export class FormTreeHelpers {
 
   public static transformer(node: FeatureNode, level: number): FlatNode  {
     return {

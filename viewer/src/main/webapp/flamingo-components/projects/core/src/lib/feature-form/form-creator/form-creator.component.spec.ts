@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { WegvakkenFormCreatorComponent } from './wegvakken-form-creator.component';
+import { FormCreatorComponent } from './form-creator.component';
 
 describe('WegvakkenFormCreatorComponent', () => {
-  let component: WegvakkenFormCreatorComponent;
-  let fixture: ComponentFixture<WegvakkenFormCreatorComponent>;
+  let component: FormCreatorComponent;
+  let fixture: ComponentFixture<FormCreatorComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ WegvakkenFormCreatorComponent ]
+      declarations: [ FormCreatorComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(WegvakkenFormCreatorComponent);
+    fixture = TestBed.createComponent(FormCreatorComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

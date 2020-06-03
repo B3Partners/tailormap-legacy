@@ -1,18 +1,18 @@
 import {Component, OnInit, Input, Output, EventEmitter, Inject} from '@angular/core';
-import { WegvakkenFormComponent } from '../wegvakken-form/wegvakken-form.component';
+import { FormComponent } from '../form/form.component';
 import { MatDialog } from '@angular/material';
 import {BASE_PATH, Feature, Wegvakonderdeel, WegvakonderdeelControllerService} from "../../shared/generated";
 import {MatSnackBar} from "@angular/material/snack-bar";
-import {DialogClosedData} from "./wegvak-popup-models";
-import {FormConfiguration, FormConfigurations} from "../wegvakken-form/wegvakken-form-models";
+import {DialogClosedData} from "./form-popup-models";
+import {FormConfiguration, FormConfigurations} from "../form/form-models";
 
 
 @Component({
   selector: 'flamingo-wegvak-popup',
-  templateUrl: './wegvak-popup.component.html',
-  styleUrls: ['./wegvak-popup.component.css'],
+  templateUrl: './form-popup.component.html',
+  styleUrls: ['./form-popup.component.css'],
 })
-export class WegvakPopupComponent implements OnInit {
+export class FormPopupComponent implements OnInit {
 
   constructor(
     public dialog: MatDialog,
@@ -81,7 +81,7 @@ export class WegvakPopupComponent implements OnInit {
   public openDialog(formFeatures ?: Feature[]): void {
     this.popupOpen = true;
 
-    const dialogRef = this.dialog.open(WegvakkenFormComponent, {
+    const dialogRef = this.dialog.open(FormComponent, {
       width: '1050px',
       height: '800px',
       disableClose: true,

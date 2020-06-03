@@ -4,9 +4,9 @@ import { createCustomElement } from '@angular/elements';
 
 import { AppComponent } from './app.component';
 import { CoreModule } from 'projects/core/src';
-import { WegvakkenFormComponent } from 'projects/core/src/lib/gbi/wegvakken-form/wegvakken-form.component';
+import { FormComponent } from 'projects/core/src/lib/feature-form/form/form.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { WegvakPopupComponent } from 'projects/core/src/lib/gbi/wegvak-popup/wegvak-popup.component';
+import { FormPopupComponent } from 'projects/core/src/lib/feature-form/form-popup/form-popup.component';
 import { MatGridListModule } from '@angular/material';
 
 @NgModule({
@@ -21,14 +21,14 @@ import { MatGridListModule } from '@angular/material';
   providers: [
   ],
   entryComponents: [
-    WegvakPopupComponent,
+    FormPopupComponent,
   ],
   bootstrap: [],
   schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
 })
 export class AppModule {
   constructor(injector: Injector) {
-    customElements.define('flamingo-wegvak-popup', createCustomElement(WegvakPopupComponent, {injector}));
+    customElements.define('flamingo-wegvak-popup', createCustomElement(FormPopupComponent, {injector}));
   }
   public ngDoBootstrap() {}
 }

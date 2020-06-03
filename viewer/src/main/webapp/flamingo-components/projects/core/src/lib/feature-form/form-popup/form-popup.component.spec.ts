@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { WegvakFormfieldComponent } from './wegvak-formfield.component';
+import { FormPopupComponent } from './form-popup.component';
 
-describe('WegvakFormfieldComponent', () => {
-  let component: WegvakFormfieldComponent;
-  let fixture: ComponentFixture<WegvakFormfieldComponent>;
+describe('WegvakPopupComponent', () => {
+  let component: FormPopupComponent;
+  let fixture: ComponentFixture<FormPopupComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ WegvakFormfieldComponent ]
+      declarations: [ FormPopupComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(WegvakFormfieldComponent);
+    fixture = TestBed.createComponent(FormPopupComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

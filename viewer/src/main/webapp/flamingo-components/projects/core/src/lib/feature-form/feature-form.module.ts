@@ -1,26 +1,27 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { WegvakkenFormComponent } from './wegvakken-form/wegvakken-form.component';
+import { FormComponent } from './form/form.component';
 import { SharedModule } from '../shared/shared.module';
-import { WegvakPopupComponent } from './wegvak-popup/wegvak-popup.component';
-import { WegvakkenTreeComponent } from './wegvakken-tree/wegvakken-tree.component';
-import { WegvakFormfieldComponent } from './wegvak-formfield/wegvak-formfield.component';
-import { WegvakkenFormCreatorComponent } from './wegvakken-form-creator/wegvakken-form-creator.component';
+import { FormPopupComponent } from './form-popup/form-popup.component';
+
+import { FormfieldComponent } from './form-field/formfield.component';
+import { FormCreatorComponent } from './form-creator/form-creator.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatSnackBarModule } from '@angular/material';
 import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.component';
 import { ConfirmDialogService } from './confirm-dialog/confirm-dialog.service';
 import {ApiModule, BASE_PATH} from "../shared/generated";
+import {FormTreeComponent} from "./form-tree/form-tree.component";
 
 
 
 @NgModule({
   declarations: [
-    WegvakkenFormComponent,
-    WegvakPopupComponent,
-    WegvakkenTreeComponent,
-    WegvakFormfieldComponent,
-    WegvakkenFormCreatorComponent,
+    FormComponent,
+    FormPopupComponent,
+    FormTreeComponent,
+    FormfieldComponent,
+    FormCreatorComponent,
     ConfirmDialogComponent,
   ],
   imports: [
@@ -31,10 +32,10 @@ import {ApiModule, BASE_PATH} from "../shared/generated";
     ApiModule,
   ],
   exports: [
-    WegvakPopupComponent,
+    FormPopupComponent,
   ],
   entryComponents: [
-    WegvakkenFormComponent,
+    FormComponent,
     ConfirmDialogComponent,
   ],
   providers: [
@@ -47,5 +48,5 @@ import {ApiModule, BASE_PATH} from "../shared/generated";
     },
   ],
 })
-export class GbiModule { }
+export class FeatureFormModule { }
 

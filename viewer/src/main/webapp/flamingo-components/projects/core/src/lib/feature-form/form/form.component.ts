@@ -3,21 +3,21 @@ import {  MatDialogRef, MAT_DIALOG_DATA, MatSnackBar } from '@angular/material';
 
 import { ConfirmDialogService } from '../confirm-dialog/confirm-dialog.service';
 import { filter, take } from 'rxjs/operators';
-import { WegvakkenFormSaveService } from '../wegvakken-form-save.service';
+
 import { Subscription } from 'rxjs';
-import {DialogData} from "../wegvak-popup/wegvak-popup-models";
+import {DialogData} from "../form-popup/form-popup-models";
 import {
   FormConfiguration,
   FormConfigurations,
-} from "./wegvakken-form-models";
+} from "./form-models";
 import {Feature} from "../../shared/generated";
 
 @Component({
   selector: 'flamingo-wegvakken-form',
-  templateUrl: './wegvakken-form.component.html',
-  styleUrls: ['./wegvakken-form.component.css'],
+  templateUrl: './form.component.html',
+  styleUrls: ['./form.component.css'],
 })
-export class WegvakkenFormComponent implements OnDestroy {
+export class FormComponent implements OnDestroy {
 
   public features: Feature[];
   public feature: Feature;
@@ -30,10 +30,9 @@ export class WegvakkenFormComponent implements OnDestroy {
   public formDirty: boolean;
 
   private subscriptions = new Subscription();
-  constructor( public dialogRef: MatDialogRef<WegvakkenFormComponent>,
+  constructor( public dialogRef: MatDialogRef<FormComponent>,
                @Inject(MAT_DIALOG_DATA) public data: DialogData,
                private confirmDialogService: ConfirmDialogService ,
-               private saveService: WegvakkenFormSaveService,
                private _snackBar: MatSnackBar) {
       this.formConfigs = data.formConfigs;
       this.features = data.formFeatures;

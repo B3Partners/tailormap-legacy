@@ -1,13 +1,13 @@
 import { Component, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import {Attribute, FeatureAttribute, FormFieldType} from "../wegvakken-form/wegvakken-form-models";
+import {Attribute, FeatureAttribute, FormFieldType} from "../form/form-models";
 
 @Component({
   selector: 'flamingo-wegvak-formfield',
-  templateUrl: './wegvak-formfield.component.html',
-  styleUrls: ['./wegvak-formfield.component.css'],
+  templateUrl: './formfield.component.html',
+  styleUrls: ['./formfield.component.css'],
 })
-export class WegvakFormfieldComponent {
+export class FormfieldComponent {
 
   @Input()
   public attribute: FeatureAttribute;

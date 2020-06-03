@@ -1,7 +1,7 @@
 import {Feature} from "../../shared/generated";
-import {FeatureAttribute, FormConfiguration, IndexedFeatureAttributes} from "../wegvakken-form/wegvakken-form-models";
+import {FeatureAttribute, FormConfiguration, IndexedFeatureAttributes} from "../form/form-models";
 
-export class WegvakkenFormCreatorHelpers {
+export class FormCreatorHelpers {
 
   public static  convertFeatureToIndexed(feat: Feature, formConfig: FormConfiguration): IndexedFeatureAttributes {
     const m = new Map<string, FeatureAttribute>();
