@@ -3,7 +3,8 @@ import { WegvakkenFormSaveService } from '../wegvakken-form-save.service';
 import {FormControl, FormGroup} from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Subscription } from 'rxjs';
-import {Feature} from "../../shared/generated";
+import {Feature, Wegvakonderdeel, WegvakonderdeelControllerService} from "../../shared/generated";
+
 import {
   Attribute,
   ColumnizedFields,
@@ -11,6 +12,8 @@ import {
   IndexedFeatureAttributes,
   TabbedFields
 } from "../wegvakken-form/wegvakken-form-models";
+import { WegvakkenFormCreatorHelpers } from './wegvakken-form-creator-helpers';
+
 @Component({
   selector: 'flamingo-wegvakken-form-creator',
   templateUrl: './wegvakken-form-creator.component.html',
@@ -41,12 +44,13 @@ export class WegvakkenFormCreatorComponent implements OnChanges, OnDestroy {
   private subscriptions = new Subscription();
 
   constructor(
-    private saveService: WegvakkenFormSaveService,
+    private service: WegvakonderdeelControllerService,
     private _snackBar: MatSnackBar) {
   }
 
   public ngOnChanges() {
     this.tabbedConfig = this.prepareFormConfig();
+    this.indexedAttributes = WegvakkenFormCreatorHelpers.convertFeatureToIndexed(this.feature, this.formConfig);
     this.createFormControls();
     this.formgroep.valueChanges.subscribe(s=>{this.formChanged.emit(true);});
   }
@@ -99,27 +103,52 @@ export class WegvakkenFormCreatorComponent implements OnChanges, OnDestroy {
   }
 
   public save() {
-    console.error("to be implemented");
     if (this.isBulk) {
       const features = this.getChangedValues();
+      console.error("to be implemented");
 
     } else {
       const feature = this.formgroep.value;
       feature.__fid = this.feature.id;
       this.mergeFromToFeature(feature);
-
+      const id = (this.feature as Wegvakonderdeel).fid;
+      if(id) {
+        this.service.update(this.feature, id).subscribe((wegvakonderdeel: Wegvakonderdeel) => {
+            this.feature = wegvakonderdeel;
+            this._snackBar.open('Opgeslagen', '', {duration: 5000});
+            this.formChanged.emit(false);
+          },
+          error => {
+            this._snackBar.open('Fout: Feature niet kunnen opslaan: ' + error.error.message, '', {
+              duration: 5000,
+            });
+          },
+        );
+      }else{
+        this.service.save(this.feature).subscribe((wegvakonderdeel: Wegvakonderdeel) => {
+            this.feature = wegvakonderdeel;
+            this._snackBar.open('Opgeslagen', '', {duration: 5000});
+            this.formChanged.emit(false);
+          },
+          error => {
+            this._snackBar.open('Fout: Feature niet kunnen opslaan: ' + error.error.message, '', {
+              duration: 5000,
+            });
+          },
+        );
+      }
     }
   }
 
   private mergeFromToFeature(form){
-   /* this.feature.attributes.forEach(attr=>{
+    Object.keys(this.feature).forEach(attr=>{
       for(const key in form){
-        if(form.hasOwnProperty(key) && key === attr.key){
-          attr.value = form[key];
+        if(form.hasOwnProperty(key) && key === attr){
+          this.feature[attr] = form[key];
           break;
         }
       }
-    });*/
+    });
   }
 
   public getChangedValues(): Feature[] {

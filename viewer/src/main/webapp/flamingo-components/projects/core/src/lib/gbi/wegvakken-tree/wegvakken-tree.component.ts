@@ -4,7 +4,7 @@ import {MatTreeFlatDataSource, MatTreeFlattener} from '@angular/material/tree';
 
 import { WegvakkenTreeHelpers } from './wegvakken-tree-helpers';
 import { FlatNode, FeatureNode } from './wegvakken-tree-models';
-import {FeatureAttribute, FormConfiguration, FormConfigurations} from "../wegvakken-form/wegvakken-form-models";
+import { FormConfiguration, FormConfigurations} from "../wegvakken-form/wegvakken-form-models";
 import {Feature} from "../../shared/generated";
 
 @Component({
@@ -91,7 +91,7 @@ export class WegvakkenTreeComponent implements OnInit,  OnChanges {
     let columnName = this.getFeatureValue(feature, config.treeNodeColumn);
     if(config.idInTreeNodeColumn){
       let id = feature.id;
-      id = id.substring(id.indexOf('.') +1);
+
       columnName = (columnName ? columnName : config.name) + ' (id: ' + id + ')';
     }
     return columnName;

@@ -1,4 +1,4 @@
-import { Component, Inject, OnDestroy, Input } from '@angular/core';
+import { Component, Inject, OnDestroy } from '@angular/core';
 import {  MatDialogRef, MAT_DIALOG_DATA, MatSnackBar } from '@angular/material';
 
 import { ConfirmDialogService } from '../confirm-dialog/confirm-dialog.service';
@@ -7,10 +7,8 @@ import { WegvakkenFormSaveService } from '../wegvakken-form-save.service';
 import { Subscription } from 'rxjs';
 import {DialogData} from "../wegvak-popup/wegvak-popup-models";
 import {
-  FeatureAttribute,
   FormConfiguration,
-  FormConfigurations, FormFieldType,
-  IndexedFeatureAttributes
+  FormConfigurations,
 } from "./wegvakken-form-models";
 import {Feature} from "../../shared/generated";
 
@@ -25,7 +23,6 @@ export class WegvakkenFormComponent implements OnDestroy {
   public feature: Feature;
   public formConfig: FormConfiguration;
   public formConfigs: FormConfigurations;
-  public indexedAttributes: IndexedFeatureAttributes;
 
   public isBulk: boolean;
   public formsForNew: FormConfiguration[] = [];
@@ -63,7 +60,6 @@ export class WegvakkenFormComponent implements OnDestroy {
   private initForm() {
     this.formDirty = false;
     this.formConfig = this.formConfigs.config[this.feature.clazz];
-    this.indexedAttributes = this.convertFeatureToIndexed(this.feature);
   }
 
   public openForm(feature) {
@@ -87,16 +83,6 @@ export class WegvakkenFormComponent implements OnDestroy {
     }
   }
 
-  private convertFeatureToIndexed(feat: Feature): IndexedFeatureAttributes {
-    const m = new Map<string, FeatureAttribute>();
-    for (const field of this.formConfig.fields) {
-      m.set(field.key, {
-        ...field,
-        value: feat[field.key] ? feat[field.key] : ''
-      });
-    }
-    return {attrs: m};
-  }
 
   public remove() {
     /*const attribute = this.feature.attributes.find(a => a.key === this.formConfig.treeNodeColumn);
