@@ -2,7 +2,12 @@ import { Component,  Input, OnChanges, OnDestroy, Output, EventEmitter} from '@a
 import {FormControl, FormGroup} from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Subscription } from 'rxjs';
-import {Feature, Wegvakonderdeel, WegvakonderdeelControllerService} from "../../shared/generated";
+import {
+  Feature,
+  FeatureControllerService,
+  Wegvakonderdeel,
+  WegvakonderdeelControllerService
+} from "../../shared/generated";
 
 import {
   Attribute,
@@ -43,7 +48,7 @@ export class FormCreatorComponent implements OnChanges, OnDestroy {
   private subscriptions = new Subscription();
 
   constructor(
-    private service: WegvakonderdeelControllerService,
+    private service: FeatureControllerService,
     private _snackBar: MatSnackBar) {
   }
 
@@ -102,6 +107,7 @@ export class FormCreatorComponent implements OnChanges, OnDestroy {
   }
 
   public save() {
+    //this.discover.
     if (this.isBulk) {
       const features = this.getChangedValues();
       console.error("to be implemented");
@@ -112,8 +118,8 @@ export class FormCreatorComponent implements OnChanges, OnDestroy {
       this.mergeFromToFeature(feature);
       const id = (this.feature as Wegvakonderdeel).fid;
       if(id) {
-        this.service.update(this.feature, id).subscribe((wegvakonderdeel: Wegvakonderdeel) => {
-            this.feature = wegvakonderdeel;
+        this.service.update(this.feature, id).subscribe((feature: Feature) => {
+            this.feature = feature;
             this._snackBar.open('Opgeslagen', '', {duration: 5000});
             this.formChanged.emit(false);
           },
@@ -124,8 +130,8 @@ export class FormCreatorComponent implements OnChanges, OnDestroy {
           },
         );
       }else{
-        this.service.save(this.feature).subscribe((wegvakonderdeel: Wegvakonderdeel) => {
-            this.feature = wegvakonderdeel;
+        this.service.save(this.feature).subscribe((feature: Feature) => {
+            this.feature = feature;
             this._snackBar.open('Opgeslagen', '', {duration: 5000});
             this.formChanged.emit(false);
           },

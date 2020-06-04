@@ -17,15 +17,14 @@ import { CustomHttpUrlEncodingCodec }                        from '../encoder';
 
 import { Observable }                                        from 'rxjs';
 
-import { PageWegvakonderdeel } from '../model/pageWegvakonderdeel';
-import { Wegvakonderdeel } from '../model/wegvakonderdeel';
+import { Feature } from '../model/feature';
 
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
 import { Configuration }                                     from '../configuration';
 
 
 @Injectable()
-export class WegvakonderdeelControllerService {
+export class FeatureControllerService {
 
     protected basePath = 'http://localhost:9090';
     public defaultHeaders = new HttpHeaders();
@@ -59,17 +58,22 @@ export class WegvakonderdeelControllerService {
     /**
      * 
      * 
+     * @param featuretype 
      * @param fid 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public delete1(fid: number, observe?: 'body', reportProgress?: boolean): Observable<any>;
-    public delete1(fid: number, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<any>>;
-    public delete1(fid: number, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<any>>;
-    public delete1(fid: number, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
+    public _delete(featuretype: string, fid: number, observe?: 'body', reportProgress?: boolean): Observable<any>;
+    public _delete(featuretype: string, fid: number, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<any>>;
+    public _delete(featuretype: string, fid: number, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<any>>;
+    public _delete(featuretype: string, fid: number, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
+
+        if (featuretype === null || featuretype === undefined) {
+            throw new Error('Required parameter featuretype was null or undefined when calling _delete.');
+        }
 
         if (fid === null || fid === undefined) {
-            throw new Error('Required parameter fid was null or undefined when calling delete1.');
+            throw new Error('Required parameter fid was null or undefined when calling _delete.');
         }
 
         let headers = this.defaultHeaders;
@@ -86,7 +90,7 @@ export class WegvakonderdeelControllerService {
         const consumes: string[] = [
         ];
 
-        return this.httpClient.request<any>('delete',`${this.basePath}/wegvakonderdeel/${encodeURIComponent(String(fid))}`,
+        return this.httpClient.request<any>('delete',`${this.basePath}/features/${encodeURIComponent(String(featuretype))}/${encodeURIComponent(String(fid))}`,
             {
                 withCredentials: this.configuration.withCredentials,
                 headers: headers,
@@ -99,17 +103,22 @@ export class WegvakonderdeelControllerService {
     /**
      * 
      * 
+     * @param featuretype 
      * @param fid 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public get1(fid: number, observe?: 'body', reportProgress?: boolean): Observable<Wegvakonderdeel>;
-    public get1(fid: number, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<Wegvakonderdeel>>;
-    public get1(fid: number, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<Wegvakonderdeel>>;
-    public get1(fid: number, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
+    public get(featuretype: string, fid: number, observe?: 'body', reportProgress?: boolean): Observable<Feature>;
+    public get(featuretype: string, fid: number, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<Feature>>;
+    public get(featuretype: string, fid: number, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<Feature>>;
+    public get(featuretype: string, fid: number, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
+
+        if (featuretype === null || featuretype === undefined) {
+            throw new Error('Required parameter featuretype was null or undefined when calling get.');
+        }
 
         if (fid === null || fid === undefined) {
-            throw new Error('Required parameter fid was null or undefined when calling get1.');
+            throw new Error('Required parameter fid was null or undefined when calling get.');
         }
 
         let headers = this.defaultHeaders;
@@ -127,7 +136,7 @@ export class WegvakonderdeelControllerService {
         const consumes: string[] = [
         ];
 
-        return this.httpClient.request<Wegvakonderdeel>('get',`${this.basePath}/wegvakonderdeel/${encodeURIComponent(String(fid))}`,
+        return this.httpClient.request<Feature>('get',`${this.basePath}/features/${encodeURIComponent(String(featuretype))}/${encodeURIComponent(String(fid))}`,
             {
                 withCredentials: this.configuration.withCredentials,
                 headers: headers,
@@ -143,10 +152,10 @@ export class WegvakonderdeelControllerService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public getAll1(observe?: 'body', reportProgress?: boolean): Observable<Array<Wegvakonderdeel>>;
-    public getAll1(observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<Array<Wegvakonderdeel>>>;
-    public getAll1(observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<Array<Wegvakonderdeel>>>;
-    public getAll1(observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
+    public getAll(observe?: 'body', reportProgress?: boolean): Observable<Array<Feature>>;
+    public getAll(observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<Array<Feature>>>;
+    public getAll(observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<Array<Feature>>>;
+    public getAll(observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
 
         let headers = this.defaultHeaders;
 
@@ -163,7 +172,7 @@ export class WegvakonderdeelControllerService {
         const consumes: string[] = [
         ];
 
-        return this.httpClient.request<Array<Wegvakonderdeel>>('get',`${this.basePath}/wegvakonderdelen/unpaged`,
+        return this.httpClient.request<Array<Feature>>('get',`${this.basePath}/features/unpaged`,
             {
                 withCredentials: this.configuration.withCredentials,
                 headers: headers,
@@ -176,31 +185,27 @@ export class WegvakonderdeelControllerService {
     /**
      * 
      * 
-     * @param page Zero-based page index (0..N)
-     * @param size The size of the page to be returned
-     * @param sort Sorting criteria in the format: property(,asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+     * @param x 
+     * @param y 
+     * @param scale 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public getAllPaged(page?: number, size?: number, sort?: Array<string>, observe?: 'body', reportProgress?: boolean): Observable<PageWegvakonderdeel>;
-    public getAllPaged(page?: number, size?: number, sort?: Array<string>, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<PageWegvakonderdeel>>;
-    public getAllPaged(page?: number, size?: number, sort?: Array<string>, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<PageWegvakonderdeel>>;
-    public getAllPaged(page?: number, size?: number, sort?: Array<string>, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
+    public onPoint(x: number, y: number, scale: number, observe?: 'body', reportProgress?: boolean): Observable<Array<Feature>>;
+    public onPoint(x: number, y: number, scale: number, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<Array<Feature>>>;
+    public onPoint(x: number, y: number, scale: number, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<Array<Feature>>>;
+    public onPoint(x: number, y: number, scale: number, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
 
-
-
-
-        let queryParameters = new HttpParams({encoder: new CustomHttpUrlEncodingCodec()});
-        if (page !== undefined && page !== null) {
-            queryParameters = queryParameters.set('page', <any>page);
+        if (x === null || x === undefined) {
+            throw new Error('Required parameter x was null or undefined when calling onPoint.');
         }
-        if (size !== undefined && size !== null) {
-            queryParameters = queryParameters.set('size', <any>size);
+
+        if (y === null || y === undefined) {
+            throw new Error('Required parameter y was null or undefined when calling onPoint.');
         }
-        if (sort) {
-            sort.forEach((element) => {
-                queryParameters = queryParameters.append('sort', <any>element);
-            })
+
+        if (scale === null || scale === undefined) {
+            throw new Error('Required parameter scale was null or undefined when calling onPoint.');
         }
 
         let headers = this.defaultHeaders;
@@ -218,9 +223,8 @@ export class WegvakonderdeelControllerService {
         const consumes: string[] = [
         ];
 
-        return this.httpClient.request<PageWegvakonderdeel>('get',`${this.basePath}/wegvakonderdelen`,
+        return this.httpClient.request<Array<Feature>>('get',`${this.basePath}/features/${encodeURIComponent(String(x))}/${encodeURIComponent(String(y))}/${encodeURIComponent(String(scale))}`,
             {
-                params: queryParameters,
                 withCredentials: this.configuration.withCredentials,
                 headers: headers,
                 observe: observe,
@@ -236,13 +240,13 @@ export class WegvakonderdeelControllerService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public save1(body: Wegvakonderdeel, observe?: 'body', reportProgress?: boolean): Observable<Wegvakonderdeel>;
-    public save1(body: Wegvakonderdeel, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<Wegvakonderdeel>>;
-    public save1(body: Wegvakonderdeel, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<Wegvakonderdeel>>;
-    public save1(body: Wegvakonderdeel, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
+    public save(body: Feature, observe?: 'body', reportProgress?: boolean): Observable<Feature>;
+    public save(body: Feature, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<Feature>>;
+    public save(body: Feature, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<Feature>>;
+    public save(body: Feature, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
 
         if (body === null || body === undefined) {
-            throw new Error('Required parameter body was null or undefined when calling save1.');
+            throw new Error('Required parameter body was null or undefined when calling save.');
         }
 
         let headers = this.defaultHeaders;
@@ -265,7 +269,7 @@ export class WegvakonderdeelControllerService {
             headers = headers.set('Content-Type', httpContentTypeSelected);
         }
 
-        return this.httpClient.request<Wegvakonderdeel>('post',`${this.basePath}/wegvakonderdeel`,
+        return this.httpClient.request<Feature>('post',`${this.basePath}/features`,
             {
                 body: body,
                 withCredentials: this.configuration.withCredentials,
@@ -284,17 +288,17 @@ export class WegvakonderdeelControllerService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public update1(body: Wegvakonderdeel, id: number, observe?: 'body', reportProgress?: boolean): Observable<Wegvakonderdeel>;
-    public update1(body: Wegvakonderdeel, id: number, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<Wegvakonderdeel>>;
-    public update1(body: Wegvakonderdeel, id: number, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<Wegvakonderdeel>>;
-    public update1(body: Wegvakonderdeel, id: number, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
+    public update(body: Feature, id: number, observe?: 'body', reportProgress?: boolean): Observable<Feature>;
+    public update(body: Feature, id: number, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<Feature>>;
+    public update(body: Feature, id: number, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<Feature>>;
+    public update(body: Feature, id: number, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
 
         if (body === null || body === undefined) {
-            throw new Error('Required parameter body was null or undefined when calling update1.');
+            throw new Error('Required parameter body was null or undefined when calling update.');
         }
 
         if (id === null || id === undefined) {
-            throw new Error('Required parameter id was null or undefined when calling update1.');
+            throw new Error('Required parameter id was null or undefined when calling update.');
         }
 
         let headers = this.defaultHeaders;
@@ -317,60 +321,9 @@ export class WegvakonderdeelControllerService {
             headers = headers.set('Content-Type', httpContentTypeSelected);
         }
 
-        return this.httpClient.request<Wegvakonderdeel>('put',`${this.basePath}/wegvakonderdeel/${encodeURIComponent(String(id))}`,
+        return this.httpClient.request<Feature>('put',`${this.basePath}/features/${encodeURIComponent(String(id))}`,
             {
                 body: body,
-                withCredentials: this.configuration.withCredentials,
-                headers: headers,
-                observe: observe,
-                reportProgress: reportProgress
-            }
-        );
-    }
-
-    /**
-     * 
-     * 
-     * @param x 
-     * @param y 
-     * @param scale 
-     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
-     * @param reportProgress flag to report request and response progress.
-     */
-    public wegvakkenOnPoint(x: number, y: number, scale: number, observe?: 'body', reportProgress?: boolean): Observable<Array<Wegvakonderdeel>>;
-    public wegvakkenOnPoint(x: number, y: number, scale: number, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<Array<Wegvakonderdeel>>>;
-    public wegvakkenOnPoint(x: number, y: number, scale: number, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<Array<Wegvakonderdeel>>>;
-    public wegvakkenOnPoint(x: number, y: number, scale: number, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
-
-        if (x === null || x === undefined) {
-            throw new Error('Required parameter x was null or undefined when calling wegvakkenOnPoint.');
-        }
-
-        if (y === null || y === undefined) {
-            throw new Error('Required parameter y was null or undefined when calling wegvakkenOnPoint.');
-        }
-
-        if (scale === null || scale === undefined) {
-            throw new Error('Required parameter scale was null or undefined when calling wegvakkenOnPoint.');
-        }
-
-        let headers = this.defaultHeaders;
-
-        // to determine the Accept header
-        let httpHeaderAccepts: string[] = [
-            '*/*'
-        ];
-        const httpHeaderAcceptSelected: string | undefined = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-        if (httpHeaderAcceptSelected != undefined) {
-            headers = headers.set('Accept', httpHeaderAcceptSelected);
-        }
-
-        // to determine the Content-Type header
-        const consumes: string[] = [
-        ];
-
-        return this.httpClient.request<Array<Wegvakonderdeel>>('get',`${this.basePath}/wegvakonderdelen/${encodeURIComponent(String(x))}/${encodeURIComponent(String(y))}/${encodeURIComponent(String(scale))}`,
-            {
                 withCredentials: this.configuration.withCredentials,
                 headers: headers,
                 observe: observe,

@@ -1,7 +1,13 @@
 import {Component, OnInit, Input, Output, EventEmitter, Inject} from '@angular/core';
 import { FormComponent } from '../form/form.component';
 import { MatDialog } from '@angular/material';
-import {BASE_PATH, Feature, Wegvakonderdeel, WegvakonderdeelControllerService} from "../../shared/generated";
+import {
+  BASE_PATH,
+  Feature,
+  FeatureControllerService,
+  Wegvakonderdeel,
+  WegvakonderdeelControllerService
+} from "../../shared/generated";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {DialogClosedData} from "./form-popup-models";
 import {FormConfiguration, FormConfigurations} from "../form/form-models";
@@ -16,7 +22,7 @@ export class FormPopupComponent implements OnInit {
 
   constructor(
     public dialog: MatDialog,
-    private service: WegvakonderdeelControllerService,
+    private service: FeatureControllerService,
     private _snackBar: MatSnackBar ) {
   }
 
@@ -53,9 +59,8 @@ export class FormPopupComponent implements OnInit {
     const y = mapClickData.y;
     const scale = mapClickData.scale;
     this.service.onPoint(x, y, scale).subscribe(
-      (wegvakonderdelen: Wegvakonderdeel[]) => {
-
-        this.openDialog(wegvakonderdelen);
+      (features: Feature[]) => {
+        this.openDialog(features);
       },
       error => {
         this._snackBar.open('Fout: Feature niet kunnen ophalen: ' + error, '', {

@@ -2,7 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { FormCreatorComponent } from './form-creator.component';
 
-describe('WegvakkenFormCreatorComponent', () => {
+describe('FormCreatorComponent', () => {
   let component: FormCreatorComponent;
   let fixture: ComponentFixture<FormCreatorComponent>;
 

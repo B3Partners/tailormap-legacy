@@ -1,6 +1,6 @@
 <div class="container">
 
-  <h1>Paspoort - {{formConfig.name}} {{formDirty ? '*' : ''}}
+  <h1>Formulier - {{formConfig.name}} {{formDirty ? '*' : ''}}
     <button mat-button  mat-mini-fab color="" (click)="closeDialog();" class="close-button" >
       <mat-icon>close</mat-icon>
     </button>
@@ -27,13 +27,13 @@
   </div>
   <div class="bottom-bar">
 
-    <button color="primary" mat-raised-button mat-fab aria-label="Voeg paspoort toe" class="add-button" [matMenuTriggerFor]="menu">
+    <button color="primary" mat-raised-button mat-fab aria-label="Voeg toe" class="add-button" [matMenuTriggerFor]="menu">
       <mat-icon>add</mat-icon>
     </button>
-    <button color="warn" mat-raised-button mat-fab aria-label="Verwijder paspoort" class="add-button" (click)="remove();">
+    <button color="warn" mat-raised-button mat-fab aria-label="Verwijder" class="add-button" (click)="remove();">
       <mat-icon>delete</mat-icon>
     </button>
-    <button [disabled]="!formDirty" mat-raised-button mat-fab aria-label="Sla paspoort op" class="add-button save-button" (click)="formCreator.save();">
+    <button [disabled]="!formDirty" mat-raised-button mat-fab aria-label="Sla op" class="add-button save-button" (click)="formCreator.save();">
       <mat-icon>save</mat-icon>
     </button>
     <mat-menu #menu="matMenu">

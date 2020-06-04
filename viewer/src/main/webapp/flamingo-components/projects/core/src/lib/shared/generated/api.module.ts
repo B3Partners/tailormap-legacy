@@ -3,14 +3,18 @@ import { Configuration } from './configuration';
 import { HttpClient } from '@angular/common/http';
 
 
+import { FeatureControllerService } from './api/featureController.service';
 import { WegvakonderdeelControllerService } from './api/wegvakonderdeelController.service';
+import { WegvakonderdeelplanningControllerService } from './api/wegvakonderdeelplanningController.service';
 
 @NgModule({
   imports:      [],
   declarations: [],
   exports:      [],
   providers: [
-    WegvakonderdeelControllerService ]
+    FeatureControllerService,
+    WegvakonderdeelControllerService,
+    WegvakonderdeelplanningControllerService ]
 })
 export class ApiModule {
     public static forRoot(configurationFactory: () => Configuration): ModuleWithProviders {

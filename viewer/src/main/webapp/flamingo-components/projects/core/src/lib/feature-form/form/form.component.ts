@@ -149,8 +149,8 @@ export class FormComponent implements OnDestroy {
   }
 
   private closeNotification(afterAction){
-    this.confirmDialogService.confirm('Paspoort sluiten',
-    'Wilt u het paspoort sluiten? Niet opgeslagen wijzigingen gaan verloren.', true)
+    this.confirmDialogService.confirm('Formulier sluiten',
+    'Wilt u het formulier sluiten? Niet opgeslagen wijzigingen gaan verloren.', true)
     .pipe(take(1), filter(remove => remove))
     // tslint:disable-next-line: rxjs-no-ignored-subscription
     .subscribe(() => {

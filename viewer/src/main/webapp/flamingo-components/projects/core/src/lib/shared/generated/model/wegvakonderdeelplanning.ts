@@ -20,6 +20,6 @@ export interface Wegvakonderdeelplanning {
     kosten?: number;
     wegvakonderdeel_id?: string;
     maatregel_wvko?: string;
-    id?: string;
+    id?: number;
     clazz?: string;
 }

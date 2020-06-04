@@ -17,7 +17,7 @@ export interface Wegvakonderdeel extends Feature {
     fid?: number;
     geometrie?: Geometry;
     planningen?: Array<Wegvakonderdeelplanning>;
-    id?: string;
+    id?: number;
     object_guid?: string;
     woonplaats?: string;
     wijk?: string;
@@ -26,11 +26,11 @@ export interface Wegvakonderdeel extends Feature {
     verhardingssoort?: string;
     std_structuurelement?: string;
     verhardingsfunctie?: string;
-    oppervlakte?: string;
+    oppervlakte?: number;
     rijstrook?: string;
-    aanlegjaar?: string;
-    lengte?: string;
-    breedte?: string;
+    aanlegjaar?: number;
+    lengte?: number;
+    breedte?: number;
     beheerder?: string;
     aanzien?: string;
     comfort?: string;
@@ -42,6 +42,6 @@ export interface Wegvakonderdeel extends Feature {
     functie_weg?: string;
     functie_weg_plus?: string;
     fysiekvoorkomenwegplus?: string;
-    children?: Array<Wegvakonderdeelplanning>;
+    children?: Array<Feature>;
     clazz?: string;
 }

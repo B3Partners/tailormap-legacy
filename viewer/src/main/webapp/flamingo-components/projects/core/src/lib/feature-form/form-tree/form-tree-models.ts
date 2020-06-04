@@ -4,7 +4,7 @@ import {Feature} from "../../shared/generated";
 export interface FeatureNode {
   name: string;
   children?: FeatureNode[];
-  id: string;
+  id: number;
   feature?: Feature;
   isFeatureType: boolean;
   selected: boolean;
