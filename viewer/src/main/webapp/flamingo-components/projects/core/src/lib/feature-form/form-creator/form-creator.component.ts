@@ -114,7 +114,7 @@ export class FormCreatorComponent implements OnChanges, OnDestroy {
     this.mergeFromToFeature(feature);
     this.actions.save(this.isBulk, this.feature).subscribe(feature=>{
         this.feature = {...feature};
-        this.features = [...this.features];// this.updateFeatureFromArray(this.features, feature);
+        this.features = this.updateFeatureInArray(feature, this.features);
         this._snackBar.open('Opgeslagen', '', {duration: 5000});
         this.formChanged.emit(false);
       },
@@ -123,6 +123,24 @@ export class FormCreatorComponent implements OnChanges, OnDestroy {
           duration: 5000,
         });
       });
+  }
+
+  private updateFeatureInArray(feature : Feature, features: Feature[]): Feature[]{
+    let fs = [];
+    if(!features){
+      return fs;
+    }
+    const parentIdx = features.findIndex(f => f.id === feature.id);
+    if(parentIdx !== -1){
+      fs = [
+        ...features.slice(0, parentIdx),
+        {...feature},
+        ...features.slice(parentIdx + 1)
+      ]
+    }else{
+      fs = features.map(f => f.children = this.updateFeatureInArray(feature, f.children));
+    }
+    return fs;
   }
 
   private mergeFromToFeature(form){
