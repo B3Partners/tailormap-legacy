@@ -280,21 +280,21 @@ export class WegvakonderdeelControllerService {
      * 
      * 
      * @param body 
-     * @param id 
+     * @param fid 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public update1(body: Wegvakonderdeel, id: number, observe?: 'body', reportProgress?: boolean): Observable<Wegvakonderdeel>;
-    public update1(body: Wegvakonderdeel, id: number, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<Wegvakonderdeel>>;
-    public update1(body: Wegvakonderdeel, id: number, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<Wegvakonderdeel>>;
-    public update1(body: Wegvakonderdeel, id: number, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
+    public update1(body: Wegvakonderdeel, fid: number, observe?: 'body', reportProgress?: boolean): Observable<Wegvakonderdeel>;
+    public update1(body: Wegvakonderdeel, fid: number, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<Wegvakonderdeel>>;
+    public update1(body: Wegvakonderdeel, fid: number, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<Wegvakonderdeel>>;
+    public update1(body: Wegvakonderdeel, fid: number, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
 
         if (body === null || body === undefined) {
             throw new Error('Required parameter body was null or undefined when calling update1.');
         }
 
-        if (id === null || id === undefined) {
-            throw new Error('Required parameter id was null or undefined when calling update1.');
+        if (fid === null || fid === undefined) {
+            throw new Error('Required parameter fid was null or undefined when calling update1.');
         }
 
         let headers = this.defaultHeaders;
@@ -317,7 +317,7 @@ export class WegvakonderdeelControllerService {
             headers = headers.set('Content-Type', httpContentTypeSelected);
         }
 
-        return this.httpClient.request<Wegvakonderdeel>('put',`${this.basePath}/wegvakonderdeel/${encodeURIComponent(String(id))}`,
+        return this.httpClient.request<Wegvakonderdeel>('put',`${this.basePath}/wegvakonderdeel/${encodeURIComponent(String(fid))}`,
             {
                 body: body,
                 withCredentials: this.configuration.withCredentials,

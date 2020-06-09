@@ -17,6 +17,7 @@ import {
   TabbedFields
 } from "../form/form-models";
 import { FormCreatorHelpers } from './form-creator-helpers';
+import {FormActionsService} from "../form-actions/form-actions.service";
 
 @Component({
   selector: 'flamingo-form-creator',
@@ -49,6 +50,7 @@ export class FormCreatorComponent implements OnChanges, OnDestroy {
 
   constructor(
     private service: FeatureControllerService,
+    private actions: FormActionsService,
     private _snackBar: MatSnackBar) {
   }
 
@@ -107,42 +109,20 @@ export class FormCreatorComponent implements OnChanges, OnDestroy {
   }
 
   public save() {
-    //this.discover.
-    if (this.isBulk) {
-      const features = this.getChangedValues();
-      console.error("to be implemented");
-
-    } else {
-      const feature = this.formgroep.value;
-      feature.__fid = this.feature.id;
-      this.mergeFromToFeature(feature);
-      const id = (this.feature as Wegvakonderdeel).fid;
-      if(id) {
-        this.service.update(this.feature, id).subscribe((feature: Feature) => {
-            this.feature = feature;
-            this._snackBar.open('Opgeslagen', '', {duration: 5000});
-            this.formChanged.emit(false);
-          },
-          error => {
-            this._snackBar.open('Fout: Feature niet kunnen opslaan: ' + error.error.message, '', {
-              duration: 5000,
-            });
-          },
-        );
-      }else{
-        this.service.save(this.feature).subscribe((feature: Feature) => {
-            this.feature = feature;
-            this._snackBar.open('Opgeslagen', '', {duration: 5000});
-            this.formChanged.emit(false);
-          },
-          error => {
-            this._snackBar.open('Fout: Feature niet kunnen opslaan: ' + error.error.message, '', {
-              duration: 5000,
-            });
-          },
-        );
-      }
-    }
+    const feature = this.formgroep.value;
+    feature.__fid = this.feature.id;
+    this.mergeFromToFeature(feature);
+    this.actions.save(this.isBulk, this.feature).subscribe(feature=>{
+        this.feature = {...feature};
+        this.features = [...this.features];// this.updateFeatureFromArray(this.features, feature);
+        this._snackBar.open('Opgeslagen', '', {duration: 5000});
+        this.formChanged.emit(false);
+      },
+      error => {
+        this._snackBar.open('Fout: Feature niet kunnen opslaan: ' + error.error.message, '', {
+          duration: 5000,
+        });
+      });
   }
 
   private mergeFromToFeature(form){

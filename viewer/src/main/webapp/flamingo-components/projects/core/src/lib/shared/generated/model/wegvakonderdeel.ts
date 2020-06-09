@@ -42,6 +42,5 @@ export interface Wegvakonderdeel extends Feature {
     functie_weg?: string;
     functie_weg_plus?: string;
     fysiekvoorkomenwegplus?: string;
-    children?: Array<Feature>;
     clazz?: string;
 }

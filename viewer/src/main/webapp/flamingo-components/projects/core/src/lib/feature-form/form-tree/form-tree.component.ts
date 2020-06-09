@@ -42,7 +42,7 @@ export class FormTreeComponent implements OnInit,  OnChanges {
 
   public ngOnChanges(changes: SimpleChanges): void {
     this.dataSource.data = this.convertFeatureToNode(this.features);
-    console.log("ngOnchanges");
+    console.log("changes in tree", this.features);
     this.treeControl.expandAll();
   }
 

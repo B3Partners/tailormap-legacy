@@ -30,14 +30,14 @@
     <button color="primary" mat-raised-button mat-fab aria-label="Voeg toe" class="add-button" [matMenuTriggerFor]="menu">
       <mat-icon>add</mat-icon>
     </button>
-    <button color="warn" mat-raised-button mat-fab aria-label="Verwijder" class="add-button" (click)="remove();">
+    <button color="warn" mat-raised-button mat-fab aria-label="Verwijder" class="add-button" (click)="this.remove();">
       <mat-icon>delete</mat-icon>
     </button>
     <button [disabled]="!formDirty" mat-raised-button mat-fab aria-label="Sla op" class="add-button save-button" (click)="formCreator.save();">
       <mat-icon>save</mat-icon>
     </button>
     <mat-menu #menu="matMenu">
-      <button *ngFor="let co of formsForNew" [id]="co.featureType" mat-menu-item (click)="newItem($event);">
+      <button *ngFor="let co of formsForNew" [id]="co.featureType" mat-menu-item (click)="this.newItem($event);">
        {{co.name}}
       </button>
     </mat-menu>

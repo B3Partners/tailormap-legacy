@@ -13,5 +13,6 @@
 export interface Feature { 
     children?: Array<Feature>;
     id?: number;
+    objecttype: string;
     clazz?: string;
 }

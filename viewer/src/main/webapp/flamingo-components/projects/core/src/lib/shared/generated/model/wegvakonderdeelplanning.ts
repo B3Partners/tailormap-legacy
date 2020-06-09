@@ -11,15 +11,12 @@
  */
 import { Feature } from './feature';
 
-export interface Wegvakonderdeelplanning { 
+export interface Wegvakonderdeelplanning extends Feature { 
     fid?: number;
-    hoeveelheid?: number;
+    maatregel_wvko?: string;
     maatregeltype?: string;
     jaarvanuitvoering?: number;
-    children?: Array<Feature>;
+    hoeveelheid?: number;
     kosten?: number;
     wegvakonderdeel_id?: string;
-    maatregel_wvko?: string;
-    id?: number;
-    clazz?: string;
 }

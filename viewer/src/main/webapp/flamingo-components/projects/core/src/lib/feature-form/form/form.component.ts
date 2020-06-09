@@ -1,5 +1,6 @@
-import { Component, Inject, OnDestroy } from '@angular/core';
+import { Component, Inject, OnDestroy,Input } from '@angular/core';
 import {  MatDialogRef, MAT_DIALOG_DATA, MatSnackBar } from '@angular/material';
+
 
 import { ConfirmDialogService } from '../../shared/confirm-dialog/confirm-dialog.service';
 import { filter, take } from 'rxjs/operators';
@@ -11,6 +12,8 @@ import {
   FormConfigurations,
 } from "./form-models";
 import {Feature} from "../../shared/generated";
+import {FormHelpers} from "./form-helpers";
+import {FormActionsService} from "../form-actions/form-actions.service";
 
 @Component({
   selector: 'flamingo-form',
@@ -31,9 +34,10 @@ export class FormComponent implements OnDestroy {
 
   private subscriptions = new Subscription();
   constructor( public dialogRef: MatDialogRef<FormComponent>,
+               private confirmDialogService: ConfirmDialogService,
                @Inject(MAT_DIALOG_DATA) public data: DialogData,
-               private confirmDialogService: ConfirmDialogService ,
-               private _snackBar: MatSnackBar) {
+               private _snackBar: MatSnackBar,
+               public actions : FormActionsService) {
       this.formConfigs = data.formConfigs;
       this.features = data.formFeatures;
       this.feature = this.features[0];
@@ -82,62 +86,27 @@ export class FormComponent implements OnDestroy {
     }
   }
 
-
-  public remove() {
-    /*const attribute = this.feature.attributes.find(a => a.key === this.formConfig.treeNodeColumn);
-    const message = 'Wilt u ' + this.formConfig.name + ' - ' + attribute.value + ' verwijderen?';
-    this.confirmDialogService.confirm('Verwijderen',
-    message, true)
-      .pipe(take(1), filter(remove => remove))
-      // tslint:disable-next-line: rxjs-no-ignored-subscription
-      .subscribe(() => {
-        this.removeFeatureFromDb();
-      });*/
-    console.error("to be implemented");
-  }
-
-  private removeFeatureFromDb() {
-    console.error("to be implemented");
-  }
-
-  private removeSuccess() {
-    this._snackBar.open('Verwijderd', '', {duration: 5000});
-    this.features = this.removeFeature(this.features);
-    this.feature = this.features[0];
-  }
-
-  private removeFeature(features: Feature[]): Feature[] {
-    let fs = [];
-    fs = [...features.filter(f => f !== this.feature)];
-    fs.forEach(f=>{
-      f.children = this.removeFeature(f.children);
-    });
-    return fs;
-  }
-
   public newItem(evt) {
-    const type = evt.srcElement.id;
-    this.formConfig = this.formConfigs.config[type];
-    const name = 'Nieuwe '  + this.formConfig.name;
+    this.subscriptions.add(
+      this.actions.newItem(evt, this.formConfigs, this.features).subscribe(features => {
+        this.features = features.features;
+        this.feature = features.feature;
+        this.initForm();
+      })
+    );
+  }
 
-    const parentFeature = this.features[0];
-    const relations = this.formConfig.relation.relation;
-
-    const newFeature = {
-      id: null,
-      clazz: type,
-      isRelated: true,
-    };
-    newFeature[this.formConfig.treeNodeColumn] = name;
-    relations.forEach(r => {
-      const relatedKey = r.relatedFeatureColumn;
-      const mainKey = r.mainFeatureColumn;
-      newFeature[relatedKey] = parentFeature[mainKey];
-    });
-    parentFeature.children.push(newFeature);
-    this.feature = newFeature;
-    this.features = [...this.features];
-    this.initForm();
+  public remove(){
+    const attribute = Object.keys(this.feature).find(attribute => attribute === this.formConfig.treeNodeColumn);
+    const message = 'Wilt u ' + this.formConfig.name + ' - ' + this.feature[attribute] + ' verwijderen?';
+    this.confirmDialogService.confirm('Verwijderen',
+      message, true)
+      .pipe(take(1), filter(remove => remove)).subscribe(() => {
+       this.actions.removeFeature(this.feature, this.features).subscribe(result=>{
+          this.features = result.features;
+          this.feature = result.features[0];
+        });
+      });
   }
 
   public closeDialog() {
