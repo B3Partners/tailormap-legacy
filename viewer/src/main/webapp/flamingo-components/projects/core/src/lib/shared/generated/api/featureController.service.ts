@@ -59,21 +59,21 @@ export class FeatureControllerService {
      * 
      * 
      * @param featuretype 
-     * @param fid 
+     * @param object_guid 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public _delete(featuretype: string, fid: number, observe?: 'body', reportProgress?: boolean): Observable<any>;
-    public _delete(featuretype: string, fid: number, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<any>>;
-    public _delete(featuretype: string, fid: number, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<any>>;
-    public _delete(featuretype: string, fid: number, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
+    public _delete(featuretype: string, object_guid: string, observe?: 'body', reportProgress?: boolean): Observable<any>;
+    public _delete(featuretype: string, object_guid: string, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<any>>;
+    public _delete(featuretype: string, object_guid: string, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<any>>;
+    public _delete(featuretype: string, object_guid: string, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
 
         if (featuretype === null || featuretype === undefined) {
             throw new Error('Required parameter featuretype was null or undefined when calling _delete.');
         }
 
-        if (fid === null || fid === undefined) {
-            throw new Error('Required parameter fid was null or undefined when calling _delete.');
+        if (object_guid === null || object_guid === undefined) {
+            throw new Error('Required parameter object_guid was null or undefined when calling _delete.');
         }
 
         let headers = this.defaultHeaders;
@@ -90,7 +90,7 @@ export class FeatureControllerService {
         const consumes: string[] = [
         ];
 
-        return this.httpClient.request<any>('delete',`${this.basePath}/features/${encodeURIComponent(String(featuretype))}/${encodeURIComponent(String(fid))}`,
+        return this.httpClient.request<any>('delete',`${this.basePath}/features/${encodeURIComponent(String(featuretype))}/${encodeURIComponent(String(object_guid))}`,
             {
                 withCredentials: this.configuration.withCredentials,
                 headers: headers,
@@ -104,21 +104,21 @@ export class FeatureControllerService {
      * 
      * 
      * @param featuretype 
-     * @param fid 
+     * @param object_guid 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public get(featuretype: string, fid: number, observe?: 'body', reportProgress?: boolean): Observable<Feature>;
-    public get(featuretype: string, fid: number, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<Feature>>;
-    public get(featuretype: string, fid: number, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<Feature>>;
-    public get(featuretype: string, fid: number, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
+    public get(featuretype: string, object_guid: string, observe?: 'body', reportProgress?: boolean): Observable<Feature>;
+    public get(featuretype: string, object_guid: string, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<Feature>>;
+    public get(featuretype: string, object_guid: string, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<Feature>>;
+    public get(featuretype: string, object_guid: string, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
 
         if (featuretype === null || featuretype === undefined) {
             throw new Error('Required parameter featuretype was null or undefined when calling get.');
         }
 
-        if (fid === null || fid === undefined) {
-            throw new Error('Required parameter fid was null or undefined when calling get.');
+        if (object_guid === null || object_guid === undefined) {
+            throw new Error('Required parameter object_guid was null or undefined when calling get.');
         }
 
         let headers = this.defaultHeaders;
@@ -136,7 +136,7 @@ export class FeatureControllerService {
         const consumes: string[] = [
         ];
 
-        return this.httpClient.request<Feature>('get',`${this.basePath}/features/${encodeURIComponent(String(featuretype))}/${encodeURIComponent(String(fid))}`,
+        return this.httpClient.request<Feature>('get',`${this.basePath}/features/${encodeURIComponent(String(featuretype))}/${encodeURIComponent(String(object_guid))}`,
             {
                 withCredentials: this.configuration.withCredentials,
                 headers: headers,
@@ -284,21 +284,21 @@ export class FeatureControllerService {
      * 
      * 
      * @param body 
-     * @param id 
+     * @param object_guid 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public update(body: Feature, id: number, observe?: 'body', reportProgress?: boolean): Observable<Feature>;
-    public update(body: Feature, id: number, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<Feature>>;
-    public update(body: Feature, id: number, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<Feature>>;
-    public update(body: Feature, id: number, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
+    public update(body: Feature, object_guid: string, observe?: 'body', reportProgress?: boolean): Observable<Feature>;
+    public update(body: Feature, object_guid: string, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<Feature>>;
+    public update(body: Feature, object_guid: string, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<Feature>>;
+    public update(body: Feature, object_guid: string, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
 
         if (body === null || body === undefined) {
             throw new Error('Required parameter body was null or undefined when calling update.');
         }
 
-        if (id === null || id === undefined) {
-            throw new Error('Required parameter id was null or undefined when calling update.');
+        if (object_guid === null || object_guid === undefined) {
+            throw new Error('Required parameter object_guid was null or undefined when calling update.');
         }
 
         let headers = this.defaultHeaders;
@@ -321,7 +321,7 @@ export class FeatureControllerService {
             headers = headers.set('Content-Type', httpContentTypeSelected);
         }
 
-        return this.httpClient.request<Feature>('put',`${this.basePath}/features/${encodeURIComponent(String(id))}`,
+        return this.httpClient.request<Feature>('put',`${this.basePath}/features/${encodeURIComponent(String(object_guid))}`,
             {
                 body: body,
                 withCredentials: this.configuration.withCredentials,

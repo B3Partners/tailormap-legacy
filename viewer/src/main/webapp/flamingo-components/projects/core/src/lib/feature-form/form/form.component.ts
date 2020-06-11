@@ -1,4 +1,4 @@
-import { Component, Inject, OnDestroy,Input } from '@angular/core';
+import {Component, Inject, OnDestroy, Input, OnChanges, SimpleChanges} from '@angular/core';
 import {  MatDialogRef, MAT_DIALOG_DATA, MatSnackBar } from '@angular/material';
 
 
@@ -20,8 +20,7 @@ import {FormActionsService} from "../form-actions/form-actions.service";
   templateUrl: './form.component.html',
   styleUrls: ['./form.component.css'],
 })
-export class FormComponent implements OnDestroy {
-
+export class FormComponent implements OnDestroy, OnChanges {
   public features: Feature[];
   public feature: Feature;
   public formConfig: FormConfiguration;
@@ -65,6 +64,10 @@ export class FormComponent implements OnDestroy {
     this.formConfig = this.formConfigs.config[this.feature.clazz];
   }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    throw new Error("Method not implemented.");
+  }
+
   public openForm(feature) {
     if (feature && !this.isBulk) {
       if(this.formDirty){
@@ -79,10 +82,11 @@ export class FormComponent implements OnDestroy {
     }
   }
 
-  public formChanged(changed: boolean){
-    this.formDirty = changed;
-    if(!changed){
-      this.features = [...this.features];
+  public formChanged(result: any){
+    this.formDirty = result.changed;
+    if(!result.changed){
+      this.features = result.features;
+      this.feature = result.feature;
     }
   }
 

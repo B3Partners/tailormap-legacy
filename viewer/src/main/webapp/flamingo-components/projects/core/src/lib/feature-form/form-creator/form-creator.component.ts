@@ -40,7 +40,7 @@ export class FormCreatorComponent implements OnChanges, OnDestroy {
   @Input()
   public lookup: Map<string, string>;
   @Output()
-  public formChanged = new EventEmitter<boolean>();
+  public formChanged = new EventEmitter<any>();
 
   public tabbedConfig: TabbedFields;
 
@@ -58,7 +58,7 @@ export class FormCreatorComponent implements OnChanges, OnDestroy {
     this.tabbedConfig = this.prepareFormConfig();
     this.indexedAttributes = FormCreatorHelpers.convertFeatureToIndexed(this.feature, this.formConfig);
     this.createFormControls();
-    this.formgroep.valueChanges.subscribe(s=>{this.formChanged.emit(true);});
+    this.formgroep.valueChanges.subscribe(s=>{this.formChanged.emit({changed:true});});
   }
 
   public ngOnDestroy() {
@@ -110,13 +110,14 @@ export class FormCreatorComponent implements OnChanges, OnDestroy {
 
   public save() {
     const feature = this.formgroep.value;
-    feature.__fid = this.feature.id;
+    feature.__fid = this.feature.object_guid;
     this.mergeFromToFeature(feature);
     this.actions.save(this.isBulk, this.feature).subscribe(feature=>{
+        const fs = this.updateFeatureInArray(feature, this.features);
+        this.features = [...fs];
         this.feature = {...feature};
-        this.features = this.updateFeatureInArray(feature, this.features);
         this._snackBar.open('Opgeslagen', '', {duration: 5000});
-        this.formChanged.emit(false);
+        this.formChanged.emit({changed: false, feature, features:this.features});
       },
       error => {
         this._snackBar.open('Fout: Feature niet kunnen opslaan: ' + error.error.message, '', {
@@ -125,20 +126,22 @@ export class FormCreatorComponent implements OnChanges, OnDestroy {
       });
   }
 
-  private updateFeatureInArray(feature : Feature, features: Feature[]): Feature[]{
+  public updateFeatureInArray(feature : Feature, features: Feature[]): Feature[]{
     let fs = [];
     if(!features){
       return fs;
     }
-    const parentIdx = features.findIndex(f => f.id === feature.id);
+    const parentIdx = features.findIndex(f => f.object_guid === feature.object_guid);
     if(parentIdx !== -1){
       fs = [
         ...features.slice(0, parentIdx),
         {...feature},
         ...features.slice(parentIdx + 1)
-      ]
+      ];
     }else{
-      fs = features.map(f => f.children = this.updateFeatureInArray(feature, f.children));
+      const s = features.map(f =>{return this.updateFeatureInArray(feature, f.children)});
+      console.log("asdf", s);
+      fs = s;
     }
     return fs;
   }

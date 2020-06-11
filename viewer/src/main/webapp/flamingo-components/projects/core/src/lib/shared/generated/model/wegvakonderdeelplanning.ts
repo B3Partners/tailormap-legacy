@@ -19,4 +19,5 @@ export interface Wegvakonderdeelplanning extends Feature {
     hoeveelheid?: number;
     kosten?: number;
     wegvakonderdeel_id?: string;
+    id?: number;
 }

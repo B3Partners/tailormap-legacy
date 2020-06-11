@@ -1,4 +1,4 @@
-<form [formGroup]="formgroep">
+<form [formGroup]="formgroep" >
   <mat-tab-group>
       <mat-tab *ngFor="let tab of tabbedConfig.tabs | keyvalue" label="{{formConfig.tabConfig[tab.key]}}">
           <div class="tab">

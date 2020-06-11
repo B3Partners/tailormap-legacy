@@ -12,7 +12,7 @@
 
 export interface Feature { 
     children?: Array<Feature>;
-    id?: number;
+    object_guid?: string;
     objecttype: string;
     clazz?: string;
 }

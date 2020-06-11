@@ -78,7 +78,7 @@ export class FormTreeComponent implements OnInit,  OnChanges {
         nodes.push({
             name: this.getNodeLabel(feature),
             children,
-            id: feature.id,
+            object_guid: feature.object_guid,
             feature,
             selected: feature === this.feature,
             isFeatureType: false,
@@ -89,13 +89,13 @@ export class FormTreeComponent implements OnInit,  OnChanges {
 
   private getNodeLabel (feature:Feature) :string{
     const config : FormConfiguration = this.formConfigs.config[feature.clazz];
-    let columnName = this.getFeatureValue(feature, config.treeNodeColumn);
+    let label = this.getFeatureValue(feature, config.treeNodeColumn);
     if(config.idInTreeNodeColumn){
-      let id = feature.id;
+      let id = feature.object_guid;
 
-      columnName = (columnName ? columnName : config.name) + ' (id: ' + id + ')';
+      label = (label ? label : config.name) + ' (id: ' + id + ')';
     }
-    return columnName;
+    return label;
   }
 
   private getFeatureValue(feature: Feature, key: string): any {

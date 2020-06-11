@@ -59,17 +59,17 @@ export class WegvakonderdeelControllerService {
     /**
      * 
      * 
-     * @param fid 
+     * @param object_guid 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public delete1(fid: number, observe?: 'body', reportProgress?: boolean): Observable<any>;
-    public delete1(fid: number, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<any>>;
-    public delete1(fid: number, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<any>>;
-    public delete1(fid: number, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
+    public delete1(object_guid: string, observe?: 'body', reportProgress?: boolean): Observable<any>;
+    public delete1(object_guid: string, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<any>>;
+    public delete1(object_guid: string, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<any>>;
+    public delete1(object_guid: string, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
 
-        if (fid === null || fid === undefined) {
-            throw new Error('Required parameter fid was null or undefined when calling delete1.');
+        if (object_guid === null || object_guid === undefined) {
+            throw new Error('Required parameter object_guid was null or undefined when calling delete1.');
         }
 
         let headers = this.defaultHeaders;
@@ -86,7 +86,7 @@ export class WegvakonderdeelControllerService {
         const consumes: string[] = [
         ];
 
-        return this.httpClient.request<any>('delete',`${this.basePath}/wegvakonderdeel/${encodeURIComponent(String(fid))}`,
+        return this.httpClient.request<any>('delete',`${this.basePath}/wegvakonderdeel/${encodeURIComponent(String(object_guid))}`,
             {
                 withCredentials: this.configuration.withCredentials,
                 headers: headers,
@@ -99,17 +99,17 @@ export class WegvakonderdeelControllerService {
     /**
      * 
      * 
-     * @param fid 
+     * @param object_guid 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public get1(fid: number, observe?: 'body', reportProgress?: boolean): Observable<Wegvakonderdeel>;
-    public get1(fid: number, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<Wegvakonderdeel>>;
-    public get1(fid: number, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<Wegvakonderdeel>>;
-    public get1(fid: number, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
+    public get1(object_guid: string, observe?: 'body', reportProgress?: boolean): Observable<Wegvakonderdeel>;
+    public get1(object_guid: string, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<Wegvakonderdeel>>;
+    public get1(object_guid: string, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<Wegvakonderdeel>>;
+    public get1(object_guid: string, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
 
-        if (fid === null || fid === undefined) {
-            throw new Error('Required parameter fid was null or undefined when calling get1.');
+        if (object_guid === null || object_guid === undefined) {
+            throw new Error('Required parameter object_guid was null or undefined when calling get1.');
         }
 
         let headers = this.defaultHeaders;
@@ -127,7 +127,7 @@ export class WegvakonderdeelControllerService {
         const consumes: string[] = [
         ];
 
-        return this.httpClient.request<Wegvakonderdeel>('get',`${this.basePath}/wegvakonderdeel/${encodeURIComponent(String(fid))}`,
+        return this.httpClient.request<Wegvakonderdeel>('get',`${this.basePath}/wegvakonderdeel/${encodeURIComponent(String(object_guid))}`,
             {
                 withCredentials: this.configuration.withCredentials,
                 headers: headers,
@@ -280,21 +280,21 @@ export class WegvakonderdeelControllerService {
      * 
      * 
      * @param body 
-     * @param fid 
+     * @param object_guid 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public update1(body: Wegvakonderdeel, fid: number, observe?: 'body', reportProgress?: boolean): Observable<Wegvakonderdeel>;
-    public update1(body: Wegvakonderdeel, fid: number, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<Wegvakonderdeel>>;
-    public update1(body: Wegvakonderdeel, fid: number, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<Wegvakonderdeel>>;
-    public update1(body: Wegvakonderdeel, fid: number, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
+    public update1(body: Wegvakonderdeel, object_guid: string, observe?: 'body', reportProgress?: boolean): Observable<Wegvakonderdeel>;
+    public update1(body: Wegvakonderdeel, object_guid: string, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<Wegvakonderdeel>>;
+    public update1(body: Wegvakonderdeel, object_guid: string, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<Wegvakonderdeel>>;
+    public update1(body: Wegvakonderdeel, object_guid: string, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
 
         if (body === null || body === undefined) {
             throw new Error('Required parameter body was null or undefined when calling update1.');
         }
 
-        if (fid === null || fid === undefined) {
-            throw new Error('Required parameter fid was null or undefined when calling update1.');
+        if (object_guid === null || object_guid === undefined) {
+            throw new Error('Required parameter object_guid was null or undefined when calling update1.');
         }
 
         let headers = this.defaultHeaders;
@@ -317,7 +317,7 @@ export class WegvakonderdeelControllerService {
             headers = headers.set('Content-Type', httpContentTypeSelected);
         }
 
-        return this.httpClient.request<Wegvakonderdeel>('put',`${this.basePath}/wegvakonderdeel/${encodeURIComponent(String(fid))}`,
+        return this.httpClient.request<Wegvakonderdeel>('put',`${this.basePath}/wegvakonderdeel/${encodeURIComponent(String(object_guid))}`,
             {
                 body: body,
                 withCredentials: this.configuration.withCredentials,

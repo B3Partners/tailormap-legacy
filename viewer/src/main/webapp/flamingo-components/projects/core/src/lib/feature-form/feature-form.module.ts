@@ -27,6 +27,7 @@ import {FormTreeComponent} from "./form-tree/form-tree.component";
   ],
   exports: [
     FormPopupComponent,
+    FormComponent,
   ],
   entryComponents: [
     FormComponent,

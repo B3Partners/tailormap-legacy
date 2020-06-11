@@ -24,9 +24,9 @@ export class FormActionsService {
         console.error("to be implemented");
 
       } else {
-        const id = feature.id;
-        if(id) {
-          return this.service.update(feature, id);
+        const object_guid = feature.object_guid;
+        if(object_guid) {
+          return this.service.update(feature, object_guid);
         }else{
           return this.service.save(feature);
         }
@@ -34,7 +34,7 @@ export class FormActionsService {
     }
 
   public removeFeature(feature: Feature, features: Feature[]) :Observable<any>{
-    this.service._delete(feature.clazz,feature.id).subscribe(a=>{
+    this.service._delete(feature.clazz,feature.object_guid).subscribe(a=>{
       console.log("removed: ", a);
     });
 
