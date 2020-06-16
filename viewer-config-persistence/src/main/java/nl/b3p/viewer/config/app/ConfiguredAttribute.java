@@ -280,7 +280,7 @@ public class ConfiguredAttribute {
         o.put("folder_label", label);
         if(editValues != null) {
             try {
-                if (!valueList.equalsIgnoreCase("dynamic")) {
+                if (valueList == null || !valueList.equalsIgnoreCase("dynamic")) {
                     o.put("editValues", new JSONArray(editValues));
                 }
             } catch(JSONException je) {
