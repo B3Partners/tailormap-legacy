@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.flamingo-mc</groupId>
     <artifactId>flamingo-mc</artifactId>
-    <version>5.7.4-SNAPSHOT</version>
+    <version>5.7.5-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>flamingo-mc</name>
     <url>http://github.com/flamingo-mc</url>
@@ -38,7 +38,7 @@
         </license>
     </licenses>
     <properties>
-        <flamingo.version>5.7.4-SNAPSHOT</flamingo.version>
+        <flamingo.version>5.7.5-SNAPSHOT</flamingo.version>
         <java.version>1.8</java.version>
         <project.build.sourceVersion>${java.version}</project.build.sourceVersion>
         <project.build.targetVersion>${java.version}</project.build.targetVersion>
@@ -47,12 +47,12 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <!-- when updating geotools also check jts and b3p-commons-csw or you will end up in transitive dependency hell -->
-        <geotools.version>23.0</geotools.version>
-        <b3p-commons-csw.version>6.2.0</b3p-commons-csw.version>
+        <geotools.version>23.1</geotools.version>
+        <b3p-commons-csw.version>6.2.1</b3p-commons-csw.version>
         <powermock.version>2.0.7</powermock.version>
         <hsqldb.version>2.5.0</hsqldb.version>
         <test.persistence.unit>viewer-config-hsqldb</test.persistence.unit>
-        <postgresql.version>42.2.12</postgresql.version>
+        <postgresql.version>42.2.14</postgresql.version>
         <mssql.version>8.2.2.jre8</mssql.version>
         <oracle.version>19.6.0.0</oracle.version>
         <apache.poi.version>4.1.2</apache.poi.version>
@@ -494,7 +494,7 @@
             <dependency>
                 <groupId>org.eclipse.emf</groupId>
                 <artifactId>org.eclipse.emf.common</artifactId>
-                <version>2.18.0</version>
+                <version>2.19.0</version>
             </dependency>
             <dependency>
                 <groupId>xalan</groupId>
@@ -634,7 +634,7 @@
                 </plugin>
                 <plugin>
                     <artifactId>maven-war-plugin</artifactId>
-                    <version>3.2.3</version>
+                    <version>3.3.0</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-dependency-plugin</artifactId>

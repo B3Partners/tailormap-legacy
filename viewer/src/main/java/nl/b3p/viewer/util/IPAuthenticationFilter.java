@@ -106,6 +106,7 @@ public class IPAuthenticationFilter implements Filter {
                     u = possibleUsers.get(0);
                     u.setAuthenticatedByIp(true);
                     Hibernate.initialize(u.getGroups());
+                    Hibernate.initialize(u.getDetails());
                     session.setAttribute(IP_CHECK, ipAddress);
                     session.setAttribute(USER_CHECK, u);
                     session.setAttribute(TIME_USER_CHECKED, System.currentTimeMillis());
