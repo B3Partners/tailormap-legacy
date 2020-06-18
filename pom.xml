@@ -621,7 +621,8 @@
                 </plugin>
                 <plugin>
                     <artifactId>maven-war-plugin</artifactId>
-                    <version>3.3.0</version>
+                    <!-- 3.3.0 is "broken" see: https://issues.apache.org/jira/browse/MWAR-433  -->
+                    <version>3.2.3</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-dependency-plugin</artifactId>
