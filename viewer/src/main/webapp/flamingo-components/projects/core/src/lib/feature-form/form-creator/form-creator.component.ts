@@ -139,9 +139,10 @@ export class FormCreatorComponent implements OnChanges, OnDestroy {
         ...features.slice(parentIdx + 1)
       ];
     }else{
-      const s = features.map(f =>{return this.updateFeatureInArray(feature, f.children)});
-      console.log("asdf", s);
-      fs = s;
+      features.forEach( (feat)=>{
+        feat.children = this.updateFeatureInArray(feature, feat.children);
+        fs.push(feat);
+      });
     }
     return fs;
   }
