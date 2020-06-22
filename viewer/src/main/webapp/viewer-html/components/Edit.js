@@ -1748,7 +1748,7 @@ Ext.define("viewer.components.Edit", {
 
         var window = Ext.create("Ext.window.Window", {
             id: this.name + "FeaturesWindow",
-            width: 500,
+            width: '80%',
             height: 300,
             layout: 'fit',
             title: i18next.t('viewer_components_edit_45'),
