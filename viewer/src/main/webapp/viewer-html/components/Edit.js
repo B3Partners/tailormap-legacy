@@ -52,6 +52,7 @@ Ext.define("viewer.components.Edit", {
         tooltip: "",
         layers: null,
         label: "",
+        editLabelWidth: 100,
         clickRadius: 4,
         allowDelete: false,
         allowCopy: false,
@@ -899,6 +900,8 @@ Ext.define("viewer.components.Edit", {
             name: 'files[' + index + "]",
             width: "70%",
             labelClsExtra: this.editLblClass,
+            labelWidth: this.config.editLabelWidth,
+            labelAlign: 'left',
             listeners:{
                 change: function(fld,value){
                     var newValue = value.replace(/C:\\fakepath\\/g, '');
@@ -926,6 +929,8 @@ Ext.define("viewer.components.Edit", {
             disabled: !this.allowedEditable(attribute),
             readOnly:  attribute.automaticValue,
             labelClsExtra: this.editLblClass,
+            labelWidth: this.config.editLabelWidth,
+            labelAlign: 'left',
             allowBlank: !disallowNull,
             listeners: {
                 scope: this,
@@ -1078,6 +1083,8 @@ Ext.define("viewer.components.Edit", {
              (default: false)  */
             forceSelection: (attribute.hasOwnProperty('allowValueListOnly') && attribute.allowValueListOnly),
             labelClsExtra: this.editLblClass,
+            labelWidth: this.config.editLabelWidth,
+            labelAlign: 'left',
             listeners: {
                 scope: this,
                 change: this.validateFormFieldChange
