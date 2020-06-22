@@ -83,7 +83,8 @@ Ext.define("viewer.components.GBI", {
         this.div = document.createElement("flamingo-wegvak-popup");
         this.div.addEventListener('wanneerPopupClosed', function(evt){
             console.log("wanneerPopupClosed", evt.detail);
-        });
+            this.config.viewerController.mapComponent.getMap().update();
+        }.bind(this));
         this.div.addEventListener('startGeometryDrawing', function(e){this.startDrawingGeometry(e.detail);}.bind(this));
         this.div.setAttribute("config", JSON.stringify(this.formConfigs));
         document.body.appendChild(this.div);
@@ -93,6 +94,7 @@ Ext.define("viewer.components.GBI", {
     },
     geometryDrawn: function(vectorLayer, feature){
         this.div.setAttribute("geometry-drawn", feature.config.wktgeom);
+        this.vectorLayer.removeAllFeatures();
     },
     loadConfig: function(){
         Ext.Ajax.request({

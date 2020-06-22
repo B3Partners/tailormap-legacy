@@ -6,7 +6,7 @@ import {MatSnackBar} from "@angular/material/snack-bar";
 import {DialogClosedData, GeometryInteractionData, GeometryType} from "./form-popup-models";
 import {FormConfigurations} from "../form/form-models";
 import {AddButtonEvent} from "../../user-interface/add-feature/add-feature-models";
-import * as piet from "wellknown";
+import * as wellknown from "wellknown";
 
 @Component({
   selector: 'flamingo-form-popup',
@@ -118,14 +118,14 @@ export class FormPopupComponent implements OnInit {
   @Input()
   public set geometryDrawn(geom:string){
     console.log('geom received', geom);
-    const geoJson = piet.parse(geom); // wellknown.parse('');
+    const geoJson = wellknown.parse(geom); // wellknown.parse('');
     console.log("parsed: ", geoJson);
     const features :Feature[] =[
       {
         children: [],
         clazz: this.temp.featuretype,
         objecttype: this.temp.featuretype.charAt(0).toUpperCase() + this.temp.featuretype.slice(1),
-        geometrie: geoJson
+        geometrie: geoJson,
       }
 
     ];
