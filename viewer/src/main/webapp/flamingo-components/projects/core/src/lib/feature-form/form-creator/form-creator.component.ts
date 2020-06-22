@@ -56,9 +56,13 @@ export class FormCreatorComponent implements OnChanges, OnDestroy {
 
   public ngOnChanges() {
     this.tabbedConfig = this.prepareFormConfig();
-    this.indexedAttributes = FormCreatorHelpers.convertFeatureToIndexed(this.feature, this.formConfig);
-    this.createFormControls();
-    this.formgroep.valueChanges.subscribe(s=>{this.formChanged.emit({changed:true});});
+    if(this.feature) {
+      this.indexedAttributes = FormCreatorHelpers.convertFeatureToIndexed(this.feature, this.formConfig);
+      this.createFormControls();
+      this.formgroep.valueChanges.subscribe(s => {
+        this.formChanged.emit({changed: true});
+      });
+    }
   }
 
   public ngOnDestroy() {
