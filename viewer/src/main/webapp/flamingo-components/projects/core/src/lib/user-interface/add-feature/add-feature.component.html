@@ -1,0 +1,7 @@
+<button color="primary"  mat-raised-button mat-fab aria-label="Voeg toe" class="add-button" (click)="click()">
+  <mat-icon>add</mat-icon>
+</button>
+
+<mat-menu #menu="matMenu">
+  <button *ngFor="let ft of visibleFeatureTypes" mat-menu-item [id]="ft">{{ft}}</button>
+</mat-menu>

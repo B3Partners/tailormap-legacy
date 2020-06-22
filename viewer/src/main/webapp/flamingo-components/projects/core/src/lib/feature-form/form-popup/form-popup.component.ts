@@ -1,17 +1,12 @@
-import {Component, OnInit, Input, Output, EventEmitter, Inject} from '@angular/core';
-import { FormComponent } from '../form/form.component';
-import { MatDialog } from '@angular/material';
-import {
-  BASE_PATH,
-  Feature,
-  FeatureControllerService,
-  Wegvakonderdeel,
-  WegvakonderdeelControllerService
-} from "../../shared/generated";
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {FormComponent} from '../form/form.component';
+import {MatDialog} from '@angular/material';
+import {Feature, FeatureControllerService,} from "../../shared/generated";
 import {MatSnackBar} from "@angular/material/snack-bar";
-import {DialogClosedData} from "./form-popup-models";
-import {FormConfiguration, FormConfigurations} from "../form/form-models";
-
+import {DialogClosedData, GeometryInteractionData, GeometryType} from "./form-popup-models";
+import {FormConfigurations} from "../form/form-models";
+import {AddButtonEvent} from "../../user-interface/add-feature/add-feature-models";
+import * as piet from "wellknown";
 
 @Component({
   selector: 'flamingo-form-popup',
@@ -60,7 +55,9 @@ export class FormPopupComponent implements OnInit {
     const scale = mapClickData.scale;
     this.service.onPoint(x, y, scale).subscribe(
       (features: Feature[]) => {
-        this.openDialog(features);
+        if(features && features.length >0){
+          this.openDialog(features);
+        }
       },
       error => {
         this._snackBar.open('Fout: Feature niet kunnen ophalen: ' + error, '', {
@@ -79,6 +76,9 @@ export class FormPopupComponent implements OnInit {
 
   @Output()
   public wanneerPopupClosed = new EventEmitter<DialogClosedData>();
+
+  @Output()
+  public startGeometryDrawing = new EventEmitter<GeometryInteractionData>();
 
   public ngOnInit() {
   }
@@ -107,58 +107,31 @@ export class FormPopupComponent implements OnInit {
     });
   }
 
-/*
-  private convertToFormFeature(f: any, isRelated: boolean): Wegvakonderdeel[] {
-    if (Array.isArray(f)) {
-      const features = [];
-      f.forEach(feat => {
-        const featureObject = this.convertToFormFeature(feat, false);
-        if(featureObject){
-          features.push(featureObject[0]);
-        }
-      });
-      return features;
-    } else {
-      const id = f.id;
-      const ft = "wegvakonderdeel";
-      const formConfig = this.formConfigs.config[ft];
-      if(!formConfig){
-        return null;
-      }
-      const featureAttributes: FeatureAttribute[] = this.convertFeatureAttributes(formConfig, f);
-      const children: Feature[] = [];
-      if (f.children) {
-        f.children.forEach((feat) => {
-          const featureObject = this.convertToFormFeature(feat, true);
-          if(featureObject){
-            children.push(featureObject[0]);
-          }
-        });
-      }
-      const feature: Feature = {
-          id,
-          children,
-          isRelated,
-          attributes: featureAttributes,
-      };
-      return [feature];
-    }
-  }*/
-
-/*  private convertFeatureAttributes(formConfig: FormConfiguration, attributes: []): FeatureAttribute[] {
-    const attrs = [];
-    for (const attr of formConfig.fields) {
-      for (const key in attributes) {
-        if (this.lookup[attr.key] === key) {
-          const attribute = {...attr, value : attributes[key]};
-          attrs.push(attribute);
-          break;
-        }
-      }
-    }
-    return attrs;
+  public temp: AddButtonEvent;
+  public addFeature(event: AddButtonEvent){
+    this.temp = event;
+    this.startGeometryDrawing.emit({
+      type: GeometryType.POLYGON
+    });
   }
-*/
+
+  @Input()
+  public set geometryDrawn(geom:string){
+    console.log('geom received', geom);
+    const geoJson = piet.parse(geom); // wellknown.parse('');
+    console.log("parsed: ", geoJson);
+    const features :Feature[] =[
+      {
+        children: [],
+        clazz: this.temp.featuretype,
+        objecttype: this.temp.featuretype.charAt(0).toUpperCase() + this.temp.featuretype.slice(1),
+        geometrie: geoJson
+      }
+
+    ];
+    this.openDialog(features);
+  }
+
   public createColumnLookup(): Map<string, string> {
     const lookup = new Map<string, string>();
    /* this.flamingoAppLayer.attributes.forEach(a => {

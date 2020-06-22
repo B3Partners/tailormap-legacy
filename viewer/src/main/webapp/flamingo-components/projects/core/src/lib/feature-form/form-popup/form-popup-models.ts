@@ -12,3 +12,14 @@ export interface DialogData {
 export interface DialogClosedData {
   iets: string;
 }
+
+export interface GeometryInteractionData {
+  type: GeometryType;
+
+}
+
+export enum GeometryType {
+  POLYGON = "Polygon",
+  LINESTRING = "LineString",
+  POINT = "Point",
+}

@@ -1,10 +1,7 @@
 import {Component, Inject, OnDestroy, Input, OnChanges, SimpleChanges} from '@angular/core';
 import {  MatDialogRef, MAT_DIALOG_DATA, MatSnackBar } from '@angular/material';
-
-
 import { ConfirmDialogService } from '../../shared/confirm-dialog/confirm-dialog.service';
 import { filter, take } from 'rxjs/operators';
-
 import { Subscription } from 'rxjs';
 import {DialogData} from "../form-popup/form-popup-models";
 import {
