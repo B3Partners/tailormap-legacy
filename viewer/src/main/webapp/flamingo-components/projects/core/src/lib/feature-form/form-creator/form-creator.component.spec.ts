@@ -12,6 +12,8 @@ import {FormPopupComponent} from "../form-popup/form-popup.component";
 import {FormTreeComponent} from "../form-tree/form-tree.component";
 import {MatSnackBarModule} from "@angular/material/snack-bar";
 import {Wegvakonderdeel} from "../../shared/generated/model/wegvakonderdeel";
+import {AddFeatureComponent} from "../../user-interface/add-feature/add-feature.component";
+import {FeatureInitializerService} from "../../shared/feature-initializer/feature-initializer.service";
 
 describe('FormCreatorComponent', () => {
   let component: FormCreatorComponent;
@@ -33,6 +35,7 @@ describe('FormCreatorComponent', () => {
       declarations: [
         FormCreatorComponent,
         FormComponent,
+        AddFeatureComponent,
         FormPopupComponent,
         FormTreeComponent,
         FormfieldComponent,
@@ -123,6 +126,27 @@ describe('FormCreatorComponent', () => {
     expect(newArray.length === 1).toBeTruthy();
     expect(newArray[0].object_guid).toEqual('een');
     expect(newArray[0].children.length).toEqual(1);
+    expect((newArray[0] as Wegvakonderdeel).aanlegjaar).toEqual(featureIsChanged.aanlegjaar);
+  });
+
+
+  it('should update the objecttguid of a new feature in  features array', ()=>{
+
+    let featureIsChanged : Wegvakonderdeel ={
+      objecttype: "wegvakonderdeel",
+      object_guid: "een",
+      aanlegjaar: 16,
+      children:[]
+    };
+    let baseFeature: Wegvakonderdeel  = {
+      objecttype: "wegvakonderdeel",
+      object_guid: FeatureInitializerService.STUB_OBJECT_GUID_NEW_OBJECT
+    };
+    let featuresArray = [baseFeature];
+    let newArray = component.updateFeatureInArray(featureIsChanged, featuresArray);
+    expect(newArray.length === 1).toBeTruthy();
+    expect(newArray[0].object_guid).toEqual('een');
+    expect(newArray[0].children.length).toEqual(0);
     expect((newArray[0] as Wegvakonderdeel).aanlegjaar).toEqual(featureIsChanged.aanlegjaar);
   });
 });

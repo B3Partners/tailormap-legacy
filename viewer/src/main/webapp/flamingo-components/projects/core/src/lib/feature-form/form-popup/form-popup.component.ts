@@ -7,6 +7,7 @@ import {DialogClosedData, GeometryInteractionData, GeometryType} from "./form-po
 import {FormConfigurations} from "../form/form-models";
 import {AddButtonEvent} from "../../user-interface/add-feature/add-feature-models";
 import * as wellknown from "wellknown";
+import {FeatureInitializerService} from "../../shared/feature-initializer/feature-initializer.service";
 
 @Component({
   selector: 'flamingo-form-popup',
@@ -18,7 +19,8 @@ export class FormPopupComponent implements OnInit {
   constructor(
     public dialog: MatDialog,
     private service: FeatureControllerService,
-    private _snackBar: MatSnackBar ) {
+    private _snackBar: MatSnackBar,
+    private featureInitializerService: FeatureInitializerService) {
   }
 
   private popupOpen = false;
@@ -117,18 +119,11 @@ export class FormPopupComponent implements OnInit {
 
   @Input()
   public set geometryDrawn(geom:string){
-    console.log('geom received', geom);
-    const geoJson = wellknown.parse(geom); // wellknown.parse('');
-    console.log("parsed: ", geoJson);
-    const features :Feature[] =[
-      {
-        children: [],
-        clazz: this.temp.featuretype,
-        objecttype: this.temp.featuretype.charAt(0).toUpperCase() + this.temp.featuretype.slice(1),
-        geometrie: geoJson,
-      }
+    const geoJson = wellknown.parse(geom);
+    const objecttype = this.temp.featuretype.charAt(0).toUpperCase() + this.temp.featuretype.slice(1);
+    let feat = this.featureInitializerService.create(objecttype,{geometrie:geoJson, clazz: this.temp.featuretype, children:[]});
 
-    ];
+    const features :Feature[] =[feat];
     this.openDialog(features);
   }
 

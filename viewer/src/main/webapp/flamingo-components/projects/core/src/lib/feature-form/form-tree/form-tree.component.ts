@@ -80,7 +80,7 @@ export class FormTreeComponent implements OnInit,  OnChanges {
             children,
             object_guid: feature.object_guid,
             feature,
-            selected: feature === this.feature,
+            selected: feature.object_guid === this.feature.object_guid,
             isFeatureType: false,
           });
       });

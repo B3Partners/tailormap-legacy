@@ -5,6 +5,7 @@ import {ConfirmDialogService} from "../../shared/confirm-dialog/confirm-dialog.s
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {Feature, FeatureControllerService, Wegvakonderdeel} from "../../shared/generated";
 import {Observable, of} from "rxjs";
+import {FeatureInitializerService} from "../../shared/feature-initializer/feature-initializer.service";
 
 
 @Injectable({
@@ -25,7 +26,7 @@ export class FormActionsService {
 
       } else {
         const object_guid = feature.object_guid;
-        if(object_guid) {
+        if(object_guid && object_guid !== FeatureInitializerService.STUB_OBJECT_GUID_NEW_OBJECT) {
           return this.service.update(feature, object_guid);
         }else{
           return this.service.save(feature);

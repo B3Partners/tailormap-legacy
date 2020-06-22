@@ -18,6 +18,7 @@ import {
 } from "../form/form-models";
 import { FormCreatorHelpers } from './form-creator-helpers';
 import {FormActionsService} from "../form-actions/form-actions.service";
+import {FeatureInitializerService} from "../../shared/feature-initializer/feature-initializer.service";
 
 @Component({
   selector: 'flamingo-form-creator',
@@ -135,7 +136,7 @@ export class FormCreatorComponent implements OnChanges, OnDestroy {
     if(!features){
       return fs;
     }
-    const parentIdx = features.findIndex(f => f.object_guid === feature.object_guid);
+    const parentIdx = features.findIndex(f => (f.object_guid === feature.object_guid || f.object_guid === FeatureInitializerService.STUB_OBJECT_GUID_NEW_OBJECT));
     if(parentIdx !== -1){
       fs = [
         ...features.slice(0, parentIdx),
