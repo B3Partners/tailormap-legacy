@@ -6,6 +6,13 @@ updates:
     interval: daily
     timezone: Europe/Amsterdam
   open-pull-requests-limit: 25
+  reviewers:
+  - mprins
+  - mtoonen
+  assignees:
+  - mprins
+  labels:
+  - build infrastructure
 - package-ecosystem: maven
   directory: "/"
   schedule:
@@ -76,10 +83,17 @@ updates:
   - dependency-name: org.stripesstuff:stripesstuff
     versions:
     - ">= 1.a, < 2"
+  - dependency-name: org.apache.tomcat:*
+    versions:
+    - ">= 8.a"
+  - dependency-name: org.apache.tomcat.embed:*
+    versions:
+    - ">= 8.a"
 - package-ecosystem: npm
   directory: "/viewer/src/main/webapp/viewer-html"
   schedule:
-    interval: daily
+    interval: weekly
+    day: saturday
     timezone: Europe/Amsterdam
   open-pull-requests-limit: 25
   reviewers:
