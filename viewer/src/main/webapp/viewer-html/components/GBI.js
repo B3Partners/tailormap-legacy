@@ -91,7 +91,7 @@ Ext.define("viewer.components.GBI", {
 
         var visibleAppLayers = this.config.viewerController.getVisibleAppLayers();
         for(var key in visibleAppLayers){
-            var appLayer = viewerController.getAppLayerById(key);
+            var appLayer = this.config.viewerController.getAppLayerById(key);
             this.processLayerVisible(appLayer, true);
         }
 
@@ -101,7 +101,7 @@ Ext.define("viewer.components.GBI", {
     },
     layerVisibilityChanged: function(map,event) {
         if(event.layer instanceof viewer.viewercontroller.controller.WMSLayer) {
-            var appLayer = viewerController.getAppLayerById(event.layer.appLayerId);
+            var appLayer = this.config.viewerController.getAppLayerById(event.layer.appLayerId);
             this.processLayerVisible(appLayer, event.visible);
         }
     },
