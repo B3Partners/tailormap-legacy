@@ -8,6 +8,8 @@ import {FormConfigurations} from "../form/form-models";
 import {AddButtonEvent} from "../../user-interface/add-feature/add-feature-models";
 import * as wellknown from "wellknown";
 import {FeatureInitializerService} from "../../shared/feature-initializer/feature-initializer.service";
+import {LayerVisibilityEvent} from "../../shared/layer-visibility-service/layer-visibility-models";
+import {LayerVisibilityServiceService} from "../../shared/layer-visibility-service/layer-visibility-service.service";
 
 @Component({
   selector: 'flamingo-form-popup',
@@ -20,7 +22,8 @@ export class FormPopupComponent implements OnInit {
     public dialog: MatDialog,
     private service: FeatureControllerService,
     private _snackBar: MatSnackBar,
-    private featureInitializerService: FeatureInitializerService) {
+    private featureInitializerService: FeatureInitializerService,
+    private visibilityService: LayerVisibilityServiceService) {
   }
 
   private popupOpen = false;
@@ -116,6 +119,13 @@ export class FormPopupComponent implements OnInit {
       type: GeometryType.POLYGON
     });
   }
+
+  @Input()
+  public set layerVisibilityChanged(evtString: any) {
+    let event: LayerVisibilityEvent = JSON.parse(evtString);
+    this.visibilityService.layerVisibiltyChanged(event);
+  }
+
 
   @Input()
   public set geometryDrawn(geom:string){

@@ -1,6 +1,8 @@
 import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {DialogClosedData} from "../../feature-form/form-popup/form-popup-models";
 import {AddButtonEvent} from "./add-feature-models";
+import {FeatureTypes} from "../../shared/feature-initializer/feature-initializer-models";
+import {LayerVisibilityServiceService} from "../../shared/layer-visibility-service/layer-visibility-service.service";
 
 @Component({
   selector: 'flamingo-add-feature',
@@ -13,18 +15,21 @@ export class AddFeatureComponent implements OnInit {
   public addFeature = new EventEmitter<AddButtonEvent>();
 
   public visibleFeatureTypes:string[];
-  constructor() {
-    this.visibleFeatureTypes = [
-      'pietje','jantje','klaasje'
-    ];
+  constructor(
+    private layerVisible: LayerVisibilityServiceService
+  ){
+
   }
+
+
 
   ngOnInit() {
   }
 
   public click(){
+    let first = this.layerVisible.getVisibleLayers()[0];
     this.addFeature.emit({
-      featuretype: 'wegvakonderdeel'
+      featuretype:first
     });
   }
 }

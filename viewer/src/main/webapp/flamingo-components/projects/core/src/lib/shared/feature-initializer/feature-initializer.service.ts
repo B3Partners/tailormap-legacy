@@ -1,11 +1,13 @@
 import { Injectable } from '@angular/core';
 import {Feature, Wegvakonderdeel, Wegvakonderdeelplanning} from "../generated";
+import {FeatureTypes} from "./feature-initializer-models";
 
 @Injectable({
   providedIn: 'root'
 })
 export class FeatureInitializerService {
 
+  public static enum
 
   public static readonly STUB_OBJECT_GUID_NEW_OBJECT = "-1";
   constructor() { }
@@ -15,7 +17,7 @@ export class FeatureInitializerService {
     params.objecttype = type;
     params.object_guid = FeatureInitializerService.STUB_OBJECT_GUID_NEW_OBJECT;
     switch(type){
-      case 'Wegvakonderdeel':
+      case FeatureTypes.WEGVAKONDERDEEL:
         let wv : Wegvakonderdeel = {
           aanlegjaar: 0,
           aanzien: "",
@@ -47,21 +49,23 @@ export class FeatureInitializerService {
           ...params,
         };
         return wv;
-      case 'Wegvakonderdeelplanning':
-         let wvp : Wegvakonderdeelplanning ={
-           children: [],
-           fid: 0,
-           geometrie: undefined,
-           hoeveelheid: 0,
-           id: 0,
-           jaarvanuitvoering: 0,
-           kosten: 0,
-           maatregel_wvko: "",
-           maatregeltype: "",
-           wegvakonderdeel_id: "",
-           ...params,
-         };
+      case FeatureTypes.WEGVAKONDERDEELPLANNING:
+        let wvp: Wegvakonderdeelplanning = {
+          children: [],
+          fid: 0,
+          geometrie: undefined,
+          hoeveelheid: 0,
+          id: 0,
+          jaarvanuitvoering: 0,
+          kosten: 0,
+          maatregel_wvko: "",
+          maatregeltype: "",
+          wegvakonderdeel_id: "",
+          ...params,
+        };
         return wvp;
+      default:
+        throw new Error("Featuretype not implemented: " + type);
     }
   }
 }

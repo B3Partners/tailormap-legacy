@@ -45,6 +45,8 @@ Ext.define("viewer.components.GBI", {
         });
         this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_COMPONENTS_FINISHED_LOADING,
             this.initialize,this);
+        this.config.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_VISIBILITY_CHANGED,
+            this.layerVisibilityChanged,this);
         return this;
     },
     initialize: function(){
@@ -61,7 +63,7 @@ Ext.define("viewer.components.GBI", {
         });
         this.toolMapClick.activateTool();
    },
-    createVectorLayer: function () {
+   createVectorLayer: function () {
         this.vectorLayer = this.config.viewerController.mapComponent.createVectorLayer({
             name: this.name + 'VectorLayer',
             geometrytypes: ["Polygon", "Point", "LineString"],
@@ -86,9 +88,33 @@ Ext.define("viewer.components.GBI", {
             this.vectorLayer.removeAllFeatures();
             this.config.viewerController.mapComponent.getMap().update();
         }.bind(this));
+
+        var visibleAppLayers = this.config.viewerController.getVisibleAppLayers();
+        for(var key in visibleAppLayers){
+            var appLayer = viewerController.getAppLayerById(key);
+            this.processLayerVisible(appLayer, true);
+        }
+
         this.div.addEventListener('startGeometryDrawing', function(e){this.startDrawingGeometry(e.detail);}.bind(this));
         this.div.setAttribute("config", JSON.stringify(this.formConfigs));
         document.body.appendChild(this.div);
+    },
+    layerVisibilityChanged: function(map,event) {
+        if(event.layer instanceof viewer.viewercontroller.controller.WMSLayer) {
+            var appLayer = viewerController.getAppLayerById(event.layer.appLayerId);
+            this.processLayerVisible(appLayer, event.visible);
+        }
+    },
+    processLayerVisible: function(appLayer, visible){
+        var layerName = appLayer.layerName;
+        if(layerName.indexOf(":") !== -1){
+            layerName = layerName.substring(layerName.indexOf(':') + 1);
+        }
+        var evt = {
+            layername : layerName,
+            visible: visible
+        };
+        this.div.setAttribute("layer-visibility-changed", JSON.stringify(evt));
     },
     startDrawingGeometry: function(event){
         this.vectorLayer.drawFeature(event.type);
