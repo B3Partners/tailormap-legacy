@@ -110,6 +110,9 @@ export class FormComponent implements OnDestroy, OnChanges {
        this.actions.removeFeature(this.feature, this.features).subscribe(result=>{
           this.features = result.features;
           this.feature = result.features[0];
+          if(!this.feature){
+            this.closeDialog();
+          }
         });
       });
   }
