@@ -10,6 +10,7 @@ import * as wellknown from "wellknown";
 import {FeatureInitializerService} from "../../shared/feature-initializer/feature-initializer.service";
 import {LayerVisibilityEvent} from "../../shared/layer-visibility-service/layer-visibility-models";
 import {LayerVisibilityServiceService} from "../../shared/layer-visibility-service/layer-visibility-service.service";
+import {FormconfigRepositoryService} from "../../shared/formconfig-repository/formconfig-repository.service";
 
 @Component({
   selector: 'flamingo-form-popup',
@@ -23,6 +24,7 @@ export class FormPopupComponent implements OnInit {
     private service: FeatureControllerService,
     private _snackBar: MatSnackBar,
     private featureInitializerService: FeatureInitializerService,
+    private formConfigRepo: FormconfigRepositoryService,
     private visibilityService: LayerVisibilityServiceService) {
   }
 
@@ -32,13 +34,12 @@ export class FormPopupComponent implements OnInit {
 
   private isBulk: string;
 
-  private formConfigs: FormConfigurations;
 
   public lookup: Map<string, string>;
 
   @Input()
   public set config(config: string) {
-    this.formConfigs = JSON.parse(config);
+    this.formConfigRepo.setFormConfigs(JSON.parse(config));
   }
 
   @Input()
@@ -96,7 +97,6 @@ export class FormPopupComponent implements OnInit {
       height: '800px',
       disableClose: true,
       data: {
-        formConfigs: this.formConfigs,
         formFeatures,
         isBulk: this.isBulk,
         lookup: this.lookup,

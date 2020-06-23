@@ -7,6 +7,7 @@ import { FlatNode, FeatureNode } from './form-tree-models';
 import { FormConfiguration, FormConfigurations} from "../form/form-models";
 import {Feature} from "../../shared/generated";
 import {FormTreeHelpers} from "./form-tree-helpers";
+import {FormconfigRepositoryService} from "../../shared/formconfig-repository/formconfig-repository.service";
 
 @Component({
   selector: 'flamingo-form-tree',
@@ -15,7 +16,8 @@ import {FormTreeHelpers} from "./form-tree-helpers";
 })
 export class FormTreeComponent implements OnInit,  OnChanges {
 
-  constructor() {
+  constructor(
+    private formConfigRepo: FormconfigRepositoryService,) {
   }
 
   @Output()
@@ -26,9 +28,6 @@ export class FormTreeComponent implements OnInit,  OnChanges {
 
   @Input()
   public feature: Feature;
-
-  @Input()
-  public formConfigs: FormConfigurations;
 
   public treeControl = new FlatTreeControl<FlatNode>(node => node.level, node => node.expandable);
 
@@ -88,7 +87,7 @@ export class FormTreeComponent implements OnInit,  OnChanges {
   }
 
   private getNodeLabel (feature:Feature) :string{
-    const config : FormConfiguration = this.formConfigs.config[feature.clazz];
+    const config : FormConfiguration = this.formConfigRepo.getFormConfig(feature.clazz);
     let label = this.getFeatureValue(feature, config.treeNodeColumn);
     if(config.idInTreeNodeColumn){
       let id = feature.object_guid;

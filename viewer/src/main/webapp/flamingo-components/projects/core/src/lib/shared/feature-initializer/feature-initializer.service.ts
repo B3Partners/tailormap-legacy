@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import {Feature, Wegvakonderdeel, Wegvakonderdeelplanning} from "../generated";
-import {FeatureTypes} from "./feature-initializer-models";
+
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +17,7 @@ export class FeatureInitializerService {
     params.objecttype = type;
     params.object_guid = FeatureInitializerService.STUB_OBJECT_GUID_NEW_OBJECT;
     switch(type){
-      case FeatureTypes.WEGVAKONDERDEEL:
+      case "Wegvakonderdeel":
         let wv : Wegvakonderdeel = {
           aanlegjaar: 0,
           aanzien: "",
@@ -49,7 +49,7 @@ export class FeatureInitializerService {
           ...params,
         };
         return wv;
-      case FeatureTypes.WEGVAKONDERDEELPLANNING:
+      case "Wegvakonderdeelplanning":
         let wvp: Wegvakonderdeelplanning = {
           children: [],
           fid: 0,

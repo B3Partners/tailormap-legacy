@@ -6,6 +6,7 @@ import {MatSnackBar} from "@angular/material/snack-bar";
 import {Feature, FeatureControllerService, Wegvakonderdeel} from "../../shared/generated";
 import {Observable, of} from "rxjs";
 import {FeatureInitializerService} from "../../shared/feature-initializer/feature-initializer.service";
+import {FormconfigRepositoryService} from "../../shared/formconfig-repository/formconfig-repository.service";
 
 
 @Injectable({
@@ -16,6 +17,7 @@ export class FormActionsService {
   constructor(
     private confirmDialogService: ConfirmDialogService,
     private service: FeatureControllerService,
+    private formConfigRepo: FormconfigRepositoryService,
     private _snackBar: MatSnackBar) { }
 
     public save(isBulk: boolean, feature: Feature) :Observable<any>{
@@ -56,9 +58,9 @@ export class FormActionsService {
     return fs;
   }
 
-  public newItem(evt, formConfigs, features) : Observable<any> {
+  public newItem(evt, features) : Observable<any> {
     const type = evt.srcElement.id;
-    let formConfig = formConfigs.config[type];
+    let formConfig = this.formConfigRepo.getFormConfig(type);
     const name = 'Nieuwe '  + formConfig.name;
 
     const parentFeature = features[0];

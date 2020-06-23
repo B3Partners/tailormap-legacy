@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import {LayerVisibilityEvent} from "./layer-visibility-models";
-import {FeatureTypes} from "../feature-initializer/feature-initializer-models";
+import {FormconfigRepositoryService} from "../formconfig-repository/formconfig-repository.service";
 
 @Injectable({
   providedIn: 'root'
@@ -8,11 +8,12 @@ import {FeatureTypes} from "../feature-initializer/feature-initializer-models";
 export class LayerVisibilityServiceService {
 
   private visibleLayers : string[] = [];
-  constructor() { }
+  constructor(
+    private formConfigRepo: FormconfigRepositoryService) { }
 
   public layerVisibiltyChanged(event: LayerVisibilityEvent):void{
     const layerName = event.layername;
-    let allowFts = Object.values(FeatureTypes);
+    let allowFts = this.formConfigRepo.getFeatureTypes();
     const isOfFormType = allowFts.findIndex(l => l.toLowerCase() === layerName.toLowerCase());
     if(isOfFormType !== -1) {
       const idx = this.visibleLayers.findIndex(l => l === layerName);
