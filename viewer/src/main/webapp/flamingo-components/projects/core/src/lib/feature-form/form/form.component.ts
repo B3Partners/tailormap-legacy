@@ -40,10 +40,10 @@ export class FormComponent implements OnDestroy, OnChanges {
       this.feature = this.features[0];
       this.isBulk = !!data.isBulk;
       this.lookup = data.lookup;
-      const configs = this.formConfigRepo.getAllFormConfigs();
+      const configs = this.formConfigRepo.getAllFormConfigs().config;
       for (const key in configs) {
-        if (configs.config.hasOwnProperty(key)) {
-          const cf: FormConfiguration = configs.config[key];
+        if (configs.hasOwnProperty(key)) {
+          const cf: FormConfiguration = configs [key];
           if (cf.newPossible) {
             this.formsForNew.push(cf);
           }
@@ -100,7 +100,10 @@ export class FormComponent implements OnDestroy, OnChanges {
 
   public remove(){
     const attribute = Object.keys(this.feature).find(attribute => attribute === this.formConfig.treeNodeColumn);
-    const message = 'Wilt u ' + this.formConfig.name + ' - ' + this.feature[attribute] + ' verwijderen?';
+    let message = 'Wilt u ' + this.formConfig.name + ' - ' + this.feature[attribute] + ' verwijderen?';
+    if(this.feature.children.length > 0){
+      message += ' Let op! Alle onderliggende objecten worden ook verwijderd.'
+    }
     this.confirmDialogService.confirm('Verwijderen',
       message, true)
       .pipe(take(1), filter(remove => remove)).subscribe(() => {

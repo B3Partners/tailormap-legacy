@@ -105,7 +105,6 @@ export class FormPopupComponent implements OnInit {
     // tslint:disable-next-line: rxjs-no-ignored-subscription
     dialogRef.afterClosed().subscribe(result => {
       this.popupOpen = false;
-      console.log('The dialog was closed');
       this.wanneerPopupClosed.emit({
         iets: 'hoi',
       });
