@@ -13,7 +13,7 @@ import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 import {FeatureControllerService} from "../../shared/generated";
 import {FormconfigRepositoryService} from "../../shared/formconfig-repository/formconfig-repository.service";
 
-fdescribe('WegvakkenFormComponent', () => {
+describe('WegvakkenFormComponent', () => {
   let component: FormComponent;
   let fixture: ComponentFixture<FormComponent>;
 

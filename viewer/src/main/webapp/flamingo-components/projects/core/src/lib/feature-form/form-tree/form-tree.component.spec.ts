@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { FormTreeComponent } from './form-tree.component';
+import {SharedModule} from "../../shared/shared.module";
 
 describe('WegvakkenTreeComponent', () => {
   let component: FormTreeComponent;
@@ -8,6 +9,9 @@ describe('WegvakkenTreeComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
+      imports: [
+        SharedModule,],
+      providers:[],
       declarations: [ FormTreeComponent ]
     })
     .compileComponents();

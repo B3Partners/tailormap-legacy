@@ -1,11 +1,9 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { FormCreatorComponent } from './form-creator.component';
 import {Feature, FeatureControllerService, Wegvakonderdeelplanning} from "../../shared/generated";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {SharedModule} from "../../shared/shared.module";
-import {FeatureFormModule} from "../feature-form.module";
-import {Attribute, FormConfiguration} from "../form/form-models";
+import { FormConfiguration} from "../form/form-models";
 import {FormfieldComponent} from "../form-field/formfield.component";
 import {FormComponent} from "../form/form.component";
 import {FormPopupComponent} from "../form-popup/form-popup.component";
