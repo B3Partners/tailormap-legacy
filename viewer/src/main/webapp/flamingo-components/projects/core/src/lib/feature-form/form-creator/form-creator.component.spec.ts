@@ -26,14 +26,12 @@ describe('FormCreatorComponent', () => {
         ReactiveFormsModule,
         MatSnackBarModule,
         SharedModule,
-        //FeatureFormModule,
       ],
       providers:[
         FeatureControllerService,
 
       ],
       declarations: [
-        FormCreatorComponent,
         FormComponent,
         AddFeatureComponent,
         FormPopupComponent,
