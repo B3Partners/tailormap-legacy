@@ -24,12 +24,11 @@ export class FormconfigRepositoryService {
 
   public getFeatureTypes(): string[]{
     let featuresTypes = [];
-    for(let key in this.formConfigs.config){
-      featuresTypes.push(key);
+    if(this.formConfigs) {
+      for (let key in this.formConfigs.config) {
+        featuresTypes.push(key);
+      }
     }
-   /* this.formConfigs.config.forEach((value: FormConfiguration, key: string)=>{
-      featuresTypes.push(key);
-    });*/
     return featuresTypes;
   }
 }
