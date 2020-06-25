@@ -115,4 +115,4 @@ updates:
     day: saturday
     timezone: Europe/Amsterdam
   labels:
-  - bouw- en testinfrastuctuur
+  - build infrastructure
