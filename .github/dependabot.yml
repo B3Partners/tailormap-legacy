@@ -5,7 +5,7 @@ updates:
   schedule:
     interval: weekly
     timezone: Europe/Amsterdam
-    day: "saterday"
+    day: "saturday"
   open-pull-requests-limit: 25
   reviewers:
   - mprins
@@ -18,7 +18,7 @@ updates:
   directory: "/"
   schedule:
     interval: daily
-    time: "3:00"
+    time: "03:00"
     timezone: Europe/Amsterdam
   open-pull-requests-limit: 25
   reviewers:
@@ -30,6 +30,8 @@ updates:
   labels:
   - build infrastructure
   - dependencies
+  - backport v5.4.x
+  - backport v5.6.x
   ignore:
   - dependency-name: com.microsoft.sqlserver:mssql-jdbc
     versions:
