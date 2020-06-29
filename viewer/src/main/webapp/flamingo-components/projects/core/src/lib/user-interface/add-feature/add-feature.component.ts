@@ -13,7 +13,7 @@ export class AddFeatureComponent implements OnInit {
   public addFeature = new EventEmitter<AddButtonEvent>();
 
   constructor(
-    private layerVisible: LayerVisibilityServiceService
+    public layerVisible: LayerVisibilityServiceService
   ){ }
 
   ngOnInit() {
