@@ -154,7 +154,8 @@ Ext.define("viewer.viewercontroller.ol.OpenLayers5Map", {
     },
 
     update: function () {
-        for(var layer of this.layers){
+        for(var i = 0 ; i < this.layers.length ; i++){
+            var layer = this.layers[i];
             layer.frameworkLayer.getSource().refresh();
         }
     },

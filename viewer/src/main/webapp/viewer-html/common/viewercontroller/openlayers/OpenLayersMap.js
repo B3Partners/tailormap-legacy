@@ -474,7 +474,8 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
     },
 
     update: function(){
-        for(var layer of this.layers){
+        for(var i = 0 ; i < this.layers.length ; i++){
+            var layer = this.layers[i];
             layer.reload();
         }
     },
