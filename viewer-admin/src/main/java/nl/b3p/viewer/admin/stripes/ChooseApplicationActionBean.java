@@ -309,6 +309,9 @@ public class ChooseApplicationActionBean extends ApplicationActionBean {
             }
             order.ignoreCase();
             c.addOrder(order);
+            if(!sort.equals("version")){
+                c.addOrder(Order.desc("version"));
+            }
         }
 
         if (filterName != null && filterName.length() > 0) {

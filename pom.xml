@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.flamingo-mc</groupId>
     <artifactId>flamingo-mc</artifactId>
-    <version>5.7.5-SNAPSHOT</version>
+    <version>5.7.6-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>flamingo-mc</name>
     <url>http://github.com/flamingo-mc</url>
@@ -38,7 +38,7 @@
         </license>
     </licenses>
     <properties>
-        <flamingo.version>5.7.5-SNAPSHOT</flamingo.version>
+        <flamingo.version>5.7.6-SNAPSHOT</flamingo.version>
         <java.version>1.8</java.version>
         <project.build.sourceVersion>${java.version}</project.build.sourceVersion>
         <project.build.targetVersion>${java.version}</project.build.targetVersion>
@@ -54,7 +54,7 @@
         <test.persistence.unit>viewer-config-hsqldb</test.persistence.unit>
         <postgresql.version>42.2.14</postgresql.version>
         <mssql.version>8.2.2.jre8</mssql.version>
-        <oracle.version>19.6.0.0</oracle.version>
+        <oracle.version>19.7.0.0</oracle.version>
         <apache.poi.version>4.1.2</apache.poi.version>
         <jakarta.mail.version>1.6.5</jakarta.mail.version>
         <apache.httpcomponents.version>4.5.12</apache.httpcomponents.version>
@@ -65,7 +65,7 @@
         <!-- skip integration tests by default, override this property from commandline
         or as part of a profile, see eg. 'travis-ci' profile in viewer -->
         <test.skip.integrationtests>false</test.skip.integrationtests>
-        <maven-surefire-plugin.version>3.0.0-M4</maven-surefire-plugin.version>
+        <maven-surefire-plugin.version>3.0.0-M5</maven-surefire-plugin.version>
         <tomcat.version>7.0.104</tomcat.version>
         <jacoco-maven-plugin.version>0.8.5</jacoco-maven-plugin.version>
         <tomcat7-maven-plugin.version>2.2</tomcat7-maven-plugin.version>
@@ -534,7 +534,7 @@
             <dependency>
                 <groupId>org.apache.tika</groupId>
                 <artifactId>tika-core</artifactId>
-                <version>1.24</version>
+                <version>1.24.1</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -571,7 +571,7 @@
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>build-helper-maven-plugin</artifactId>
-                    <version>3.1.0</version>
+                    <version>3.2.0</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-assembly-plugin</artifactId>
@@ -668,7 +668,7 @@
                 </plugin>
                 <plugin>
                     <artifactId>maven-site-plugin</artifactId>
-                    <version>3.9.0</version>
+                    <version>3.9.1</version>
                 </plugin>
                 <plugin>
                     <groupId>org.owasp</groupId>

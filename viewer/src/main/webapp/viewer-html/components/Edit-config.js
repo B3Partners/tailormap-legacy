@@ -107,6 +107,19 @@ Ext.define("viewer.components.CustomConfiguration", {
                 labelWidth: this.labelWidth
             },
             {
+                xtype: 'numberfield',
+                fieldLabel: i18next.t('edit_config_editLabelWidth'),
+                minValue: 100,
+                maxValue: 500,
+                step: 10,
+                name: 'editLabelWidth',
+                value: this.configObject.editLabelWidth !== undefined ? this.configObject.editLabelWidth : 100,
+                labelWidth: this.labelWidth,
+                style: {
+                    marginRight: "70px"
+                }
+            },
+            {
                 xtype: 'textarea',
                 fieldLabel: i18next.t('edit_config_6'),
                 name: 'editHelpText',

@@ -1,0 +1,118 @@
+version: 2
+updates:
+- package-ecosystem: docker
+  directory: "/viewer-commons/docker/geoserver"
+  schedule:
+    interval: weekly
+    timezone: Europe/Amsterdam
+    day: "saturday"
+  open-pull-requests-limit: 25
+  reviewers:
+  - mprins
+  - mtoonen
+  assignees:
+  - mprins
+  labels:
+  - build infrastructure
+- package-ecosystem: maven
+  directory: "/"
+  schedule:
+    interval: daily
+    time: "03:00"
+    timezone: Europe/Amsterdam
+  open-pull-requests-limit: 25
+  reviewers:
+  - mprins
+  - mtoonen
+  assignees:
+  - mprins
+  - mtoonen
+  labels:
+  - build infrastructure
+  - dependencies
+  - backport v5.4.x
+  - backport v5.6.x
+  ignore:
+  - dependency-name: com.microsoft.sqlserver:mssql-jdbc
+    versions:
+    - "> 8.2.2.jre8, < 8.3"
+  - dependency-name: com.microsoft.sqlserver:mssql-jdbc
+    versions:
+    - ">= 8.3.a, < 8.4"
+  - dependency-name: javax.servlet:javax.servlet-api
+    versions:
+    - ">= 3.1.a, < 3.2"
+  - dependency-name: javax.servlet:javax.servlet-api
+    versions:
+    - ">= 4.a, < 5"
+  - dependency-name: javax.servlet.jsp:javax.servlet.jsp-api
+    versions:
+    - ">= 2.3.a, < 2.4"
+  - dependency-name: nl.geodienstencentrum.maven:closure-compiler-maven-plugin
+    versions:
+    - "> 2.4"
+  - dependency-name: nl.geodienstencentrum.maven:closure-compiler-maven-plugin
+    versions:
+    - ">= 2.8.a, < 2.9"
+  - dependency-name: org.apache.lucene:lucene-core
+    versions:
+    - "> 4.6.0"
+  - dependency-name: org.apache.maven.plugins:maven-war-plugin
+    versions:
+    - ">= 3.3.a, < 3.4"
+  - dependency-name: org.apache.solr:solr-core
+    versions:
+    - "> 4.6.0"
+  - dependency-name: org.apache.solr:solr-core
+    versions:
+    - ">= 7.a, < 8"
+  - dependency-name: org.apache.solr:solr-solrj
+    versions:
+    - "> 4.6.0"
+  - dependency-name: org.apache.solr:solr-solrj
+    versions:
+    - ">= 7.a, < 8"
+  - dependency-name: org.hibernate:hibernate-core
+    versions:
+    - "> 3.6.10.Final"
+  - dependency-name: org.hibernate:hibernate-core
+    versions:
+    - ">= 5.a, < 6"
+  - dependency-name: org.hibernate:hibernate-entitymanager
+    versions:
+    - "> 3.6.10.Final"
+  - dependency-name: org.hibernate:hibernate-entitymanager
+    versions:
+    - ">= 5.a, < 6"
+  - dependency-name: org.stripesstuff:stripesstuff
+    versions:
+    - ">= 1.a, < 2"
+  - dependency-name: org.apache.tomcat:*
+    versions:
+    - ">= 8.a"
+  - dependency-name: org.apache.tomcat.embed:*
+    versions:
+    - ">= 8.a"
+- package-ecosystem: npm
+  directory: "/viewer/src/main/webapp/viewer-html"
+  schedule:
+    interval: weekly
+    day: saturday
+    timezone: Europe/Amsterdam
+  open-pull-requests-limit: 25
+  reviewers:
+  - mprins
+  - mtoonen
+  assignees:
+  - mtoonen
+  - mprins
+  labels:
+  - dependencies
+- package-ecosystem: "github-actions"
+  directory: "/"
+  schedule:
+    interval: "weekly"
+    day: saturday
+    timezone: Europe/Amsterdam
+  labels:
+  - build infrastructure
