@@ -125,7 +125,6 @@ describe('FormCreatorComponent', () => {
     expect((newArray[0] as Wegvakonderdeel).aanlegjaar).toEqual(featureIsChanged.aanlegjaar);
   });
 
-
   it('should update the objecttguid of a new feature in  features array', ()=>{
 
     let featureIsChanged : Wegvakonderdeel ={
