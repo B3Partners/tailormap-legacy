@@ -38,7 +38,6 @@ describe('FormCreatorComponent', () => {
         FormCreatorComponent,]
     })
     .compileComponents();
-
   }));
 
   beforeEach(() => {
