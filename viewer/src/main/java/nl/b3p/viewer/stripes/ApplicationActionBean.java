@@ -340,7 +340,7 @@ public class ApplicationActionBean extends LocalizableApplicationActionBean impl
         application = findApplication(name, version);
 
         if(application == null) {
-            getContext().getValidationErrors().addGlobalError(new LocalizableError("app.notfound", name + (version != null ? " v" + version : "")));
+            getContext().getValidationErrors().addGlobalError(new LocalizableError("app.notfound", HtmlUtil.encode(name + (version != null ? " v" + version : ""))));
             return new ForwardResolution("/WEB-INF/jsp/error.jsp");
         }
 
