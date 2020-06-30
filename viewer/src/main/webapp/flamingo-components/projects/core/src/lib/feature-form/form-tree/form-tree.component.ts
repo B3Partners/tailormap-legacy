@@ -56,15 +56,17 @@ export class FormTreeComponent implements OnInit,  OnChanges {
           const fts = {};
           feature.children.forEach((child: Feature) => {
             const featureType = child.clazz;
-            if (!fts.hasOwnProperty(featureType)) {
-              fts[featureType] = {
-                name: featureType,
-                children: [],
-                id: featureType,
-                isFeatureType: true,
-              };
+            if(this.formConfigRepo.getFormConfig(featureType)) {
+              if (!fts.hasOwnProperty(featureType)) {
+                fts[featureType] = {
+                  name: featureType,
+                  children: [],
+                  id: featureType,
+                  isFeatureType: true,
+                };
+              }
+              fts[featureType].children.push(this.convertFeatureToNode([child])[0]);
             }
-            fts[featureType].children.push(this.convertFeatureToNode([child])[0]);
           });
           for (const key in fts) {
             if (fts.hasOwnProperty(key)) {
