@@ -35,7 +35,6 @@ export class FormCreatorComponent implements OnChanges, OnDestroy {
   public features: Feature[];
   @Input()
   public indexedAttributes: IndexedFeatureAttributes;
-
   @Input()
   public isBulk = false;
   @Input()
