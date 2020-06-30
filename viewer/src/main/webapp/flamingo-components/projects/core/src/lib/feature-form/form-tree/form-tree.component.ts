@@ -118,6 +118,5 @@ export class FormTreeComponent implements OnInit,  OnChanges {
 
     return cls.join(' ');
   }
-
   public hasChild = (_: number, node: FlatNode) => node.expandable;
 }
