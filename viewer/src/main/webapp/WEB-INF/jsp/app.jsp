@@ -47,6 +47,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <link href="${contextPath}/viewer-html/components/resources/css/logger.css" rel="stylesheet">
         <link href="${contextPath}/viewer-html/components/resources/css/simpleFilter.css" rel="stylesheet">
         <link href="${contextPath}/viewer-html/components/resources/css/attributeList.css" rel="stylesheet">
+        <link href="${contextPath}/viewer-html/components/resources/mapbox-gl/mapbox-gl.css" rel="stylesheet">
         <c:if test="${actionBean.viewerType == 'openlayers'}">
             <link href="${contextPath}/viewer-html/common/resources/css/openlayers.css" rel="stylesheet">
         </c:if>

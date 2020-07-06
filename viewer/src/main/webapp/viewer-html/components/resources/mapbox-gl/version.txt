@@ -1,0 +1,3 @@
+version 1.11.1
+
+see https://www.mapbox.com/install/js/cdn-install/
