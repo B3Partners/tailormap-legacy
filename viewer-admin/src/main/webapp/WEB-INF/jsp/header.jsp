@@ -40,6 +40,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                        </ul>
                     </li>
                     <li><stripes:link beanclass="nl.b3p.viewer.admin.stripes.DocumentActionBean" id="menu_documenten"><fmt:message key="viewer_admin.header.10" /></stripes:link></li>
+                    <li><stripes:link beanclass="nl.b3p.viewer.admin.stripes.FormActionBean" id="menu_forms"><fmt:message key="viewer_admin.header.25" /></stripes:link></li>
                     <li><stripes:link beanclass="nl.b3p.viewer.admin.stripes.ServiceUsageMatrixActionBean" id="menu_serviceusagematrix"><fmt:message key="viewer_admin.header.11" /></stripes:link></li>
                     <li><stripes:link beanclass="nl.b3p.viewer.admin.stripes.BookmarkActionBean" id="menu_bookmarks"><fmt:message key="viewer_admin.header.12" /></stripes:link></li>
                 </ul>

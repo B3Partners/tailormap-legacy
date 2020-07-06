@@ -43,6 +43,15 @@
         </attributes>
     </entity>
 
+    <entity class="nl.b3p.viewer.config.forms.Form">
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE" generator="form_id_seq"/>
+                <sequence-generator name="form_id_seq" sequence-name="form_id_seq"/>
+            </id>
+        </attributes>
+    </entity>
+
     <entity class="nl.b3p.viewer.config.services.Layer">
         <attributes>
             <id name="id">
