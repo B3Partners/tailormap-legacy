@@ -215,9 +215,17 @@ public class EditFeatureActionBean extends LocalizableApplicationActionBean impl
         } catch(Exception e) {
             log.error("Exception editing feature",e);
 
-            error = e.toString();
+            error = getBundle().getString("viewer.editfeatureactionbean.19");
             if(e.getCause() != null) {
-                error += "; cause: " + e.getCause().toString();
+                // PG || oracle || sql server
+                if (e.getCause().getMessage().contains("numeric field overflow") ||
+                        e.getCause().getMessage().contains("Value too large for column") ||
+                        e.getCause().getMessage().contains("overflow error")){
+                    error += " "+ getBundle().getString("viewer.editfeatureactionbean.20");
+                }
+                error += "<br/><samp>" + e.getCause().getMessage() + "</samp>";
+            } else{
+                error += e.getLocalizedMessage();
             }
         } finally {
             if(fs != null) {

@@ -27,6 +27,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <body>
         <h1><fmt:message key="viewer.error.title" /></h1>
         <p><fmt:message key="viewer.error.msg" /></p>
-        <p><%=response.getStatus()%>:<%=response.getMessage()%>
+        <p>code: <%=response.getStatus()%></p>
     </body>
 </html>
