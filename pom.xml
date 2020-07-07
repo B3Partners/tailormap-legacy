@@ -211,7 +211,7 @@
                 <!-- do not upgrade because that would enforce "use strict;" -->
                 <groupId>com.google.javascript</groupId>
                 <artifactId>closure-compiler</artifactId>
-                <version>v20161201</version>
+                <version>v20200628</version>
             </dependency>
             <dependency>
                 <groupId>javax.servlet</groupId>
