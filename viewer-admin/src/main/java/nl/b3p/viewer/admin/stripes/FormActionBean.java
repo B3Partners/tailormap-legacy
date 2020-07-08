@@ -4,10 +4,7 @@ import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.i18n.LocalizableActionBean;
 import nl.b3p.viewer.config.forms.Form;
-import nl.b3p.viewer.config.services.ArcGISFeatureSource;
-import nl.b3p.viewer.config.services.FeatureSource;
-import nl.b3p.viewer.config.services.JDBCFeatureSource;
-import nl.b3p.viewer.config.services.WFSFeatureSource;
+import nl.b3p.viewer.config.security.Group;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
@@ -19,10 +16,14 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.stripesstuff.stripersist.Stripersist;
 
+import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 
+@UrlBinding("/action/form/{$event}")
+@StrictBinding
+@RolesAllowed({Group.ADMIN, Group.REGISTRY_ADMIN})
 public class FormActionBean extends LocalizableActionBean {
 
     public ActionBeanContext context;
@@ -47,6 +48,9 @@ public class FormActionBean extends LocalizableActionBean {
     private String sort;
     @Validate
     private String dir;
+
+    @Validate(on = {"save", "edit","cancel", "delete"})
+    private Form form;
 
     @Override
     public ActionBeanContext getContext() {
@@ -75,6 +79,29 @@ public class FormActionBean extends LocalizableActionBean {
     }
 
     public Resolution cancel() {
+        return new ForwardResolution(EDITJSP);
+    }
+
+    public Resolution add() {
+        form = new Form();
+        return new ForwardResolution(EDITJSP);
+    }
+
+    public Resolution save() {
+        EntityManager em = Stripersist.getEntityManager();
+        em.persist(form);
+        em.getTransaction().commit();
+        return new ForwardResolution(EDITJSP);
+    }
+
+    public Resolution delete() {
+        EntityManager em = Stripersist.getEntityManager();
+        em.remove(form);
+        em.getTransaction().commit();
+        return new ForwardResolution(EDITJSP);
+    }
+
+    public Resolution edit() {
         return new ForwardResolution(EDITJSP);
     }
 
@@ -195,5 +222,53 @@ public class FormActionBean extends LocalizableActionBean {
 
     public void setFilter(JSONArray filter) {
         this.filter = filter;
+    }
+
+    public int getPage() {
+        return page;
+    }
+
+    public void setPage(int page) {
+        this.page = page;
+    }
+
+    public int getStart() {
+        return start;
+    }
+
+    public void setStart(int start) {
+        this.start = start;
+    }
+
+    public int getLimit() {
+        return limit;
+    }
+
+    public void setLimit(int limit) {
+        this.limit = limit;
+    }
+
+    public String getSort() {
+        return sort;
+    }
+
+    public void setSort(String sort) {
+        this.sort = sort;
+    }
+
+    public String getDir() {
+        return dir;
+    }
+
+    public void setDir(String dir) {
+        this.dir = dir;
+    }
+
+    public Form getForm() {
+        return form;
+    }
+
+    public void setForm(Form form) {
+        this.form = form;
     }
 }

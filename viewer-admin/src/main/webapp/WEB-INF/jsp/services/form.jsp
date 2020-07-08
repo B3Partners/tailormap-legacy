@@ -32,20 +32,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <h1><fmt:message key="viewer_admin.form.header" /><a href="#Soorten_Applicaties_Help" title="<fmt:message key="viewer_admin.form.helptext" />" class="helplink"></a></h1>
             <br/>
             <div id="form-container" class="forms">
-
-                <stripes:form beanclass="nl.b3p.viewer.admin.stripes.FormActionBean">
-                <select name="featureType" id="featureType">
-                    <option value="-">-- Selecteer --</option>
-                    <c:forEach var="ft" items="${actionBean.featureTypes}">
-                        <option value="${ft}"> <c:out value="${ft}"/></option>
-                    </c:forEach>
-                </select>
                 <div id="grid-container" class="attribute"></div>
-
-                <stripes:submit name="add" value="add">Voeg toe</stripes:submit>
-                </stripes:form>
             </div>
-            <div id="form-container" class="form">
+            <div id="form-container" class="attributesources">
                 <iframe src="<stripes:url beanclass="nl.b3p.viewer.admin.stripes.FormActionBean" event="cancel"/>" id="editFrame" frameborder="0"></iframe>
             </div>
         </div>
@@ -55,12 +44,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
             Ext.onReady(function() {
                 // Expose vieweradmin_components_Bookmark to global scope to be able to access the component from the iframe
-                Ext.create('vieweradmin.components.Form', {
+                window.vieweradmin_components_FormSource = Ext.create('vieweradmin.components.Form', {
                     forms:forms,
                     gridurl: '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.FormActionBean" event="getGridData"/>',
-                   <%-- editurl: '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.FormActionBean" event="edit"/>',
-                    deleteurl: '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.FormActionBean" event="delete"/>',--%>
-
+                    editurl: '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.FormActionBean" event="edit"/>',
+                    deleteurl: '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.FormActionBean" event="delete"/>'
                 });
             });
         </script>

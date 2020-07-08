@@ -76,7 +76,7 @@ Ext.define('vieweradmin.components.Form', {
                 }
             }, {
                 id: 'attribute',
-                text: i18next.t('viewer_admin_attribute_4'),
+                text: '',
                 dataIndex: 'id',
                 flex: 1,
                 menuDisabled: true,
@@ -84,7 +84,10 @@ Ext.define('vieweradmin.components.Form', {
                 hideable: false,
                 menuDisabled: true,
                 renderer: function (value) {
-                    return Ext.String.format('<a href="#" class="editobject">' + i18next.t('viewer_admin_attribute_6') + '</a>');
+                    return [
+                        Ext.String.format('<a href="#" class="editobject">' + i18next.t('viewer_admin_document_3') + '</a>'),
+                        Ext.String.format('<a href="#" class="removeobject">' + i18next.t('viewer_admin_document_4') + '</a>')
+                    ].join(" | ");
                 }
             }
     ];
@@ -97,6 +100,14 @@ Ext.define('vieweradmin.components.Form', {
             {name: 'featureTypeName', type: 'string'},
         ];
     },
+
+    getEditUrl: function(record) {
+        return this.createUrl(this.config.editurl, { form: record.get('id') });
+    },
+
+    getRemoveUrl: function(record) {
+        return this.createUrl(this.config.deleteurl, { form: record.get('id') });
+    }
 
 
 });

@@ -17,6 +17,7 @@ public class Form {
     private SimpleFeatureType sft;
 
     @Lob
+    @org.hibernate.annotations.Type(type="org.hibernate.type.StringClobType")
     private String json;
 
     public Long getId() {
