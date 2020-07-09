@@ -1205,6 +1205,26 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         }
         return visibleAppLayers;
     },
+
+    getAppLayersWithAttributes: function(restriction, layers){
+        var totalLayers = this.app.appLayers;
+        var layerList = [];
+        for(var key in totalLayers){
+            if(totalLayers.hasOwnProperty(key)) {
+                var layer = totalLayers[key];
+                if (layer[restriction]) {
+                    if(layers != null && layers.length > 0) {
+                        if (layers.indexOf(parseInt(key))!==-1) {
+                            layerList.push(layer);
+                        }
+                    }else{
+                        layerList.push(layer);
+                    }
+                }
+            }
+        }
+        return layerList;
+    },
     /**
      * Gets the layers that have a maptip configured
      * @param layer a mapComponent layer.
