@@ -202,10 +202,10 @@ INSERT INTO feature_type_attributes (feature_type, attribute_descriptor, list_in
 INSERT INTO feature_type_attributes (feature_type, attribute_descriptor, list_index) VALUES (6, 46, 0);
 
 
-INSERT INTO geo_service (protocol, id, authorizations_modified, monitoring_enabled, monitoring_statusok, name, password, url, username, tiling_protocol, exception_type, override_url, category, top_layer) VALUES ('tiled', 1, '2015-09-15 16:33:48.096', false, true, 'Openbasiskaart', NULL, 'http://www.openbasiskaart.nl/mapcache/tms/1.0.0/osm-nb@rd', NULL, 'TMS', NULL, NULL, 1, 1);
-INSERT INTO geo_service (protocol, id, authorizations_modified, monitoring_enabled, monitoring_statusok, name, password, url, username, tiling_protocol, exception_type, override_url, category, top_layer) VALUES ('wms', 2, '2015-09-15 16:34:14.961', false, true, 'Groen', 'w@chtw00rd', 'http://x12.b3p.nl/cgi-bin/mapserv?map=/srv/maps/solparc/groen_productie.map&', 'B3P', NULL, 'Inimage', false, 2, 3);
-INSERT INTO geo_service (protocol, id, authorizations_modified, monitoring_enabled, monitoring_statusok, name, password, url, username, tiling_protocol, exception_type, override_url, category, top_layer) VALUES ('wms', 3, '2015-09-15 16:34:29.301', false, true, 'woonplaatsen', 'w@chtw00rd', 'http://x12.b3p.nl/cgi-bin/mapserv?map=/srv/maps/solparc/woonplaats_productie.map&', 'B3P', NULL, 'Inimage', false, 2, 9);
-INSERT INTO geo_service (protocol, id, authorizations_modified, monitoring_enabled, monitoring_statusok, name, password, url, username, tiling_protocol, exception_type, override_url, category, top_layer) VALUES ('wms', 4, '2018-11-22 13:34:29.301', false, true, 'woonplaatsen', 'w@chtw00rd', 'https://flamingo5.b3p.nl/geoserver/test_omgeving_fla5/wms', 'B3P', NULL, 'Inimage', false, 2, 1);
+INSERT INTO geo_service (protocol, id, authorizations_modified, monitoring_enabled, monitoring_statusok, name, password, url, username, tiling_protocol, exception_type, override_url, category, top_layer, geofence_header) VALUES ('tiled', 1, '2015-09-15 16:33:48.096', false, true, 'Openbasiskaart', NULL, 'http://www.openbasiskaart.nl/mapcache/tms/1.0.0/osm-nb@rd', NULL, 'TMS', NULL, NULL, 1, 1, NULL);
+INSERT INTO geo_service (protocol, id, authorizations_modified, monitoring_enabled, monitoring_statusok, name, password, url, username, tiling_protocol, exception_type, override_url, category, top_layer, geofence_header) VALUES ('wms', 2, '2015-09-15 16:34:14.961', false, true, 'Groen', 'w@chtw00rd', 'http://x12.b3p.nl/cgi-bin/mapserv?map=/srv/maps/solparc/groen_productie.map&', 'B3P', NULL, 'Inimage', false, 2, 3, NULL);
+INSERT INTO geo_service (protocol, id, authorizations_modified, monitoring_enabled, monitoring_statusok, name, password, url, username, tiling_protocol, exception_type, override_url, category, top_layer, geofence_header) VALUES ('wms', 3, '2015-09-15 16:34:29.301', false, true, 'woonplaatsen', 'w@chtw00rd', 'http://x12.b3p.nl/cgi-bin/mapserv?map=/srv/maps/solparc/woonplaats_productie.map&', 'B3P', NULL, 'Inimage', false, 2, 9, NULL);
+INSERT INTO geo_service (protocol, id, authorizations_modified, monitoring_enabled, monitoring_statusok, name, password, url, username, tiling_protocol, exception_type, override_url, category, top_layer, geofence_header) VALUES ('wms', 4, '2018-11-22 13:34:29.301', false, true, 'woonplaatsen', 'w@chtw00rd', 'https://flamingo5.b3p.nl/geoserver/test_omgeving_fla5/wms', 'B3P', NULL, 'Inimage', false, 2, 1, NULL);
 
 insert into geo_service_readers (geo_service, role_name) values (2, 'Admin');
 insert into geo_service_readers (geo_service, role_name) values (4, 'Admin');
@@ -342,7 +342,7 @@ INSERT INTO START_LAYER (ID, CHECKED, SELECTED_INDEX, APPLICATION, APPLICATION_L
 INSERT INTO START_LAYER (ID, CHECKED, SELECTED_INDEX, APPLICATION, APPLICATION_LAYER, REMOVED) VALUES (27, false, null, 1, 4, false);
 INSERT INTO START_LAYER (ID, CHECKED, SELECTED_INDEX, APPLICATION, APPLICATION_LAYER, REMOVED) VALUES (28, false, null, 1, 5, false);
 
-INSERT INTO metadata (id, config_key, config_value) VALUES (1, 'database_version', '38');
+INSERT INTO metadata (id, config_key, config_value) VALUES (1, 'database_version', '40');
 
 INSERT INTO user_ (username, password) VALUES ('admin', '14c06474bec5e7def0304925d09f2b977af3146a');
 INSERT INTO user_ (username, password) VALUES ('pietje', '14c06474bec5e7def0304925d09f2b977af3146a');
