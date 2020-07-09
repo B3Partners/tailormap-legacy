@@ -675,26 +675,9 @@ Ext.define("viewer.components.Print", {
         var attributeLists = this.viewerController.getComponentsByClassName("viewer.components.AttributeList");
         if(attributeLists && attributeLists.length > 0) {
             var al = attributeLists[0];
-            var me = this;
-            var requestParams = {};
-            requestParams["attribute"] = true;
-            requestParams["appId"] = FlamingoAppLoader.get('appId');
-            requestParams["layers"] = al.config.layers;
-
-            requestParams["hasConfiguredLayers"] = !!al.config.layers && al.config.layers.length > 0;
-            Ext.Ajax.request({
-                url: actionBeans["layerlist"],
-                params: requestParams,
-                scope: this,
-                success: function (result, request) {
-                    var layers = Ext.JSON.decode(result.responseText);
-                    var s = this.attributesLayer.getStore();
-                    s.loadData(layers);
-                },
-                failure: function (a, b, c) {
-                    Ext.MessageBox.alert(i18next.t('viewer_components_featurereport_1'), i18next.t('viewer_components_featurereport_2'));
-                }
-            });
+            var layers = this.config.viewerController.getAppLayersWithAttributes("attribute", al.config.layers);
+            var s = this.attributesLayer.getStore();
+            s.loadData(layers);
         }
     },
     /**

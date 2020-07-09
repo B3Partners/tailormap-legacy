@@ -199,7 +199,7 @@ Ext.define("viewer.components.sf.SimpleFilter",{
         var appLayer = this.config.viewerController.getAppLayerById(this.config.appLayerId);
 
         var me = this;
-        if(appLayer !== null) {
+        if(appLayer) {
             var featureService = this.config.viewerController.getAppLayerFeatureService(appLayer);
 
             // check if featuretype was loaded
