@@ -57,29 +57,12 @@ Ext.define ("viewer.components.LayerSelector",{
             this.createCombobox();
         }
 
-        var requestPath= actionBeans["layerlist"];
-        var requestParams = {};
-        requestParams[this.config.restriction]= true;
-        requestParams["appId"]= FlamingoAppLoader.get("appId");
-        var me = this;
-        if(this.config.layers != null && this.config.layers.length > 0){
-            requestParams["layers"]= this.config.layers;
-            requestParams["hasConfiguredLayers"]= true;    
-        }
-        
-        Ext.Ajax.request({ 
-            url: requestPath,
-            timeout: 120000,
-            params: requestParams, 
-            success: function ( result, request ) {
-                me.layersInitialized = true;
-                me.layerList = Ext.JSON.decode(result.responseText);
-                me.initLayers();
-            },
-            failure: function(a,b,c) {
-                Ext.MessageBox.alert(i18next.t('viewer_components_layerselector_1'), i18next.t('viewer_components_layerselector_2'));
-            }
-        });
+        this.layerList = this.config.viewerController.getAppLayersWithAttributes(this.config.restriction, this.config.layers);
+        this.layersInitialized = true;
+        setTimeout(function () {
+            this.initLayers();
+        }.bind(this), 50);
+
         this.config.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_VISIBILITY_CHANGED, this.layerVisibilityChanged, this);
         return this;
     },
