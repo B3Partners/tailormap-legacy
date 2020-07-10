@@ -250,12 +250,7 @@ public class DownloadFeaturesActionBean extends LocalizableApplicationActionBean
                 }
 
                 final Query q = new Query(fs.getName().toString());
-                try{
-                    int max = Integer.parseInt(context.getServletContext().getInitParameter("flamingo.download.maxfeatures"));
-                    q.setMaxFeatures(max);
-                }catch (NumberFormatException e){
-                q.setMaxFeatures(Math.min(limit,FeatureToJson.MAX_FEATURES));
-                }
+                q.setMaxFeatures(getMaxFeatures());
 
                 setFilter(filter, q, ft, Stripersist.getEntityManager());
 
