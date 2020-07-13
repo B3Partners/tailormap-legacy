@@ -23,10 +23,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.StringReader;
 import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import javax.activation.MimetypesFileTypeMap;
 import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletResponse;
@@ -45,6 +42,7 @@ import nl.b3p.viewer.audit.Auditable;
 import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.ApplicationLayer;
 import nl.b3p.viewer.config.app.ConfiguredAttribute;
+import nl.b3p.viewer.config.app.ConfiguredComponent;
 import nl.b3p.viewer.config.security.Authorizations;
 import nl.b3p.viewer.config.services.AttributeDescriptor;
 import nl.b3p.viewer.config.services.FeatureTypeRelation;
@@ -250,12 +248,7 @@ public class DownloadFeaturesActionBean extends LocalizableApplicationActionBean
                 }
 
                 final Query q = new Query(fs.getName().toString());
-                try{
-                    int max = Integer.parseInt(context.getServletContext().getInitParameter("flamingo.download.maxfeatures"));
-                    q.setMaxFeatures(max);
-                }catch (NumberFormatException e){
-                q.setMaxFeatures(Math.min(limit,FeatureToJson.MAX_FEATURES));
-                }
+                q.setMaxFeatures(getMaxFeatures());
 
                 setFilter(filter, q, ft, Stripersist.getEntityManager());
 
@@ -416,5 +409,26 @@ public class DownloadFeaturesActionBean extends LocalizableApplicationActionBean
                 ff2.sort(sort, SortOrder.ASCENDING)
             });
         }
+    }
+
+    private static final String COMPONENT_NAME = "viewer.components.AttributeList";
+    private int getMaxFeatures(){
+        EntityManager em = Stripersist.getEntityManager();
+        int max = 1000;
+        Set<ConfiguredComponent> components = application.getComponents();
+        for (Iterator<ConfiguredComponent> it = components.iterator(); it.hasNext();) {
+            ConfiguredComponent comp = it.next();
+            if (comp.getClassName().equals(COMPONENT_NAME)) {
+                JSONObject config = new JSONObject(comp.getConfig());
+                String maxFeatures = config.optString("maxFeatures");
+                if (maxFeatures != null && !maxFeatures.isEmpty()) {
+                    try{
+                        max = Integer.parseInt(maxFeatures);
+                    }catch (NumberFormatException e){
+                    }
+                }
+            }
+        }
+        return max;
     }
 }
