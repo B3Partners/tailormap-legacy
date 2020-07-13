@@ -1,6 +1,7 @@
 package nl.b3p.gbi.converter;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;
@@ -12,7 +13,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.Assert.*;
-
+@Ignore
 public class ConverterTest {
 
     private Converter instance;
