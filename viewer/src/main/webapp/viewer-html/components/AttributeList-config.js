@@ -33,7 +33,13 @@ Ext.define("viewer.components.CustomConfiguration",{
             fieldLabel: i18next.t('attributelist_config_3'),
             value: this.configObject.defaultDownload || "SHP"
         });
-
+        this.form.add({
+            xtype: 'numberfield',
+            fieldLabel: i18next.t('attributelist_config_maxFeatures'),
+            value: this.configObject.maxFeatures || 1000,
+            name: 'maxFeatures',
+            labelWidth: this.labelWidth,
+        });
         this.form.add({
             xtype: 'checkbox',
             fieldLabel: i18next.t('attributelist_config_4'),
