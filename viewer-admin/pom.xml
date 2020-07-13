@@ -93,6 +93,10 @@
             <groupId>org.flamingo-mc</groupId>
             <artifactId>web-commons</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.flamingo-mc</groupId>
+            <artifactId>form</artifactId>
+        </dependency>
         <!-- nl b3p csw-->
         <dependency>
             <groupId>nl.b3p</groupId>

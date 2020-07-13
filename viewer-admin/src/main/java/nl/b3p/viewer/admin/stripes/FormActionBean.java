@@ -1,10 +1,18 @@
 package nl.b3p.viewer.admin.stripes;
 
 import net.sourceforge.stripes.action.*;
+import net.sourceforge.stripes.validation.SimpleError;
 import net.sourceforge.stripes.validation.Validate;
+import net.sourceforge.stripes.validation.ValidateNestedProperties;
+import nl.b3p.gbi.converter.Converter;
+import nl.b3p.gbi.converter.Formulier;
+import nl.b3p.gbi.converter.Parser;
+import nl.b3p.gbi.converter.Paspoort;
 import nl.b3p.i18n.LocalizableActionBean;
 import nl.b3p.viewer.config.forms.Form;
 import nl.b3p.viewer.config.security.Group;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
@@ -19,13 +27,17 @@ import org.stripesstuff.stripersist.Stripersist;
 import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 
 @UrlBinding("/action/form/{$event}")
 @StrictBinding
 @RolesAllowed({Group.ADMIN, Group.REGISTRY_ADMIN})
 public class FormActionBean extends LocalizableActionBean {
 
+    private static final Log log = LogFactory.getLog(FormActionBean.class);
     public ActionBeanContext context;
     private static final String JSP = "/WEB-INF/jsp/services/form.jsp";
     private static final String EDITJSP = "/WEB-INF/jsp/services/editform.jsp";
@@ -50,7 +62,15 @@ public class FormActionBean extends LocalizableActionBean {
     private String dir;
 
     @Validate(on = {"save", "edit","cancel", "delete"})
+    @ValidateNestedProperties({
+            @Validate(field="name", required=true, maxlength=255, label="Naam", on = {"save"}),
+            @Validate(field="featureTypeName", required = true, maxlength=255, label="Feature Type Name", on = {"save"}),
+            @Validate(field="json", required=true, label="JSON", on = {"save"})
+    })
     private Form form;
+
+    @Validate
+    private FileBean file;
 
     @Override
     public ActionBeanContext getContext() {
@@ -89,9 +109,31 @@ public class FormActionBean extends LocalizableActionBean {
 
     public Resolution save() {
         EntityManager em = Stripersist.getEntityManager();
-        em.persist(form);
-        em.getTransaction().commit();
+        try {
+            form = processForm(form);
+            em.persist(form);
+            em.getTransaction().commit();
+        } catch (IOException e) {
+            log.error("Exception occured during processing of form json");
+            context.getValidationErrors().add("json", new SimpleError(e.getLocalizedMessage()));
+        }
         return new ForwardResolution(EDITJSP);
+    }
+
+    private Form processForm(Form f) throws IOException {
+        String json = f.getJson();
+        if(json.contains("GeoVisia")){
+            Converter c = new Converter();
+            Parser p = new Parser();
+
+            List<Paspoort> ps = p.parse(json);
+
+            List<Formulier> fs = c.convert(ps);
+            Formulier formulier = fs.get(0);
+            f.setFeatureTypeName(formulier.getFeatureType());
+            f.setJson(formulier.toString());
+        }
+        return f;
     }
 
     public Resolution delete() {
@@ -166,7 +208,6 @@ public class FormActionBean extends LocalizableActionBean {
 
         for (Iterator it = sources.iterator(); it.hasNext();) {
             Form form = (Form) it.next();
-
             JSONObject j = this.getGridRow(form);
             jsonData.put(j);
         }
@@ -270,5 +311,13 @@ public class FormActionBean extends LocalizableActionBean {
 
     public void setForm(Form form) {
         this.form = form;
+    }
+
+    public FileBean getFile() {
+        return file;
+    }
+
+    public void setFile(FileBean file) {
+        this.file = file;
     }
 }

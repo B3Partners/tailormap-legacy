@@ -29,39 +29,38 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <stripes:form beanclass="nl.b3p.viewer.admin.stripes.FormActionBean">
                 <stripes:hidden name="form" value="${actionBean.form.id}"/>
                 <c:choose>
-                <c:when test="${actionBean.context.eventName == 'edit' || actionBean.context.eventName == 'add'}">
-                    <h1 id="headertext">Formulier bewerken</h1>
-                    <table class="formtable">
-                        <tr>
-                            <td><fmt:message key="viewer_admin.editform.name" />:</td>
-                            <td><stripes:text name="form.name" maxlength="255" size="30"/></td>
-                        </tr>
-                        <tr>
-                            <td><fmt:message key="viewer_admin.editform.ft" />:</td>
-                            <td><stripes:text name="form.featureTypeName" maxlength="255" size="30"/></td>
-                        </tr>
-                        <tr>
-                            <td><fmt:message key="viewer_admin.editform.formconfig" /> *:</td>
-                            <td><stripes:textarea name="form.json"  cols="100" rows="15"/></td>
-                        </tr>
-                    </table>
-                    <div class="submitbuttons">
-                        <fmt:message key="viewer_admin.editattribute.3" var="editattribute3" />
-                        <fmt:message key="viewer_admin.editattribute.4" var="editattribute4" />
-                        <stripes:submit name="save" value="${editattribute3}"/>
-                        <stripes:reset name="cancel" class="extlikebutton" value="${editattribute4}"/>
-                    </div>
-                </c:when>
-                <c:when test="${actionBean.context.eventName == 'save' || actionBean.context.eventName == 'delete'}">
-                    <script type="text/javascript">
-                        var frameParent = getParent();
-                        if(frameParent && frameParent.vieweradmin_components_FormSource) {
-                            frameParent.vieweradmin_components_FormSource.reloadGrid();
-                        }
-                    </script>
-                </c:when>
+                    <c:when test="${actionBean.context.eventName == 'edit' || actionBean.context.eventName == 'add'}">
+                        <h1 id="headertext">Formulier bewerken</h1>
+                        <table class="formtable">
+                            <tr>
+                                <td><fmt:message key="viewer_admin.editform.name" />:</td>
+                                <td><stripes:text name="form.name" maxlength="255" size="30"/></td>
+                            </tr>
+                            <tr>
+                                <td><fmt:message key="viewer_admin.editform.ft" />:</td>
+                                <td><stripes:text name="form.featureTypeName" maxlength="255" size="30"/></td>
+                            </tr>
+                            <tr>
+                                <td><fmt:message key="viewer_admin.editform.formconfig" /> *:</td>
+                                <td><stripes:textarea name="form.json"  cols="100" rows="15"/></td>
+                            </tr>
+                        </table>
+                        <div class="submitbuttons">
+                            <fmt:message key="viewer_admin.editattribute.3" var="editattribute3" />
+                            <fmt:message key="viewer_admin.editattribute.4" var="editattribute4" />
+                            <stripes:submit name="save" value="${editattribute3}"/>
+                            <stripes:reset name="cancel" class="extlikebutton" value="${editattribute4}"/>
+                        </div>
+                    </c:when>
+                    <c:when test="${actionBean.context.eventName == 'save' || actionBean.context.eventName == 'delete'}">
+                        <script type="text/javascript">
+                            var frameParent = getParent();
+                            if(frameParent && frameParent.vieweradmin_components_FormSource) {
+                                frameParent.vieweradmin_components_FormSource.reloadGrid();
+                            }
+                        </script>
+                    </c:when>
                     <c:otherwise>
-
                         <stripes:submit name="add" value="add">Voeg toe</stripes:submit>
                     </c:otherwise>
                 </c:choose>

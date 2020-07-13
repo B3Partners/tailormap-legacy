@@ -32,10 +32,6 @@ Ext.define('vieweradmin.components.Form', {
         this.initConfig(config);
         vieweradmin.components.Form.superclass.constructor.call(this, this.config);
         vieweradmin.components.Menu.setActiveLink('menu_forms');
-        var featureType = Ext.get('featureType');
-        featureType.on('change', function() {
-            this.simpleFeatureTypeChange();
-        }, this);
     },
 
     simpleFeatureTypeChange: function(simpleFeatureTypeId) {
