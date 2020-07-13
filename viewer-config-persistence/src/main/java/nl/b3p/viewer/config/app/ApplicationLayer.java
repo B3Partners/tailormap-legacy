@@ -19,11 +19,7 @@ package nl.b3p.viewer.config.app;
 import javax.persistence.*;
 import java.util.*;
 import nl.b3p.viewer.config.ClobElement;
-import nl.b3p.viewer.config.services.AttributeDescriptor;
-import nl.b3p.viewer.config.services.FeatureTypeRelation;
-import nl.b3p.viewer.config.services.GeoService;
-import nl.b3p.viewer.config.services.Layer;
-import nl.b3p.viewer.config.services.SimpleFeatureType;
+import nl.b3p.viewer.config.services.*;
 import org.apache.commons.beanutils.BeanUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -229,10 +225,30 @@ public class ApplicationLayer {
             addAttributesJSON(o, includeRelations, em);
         }
 
+        addLayerListDetails(o, l);
+
         StartLayer sl = getStartLayers().get(app);
         o.put("checked", sl != null ? sl.isChecked() : false);
 
         return o;
+    }
+
+    public void addLayerListDetails(JSONObject json, Layer l){
+        if (l.getService() instanceof WMSService) {
+            json.put("filterable", l.getFeatureType() != null);
+        }else{
+            json.put("filterable", l.isFilterable());
+        }
+
+        if( l.getService() instanceof ArcGISService){
+            json.put("filterable", l.getFeatureType() != null && !(l.getFeatureType().getFeatureSource() instanceof ArcGISFeatureSource) );
+        }
+        json.put("bufferable", l.isBufferable());
+        json.put("editable", l.getFeatureType() != null && l.getFeatureType().isWriteable());
+        json.put("influence", this.getDetails().containsKey("influenceradius"));
+        json.put("arc", l.getService().getProtocol().startsWith("arc"));
+        json.put("wfs", l.getFeatureType() != null && l.getFeatureType().getFeatureSource().getProtocol().equals("wfs"));
+        json.put("attribute", !this.getAttributes().isEmpty());
     }
     
     public void addAttributesJSON(JSONObject json, boolean includeRelations, EntityManager em) throws JSONException {
