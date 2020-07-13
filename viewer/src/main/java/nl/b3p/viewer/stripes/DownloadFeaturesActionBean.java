@@ -415,9 +415,9 @@ public class DownloadFeaturesActionBean extends LocalizableApplicationActionBean
     private int getMaxFeatures(){
         EntityManager em = Stripersist.getEntityManager();
         int max = 1000;
-        Set components = application.getComponents();
-        for (Iterator it = components.iterator(); it.hasNext();) {
-            ConfiguredComponent comp = (ConfiguredComponent) it.next();
+        Set<ConfiguredComponent> components = application.getComponents();
+        for (Iterator<ConfiguredComponent> it = components.iterator(); it.hasNext();) {
+            ConfiguredComponent comp = it.next();
             if (comp.getClassName().equals(COMPONENT_NAME)) {
                 JSONObject config = new JSONObject(comp.getConfig());
                 String maxFeatures = config.optString("maxFeatures");
