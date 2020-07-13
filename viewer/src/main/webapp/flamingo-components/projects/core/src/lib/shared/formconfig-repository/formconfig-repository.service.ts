@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import {FormConfiguration, FormConfigurations} from "../../feature-form/form/form-models";
 
 @Injectable({
@@ -7,8 +8,15 @@ import {FormConfiguration, FormConfigurations} from "../../feature-form/form/for
 export class FormconfigRepositoryService {
 
   private formConfigs: FormConfigurations;
+  private config: any;
 
-  constructor() { }
+  constructor(private http: HttpClient) {
+    this.http.get<[FormConfigurations]>('http://localhost:8084/viewer/action/form').subscribe((data: any) => {
+      this.formConfigs = data;
+    });
+
+  }
+
 
   public setFormConfigs(formConfigs: FormConfigurations){
     this.formConfigs = formConfigs;
