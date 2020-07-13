@@ -23,10 +23,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.StringReader;
 import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import javax.activation.MimetypesFileTypeMap;
 import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletResponse;
@@ -45,6 +42,7 @@ import nl.b3p.viewer.audit.Auditable;
 import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.ApplicationLayer;
 import nl.b3p.viewer.config.app.ConfiguredAttribute;
+import nl.b3p.viewer.config.app.ConfiguredComponent;
 import nl.b3p.viewer.config.security.Authorizations;
 import nl.b3p.viewer.config.services.AttributeDescriptor;
 import nl.b3p.viewer.config.services.FeatureTypeRelation;
@@ -411,5 +409,26 @@ public class DownloadFeaturesActionBean extends LocalizableApplicationActionBean
                 ff2.sort(sort, SortOrder.ASCENDING)
             });
         }
+    }
+
+    private static final String COMPONENT_NAME = "viewer.components.AttributeList";
+    private int getMaxFeatures(){
+        EntityManager em = Stripersist.getEntityManager();
+        int max = 1000;
+        Set components = application.getComponents();
+        for (Iterator it = components.iterator(); it.hasNext();) {
+            ConfiguredComponent comp = (ConfiguredComponent) it.next();
+            if (comp.getClassName().equals(COMPONENT_NAME)) {
+                JSONObject config = new JSONObject(comp.getConfig());
+                String maxFeatures = config.optString("maxFeatures");
+                if (maxFeatures != null && !maxFeatures.isEmpty()) {
+                    try{
+                        max = Integer.parseInt(maxFeatures);
+                    }catch (NumberFormatException e){
+                    }
+                }
+            }
+        }
+        return max;
     }
 }
