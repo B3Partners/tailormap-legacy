@@ -175,11 +175,15 @@ public class DatabaseSynchronizer implements Servlet {
         // 5.7.3
         updates.put("39", new UpdateElement(Collections.singletonList("add_geoservice_geofence_header.sql"), String.class, false));
 
-        // 5.7.7
-        updates.put("40", new UpdateElement(Collections.singletonList("add_form.sql"), String.class, false));
+        //5.6.4
 
-        //
-        // NB when adding an update also update the metadata version in the testdata.sql file around line 345
+        updates.put("40", new UpdateElement (Collections.singletonList("selectedcontentcaches_dirty.sql"), String.class));
+	
+	 // 5.7.7
+        updates.put("41", new UpdateElement(Collections.singletonList("add_form.sql"), String.class, false));
+
+        // 
+        // NB when adding an update also update the metadata version in the testdata.sql file around line 348
         // that is: /src/test/resources/nl/b3p/viewer/util/testdata.sql
     }
 
