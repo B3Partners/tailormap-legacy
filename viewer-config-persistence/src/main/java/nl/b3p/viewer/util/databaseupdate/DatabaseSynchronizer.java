@@ -179,7 +179,7 @@ public class DatabaseSynchronizer implements Servlet {
 
         updates.put("40", new UpdateElement (Collections.singletonList("selectedcontentcaches_dirty.sql"), String.class));
 	
-	 // 5.7.7
+	    // 5.7.7
         updates.put("41", new UpdateElement(Collections.singletonList("add_form.sql"), String.class, false));
 
         // 
