@@ -23,16 +23,16 @@ public class FormActionBean implements ActionBean {
     public Resolution configs(){
         EntityManager em = Stripersist.getEntityManager();
         List<Form> forms = em.createQuery("FROM Form", Form.class).getResultList();
-        JSONObject json = new JSONObject();
+        JSONObject fts = new JSONObject();
         for (Form form : forms) {
             if(form.getJson() != null && !form.getJson().isEmpty()){
-                JSONObject config = new JSONObject(form.getJson());
-
-                json.put(form.getJson());
+                fts.put(form.getFeatureTypeName(), new JSONObject(form.getJson()));
             }
         }
 
-        return new StreamingResolution("application/json", new StringReader(json.toString()));
+        JSONObject config = new JSONObject();
+        config.put("config", fts);
+        return new StreamingResolution("application/json", new StringReader(config.toString()));
     }
 
     @Override

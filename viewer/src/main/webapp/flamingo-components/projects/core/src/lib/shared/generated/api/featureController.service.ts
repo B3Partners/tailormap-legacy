@@ -237,16 +237,23 @@ export class FeatureControllerService {
      * 
      * 
      * @param body 
+     * @param parent_id 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public save(body: Feature, observe?: 'body', reportProgress?: boolean): Observable<Feature>;
-    public save(body: Feature, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<Feature>>;
-    public save(body: Feature, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<Feature>>;
-    public save(body: Feature, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
+    public save(body: Feature, parent_id?: string, observe?: 'body', reportProgress?: boolean): Observable<Feature>;
+    public save(body: Feature, parent_id?: string, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<Feature>>;
+    public save(body: Feature, parent_id?: string, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<Feature>>;
+    public save(body: Feature, parent_id?: string, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
 
         if (body === null || body === undefined) {
             throw new Error('Required parameter body was null or undefined when calling save.');
+        }
+
+
+        let queryParameters = new HttpParams({encoder: new CustomHttpUrlEncodingCodec()});
+        if (parent_id !== undefined && parent_id !== null) {
+            queryParameters = queryParameters.set('parentId', <any>parent_id);
         }
 
         let headers = this.defaultHeaders;
@@ -272,6 +279,7 @@ export class FeatureControllerService {
         return this.httpClient.request<Feature>('post',`${this.basePath}/features`,
             {
                 body: body,
+                params: queryParameters,
                 withCredentials: this.configuration.withCredentials,
                 headers: headers,
                 observe: observe,

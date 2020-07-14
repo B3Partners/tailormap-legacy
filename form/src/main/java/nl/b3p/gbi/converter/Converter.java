@@ -14,7 +14,11 @@ public class Converter {
     public Formulier convert(Paspoort p){
         Formulier form = new Formulier();
         form.setName(p.getNaam());
-        form.setFeatureType(p.getTabelnaam().toLowerCase());
+        String tableName = p.getTabelnaam().toLowerCase();
+        if(tableName.contains("gb_")){
+            tableName = tableName.substring(3);
+        }
+        form.setFeatureType(tableName);
         form.setTabs(p.getTabs().size());
         form.setTreeNodeColumn(p.getTabs().get(0).getControls().get(0).getKolom().toLowerCase());
         form.setFields(convertFields(p));

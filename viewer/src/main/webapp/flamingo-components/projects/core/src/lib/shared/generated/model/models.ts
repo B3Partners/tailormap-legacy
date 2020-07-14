@@ -1,3 +1,5 @@
+export * from './body';
+export * from './body1';
 export * from './crs';
 export * from './feature';
 export * from './geometry';

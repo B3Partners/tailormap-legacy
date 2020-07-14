@@ -17,6 +17,7 @@ import { CustomHttpUrlEncodingCodec }                        from '../encoder';
 
 import { Observable }                                        from 'rxjs';
 
+import { Body1 } from '../model/body1';
 import { PageWegvakonderdeelplanning } from '../model/pageWegvakonderdeelplanning';
 import { Wegvakonderdeelplanning } from '../model/wegvakonderdeelplanning';
 
@@ -236,10 +237,10 @@ export class WegvakonderdeelplanningControllerService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public save2(body: Wegvakonderdeelplanning, observe?: 'body', reportProgress?: boolean): Observable<Wegvakonderdeelplanning>;
-    public save2(body: Wegvakonderdeelplanning, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<Wegvakonderdeelplanning>>;
-    public save2(body: Wegvakonderdeelplanning, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<Wegvakonderdeelplanning>>;
-    public save2(body: Wegvakonderdeelplanning, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
+    public save2(body: Body1, observe?: 'body', reportProgress?: boolean): Observable<Wegvakonderdeelplanning>;
+    public save2(body: Body1, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<Wegvakonderdeelplanning>>;
+    public save2(body: Body1, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<Wegvakonderdeelplanning>>;
+    public save2(body: Body1, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
 
         if (body === null || body === undefined) {
             throw new Error('Required parameter body was null or undefined when calling save2.');

@@ -39,13 +39,7 @@ public class Formulier {
         mapper.registerModule(module);
     }
     public JsonNode toJSON() throws IOException {
-
-
-        ObjectNode o = mapper.createObjectNode();
-        ObjectNode ft = mapper.createObjectNode();
-        ft.set(this.getFeatureType(), mapper.valueToTree(this));
-        o.set("config", ft);
-        return o;
+        return mapper.valueToTree(this);
     }
 
     public File toFile(String filename) throws IOException {

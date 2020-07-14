@@ -64,7 +64,7 @@ public class FormActionBean extends LocalizableActionBean {
     @Validate(on = {"save", "edit","cancel", "delete"})
     @ValidateNestedProperties({
             @Validate(field="name", required=true, maxlength=255, label="Naam", on = {"save"}),
-            @Validate(field="featureTypeName", required = true, maxlength=255, label="Feature Type Name", on = {"save"}),
+            @Validate(field="featureTypeName", maxlength=255, label="Feature Type Name", on = {"save"}),
             @Validate(field="json", required=true, label="JSON", on = {"save"})
     })
     private Form form;

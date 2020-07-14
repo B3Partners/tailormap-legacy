@@ -2,7 +2,6 @@ package nl.b3p.gbi.converter;
 
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;
@@ -11,7 +10,8 @@ import java.net.URL;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
-@Ignore
+import static org.junit.Assume.assumeNotNull;
+
 public class ParserTest {
 
     private Parser parser;
@@ -27,6 +27,7 @@ public class ParserTest {
 
         String filename = "paspoorten" + File.separator + "Element.txt";
         URL u = this.getClass().getResource(filename);
+        assumeNotNull("Het test bestand moet er zijn.", u);
         element = new File(u.getFile());
     }
 

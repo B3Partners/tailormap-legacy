@@ -8,7 +8,6 @@ export interface FormConfiguration {
   name: string;
   treeNodeColumn: string;
   idInTreeNodeColumn?: boolean;
-  newPossible: boolean;
   featureType: string;
   tabConfig: Map<number, string>;
   relation ?: FormRelation;

@@ -13,7 +13,8 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.Assert.*;
-@Ignore
+import static org.junit.Assume.assumeNotNull;
+
 public class ConverterTest {
 
     private Converter instance;
@@ -26,6 +27,7 @@ public class ConverterTest {
 
         String filename = "paspoorten" + File.separator + "Element.txt";
         URL u = this.getClass().getResource(filename);
+        assumeNotNull("Het test bestand moet er zijn.", u);
         File element = new File(u.getFile());
 
         Parser p = new Parser();

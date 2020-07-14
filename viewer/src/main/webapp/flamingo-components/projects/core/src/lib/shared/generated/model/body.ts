@@ -9,10 +9,9 @@
  * https://github.com/swagger-api/swagger-codegen.git
  * Do not edit the class manually.
  */
+import { Wegvakonderdeel } from './wegvakonderdeel';
 
-export interface Feature { 
-    children?: Array<Feature>;
-    object_guid?: string;
-    objecttype: string;
-    clazz?: string;
+export interface Body { 
+    wv?: Wegvakonderdeel;
+    parent_id?: string;
 }

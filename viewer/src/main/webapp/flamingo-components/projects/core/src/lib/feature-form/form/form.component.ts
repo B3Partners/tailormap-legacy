@@ -44,9 +44,7 @@ export class FormComponent implements OnDestroy, OnChanges {
       for (const key in configs) {
         if (configs.hasOwnProperty(key)) {
           const cf: FormConfiguration = configs [key];
-          if (cf.newPossible) {
-            this.formsForNew.push(cf);
-          }
+          this.formsForNew.push(cf);
         }
       }
 
@@ -101,7 +99,7 @@ export class FormComponent implements OnDestroy, OnChanges {
   public remove(){
     const attribute = Object.keys(this.feature).find(attribute => attribute === this.formConfig.treeNodeColumn);
     let message = 'Wilt u ' + this.formConfig.name + ' - ' + this.feature[attribute] + ' verwijderen?';
-    if(this.feature.children.length > 0){
+    if(this.feature.children && this.feature.children.length > 0){
       message += ' Let op! Alle onderliggende objecten worden ook verwijderd.'
     }
     this.confirmDialogService.confirm('Verwijderen',

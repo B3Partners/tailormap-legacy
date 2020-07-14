@@ -116,7 +116,7 @@ export class FormCreatorComponent implements OnChanges, OnDestroy {
     const feature = this.formgroep.value;
     feature.__fid = this.feature.object_guid;
     this.mergeFromToFeature(feature);
-    this.actions.save(this.isBulk, this.feature).subscribe(feature => {
+    this.actions.save(this.isBulk, this.feature, this.features[0]).subscribe(feature => {
         const fs = this.updateFeatureInArray(feature, this.features);
         this.features = [...fs];
         this.feature = {...feature};

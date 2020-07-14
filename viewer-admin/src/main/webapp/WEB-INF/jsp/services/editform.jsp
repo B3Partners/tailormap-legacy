@@ -53,6 +53,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         </div>
                     </c:when>
                     <c:when test="${actionBean.context.eventName == 'save' || actionBean.context.eventName == 'delete'}">
+                        <stripes:submit name="add" value="add">Voeg toe</stripes:submit>
                         <script type="text/javascript">
                             var frameParent = getParent();
                             if(frameParent && frameParent.vieweradmin_components_FormSource) {

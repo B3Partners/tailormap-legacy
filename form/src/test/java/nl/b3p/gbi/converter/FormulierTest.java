@@ -39,32 +39,21 @@ public class FormulierTest{
         System.out.println(jsonString);
         assertNotEquals(0,jsonString.length());
 
-        assertEquals(1, n.size());
-        n.fields().forEachRemaining(node->{
-            assertEquals("config", node.getKey());
-        });
-        n.elements().forEachRemaining(child ->{
-            // valideer elk paspoort config. Een child is een featuretypename met zijn opbouw
-            assertTrue(child.has("pietje"));
-            child.elements().forEachRemaining(configNode ->{
-                assertTrue(configNode.has("tabs"));
-                assertTrue(configNode.has("name"));
-                assertTrue(configNode.has("featureType"));
-                assertTrue(configNode.has("newPossible"));
-                assertTrue(configNode.has("tabConfig"));
-                assertTrue(configNode.has("relation"));
-                assertTrue(configNode.has("fields"));
-                JsonNode tabConfig = configNode.get("tabConfig");
-                assertEquals(2,tabConfig.size());
-  
-                assertTrue(tabConfig.has("1"));
-                assertTrue(tabConfig.has("2"));
+        assertEquals(8, n.size());
+        assertTrue(n.has("tabs"));
+        assertTrue(n.has("name"));
+        assertTrue(n.has("featureType"));
+        assertTrue(n.has("newPossible"));
+        assertTrue(n.has("tabConfig"));
+        assertTrue(n.has("relation"));
+        assertTrue(n.has("fields"));
+        JsonNode tabConfig = n.get("tabConfig");
+        assertEquals(2,tabConfig.size());
 
-                assertEquals("bessie", tabConfig.get("1").textValue());
-                assertEquals("bel", tabConfig.get("2").textValue());
+        assertTrue(tabConfig.has("1"));
+        assertTrue(tabConfig.has("2"));
 
-
-            });
-        });
+        assertEquals("bessie", tabConfig.get("1").textValue());
+        assertEquals("bel", tabConfig.get("2").textValue());
     }
 }
