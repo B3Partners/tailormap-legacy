@@ -19,6 +19,7 @@ import {
 import {FormCreatorHelpers} from './form-creator-helpers';
 import {FormActionsService} from "../form-actions/form-actions.service";
 import {FeatureInitializerService} from "../../shared/feature-initializer/feature-initializer.service";
+import {DomainRepositoryService} from "../../shared/linked-fields/domain-repository/domain-repository.service";
 
 @Component({
   selector: 'flamingo-form-creator',

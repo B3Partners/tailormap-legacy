@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import {Attribute, FeatureAttribute, FormFieldType} from "../form/form-models";
+import {LinkedAttributeRegistryService} from "../../shared/linked-fields/registry/linked-attribute-registry.service";
 
 @Component({
   selector: 'flamingo-formfield',
@@ -25,12 +26,20 @@ export class FormfieldComponent {
   public isBulk: boolean;
 
 
-  constructor() {
-    const a=0;
+  constructor(
+    private registry: LinkedAttributeRegistryService,
+    ) {
+
   }
 
+  public valueChanged(event : any):void{
+    if(this.isDomainAttribute(this.attribute)){
+      this.registry.domainFieldChanged(this.attribute, event.value);
+    }
+  }
 
   public isTextAttribute = (attr: Attribute): boolean => attr.type === FormFieldType.TEXTFIELD;
   public isSelectAttribute = (attr: Attribute): boolean => attr.type === FormFieldType.SELECT;
   public isHiddenAttribute = (attr: Attribute): boolean => attr.type === FormFieldType.HIDDEN;
+  public isDomainAttribute = (attr: Attribute): boolean => attr.type === FormFieldType.DOMAIN;
 }

@@ -3,6 +3,7 @@ import { Configuration } from './configuration';
 import { HttpClient } from '@angular/common/http';
 
 
+import { AttribuutControllerService } from './api/attribuutController.service';
 import { FeatureControllerService } from './api/featureController.service';
 import { WegvakonderdeelControllerService } from './api/wegvakonderdeelController.service';
 import { WegvakonderdeelplanningControllerService } from './api/wegvakonderdeelplanningController.service';
@@ -12,6 +13,7 @@ import { WegvakonderdeelplanningControllerService } from './api/wegvakonderdeelp
   declarations: [],
   exports:      [],
   providers: [
+    AttribuutControllerService,
     FeatureControllerService,
     WegvakonderdeelControllerService,
     WegvakonderdeelplanningControllerService ]

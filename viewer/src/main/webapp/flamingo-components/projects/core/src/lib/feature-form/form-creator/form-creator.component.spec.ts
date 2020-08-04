@@ -44,7 +44,8 @@ describe('FormCreatorComponent', () => {
     fixture = TestBed.createComponent(FormCreatorComponent);
     component = fixture.componentInstance;
     let formConfig : FormConfiguration = {
-      featureType: "", newPossible: false, tabConfig: undefined,
+      featureType: "",
+      tabConfig: undefined,
       fields: [],
       tabs: 0,
       name: 'pietje',

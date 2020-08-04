@@ -17,6 +17,7 @@ export interface Attribute {
   key: string;
   type: FormFieldType;
   options ?: SelectOption[];
+  linkedList ?: number;
   column: number;
   tab: number;
 }
@@ -31,11 +32,13 @@ export enum FormFieldType {
   TEXTFIELD = 'textfield',
   SELECT = 'select',
   HIDDEN = 'hidden',
+  DOMAIN = 'domain',
 }
 
 
 export interface SelectOption {
   label: string;
+  disabled?: boolean;
   val: string;
 }
 

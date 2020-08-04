@@ -38,11 +38,6 @@ export class FormPopupComponent implements OnInit {
   public lookup: Map<string, string>;
 
   @Input()
-  public set config(config: string) {
-    this.formConfigRepo.setFormConfigs(JSON.parse(config));
-  }
-
-  @Input()
   public set bulk(isBulk: string) {
     this.isBulk = isBulk;
   }

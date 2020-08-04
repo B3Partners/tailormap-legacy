@@ -43,14 +43,14 @@ Ext.define("viewer.components.GBI", {
             },
             text: "me.config.title"
         });
-        this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_COMPONENTS_FINISHED_LOADING,
+        this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_LAYERS_INITIALIZED,
             this.initialize,this);
         this.config.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_VISIBILITY_CHANGED,
             this.layerVisibilityChanged,this);
         return this;
     },
     initialize: function(){
-        this.loadConfig();
+        this.initializeForm();
         this.createVectorLayer();
         this.toolMapClick =  this.config.viewerController.mapComponent.createTool({
             type: viewer.viewercontroller.controller.Tool.MAP_CLICK,
@@ -121,21 +121,6 @@ Ext.define("viewer.components.GBI", {
     },
     geometryDrawn: function(vectorLayer, feature){
         this.div.setAttribute("geometry-drawn", feature.config.wktgeom);
-    },
-    loadConfig: function(){
-        Ext.Ajax.request({
-            url: this.config.configURL,
-            scope: this,
-            success: function(result) {
-                var text = result.responseText;
-                var response = Ext.JSON.decode(text);
-                this.formConfigs = response;
-                this.initializeForm();
-            },
-            failure: function(result) {
-               this.config.viewerController.logger.error(result);
-            }
-        });
     },
     mapClicked : function(tool, comp){
         var coords = comp.coord;

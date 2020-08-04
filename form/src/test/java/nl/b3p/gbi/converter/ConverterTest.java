@@ -41,7 +41,7 @@ public class ConverterTest {
         assertNotNull(form);
 
         assertEquals("Element", form.getName());
-        assertEquals("gb_kw_element", form.getFeatureType());
+        assertEquals("kw_element", form.getFeatureType());
         assertEquals("element_type", form.getTreeNodeColumn());
         //assertEquals(2, form.getFields().size());
         assertEquals(null, form.getRelation());
