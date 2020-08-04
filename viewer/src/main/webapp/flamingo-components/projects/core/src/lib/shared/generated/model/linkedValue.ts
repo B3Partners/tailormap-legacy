@@ -14,6 +14,7 @@ import { LinkedAttribute } from './linkedAttribute';
 export interface LinkedValue { 
     domeinchildid?: number;
     linked_attributes?: Array<LinkedAttribute>;
+    domeinid?: number;
     id?: number;
     value?: string;
     domeinparentid?: number;

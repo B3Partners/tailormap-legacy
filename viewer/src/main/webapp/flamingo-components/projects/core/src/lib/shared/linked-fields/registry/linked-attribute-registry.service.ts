@@ -9,11 +9,13 @@ import {DomainRepositoryService} from "../domain-repository/domain-repository.se
 export class LinkedAttributeRegistryService {
 
   private linkedAttributes:  { [key: string]: LinkedAttribute };
+  private domainToAttribute: Map<number, Attribute>;
 
   private registry: Map<number, LinkedAttribute>;
   constructor(
   ) {
     this.registry = new Map();
+    this.domainToAttribute = new Map();
   }
 
   public setLinkedAttributes(linkedAttributes : { [key: string]: LinkedAttribute }){
@@ -21,23 +23,30 @@ export class LinkedAttributeRegistryService {
   }
 
 
-  public registerDomainField(linkedAttributeId: number, linkedAttribute: LinkedAttribute){
+  public registerDomainField(linkedAttributeId: number, linkedAttribute: LinkedAttribute, field: Attribute){
     this.registry.set(linkedAttributeId, linkedAttribute);
+    this.domainToAttribute.set(linkedAttribute.domein_id, field);
   }
 
   public domainFieldChanged(attribuut: Attribute, value: any){
     const linkedAttribute : LinkedAttribute = this.registry.get(attribuut.linkedList);
-    const options = [];
+    const options = {};
     const linkedValues = linkedAttribute.linked_values[value];
+
     for(let lVal of linkedValues ) {
       const b =0;
-
-      options.push({
+      if(!options.hasOwnProperty(lVal.domeinchildid)){
+        options[lVal.domeinchildid] = [];
+      }
+      options[lVal.domeinchildid].push({
         label: lVal.value,
         val: lVal.value,
       });
     }
-    attribuut.options = options;
+    for (let domainId in options) {
+      this.domainToAttribute.get(parseInt(domainId)).options = options[domainId];
+    }
+    //attribuut.options = options;
     const a = 0;
   }
 }
