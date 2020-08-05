@@ -40,35 +40,59 @@ export class LinkedAttributeRegistryService {
         break;
       }
     }
-
-    // retrieve all childvalue for the selected value
-    for(let domainId in selectedValue.child_domain_values){
-      const childValues : LinkedValue[] = selectedValue.child_domain_values[domainId];
-      // for all different domains related to the selected value, retrieve the childvalues
-      for(let childValue of childValues){
-          if(!options.hasOwnProperty(childValue.domeinid)){
+    if(selectedValue) {
+      // retrieve all childvalue for the selected value
+      for (let domainId in selectedValue.child_domain_values) {
+        const childValues: LinkedValue[] = selectedValue.child_domain_values[domainId];
+        // for all different domains related to the selected value, retrieve the childvalues
+        for (let childValue of childValues) {
+          if (!options.hasOwnProperty(childValue.domeinid)) {
             options[childValue.domeinid] = [];
           }
           options[childValue.domeinid].push({
             label: childValue.value,
             val: childValue.id,
           });
+        }
       }
+    }else{
+      this.resetLinkedDomains(linkedAttribute);
     }
 
     // set all the fields to the new values
     for (let domainId in options) {
       let attr = this.domainToAttribute.get(parseInt(domainId));
       if(attr){
-        attr.options = options[domainId];
+        const selectedOptions = options[domainId];
+        attr.options.forEach(option => {
+          option.disabled = true;
+          for(let selectedOption of selectedOptions){
+            if(selectedOption.val === option.val){
+              option.disabled = false;
+            }
+          }
+        });
       }
     }
 
     // check if the changed value has a parent. If so, select the associated value
-    if(selectedValue.parentdomeinid){
+    if(selectedValue && selectedValue.parentdomeinid){
       const parentAttribute = this.domainToAttribute.get(selectedValue.parentdomeinid);
       const parentValue : LinkedValue = selectedValue.parent_value;
       parentAttribute.value = parentValue.id;
     }
+  }
+
+  private resetLinkedDomains(linkedAttribute : LinkedAttribute){
+    linkedAttribute.values.forEach(value => {
+      for (let domainId in value.child_domain_values) {
+        let attr = this.domainToAttribute.get(parseInt(domainId));
+        if (attr) {
+          attr.options.forEach(option => {
+            option.disabled = false;
+          });
+        }
+      }
+    });
   }
 }
