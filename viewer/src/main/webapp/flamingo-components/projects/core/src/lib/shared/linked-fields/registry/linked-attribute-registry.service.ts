@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
-import {Attribute} from "../../../feature-form/form/form-models";
-import {Attribuut, LinkedAttribute} from "../../generated";
-import {DomainRepositoryService} from "../domain-repository/domain-repository.service";
+import {Attribute, FeatureAttribute} from "../../../feature-form/form/form-models";
+import { LinkedAttribute, LinkedValue} from "../../generated";
 
 @Injectable({
   providedIn: 'root'
@@ -9,7 +8,7 @@ import {DomainRepositoryService} from "../domain-repository/domain-repository.se
 export class LinkedAttributeRegistryService {
 
   private linkedAttributes:  { [key: string]: LinkedAttribute };
-  private domainToAttribute: Map<number, Attribute>;
+  private domainToAttribute: Map<number, FeatureAttribute>;
 
   private registry: Map<number, LinkedAttribute>;
   constructor(
@@ -23,7 +22,8 @@ export class LinkedAttributeRegistryService {
   }
 
 
-  public registerDomainField(linkedAttributeId: number, linkedAttribute: LinkedAttribute, field: Attribute){
+  public registerDomainField(linkedAttributeId: number, field: FeatureAttribute){
+    const linkedAttribute = this.linkedAttributes[linkedAttributeId];
     this.registry.set(linkedAttributeId, linkedAttribute);
     this.domainToAttribute.set(linkedAttribute.domein_id, field);
   }
@@ -31,22 +31,44 @@ export class LinkedAttributeRegistryService {
   public domainFieldChanged(attribuut: Attribute, value: any){
     const linkedAttribute : LinkedAttribute = this.registry.get(attribuut.linkedList);
     const options = {};
-    const linkedValues = linkedAttribute.linked_values[value];
+    let selectedValue : LinkedValue;
 
-    for(let lVal of linkedValues ) {
-      const b =0;
-      if(!options.hasOwnProperty(lVal.domeinchildid)){
-        options[lVal.domeinchildid] = [];
+    // retrieve the selected value
+    for(let val of linkedAttribute.values){
+      if(val.id === value){
+        selectedValue = val;
+        break;
       }
-      options[lVal.domeinchildid].push({
-        label: lVal.value,
-        val: lVal.value,
-      });
     }
+
+    // retrieve all childvalue for the selected value
+    for(let domainId in selectedValue.child_domain_values){
+      const childValues : LinkedValue[] = selectedValue.child_domain_values[domainId];
+      // for all different domains related to the selected value, retrieve the childvalues
+      for(let childValue of childValues){
+          if(!options.hasOwnProperty(childValue.domeinid)){
+            options[childValue.domeinid] = [];
+          }
+          options[childValue.domeinid].push({
+            label: childValue.value,
+            val: childValue.id,
+          });
+      }
+    }
+
+    // set all the fields to the new values
     for (let domainId in options) {
-      this.domainToAttribute.get(parseInt(domainId)).options = options[domainId];
+      let attr = this.domainToAttribute.get(parseInt(domainId));
+      if(attr){
+        attr.options = options[domainId];
+      }
     }
-    //attribuut.options = options;
-    const a = 0;
+
+    // check if the changed value has a parent. If so, select the associated value
+    if(selectedValue.parentdomeinid){
+      const parentAttribute = this.domainToAttribute.get(selectedValue.parentdomeinid);
+      const parentValue : LinkedValue = selectedValue.parent_value;
+      parentAttribute.value = parentValue.id;
+    }
   }
 }

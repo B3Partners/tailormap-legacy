@@ -48,13 +48,11 @@ export class DomainRepositoryService {
 
           fc.fields.forEach(field => {
             if (field.linkedList && field.linkedList === parseInt(attributeId)) {
-              field moet hier een FeatureAttribute zijn
-              this.registry.registerDomainField(field.linkedList, linkedAttribute, field);
               const options = [];
-              for (var value in linkedAttribute.linked_values) {
+              for (var value of linkedAttribute.values) {
                 options.push({
-                  label: value,
-                  val: value,
+                  label: value.value,
+                  val: value.id,
                 });
               }
               field.options = options;

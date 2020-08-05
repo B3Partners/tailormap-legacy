@@ -1,25 +1,21 @@
-import {Component, Input, OnChanges, OnDestroy, Output, EventEmitter} from '@angular/core';
+import {Component, EventEmitter, Input, OnChanges, OnDestroy, Output} from '@angular/core';
 import {FormControl, FormGroup} from '@angular/forms';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {Subscription} from 'rxjs';
-import {
-  Feature,
-  FeatureControllerService,
-  Wegvakonderdeel,
-  WegvakonderdeelControllerService
-} from "../../shared/generated";
+import {Feature, FeatureControllerService} from "../../shared/generated";
 
 import {
   Attribute,
   ColumnizedFields,
   FormConfiguration,
+  FormFieldType,
   IndexedFeatureAttributes,
   TabbedFields
 } from "../form/form-models";
 import {FormCreatorHelpers} from './form-creator-helpers';
 import {FormActionsService} from "../form-actions/form-actions.service";
 import {FeatureInitializerService} from "../../shared/feature-initializer/feature-initializer.service";
-import {DomainRepositoryService} from "../../shared/linked-fields/domain-repository/domain-repository.service";
+import {LinkedAttributeRegistryService} from "../../shared/linked-fields/registry/linked-attribute-registry.service";
 
 @Component({
   selector: 'flamingo-form-creator',
@@ -52,6 +48,7 @@ export class FormCreatorComponent implements OnChanges, OnDestroy {
   constructor(
     private service: FeatureControllerService,
     private actions: FormActionsService,
+    private registry: LinkedAttributeRegistryService,
     private _snackBar: MatSnackBar) {
   }
 
@@ -109,6 +106,10 @@ export class FormCreatorComponent implements OnChanges, OnDestroy {
     for (const attr of attrs) {
       formControls[attr.key] = new FormControl(!this.isBulk && this.indexedAttributes.attrs.get(attr.key)
         ? this.indexedAttributes.attrs.get(attr.key).value : null);
+
+      if(attr.type === FormFieldType.DOMAIN) {
+        this.registry.registerDomainField(attr.linkedList, this.indexedAttributes.attrs.get(attr.key));
+      }
     }
     this.formgroep = new FormGroup(formControls);
   }

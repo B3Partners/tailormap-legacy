@@ -9,13 +9,12 @@
  * https://github.com/swagger-api/swagger-codegen.git
  * Do not edit the class manually.
  */
-import { LinkedAttribute } from './linkedAttribute';
 
 export interface LinkedValue { 
-    domeinchildid?: number;
-    linked_attributes?: Array<LinkedAttribute>;
+    parentdomeinid?: number;
+    child_domain_values?: { [key: string]: Array<LinkedValue>; };
     domeinid?: number;
     id?: number;
+    parent_value?: LinkedValue;
     value?: string;
-    domeinparentid?: number;
 }

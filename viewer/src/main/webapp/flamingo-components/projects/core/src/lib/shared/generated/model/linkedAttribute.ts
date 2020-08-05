@@ -12,9 +12,8 @@
 import { LinkedValue } from './linkedValue';
 
 export interface LinkedAttribute { 
-    child_domein_id?: number;
-    linked_values?: { [key: string]: Array<LinkedValue>; };
     tabel_naam?: string;
+    values?: Array<LinkedValue>;
     feature_type?: string;
     domein_id?: number;
     id?: number;

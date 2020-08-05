@@ -9,6 +9,7 @@
  * https://github.com/swagger-api/swagger-codegen.git
  * Do not edit the class manually.
  */
+import { Domein } from './domein';
 
 export interface Domeinwaarde { 
     afkorting?: string;
@@ -16,5 +17,6 @@ export interface Domeinwaarde {
     synoniem?: string;
     waarde?: string;
     id?: number;
+    domein?: Domein;
     linked_domeinwaardes?: Array<Domeinwaarde>;
 }
