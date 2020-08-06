@@ -47,13 +47,13 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <!-- when updating geotools also check jts and b3p-commons-csw or you will end up in transitive dependency hell -->
-        <geotools.version>23.1</geotools.version>
-        <b3p-commons-csw.version>6.2.1</b3p-commons-csw.version>
+        <geotools.version>23.2</geotools.version>
+        <b3p-commons-csw.version>6.2.2</b3p-commons-csw.version>
         <powermock.version>2.0.7</powermock.version>
         <hsqldb.version>2.5.1</hsqldb.version>
         <test.persistence.unit>viewer-config-hsqldb</test.persistence.unit>
         <postgresql.version>42.2.14</postgresql.version>
-        <mssql.version>8.2.2.jre8</mssql.version>
+        <mssql.version>8.4.0.jre8</mssql.version>
         <oracle.version>19.7.0.0</oracle.version>
         <apache.poi.version>4.1.2</apache.poi.version>
         <jakarta.mail.version>1.6.5</jakarta.mail.version>
@@ -205,7 +205,7 @@
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
-                <version>3.10</version>
+                <version>3.11</version>
             </dependency>
             <dependency>
                 <!-- do not upgrade because that would enforce "use strict;" -->
@@ -280,7 +280,7 @@
             <dependency>
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-core</artifactId>
-                <version>3.4.0</version>
+                <version>3.4.6</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
@@ -635,7 +635,7 @@
                 <plugin>
                     <artifactId>maven-war-plugin</artifactId>
                     <!-- 3.3.0 is "broken" see: https://issues.apache.org/jira/browse/MWAR-433  -->
-                    <version>3.2.3</version>
+                    <version>3.3.1</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-dependency-plugin</artifactId>
@@ -644,7 +644,7 @@
                 <plugin>
                     <groupId>pl.project13.maven</groupId>
                     <artifactId>git-commit-id-plugin</artifactId>
-                    <version>4.0.0</version>
+                    <version>4.0.1</version>
                 </plugin>
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
