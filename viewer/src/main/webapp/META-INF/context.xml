@@ -2,7 +2,6 @@
 <Context antiJARLocking="true" disableURLRewriting="true" path="/viewer">
   <Parameter name="componentregistry.path" override="false" value="/viewer-html/components"/>
   <Parameter name="flamingo.data.dir" override="false" value="/opt/flamingo_data/"/>
-  <Parameter name="flamingo.download.maxfeatures" override="false" value="1000"/>
   <!-- For Tomcat: define datasource in server.xml, for example:
     NOTE:
         each version of tomcat comes with it's own version of the pooling library
