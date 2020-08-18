@@ -208,10 +208,9 @@
                 <version>3.11</version>
             </dependency>
             <dependency>
-                <!-- do not upgrade because that would enforce "use strict;" -->
                 <groupId>com.google.javascript</groupId>
                 <artifactId>closure-compiler</artifactId>
-                <version>v20161201</version>
+                <version>v20200719</version>
             </dependency>
             <dependency>
                 <groupId>javax.servlet</groupId>
@@ -647,10 +646,10 @@
                     <version>1.2</version>
                 </plugin>
                 <plugin>
-                    <groupId>nl.geodienstencentrum.maven</groupId>
+                    <groupId>com.github.blutorange</groupId>
                     <artifactId>closure-compiler-maven-plugin</artifactId>
-                    <version>2.4</version>
-               </plugin>
+                    <version>2.18.0</version>
+                </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-deploy-plugin</artifactId>
