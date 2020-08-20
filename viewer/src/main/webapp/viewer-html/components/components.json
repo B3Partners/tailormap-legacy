@@ -934,7 +934,7 @@
         "group": "Map",
         "shortName": "MapboxGL",
         "sources": ["MapboxGL.js","resources/mapbox-gl/mapbox-gl.js"],
-        "singleton": true,
+        "singleton": false,
         "configSource": ["ConfigObject.js","SelectionWindowConfig.js", "MapboxGL-config.js"],
         "restrictions": ["left_menu"]
     }

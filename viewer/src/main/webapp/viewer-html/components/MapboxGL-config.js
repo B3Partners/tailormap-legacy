@@ -41,22 +41,24 @@ Ext.define("viewer.components.CustomConfiguration", {
         });
         this.form.add({
             xtype: 'textfield',
-            fieldLabel: i18next.t('mapbox3d_config_extrusionLayerId'),
-            // 3d-buildings
-            value: this.configObject.extrusionLayerId || '',
-            name: 'extrusionLayerId',
+            fieldLabel: i18next.t('mapbox3d_config_extrusionSource'),
+            // composite
+            value: this.configObject.extrusionSource || '',
+            name: 'extrusionSource',
             labelWidth: this.labelWidth,
             width: 700
         });
         this.form.add({
             xtype: 'textfield',
-            fieldLabel: i18next.t('mapbox3d_config_extrusionLayerSource'),
+            fieldLabel: i18next.t('mapbox3d_config_extrusionSourceLayer'),
             // building
-            value: this.configObject.extrusionLayerSource || '',
-            name: 'extrusionLayerSource',
+            value: this.configObject.extrusionSourceLayer || '',
+            name: 'extrusionSourceLayer',
             labelWidth: this.labelWidth,
             width: 700
         });
+
+        // map config options
         this.form.add({
             xtype: 'numberfield',
             fieldLabel: i18next.t('mapbox3d_config_pitch'),
