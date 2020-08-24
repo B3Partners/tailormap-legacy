@@ -1,4 +1,4 @@
-/**
+/*
  * ol3-loadingpanel - v1.0.2 - 2016-10-04
  * Copyright (c) 2016 Emmanuel Blondel
  * 
@@ -16,17 +16,10 @@
  * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, 
  * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE 
  * OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- * /
- /**
- * @classdesc
- * A control to display a loader image (typically an animated GIF) when
- * the map tiles are loading, and hide the loader image when tiles are
- * loaded
+ */
+/**
  *
- * @constructor
- * @extends {ol.control.Control}
- * @param {olx.control.LoadingPanelOptions} opt_options Options.
- * 
+ *
  * @author Emmanuel Blondel
  *
  */
@@ -45,7 +38,16 @@
         factory();
     }
 }(this, function () {
-
+    /**
+     * @classdesc
+     * A control to display a loader image (typically an animated GIF) when
+     * the map tiles are loading, and hide the loader image when tiles are
+     * loaded
+     *
+     * @constructor
+     * @extends {ol.control.Control}
+     * @param {olx.control.LoadingPanelOptions} opt_options Options.
+     */
     ol.control.LoadingPanel = function (opt_options) {
 
         var options = opt_options || {};
