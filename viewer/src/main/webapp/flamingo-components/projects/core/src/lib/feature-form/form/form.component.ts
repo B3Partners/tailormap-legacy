@@ -45,7 +45,7 @@ export class FormComponent implements OnDestroy, OnChanges {
       for (const key in configs) {
         if (configs.hasOwnProperty(key)) {
           const cf: FormConfiguration = configs [key];
-          this.formsForNew.push(cf);
+            this.formsForNew.push(cf);
         }
       }
 

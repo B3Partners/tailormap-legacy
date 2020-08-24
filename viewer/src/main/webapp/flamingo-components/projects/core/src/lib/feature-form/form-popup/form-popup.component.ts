@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {FormComponent} from '../form/form.component';
+import { FormComponent } from '../form/form.component';
 import { MatDialog } from '@angular/material/dialog';
 import {Feature, FeatureControllerService,} from "../../shared/generated";
 import {MatSnackBar} from "@angular/material/snack-bar";
@@ -57,7 +57,7 @@ export class FormPopupComponent implements OnInit {
     this.service.onPoint(x, y, scale).subscribe(
       (features: Feature[]) => {
         if(features && features.length >0){
-          this.openDialog(features);
+        this.openDialog(features);
         }
       },
       error => {
@@ -111,14 +111,14 @@ export class FormPopupComponent implements OnInit {
     this.temp = event;
     this.startGeometryDrawing.emit({
       type: GeometryType.POLYGON
-    });
-  }
+      });
+      }
 
   @Input()
   public set layerVisibilityChanged(evtString: any) {
     let event: LayerVisibilityEvent = JSON.parse(evtString);
     this.visibilityService.layerVisibiltyChanged(event);
-  }
+          }
 
 
   @Input()
@@ -129,7 +129,7 @@ export class FormPopupComponent implements OnInit {
 
     const features :Feature[] =[feat];
     this.openDialog(features);
-  }
+      }
 
   public createColumnLookup(): Map<string, string> {
     const lookup = new Map<string, string>();
