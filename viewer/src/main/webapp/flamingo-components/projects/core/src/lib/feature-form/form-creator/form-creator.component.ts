@@ -1,7 +1,7 @@
 import {Component, EventEmitter, Input, OnChanges, OnDestroy, Output} from '@angular/core';
 import {FormControl, FormGroup} from '@angular/forms';
-import {MatSnackBar} from '@angular/material/snack-bar';
-import {Subscription} from 'rxjs';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { Subscription } from 'rxjs';
 import {Feature, FeatureControllerService} from "../../shared/generated";
 
 import {
@@ -12,7 +12,7 @@ import {
   IndexedFeatureAttributes,
   TabbedFields
 } from "../form/form-models";
-import {FormCreatorHelpers} from './form-creator-helpers';
+import { FormCreatorHelpers } from './form-creator-helpers';
 import {FormActionsService} from "../form-actions/form-actions.service";
 import {FeatureInitializerService} from "../../shared/feature-initializer/feature-initializer.service";
 import {LinkedAttributeRegistryService} from "../../shared/linked-fields/registry/linked-attribute-registry.service";
@@ -32,6 +32,7 @@ export class FormCreatorComponent implements OnChanges, OnDestroy {
   public features: Feature[];
   @Input()
   public indexedAttributes: IndexedFeatureAttributes;
+
   @Input()
   public isBulk = false;
   @Input()
@@ -55,8 +56,8 @@ export class FormCreatorComponent implements OnChanges, OnDestroy {
   public ngOnChanges() {
     this.tabbedConfig = this.prepareFormConfig();
     if (this.feature) {
-      this.indexedAttributes = FormCreatorHelpers.convertFeatureToIndexed(this.feature, this.formConfig);
-      this.createFormControls();
+    this.indexedAttributes = FormCreatorHelpers.convertFeatureToIndexed(this.feature, this.formConfig);
+    this.createFormControls();
       this.formgroep.valueChanges.subscribe(s => {
         this.formChanged.emit({changed: true});
       });
@@ -70,7 +71,7 @@ export class FormCreatorComponent implements OnChanges, OnDestroy {
   private prepareFormConfig(): TabbedFields {
     const tabbedFields: TabbedFields = {tabs: new Map<number, ColumnizedFields>()};
     const attrs = this.formConfig.fields;
-    for (let tabNr = 1; tabNr <= this.formConfig.tabs; tabNr++) {
+    for (let tabNr = 1 ; tabNr <= this.formConfig.tabs ; tabNr++) {
       const fields: Attribute[] = [];
       attrs.forEach(attr => {
         if (attr.tab === tabNr) {
@@ -88,7 +89,7 @@ export class FormCreatorComponent implements OnChanges, OnDestroy {
       return columnizedFields;
     }
     const numCols = attrs.reduce((max, b) => Math.max(max, b.column), attrs[0].column);
-    for (let col = 1; col <= numCols; col++) {
+    for (let col = 1 ; col <= numCols ; col++) {
       const fields: Attribute[] = [];
       attrs.forEach(attr => {
         if (attr.column === col) {
@@ -103,7 +104,7 @@ export class FormCreatorComponent implements OnChanges, OnDestroy {
   private createFormControls() {
     const attrs = this.formConfig.fields;
     const formControls = {};
-    for (const attr of attrs) {
+    for ( const attr of attrs) {
       formControls[attr.key] = new FormControl(!this.isBulk && this.indexedAttributes.attrs.get(attr.key)
         ? this.indexedAttributes.attrs.get(attr.key).value : null);
 
@@ -123,7 +124,7 @@ export class FormCreatorComponent implements OnChanges, OnDestroy {
         this.features = [...fs];
         this.feature = {...feature};
         this._snackBar.open('Opgeslagen', '', {duration: 5000});
-        this.formChanged.emit({changed: false, feature, features: this.features});
+        this.formChanged.emit({changed: false, feature, features:this.features});
       },
       error => {
         this._snackBar.open('Fout: Feature niet kunnen opslaan: ' + error.error.message, '', {
@@ -132,20 +133,20 @@ export class FormCreatorComponent implements OnChanges, OnDestroy {
       });
   }
 
-  public updateFeatureInArray(feature: Feature, features: Feature[]): Feature[] {
+  public updateFeatureInArray(feature : Feature, features: Feature[]): Feature[]{
     let fs = [];
-    if (!features) {
+    if(!features){
       return fs;
     }
     const parentIdx = features.findIndex(f => (f.object_guid === feature.object_guid || f.object_guid === FeatureInitializerService.STUB_OBJECT_GUID_NEW_OBJECT));
-    if (parentIdx !== -1) {
+    if(parentIdx !== -1){
       fs = [
         ...features.slice(0, parentIdx),
         {...feature},
         ...features.slice(parentIdx + 1)
       ];
-    } else {
-      features.forEach((feat) => {
+    }else{
+      features.forEach( (feat)=>{
         feat.children = this.updateFeatureInArray(feature, feat.children);
         fs.push(feat);
       });
@@ -153,10 +154,10 @@ export class FormCreatorComponent implements OnChanges, OnDestroy {
     return fs;
   }
 
-  private mergeFromToFeature(form) {
-    Object.keys(this.feature).forEach(attr => {
-      for (const key in form) {
-        if (form.hasOwnProperty(key) && key === attr) {
+  private mergeFromToFeature(form){
+    Object.keys(this.feature).forEach(attr=>{
+      for(const key in form){
+        if(form.hasOwnProperty(key) && key === attr){
           this.feature[attr] = form[key];
           break;
         }
@@ -168,7 +169,7 @@ export class FormCreatorComponent implements OnChanges, OnDestroy {
     let features = [];
     if (this.formgroep.dirty) {
       const attributes = [];
-      for (const key in this.formgroep.controls) {
+      for ( const key in this.formgroep.controls) {
         if (this.formgroep.controls.hasOwnProperty(key)) {
           const control = this.formgroep.controls[key];
           if (control.dirty) {
@@ -181,4 +182,5 @@ export class FormCreatorComponent implements OnChanges, OnDestroy {
     }
     return features;
   }
+
 }

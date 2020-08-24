@@ -23,8 +23,8 @@
 Ext.define("viewer.components.GBI", {
     extend: "viewer.components.Component",
     div: null,
-    toolMapClick: null,
-    formConfigs: null,
+    toolMapClick:null,
+    formConfigs:null,
     vectorLayer: null,
     config: {
         layers:[],
@@ -104,12 +104,12 @@ Ext.define("viewer.components.GBI", {
             var appLayer = this.config.viewerController.getAppLayerById(event.layer.appLayerId);
             this.processLayerVisible(appLayer, event.visible);
         }
-    },
+            },
     processLayerVisible: function(appLayer, visible){
         var layerName = appLayer.layerName;
         if(layerName.indexOf(":") !== -1){
             layerName = layerName.substring(layerName.indexOf(':') + 1);
-        }
+            }
         var evt = {
             layername : layerName,
             visible: visible
@@ -137,7 +137,7 @@ Ext.define("viewer.components.GBI", {
         this.div.setAttribute("visible-layers", this.stringifyAppLayer(visibleLayers));
         this.div.setAttribute("map-clicked", JSON.stringify(json));
     },
-
+    
     stringifyAppLayer: function(al){
         var culledObject = {
             id: al.id,
