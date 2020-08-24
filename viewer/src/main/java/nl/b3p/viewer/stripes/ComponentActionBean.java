@@ -16,22 +16,11 @@
  */
 package nl.b3p.viewer.stripes;
 
-import com.google.javascript.jscomp.CompilationLevel;
 import com.google.javascript.jscomp.Compiler;
-import com.google.javascript.jscomp.CompilerOptions;
-import com.google.javascript.jscomp.JSError;
-import com.google.javascript.jscomp.SourceFile;
-import java.util.*;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.nio.charset.Charset;
-import javax.persistence.EntityManager;
-import javax.servlet.http.HttpServletResponse;
+import com.google.javascript.jscomp.*;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.controller.LifecycleStage;
-import net.sourceforge.stripes.validation.*;
+import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.viewer.components.ComponentRegistryInitializer;
 import nl.b3p.viewer.components.ViewerComponent;
 import nl.b3p.viewer.config.app.Application;
@@ -41,6 +30,15 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.stripesstuff.stripersist.Stripersist;
+
+import javax.persistence.EntityManager;
+import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.charset.Charset;
+import java.util.*;
 
 /**
  *
@@ -255,22 +253,26 @@ public class ComponentActionBean implements ActionBean {
         try {
             Compiler compiler = new Compiler();
             CompilerOptions options = new CompilerOptions();
+            // for IE 11
+            options.setLanguageOut(CompilerOptions.LanguageMode.ECMASCRIPT5);
+            options.setEmitUseStrict(false);
             CompilationLevel.SIMPLE_OPTIMIZATIONS.setOptionsForCompilationLevel(options);
             options.setOutputCharset(Charset.forName("UTF-8"));
-            compiler.compile(SourceFile.fromCode("dummy.js", ""), SourceFile.fromFile(f), options);
+            compiler.compile(SourceFile.fromCode("dummy.js", ""), SourceFile.fromFile(f.getCanonicalPath()), options);
 
             if(compiler.hasErrors()) {
                 log.warn(compiler.getErrorCount() + " error(s) minifying source file " + f.getCanonicalPath() + "; using original source");
-                minified = IOUtils.toString(new FileInputStream(f));
-                
-                for(int i = 0; i < compiler.getErrorCount(); i++) {
-                    JSError error = compiler.getErrors()[i];
+                minified = IOUtils.toString(new FileInputStream(f), Charset.forName("UTF-8"));
+
+                for (int i = 0; i < compiler.getErrorCount(); i++) {
+                    JSError error = compiler.getErrors().get(i);
                     log.warn(String.format("#%d line %d,%d: %s: %s",
-                            i+1,
-                            error.lineNumber,
+                            i + 1,
+                            error.getLineno(),
                             error.getCharno(),
                             error.getDefaultLevel(),
-                            error.description));
+                            error.getDescription()
+                    ));
                 }
                 
             } else {

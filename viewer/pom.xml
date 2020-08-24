@@ -15,7 +15,7 @@
 
     <properties>
         <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
-        <minify.outputdir>${project.build.directory}/${project.name}-${project.version}/viewer-html</minify.outputdir>
+        <minify.outputdir>${project.name}-${project.version}/viewer-html</minify.outputdir>
         <viewerhtml.path>${basedir}/src/main/webapp/viewer-html</viewerhtml.path>
         <test.persistence.unit>viewer-config-hsqldb</test.persistence.unit>
     </properties>
@@ -273,183 +273,207 @@
                 </executions>
             </plugin>
             <plugin>
-                <groupId>nl.geodienstencentrum.maven</groupId>
+                <groupId>com.github.blutorange</groupId>
                 <artifactId>closure-compiler-maven-plugin</artifactId>
+                <configuration>
+                    <encoding>UTF-8</encoding>
+                    <closureLanguageOut>ECMASCRIPT5</closureLanguageOut>
+                    <closureCompilationLevel>SIMPLE_OPTIMIZATIONS</closureCompilationLevel>
+                    <baseSourceDir>${viewerhtml.path}</baseSourceDir>
+                    <baseTargetDir>${project.build.directory}/</baseTargetDir>
+                    <closureEmitUseStrict>false</closureEmitUseStrict>
+                </configuration>
                 <executions>
                     <execution>
+                        <id>viewer</id>
                         <goals>
-                            <goal>compile</goal>
+                            <goal>minify</goal>
                         </goals>
+                        <configuration>
+                            <closureCompilationLevel>SIMPLE_OPTIMIZATIONS</closureCompilationLevel>
+                            <closurePrettyPrint>true</closurePrettyPrint>
+                            <sourceDir>.</sourceDir>
+                            <includes>
+                                <include>common/AppLoader.js</include>
+                                <include>common/AppStyle.js</include>
+                                <include>common/MobileManager.js</include>
+                                <!-- ViewerController -->
+                                <include>common/viewercontroller/ViewerController.js</include>
+                                <include>common/viewercontroller/MapComponent.js</include>
+                                <!-- Components -->
+                                <include>components/Component.js</include>
+                                <include>components/LogMessage.js</include>
+                                <include>components/Logger.js</include>
+                                <include>components/RequestManager.js</include>
+                                <include>components/DataSelectionChecker.js</include>
+                                <!-- Common -->
+                                <include>common/ScreenPopup.js</include>
+                                <include>common/CQLFilterWrapper.js</include>
+                                <include>common/FeatureInfoWrapper.js</include>
+                                <include>common/ClearTrigger.js</include>
+                                <include>common/LocalStorage.js</include>
+                                <!-- Server side Ajax Wrappers -->
+                                <include>common/ajax/ServiceInfo.js</include>
+                                <include>common/ajax/CSWClient.js</include>
+                                <include>common/ajax/FeatureService.js</include>
+                                <include>common/ajax/SLD.js</include>
+                                <include>common/ajax/Bookmark.js</include>
+                                <include>common/ajax/LayerSelector.js</include>
+                                <include>common/ajax/CombineImage.js</include>
+                                <include>common/ajax/FeatureInfo.js</include>
+                                <include>common/ajax/EditFeature.js</include>
+                                <include>common/ajax/EditBulkFeature.js</include>
+                                <include>common/ajax/ArcQueryUtil.js</include>
+                                <include>common/ajax/FeatureExtent.js</include>
+                                <!-- Abstracts MapComponent -->
+                                <include>common/viewercontroller/controller/Map.js</include>
+                                <include>common/viewercontroller/controller/Layer.js</include>
+                                <include>common/viewercontroller/controller/TilingLayer.js</include>
+                                <include>common/viewercontroller/controller/WMSLayer.js</include>
+                                <include>common/viewercontroller/controller/ImageLayer.js</include>
+                                <include>common/viewercontroller/controller/VectorLayer.js</include>
+                                <include>common/viewercontroller/controller/ArcLayer.js</include>
+                                <include>common/viewercontroller/controller/Feature.js</include>
+                                <include>common/viewercontroller/controller/FeatureStyle.js</include>
+                                <include>common/viewercontroller/controller/MapTip.js</include>
+                                <include>common/viewercontroller/controller/Extent.js</include>
+                                <include>common/viewercontroller/controller/Event.js</include>
+                                <include>common/viewercontroller/controller/Tool.js</include>
+                                <include>common/viewercontroller/controller/Component.js</include>
+                                <include>common/viewercontroller/controller/ToolMapClick.js</include>
+                                <include>common/viewercontroller/controller/SnappingController.js</include>
+                            </includes>
+                            <targetDir>${minify.outputdir}</targetDir>
+                            <outputFilename>viewer-min.js</outputFilename>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>openlayers</id>
+                        <goals>
+                            <goal>minify</goal>
+                        </goals>
+                        <configuration>
+                            <closurePrettyPrint>true</closurePrettyPrint>
+                            <closureCompilationLevel>SIMPLE_OPTIMIZATIONS</closureCompilationLevel>
+                            <closureLanguageIn>ECMASCRIPT_2015</closureLanguageIn>
+                            <sourceDir>common/</sourceDir>
+                            <includes>
+                                <!-- openlayers overrides -->
+                                <include>overrides.js</include>
+                                <!-- OpenLayers -->
+                                <include>viewercontroller/openlayers/OpenLayersLayer.js</include>
+                                <include>viewercontroller/openlayers/OpenLayersArcLayer.js</include>
+                                <include>viewercontroller/openlayers/OpenLayersArcServerLayer.js</include>
+                                <include>viewercontroller/openlayers/OpenLayersWMSLayer.js</include>
+                                <include>viewercontroller/openlayers/OpenLayersVectorLayer.js</include>
+                                <include>viewercontroller/openlayers/OpenLayersImageLayer.js</include>
+                                <include>viewercontroller/openlayers/OpenLayersTilingLayer.js</include>
+                                <include>viewercontroller/openlayers/OpenLayersTool.js</include>
+                                <include>viewercontroller/openlayers/OpenLayersMap.js</include>
+                                <include>viewercontroller/openlayers/Utils.js</include>
+                                <include>viewercontroller/openlayers/ToolMapClick.js</include>
+                                <include>viewercontroller/openlayers/OpenLayersComponent.js</include>
+                                <include>viewercontroller/openlayers/OpenLayersMapComponent.js</include>
+                                <include>viewercontroller/openlayers/OpenLayersSnappingController.js</include>
+                                <!-- OpenLayers Components -->
+                                <include>viewercontroller/openlayers/components/LoadingPanel.js</include>
+                                <include>viewercontroller/openlayers/components/OpenLayersBorderNavigation.js</include>
+                                <include>viewercontroller/openlayers/components/OpenLayersLoadMonitor.js</include>
+                                <include>viewercontroller/openlayers/components/OpenLayersOverview.js</include>
+                                <include>viewercontroller/openlayers/components/OpenLayersMaptip.js</include>
+                                <!-- OpenLayers Tools -->
+                                <include>viewercontroller/openlayers/tools/OpenLayersMeasureTool.js</include>
+                                <include>viewercontroller/openlayers/tools/OpenLayersIdentifyTool.js</include>
+                                <include>viewercontroller/openlayers/tools/OpenLayersDefaultTool.js</include>
+                                <include>viewercontroller/openlayers/tools/OpenLayersMeasureHandler.js</include>
+                            </includes>
+                            <targetDir>${minify.outputdir}</targetDir>
+                            <outputFilename>openlayers-min.js</outputFilename>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>openlayers5</id>
+                        <goals>
+                            <goal>minify</goal>
+                        </goals>
+                        <configuration>
+                            <sourceDir>common/viewercontroller/ol/</sourceDir>
+                            <closurePrettyPrint>true</closurePrettyPrint>
+                            <closureCompilationLevel>SIMPLE_OPTIMIZATIONS</closureCompilationLevel>
+                            <closureLanguageIn>ECMASCRIPT5</closureLanguageIn>
+                            <includes>
+                                <include>OlLayer.js</include>
+                                <include>OpenLayers5Map.js</include>
+                                <include>Utils.js</include>
+                                <include>OlTilingLayer.js</include>
+                                <include>OlMapComponent.js</include>
+                                <include>OlComponent.js</include>
+                                <include>OlTool.js</include>
+                                <include>ToolMapClick.js</include>
+                                <include>OlWMSLayer.js</include>
+                                <include>OlArcLayer.js</include>
+                                <include>OlVectorLayer.js</include>
+                                <include>OlArcServerLayer.js</include>
+                                <include>OlSnappingController.js</include>
+                                <include>OlImageLayer.js</include>
+
+                                <include>components/panZoomBar.js</include>
+                                <include>components/LoadingPanel.js</include>
+                                <include>components/OlLoadMonitor.js</include>
+                                <include>components/OlMaptip.js</include>
+                                <include>components/OlOverview.js</include>
+
+                                <include>tools/OlIdentifyTool.js</include>
+                                <include>tools/OlDefaultTool.js</include>
+                                <include>tools/ZoomIn.js</include>
+                                <include>tools/ZoomOutButton.js</include>
+                                <include>tools/Measure.js</include>
+                                <include>tools/FullExtent.js</include>
+                                <include>tools/ToolButton.js</include>
+                                <include>tools/DragPan.js</include>
+                                <include>tools/StreetViewButton.js</include>
+                                <include>tools/NextExtent.js</include>
+                                <include>tools/PrevExtent.js</include>
+                            </includes>
+                            <targetDir>${minify.outputdir}</targetDir>
+                            <outputFilename>/openlayers5-min.js</outputFilename>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>components-json</id>
+                        <goals>
+                            <goal>minify</goal>
+                        </goals>
+                        <configuration>
+                            <closurePrettyPrint>true</closurePrettyPrint>
+                            <closureCompilationLevel>WHITESPACE_ONLY</closureCompilationLevel>
+                            <sourceDir>components/</sourceDir>
+                            <includes>
+                                <include>components.json</include>
+                            </includes>
+                            <targetDir>${minify.outputdir}</targetDir>
+                            <outputFilename>components.json</outputFilename>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>components-js</id>
+                        <goals>
+                            <goal>minify</goal>
+                        </goals>
+                        <configuration>
+                            <sourceDir>components/</sourceDir>
+                            <targetDir>.</targetDir>
+                            <closurePrettyPrint>true</closurePrettyPrint>
+                            <closureCompilationLevel>SIMPLE_OPTIMIZATIONS</closureCompilationLevel>
+                            <includes>
+                                <include>Edit.js</include>
+                                <include>CurrentLocation.js</include>
+                                <include>MapboxGL.js</include>
+                            </includes>
+                            <outputFilename>compiled-components-temp.js</outputFilename>
+                        </configuration>
                     </execution>
                 </executions>
-                <configuration>
-                    <compilations>
-                        <compilation>
-                            <compilationLevel>SIMPLE_OPTIMIZATIONS</compilationLevel>
-                            <compilerOptions>
-                                <prettyPrint>true</prettyPrint>
-                            </compilerOptions>
-                            <externFiles />
-                            <sourceFiles>
-                                <param>${viewerhtml.path}/common/AppLoader.js</param>
-                                <param>${viewerhtml.path}/common/AppStyle.js</param>
-                                <param>${viewerhtml.path}/common/MobileManager.js</param>
-                                <!-- ViewerController -->
-                                <param>${viewerhtml.path}/common/viewercontroller/ViewerController.js</param>
-                                <param>${viewerhtml.path}/common/viewercontroller/MapComponent.js</param>
-                                <!-- Components -->
-                                <param>${viewerhtml.path}/components/Component.js</param>
-                                <param>${viewerhtml.path}/components/LogMessage.js</param>
-                                <param>${viewerhtml.path}/components/Logger.js</param>
-                                <param>${viewerhtml.path}/components/RequestManager.js</param>
-                                <param>${viewerhtml.path}/components/DataSelectionChecker.js</param>
-                                <!-- Common -->
-                                
-                                <param>${viewerhtml.path}/common/ScreenPopup.js</param>
-                                <param>${viewerhtml.path}/common/CQLFilterWrapper.js</param>
-                                <param>${viewerhtml.path}/common/FeatureInfoWrapper.js</param>
-                                <param>${viewerhtml.path}/common/ClearTrigger.js</param>
-                                <param>${viewerhtml.path}/common/LocalStorage.js</param>
-                                <!-- Server side Ajax Wrappers -->
-                                <param>${viewerhtml.path}/common/ajax/ServiceInfo.js</param>
-                                <param>${viewerhtml.path}/common/ajax/CSWClient.js</param>
-                                <param>${viewerhtml.path}/common/ajax/FeatureService.js</param>
-                                <param>${viewerhtml.path}/common/ajax/SLD.js</param>
-                                <param>${viewerhtml.path}/common/ajax/Bookmark.js</param>
-                                <param>${viewerhtml.path}/common/ajax/LayerSelector.js</param>
-                                <param>${viewerhtml.path}/common/ajax/CombineImage.js</param>
-                                <param>${viewerhtml.path}/common/ajax/FeatureInfo.js</param>
-                                <param>${viewerhtml.path}/common/ajax/EditFeature.js</param>
-                                <param>${viewerhtml.path}/common/ajax/EditBulkFeature.js</param>
-                                <param>${viewerhtml.path}/common/ajax/ArcQueryUtil.js</param>
-                                <param>${viewerhtml.path}/common/ajax/FeatureExtent.js</param>
-                                <!-- Abstracts MapComponent -->
-                                <param>${viewerhtml.path}/common/viewercontroller/controller/Map.js</param>
-                                <param>${viewerhtml.path}/common/viewercontroller/controller/Layer.js</param>
-                                <param>${viewerhtml.path}/common/viewercontroller/controller/TilingLayer.js</param>
-                                <param>${viewerhtml.path}/common/viewercontroller/controller/WMSLayer.js</param>
-                                <param>${viewerhtml.path}/common/viewercontroller/controller/ImageLayer.js</param>
-                                <param>${viewerhtml.path}/common/viewercontroller/controller/VectorLayer.js</param>
-                                <param>${viewerhtml.path}/common/viewercontroller/controller/ArcLayer.js</param>
-                                <param>${viewerhtml.path}/common/viewercontroller/controller/Feature.js</param>
-                                <param>${viewerhtml.path}/common/viewercontroller/controller/FeatureStyle.js</param>
-                                <param>${viewerhtml.path}/common/viewercontroller/controller/MapTip.js</param>
-                                <param>${viewerhtml.path}/common/viewercontroller/controller/Extent.js</param>
-                                <param>${viewerhtml.path}/common/viewercontroller/controller/Event.js</param>
-                                <param>${viewerhtml.path}/common/viewercontroller/controller/Tool.js</param>
-                                <param>${viewerhtml.path}/common/viewercontroller/controller/Component.js</param>
-                                <param>${viewerhtml.path}/common/viewercontroller/controller/ToolMapClick.js</param>
-                                <param>${viewerhtml.path}/common/viewercontroller/controller/SnappingController.js</param>
-                            </sourceFiles>
-                            <outputFile>${minify.outputdir}/viewer-min.js</outputFile>
-                        </compilation>
-                        <compilation>
-                            <compilationLevel>SIMPLE_OPTIMIZATIONS</compilationLevel>
-                            <compilerOptions>
-                                <prettyPrint>true</prettyPrint>
-                                <languageIn>ECMASCRIPT5</languageIn>
-                            </compilerOptions>
-                            <externFiles />
-                            <sourceFiles>
-                                <!-- openlayers overrides -->
-                                <param>${viewerhtml.path}/common/overrides.js</param>
-                                <!-- OpenLayers -->
-                                <param>${viewerhtml.path}/common/viewercontroller/openlayers/OpenLayersLayer.js</param>
-                                <param>${viewerhtml.path}/common/viewercontroller/openlayers/OpenLayersArcLayer.js</param>
-                                <param>${viewerhtml.path}/common/viewercontroller/openlayers/OpenLayersArcServerLayer.js</param>
-                                <param>${viewerhtml.path}/common/viewercontroller/openlayers/OpenLayersWMSLayer.js</param>
-                                <param>${viewerhtml.path}/common/viewercontroller/openlayers/OpenLayersVectorLayer.js</param>
-                                <param>${viewerhtml.path}/common/viewercontroller/openlayers/OpenLayersImageLayer.js</param>
-                                <param>${viewerhtml.path}/common/viewercontroller/openlayers/OpenLayersTilingLayer.js</param>
-                                <param>${viewerhtml.path}/common/viewercontroller/openlayers/OpenLayersTool.js</param>
-                                <param>${viewerhtml.path}/common/viewercontroller/openlayers/OpenLayersMap.js</param>
-                                <param>${viewerhtml.path}/common/viewercontroller/openlayers/Utils.js</param>
-                                <param>${viewerhtml.path}/common/viewercontroller/openlayers/ToolMapClick.js</param>
-                                <param>${viewerhtml.path}/common/viewercontroller/openlayers/OpenLayersComponent.js</param>
-                                <param>${viewerhtml.path}/common/viewercontroller/openlayers/OpenLayersMapComponent.js</param>
-                                <param>${viewerhtml.path}/common/viewercontroller/openlayers/OpenLayersSnappingController.js</param>
-                                <!-- OpenLayers Components -->
-                                <param>${viewerhtml.path}/common/viewercontroller/openlayers/components/LoadingPanel.js</param>
-                                <param>${viewerhtml.path}/common/viewercontroller/openlayers/components/OpenLayersBorderNavigation.js</param>
-                                <param>${viewerhtml.path}/common/viewercontroller/openlayers/components/OpenLayersLoadMonitor.js</param>
-                                <param>${viewerhtml.path}/common/viewercontroller/openlayers/components/OpenLayersOverview.js</param>
-                                <param>${viewerhtml.path}/common/viewercontroller/openlayers/components/OpenLayersMaptip.js</param>
-                                <!-- OpenLayers Tools -->
-                                <param>${viewerhtml.path}/common/viewercontroller/openlayers/tools/OpenLayersMeasureTool.js</param>
-                                <param>${viewerhtml.path}/common/viewercontroller/openlayers/tools/OpenLayersIdentifyTool.js</param>
-                                <param>${viewerhtml.path}/common/viewercontroller/openlayers/tools/OpenLayersDefaultTool.js</param>
-                                <param>${viewerhtml.path}/common/viewercontroller/openlayers/tools/OpenLayersMeasureHandler.js</param>
-                            </sourceFiles>
-                            <outputFile>${minify.outputdir}/openlayers-min.js</outputFile>
-                        </compilation>
-                        <compilation>
-                            <compilationLevel>SIMPLE_OPTIMIZATIONS</compilationLevel>
-                            <compilerOptions>
-                                <prettyPrint>true</prettyPrint>
-                                <languageIn>ECMASCRIPT5</languageIn>
-                            </compilerOptions>
-                            <externFiles />
-                            <sourceFiles>
-                                <param>${viewerhtml.path}/common/viewercontroller/ol/OlLayer.js</param>
-                                <param>${viewerhtml.path}/common/viewercontroller/ol/OpenLayers5Map.js</param>
-                                <param>${viewerhtml.path}/common/viewercontroller/ol/Utils.js</param>
-                                <param>${viewerhtml.path}/common/viewercontroller/ol/OlTilingLayer.js</param>
-                                <param>${viewerhtml.path}/common/viewercontroller/ol/OlMapComponent.js</param>
-                                <param>${viewerhtml.path}/common/viewercontroller/ol/OlComponent.js</param>
-                                <param>${viewerhtml.path}/common/viewercontroller/ol/OlTool.js</param>
-                                <param>${viewerhtml.path}/common/viewercontroller/ol/ToolMapClick.js</param>
-                                <param>${viewerhtml.path}/common/viewercontroller/ol/OlWMSLayer.js</param>
-                                <param>${viewerhtml.path}/common/viewercontroller/ol/OlArcLayer.js</param>
-                                <param>${viewerhtml.path}/common/viewercontroller/ol/OlVectorLayer.js</param>
-                                <param>${viewerhtml.path}/common/viewercontroller/ol/OlArcServerLayer.js</param>
-                                <param>${viewerhtml.path}/common/viewercontroller/ol/OlSnappingController.js</param>
-                                <param>${viewerhtml.path}/common/viewercontroller/ol/OlImageLayer.js</param>
-                                
-                                <param>${viewerhtml.path}/common/viewercontroller/ol/components/panZoomBar.js</param>
-                                <param>${viewerhtml.path}/common/viewercontroller/ol/components/LoadingPanel.js</param>
-                                <param>${viewerhtml.path}/common/viewercontroller/ol/components/OlLoadMonitor.js</param>
-                                <param>${viewerhtml.path}/common/viewercontroller/ol/components/OlMaptip.js</param>
-                                <param>${viewerhtml.path}/common/viewercontroller/ol/components/OlOverview.js</param>
-                                
-                                <param>${viewerhtml.path}/common/viewercontroller/ol/tools/OlIdentifyTool.js</param>
-                                <param>${viewerhtml.path}/common/viewercontroller/ol/tools/OlDefaultTool.js</param>
-                                <param>${viewerhtml.path}/common/viewercontroller/ol/tools/ZoomIn.js</param>
-                                <param>${viewerhtml.path}/common/viewercontroller/ol/tools/ZoomOutButton.js</param>
-                                <param>${viewerhtml.path}/common/viewercontroller/ol/tools/Measure.js</param>
-                                <param>${viewerhtml.path}/common/viewercontroller/ol/tools/FullExtent.js</param>
-                                <param>${viewerhtml.path}/common/viewercontroller/ol/tools/ToolButton.js</param>
-                                <param>${viewerhtml.path}/common/viewercontroller/ol/tools/DragPan.js</param>
-                                <param>${viewerhtml.path}/common/viewercontroller/ol/tools/StreetViewButton.js</param>
-                                <param>${viewerhtml.path}/common/viewercontroller/ol/tools/NextExtent.js</param>
-                                <param>${viewerhtml.path}/common/viewercontroller/ol/tools/PrevExtent.js</param>
-                            </sourceFiles>
-                            <outputFile>${minify.outputdir}/openlayers5-min.js</outputFile>
-                        </compilation>
-                        <compilation>
-                            <compilationLevel>WHITESPACE_ONLY</compilationLevel>
-                            <compilerOptions>
-                                <prettyPrint>true</prettyPrint>
-                            </compilerOptions>
-                            <externFiles />
-                            <sourceFiles>
-                                <param>${viewerhtml.path}/components/components.json</param>
-                            </sourceFiles>
-                            <outputFile>${minify.outputdir}/components.json</outputFile>
-                        </compilation>
-                        <compilation>
-                            <compilationLevel>SIMPLE_OPTIMIZATIONS</compilationLevel>
-                            <compilerOptions>
-                                <prettyPrint>true</prettyPrint>
-                            </compilerOptions>
-                            <externFiles />
-                            <sourceFiles>
-                                <param>${viewerhtml.path}/components/Edit.js</param>
-                                <param>${viewerhtml.path}/components/CurrentLocation.js</param>
-                            </sourceFiles>
-                            <outputFile>${project.build.directory}/compiled-components-temp.js</outputFile>
-                        </compilation>
-                    </compilations>
-                </configuration>
             </plugin>
             <plugin>
                 <groupId>pl.project13.maven</groupId>
