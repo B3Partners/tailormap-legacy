@@ -1,6 +1,6 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {FormComponent} from '../form/form.component';
-import {MatDialog} from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import {Feature, FeatureControllerService,} from "../../shared/generated";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {DialogClosedData, GeometryInteractionData, GeometryType} from "./form-popup-models";

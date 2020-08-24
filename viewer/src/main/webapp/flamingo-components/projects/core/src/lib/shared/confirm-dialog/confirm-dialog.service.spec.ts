@@ -4,7 +4,9 @@ import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/t
 import { ConfirmDialogService } from './confirm-dialog.service';
 import { ConfirmDialogComponent } from './confirm-dialog.component';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { MatButtonModule, MatCommonModule, MatDialogModule } from '@angular/material';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCommonModule } from '@angular/material/core';
+import { MatDialogModule } from '@angular/material/dialog';
 
 describe('ConfirmDialogService', () => {
 
