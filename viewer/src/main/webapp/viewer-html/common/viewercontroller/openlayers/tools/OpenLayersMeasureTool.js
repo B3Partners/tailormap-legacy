@@ -18,8 +18,7 @@
 
 /**
  * @class 
- * @constructor
- * @description Measure tool 
+ * @description Measure tool
  */
 Ext.define("viewer.viewercontroller.openlayers.tools.OpenLayersMeasureTool",{
     extend: "viewer.viewercontroller.openlayers.OpenLayersTool",
