@@ -162,22 +162,25 @@ public class DatabaseSynchronizer implements Servlet {
         updates.put("32", new UpdateElement(Collections.singletonList("dropfileupload.sql"), String.class, true));
         updates.put("33", new UpdateElement(Collections.singletonList("fileupload.sql"), String.class, true));
         // 5.3.6
-        updates.put("34", new UpdateElement(Collections.singletonList("add_application_title.sql"), String.class, true));
-        updates.put("35", new UpdateElement(Collections.singletonList("add_application_language.sql"), String.class, true));
-        updates.put("36", new UpdateElement(Collections.singletonList("add_projection.sql"), String.class, true));
+        updates.put("34", new UpdateElement(Collections.singletonList("add_application_title.sql"), String.class, false));
+        updates.put("35", new UpdateElement(Collections.singletonList("add_application_language.sql"), String.class, false));
+        updates.put("36", new UpdateElement(Collections.singletonList("add_projection.sql"), String.class, false));
         
         // 5.5.4
-        updates.put("37", new UpdateElement(Collections.singletonList("automatic_attributes.sql"), String.class, true));
+        updates.put("37", new UpdateElement(Collections.singletonList("automatic_attributes.sql"), String.class, false));
         
         // 5.6.0
-        updates.put("38", new UpdateElement(Collections.singletonList("delete_orphan_featuretypes.sql"), String.class, true));
+        updates.put("38", new UpdateElement(Collections.singletonList("delete_orphan_featuretypes.sql"), String.class, false));
         
         // 5.7.3
-        updates.put("39", new UpdateElement(Collections.singletonList("add_geoservice_geofence_header.sql"), String.class, true));
+        updates.put("39", new UpdateElement(Collections.singletonList("add_geoservice_geofence_header.sql"), String.class, false));
 
         //5.6.4
 
         updates.put("40", new UpdateElement (Collections.singletonList("selectedcontentcaches_dirty.sql"), String.class));
+	
+	    // 5.7.7
+        updates.put("41", new UpdateElement(Collections.singletonList("add_form.sql"), String.class, false));
 
         // 
         // NB when adding an update also update the metadata version in the testdata.sql file around line 348

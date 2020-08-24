@@ -23,8 +23,8 @@
 Ext.define("viewer.components.GBI", {
     extend: "viewer.components.Component",
     div: null,
-    toolMapClick: null,
-    formConfigs: null,
+    toolMapClick:null,
+    formConfigs:null,
     vectorLayer: null,
     config: {
         layers:[],
@@ -43,14 +43,14 @@ Ext.define("viewer.components.GBI", {
             },
             text: "me.config.title"
         });
-        this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_COMPONENTS_FINISHED_LOADING,
+        this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_LAYERS_INITIALIZED,
             this.initialize,this);
         this.config.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_VISIBILITY_CHANGED,
             this.layerVisibilityChanged,this);
         return this;
     },
     initialize: function(){
-        this.loadConfig();
+        this.initializeForm();
         this.createVectorLayer();
         this.toolMapClick =  this.config.viewerController.mapComponent.createTool({
             type: viewer.viewercontroller.controller.Tool.MAP_CLICK,
@@ -104,12 +104,12 @@ Ext.define("viewer.components.GBI", {
             var appLayer = this.config.viewerController.getAppLayerById(event.layer.appLayerId);
             this.processLayerVisible(appLayer, event.visible);
         }
-    },
+            },
     processLayerVisible: function(appLayer, visible){
         var layerName = appLayer.layerName;
         if(layerName.indexOf(":") !== -1){
             layerName = layerName.substring(layerName.indexOf(':') + 1);
-        }
+            }
         var evt = {
             layername : layerName,
             visible: visible
@@ -121,21 +121,6 @@ Ext.define("viewer.components.GBI", {
     },
     geometryDrawn: function(vectorLayer, feature){
         this.div.setAttribute("geometry-drawn", feature.config.wktgeom);
-    },
-    loadConfig: function(){
-        Ext.Ajax.request({
-            url: this.config.configURL,
-            scope: this,
-            success: function(result) {
-                var text = result.responseText;
-                var response = Ext.JSON.decode(text);
-                this.formConfigs = response;
-                this.initializeForm();
-            },
-            failure: function(result) {
-               this.config.viewerController.logger.error(result);
-            }
-        });
     },
     mapClicked : function(tool, comp){
         var coords = comp.coord;
@@ -152,7 +137,7 @@ Ext.define("viewer.components.GBI", {
         this.div.setAttribute("visible-layers", this.stringifyAppLayer(visibleLayers));
         this.div.setAttribute("map-clicked", JSON.stringify(json));
     },
-
+    
     stringifyAppLayer: function(al){
         var culledObject = {
             id: al.id,

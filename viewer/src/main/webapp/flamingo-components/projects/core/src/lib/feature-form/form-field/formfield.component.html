@@ -10,11 +10,13 @@
     />
 
   <mat-select
-     placeholder="{{attribute.key}}"
-  [formControlName]="attribute.key"
-  *ngIf="isSelectAttribute(attribute)"
-  [value]="!isBulk ?  value : ''" >
-  <mat-option *ngFor="let opt of attribute.options" [value]="opt.val">{{opt.label}}</mat-option>
+      (selectionChange)="valueChanged($event)"
+      placeholder="{{attribute.key}}"
+      [formControlName]="attribute.key"
+      *ngIf="isSelectAttribute(attribute) || isDomainAttribute(attribute)"
+      [value]="!isBulk ?  value : ''" >
+    <mat-option [value]="-1">-- Selecteer --</mat-option>
+  <mat-option *ngFor="let opt of attribute.options" [value]="opt.val" [hidden]="opt.disabled">{{opt.label}}</mat-option>
 </mat-select>
 
 </mat-form-field>

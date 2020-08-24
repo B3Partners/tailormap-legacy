@@ -8,7 +8,7 @@ or
 crossContext="true" is required to enable the viewer-admin to load the
   components.json file and component config javascript sources from the viewer
 -->
-<Context antiResourceLocking="true" crossContext="true" path="/viewer-admin">
+<Context crossContext="true" path="/viewer-admin">
   <Parameter name="componentregistry.path" override="false" value="/viewer-html/components"/>
   <!-- Customized context parameters; see also: web.xml -->
   <!--Parameter name="viewer.url" value="/viewer" override="false"/-->

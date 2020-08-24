@@ -39,6 +39,7 @@ function appendPanel(header, content, container) {
             title: headercontent,
             contentEl: contentobj,
             width: '100%',
+            height: '100%',
             renderTo: panelContainer,
             autoScroll: true
         });

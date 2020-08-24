@@ -12,6 +12,14 @@ export class LayerVisibilityServiceService {
     private formConfigRepo: FormconfigRepositoryService) { }
 
   public layerVisibiltyChanged(event: LayerVisibilityEvent):void{
+    if(this.formConfigRepo.isLoaded()){
+      this.processEvent(event);
+    }else{
+      setTimeout(function(){this.layerVisibiltyChanged(event)}.bind(this), 500);
+    }
+  }
+
+  private processEvent(event: LayerVisibilityEvent) :void{
     const layerName = event.layername;
     let allowFts = this.formConfigRepo.getFeatureTypes();
     const isOfFormType = allowFts.findIndex(l => l.toLowerCase() === layerName.toLowerCase());

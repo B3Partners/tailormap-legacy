@@ -18,9 +18,10 @@ export class FormActionsService {
     private confirmDialogService: ConfirmDialogService,
     private service: FeatureControllerService,
     private formConfigRepo: FormconfigRepositoryService,
+    private featureInitializerService: FeatureInitializerService,
     private _snackBar: MatSnackBar) { }
 
-    public save(isBulk: boolean, feature: Feature) :Observable<any>{
+    public save(isBulk: boolean, feature: Feature, parent: Feature) :Observable<any>{
 
       if (isBulk) {
       //  const features = this.getChangedValues();
@@ -31,7 +32,8 @@ export class FormActionsService {
         if(object_guid && object_guid !== FeatureInitializerService.STUB_OBJECT_GUID_NEW_OBJECT) {
           return this.service.update(feature, object_guid);
         }else{
-          return this.service.save(feature);
+          const parentId = parent ? parent.object_guid : null;
+          return this.service.save(feature, parentId);
         }
       }
     }
@@ -64,20 +66,23 @@ export class FormActionsService {
     const name = 'Nieuwe '  + formConfig.name;
 
     const parentFeature = features[0];
-    const relations = formConfig.relation.relation;
+   // const relations = formConfig.relation.relation;
+    const objecttype = FormHelpers.capitalize(type);
 
-    const newFeature = {
+    const newFeature = this.featureInitializerService.create(objecttype,{
       id: null,
       clazz: type,
       isRelated: true,
-      objecttype: FormHelpers.capitalize(type)
-    };
+      objecttype,
+      children:null
+    });
+
     newFeature[formConfig.treeNodeColumn] = name;
-    relations.forEach(r => {
+   /* relations.forEach(r => {
       const relatedKey = r.relatedFeatureColumn;
       const mainKey = r.mainFeatureColumn;
       newFeature[relatedKey] = parentFeature[mainKey];
-    });
+    });*/
     parentFeature.children.push(newFeature);
     let feature = newFeature;
     features = [...features];

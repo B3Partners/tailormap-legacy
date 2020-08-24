@@ -8,7 +8,6 @@ export interface FormConfiguration {
   name: string;
   treeNodeColumn: string;
   idInTreeNodeColumn?: boolean;
-  newPossible: boolean;
   featureType: string;
   tabConfig: Map<number, string>;
   relation ?: FormRelation;
@@ -18,6 +17,7 @@ export interface Attribute {
   key: string;
   type: FormFieldType;
   options ?: SelectOption[];
+  linkedList ?: number;
   column: number;
   tab: number;
 }
@@ -25,18 +25,20 @@ export interface Attribute {
 export interface FeatureAttribute extends Attribute {
   key: string;
   //type: FormFieldType;
-  value: string;
+  value: string | number;
 }
 
 export enum FormFieldType {
   TEXTFIELD = 'textfield',
   SELECT = 'select',
   HIDDEN = 'hidden',
+  DOMAIN = 'domain',
 }
 
 
 export interface SelectOption {
   label: string;
+  disabled?: boolean;
   val: string;
 }
 
