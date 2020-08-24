@@ -78,7 +78,6 @@ Ext.define('vieweradmin.components.Form', {
                 menuDisabled: true,
                 sortable: false,
                 hideable: false,
-                menuDisabled: true,
                 renderer: function (value) {
                     return [
                         Ext.String.format('<a href="#" class="editobject">' + i18next.t('viewer_admin_document_3') + '</a>'),
