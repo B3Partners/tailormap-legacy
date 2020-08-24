@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.flamingo-mc</groupId>
     <artifactId>flamingo-mc</artifactId>
-    <version>5.7.7-SNAPSHOT</version>
+    <version>5.7.8-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>flamingo-mc</name>
     <url>http://github.com/flamingo-mc</url>
@@ -38,7 +38,7 @@
         </license>
     </licenses>
     <properties>
-        <flamingo.version>5.7.7-SNAPSHOT</flamingo.version>
+        <flamingo.version>5.7.8-SNAPSHOT</flamingo.version>
         <java.version>1.8</java.version>
         <project.build.sourceVersion>${java.version}</project.build.sourceVersion>
         <project.build.targetVersion>${java.version}</project.build.targetVersion>
@@ -52,7 +52,7 @@
         <powermock.version>2.0.7</powermock.version>
         <hsqldb.version>2.5.1</hsqldb.version>
         <test.persistence.unit>viewer-config-hsqldb</test.persistence.unit>
-        <postgresql.version>42.2.14</postgresql.version>
+        <postgresql.version>42.2.16</postgresql.version>
         <mssql.version>8.4.0.jre8</mssql.version>
         <oracle.version>19.7.0.0</oracle.version>
         <apache.poi.version>4.1.2</apache.poi.version>
@@ -65,7 +65,7 @@
         <!-- skip integration tests by default, override this property from commandline
         or as part of a profile, see eg. 'travis-ci' profile in viewer -->
         <test.skip.integrationtests>false</test.skip.integrationtests>
-        <maven-surefire-plugin.version>3.0.0-M5</maven-surefire-plugin.version>
+        <maven-surefire-plugin.version>3.0.0-M4</maven-surefire-plugin.version>
         <tomcat.version>7.0.105</tomcat.version>
         <jacoco-maven-plugin.version>0.8.5</jacoco-maven-plugin.version>
         <tomcat7-maven-plugin.version>2.2</tomcat7-maven-plugin.version>
@@ -208,10 +208,9 @@
                 <version>3.11</version>
             </dependency>
             <dependency>
-                <!-- do not upgrade because that would enforce "use strict;" -->
                 <groupId>com.google.javascript</groupId>
                 <artifactId>closure-compiler</artifactId>
-                <version>v20161201</version>
+                <version>v20200719</version>
             </dependency>
             <dependency>
                 <groupId>javax.servlet</groupId>
@@ -280,7 +279,7 @@
             <dependency>
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-core</artifactId>
-                <version>3.4.6</version>
+                <version>3.5.5</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
@@ -566,7 +565,7 @@
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>versions-maven-plugin</artifactId>
-                    <version>2.7</version>
+                    <version>2.8.1</version>
                 </plugin>
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
@@ -598,7 +597,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-resources-plugin</artifactId>
-                    <version>3.1.0</version>
+                    <version>3.2.0</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-clean-plugin</artifactId>
@@ -644,7 +643,7 @@
                 <plugin>
                     <groupId>pl.project13.maven</groupId>
                     <artifactId>git-commit-id-plugin</artifactId>
-                    <version>4.0.1</version>
+                    <version>4.0.2</version>
                 </plugin>
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
@@ -652,10 +651,10 @@
                     <version>1.2</version>
                 </plugin>
                 <plugin>
-                    <groupId>nl.geodienstencentrum.maven</groupId>
+                    <groupId>com.github.blutorange</groupId>
                     <artifactId>closure-compiler-maven-plugin</artifactId>
-                    <version>2.4</version>
-               </plugin>
+                    <version>2.18.0</version>
+                </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-deploy-plugin</artifactId>

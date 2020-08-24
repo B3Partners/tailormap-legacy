@@ -2,7 +2,6 @@
 
 /**
  * @class
- * @constructor
  * @augments MapComponent
  * @description MapComponent subclass for OpenLayers
  * @author <a href="mailto:meinetoonen@b3partners.nl">Meine Toonen</a>
@@ -696,7 +695,7 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
         if(!Ext.browser.is.IE) {
             return;
         }
-    ﻿   var tools = document.querySelectorAll('.svg-tool svg use');
+       var tools = document.querySelectorAll('.svg-tool svg use');
         for(var i = 0; i < tools.length; i++) {
             tools[i].setAttribute('href', tools[i].getAttribute('xlink:href'));
         }
