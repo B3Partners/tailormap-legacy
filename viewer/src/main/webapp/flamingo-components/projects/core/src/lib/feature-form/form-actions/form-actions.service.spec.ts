@@ -22,7 +22,7 @@ describe('FormActionsService', () => {
   );
 
   it('should be created', () => {
-    const service: FormActionsService = TestBed.get(FormActionsService);
+    const service: FormActionsService = TestBed.inject(FormActionsService);
     expect(service).toBeTruthy();
   });
 });

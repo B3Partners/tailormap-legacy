@@ -23,12 +23,12 @@ describe('ConfirmDialogService', () => {
     providers: [ ConfirmDialogService ],
   }).overrideModule(BrowserDynamicTestingModule, {
     set: {
-      entryComponents: [ ConfirmDialogComponent ],
+
     }
   }));
 
   it('should return true if confirmed', async(() => {
-    const service: ConfirmDialogService = TestBed.get(ConfirmDialogService);
+    const service: ConfirmDialogService = TestBed.inject(ConfirmDialogService);
     expect(service).toBeTruthy();
     const observable$ = service.confirm('Title');
     service.dialogRef.componentInstance.onConfirm();
@@ -36,7 +36,7 @@ describe('ConfirmDialogService', () => {
   }));
 
   it('should return false when dismissed', async(() => {
-    const service: ConfirmDialogService = TestBed.get(ConfirmDialogService);
+    const service: ConfirmDialogService = TestBed.inject(ConfirmDialogService);
     expect(service).toBeTruthy();
     const observable$ = service.confirm('Title');
     service.dialogRef.componentInstance.onDismiss();

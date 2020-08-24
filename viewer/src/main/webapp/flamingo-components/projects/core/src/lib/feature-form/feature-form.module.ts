@@ -33,7 +33,6 @@ import {UserIntefaceModule} from "../user-interface/user-interface.module";
     FormComponent,
   ],
   entryComponents: [
-    FormComponent,
   ]
 })
 export class FeatureFormModule {

@@ -76,7 +76,6 @@ import {ConfirmDialogService} from "./confirm-dialog/confirm-dialog.service";
     MatDialogModule,
   ],
   entryComponents:[
-    ConfirmDialogComponent,
   ],
   providers: [
     ConfirmDialogService,

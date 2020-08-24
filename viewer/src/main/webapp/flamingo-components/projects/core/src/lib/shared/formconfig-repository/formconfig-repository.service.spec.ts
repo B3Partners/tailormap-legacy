@@ -10,12 +10,12 @@ describe('FormconfigRepositoryService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
-    const service: FormconfigRepositoryService = TestBed.get(FormconfigRepositoryService);
+    const service: FormconfigRepositoryService = TestBed.inject(FormconfigRepositoryService);
     expect(service).toBeTruthy();
   });
 
   it('should return all formconfigs', () => {
-    const service: FormconfigRepositoryService = TestBed.get(FormconfigRepositoryService);
+    const service: FormconfigRepositoryService = TestBed.inject(FormconfigRepositoryService);
     service.setFormConfigs(formConfigs);
     expect(service.getAllFormConfigs()).toBeTruthy();
     expect(service.getAllFormConfigs().config).toBeTruthy();
@@ -23,14 +23,14 @@ describe('FormconfigRepositoryService', () => {
   });
 
   it('should return all featuretypes', () => {
-    const service: FormconfigRepositoryService = TestBed.get(FormconfigRepositoryService);
+    const service: FormconfigRepositoryService = TestBed.inject(FormconfigRepositoryService);
     service.setFormConfigs(formConfigs);
     expect(service.getFeatureTypes()).toContain('test');
     expect(service.getFeatureTypes().length).toBe(1);
   });
 
   it('should return no featuretypes when no configs present', () => {
-    const service: FormconfigRepositoryService = TestBed.get(FormconfigRepositoryService);
+    const service: FormconfigRepositoryService = TestBed.inject(FormconfigRepositoryService);
     expect(service.getFeatureTypes().length).toBe(0);
   });
 });
