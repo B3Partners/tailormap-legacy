@@ -1,6 +1,10 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { FormPopupComponent } from './form-popup.component';
+import {FormPopupComponent} from './form-popup.component';
+import {SharedModule} from "../../shared/shared.module";
+import {AddFeatureComponent} from "../../user-interface/add-feature/add-feature.component";
+import {FeatureControllerService} from "../../shared/generated";
+import {MatSnackBarModule} from "@angular/material/snack-bar";
 
 describe('WegvakPopupComponent', () => {
   let component: FormPopupComponent;
@@ -8,9 +12,19 @@ describe('WegvakPopupComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ FormPopupComponent ]
+      imports: [
+        SharedModule,
+        MatSnackBarModule,
+      ],
+      providers: [
+        FeatureControllerService
+      ],
+      declarations: [
+
+        AddFeatureComponent,
+        FormPopupComponent]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

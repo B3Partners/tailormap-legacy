@@ -23,9 +23,9 @@
 Ext.define("viewer.components.GBI", {
     extend: "viewer.components.Component",
     div: null,
-    toolMapClick:null,
-    formConfigs:null,
-    relatedFeatureCounter: {},
+    toolMapClick: null,
+    formConfigs: null,
+    vectorLayer: null,
     config: {
         layers:[],
         configUrl:null
@@ -43,12 +43,15 @@ Ext.define("viewer.components.GBI", {
             },
             text: "me.config.title"
         });
-        this.initialize();
-        
+        this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_COMPONENTS_FINISHED_LOADING,
+            this.initialize,this);
+        this.config.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_VISIBILITY_CHANGED,
+            this.layerVisibilityChanged,this);
         return this;
     },
     initialize: function(){
         this.loadConfig();
+        this.createVectorLayer();
         this.toolMapClick =  this.config.viewerController.mapComponent.createTool({
             type: viewer.viewercontroller.controller.Tool.MAP_CLICK,
             id: this.config.name + "toolMapClick",
@@ -59,15 +62,65 @@ Ext.define("viewer.components.GBI", {
             viewerController: this.config.viewerController
         });
         this.toolMapClick.activateTool();
-        this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_EDIT_MULTIPLE_FEATURES_START,this.editMultiple,this);
+   },
+   createVectorLayer: function () {
+        this.vectorLayer = this.config.viewerController.mapComponent.createVectorLayer({
+            name: this.name + 'VectorLayer',
+            geometrytypes: ["Polygon", "Point", "LineString"],
+            showmeasures: false,
+            mustCreateVertices:true,
+            allowselection:true,
+            viewerController: this.config.viewerController,
+            style: {
+                fillcolor: "FF0000",
+                fillopacity: 50,
+                strokecolor: "FF0000",
+                strokeopacity: 50
+            }
+        });
+        this.vectorLayer.addListener(viewer.viewercontroller.controller.Event.ON_FEATURE_ADDED,this.geometryDrawn, this);
+        this.config.viewerController.mapComponent.getMap().addLayer(this.vectorLayer);
     },
     initializeForm: function(){
         this.div = document.createElement("flamingo-wegvak-popup");
         this.div.addEventListener('wanneerPopupClosed', function(evt){
             console.log("wanneerPopupClosed", evt.detail);
-        });
+            this.vectorLayer.removeAllFeatures();
+            this.config.viewerController.mapComponent.getMap().update();
+        }.bind(this));
+
+        var visibleAppLayers = this.config.viewerController.getVisibleAppLayers();
+        for(var key in visibleAppLayers){
+            var appLayer = this.config.viewerController.getAppLayerById(key);
+            this.processLayerVisible(appLayer, true);
+        }
+
+        this.div.addEventListener('startGeometryDrawing', function(e){this.startDrawingGeometry(e.detail);}.bind(this));
         this.div.setAttribute("config", JSON.stringify(this.formConfigs));
         document.body.appendChild(this.div);
+    },
+    layerVisibilityChanged: function(map,event) {
+        if(event.layer instanceof viewer.viewercontroller.controller.WMSLayer) {
+            var appLayer = this.config.viewerController.getAppLayerById(event.layer.appLayerId);
+            this.processLayerVisible(appLayer, event.visible);
+        }
+    },
+    processLayerVisible: function(appLayer, visible){
+        var layerName = appLayer.layerName;
+        if(layerName.indexOf(":") !== -1){
+            layerName = layerName.substring(layerName.indexOf(':') + 1);
+        }
+        var evt = {
+            layername : layerName,
+            visible: visible
+        };
+        this.div.setAttribute("layer-visibility-changed", JSON.stringify(evt));
+    },
+    startDrawingGeometry: function(event){
+        this.vectorLayer.drawFeature(event.type);
+    },
+    geometryDrawn: function(vectorLayer, feature){
+        this.div.setAttribute("geometry-drawn", feature.config.wktgeom);
     },
     loadConfig: function(){
         Ext.Ajax.request({
@@ -90,7 +143,6 @@ Ext.define("viewer.components.GBI", {
         var y = parseInt(coords.y);
         var scale = 25;
 
-
         var json = {
             x: x,
             y: y,
@@ -98,162 +150,9 @@ Ext.define("viewer.components.GBI", {
         };
         var visibleLayers = this.config.viewerController.getAppLayerById(this.config.layers[0]);
         this.div.setAttribute("visible-layers", this.stringifyAppLayer(visibleLayers));
-        //this.div.setAttribute("app-layer", this.stringifyAppLayer(this.config.viewerController.getAppLayerById(this.config.layers[0])));
         this.div.setAttribute("map-clicked", JSON.stringify(json));
-        /*
-        var appLayers = this.config.layers;
-        for (var key in appLayers) {
-            if (appLayers.hasOwnProperty(key)) {
-                var me = this;
-                var appLayer = me.config.viewerController.getAppLayerById(appLayers[key]);
-
-                if (appLayer === null) {
-                    Ext.MessageBox.alert(i18next.t('viewer_components_graph_2'), i18next.t('viewer_components_graph_3'));
-                    return;
-                }
-
-                var extraParams = {
-                    graph: false,
-                    edit:false,
-                    arrays: false,
-                    attributesToInclude: this.getAttributesToInclude(this.formConfigs.config, appLayer)
-                };
-                me.config.viewerController.mapComponent.getMap().setMarker("gbi", x, y);
-                var featureInfo = Ext.create("viewer.FeatureInfo", {
-                    viewerController: me.config.viewerController
-                });
-                featureInfo.editFeatureInfo(x, y, me.config.viewerController.mapComponent.getMap().getResolution() * 4, appLayer, function (response) {
-                    var features = response.features;
-                    me.featuresReceived(features, appLayer);
-                }, function (msg) {
-                    me.failed(msg);
-                }, extraParams);
-            }
-        }*/
     },
 
-    featuresReceived : function (features, appLayer){
-        var json = {};
-        for (var i = 0 ; i < features.length ;i++){
-            var feature = features[i];
-            json = this.convertFeature(feature, appLayer.id);
-                        
-            if(feature.related_featuretypes){
-                json.children = [];
-                this.relatedFeatureCounter[json.id] ={
-                    totalRelated :feature.related_featuretypes.length,
-                    totalRetrieved: 0
-                };
-                for (var j = 0 ; j < feature.related_featuretypes.length ;j++){
-                    this.getLinkedData(feature.related_featuretypes[j], json, appLayer);
-                }
-                break;
-            }else{
-                this.div.setAttribute("app-layer", this.stringifyAppLayer(appLayer));
-                this.div.setAttribute("feature-clicked", JSON.stringify(json));
-            }
-            break;// for now only open the first one
-        }
-    },
-    editMultiple: function(appLayer, a, b,c ){
-        var options = {};
-        options.application = this.appId;
-        options.appLayer = appLayer.id;
-        options.limit = 1000;
-        options.filter =  appLayer.filter ? appLayer.filter.getCQL() : null;
-        options.graph = false;
-        options.edit = false;
-        options.arrays = false;
-        options.attributesToInclude = this.getAttributesToInclude(this.formConfigs.config, appLayer);
-        Ext.Ajax.request({
-            url: appLayer.featureService.getStoreUrl(),
-            params: options,
-            scope: this,
-            success: function(result) {
-                var response = Ext.JSON.decode(result.responseText);
-                var fs = response.features;
-                var features = [];
-                for(var i = 0 ; i < fs.length ;i++){
-                    features.push(this.convertFeature(fs[i],appLayer.id));
-                }
-                this.div.setAttribute("app-layer", this.stringifyAppLayer(appLayer));
-                this.div.setAttribute("feature-clicked", JSON.stringify(features));
-            },
-            failure: function(result) {
-               this.config.viewerController.logger.error(result);
-            }
-        });
-    },
-    convertFeature: function(feature, appLayer){
-        var json = {};
-        json.id = feature["__fid"];
-        json.attributes = feature;
-        json.appLayer = appLayer;
-        return json;
-    },
-    getLinkedData : function (related_featuretype, feature, appLayer){
-        var appLayer = this.config.viewerController.getAppLayerById(appLayer.id);
-        var options = {};
-
-        var filter = "&filter="+encodeURIComponent(related_featuretype.filter);
-
-        var featureType="&featureType="+related_featuretype.id;
-
-        options.application = this.appId;
-        options.appLayer = appLayer.id;
-        options.limit = 1000;
-        options.filter = filter;
-        options.graph = true;
-        options.edit = false;
-        options.attributesToInclude = this.getAttributesToInclude(this.formConfigs.config, appLayer);
-        options.arrays = false;
-        Ext.Ajax.request({
-            url: appLayer.featureService.getStoreUrl() + featureType+filter,
-            params: options,
-            scope: this,
-            success: function(result) {
-                var response = Ext.JSON.decode(result.responseText);
-                var features = response.features;
-                var childs = [];
-                for(var i = 0 ; i < features.length ;i++){
-                    childs.push(this.convertFeature(features[i],appLayer.id));
-                }
-                feature.children = feature.children.concat(childs);
-                this.relatedFeatureFinishedLoading(feature, appLayer);
-            },
-            failure: function(result) {
-               this.config.viewerController.logger.error(result);
-            }
-        });
-    },
-    relatedFeatureFinishedLoading: function(feature, appLayer){
-        this.relatedFeatureCounter[feature.id]["totalRetrieved"] = this.relatedFeatureCounter[feature.id]["totalRetrieved"]+1;
-        if(this.relatedFeatureCounter[feature.id]["totalRetrieved"] === this.relatedFeatureCounter[feature.id]["totalRelated"]){
-            this.div.setAttribute("app-layer", this.stringifyAppLayer(appLayer));
-            this.div.setAttribute("feature-clicked", JSON.stringify(feature));
-        }
-    },
-    
-    getAttributesToInclude: function(formConfigs, appLayer){
-        var attributes = [];
-        for(var key in formConfigs){
-            if(formConfigs.hasOwnProperty(key)){
-                var formConfig = formConfigs[key];
-                for (var i = 0 ; i< formConfig.fields.length ;i++){
-                    var field = formConfig.fields[i];
-                    for(var j = 0 ; j < appLayer.attributes.length ;j++){
-                        var attr = appLayer.attributes[j];
-                        if(attr.name === field.key){
-                            attributes.push(attr.id);
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-        return attributes;
-    },
-    
     stringifyAppLayer: function(al){
         var culledObject = {
             id: al.id,

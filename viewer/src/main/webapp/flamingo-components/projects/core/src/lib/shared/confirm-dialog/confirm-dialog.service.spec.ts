@@ -1,4 +1,4 @@
-import { async, fakeAsync, TestBed } from '@angular/core/testing';
+import { async, TestBed } from '@angular/core/testing';
 
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { ConfirmDialogService } from './confirm-dialog.service';

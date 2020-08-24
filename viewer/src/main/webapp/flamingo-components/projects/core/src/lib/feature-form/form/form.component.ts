@@ -1,10 +1,7 @@
 import {Component, Inject, OnDestroy, Input, OnChanges, SimpleChanges} from '@angular/core';
 import {  MatDialogRef, MAT_DIALOG_DATA, MatSnackBar } from '@angular/material';
-
-
 import { ConfirmDialogService } from '../../shared/confirm-dialog/confirm-dialog.service';
 import { filter, take } from 'rxjs/operators';
-
 import { Subscription } from 'rxjs';
 import {DialogData} from "../form-popup/form-popup-models";
 import {
@@ -14,6 +11,7 @@ import {
 import {Feature} from "../../shared/generated";
 import {FormHelpers} from "./form-helpers";
 import {FormActionsService} from "../form-actions/form-actions.service";
+import {FormconfigRepositoryService} from "../../shared/formconfig-repository/formconfig-repository.service";
 
 @Component({
   selector: 'flamingo-form',
@@ -24,7 +22,6 @@ export class FormComponent implements OnDestroy, OnChanges {
   public features: Feature[];
   public feature: Feature;
   public formConfig: FormConfiguration;
-  public formConfigs: FormConfigurations;
 
   public isBulk: boolean;
   public formsForNew: FormConfiguration[] = [];
@@ -36,16 +33,17 @@ export class FormComponent implements OnDestroy, OnChanges {
                private confirmDialogService: ConfirmDialogService,
                @Inject(MAT_DIALOG_DATA) public data: DialogData,
                private _snackBar: MatSnackBar,
+               private formConfigRepo: FormconfigRepositoryService,
                public actions : FormActionsService) {
-      this.formConfigs = data.formConfigs;
+
       this.features = data.formFeatures;
       this.feature = this.features[0];
       this.isBulk = !!data.isBulk;
       this.lookup = data.lookup;
-
-      for (const key in this.formConfigs.config) {
-        if (this.formConfigs.config.hasOwnProperty(key)) {
-          const cf: FormConfiguration = this.formConfigs.config[key];
+      const configs = this.formConfigRepo.getAllFormConfigs().config;
+      for (const key in configs) {
+        if (configs.hasOwnProperty(key)) {
+          const cf: FormConfiguration = configs [key];
           if (cf.newPossible) {
             this.formsForNew.push(cf);
           }
@@ -61,7 +59,7 @@ export class FormComponent implements OnDestroy, OnChanges {
 
   private initForm() {
     this.formDirty = false;
-    this.formConfig = this.formConfigs.config[this.feature.clazz];
+    this.formConfig = this.formConfigRepo.getFormConfig(this.feature.clazz);
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -92,7 +90,7 @@ export class FormComponent implements OnDestroy, OnChanges {
 
   public newItem(evt) {
     this.subscriptions.add(
-      this.actions.newItem(evt, this.formConfigs, this.features).subscribe(features => {
+      this.actions.newItem(evt, this.features).subscribe(features => {
         this.features = features.features;
         this.feature = features.feature;
         this.initForm();
@@ -102,13 +100,19 @@ export class FormComponent implements OnDestroy, OnChanges {
 
   public remove(){
     const attribute = Object.keys(this.feature).find(attribute => attribute === this.formConfig.treeNodeColumn);
-    const message = 'Wilt u ' + this.formConfig.name + ' - ' + this.feature[attribute] + ' verwijderen?';
+    let message = 'Wilt u ' + this.formConfig.name + ' - ' + this.feature[attribute] + ' verwijderen?';
+    if(this.feature.children.length > 0){
+      message += ' Let op! Alle onderliggende objecten worden ook verwijderd.'
+    }
     this.confirmDialogService.confirm('Verwijderen',
       message, true)
       .pipe(take(1), filter(remove => remove)).subscribe(() => {
        this.actions.removeFeature(this.feature, this.features).subscribe(result=>{
           this.features = result.features;
           this.feature = result.features[0];
+          if(!this.feature){
+            this.closeDialog();
+          }
         });
       });
   }

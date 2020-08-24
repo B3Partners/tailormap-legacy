@@ -472,7 +472,13 @@ Ext.define ("viewer.viewercontroller.openlayers.OpenLayersMap",{
     updateSize : function(){
         this.getFrameworkMap().updateSize();
     },
-    
+
+    update: function(){
+        for(var i = 0 ; i < this.layers.length ; i++){
+            var layer = this.layers[i];
+            layer.reload();
+        }
+    },
     /**
      * The OpenLayers ID can't be changed. With this function you can get the 
      * viewer.viewercontroller.openlayers.OpenLayersLayer with the openlayersid
