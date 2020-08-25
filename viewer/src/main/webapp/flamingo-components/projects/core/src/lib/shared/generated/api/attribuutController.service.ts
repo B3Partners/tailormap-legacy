@@ -17,7 +17,7 @@ import { CustomHttpUrlEncodingCodec }                        from '../encoder';
 
 import { Observable }                                        from 'rxjs';
 
-import { LinkedAttribute } from '../model/linkedAttribute';
+import { Attribuut } from '../model/attribuut';
 import { PageAttribuut } from '../model/pageAttribuut';
 
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
@@ -63,9 +63,9 @@ export class AttribuutControllerService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public attributes(ids: Array<number>, observe?: 'body', reportProgress?: boolean): Observable<{ [key: string]: LinkedAttribute; }>;
-    public attributes(ids: Array<number>, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<{ [key: string]: LinkedAttribute; }>>;
-    public attributes(ids: Array<number>, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<{ [key: string]: LinkedAttribute; }>>;
+    public attributes(ids: Array<number>, observe?: 'body', reportProgress?: boolean): Observable<Array<Attribuut>>;
+    public attributes(ids: Array<number>, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<Array<Attribuut>>>;
+    public attributes(ids: Array<number>, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<Array<Attribuut>>>;
     public attributes(ids: Array<number>, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
 
         if (ids === null || ids === undefined) {
@@ -87,7 +87,7 @@ export class AttribuutControllerService {
         const consumes: string[] = [
         ];
 
-        return this.httpClient.request<{ [key: string]: LinkedAttribute; }>('get',`${this.basePath}/attributes/${encodeURIComponent(String(ids))}`,
+        return this.httpClient.request<Array<Attribuut>>('get',`${this.basePath}/attributes/${encodeURIComponent(String(ids))}`,
             {
                 withCredentials: this.configuration.withCredentials,
                 headers: headers,

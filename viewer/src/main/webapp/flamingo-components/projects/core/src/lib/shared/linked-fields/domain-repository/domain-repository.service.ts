@@ -7,15 +7,15 @@ import {
   FormFieldType,
   SelectOption
 } from "../../../feature-form/form/form-models";
-import { AttribuutControllerService, LinkedAttribute} from "../../generated";
 import {LinkedAttributeRegistryService} from "../registry/linked-attribute-registry.service";
+import {AttribuutControllerService, Attribuut} from "../../generated";
 
 @Injectable({
   providedIn: 'root'
 })
 export class DomainRepositoryService {
   private formConfigs: FormConfigurations;
-  private linkedAttributes:  { [key: string]: LinkedAttribute };
+  private linkedAttributes:  Array<Attribuut>;
   private domainToAttribute: { [key: string]: Attribute;}
 
   constructor(
@@ -41,18 +41,18 @@ export class DomainRepositoryService {
       this.repo.attributes(domainAttrs).subscribe(result => {
         this.linkedAttributes = result;
         this.registry.setLinkedAttributes(this.linkedAttributes);
-        for (let attributeId in this.linkedAttributes) {
-          let linkedAttribute: LinkedAttribute = this.linkedAttributes[attributeId];
-          let featureType = linkedAttribute.feature_type.toLowerCase();
+        for(let attribute of this.linkedAttributes){
+          let featureType = attribute.object_naam.toLowerCase();
           let fc: FormConfiguration = this.formConfigs.config[featureType];
-
           fc.fields.forEach(field => {
-            if (field.linkedList && field.linkedList === parseInt(attributeId)) {
+            if (field.linkedList && field.linkedList === attribute.id) {
               const options = [];
-              for (var value of linkedAttribute.values) {
+              let domeinwaardes = attribute.domein.waardes;
+
+              for (var domeinwaarde of domeinwaardes) {
                 options.push({
-                  label: value.value,
-                  val: value.id,
+                  label: domeinwaarde.synoniem || domeinwaarde.waarde,
+                  val: domeinwaarde.id,
                 });
               }
               field.options = options;

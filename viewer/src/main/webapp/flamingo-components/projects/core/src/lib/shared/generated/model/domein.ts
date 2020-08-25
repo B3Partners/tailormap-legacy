@@ -13,7 +13,6 @@ import { Domeinwaarde } from './domeinwaarde';
 
 export interface Domein { 
     waardes?: Array<Domeinwaarde>;
-    parent?: Domein;
     linked_domein?: Array<Domein>;
     id?: number;
     naam?: string;
