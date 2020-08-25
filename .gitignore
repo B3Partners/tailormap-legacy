@@ -18,3 +18,4 @@ target/
 viewer/src/main/webapp/viewer-html/package-lock.json
 package-lock.json
 node_modules
+/docker/src/main/docker/bin_unzipped/
