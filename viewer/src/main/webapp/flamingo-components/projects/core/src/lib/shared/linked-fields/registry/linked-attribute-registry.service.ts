@@ -3,6 +3,7 @@ import {Attribute, FeatureAttribute} from "../../../feature-form/form/form-model
 import {Attribuut, Domeinwaarde} from "../../generated";
 
 
+
 @Injectable({
   providedIn: 'root'
 })
@@ -11,17 +12,25 @@ export class LinkedAttributeRegistryService {
   private linkedAttributes:  { [key: number]: Attribuut };
   private domainToAttribute: Map<number, FeatureAttribute>;
 
+  private valueToParentValue: Map<number, Domeinwaarde>;
+
   private registry: Map<number, Attribuut>;
   constructor(
   ) {
     this.registry = new Map();
     this.domainToAttribute = new Map();
+    this.valueToParentValue = new Map();
   }
 
   public setLinkedAttributes(linkedAttributes :Array<Attribuut>){
     this.linkedAttributes = {};
     linkedAttributes.forEach(attribuut => {
       this.linkedAttributes[attribuut.id]=attribuut;
+      attribuut.domein.waardes.forEach(domeinWaarde => {
+        domeinWaarde.linked_domeinwaardes.forEach(childWaarde => {
+          this.valueToParentValue.set(childWaarde.id, domeinWaarde);
+        });
+      });
     })
   }
 
@@ -75,9 +84,9 @@ export class LinkedAttributeRegistryService {
     }
 
     // check if the changed value has a parent. If so, select the associated value
-    if(selectedValue && selectedValue.domeinparentid){
-      const parentAttribute = this.domainToAttribute.get(selectedValue.domeinparentid);
-      const parentValue : LinkedValue = selectedValue.;
+    if(selectedValue && this.valueToParentValue.has(selectedValue.id)){
+      const parentValue = this.valueToParentValue.get(selectedValue.id);
+      const parentAttribute = this.domainToAttribute.get(parentValue.domein_id);
       parentAttribute.value = parentValue.id;
     }
   }

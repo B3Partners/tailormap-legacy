@@ -6,7 +6,6 @@ export * from './domein';
 export * from './domeinwaarde';
 export * from './feature';
 export * from './geometry';
-export * from './pageAttribuut';
 export * from './pageWegvakonderdeel';
 export * from './pageWegvakonderdeelplanning';
 export * from './pageable';
