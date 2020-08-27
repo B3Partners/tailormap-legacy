@@ -6,9 +6,9 @@ import {
   FormConfigurations,
   FormFieldType,
   SelectOption
-} from "../../../feature-form/form/form-models";
+} from "../../form/form-models";
 import {LinkedAttributeRegistryService} from "../registry/linked-attribute-registry.service";
-import {AttribuutControllerService, Attribuut} from "../../generated";
+import {AttribuutControllerService, Attribuut} from "../../../shared/generated";
 
 @Injectable({
   providedIn: 'root'

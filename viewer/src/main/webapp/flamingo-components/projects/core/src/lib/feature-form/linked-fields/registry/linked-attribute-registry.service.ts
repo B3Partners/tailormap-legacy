@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import {Attribute, FeatureAttribute} from "../../../feature-form/form/form-models";
-import {Attribuut, Domeinwaarde} from "../../generated";
+import {Attribute, FeatureAttribute} from "../../form/form-models";
+import {Attribuut, Domeinwaarde} from "../../../shared/generated";
 
 
 
@@ -47,7 +47,7 @@ export class LinkedAttributeRegistryService {
 
     // retrieve the selected value
     for(let val of linkedAttribute.domein.waardes){
-      if(val.id === value){
+      if(val.id === value || val.id === parseInt(value)){
         selectedValue = val;
         break;
       }
