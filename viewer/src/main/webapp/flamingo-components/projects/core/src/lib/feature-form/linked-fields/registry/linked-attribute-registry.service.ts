@@ -47,7 +47,7 @@ export class LinkedAttributeRegistryService {
 
     // retrieve the selected value
     for(let val of linkedAttribute.domein.waardes){
-      if(val.id === value || val.id === parseInt(value)){
+      if(val.id == value ){
         selectedValue = val;
         break;
       }
@@ -89,6 +89,12 @@ export class LinkedAttributeRegistryService {
       const parentAttribute = this.domainToAttribute.get(parentValue.domein_id);
       parentAttribute.value = parentValue.id;
     }
+  }
+
+  public resetLinkedAttributes(){
+    this.registry.forEach(attribuut => {
+      this.resetLinkedDomains(attribuut);
+    });
   }
 
   private resetLinkedDomains(linkedAttribute : Attribuut){
