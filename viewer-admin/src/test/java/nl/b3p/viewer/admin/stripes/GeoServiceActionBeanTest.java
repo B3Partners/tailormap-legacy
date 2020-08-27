@@ -39,18 +39,16 @@ public class GeoServiceActionBeanTest extends TestUtil{
 
     @Test
     public void addWMSService(){
-        String url = "https://geodata.nationaalgeoregister.nl/inspire/au/wms?SERVICE=WMS&";
+        String url = "https://geodata.nationaalgeoregister.nl/au/wms?SERVICE=WMS&";
         try {
-            String protocol = "wms";
-            boolean overrideUrl = false;
             Category cat = new Category();
             cat.setId(1L);
             ActionBeanContext context = new ActionBeanContext();
             
             GeoServiceActionBean ab = new GeoServiceActionBean();
             ab.setUrl(url);
-            ab.setProtocol(protocol);
-            ab.setOverrideUrl(overrideUrl);
+            ab.setProtocol("wms");
+            ab.setOverrideUrl(false);
             ab.setCategory(cat);
             ab.setContext(context);
             ab.addService(entityManager);
