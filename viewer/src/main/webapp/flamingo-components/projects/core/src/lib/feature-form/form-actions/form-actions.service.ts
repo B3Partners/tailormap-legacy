@@ -24,7 +24,6 @@ export class FormActionsService {
     public save(isBulk: boolean, feature: Feature, parent: Feature) :Observable<any>{
 
       if (isBulk) {
-      //  const features = this.getChangedValues();
         console.error("to be implemented");
 
       } else {

@@ -6,7 +6,7 @@ describe('LayerVisibilityServiceService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
-    const service: LayerVisibilityServiceService = TestBed.get(LayerVisibilityServiceService);
+    const service: LayerVisibilityServiceService = TestBed.inject(LayerVisibilityServiceService);
     expect(service).toBeTruthy();
   });
 });
