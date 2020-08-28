@@ -36,7 +36,7 @@ Ext.define("viewer.viewercontroller.ol.OlWMSLayer", {
                 STYLES: this.options.styles,
                 FORMAT: this.options.format,
                 TRANSPARENT: this.options.transparent,
-                TILED: true,
+                TILED: false,
                 REQUEST: 'GetMap'
             }
         });
