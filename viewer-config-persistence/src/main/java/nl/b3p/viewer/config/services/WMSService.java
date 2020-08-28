@@ -283,6 +283,7 @@ public class WMSService extends GeoService implements Updatable {
                     new WMS1_1_0(),
                     new WMS1_1_1(),
                     new WMS1_3_0()
+                        // Very old comment, WMS 1.3.0 is now supported, not sure to delete this comment can be handy in the future...
                         // No WMS 1.3.0, GeoTools GetCaps parser cannot handle
                         // ExtendedCapabilities such as inspire_common:MetadataUrl,
                         // for example PDOK. See:
