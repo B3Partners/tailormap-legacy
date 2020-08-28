@@ -164,7 +164,9 @@ public class WMSService extends GeoService implements Updatable {
             wmsService.setOverrideUrl(Boolean.TRUE.equals(params.get(PARAM_OVERRIDE_URL)));
             wmsService.setSkipDiscoverWFS(Boolean.TRUE.equals(params.get(PARAM_SKIP_DISCOVER_WFS)));
             WebMapServer wms = wmsService.getWebMapServer();
-            
+            String version = wms.getCapabilities().getVersion();
+            wmsService.setVersion(version);
+
             if(Boolean.TRUE.equals(params.get(GeoService.PARAM_ONLINE_CHECK_ONLY))) {
                 return null;
             }
