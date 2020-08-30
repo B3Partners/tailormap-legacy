@@ -25,14 +25,14 @@ Ext.define("viewer.viewercontroller.ol.OlWMSLayer", {
         viewer.viewercontroller.ol.OlWMSLayer.superclass.constructor.call(this, config);
         this.mixins.olLayer.constructor.call(this, config);
 
-
         var sources = new ol.source.ImageWMS({
             attributions: this.config.attribution,
             url: config.options.url,
             projection: config.viewerController.mapComponent.mapOptions.projection,
-            params: {LAYERS: config.options.layers,
+            params: {
+                LAYERS: config.options.layers,
                 VERSION: this.options.version,
-                SRS: this.options.srs,
+                CRS: this.options.srs,
                 STYLES: this.options.styles,
                 FORMAT: this.options.format,
                 TRANSPARENT: this.options.transparent,
