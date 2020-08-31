@@ -1,1 +1,1 @@
-ALTER TABLE geo_service ADD version VARCHAR(6) NULL;
+ALTER TABLE geo_service ADD version VARCHAR(6) NOT NULL DEFAULT '1.1.1';
