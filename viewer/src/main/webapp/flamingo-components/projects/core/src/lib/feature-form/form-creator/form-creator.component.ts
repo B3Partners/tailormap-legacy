@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnChanges, OnDestroy, Output} from '@angular/core';
+import {AfterViewInit, Component, EventEmitter, Input, OnChanges, OnDestroy, Output} from '@angular/core';
 import {FormControl, FormGroup} from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Subscription } from 'rxjs';
@@ -22,7 +22,7 @@ import {LinkedAttributeRegistryService} from "../linked-fields/registry/linked-a
   templateUrl: './form-creator.component.html',
   styleUrls: ['./form-creator.component.css'],
 })
-export class FormCreatorComponent implements OnChanges, OnDestroy {
+export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit {
 
   @Input()
   public formConfig: FormConfiguration;
@@ -102,20 +102,36 @@ export class FormCreatorComponent implements OnChanges, OnDestroy {
     return columnizedFields;
   }
 
+  private domainValues = new Map<Attribute, any>();
+
   private createFormControls() {
     const attrs = this.formConfig.fields;
     const formControls = {};
+    this.domainValues = new Map<Attribute, any>();
     for ( const attr of attrs) {
-      formControls[attr.key] = new FormControl(!this.isBulk && this.indexedAttributes.attrs.get(attr.key)
-        ? this.indexedAttributes.attrs.get(attr.key).value : null);
+      let value = !this.isBulk && this.indexedAttributes.attrs.get(attr.key)
+        ? this.indexedAttributes.attrs.get(attr.key).value : null;
 
       if(attr.type === FormFieldType.DOMAIN) {
         this.registry.registerDomainField(attr.linkedList, this.indexedAttributes.attrs.get(attr.key));
+        const val = this.indexedAttributes.attrs.get(attr.key);
+        if(val.value && val.value !== "-1"){
+          this.domainValues.set(attr,val.value);
+          value = parseInt("" + value);
+        }
       }
+      formControls[attr.key] = new FormControl(value);
     }
     this.formgroep = new FormGroup(formControls);
   }
 
+  public ngAfterViewInit(){
+    setTimeout(() => {
+      this.domainValues.forEach((value, attribute) => {
+        this.registry.domainFieldChanged(attribute, value);
+      });
+    });
+  }
   public save() {
     const feature = this.formgroep.value;
     feature.__fid = this.feature.object_guid;

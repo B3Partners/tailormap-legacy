@@ -46,13 +46,14 @@ export class DomainRepositoryService {
           let fc: FormConfiguration = this.formConfigs.config[featureType];
           fc.fields.forEach(field => {
             if (field.linkedList && field.linkedList === attribute.id) {
-              const options = [];
+              const options : SelectOption[]= [];
               let domeinwaardes = attribute.domein.waardes;
 
               for (var domeinwaarde of domeinwaardes) {
                 options.push({
                   label: domeinwaarde.synoniem || domeinwaarde.waarde,
                   val: domeinwaarde.id,
+                  disabled: false
                 });
               }
               field.options = options;
