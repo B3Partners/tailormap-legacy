@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import {FormConfiguration, FormConfigurations} from "../../feature-form/form/form-models";
-import {DomainRepositoryService} from "../linked-fields/domain-repository/domain-repository.service";
+import {DomainRepositoryService} from "../../feature-form/linked-fields/domain-repository/domain-repository.service";
 
 @Injectable({
   providedIn: 'root'

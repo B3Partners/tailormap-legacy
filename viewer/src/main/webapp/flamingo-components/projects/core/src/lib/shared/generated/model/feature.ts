@@ -1,5 +1,3 @@
-import {Geometry} from "./geometry";
-
 /**
  * GBI Form REST API
  * \"REST API for GBI Forms\"
@@ -12,10 +10,9 @@ import {Geometry} from "./geometry";
  * Do not edit the class manually.
  */
 
-export interface Feature {
+export interface Feature { 
     children?: Array<Feature>;
     object_guid?: string;
     objecttype: string;
     clazz?: string;
-    geometrie?: Geometry;
 }

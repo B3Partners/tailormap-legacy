@@ -38,8 +38,8 @@ export enum FormFieldType {
 
 export interface SelectOption {
   label: string;
-  disabled?: boolean;
-  val: string;
+  disabled: boolean;
+  val: string | number  ;
 }
 
 export interface FormRelation {
