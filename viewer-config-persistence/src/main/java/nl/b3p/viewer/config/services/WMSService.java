@@ -281,8 +281,8 @@ public class WMSService extends GeoService implements Updatable {
                 specs = new Specification[] {
                     new WMS1_0_0(),
                     new WMS1_1_0(),
-                    new WMS1_1_1(),
-                    new WMS1_3_0()
+                    new WMS1_3_0(),
+                    new WMS1_1_1()
                 };
             }
         };
