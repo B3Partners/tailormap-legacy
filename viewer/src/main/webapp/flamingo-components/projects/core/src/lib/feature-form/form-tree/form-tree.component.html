@@ -17,7 +17,8 @@
             {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
           </mat-icon>
         </button>
-        <span matTreeNodeToggle class="{{node.selected ? 'selected' : ''}} {{node.feature?.id || node.isFeatureType ? '' : 'newNode'}}">{{node.name}}</span>
+        <span *ngIf="node.isFeatureType" matTreeNodeToggle class="{{node.selected ? 'selected' : ''}} {{node.feature?.id || node.isFeatureType ? '' : 'newNode'}}">{{node.name}}</span>
+        <span *ngIf="!node.isFeatureType" class="{{node.selected ? 'selected' : ''}} {{node.feature?.id || node.isFeatureType ? '' : 'newNode'}}">{{node.name}}</span>
       </div>
     </mat-tree-node>
   </mat-tree>
