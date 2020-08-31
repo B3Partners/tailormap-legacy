@@ -209,6 +209,7 @@ public class ProxyActionBean implements ActionBean, Auditable {
         allowedParams.add("LAYER");
         allowedParams.add("STYLES");
         allowedParams.add("SRS");
+        allowedParams.add("CRS");
         allowedParams.add("BBOX");
         allowedParams.add("FORMAT");
         allowedParams.add("WIDTH");
@@ -221,6 +222,8 @@ public class ProxyActionBean implements ActionBean, Auditable {
         allowedParams.add("QUERY_LAYERS");
         allowedParams.add("X");
         allowedParams.add("Y");
+        allowedParams.add("I");
+        allowedParams.add("J");
         allowedParams.add("INFO_FORMAT");
         allowedParams.add("FEATURE_COUNT");
         allowedParams.add("SLD");
