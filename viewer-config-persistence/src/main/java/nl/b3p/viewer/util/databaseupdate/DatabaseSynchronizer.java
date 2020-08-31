@@ -178,6 +178,7 @@ public class DatabaseSynchronizer implements Servlet {
         //5.6.4
 
         updates.put("40", new UpdateElement (Collections.singletonList("selectedcontentcaches_dirty.sql"), String.class));
+        updates.put("41", new UpdateElement (Collections.singletonList("add_geoservice_version.sql"), String.class));
 
         // 
         // NB when adding an update also update the metadata version in the testdata.sql file around line 348
