@@ -199,5 +199,4 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
     }
     return features;
   }
-
 }

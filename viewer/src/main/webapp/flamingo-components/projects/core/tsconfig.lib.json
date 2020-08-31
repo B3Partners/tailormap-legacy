@@ -1,5 +1,5 @@
 {
-  "extends": "../../tsconfig.json",
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "outDir": "../../out-tsc/lib",
     "target": "es2015",
@@ -8,11 +8,10 @@
     "types": [],
     "lib": [
       "dom",
-      "es2018"
+      "ES5"
     ]
   },
   "angularCompilerOptions": {
-    "annotateForClosureCompiler": true,
     "skipTemplateCodegen": true,
     "strictMetadataEmit": true,
     "fullTemplateTypeCheck": true,

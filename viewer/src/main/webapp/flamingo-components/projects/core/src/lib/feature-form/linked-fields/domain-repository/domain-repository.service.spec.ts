@@ -6,7 +6,7 @@ describe('DomainRepositoryService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
-    const service: DomainRepositoryService = TestBed.get(DomainRepositoryService);
+    const service: DomainRepositoryService = TestBed.inject(DomainRepositoryService);
     expect(service).toBeTruthy();
   });
 });
