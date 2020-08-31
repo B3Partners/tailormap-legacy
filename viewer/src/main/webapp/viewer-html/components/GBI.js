@@ -89,15 +89,16 @@ Ext.define("viewer.components.GBI", {
             this.config.viewerController.mapComponent.getMap().update();
         }.bind(this));
 
+
+        this.div.addEventListener('startGeometryDrawing', function(e){this.startDrawingGeometry(e.detail);}.bind(this));
+        this.div.setAttribute("config", JSON.stringify(this.formConfigs));
+        document.body.appendChild(this.div);
+
         var visibleAppLayers = this.config.viewerController.getVisibleAppLayers();
         for(var key in visibleAppLayers){
             var appLayer = this.config.viewerController.getAppLayerById(key);
             this.processLayerVisible(appLayer, true);
         }
-
-        this.div.addEventListener('startGeometryDrawing', function(e){this.startDrawingGeometry(e.detail);}.bind(this));
-        this.div.setAttribute("config", JSON.stringify(this.formConfigs));
-        document.body.appendChild(this.div);
     },
     layerVisibilityChanged: function(map,event) {
         if(event.layer instanceof viewer.viewercontroller.controller.WMSLayer) {
