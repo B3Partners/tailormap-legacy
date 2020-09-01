@@ -316,6 +316,14 @@ Ext.define("viewer.viewercontroller.OpenLayersMapComponent",{
         config.options["visibility"] = ogcParams["visible"];
         config.options["name"]=name;
         config.options["url"]=wmsurl;
+        // todo make it possible to set yx to true if yx is reversed, code beneath is example code
+        // http://dev.openlayers.org/docs/files/OpenLayers/Layer/WMS-js.html#OpenLayers.Layer.WMS.yx
+        //if(ogcParams.version === "1.3.0") {
+        //    var proj = ogcParams.crs;
+        //    var obj ={};
+        //    obj[proj] = true;
+        //    config.options["yx"] = obj;
+        //}
         // TODO: still needed?
         for (var key in ogcParams){
            config.options[key]=ogcParams[key];

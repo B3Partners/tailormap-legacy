@@ -76,7 +76,8 @@ public abstract class GeoService implements Serializable {
     private String password;
     
     private String geofenceHeader;
-    
+    private String version;
+
     private boolean monitoringEnabled;
     
     private boolean monitoringStatusOK = true;
@@ -232,6 +233,14 @@ public abstract class GeoService implements Serializable {
 
     public void setGeofenceHeader(String geofenceHeader) {
         this.geofenceHeader = geofenceHeader;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
     }
     //</editor-fold>
       
@@ -396,6 +405,7 @@ public abstract class GeoService implements Serializable {
         o.put("url", url);
         o.put("protocol", getProtocol());
         o.put("readers",getReaders());
+        o.put("version",getVersion());
 
         if (details.containsKey(GeoService.DETAIL_USE_PROXY)) {
             ClobElement ce = details.get(GeoService.DETAIL_USE_PROXY);
