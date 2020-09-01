@@ -88,6 +88,16 @@ if(Ext.os.deviceType !== "Desktop") {
         Ext.form.field.ComboBox.prototype.defaultConfig.editable = false;
     }
 }
+
+/**
+ * Override reverseAxisOrder function on openlayers WMS.js
+ * This override checks if the used projection on the map is available in the default projections of openlayers before it continues with the rest of the check
+ */
+OpenLayers.Layer.WMS.prototype.reverseAxisOrder = function() {
+    var a = this.projection.getCode();
+    return 1.3 <= parseFloat(this.params.VERSION) && OpenLayers.Projection.defaults[a] && !(!this.yx[a] && !OpenLayers.Projection.defaults[a].yx)
+};
+
 /**
  * Override drawText function on openlayers SVG.js
  * This override adds label rotation

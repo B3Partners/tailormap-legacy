@@ -47,6 +47,9 @@ public class TileServiceTest extends TestUtil{
     
     private TileService instance = new TileService();
 
+    private static final String PDOK_WMTS = "http://geodata.nationaalgeoregister.nl/tiles/service/wmts?request=getcapabilities";
+    private static final int PDOK_WMTS_LAYERCOUNT = 41;
+
     DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
     DocumentBuilder builder = null;
     XPathFactory xPathfactory = XPathFactory.newInstance();
@@ -95,21 +98,21 @@ public class TileServiceTest extends TestUtil{
         
     }
 
-    
+
     @Test
     public void testLoadBRTWMTSFromURL() throws MalformedURLException {
-        URL u = new URL("http://geodata.nationaalgeoregister.nl/tiles/service/wmts?request=getcapabilities");
+        URL u = new URL(PDOK_WMTS);
         String url = u.toString();
         Map params = new HashMap();
         params.put(TileService.PARAM_TILINGPROTOCOL, "WMTS");
         params.put(TileService.PARAM_SERVICENAME, "Web Map Tile Service - GeoWebCache");
         WaitPageStatus status = new WaitPageStatus();
-        
+
         GeoService result = instance.loadFromUrl(url, params, status, entityManager);
         assertEquals("https://geodata.nationaalgeoregister.nl/tiles/service/wmts?",result.getUrl());
         Layer topLayer = result.getTopLayer();
-        assertEquals(44, topLayer.getChildren().size());
-        
+        assertEquals(PDOK_WMTS_LAYERCOUNT, topLayer.getChildren().size());
+
         Layer brt = topLayer.getChildren().get(0);
         assertEquals("brtachtergrondkaart", brt.getName());
         JSONArray styles = new JSONArray(brt.getDetails().get(Layer.DETAIL_WMS_STYLES).getValue());
@@ -122,7 +125,7 @@ public class TileServiceTest extends TestUtil{
         assertEquals(903401.9, bbox.getMaxy(), 0.1);
         assertEquals(-370406.0, bbox.getMinx(), 0.1);
         assertEquals(5328.8, bbox.getMiny(), 0.1);
-        
+
         JSONObject serviceObj = result.toJSONObject(false, entityManager);
         assertTrue(serviceObj.has("matrixSets"));
         JSONArray matrixSets = serviceObj.getJSONArray("matrixSets");
@@ -177,21 +180,21 @@ public class TileServiceTest extends TestUtil{
         assertNotNull(jsonLayer);
         assertTrue(jsonLayer.has("bbox"));
     }
-    
+
     @Test
     public void testLoadTopoWMTSFromURL() throws MalformedURLException {
-        URL u = new URL("http://geodata.nationaalgeoregister.nl/tiles/service/wmts?request=getcapabilities");
+        URL u = new URL(PDOK_WMTS);
         String url = u.toString();
         Map params = new HashMap();
         params.put(TileService.PARAM_TILINGPROTOCOL, "WMTS");
         params.put(TileService.PARAM_SERVICENAME, "Web Map Tile Service - GeoWebCache");
         WaitPageStatus status = new WaitPageStatus();
-        
+
         GeoService result = instance.loadFromUrl(url, params, status, entityManager);
         Layer topLayer = result.getTopLayer();
-        assertEquals(44, topLayer.getChildren().size());
+        assertEquals(PDOK_WMTS_LAYERCOUNT, topLayer.getChildren().size());
         assertEquals("https://geodata.nationaalgeoregister.nl/tiles/service/wmts?", result.getUrl());
-        
+
         Layer brt = topLayer.getChildren().get(0);
         assertEquals("brtachtergrondkaart", brt.getName());
         assertEquals(1, brt.getBoundingBoxes().size());
@@ -201,7 +204,7 @@ public class TileServiceTest extends TestUtil{
         assertEquals(903402.0, bbox.getMaxy(), 0.01);
         assertEquals(-285401.92, bbox.getMinx(), 0.01);
         assertEquals(22598.16, bbox.getMiny(), 0.01);
-        
+
         JSONObject serviceObj = result.toJSONObject(false, entityManager);
         assertTrue(serviceObj.has("matrixSets"));
         JSONArray matrixSets = serviceObj.getJSONArray("matrixSets");
