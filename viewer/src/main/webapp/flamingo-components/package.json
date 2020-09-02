@@ -8,6 +8,7 @@
     "build-prod": "npm run ng -- build --prod --output-hashing=none",
     "test": "ng test --project=core",
     "lint": "ng lint --project=bridge",
+    "lint-fix": "ng lint --project=bridge --fix",
     "e2e": "ng e2e"
   },
   "private": true,
