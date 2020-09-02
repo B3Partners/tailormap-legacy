@@ -1,0 +1,996 @@
+info:
+  title: GBI Form REST API
+  description: '"REST API for GBI Forms"'
+  contact:
+    name: Meine Toonen
+    email: meinetoonen@b3partners.nl
+  license:
+    name: Affero GPL v3
+    url: https://www.gnu.org/licenses/agpl-3.0.nl.html
+  version: 1.0.0
+externalDocs:
+  description: B3Partners
+  url: '"https://b3partners.nl/"'
+paths:
+  "/attributes/{ids}":
+    get:
+      tags:
+        - attribuut-controller
+      operationId: attributes
+      parameters:
+        - name: ids
+          in: path
+          required: true
+          uniqueItems: true
+          type: array
+          items:
+            type: integer
+            format: int64
+          collectionFormat: csv
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Attribuut"
+      produces:
+        - "*/*"
+  "/features/{featuretype}/{objectGuid}":
+    get:
+      tags:
+        - feature-controller
+      operationId: get
+      parameters:
+        - name: featuretype
+          in: path
+          required: true
+          type: string
+        - name: objectGuid
+          in: path
+          required: true
+          type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: "#/definitions/Feature"
+      produces:
+        - "*/*"
+    delete:
+      tags:
+        - feature-controller
+      operationId: delete
+      parameters:
+        - name: featuretype
+          in: path
+          required: true
+          type: string
+        - name: objectGuid
+          in: path
+          required: true
+          type: string
+      responses:
+        "200":
+          description: OK
+  "/features/{objectGuid}":
+    put:
+      tags:
+        - feature-controller
+      operationId: update
+      parameters:
+        - name: objectGuid
+          in: path
+          required: true
+          type: string
+        - required: true
+          name: body
+          in: body
+          schema:
+            $ref: "#/definitions/Feature"
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: "#/definitions/Feature"
+      consumes:
+        - application/json
+      produces:
+        - "*/*"
+  /features:
+    post:
+      tags:
+        - feature-controller
+      operationId: save
+      parameters:
+        - name: parentId
+          in: query
+          required: false
+          type: string
+        - required: true
+          name: body
+          in: body
+          schema:
+            $ref: "#/definitions/Feature"
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: "#/definitions/Feature"
+      consumes:
+        - application/json
+      produces:
+        - "*/*"
+  /features/unpaged:
+    get:
+      tags:
+        - feature-controller
+      operationId: getAll
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Feature"
+      parameters: []
+      produces:
+        - "*/*"
+  "/features/{x}/{y}/{scale}":
+    get:
+      tags:
+        - feature-controller
+      operationId: onPoint
+      parameters:
+        - name: x
+          in: path
+          required: true
+          format: double
+          type: number
+        - name: y
+          in: path
+          required: true
+          format: double
+          type: number
+        - name: scale
+          in: path
+          required: true
+          format: double
+          type: number
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Feature"
+      produces:
+        - "*/*"
+  "/wegvakonderdeel/{objectGuid}":
+    get:
+      tags:
+        - wegvakonderdeel-controller
+      operationId: get_1
+      parameters:
+        - name: objectGuid
+          in: path
+          required: true
+          type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: "#/definitions/Wegvakonderdeel"
+      produces:
+        - "*/*"
+    put:
+      tags:
+        - wegvakonderdeel-controller
+      operationId: update_1
+      parameters:
+        - name: objectGuid
+          in: path
+          required: true
+          type: string
+        - required: true
+          name: body
+          in: body
+          schema:
+            $ref: "#/definitions/Wegvakonderdeel"
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: "#/definitions/Wegvakonderdeel"
+      consumes:
+        - application/json
+      produces:
+        - "*/*"
+    delete:
+      tags:
+        - wegvakonderdeel-controller
+      operationId: delete_1
+      parameters:
+        - name: objectGuid
+          in: path
+          required: true
+          type: string
+      responses:
+        "200":
+          description: OK
+  /wegvakonderdeel:
+    post:
+      tags:
+        - wegvakonderdeel-controller
+      operationId: save_1
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: "#/definitions/Wegvakonderdeel"
+      parameters:
+        - required: true
+          name: body
+          in: body
+          schema:
+            type: object
+            properties:
+              wv:
+                $ref: "#/definitions/Wegvakonderdeel"
+              parentId:
+                type: string
+      consumes:
+        - application/json
+      produces:
+        - "*/*"
+  /wegvakonderdelen/unpaged:
+    get:
+      tags:
+        - wegvakonderdeel-controller
+      operationId: getAll_1
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Wegvakonderdeel"
+      parameters: []
+      produces:
+        - "*/*"
+  /wegvakonderdelen:
+    get:
+      tags:
+        - wegvakonderdeel-controller
+      operationId: getAllPaged
+      parameters:
+        - name: page
+          in: query
+          description: Zero-based page index (0..N)
+          required: false
+          minimum: 0
+          default: "0"
+          type: integer
+        - name: size
+          in: query
+          description: The size of the page to be returned
+          required: false
+          minimum: 1
+          default: "20"
+          type: integer
+        - name: sort
+          in: query
+          description: "Sorting criteria in the format: property(,asc|desc). Default sort
+            order is ascending. Multiple sort criteria are supported."
+          required: false
+          type: array
+          items:
+            type: string
+          collectionFormat: multi
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: "#/definitions/PageWegvakonderdeel"
+      produces:
+        - "*/*"
+  "/wegvakonderdelen/{x}/{y}/{scale}":
+    get:
+      tags:
+        - wegvakonderdeel-controller
+      operationId: wegvakkenOnPoint
+      parameters:
+        - name: x
+          in: path
+          required: true
+          format: double
+          type: number
+        - name: y
+          in: path
+          required: true
+          format: double
+          type: number
+        - name: scale
+          in: path
+          required: true
+          format: double
+          type: number
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Wegvakonderdeel"
+      produces:
+        - "*/*"
+  "/wegvakonderdeelplanning/{objectGuid}":
+    get:
+      tags:
+        - wegvakonderdeelplanning-controller
+      operationId: get_2
+      parameters:
+        - name: objectGuid
+          in: path
+          required: true
+          type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: "#/definitions/Wegvakonderdeelplanning"
+      produces:
+        - "*/*"
+    put:
+      tags:
+        - wegvakonderdeelplanning-controller
+      operationId: update_2
+      parameters:
+        - name: objectGuid
+          in: path
+          required: true
+          type: string
+        - required: true
+          name: body
+          in: body
+          schema:
+            $ref: "#/definitions/Wegvakonderdeelplanning"
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: "#/definitions/Wegvakonderdeelplanning"
+      consumes:
+        - application/json
+      produces:
+        - "*/*"
+    delete:
+      tags:
+        - wegvakonderdeelplanning-controller
+      operationId: delete_2
+      parameters:
+        - name: objectGuid
+          in: path
+          required: true
+          type: string
+      responses:
+        "200":
+          description: OK
+  /wegvakonderdeelplanning:
+    get:
+      tags:
+        - wegvakonderdeelplanning-controller
+      operationId: getAllPaged_1
+      parameters:
+        - name: page
+          in: query
+          description: Zero-based page index (0..N)
+          required: false
+          minimum: 0
+          default: "0"
+          type: integer
+        - name: size
+          in: query
+          description: The size of the page to be returned
+          required: false
+          minimum: 1
+          default: "20"
+          type: integer
+        - name: sort
+          in: query
+          description: "Sorting criteria in the format: property(,asc|desc). Default sort
+            order is ascending. Multiple sort criteria are supported."
+          required: false
+          type: array
+          items:
+            type: string
+          collectionFormat: multi
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: "#/definitions/PageWegvakonderdeelplanning"
+      produces:
+        - "*/*"
+    post:
+      tags:
+        - wegvakonderdeelplanning-controller
+      operationId: save_2
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: "#/definitions/Wegvakonderdeelplanning"
+      parameters:
+        - required: true
+          name: body
+          in: body
+          schema:
+            type: object
+            properties:
+              wv:
+                $ref: "#/definitions/Wegvakonderdeelplanning"
+              parentId:
+                type: string
+      consumes:
+        - application/json
+      produces:
+        - "*/*"
+  /wegvakonderdeelplanning/unpaged:
+    get:
+      tags:
+        - wegvakonderdeelplanning-controller
+      operationId: getAll_2
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Wegvakonderdeelplanning"
+      parameters: []
+      produces:
+        - "*/*"
+swagger: "2.0"
+schemes:
+  - http
+host: localhost:9090
+basePath: /
+securityDefinitions: null
+definitions:
+  Attribuut:
+    type: object
+    properties:
+      muteerbaar:
+        type: boolean
+      object_naam:
+        type: string
+      tabel_naam:
+        type: string
+      kolom_naam:
+        type: string
+      id:
+        type: integer
+        format: int64
+      domein:
+        $ref: "#/definitions/Domein"
+      naam:
+        type: string
+  Domein:
+    type: object
+    properties:
+      waardes:
+        type: array
+        items:
+          $ref: "#/definitions/Domeinwaarde"
+      parent:
+        $ref: "#/definitions/Domein"
+      linkedDomains:
+        type: array
+        items:
+          $ref: "#/definitions/Domein"
+      id:
+        type: integer
+        format: int64
+      naam:
+        type: string
+      leeg_toestaan:
+        type: boolean
+  Domeinwaarde:
+    type: object
+    properties:
+      afkorting:
+        type: string
+      volgorde:
+        type: integer
+        format: int32
+      synoniem:
+        type: string
+      waarde:
+        type: string
+      id:
+        type: integer
+        format: int64
+      domein_id:
+        type: integer
+        format: int64
+      linkedDomeinwaardes:
+        type: array
+        items:
+          $ref: "#/definitions/Domeinwaarde"
+  Crs:
+    type: object
+    properties:
+      type:
+        type: string
+        enum:
+          - name
+          - link
+      properties:
+        type: object
+        additionalProperties:
+          type: object
+  Feature:
+    required:
+      - objecttype
+    type: object
+    properties:
+      children:
+        type: array
+        items:
+          $ref: "#/definitions/Feature"
+      objectGuid:
+        type: string
+      objecttype:
+        type: string
+      clazz:
+        type: string
+    discriminator:
+      propertyName: objecttype
+  Geometry:
+    type: object
+    properties:
+      crs:
+        $ref: "#/definitions/Crs"
+      bbox:
+        type: array
+        items:
+          type: number
+          format: double
+      coordinates:
+        type: array
+        items:
+          type: object
+  Wegvakonderdeel:
+    type: object
+    allOf:
+      - $ref: "#/definitions/Feature"
+      - type: object
+        properties:
+          fid:
+            type: integer
+            format: int64
+          geometrie:
+            $ref: "#/definitions/Geometry"
+          planningen:
+            type: array
+            items:
+              $ref: "#/definitions/Wegvakonderdeelplanning"
+          id:
+            type: integer
+            format: int64
+          object_guid:
+            type: string
+          woonplaats:
+            type: string
+          wijk:
+            type: string
+          openbare_ruimte:
+            type: string
+          verhardingstype:
+            type: string
+          verhardingssoort:
+            type: string
+          std_structuurelement:
+            type: string
+          verhardingsfunctie:
+            type: string
+          oppervlakte:
+            type: number
+            format: double
+          rijstrook:
+            type: string
+          aanlegjaar:
+            type: number
+            format: double
+          lengte:
+            type: number
+            format: double
+          breedte:
+            type: number
+            format: double
+          beheerder:
+            type: string
+          aanzien:
+            type: string
+          comfort:
+            type: string
+          duurzaamheid:
+            type: string
+          veiligheid:
+            type: string
+          bestek_nr:
+            type: string
+          binnen_kom:
+            type: string
+          wegtype:
+            type: string
+          functie_weg:
+            type: string
+          functie_weg_plus:
+            type: string
+          fysiekvoorkomenwegplus:
+            type: string
+          imgeo_id:
+            type: string
+          bbv:
+            type: string
+          domein:
+            type: string
+          std_domein:
+            type: string
+          beheercluster:
+            type: string
+          std_beheercluster:
+            type: string
+          structuurelement:
+            type: string
+          beheerder_vakgeb:
+            type: string
+          std_beheerder_vakgeb:
+            type: string
+          x62_cluster_aard:
+            type: string
+          rayon:
+            type: string
+          x62_std_rayon:
+            type: string
+          object_begin_tijd:
+            type: string
+            format: date-time
+          object_eind_tijd:
+            type: string
+            format: date-time
+          reg_begin:
+            type: string
+            format: date-time
+          reg_eind:
+            type: string
+            format: date-time
+          status:
+            type: string
+          in_onderzoek:
+            type: string
+          relatieve_hoogteligging:
+            type: integer
+            format: int32
+          bronhouder:
+            type: string
+          fysiekvoorkomenweg:
+            type: string
+          functieondsteunwegdeel:
+            type: string
+          optalud:
+            type: string
+          begin_tijd:
+            type: string
+            format: date-time
+          eind_tijd:
+            type: string
+            format: date-time
+          toelichting:
+            type: string
+          afbeelding:
+            type: string
+          hoofdcategorie:
+            type: string
+          x62_std_hoofdcategorie:
+            type: string
+          categorie:
+            type: string
+          x62_std_categorie:
+            type: string
+          subcategorie:
+            type: string
+          x62_std_subcategorie:
+            type: string
+          std_verhardingssoort:
+            type: string
+          std_verhardingsfunctie:
+            type: string
+          std_rijstrook:
+            type: string
+          ondergrond:
+            type: string
+          std_ondergrond:
+            type: string
+          vereiste_verlichting:
+            type: string
+          real_verlichting_uo:
+            type: integer
+            format: int32
+          real_verlichting_egem:
+            type: integer
+            format: int32
+          x62_ligging_spec:
+            type: string
+          profielnr:
+            type: string
+          volgnr:
+            type: string
+          wegvakonderdeelnr:
+            type: string
+          voeglengte:
+            type: integer
+            format: int32
+          volgnr_dwarsprofiel:
+            type: string
+          wijz_inv:
+            type: string
+          x62_std_wijz_inv:
+            type: string
+          constructieopbouw:
+            type: string
+          std_constructieopbouw:
+            type: string
+          cbs_code:
+            type: string
+          std_cbs_code:
+            type: string
+          cbs_berekening:
+            type: integer
+            format: int32
+          x62_lus_pollar:
+            type: string
+          x62_lus_slagboom:
+            type: string
+          lus_vri:
+            type: string
+          formaat_verharding:
+            type: string
+          strooiroute:
+            type: string
+          inspectiedatum:
+            type: string
+            format: date-time
+          a1_rafeling:
+            type: integer
+            format: int32
+          a3_dwarsonvlakheid:
+            type: integer
+            format: int32
+          a4_oneffenheden:
+            type: integer
+            format: int32
+          a5_scheurvorming:
+            type: integer
+            format: int32
+          a7_randschade:
+            type: integer
+            format: int32
+          e1_dwarsonvlakheid:
+            type: integer
+            format: int32
+          e2_oneffenheden:
+            type: integer
+            format: int32
+          e3_voegwijdte:
+            type: integer
+            format: int32
+          b3_oneffenheden:
+            type: integer
+            format: int32
+          b4_scheurvorming:
+            type: integer
+            format: int32
+          b7_voegvulling:
+            type: integer
+            format: int32
+          o1_vlakheid:
+            type: integer
+            format: int32
+          o2_materiaalverlies:
+            type: integer
+            format: int32
+          d1_afwatering:
+            type: integer
+            format: int32
+          d5_zetting:
+            type: integer
+            format: int32
+          m1_stroefheid:
+            type: string
+          m3_deflectie:
+            type: string
+          m4_structurelewaarde:
+            type: string
+          m5_doorlatendheid:
+            type: string
+          m6_lastoverdracht:
+            type: string
+          w1_langsonvlakheid:
+            type: integer
+            format: int32
+          w2_spoorvorming:
+            type: integer
+            format: int32
+          w3_comfort:
+            type: integer
+            format: int32
+          ka1_rafeling:
+            type: string
+          ka3_dwarsonvlakheid:
+            type: string
+          ka4_oneffenheden:
+            type: string
+          ka5_scheurvorming:
+            type: string
+          ka7_randschade:
+            type: string
+          ke1_dwarsonvlakheid:
+            type: string
+          ke2_oneffenheden:
+            type: string
+          ke3_voegwijdte:
+            type: string
+          kb3_oneffenheden:
+            type: string
+          kb4_scheurvorming:
+            type: string
+          kb7_voegvulling:
+            type: string
+          buurt:
+            type: string
+          wegvak_id:
+            type: string
+          fysiekvkondsteunwd:
+            type: string
+          fysiekvkondsteunwdplus:
+            type: string
+          onderhoudjaar:
+            type: integer
+            format: int32
+          type_sportbedrijf:
+            type: string
+          tekening:
+            type: string
+          workflow_status:
+            type: string
+          toelichting1:
+            type: string
+          kl_weginspecteur:
+            type: string
+          kl_weginspectie_mogelijk:
+            type: string
+          kl_standaard_opmerking_wegen:
+            type: string
+          gemeente:
+            type: string
+          clazz:
+            type: string
+  Wegvakonderdeelplanning:
+    type: object
+    allOf:
+      - $ref: "#/definitions/Feature"
+      - type: object
+        properties:
+          fid:
+            type: integer
+            format: int64
+          maatregel_wvko:
+            type: string
+          maatregeltype:
+            type: string
+          jaarvanuitvoering:
+            type: integer
+            format: int32
+          hoeveelheid:
+            type: integer
+            format: int32
+          kosten:
+            type: integer
+            format: int32
+          wegvakonderdeel_id:
+            type: string
+          id:
+            type: integer
+            format: int64
+  PageWegvakonderdeel:
+    type: object
+    properties:
+      number:
+        type: integer
+        format: int32
+      size:
+        type: integer
+        format: int32
+      last:
+        type: boolean
+      numberOfElements:
+        type: integer
+        format: int32
+      totalPages:
+        type: integer
+        format: int32
+      pageable:
+        $ref: "#/definitions/Pageable"
+      sort:
+        $ref: "#/definitions/Sort"
+      content:
+        type: array
+        items:
+          $ref: "#/definitions/Wegvakonderdeel"
+      first:
+        type: boolean
+      totalElements:
+        type: integer
+        format: int64
+      empty:
+        type: boolean
+  Pageable:
+    type: object
+    properties:
+      size:
+        minimum: 1
+        type: integer
+        format: int32
+      page:
+        minimum: 0
+        type: integer
+        format: int32
+      sort:
+        type: array
+        items:
+          type: string
+  Sort:
+    type: object
+    properties:
+      unsorted:
+        type: boolean
+      sorted:
+        type: boolean
+      empty:
+        type: boolean
+  PageWegvakonderdeelplanning:
+    type: object
+    properties:
+      number:
+        type: integer
+        format: int32
+      size:
+        type: integer
+        format: int32
+      last:
+        type: boolean
+      numberOfElements:
+        type: integer
+        format: int32
+      totalPages:
+        type: integer
+        format: int32
+      pageable:
+        $ref: "#/definitions/Pageable"
+      sort:
+        $ref: "#/definitions/Sort"
+      content:
+        type: array
+        items:
+          $ref: "#/definitions/Wegvakonderdeelplanning"
+      first:
+        type: boolean
+      totalElements:
+        type: integer
+        format: int64
+      empty:
+        type: boolean
+x-components: {}

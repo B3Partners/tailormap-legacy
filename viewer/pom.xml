@@ -18,7 +18,7 @@
         <minify.outputdir>${project.name}-${project.version}/viewer-html</minify.outputdir>
         <viewerhtml.path>${basedir}/src/main/webapp/viewer-html</viewerhtml.path>
         <test.persistence.unit>viewer-config-hsqldb</test.persistence.unit>
-        <rest.api.outputdoc>${basedir}/src/main/webapp/flamingo-components/projects/core/src/lib/shared/generated</rest.api.outputdoc>
+        <rest.api.outputdoc>${basedir}../tailormap-components/projects/core/src/lib/shared/generated</rest.api.outputdoc>
     </properties>
     <dependencies>
         <dependency>
@@ -247,7 +247,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <workingDirectory>../viewer-components</workingDirectory>
+                    <workingDirectory>../tailormap-components</workingDirectory>
                     <installDirectory>${project.build.directory}/</installDirectory>
                     <nodeVersion>v13.8.0</nodeVersion>
                     <npmVersion>6.13.6</npmVersion>
@@ -294,10 +294,10 @@
                             <goal>copy-resources</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>${project.build.directory}/${project.artifactId}-${project.version}/viewer-components</outputDirectory>
+                            <outputDirectory>${project.build.directory}/${project.artifactId}-${project.version}/tailormap-components</outputDirectory>
                             <resources>
                                 <resource>
-                                    <directory>../viewer-components/dist/</directory>
+                                    <directory>../tailormap-components/dist/</directory>
                                     <!--includes>
                                         <include>... misschien *.js</include>
                                     </includes-->
