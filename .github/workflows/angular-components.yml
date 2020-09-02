@@ -1,0 +1,35 @@
+name: Angular components CI
+
+on:
+  push:
+    branches: [ feat/gbi-component ]
+  pull_request:
+    branches: [ feat/gbi-component ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 12
+      - name: Build
+        run: |
+          cd viewer/src/main/webapp/flamingo-components
+          # TODO https://github.com/marketplace/actions/cache
+          npm install
+          npm run build
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 12
+      - name: Lint
+        run: |
+          cd viewer/src/main/webapp/flamingo-components
+          npm install
+          npm run lint
