@@ -247,8 +247,8 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <workingDirectory>src/main/webapp/flamingo-components</workingDirectory>
-                    <installDirectory>target</installDirectory>
+                    <workingDirectory>../viewer-components</workingDirectory>
+                    <installDirectory>${project.build.directory}/</installDirectory>
                     <nodeVersion>v13.8.0</nodeVersion>
                     <npmVersion>6.13.6</npmVersion>
                 </configuration>
@@ -281,8 +281,31 @@
                     </webResources>
                     <attachClasses>true</attachClasses>
                     <classesClassifier>classes</classesClassifier>
-                    <packagingExcludes>flamingo-components/node_modules/,/flamingo-components/projects/</packagingExcludes>
                 </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <id>copy-resources</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/${project.artifactId}-${project.version}/viewer-components</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>../viewer-components/dist/</directory>
+                                    <!--includes>
+                                        <include>... misschien *.js</include>
+                                    </includes-->
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>

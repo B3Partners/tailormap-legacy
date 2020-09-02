@@ -39,14 +39,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <script src="http://localhost:3200/main.js" type="module"></script>
         </c:if>
         <c:if test="${(param.debug != true)}">
-            <link rel="stylesheet" type="text/css" href="${contextPath}/flamingo-components/dist/bridge/styles.css">
-            <script src="${contextPath}/flamingo-components/dist/bridge/runtime-es2015.js" type="module"></script>
-            <script src="${contextPath}/flamingo-components/dist/bridge/runtime-es5.js" nomodule defer></script>
-            <script src="${contextPath}/flamingo-components/dist/bridge/polyfills-es5.js" nomodule defer></script>
-            <script src="${contextPath}/flamingo-components/dist/bridge/polyfills-es2015.js" type="module"></script>
-            <script src="${contextPath}/flamingo-components/dist/bridge/scripts.js" defer></script>
-            <script src="${contextPath}/flamingo-components/dist/bridge/main-es2015.js" type="module"></script>
-            <script src="${contextPath}/flamingo-components/dist/bridge/main-es5.js" nomodule defer></script>
+            <link rel="stylesheet" type="text/css" href="${contextPath}/viewer-components/bridge/styles.css">
+            <script src="${contextPath}/viewer-components/bridge/runtime.js" type="module"></script>
+            <script src="${contextPath}/viewer-components/bridge/runtime-es5.js" nomodule defer></script>
+            <script src="${contextPath}/viewer-components/bridge/polyfills-es5.js" nomodule defer></script>
+            <script src="${contextPath}/viewer-components/bridge/polyfills.js" type="module"></script>
+            <script src="${contextPath}/viewer-components/bridge/scripts.js" defer></script>
+            <script src="${contextPath}/viewer-components/bridge/main.js" type="module"></script>
+            <script src="${contextPath}/viewer-components/bridge/main-es5.js" nomodule defer></script>
         </c:if>
         
         <script type="text/javascript" src="${contextPath}/viewer-html/common/FlamingoErrorLogger.js"></script>
