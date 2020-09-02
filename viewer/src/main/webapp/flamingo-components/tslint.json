@@ -24,6 +24,12 @@
     ],
     "import-spacing": true,
     "no-default-export": true,
+    "no-unused-variable": [
+      true,
+      {
+        "ignore-pattern": "^_"
+      }
+    ],
     "interface-name": false,
     "max-classes-per-file": false,
     "max-line-length": [
@@ -43,14 +49,7 @@
       }
     ],
     "no-consecutive-blank-lines": false,
-    "no-console": [
-      true,
-      "debug",
-      "info",
-      "time",
-      "timeEnd",
-      "trace"
-    ],
+    "no-console": false,
     "no-empty": false,
     "no-inferrable-types": [
       true,
@@ -93,10 +92,12 @@
         "allow-leading-underscore"
       ]
     },
-    "rxjs-no-ignored-subscription": true,
+    "rxjs-no-ignored-subscription": false,
     "rxjs-finnish": {
       "options": [
         {
+          "functions": false,
+          "methods": false,
           "types": {
             "^Subject$": false
           }
