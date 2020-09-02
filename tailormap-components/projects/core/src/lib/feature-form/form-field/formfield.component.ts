@@ -4,7 +4,7 @@ import {Attribute, FeatureAttribute, FormFieldType} from "../form/form-models";
 import {LinkedAttributeRegistryService} from "../linked-fields/registry/linked-attribute-registry.service";
 
 @Component({
-  selector: 'flamingo-formfield',
+  selector: 'tailormap-formfield',
   templateUrl: './formfield.component.html',
   styleUrls: ['./formfield.component.css'],
 })

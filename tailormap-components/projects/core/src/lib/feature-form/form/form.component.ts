@@ -15,7 +15,7 @@ import {FormActionsService} from "../form-actions/form-actions.service";
 import {FormconfigRepositoryService} from "../../shared/formconfig-repository/formconfig-repository.service";
 
 @Component({
-  selector: 'flamingo-form',
+  selector: 'tailormap-form',
   templateUrl: './form.component.html',
   styleUrls: ['./form.component.css'],
 })

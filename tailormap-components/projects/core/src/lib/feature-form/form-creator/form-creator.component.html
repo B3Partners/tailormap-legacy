@@ -5,12 +5,12 @@
             <div *ngFor="let column of tab.value.columns | keyvalue" class="column">
               <span *ngFor="let attr of column.value" class="cellfield">
 
-                <flamingo-formfield
+                <tailormap-formfield
                   [value]=indexedAttributes.attrs.get(attr.key)?.value
                   [attribute]=indexedAttributes.attrs.get(attr.key)
                   [groep]="formgroep"
                   [isBulk]=isBulk
-                   ></flamingo-formfield>
+                   ></tailormap-formfield>
               </span>
             </div>
           </div>

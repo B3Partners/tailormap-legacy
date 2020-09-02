@@ -4,13 +4,13 @@
     "directive-selector": [
       true,
       "attribute",
-      "flamingo",
+      "tailormap",
       "camelCase"
     ],
     "component-selector": [
       true,
       "element",
-      "flamingo",
+      "tailormap",
       "kebab-case"
     ]
   }

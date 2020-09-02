@@ -3,7 +3,7 @@ import {AddButtonEvent} from "./add-feature-models";
 import {LayerVisibilityServiceService} from "../../shared/layer-visibility-service/layer-visibility-service.service";
 
 @Component({
-  selector: 'flamingo-add-feature',
+  selector: 'tailormap-add-feature',
   templateUrl: './add-feature.component.html',
   styleUrls: ['./add-feature.component.css']
 })

@@ -82,7 +82,7 @@ Ext.define("viewer.components.GBI", {
         this.config.viewerController.mapComponent.getMap().addLayer(this.vectorLayer);
     },
     initializeForm: function(){
-        this.div = document.createElement("flamingo-wegvak-popup");
+        this.div = document.createElement("tailormap-wegvak-popup");
         this.div.addEventListener('wanneerPopupClosed', function(evt){
             console.log("wanneerPopupClosed", evt.detail);
             this.vectorLayer.removeAllFeatures();

@@ -28,7 +28,7 @@ import { MatGridListModule } from '@angular/material/grid-list';
 })
 export class AppModule {
   constructor(injector: Injector) {
-    customElements.define('flamingo-wegvak-popup', createCustomElement(FormPopupComponent, {injector}));
+    customElements.define('tailormap-wegvak-popup', createCustomElement(FormPopupComponent, {injector}));
   }
   public ngDoBootstrap() {}
 }

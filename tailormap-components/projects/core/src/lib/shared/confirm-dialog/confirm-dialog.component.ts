@@ -8,7 +8,7 @@ export interface ConfirmDialogData {
 }
 
 @Component({
-  selector: 'flamingo-confirm-dialog',
+  selector: 'tailormap-confirm-dialog',
   templateUrl: './confirm-dialog.component.html',
   styleUrls: ['./confirm-dialog.component.css'],
 })

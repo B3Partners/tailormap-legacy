@@ -13,7 +13,7 @@ import {LayerVisibilityServiceService} from "../../shared/layer-visibility-servi
 import {FormconfigRepositoryService} from "../../shared/formconfig-repository/formconfig-repository.service";
 
 @Component({
-  selector: 'flamingo-form-popup',
+  selector: 'tailormap-form-popup',
   templateUrl: './form-popup.component.html',
   styleUrls: ['./form-popup.component.css'],
 })
@@ -133,7 +133,7 @@ export class FormPopupComponent implements OnInit {
 
   public createColumnLookup(): Map<string, string> {
     const lookup = new Map<string, string>();
-   /* this.flamingoAppLayer.attributes.forEach(a => {
+   /* this.tailormapAppLayer.attributes.forEach(a => {
       const index = a.longname.indexOf('.');
       const featureType = a.longname.substring(0, index);
       const originalName = a.longname.substring(index + 1);

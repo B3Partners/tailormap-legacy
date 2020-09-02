@@ -7,13 +7,13 @@
   </h1>
   <div class="form-container">
     <div class="tree">
-      <flamingo-form-tree
+      <tailormap-form-tree
       (nodeClicked)='openForm($event)'
       [features]=features
-      [feature]=feature></flamingo-form-tree>
+      [feature]=feature></tailormap-form-tree>
     </div>
     <div class="form">
-      <flamingo-form-creator #formCreator
+      <tailormap-form-creator #formCreator
                              [feature]=feature
                              [features]=features
                              [lookup]=lookup
@@ -21,7 +21,7 @@
                              [isBulk]=isBulk
                              (formChanged)="formChanged($event)"
       >
-      </flamingo-form-creator>
+      </tailormap-form-creator>
     </div>
   </div>
   <div class="bottom-bar">

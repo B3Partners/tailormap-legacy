@@ -10,7 +10,7 @@ import {FormTreeHelpers} from "./form-tree-helpers";
 import {FormconfigRepositoryService} from "../../shared/formconfig-repository/formconfig-repository.service";
 
 @Component({
-  selector: 'flamingo-form-tree',
+  selector: 'tailormap-form-tree',
   templateUrl: './form-tree.component.html',
   styleUrls: ['./form-tree.component.css'],
 })

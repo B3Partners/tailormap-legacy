@@ -18,7 +18,7 @@ import {FeatureInitializerService} from "../../shared/feature-initializer/featur
 import {LinkedAttributeRegistryService} from "../linked-fields/registry/linked-attribute-registry.service";
 
 @Component({
-  selector: 'flamingo-form-creator',
+  selector: 'tailormap-form-creator',
   templateUrl: './form-creator.component.html',
   styleUrls: ['./form-creator.component.css'],
 })
