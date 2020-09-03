@@ -10,7 +10,7 @@
     "lint": "ng lint",
     "e2e": "ng e2e",
     "ng-openapi-gen": "ng-openapi-gen",
-    "generate": "ng-openapi-gen -c generateConfig.json",
+    "generate": "ng-openapi-gen -c generateConfig.json"
   },
   "private": true,
   "dependencies": {
