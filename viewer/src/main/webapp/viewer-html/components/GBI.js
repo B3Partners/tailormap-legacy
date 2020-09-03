@@ -50,6 +50,7 @@ Ext.define("viewer.components.GBI", {
         return this;
     },
     initialize: function(){
+        var bridge = Ext.create("viewer.components.AngularBridge", this.config);
         this.initializeForm();
         this.createVectorLayer();
         this.toolMapClick =  this.config.viewerController.mapComponent.createTool({

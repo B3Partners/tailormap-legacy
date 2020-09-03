@@ -8,6 +8,8 @@ import { FormComponent } from 'projects/core/src/lib/feature-form/form/form.comp
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormPopupComponent } from 'projects/core/src/lib/feature-form/form-popup/form-popup.component';
 import { MatGridListModule } from '@angular/material/grid-list';
+import {MapService} from "../../../core/src/lib/shared/ext-bridge/map/map.service";
+import {MapComponent} from "../../../core/src/lib/shared/ext-bridge/map/map.component";
 
 @NgModule({
   declarations: [
@@ -29,6 +31,7 @@ import { MatGridListModule } from '@angular/material/grid-list';
 export class AppModule {
   constructor(injector: Injector) {
     customElements.define('tailormap-wegvak-popup', createCustomElement(FormPopupComponent, {injector}));
+    customElements.define('tailormap-mapbridge', createCustomElement(MapComponent, {injector}));
   }
   public ngDoBootstrap() {}
 }

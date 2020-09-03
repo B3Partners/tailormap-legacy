@@ -987,7 +987,7 @@
         "name": "GBI",
         "group": "Map",
         "shortName": "GBI",
-        "sources": ["GBI.js"],
+        "sources": ["GBI.js", "AngularBridge.js"],
         "singleton": true,
         "configSource": ["ConfigObject.js","SelectionWindowConfig.js", "GBI-config.js"],
         "restrictions": ["content", "left_menu"]

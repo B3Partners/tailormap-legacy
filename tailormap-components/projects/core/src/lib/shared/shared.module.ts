@@ -24,11 +24,13 @@ import { HttpClientModule } from '@angular/common/http';
 import {ConfirmDialogComponent} from "./confirm-dialog/confirm-dialog.component";
 
 import {ConfirmDialogService} from "./confirm-dialog/confirm-dialog.service";
+import { MapComponent } from './ext-bridge/map/map.component';
 import {ApiModule} from "./generated";
 
 @NgModule({
   declarations: [
-    ConfirmDialogComponent,],
+    ConfirmDialogComponent,
+    MapComponent,],
   imports: [
     ApiModule.forRoot({ rootUrl: window.location.origin + '/form-api' }),
     CommonModule,
