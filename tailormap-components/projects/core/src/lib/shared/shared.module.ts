@@ -22,13 +22,15 @@ import { MatTreeModule } from '@angular/material/tree';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import {ConfirmDialogComponent} from "./confirm-dialog/confirm-dialog.component";
-import {BASE_PATH} from "./generated";
+
 import {ConfirmDialogService} from "./confirm-dialog/confirm-dialog.service";
+import {ApiModule} from "./generated";
 
 @NgModule({
   declarations: [
     ConfirmDialogComponent,],
   imports: [
+    ApiModule.forRoot({ rootUrl: window.location.origin + '/form-api' }),
     CommonModule,
     ReactiveFormsModule,
     FormsModule,
@@ -79,12 +81,6 @@ import {ConfirmDialogService} from "./confirm-dialog/confirm-dialog.service";
   ],
   providers: [
     ConfirmDialogService,
-    {
-      provide: BASE_PATH,
-      useFactory: ()=>{
-        return window.location.origin + '/form-api';
-      }
-    },
   ],
 })
 export class SharedModule { }

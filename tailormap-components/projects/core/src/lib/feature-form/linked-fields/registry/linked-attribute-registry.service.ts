@@ -27,7 +27,7 @@ export class LinkedAttributeRegistryService {
     linkedAttributes.forEach(attribuut => {
       this.linkedAttributes[attribuut.id]=attribuut;
       attribuut.domein.waardes.forEach(domeinWaarde => {
-        domeinWaarde.linked_domeinwaardes.forEach(childWaarde => {
+        domeinWaarde.linkedDomeinwaardes.forEach(childWaarde => {
           this.valueToParentValue.set(childWaarde.id, domeinWaarde);
         });
       });
@@ -46,7 +46,8 @@ export class LinkedAttributeRegistryService {
     let selectedValue : Domeinwaarde;
 
     // retrieve the selected value
-    for(let val of linkedAttribute.domein.waardes){
+    for(let key in linkedAttribute.domein.waardes){
+      let val = linkedAttribute.domein.waardes[key]
       if(val.id == value ){
         selectedValue = val;
         break;
@@ -54,15 +55,16 @@ export class LinkedAttributeRegistryService {
     }
     if(selectedValue) {
       // retrieve all childvalues for the selected value
-      for (let domeinWaarde of selectedValue.linked_domeinwaardes) {
-          if (!options.hasOwnProperty(domeinWaarde.domein_id)) {
-            options[domeinWaarde.domein_id] = [];
-          }
-          options[domeinWaarde.domein_id].push({
-            label: domeinWaarde.synoniem || domeinWaarde.waarde,
-            val: domeinWaarde.id,
-          });
-      }
+
+      selectedValue.linkedDomeinwaardes.forEach(domeinWaarde => {
+        if (!options.hasOwnProperty(domeinWaarde.domein_id)) {
+          options[domeinWaarde.domein_id] = [];
+        }
+        options[domeinWaarde.domein_id].push({
+          label: domeinWaarde.synoniem || domeinWaarde.waarde,
+          val: domeinWaarde.id,
+        });
+      });
     }else{
       this.resetLinkedDomains(linkedAttribute);
     }
@@ -99,7 +101,7 @@ export class LinkedAttributeRegistryService {
 
   private resetLinkedDomains(linkedAttribute : Attribuut){
     linkedAttribute.domein.waardes.forEach(value => {
-      for (let domeinWaarde of value.linked_domeinwaardes) {
+      for (let domeinWaarde of value.linkedDomeinwaardes) {
         let attr = this.domainToAttribute.get(domeinWaarde.domein_id);
         if (attr) {
           attr.options.forEach(option => {

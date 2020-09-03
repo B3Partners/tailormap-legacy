@@ -1,8 +1,3 @@
-export { ApiConfiguration } from './api-configuration';
-export { BaseService } from './base-service';
-export { RequestBuilder } from './request-builder';
-export { StrictHttpResponse } from './strict-http-response';
-export { ApiModule } from './api.module';
 export { Attribuut } from './models/attribuut';
 export { Domein } from './models/domein';
 export { Domeinwaarde } from './models/domeinwaarde';
@@ -15,7 +10,3 @@ export { PageWegvakonderdeel } from './models/page-wegvakonderdeel';
 export { Pageable } from './models/pageable';
 export { Sort } from './models/sort';
 export { PageWegvakonderdeelplanning } from './models/page-wegvakonderdeelplanning';
-export { AttribuutControllerService } from './services/attribuut-controller.service';
-export { FeatureControllerService } from './services/feature-controller.service';
-export { WegvakonderdeelControllerService } from './services/wegvakonderdeel-controller.service';
-export { WegvakonderdeelplanningControllerService } from './services/wegvakonderdeelplanning-controller.service';

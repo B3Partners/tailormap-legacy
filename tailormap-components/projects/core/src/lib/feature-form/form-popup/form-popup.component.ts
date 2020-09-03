@@ -54,7 +54,7 @@ export class FormPopupComponent implements OnInit {
     const x = mapClickData.x;
     const y = mapClickData.y;
     const scale = mapClickData.scale;
-    this.service.onPoint(x, y, scale).subscribe(
+    this.service.onPoint({x, y, scale}).subscribe(
       (features: Feature[]) => {
         if(features && features.length >0){
         this.openDialog(features);
