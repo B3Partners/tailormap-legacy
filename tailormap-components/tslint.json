@@ -6,7 +6,7 @@
   "linterOptions": {
     "exclude": [
       "**/*.spec.ts",
-      "projects/plot-api-client/**/*.ts"
+      "projects/core/src/lib/shared/generated/**/*.ts"
     ]
   },
   "rulesDirectory": [
