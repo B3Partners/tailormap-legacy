@@ -1,3 +1,6 @@
-version 1.11.1
+version 1.12.0
 
 see https://www.mapbox.com/install/js/cdn-install/
+
+curl https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.js -o mapbox-gl.js
+curl https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.css -o mapbox-gl.css
