@@ -1,11 +1,11 @@
-import {Component, EventEmitter, OnInit, Output} from '@angular/core';
-import {AddButtonEvent} from "./add-feature-models";
-import {LayerVisibilityServiceService} from "../../shared/layer-visibility-service/layer-visibility-service.service";
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { AddButtonEvent } from './add-feature-models';
+import { LayerVisibilityServiceService } from '../../shared/layer-visibility-service/layer-visibility-service.service';
 
 @Component({
   selector: 'tailormap-add-feature',
   templateUrl: './add-feature.component.html',
-  styleUrls: ['./add-feature.component.css']
+  styleUrls: ['./add-feature.component.css'],
 })
 export class AddFeatureComponent implements OnInit {
 
@@ -13,16 +13,16 @@ export class AddFeatureComponent implements OnInit {
   public addFeature = new EventEmitter<AddButtonEvent>();
 
   constructor(
-    public layerVisible: LayerVisibilityServiceService
-  ){ }
+    public layerVisible: LayerVisibilityServiceService,
+  ) { }
 
-  ngOnInit() {
+  public ngOnInit() {
   }
 
-  public click(){
-    let first = this.layerVisible.getVisibleLayers()[0];
+  public click() {
+    const first = this.layerVisible.getVisibleLayers()[0];
     this.addFeature.emit({
-      featuretype:first
+      featuretype: first,
     });
   }
 }

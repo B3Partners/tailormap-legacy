@@ -1,5 +1,5 @@
-import {Feature} from "../../shared/generated";
-import {FeatureAttribute, FormConfiguration, IndexedFeatureAttributes} from "../form/form-models";
+import { Feature } from '../../shared/generated';
+import { FeatureAttribute, FormConfiguration, IndexedFeatureAttributes } from '../form/form-models';
 
 export class FormCreatorHelpers {
 
@@ -8,7 +8,7 @@ export class FormCreatorHelpers {
     for (const field of formConfig.fields) {
       m.set(field.key, {
         ...field,
-        value: feat[field.key] ? feat[field.key] : ''
+        value: feat[field.key] ? feat[field.key] : '',
       });
     }
     return {attrs: m};

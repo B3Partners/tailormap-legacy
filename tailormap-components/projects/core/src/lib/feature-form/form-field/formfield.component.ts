@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import {Attribute, FeatureAttribute, FormFieldType} from "../form/form-models";
-import {LinkedAttributeRegistryService} from "../linked-fields/registry/linked-attribute-registry.service";
+import { Attribute, FeatureAttribute, FormFieldType } from '../form/form-models';
+import { LinkedAttributeRegistryService } from '../linked-fields/registry/linked-attribute-registry.service';
 
 @Component({
   selector: 'tailormap-formfield',
@@ -32,8 +32,8 @@ export class FormfieldComponent {
 
   }
 
-  public valueChanged(event : any):void{
-    if(this.isDomainAttribute(this.attribute)){
+  public valueChanged(event : any): void {
+    if (this.isDomainAttribute(this.attribute)) {
       this.registry.domainFieldChanged(this.attribute, event.value);
     }
   }

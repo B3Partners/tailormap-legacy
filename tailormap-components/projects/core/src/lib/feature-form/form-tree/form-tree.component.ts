@@ -1,13 +1,13 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
-import {FlatTreeControl} from '@angular/cdk/tree';
-import {MatTreeFlatDataSource, MatTreeFlattener} from '@angular/material/tree';
+import { FlatTreeControl } from '@angular/cdk/tree';
+import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
 
 
 import { FlatNode, FeatureNode } from './form-tree-models';
-import { FormConfiguration, FormConfigurations} from "../form/form-models";
-import {Feature} from "../../shared/generated";
-import {FormTreeHelpers} from "./form-tree-helpers";
-import {FormconfigRepositoryService} from "../../shared/formconfig-repository/formconfig-repository.service";
+import { FormConfiguration } from '../form/form-models';
+import { Feature } from '../../shared/generated';
+import { FormTreeHelpers } from './form-tree-helpers';
+import { FormconfigRepositoryService } from '../../shared/formconfig-repository/formconfig-repository.service';
 
 @Component({
   selector: 'tailormap-form-tree',
@@ -17,7 +17,7 @@ import {FormconfigRepositoryService} from "../../shared/formconfig-repository/fo
 export class FormTreeComponent implements OnInit,  OnChanges {
 
   constructor(
-    private formConfigRepo: FormconfigRepositoryService,) {
+    private formConfigRepo: FormconfigRepositoryService) {
   }
 
   @Output()
@@ -56,7 +56,7 @@ export class FormTreeComponent implements OnInit,  OnChanges {
           const fts = {};
           feature.children.forEach((child: Feature) => {
             const featureType = child.clazz;
-            if(this.formConfigRepo.getFormConfig(featureType)) {
+            if (this.formConfigRepo.getFormConfig(featureType)) {
               if (!fts.hasOwnProperty(featureType)) {
                 fts[featureType] = {
                   name: featureType,
@@ -87,11 +87,11 @@ export class FormTreeComponent implements OnInit,  OnChanges {
       return nodes;
   }
 
-  private getNodeLabel (feature:Feature) :string{
+  private getNodeLabel (feature: Feature) : string {
     const config : FormConfiguration = this.formConfigRepo.getFormConfig(feature.clazz);
     let label = this.getFeatureValue(feature, config.treeNodeColumn);
-    if(config.idInTreeNodeColumn){
-      let id = feature.objectGuid;
+    if (config.idInTreeNodeColumn) {
+      const id = feature.objectGuid;
 
       label = (label ? label : config.name) + ' (id: ' + id + ')';
     }
@@ -99,7 +99,7 @@ export class FormTreeComponent implements OnInit,  OnChanges {
   }
 
   private getFeatureValue(feature: Feature, key: string): any {
-    let val = feature[key];
+    const val = feature[key];
     return val;
   }
 

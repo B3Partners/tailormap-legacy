@@ -7,9 +7,9 @@ import { FormfieldComponent } from './form-field/formfield.component';
 import { FormCreatorComponent } from './form-creator/form-creator.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-import {ApiModule} from "../shared/generated";
-import {FormTreeComponent} from "./form-tree/form-tree.component";
-import {UserIntefaceModule} from "../user-interface/user-interface.module";
+import { ApiModule } from '../shared/generated';
+import { FormTreeComponent } from './form-tree/form-tree.component';
+import { UserIntefaceModule } from '../user-interface/user-interface.module';
 
 @NgModule({
   declarations: [
@@ -33,7 +33,7 @@ import {UserIntefaceModule} from "../user-interface/user-interface.module";
     FormComponent,
   ],
   entryComponents: [
-  ]
+  ],
 })
 export class FeatureFormModule {
 }

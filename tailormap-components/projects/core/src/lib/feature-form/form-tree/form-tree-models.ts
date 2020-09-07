@@ -1,4 +1,4 @@
-import {Feature} from "../../shared/generated";
+import { Feature } from '../../shared/generated';
 
 
 export interface FeatureNode {

@@ -24,7 +24,7 @@ export interface Attribute {
 
 export interface FeatureAttribute extends Attribute {
   key: string;
-  //type: FormFieldType;
+  // type: FormFieldType;
   value: string | number;
 }
 

@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
-import {Attribute, FeatureAttribute} from "../../form/form-models";
-import {Attribuut, Domeinwaarde} from "../../../shared/generated";
+import { Attribute, FeatureAttribute } from '../../form/form-models';
+import { Attribuut, Domeinwaarde } from '../../../shared/generated';
 
 
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class LinkedAttributeRegistryService {
 
@@ -22,10 +22,10 @@ export class LinkedAttributeRegistryService {
     this.valueToParentValue = new Map();
   }
 
-  public setLinkedAttributes(linkedAttributes :Array<Attribuut>){
+  public setLinkedAttributes(linkedAttributes : Array<Attribuut>) {
     this.linkedAttributes = {};
     linkedAttributes.forEach(attribuut => {
-      this.linkedAttributes[attribuut.id]=attribuut;
+      this.linkedAttributes[attribuut.id] = attribuut;
       attribuut.domein.waardes.forEach(domeinWaarde => {
         domeinWaarde.linkedDomeinwaardes.forEach(childWaarde => {
           this.valueToParentValue.set(childWaarde.id, domeinWaarde);
@@ -34,26 +34,26 @@ export class LinkedAttributeRegistryService {
     })
   }
 
-  public registerDomainField(attributeId: number, field: FeatureAttribute){
+  public registerDomainField(attributeId: number, field: FeatureAttribute) {
     const attribuut = this.linkedAttributes[attributeId];
     this.registry.set(attributeId, attribuut);
     this.domainToAttribute.set(attribuut.domein.id, field);
   }
 
-  public domainFieldChanged(attribuut: Attribute, value: any){
+  public domainFieldChanged(attribuut: Attribute, value: any) {
     const linkedAttribute : Attribuut = this.registry.get(attribuut.linkedList);
     const options = {};
     let selectedValue : Domeinwaarde;
 
     // retrieve the selected value
-    for(let key in linkedAttribute.domein.waardes){
-      let val = linkedAttribute.domein.waardes[key]
-      if(val.id == value ){
+    for (const key in linkedAttribute.domein.waardes) {
+      const val = linkedAttribute.domein.waardes[key]
+      if (val.id == value ) {
         selectedValue = val;
         break;
       }
     }
-    if(selectedValue) {
+    if (selectedValue) {
       // retrieve all childvalues for the selected value
 
       selectedValue.linkedDomeinwaardes.forEach(domeinWaarde => {
@@ -65,19 +65,19 @@ export class LinkedAttributeRegistryService {
           val: domeinWaarde.id,
         });
       });
-    }else{
+    }else {
       this.resetLinkedDomains(linkedAttribute);
     }
 
     // set all the fields to the new values
-    for (let domainId in options) {
-      let attr = this.domainToAttribute.get(parseInt(domainId));
-      if(attr){
+    for (const domainId in options) {
+      const attr = this.domainToAttribute.get(parseInt(domainId));
+      if (attr) {
         const selectedOptions = options[domainId];
         attr.options.forEach(option => {
           option.disabled = true;
-          for(let selectedOption of selectedOptions){
-            if(selectedOption.val === option.val){
+          for (const selectedOption of selectedOptions) {
+            if (selectedOption.val === option.val) {
               option.disabled = false;
             }
           }
@@ -86,23 +86,23 @@ export class LinkedAttributeRegistryService {
     }
 
     // check if the changed value has a parent. If so, select the associated value
-    if(selectedValue && this.valueToParentValue.has(selectedValue.id)){
+    if (selectedValue && this.valueToParentValue.has(selectedValue.id)) {
       const parentValue = this.valueToParentValue.get(selectedValue.id);
       const parentAttribute = this.domainToAttribute.get(parentValue.domein_id);
       parentAttribute.value = parentValue.id;
     }
   }
 
-  public resetLinkedAttributes(){
+  public resetLinkedAttributes() {
     this.registry.forEach(attribuut => {
       this.resetLinkedDomains(attribuut);
     });
   }
 
-  private resetLinkedDomains(linkedAttribute : Attribuut){
+  private resetLinkedDomains(linkedAttribute : Attribuut) {
     linkedAttribute.domein.waardes.forEach(value => {
-      for (let domeinWaarde of value.linkedDomeinwaardes) {
-        let attr = this.domainToAttribute.get(domeinWaarde.domein_id);
+      for (const domeinWaarde of value.linkedDomeinwaardes) {
+        const attr = this.domainToAttribute.get(domeinWaarde.domein_id);
         if (attr) {
           attr.options.forEach(option => {
             option.disabled = false;
