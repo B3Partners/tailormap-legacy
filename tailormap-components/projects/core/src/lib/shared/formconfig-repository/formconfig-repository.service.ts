@@ -13,7 +13,7 @@ export class FormconfigRepositoryService {
 
   constructor(private http: HttpClient,
   private domainRepo :DomainRepositoryService,) {
-    this.http.get<FormConfigurations>('http://localhost:8084/viewer/action/form').subscribe((data: any) => {
+    this.http.get<FormConfigurations>('/viewer/action/form').subscribe((data: any) => {
       this.formConfigs = data;
       this.domainRepo.initFormConfig(this.formConfigs);
     });
