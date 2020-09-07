@@ -11,7 +11,7 @@ dependency-updates.log
 plugin-updates.log
 vuln-check.log
 /viewer/nbproject/
-/.idea/
+.idea/
 *.iml
 target/
 # GH-issue 1493
