@@ -27,18 +27,18 @@ export class FormActionsService {
         console.error("to be implemented");
 
       } else {
-        const object_guid = feature.object_guid;
-        if(object_guid && object_guid !== FeatureInitializerService.STUB_OBJECT_GUID_NEW_OBJECT) {
-          return this.service.update(feature, object_guid);
+        const objectGuid = feature.objectGuid;
+        if(objectGuid && objectGuid !== FeatureInitializerService.STUB_objectGuid_NEW_OBJECT) {
+          return this.service.update({objectGuid:objectGuid, body: feature});
         }else{
-          const parentId = parent ? parent.object_guid : null;
-          return this.service.save(feature, parentId);
+          const parentId = parent ? parent.objectGuid : null;
+          return this.service.save({parentId, body:feature});
         }
       }
     }
 
   public removeFeature(feature: Feature, features: Feature[]) :Observable<any>{
-    this.service._delete(feature.clazz,feature.object_guid).subscribe(a=>{
+    this.service.delete({featuretype:feature.clazz,objectGuid: feature.objectGuid}).subscribe(a=>{
       console.log("removed: ", a);
     });
 

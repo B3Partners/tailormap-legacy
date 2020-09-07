@@ -64,13 +64,13 @@ describe('FormCreatorComponent', () => {
   it('should update a childfeature in the features array', ()=>{
     let featureToBeChanged : Wegvakonderdeelplanning ={
       objecttype: "wegvakonderdeelplanning",
-      object_guid: "twee",
+      objectGuid: "twee",
       maatregel_wvko: "bar"
     };
 
     let featureIsChanged : Wegvakonderdeelplanning ={
       objecttype: "wegvakonderdeelplanning",
-      object_guid: "twee",
+      objectGuid: "twee",
       maatregel_wvko: "foo"
     };
 
@@ -78,7 +78,7 @@ describe('FormCreatorComponent', () => {
     let featuresArray: Feature[];
     featuresArray = [
       {
-        object_guid: "een",
+        objectGuid: "een",
         objecttype: "wegvakonderdeel",
         children: [
          featureToBeChanged
@@ -87,7 +87,7 @@ describe('FormCreatorComponent', () => {
     ];
     let newArray = component.updateFeatureInArray(featureIsChanged, featuresArray);
     expect(newArray.length === 1).toBeTruthy();
-    expect(newArray[0].object_guid).toEqual('een');
+    expect(newArray[0].objectGuid).toEqual('een');
     expect(newArray[0].children.length).toEqual(1);
     expect((newArray[0].children[0] as Wegvakonderdeelplanning).maatregel_wvko).toEqual(featureIsChanged.maatregel_wvko);
   });
@@ -95,24 +95,24 @@ describe('FormCreatorComponent', () => {
   it('should update the parent feature in the features array', ()=>{
     let featureToBeChanged : Wegvakonderdeel ={
       objecttype: "wegvakonderdeel",
-      object_guid: "een",
+      objectGuid: "een",
       aanlegjaar: 15,
       children:[
         {
           objecttype: "wegvakonderdeelplanning",
-          object_guid: "twee",
+          objectGuid: "twee",
           maatregel_wvko: "foo"
         } as Wegvakonderdeelplanning]
     };
 
     let featureIsChanged : Wegvakonderdeel ={
       objecttype: "wegvakonderdeel",
-      object_guid: "een",
+      objectGuid: "een",
       aanlegjaar: 16,
       children:[
         {
           objecttype: "wegvakonderdeelplanning",
-          object_guid: "twee",
+          objectGuid: "twee",
           maatregel_wvko: "foo"
         } as Wegvakonderdeelplanning]
     };
@@ -120,7 +120,7 @@ describe('FormCreatorComponent', () => {
     let featuresArray = [featureToBeChanged ];
     let newArray = component.updateFeatureInArray(featureIsChanged, featuresArray);
     expect(newArray.length === 1).toBeTruthy();
-    expect(newArray[0].object_guid).toEqual('een');
+    expect(newArray[0].objectGuid).toEqual('een');
     expect(newArray[0].children.length).toEqual(1);
     expect((newArray[0] as Wegvakonderdeel).aanlegjaar).toEqual(featureIsChanged.aanlegjaar);
   });
@@ -129,18 +129,18 @@ describe('FormCreatorComponent', () => {
 
     let featureIsChanged : Wegvakonderdeel ={
       objecttype: "wegvakonderdeel",
-      object_guid: "een",
+      objectGuid: "een",
       aanlegjaar: 16,
       children:[]
     };
     let baseFeature: Wegvakonderdeel  = {
       objecttype: "wegvakonderdeel",
-      object_guid: FeatureInitializerService.STUB_OBJECT_GUID_NEW_OBJECT
+      objectGuid: FeatureInitializerService.STUB_objectGuid_NEW_OBJECT
     };
     let featuresArray = [baseFeature];
     let newArray = component.updateFeatureInArray(featureIsChanged, featuresArray);
     expect(newArray.length === 1).toBeTruthy();
-    expect(newArray[0].object_guid).toEqual('een');
+    expect(newArray[0].objectGuid).toEqual('een');
     expect(newArray[0].children.length).toEqual(0);
     expect((newArray[0] as Wegvakonderdeel).aanlegjaar).toEqual(featureIsChanged.aanlegjaar);
   });

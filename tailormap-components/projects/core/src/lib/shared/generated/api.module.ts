@@ -1,39 +1,51 @@
+/* tslint:disable */
 import { NgModule, ModuleWithProviders, SkipSelf, Optional } from '@angular/core';
-import { Configuration } from './configuration';
 import { HttpClient } from '@angular/common/http';
+import { ApiConfiguration, ApiConfigurationParams } from './api-configuration';
 
+import { AttribuutControllerService } from './services/attribuut-controller.service';
+import { FeatureControllerService } from './services/feature-controller.service';
+import { WegvakonderdeelControllerService } from './services/wegvakonderdeel-controller.service';
+import { WegvakonderdeelplanningControllerService } from './services/wegvakonderdeelplanning-controller.service';
 
-import { AttribuutControllerService } from './api/attribuutController.service';
-import { FeatureControllerService } from './api/featureController.service';
-import { WegvakonderdeelControllerService } from './api/wegvakonderdeelController.service';
-import { WegvakonderdeelplanningControllerService } from './api/wegvakonderdeelplanningController.service';
-
+/**
+ * Module that provides all services and configuration.
+ */
 @NgModule({
-  imports:      [],
+  imports: [],
+  exports: [],
   declarations: [],
-  exports:      [],
   providers: [
     AttribuutControllerService,
     FeatureControllerService,
     WegvakonderdeelControllerService,
-    WegvakonderdeelplanningControllerService ]
+    WegvakonderdeelplanningControllerService,
+    ApiConfiguration
+  ],
 })
 export class ApiModule {
-    public static forRoot(configurationFactory: () => Configuration): ModuleWithProviders<ApiModule> {
-        return {
-            ngModule: ApiModule,
-            providers: [ { provide: Configuration, useFactory: configurationFactory } ]
-        };
+  static forRoot(params: ApiConfigurationParams): ModuleWithProviders<ApiModule> {
+    return {
+      ngModule: ApiModule,
+      providers: [
+        {
+          provide: ApiConfiguration,
+          useValue: params
+        }
+      ]
     }
+  }
 
-    constructor( @Optional() @SkipSelf() parentModule: ApiModule,
-                 @Optional() http: HttpClient) {
-        if (parentModule) {
-            throw new Error('ApiModule is already loaded. Import in your base AppModule only.');
-        }
-        if (!http) {
-            throw new Error('You need to import the HttpClientModule in your AppModule! \n' +
-            'See also https://github.com/angular/angular/issues/20575');
-        }
+  constructor( 
+    @Optional() @SkipSelf() parentModule: ApiModule,
+    @Optional() http: HttpClient
+  ) {
+    if (parentModule) {
+      throw new Error('ApiModule is already loaded. Import in your base AppModule only.');
     }
+    if (!http) {
+      throw new Error('You need to import the HttpClientModule in your AppModule! \n' +
+      'See also https://github.com/angular/angular/issues/20575');
+    }
+  }
 }

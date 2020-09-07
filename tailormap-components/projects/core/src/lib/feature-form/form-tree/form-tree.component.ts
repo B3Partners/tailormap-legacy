@@ -78,9 +78,9 @@ export class FormTreeComponent implements OnInit,  OnChanges {
         nodes.push({
             name: this.getNodeLabel(feature),
             children,
-            object_guid: feature.object_guid,
+            objectGuid: feature.objectGuid,
             feature,
-            selected: feature.object_guid === this.feature.object_guid,
+            selected: feature.objectGuid === this.feature.objectGuid,
             isFeatureType: false,
           });
       });
@@ -91,7 +91,7 @@ export class FormTreeComponent implements OnInit,  OnChanges {
     const config : FormConfiguration = this.formConfigRepo.getFormConfig(feature.clazz);
     let label = this.getFeatureValue(feature, config.treeNodeColumn);
     if(config.idInTreeNodeColumn){
-      let id = feature.object_guid;
+      let id = feature.objectGuid;
 
       label = (label ? label : config.name) + ' (id: ' + id + ')';
     }

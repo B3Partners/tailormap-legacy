@@ -134,7 +134,7 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
   }
   public save() {
     const feature = this.formgroep.value;
-    feature.__fid = this.feature.object_guid;
+    feature.__fid = this.feature.objectGuid;
     this.mergeFromToFeature(feature);
     this.actions.save(this.isBulk, this.feature, this.features[0]).subscribe(feature => {
         const fs = this.updateFeatureInArray(feature, this.features);
@@ -155,7 +155,7 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
     if(!features){
       return fs;
     }
-    const parentIdx = features.findIndex(f => (f.object_guid === feature.object_guid || f.object_guid === FeatureInitializerService.STUB_OBJECT_GUID_NEW_OBJECT));
+    const parentIdx = features.findIndex(f => (f.objectGuid === feature.objectGuid || f.objectGuid === FeatureInitializerService.STUB_objectGuid_NEW_OBJECT));
     if(parentIdx !== -1){
       fs = [
         ...features.slice(0, parentIdx),

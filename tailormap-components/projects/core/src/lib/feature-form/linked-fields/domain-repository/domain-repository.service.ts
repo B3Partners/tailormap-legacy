@@ -25,7 +25,7 @@ export class DomainRepositoryService {
 
   public initFormConfig(formConfigs: FormConfigurations) {
     this.formConfigs = formConfigs;
-    const domainAttrs: number[] = [];
+    const domainAttrs: Array<number> = [];
     for (let key in formConfigs.config) {
       if (formConfigs.config.hasOwnProperty(key)) {
         let config = formConfigs.config[key];
@@ -38,7 +38,8 @@ export class DomainRepositoryService {
     }
 
     if (domainAttrs.length > 0) {
-      this.repo.attributes(domainAttrs).subscribe(result => {
+      this.repo.attributes({ids:domainAttrs}).subscribe(result=> {
+
         this.linkedAttributes = result;
         this.registry.setLinkedAttributes(this.linkedAttributes);
         for(let attribute of this.linkedAttributes){

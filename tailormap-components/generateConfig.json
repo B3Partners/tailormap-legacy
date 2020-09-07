@@ -1,0 +1,9 @@
+{
+  "$schema": "node_modules/ng-openapi-gen/ng-openapi-gen-schema.json",
+  "input": "../../form-rest-api/src/main/resources/form-endpoint.yml",
+  "output": "projects/core/src/lib/shared/generated",
+  "ignoreUnusedModels": false,
+  "indexFile": true,
+  "removeStaleFiles": false
+
+}
