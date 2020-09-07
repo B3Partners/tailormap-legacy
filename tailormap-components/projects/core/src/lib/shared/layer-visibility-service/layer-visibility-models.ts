@@ -1,4 +1,4 @@
-export interface LayerVisibilityEvent{
+export interface LayerVisibilityEvent {
   visible: boolean;
   layername: string;
 }

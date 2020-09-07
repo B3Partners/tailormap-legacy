@@ -1,46 +1,48 @@
 export interface AttributeListParameters {
-  application : number;
-  appLayer : number;
-  featureType : number;
-  layer ?: number;  // only needed when featureType is not present
-  limit ?: number;  // default 10
-  page ?: number; // default 1
-  start ?: number;  // default 1
-  dir ?: String; //ASC/DESC (case sensitive)
-  sort ?: String; // name of property to be sorted
-  arrays ?: boolean;// true (default) to get indexed results (c0:value,c1:value,... array), false to get normal response (attr_name:attr_value,...)
-  edit ?: boolean;  // true for editting, false for not editting
-  filter ?: String; // cql filter
-  aliases ?: boolean; // true (default) get attributes with their aliases instead of names
-  includeRelations ?: boolean; // true (default) to get filter for related features
-  debug ?: boolean; // true (default) to get non-gzipped response from WFS services
+  application: number;
+  appLayer: number;
+  featureType: number;
+  layer?: number;  // only needed when featureType is not present
+  limit?: number;  // default 10
+  page?: number; // default 1
+  start?: number;  // default 1
+  dir?: string; // ASC/DESC (case sensitive)
+  sort?: string; // name of property to be sorted
+  // true (default) to get indexed results (c0:value,c1:value,... array), false to get normal response (attr_name:attr_value,...)
+  arrays?: boolean;
+  edit?: boolean;  // true for editting, false for not editting
+  filter?: string; // cql filter
+  aliases?: boolean; // true (default) get attributes with their aliases instead of names
+  includeRelations?: boolean; // true (default) to get filter for related features
+  debug?: boolean; // true (default) to get non-gzipped response from WFS services
 }
 
-export interface AttributeListResponse{
+export interface AttributeListResponse {
   features: AttributeListFeature[];
   success: boolean,
   total: number
 }
 
-export interface AttributeListFeature{
-  [key:string]: any;
-  related_featuretypes ?:RelatedFeatureType[];
+export interface AttributeListFeature {
+  [key: string]: any;
+
+  related_featuretypes?: RelatedFeatureType[];
   __fid: number | string;
 }
 
-export interface RelatedFeatureType{
+export interface RelatedFeatureType {
   filter: string;
   foreignFeatureTypeName: string;
   id: number; // featureTypeId
 }
 
 
-export interface AttributeMetadataParameters{
-  application : number;
-  appLayer : number;
+export interface AttributeMetadataParameters {
+  application: number;
+  appLayer: number;
 }
 
-export interface AttributeMetadataResponse{
+export interface AttributeMetadataResponse {
   attributes: Attribute[];
   success: boolean;
   geometryAttribute: string;
@@ -48,7 +50,7 @@ export interface AttributeMetadataResponse{
   relations: Relation[];
 }
 
-export interface Attribute{
+export interface Attribute {
   allowValueListOnly: boolean;
   automaticValue: boolean;
   defaultValue: string;
@@ -69,13 +71,13 @@ export interface Attribute{
   visible: boolean;
 }
 
-export interface Relation{
+export interface Relation {
   featureType: number;
   foreignFeatureType: number;
   type: RelationType;
 }
 
-export enum RelationType{
-  RELATE='relate',
-  JOIN='join',
+export enum RelationType {
+  RELATE = 'relate',
+  JOIN = 'join',
 }

@@ -12,7 +12,7 @@ export class ConfirmDialogService {
 
   public dialogRef: MatDialogRef<ConfirmDialogComponent>;
 
-  public confirm(title: string, message?: string, removeConfirm?: boolean): Observable<boolean> {
+  public confirm$(title: string, message?: string, removeConfirm?: boolean): Observable<boolean> {
     if (this.dialogRef) {
       this.dialogRef.close(false);
     }

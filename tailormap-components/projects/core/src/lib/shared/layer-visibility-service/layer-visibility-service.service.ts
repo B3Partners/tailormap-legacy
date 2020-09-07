@@ -1,29 +1,33 @@
 import { Injectable } from '@angular/core';
-import {LayerVisibilityEvent} from "./layer-visibility-models";
-import {FormconfigRepositoryService} from "../formconfig-repository/formconfig-repository.service";
+import { LayerVisibilityEvent } from './layer-visibility-models';
+import { FormconfigRepositoryService } from '../formconfig-repository/formconfig-repository.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class LayerVisibilityServiceService {
 
-  private visibleLayers : string[] = [];
-  constructor(
-    private formConfigRepo: FormconfigRepositoryService) { }
+  private visibleLayers: string[] = [];
 
-  public layerVisibiltyChanged(event: LayerVisibilityEvent):void{
-    if(this.formConfigRepo.isLoaded()){
+  constructor(
+    private formConfigRepo: FormconfigRepositoryService) {
+  }
+
+  public layerVisibiltyChanged(event: LayerVisibilityEvent): void {
+    if (this.formConfigRepo.isLoaded()) {
       this.processEvent(event);
-    }else{
-      setTimeout(function(){this.layerVisibiltyChanged(event)}.bind(this), 500);
+    } else {
+      setTimeout(function () {
+        this.layerVisibiltyChanged(event)
+      }.bind(this), 500);
     }
   }
 
-  private processEvent(event: LayerVisibilityEvent) :void{
+  private processEvent(event: LayerVisibilityEvent): void {
     const layerName = event.layername;
-    let allowFts = this.formConfigRepo.getFeatureTypes();
+    const allowFts = this.formConfigRepo.getFeatureTypes();
     const isOfFormType = allowFts.findIndex(l => l.toLowerCase() === layerName.toLowerCase());
-    if(isOfFormType !== -1) {
+    if (isOfFormType !== -1) {
       const idx = this.visibleLayers.findIndex(l => l === layerName);
       if (event.visible) {
         if (idx === -1) {
@@ -37,7 +41,7 @@ export class LayerVisibilityServiceService {
     }
   }
 
-  public getVisibleLayers(): string[]{
+  public getVisibleLayers(): string[] {
     return this.visibleLayers;
   }
 }

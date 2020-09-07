@@ -1,23 +1,37 @@
-import { Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
-import {FlatTreeControl} from '@angular/cdk/tree';
-import {MatTreeFlatDataSource, MatTreeFlattener} from '@angular/material/tree';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  OnInit,
+  Output,
+  SimpleChanges,
+} from '@angular/core';
+import { FlatTreeControl } from '@angular/cdk/tree';
+import {
+  MatTreeFlatDataSource,
+  MatTreeFlattener,
+} from '@angular/material/tree';
 
 
-import { FlatNode, FeatureNode } from './form-tree-models';
-import { FormConfiguration, FormConfigurations} from "../form/form-models";
-import {Feature} from "../../shared/generated";
-import {FormTreeHelpers} from "./form-tree-helpers";
-import {FormconfigRepositoryService} from "../../shared/formconfig-repository/formconfig-repository.service";
+import {
+  FeatureNode,
+  FlatNode,
+} from './form-tree-models';
+import { FormConfiguration } from '../form/form-models';
+import { Feature } from '../../shared/generated';
+import { FormTreeHelpers } from './form-tree-helpers';
+import { FormconfigRepositoryService } from '../../shared/formconfig-repository/formconfig-repository.service';
 
 @Component({
   selector: 'tailormap-form-tree',
   templateUrl: './form-tree.component.html',
   styleUrls: ['./form-tree.component.css'],
 })
-export class FormTreeComponent implements OnInit,  OnChanges {
+export class FormTreeComponent implements OnInit, OnChanges {
 
   constructor(
-    private formConfigRepo: FormconfigRepositoryService,) {
+    private formConfigRepo: FormconfigRepositoryService) {
   }
 
   @Output()
@@ -49,49 +63,49 @@ export class FormTreeComponent implements OnInit,  OnChanges {
   }
 
   private convertFeatureToNode(features: Feature[]): FeatureNode[] {
-      const nodes: FeatureNode[] = [];
-      features.forEach(feature => {
-        const children: FeatureNode[] = [];
-        if (feature.children ) {
-          const fts = {};
-          feature.children.forEach((child: Feature) => {
-            const featureType = child.clazz;
-            if(this.formConfigRepo.getFormConfig(featureType)) {
-              if (!fts.hasOwnProperty(featureType)) {
-                fts[featureType] = {
-                  name: featureType,
-                  children: [],
-                  id: featureType,
-                  isFeatureType: true,
-                };
-              }
-              fts[featureType].children.push(this.convertFeatureToNode([child])[0]);
+    const nodes: FeatureNode[] = [];
+    features.forEach(feature => {
+      const children: FeatureNode[] = [];
+      if (feature.children) {
+        const fts = {};
+        feature.children.forEach((child: Feature) => {
+          const featureType = child.clazz;
+          if (this.formConfigRepo.getFormConfig(featureType)) {
+            if (!fts.hasOwnProperty(featureType)) {
+              fts[featureType] = {
+                name: featureType,
+                children: [],
+                id: featureType,
+                isFeatureType: true,
+              };
             }
-          });
-          for (const key in fts) {
-            if (fts.hasOwnProperty(key)) {
-              const child = fts[key];
-              children.push(child);
-            }
+            fts[featureType].children.push(this.convertFeatureToNode([child])[0]);
+          }
+        });
+        for (const key in fts) {
+          if (fts.hasOwnProperty(key)) {
+            const child = fts[key];
+            children.push(child);
           }
         }
-        nodes.push({
-            name: this.getNodeLabel(feature),
-            children,
-            objectGuid: feature.objectGuid,
-            feature,
-            selected: feature.objectGuid === this.feature.objectGuid,
-            isFeatureType: false,
-          });
+      }
+      nodes.push({
+        name: this.getNodeLabel(feature),
+        children,
+        objectGuid: feature.objectGuid,
+        feature,
+        selected: feature.objectGuid === this.feature.objectGuid,
+        isFeatureType: false,
       });
-      return nodes;
+    });
+    return nodes;
   }
 
-  private getNodeLabel (feature:Feature) :string{
-    const config : FormConfiguration = this.formConfigRepo.getFormConfig(feature.clazz);
+  private getNodeLabel(feature: Feature): string {
+    const config: FormConfiguration = this.formConfigRepo.getFormConfig(feature.clazz);
     let label = this.getFeatureValue(feature, config.treeNodeColumn);
-    if(config.idInTreeNodeColumn){
-      let id = feature.objectGuid;
+    if (config.idInTreeNodeColumn) {
+      const id = feature.objectGuid;
 
       label = (label ? label : config.name) + ' (id: ' + id + ')';
     }
@@ -99,7 +113,7 @@ export class FormTreeComponent implements OnInit,  OnChanges {
   }
 
   private getFeatureValue(feature: Feature, key: string): any {
-    let val = feature[key];
+    const val = feature[key];
     return val;
   }
 
@@ -118,5 +132,6 @@ export class FormTreeComponent implements OnInit,  OnChanges {
 
     return cls.join(' ');
   }
+
   public hasChild = (_: number, node: FlatNode) => node.expandable;
 }
