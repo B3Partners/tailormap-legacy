@@ -50,12 +50,9 @@ export class LinkedAttributeRegistryService {
     let selectedValue: Domeinwaarde;
 
     // retrieve the selected value
-    for (const key in linkedAttribute.domein.waardes) {
-      const val = linkedAttribute.domein.waardes[key]
-      if (val.id == value) {
-        selectedValue = val;
-        break;
-      }
+    const intValue = parseInt(value, 10);
+    if (!isNaN(intValue)) {
+      selectedValue = Object.values(linkedAttribute.domein.waardes).find(val => val.id === intValue);
     }
     if (selectedValue) {
       // retrieve all childvalues for the selected value
@@ -74,7 +71,7 @@ export class LinkedAttributeRegistryService {
     }
 
     // set all the fields to the new values
-    for (const domainId in options) {
+    Object.keys(options).forEach(domainId => {
       const attr = this.domainToAttribute.get(parseInt(domainId, 10));
       if (attr) {
         const selectedOptions = options[domainId];
@@ -87,7 +84,7 @@ export class LinkedAttributeRegistryService {
           }
         });
       }
-    }
+    });
 
     // check if the changed value has a parent. If so, select the associated value
     if (selectedValue && this.valueToParentValue.has(selectedValue.id)) {

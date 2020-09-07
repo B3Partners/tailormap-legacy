@@ -35,12 +35,6 @@ export class FormconfigRepositoryService {
   }
 
   public getFeatureTypes(): string[] {
-    const featuresTypes = [];
-    if (this.formConfigs) {
-      for (const key in this.formConfigs.config) {
-        featuresTypes.push(key);
-      }
-    }
-    return featuresTypes;
+    return this.formConfigs ? Object.keys(this.formConfigs.config) : [];
   }
 }

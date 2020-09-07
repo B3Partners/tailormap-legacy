@@ -21,9 +21,9 @@ export class AttributeService {
 
   public featureTypeMetadata$(params: AttributeMetadataParameters): Observable<AttributeMetadataResponse> {
     let httpParams: HttpParams = new HttpParams();
-    for (const paramsKey in params) {
-      httpParams = httpParams.set(paramsKey, params[paramsKey]);
-    }
+    Object.entries(params).forEach(([key, value]) => {
+      httpParams = httpParams.set(key, value);
+    });
     httpParams = httpParams.set('attributes', 'true');
     return this.http.get<AttributeMetadataResponse>('/viewer/action/attributes', {params: httpParams});
   }
@@ -38,9 +38,9 @@ export class AttributeService {
     httpParams = httpParams.set('page', '1');
     httpParams = httpParams.set('start', '1');
 
-    for (const paramsKey in params) {
-      httpParams = httpParams.set(paramsKey, params[paramsKey]);
-    }
+    Object.entries(params).forEach(([key, value]) => {
+      httpParams = httpParams.set(key, value);
+    });
     httpParams = httpParams.set('store', '1');
     return this.http.get<AttributeListResponse>('/viewer/action/attributes', {params: httpParams});
   }
