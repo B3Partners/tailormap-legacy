@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { FormHelpers } from '../form/form-helpers';
-import { ConfirmDialogService } from '../../shared/confirm-dialog/confirm-dialog.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import {
   Feature,
@@ -20,21 +19,20 @@ import { FormconfigRepositoryService } from '../../shared/formconfig-repository/
 export class FormActionsService {
 
   constructor(
-    private confirmDialogService: ConfirmDialogService,
     private service: FeatureControllerService,
     private formConfigRepo: FormconfigRepositoryService,
     private featureInitializerService: FeatureInitializerService,
     private _snackBar: MatSnackBar) {
   }
 
-  public save(isBulk: boolean, feature: Feature, parent: Feature): Observable<any> {
+  public save$(isBulk: boolean, feature: Feature, parent: Feature): Observable<any> {
 
     if (isBulk) {
       console.error('to be implemented');
 
     } else {
       const objectGuid = feature.objectGuid;
-      if (objectGuid && objectGuid !== FeatureInitializerService.STUB_objectGuid_NEW_OBJECT) {
+      if (objectGuid && objectGuid !== FeatureInitializerService.STUB_OBJECT_GUID_NEW_OBJECT) {
         return this.service.update({objectGuid, body: feature});
       } else {
         const parentId = parent ? parent.objectGuid : null;
@@ -43,7 +41,7 @@ export class FormActionsService {
     }
   }
 
-  public removeFeature(feature: Feature, features: Feature[]): Observable<any> {
+  public removeFeature$(feature: Feature, features: Feature[]): Observable<any> {
     this.service.delete({featuretype: feature.clazz, objectGuid: feature.objectGuid}).subscribe(a => {
       console.log('removed: ', a);
     });
@@ -65,7 +63,7 @@ export class FormActionsService {
     return fs;
   }
 
-  public newItem(evt, features): Observable<any> {
+  public newItem$(evt, features): Observable<any> {
     const type = evt.srcElement.id;
     const formConfig = this.formConfigRepo.getFormConfig(type);
     const name = 'Nieuwe ' + formConfig.name;

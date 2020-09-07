@@ -19,7 +19,7 @@ export class AttributeService {
   constructor(private http: HttpClient) {
   }
 
-  public featureTypeMetadata(params: AttributeMetadataParameters): Observable<AttributeMetadataResponse> {
+  public featureTypeMetadata$(params: AttributeMetadataParameters): Observable<AttributeMetadataResponse> {
     let httpParams: HttpParams = new HttpParams();
     for (const paramsKey in params) {
       httpParams = httpParams.set(paramsKey, params[paramsKey]);
@@ -32,7 +32,7 @@ export class AttributeService {
    * Get features for the attributelist
    * @param params Params for retrieving, sorting and filtering the features
    */
-  public features(params: AttributeListParameters): Observable<AttributeListResponse> {
+  public features$(params: AttributeListParameters): Observable<AttributeListResponse> {
     let httpParams: HttpParams = new HttpParams();
     httpParams = httpParams.set('limit', '10');
     httpParams = httpParams.set('page', '1');

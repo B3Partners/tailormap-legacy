@@ -18,6 +18,7 @@ import {
 export class DomainRepositoryService {
   private formConfigs: FormConfigurations;
   private linkedAttributes: Array<Attribuut>;
+  // tslint:disable-next-line:no-unused-variable
   private domainToAttribute: { [key: string]: Attribute; }
 
   constructor(

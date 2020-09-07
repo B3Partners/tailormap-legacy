@@ -15,7 +15,6 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Subscription } from 'rxjs';
 import {
   Feature,
-  FeatureControllerService,
 } from '../../shared/generated';
 
 import {
@@ -39,7 +38,6 @@ import { LinkedAttributeRegistryService } from '../linked-fields/registry/linked
 export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit {
 
   constructor(
-    private service: FeatureControllerService,
     private actions: FormActionsService,
     private registry: LinkedAttributeRegistryService,
     private _snackBar: MatSnackBar) {
@@ -131,7 +129,7 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
         const val = this.indexedAttributes.attrs.get(attr.key);
         if (val.value && val.value !== '-1') {
           this.domainValues.set(attr, val.value);
-          value = parseInt('' + value);
+          value = parseInt('' + value, 10);
         }
       }
       formControls[attr.key] = new FormControl(value);
@@ -151,12 +149,12 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
     const feature = this.formgroep.value;
     feature.__fid = this.feature.objectGuid;
     this.mergeFromToFeature(feature);
-    this.actions.save(this.isBulk, this.feature, this.features[0]).subscribe(feature => {
-        const fs = this.updateFeatureInArray(feature, this.features);
+    this.actions.save$(this.isBulk, this.feature, this.features[0]).subscribe(savedFeature => {
+        const fs = this.updateFeatureInArray(savedFeature, this.features);
         this.features = [...fs];
-        this.feature = {...feature};
+        this.feature = {...savedFeature};
         this._snackBar.open('Opgeslagen', '', {duration: 5000});
-        this.formChanged.emit({changed: false, feature, features: this.features});
+        this.formChanged.emit({changed: false, feature: savedFeature, features: this.features});
       },
       error => {
         this._snackBar.open('Fout: Feature niet kunnen opslaan: ' + error.error.message, '', {
@@ -170,7 +168,8 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
     if (!features) {
       return fs;
     }
-    const parentIdx = features.findIndex(f => (f.objectGuid === feature.objectGuid || f.objectGuid === FeatureInitializerService.STUB_objectGuid_NEW_OBJECT));
+    const parentIdx = features.findIndex(f =>
+      (f.objectGuid === feature.objectGuid || f.objectGuid === FeatureInitializerService.STUB_OBJECT_GUID_NEW_OBJECT));
     if (parentIdx !== -1) {
       fs = [
         ...features.slice(0, parentIdx),

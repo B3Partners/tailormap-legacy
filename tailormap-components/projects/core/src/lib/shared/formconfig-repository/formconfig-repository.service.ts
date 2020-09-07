@@ -12,7 +12,6 @@ import { DomainRepositoryService } from '../../feature-form/linked-fields/domain
 export class FormconfigRepositoryService {
 
   private formConfigs: FormConfigurations;
-  private config: any;
 
   constructor(private http: HttpClient,
               private domainRepo: DomainRepositoryService) {

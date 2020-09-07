@@ -135,7 +135,7 @@ describe('FormCreatorComponent', () => {
     };
     let baseFeature: Wegvakonderdeel  = {
       objecttype: "wegvakonderdeel",
-      objectGuid: FeatureInitializerService.STUB_objectGuid_NEW_OBJECT
+      objectGuid: FeatureInitializerService.STUB_OBJECT_GUID_NEW_OBJECT
     };
     let featuresArray = [baseFeature];
     let newArray = component.updateFeatureInArray(featureIsChanged, featuresArray);

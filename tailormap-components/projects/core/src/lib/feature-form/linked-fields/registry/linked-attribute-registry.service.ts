@@ -75,7 +75,7 @@ export class LinkedAttributeRegistryService {
 
     // set all the fields to the new values
     for (const domainId in options) {
-      const attr = this.domainToAttribute.get(parseInt(domainId));
+      const attr = this.domainToAttribute.get(parseInt(domainId, 10));
       if (attr) {
         const selectedOptions = options[domainId];
         attr.options.forEach(option => {

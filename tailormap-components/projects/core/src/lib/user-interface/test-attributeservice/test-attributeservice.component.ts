@@ -9,7 +9,7 @@ import {
 } from './models';
 
 @Component({
-  selector: 'flamingo-test-attributeservice',
+  selector: 'tailormap-test-attributeservice',
   templateUrl: './test-attributeservice.component.html',
   styleUrls: ['./test-attributeservice.component.css'],
 })
@@ -20,20 +20,20 @@ export class TestAttributeserviceComponent implements OnInit {
   ) {
   }
 
-  ngOnInit() {
+  public ngOnInit() {
   }
 
-  click() {
-    let params: AttributeListParameters = {
+  public click() {
+    const params: AttributeListParameters = {
       appLayer: 16,
       application: 3,
       featureType: 169,
       limit: 4,
     };
-    this.service.featureTypeMetadata(params)
+    this.service.featureTypeMetadata$(params)
       .subscribe(value => {
-        console.log('testrelate', value.relations[0].type == RelationType.RELATE);
-        console.log('testjoin', value.relations[0].type == RelationType.JOIN);
+        console.log('testrelate', value.relations[0].type === RelationType.RELATE);
+        console.log('testjoin', value.relations[0].type === RelationType.JOIN);
       });
   }
 }

@@ -30,7 +30,7 @@ describe('ConfirmDialogService', () => {
   it('should return true if confirmed', async(() => {
     const service: ConfirmDialogService = TestBed.inject(ConfirmDialogService);
     expect(service).toBeTruthy();
-    const observable$ = service.confirm('Title');
+    const observable$ = service.confirm$('Title');
     service.dialogRef.componentInstance.onConfirm();
     observable$.subscribe(confirmed => expect(confirmed).toBe(true));
   }));
@@ -38,7 +38,7 @@ describe('ConfirmDialogService', () => {
   it('should return false when dismissed', async(() => {
     const service: ConfirmDialogService = TestBed.inject(ConfirmDialogService);
     expect(service).toBeTruthy();
-    const observable$ = service.confirm('Title');
+    const observable$ = service.confirm$('Title');
     service.dialogRef.componentInstance.onDismiss();
     observable$.subscribe(confirmed => expect(confirmed).toBe(false));
   }));

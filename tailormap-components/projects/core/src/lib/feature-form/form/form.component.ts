@@ -98,7 +98,7 @@ export class FormComponent implements OnDestroy, OnChanges {
 
   public newItem(evt) {
     this.subscriptions.add(
-      this.actions.newItem(evt, this.features).subscribe(features => {
+      this.actions.newItem$(evt, this.features).subscribe(features => {
         this.features = features.features;
         this.feature = features.feature;
         this.initForm();
@@ -107,15 +107,15 @@ export class FormComponent implements OnDestroy, OnChanges {
   }
 
   public remove() {
-    const attribute = Object.keys(this.feature).find(attribute => attribute === this.formConfig.treeNodeColumn);
+    const attribute = Object.keys(this.feature).find(searchAttribute => searchAttribute === this.formConfig.treeNodeColumn);
     let message = 'Wilt u ' + this.formConfig.name + ' - ' + this.feature[attribute] + ' verwijderen?';
     if (this.feature.children && this.feature.children.length > 0) {
       message += ' Let op! Alle onderliggende objecten worden ook verwijderd.'
     }
-    this.confirmDialogService.confirm('Verwijderen',
+    this.confirmDialogService.confirm$('Verwijderen',
       message, true)
       .pipe(take(1), filter(remove => remove)).subscribe(() => {
-      this.actions.removeFeature(this.feature, this.features).subscribe(result => {
+      this.actions.removeFeature$(this.feature, this.features).subscribe(result => {
         this.features = result.features;
         this.feature = result.features[0];
         if (!this.feature) {
@@ -136,7 +136,7 @@ export class FormComponent implements OnDestroy, OnChanges {
   }
 
   private closeNotification(afterAction) {
-    this.confirmDialogService.confirm('Formulier sluiten',
+    this.confirmDialogService.confirm$('Formulier sluiten',
       'Wilt u het formulier sluiten? Niet opgeslagen wijzigingen gaan verloren.', true)
       .pipe(take(1), filter(remove => remove))
       // tslint:disable-next-line: rxjs-no-ignored-subscription

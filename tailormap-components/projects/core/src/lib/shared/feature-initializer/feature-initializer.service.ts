@@ -13,7 +13,7 @@ export class FeatureInitializerService {
 
   public static enum
 
-  public static readonly STUB_objectGuid_NEW_OBJECT = '-1';
+  public static readonly STUB_OBJECT_GUID_NEW_OBJECT = '-1';
 
   constructor() {
   }
@@ -21,7 +21,7 @@ export class FeatureInitializerService {
   public create(type: string, params: any): Feature {
     params.clazz = type.toLowerCase();
     params.objecttype = type;
-    params.objectGuid = FeatureInitializerService.STUB_objectGuid_NEW_OBJECT;
+    params.objectGuid = FeatureInitializerService.STUB_OBJECT_GUID_NEW_OBJECT;
     switch (type) {
       case 'Wegvakonderdeel':
         const wv: Wegvakonderdeel = {

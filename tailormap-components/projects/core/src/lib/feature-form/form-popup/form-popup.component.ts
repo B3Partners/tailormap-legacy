@@ -22,7 +22,6 @@ import * as wellknown from 'wellknown';
 import { FeatureInitializerService } from '../../shared/feature-initializer/feature-initializer.service';
 import { LayerVisibilityEvent } from '../../shared/layer-visibility-service/layer-visibility-models';
 import { LayerVisibilityServiceService } from '../../shared/layer-visibility-service/layer-visibility-service.service';
-import { FormconfigRepositoryService } from '../../shared/formconfig-repository/formconfig-repository.service';
 
 @Component({
   selector: 'tailormap-form-popup',
@@ -36,7 +35,6 @@ export class FormPopupComponent implements OnInit {
     private service: FeatureControllerService,
     private _snackBar: MatSnackBar,
     private featureInitializerService: FeatureInitializerService,
-    private formConfigRepo: FormconfigRepositoryService,
     private visibilityService: LayerVisibilityServiceService) {
   }
 
@@ -95,12 +93,13 @@ export class FormPopupComponent implements OnInit {
     this.openDialog(features);
   }
 
+  // tslint:disable-next-line:no-unused-variable
   private popupOpen = false;
 
+  // tslint:disable-next-line:no-unused-variable
   private layers;
 
   private isBulk: string;
-
 
   public lookup: Map<string, string>;
 
