@@ -21,7 +21,7 @@ export class AttributeService {
 
   public featureTypeMetadata(params: AttributeMetadataParameters): Observable<AttributeMetadataResponse> {
     let httpParams: HttpParams = new HttpParams();
-    for (let paramsKey in params) {
+    for (const paramsKey in params) {
       httpParams = httpParams.set(paramsKey, params[paramsKey]);
     }
     httpParams = httpParams.set('attributes', 'true');
@@ -38,7 +38,7 @@ export class AttributeService {
     httpParams = httpParams.set('page', '1');
     httpParams = httpParams.set('start', '1');
 
-    for (let paramsKey in params) {
+    for (const paramsKey in params) {
       httpParams = httpParams.set(paramsKey, params[paramsKey]);
     }
     httpParams = httpParams.set('store', '1');
