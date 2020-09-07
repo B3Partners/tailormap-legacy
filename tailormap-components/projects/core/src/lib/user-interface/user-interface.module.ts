@@ -16,7 +16,7 @@ import {CommonModule} from "@angular/common";
   ],
   exports: [
     AddFeatureComponent,
-    MatIconModule
+    MatIconModuleTileServiceTest
   ],
   entryComponents: []
 })

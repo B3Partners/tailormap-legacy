@@ -150,7 +150,7 @@ public class TileServiceTest extends TestUtil{
         WaitPageStatus status = new WaitPageStatus();
         
         GeoService result = instance.loadFromUrl(url, params, status, entityManager);
-        assertEquals("http://tiles.arcgis.com/tiles/nSZVuSZjHpEZZbRo/arcgis/rest/services/Historische_tijdreis_1950/MapServer/WMTS?",result.getUrl());
+        assertEquals("https://tiles.arcgis.com/tiles/nSZVuSZjHpEZZbRo/arcgis/rest/services/Historische_tijdreis_1950/MapServer/WMTS?",result.getUrl());
         Layer topLayer = result.getTopLayer();
         assertEquals(1, topLayer.getChildren().size());
         
