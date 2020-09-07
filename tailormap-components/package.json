@@ -7,6 +7,7 @@
     "build": "ng build",
     "build-prod": "npm run ng -- build --prod --output-hashing=none",
     "test": "ng test --project=core",
+    "test:ci": "ng test --project=core --code-coverage --no-watch --browsers=ChromeHeadless",
     "lint": "ng lint",
     "lint-fix": "ng lint --fix",
     "e2e": "ng e2e",
