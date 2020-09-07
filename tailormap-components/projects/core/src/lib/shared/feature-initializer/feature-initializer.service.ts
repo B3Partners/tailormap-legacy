@@ -1,5 +1,9 @@
 import { Injectable } from '@angular/core';
-import { Feature, Wegvakonderdeel, Wegvakonderdeelplanning } from '../generated';
+import {
+  Feature,
+  Wegvakonderdeel,
+  Wegvakonderdeelplanning,
+} from '../generated';
 
 
 @Injectable({
@@ -10,15 +14,17 @@ export class FeatureInitializerService {
   public static enum
 
   public static readonly STUB_objectGuid_NEW_OBJECT = '-1';
-  constructor() { }
 
-  public create(type: string, params: any) : Feature {
+  constructor() {
+  }
+
+  public create(type: string, params: any): Feature {
     params.clazz = type.toLowerCase();
     params.objecttype = type;
     params.objectGuid = FeatureInitializerService.STUB_objectGuid_NEW_OBJECT;
-    switch (type){
+    switch (type) {
       case 'Wegvakonderdeel':
-        const wv : Wegvakonderdeel = {
+        const wv: Wegvakonderdeel = {
           aanlegjaar: 0,
           aanzien: '',
           beheerder: '',

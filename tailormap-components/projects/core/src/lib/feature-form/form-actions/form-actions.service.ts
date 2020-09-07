@@ -2,8 +2,14 @@ import { Injectable } from '@angular/core';
 import { FormHelpers } from '../form/form-helpers';
 import { ConfirmDialogService } from '../../shared/confirm-dialog/confirm-dialog.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Feature, FeatureControllerService } from '../../shared/generated';
-import { Observable, of } from 'rxjs';
+import {
+  Feature,
+  FeatureControllerService,
+} from '../../shared/generated';
+import {
+  Observable,
+  of,
+} from 'rxjs';
 import { FeatureInitializerService } from '../../shared/feature-initializer/feature-initializer.service';
 import { FormconfigRepositoryService } from '../../shared/formconfig-repository/formconfig-repository.service';
 
@@ -18,25 +24,26 @@ export class FormActionsService {
     private service: FeatureControllerService,
     private formConfigRepo: FormconfigRepositoryService,
     private featureInitializerService: FeatureInitializerService,
-    private _snackBar: MatSnackBar) { }
+    private _snackBar: MatSnackBar) {
+  }
 
-  public save(isBulk: boolean, feature: Feature, parent: Feature) : Observable<any> {
+  public save(isBulk: boolean, feature: Feature, parent: Feature): Observable<any> {
 
-      if (isBulk) {
-        console.error('to be implemented');
+    if (isBulk) {
+      console.error('to be implemented');
 
+    } else {
+      const objectGuid = feature.objectGuid;
+      if (objectGuid && objectGuid !== FeatureInitializerService.STUB_objectGuid_NEW_OBJECT) {
+        return this.service.update({objectGuid, body: feature});
       } else {
-        const objectGuid = feature.objectGuid;
-        if (objectGuid && objectGuid !== FeatureInitializerService.STUB_objectGuid_NEW_OBJECT) {
-          return this.service.update({objectGuid, body: feature});
-        }else {
-          const parentId = parent ? parent.objectGuid : null;
-          return this.service.save({parentId, body: feature});
-        }
+        const parentId = parent ? parent.objectGuid : null;
+        return this.service.save({parentId, body: feature});
       }
     }
+  }
 
-  public removeFeature(feature: Feature, features: Feature[]) : Observable<any> {
+  public removeFeature(feature: Feature, features: Feature[]): Observable<any> {
     this.service.delete({featuretype: feature.clazz, objectGuid: feature.objectGuid}).subscribe(a => {
       console.log('removed: ', a);
     });
@@ -58,13 +65,13 @@ export class FormActionsService {
     return fs;
   }
 
-  public newItem(evt, features) : Observable<any> {
+  public newItem(evt, features): Observable<any> {
     const type = evt.srcElement.id;
     const formConfig = this.formConfigRepo.getFormConfig(type);
-    const name = 'Nieuwe '  + formConfig.name;
+    const name = 'Nieuwe ' + formConfig.name;
 
     const parentFeature = features[0];
-   // const relations = formConfig.relation.relation;
+    // const relations = formConfig.relation.relation;
     const objecttype = FormHelpers.capitalize(type);
 
     const newFeature = this.featureInitializerService.create(objecttype, {
@@ -76,11 +83,11 @@ export class FormActionsService {
     });
 
     newFeature[formConfig.treeNodeColumn] = name;
-   /* relations.forEach(r => {
-      const relatedKey = r.relatedFeatureColumn;
-      const mainKey = r.mainFeatureColumn;
-      newFeature[relatedKey] = parentFeature[mainKey];
-    });*/
+    /* relations.forEach(r => {
+       const relatedKey = r.relatedFeatureColumn;
+       const mainKey = r.mainFeatureColumn;
+       newFeature[relatedKey] = parentFeature[mainKey];
+     });*/
     parentFeature.children.push(newFeature);
     const feature = newFeature;
     features = [...features];

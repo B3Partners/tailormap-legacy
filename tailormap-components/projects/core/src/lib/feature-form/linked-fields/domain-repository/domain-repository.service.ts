@@ -7,14 +7,17 @@ import {
   SelectOption,
 } from '../../form/form-models';
 import { LinkedAttributeRegistryService } from '../registry/linked-attribute-registry.service';
-import { AttribuutControllerService, Attribuut } from '../../../shared/generated';
+import {
+  Attribuut,
+  AttribuutControllerService,
+} from '../../../shared/generated';
 
 @Injectable({
   providedIn: 'root',
 })
 export class DomainRepositoryService {
   private formConfigs: FormConfigurations;
-  private linkedAttributes:  Array<Attribuut>;
+  private linkedAttributes: Array<Attribuut>;
   private domainToAttribute: { [key: string]: Attribute; }
 
   constructor(
@@ -46,7 +49,7 @@ export class DomainRepositoryService {
           const fc: FormConfiguration = this.formConfigs.config[featureType];
           fc.fields.forEach(field => {
             if (field.linkedList && field.linkedList === attribute.id) {
-              const options : SelectOption[] = [];
+              const options: SelectOption[] = [];
               const domeinwaardes = attribute.domein.waardes;
 
               for (const domeinwaarde of domeinwaardes) {

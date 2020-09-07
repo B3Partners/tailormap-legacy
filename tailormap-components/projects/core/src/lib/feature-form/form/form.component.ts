@@ -1,13 +1,23 @@
-import { Component, Inject, OnDestroy, OnChanges, SimpleChanges } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import {
+  Component,
+  Inject,
+  OnChanges,
+  OnDestroy,
+  SimpleChanges,
+} from '@angular/core';
+import {
+  MAT_DIALOG_DATA,
+  MatDialogRef,
+} from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ConfirmDialogService } from '../../shared/confirm-dialog/confirm-dialog.service';
-import { filter, take } from 'rxjs/operators';
+import {
+  filter,
+  take,
+} from 'rxjs/operators';
 import { Subscription } from 'rxjs';
 import { DialogData } from '../form-popup/form-popup-models';
-import {
-  FormConfiguration,
-} from './form-models';
+import { FormConfiguration } from './form-models';
 import { Feature } from '../../shared/generated';
 import { FormActionsService } from '../form-actions/form-actions.service';
 import { FormconfigRepositoryService } from '../../shared/formconfig-repository/formconfig-repository.service';
@@ -28,26 +38,27 @@ export class FormComponent implements OnDestroy, OnChanges {
   public formDirty: boolean;
 
   private subscriptions = new Subscription();
-  constructor( public dialogRef: MatDialogRef<FormComponent>,
-               private confirmDialogService: ConfirmDialogService,
-               @Inject(MAT_DIALOG_DATA) public data: DialogData,
-               private _snackBar: MatSnackBar,
-               private formConfigRepo: FormconfigRepositoryService,
-               public actions : FormActionsService) {
 
-      this.features = data.formFeatures;
-      this.feature = this.features[0];
-      this.isBulk = !!data.isBulk;
-      this.lookup = data.lookup;
-      const configs = this.formConfigRepo.getAllFormConfigs().config;
-      for (const key in configs) {
-        if (configs.hasOwnProperty(key)) {
-          const cf: FormConfiguration = configs [key];
-          this.formsForNew.push(cf);
-        }
+  constructor(public dialogRef: MatDialogRef<FormComponent>,
+              private confirmDialogService: ConfirmDialogService,
+              @Inject(MAT_DIALOG_DATA) public data: DialogData,
+              private _snackBar: MatSnackBar,
+              private formConfigRepo: FormconfigRepositoryService,
+              public actions: FormActionsService) {
+
+    this.features = data.formFeatures;
+    this.feature = this.features[0];
+    this.isBulk = !!data.isBulk;
+    this.lookup = data.lookup;
+    const configs = this.formConfigRepo.getAllFormConfigs().config;
+    for (const key in configs) {
+      if (configs.hasOwnProperty(key)) {
+        const cf: FormConfiguration = configs [key];
+        this.formsForNew.push(cf);
       }
+    }
 
-      this.initForm();
+    this.initForm();
   }
 
   public ngOnDestroy() {
@@ -66,11 +77,11 @@ export class FormComponent implements OnDestroy, OnChanges {
   public openForm(feature) {
     if (feature && !this.isBulk) {
       if (this.formDirty) {
-        this.closeNotification(function() {
+        this.closeNotification(function () {
           this.feature = feature;
           this.initForm();
         });
-      }else {
+      } else {
         this.feature = feature;
         this.initForm();
       }
@@ -104,32 +115,34 @@ export class FormComponent implements OnDestroy, OnChanges {
     this.confirmDialogService.confirm('Verwijderen',
       message, true)
       .pipe(take(1), filter(remove => remove)).subscribe(() => {
-       this.actions.removeFeature(this.feature, this.features).subscribe(result => {
-          this.features = result.features;
-          this.feature = result.features[0];
-          if (!this.feature) {
-            this.closeDialog();
-          }
-        });
+      this.actions.removeFeature(this.feature, this.features).subscribe(result => {
+        this.features = result.features;
+        this.feature = result.features[0];
+        if (!this.feature) {
+          this.closeDialog();
+        }
       });
+    });
   }
 
   public closeDialog() {
     if (this.formDirty) {
-      this.closeNotification(function() {this.dialogRef.close(); });
-    }else {
+      this.closeNotification(function () {
+        this.dialogRef.close();
+      });
+    } else {
       this.dialogRef.close();
     }
   }
 
   private closeNotification(afterAction) {
     this.confirmDialogService.confirm('Formulier sluiten',
-    'Wilt u het formulier sluiten? Niet opgeslagen wijzigingen gaan verloren.', true)
-    .pipe(take(1), filter(remove => remove))
-    // tslint:disable-next-line: rxjs-no-ignored-subscription
-    .subscribe(() => {
-      afterAction.call(this);
-    });
+      'Wilt u het formulier sluiten? Niet opgeslagen wijzigingen gaan verloren.', true)
+      .pipe(take(1), filter(remove => remove))
+      // tslint:disable-next-line: rxjs-no-ignored-subscription
+      .subscribe(() => {
+        afterAction.call(this);
+      });
   }
 
 }

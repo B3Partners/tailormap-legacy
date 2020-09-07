@@ -1,8 +1,22 @@
-import { AfterViewInit, Component, EventEmitter, Input, OnChanges, OnDestroy, Output } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import {
+  AfterViewInit,
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  OnDestroy,
+  Output,
+} from '@angular/core';
+import {
+  FormControl,
+  FormGroup,
+} from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Subscription } from 'rxjs';
-import { Feature, FeatureControllerService } from '../../shared/generated';
+import {
+  Feature,
+  FeatureControllerService,
+} from '../../shared/generated';
 
 import {
   Attribute,
@@ -74,7 +88,7 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
   private prepareFormConfig(): TabbedFields {
     const tabbedFields: TabbedFields = {tabs: new Map<number, ColumnizedFields>()};
     const attrs = this.formConfig.fields;
-    for (let tabNr = 1 ; tabNr <= this.formConfig.tabs ; tabNr++) {
+    for (let tabNr = 1; tabNr <= this.formConfig.tabs; tabNr++) {
       const fields: Attribute[] = [];
       attrs.forEach(attr => {
         if (attr.tab === tabNr) {
@@ -92,7 +106,7 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
       return columnizedFields;
     }
     const numCols = attrs.reduce((max, b) => Math.max(max, b.column), attrs[0].column);
-    for (let col = 1 ; col <= numCols ; col++) {
+    for (let col = 1; col <= numCols; col++) {
       const fields: Attribute[] = [];
       attrs.forEach(attr => {
         if (attr.column === col) {
@@ -108,7 +122,7 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
     const attrs = this.formConfig.fields;
     const formControls = {};
     this.domainValues = new Map<Attribute, any>();
-    for ( const attr of attrs) {
+    for (const attr of attrs) {
       let value = !this.isBulk && this.indexedAttributes.attrs.get(attr.key)
         ? this.indexedAttributes.attrs.get(attr.key).value : null;
 
@@ -132,6 +146,7 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
       });
     });
   }
+
   public save() {
     const feature = this.formgroep.value;
     feature.__fid = this.feature.objectGuid;
@@ -150,7 +165,7 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
       });
   }
 
-  public updateFeatureInArray(feature : Feature, features: Feature[]): Feature[] {
+  public updateFeatureInArray(feature: Feature, features: Feature[]): Feature[] {
     let fs = [];
     if (!features) {
       return fs;
@@ -162,8 +177,8 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
         {...feature},
         ...features.slice(parentIdx + 1),
       ];
-    }else {
-      features.forEach( (feat) => {
+    } else {
+      features.forEach((feat) => {
         feat.children = this.updateFeatureInArray(feature, feat.children);
         fs.push(feat);
       });
@@ -186,7 +201,7 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
     let features = [];
     if (this.formgroep.dirty) {
       const attributes = [];
-      for ( const key in this.formgroep.controls) {
+      for (const key in this.formgroep.controls) {
         if (this.formgroep.controls.hasOwnProperty(key)) {
           const control = this.formgroep.controls[key];
           if (control.dirty) {

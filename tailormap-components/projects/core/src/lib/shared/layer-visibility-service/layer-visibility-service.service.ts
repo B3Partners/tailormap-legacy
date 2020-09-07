@@ -7,19 +7,23 @@ import { FormconfigRepositoryService } from '../formconfig-repository/formconfig
 })
 export class LayerVisibilityServiceService {
 
-  private visibleLayers : string[] = [];
+  private visibleLayers: string[] = [];
+
   constructor(
-    private formConfigRepo: FormconfigRepositoryService) { }
+    private formConfigRepo: FormconfigRepositoryService) {
+  }
 
   public layerVisibiltyChanged(event: LayerVisibilityEvent): void {
     if (this.formConfigRepo.isLoaded()) {
       this.processEvent(event);
-    }else {
-      setTimeout(function() {this.layerVisibiltyChanged(event)}.bind(this), 500);
+    } else {
+      setTimeout(function () {
+        this.layerVisibiltyChanged(event)
+      }.bind(this), 500);
     }
   }
 
-  private processEvent(event: LayerVisibilityEvent) : void {
+  private processEvent(event: LayerVisibilityEvent): void {
     const layerName = event.layername;
     const allowFts = this.formConfigRepo.getFeatureTypes();
     const isOfFormType = allowFts.findIndex(l => l.toLowerCase() === layerName.toLowerCase());

@@ -1,9 +1,22 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+} from '@angular/core';
 import { FormComponent } from '../form/form.component';
 import { MatDialog } from '@angular/material/dialog';
-import { Feature, FeatureControllerService } from '../../shared/generated';
+import {
+  Feature,
+  FeatureControllerService,
+} from '../../shared/generated';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { DialogClosedData, GeometryInteractionData, GeometryType } from './form-popup-models';
+import {
+  DialogClosedData,
+  GeometryInteractionData,
+  GeometryType,
+} from './form-popup-models';
 import { AddButtonEvent } from '../../user-interface/add-feature/add-feature-models';
 import * as wellknown from 'wellknown';
 import { FeatureInitializerService } from '../../shared/feature-initializer/feature-initializer.service';
@@ -47,7 +60,7 @@ export class FormPopupComponent implements OnInit {
     this.service.onPoint({x, y, scale}).subscribe(
       (features: Feature[]) => {
         if (features && features.length > 0) {
-        this.openDialog(features);
+          this.openDialog(features);
         }
       },
       error => {
@@ -69,7 +82,7 @@ export class FormPopupComponent implements OnInit {
   public set layerVisibilityChanged(evtString: any) {
     const event: LayerVisibilityEvent = JSON.parse(evtString);
     this.visibilityService.layerVisibiltyChanged(event);
-          }
+  }
 
 
   @Input()
@@ -78,9 +91,9 @@ export class FormPopupComponent implements OnInit {
     const objecttype = this.temp.featuretype.charAt(0).toUpperCase() + this.temp.featuretype.slice(1);
     const feat = this.featureInitializerService.create(objecttype, {geometrie: geoJson, clazz: this.temp.featuretype, children: []});
 
-    const features : Feature[] = [feat];
+    const features: Feature[] = [feat];
     this.openDialog(features);
-      }
+  }
 
   private popupOpen = false;
 
@@ -123,22 +136,23 @@ export class FormPopupComponent implements OnInit {
       });
     });
   }
+
   public addFeature(event: AddButtonEvent) {
     this.temp = event;
     this.startGeometryDrawing.emit({
       type: GeometryType.POLYGON,
-      });
-      }
+    });
+  }
 
   public createColumnLookup(): Map<string, string> {
     const lookup = new Map<string, string>();
-   /* this.tailormapAppLayer.attributes.forEach(a => {
-      const index = a.longname.indexOf('.');
-      const featureType = a.longname.substring(0, index);
-      const originalName = a.longname.substring(index + 1);
-      const alias = a.editAlias || a.alias;
-      lookup[originalName] = (alias || a.name);
-    });*/
+    /* this.tailormapAppLayer.attributes.forEach(a => {
+       const index = a.longname.indexOf('.');
+       const featureType = a.longname.substring(0, index);
+       const originalName = a.longname.substring(index + 1);
+       const alias = a.editAlias || a.alias;
+       lookup[originalName] = (alias || a.name);
+     });*/
     return lookup;
   }
 

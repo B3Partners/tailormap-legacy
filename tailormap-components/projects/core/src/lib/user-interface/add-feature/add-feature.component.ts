@@ -1,4 +1,9 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  OnInit,
+  Output,
+} from '@angular/core';
 import { AddButtonEvent } from './add-feature-models';
 import { LayerVisibilityServiceService } from '../../shared/layer-visibility-service/layer-visibility-service.service';
 
@@ -14,7 +19,8 @@ export class AddFeatureComponent implements OnInit {
 
   constructor(
     public layerVisible: LayerVisibilityServiceService,
-  ) { }
+  ) {
+  }
 
   public ngOnInit() {
   }
