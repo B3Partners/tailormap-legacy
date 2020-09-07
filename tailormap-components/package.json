@@ -7,8 +7,8 @@
     "build": "ng build",
     "build-prod": "npm run ng -- build --prod --output-hashing=none",
     "test": "ng test --project=core",
-    "lint": "ng lint --project=bridge",
-    "lint-fix": "ng lint --project=bridge --fix",
+    "lint": "ng lint --project=core",
+    "lint-fix": "ng lint --project=core --fix",
     "e2e": "ng e2e",
     "ng-openapi-gen": "ng-openapi-gen",
     "generate": "ng-openapi-gen -c generateConfig.json"
