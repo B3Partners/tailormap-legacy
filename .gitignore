@@ -16,5 +16,4 @@ vuln-check.log
 target/
 # GH-issue 1493
 viewer/src/main/webapp/viewer-html/package-lock.json
-package-lock.json
 node_modules
