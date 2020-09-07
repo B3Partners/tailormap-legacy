@@ -926,7 +926,13 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                     transparent: true,
                     noCache: true
                 };
-                
+                if(service.version === "1.3.0"){
+                    delete ogcOptions.srs;
+                    delete  ogcOptions.exceptions;
+                    ogcOptions.crs = this.projection;
+                    ogcOptions.version = "1.3.0";
+                }
+
                 var correction = this.calculateScaleCorrection(service,layer.minScale, layer.maxScale);
                 if(Ext.isDefined(layer.minScale)){
                     var minRes = layer.minScale / correction;
