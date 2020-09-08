@@ -2,6 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { AddFeatureComponent } from './add-feature.component';
 import {SharedModule} from "../../shared/shared.module";
+import { FormConfigMockModule } from '../../shared/formconfig-repository/formconfig-mock.module.spec';
 
 describe('AddFeatureComponent', () => {
   let component: AddFeatureComponent;
@@ -10,7 +11,9 @@ describe('AddFeatureComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
-        SharedModule,],
+        SharedModule,
+        FormConfigMockModule,
+      ],
       providers:[],
       declarations: [ AddFeatureComponent ]
     })

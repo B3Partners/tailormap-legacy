@@ -5,7 +5,7 @@ import {SharedModule} from "../../shared/shared.module";
 import {FormFieldType} from "../form/form-models";
 import {NoopAnimationsModule} from "@angular/platform-browser/animations";
 
-describe('WegvakFormfieldComponent', () => {
+describe('FormfieldComponent', () => {
   let component: FormfieldComponent;
   let fixture: ComponentFixture<FormfieldComponent>;
 
