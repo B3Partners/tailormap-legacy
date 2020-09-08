@@ -25,6 +25,10 @@ jobs:
           cd tailormap-components
           npm install
           npm run test:ci
+      - uses: codecov/codecov-action@v1
+        with:
+          file: ./tailormap-components/coverage/core/lcov.info
+          flags: frontend # optional
 
   lint:
     runs-on: ubuntu-latest
