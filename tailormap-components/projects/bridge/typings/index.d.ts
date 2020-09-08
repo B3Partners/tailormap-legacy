@@ -10,8 +10,18 @@ declare interface AppLayer {
   id: string;
 }
 
+declare interface OlMap{
+  addListener: (eventName: string) => void;
+}
+
+declare interface MapComponent {
+
+  getMap : () => OlMap;
+}
 
 declare interface ViewerController {
+  mapComponent: MapComponent;
+
   isDebug: () => boolean;
 
   getService: (serviceId: number) => GeoService;
@@ -19,5 +29,4 @@ declare interface ViewerController {
   getAppLayer: (serviceId: number, layerName: string) => AppLayer;
 
   getVisibleLayers: (castToStrings?: boolean) => number[] | string[];
-
 }
