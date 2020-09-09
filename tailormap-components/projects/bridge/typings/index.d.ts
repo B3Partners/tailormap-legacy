@@ -1,3 +1,5 @@
+import { LayerVisibilityEvent } from '../../core/src/lib/shared/layer-visibility-service/layer-visibility-models';
+
 declare interface AppLoader {
   get: (varName: 'viewerController' | 'appId' | 'user' | 'contextPath' | 'absoluteURIPrefix') => any;
 }
@@ -10,8 +12,10 @@ declare interface AppLayer {
   id: string;
 }
 
+type layerEventHandler = (object: any, event: LayerVisibilityEvent) => void;
+
 declare interface OlMap{
-  addListener: (eventName: string) => void;
+  addListener: (eventName: string, handler: layerEventHandler) => void;
 }
 
 declare interface MapComponent {

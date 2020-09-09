@@ -9,7 +9,7 @@ import { TestAttributeserviceComponent } from './test-attributeservice/test-attr
 @NgModule({
   declarations: [
     AddFeatureComponent,
-    TestAttributeserviceComponent
+    TestAttributeserviceComponent,
   ],
   imports: [
     CommonModule,
@@ -18,7 +18,8 @@ import { TestAttributeserviceComponent } from './test-attributeservice/test-attr
   ],
   exports: [
     AddFeatureComponent,
-    MatIconModule
+    MatIconModule,
+    TestAttributeserviceComponent
   ],
   entryComponents: []
 })

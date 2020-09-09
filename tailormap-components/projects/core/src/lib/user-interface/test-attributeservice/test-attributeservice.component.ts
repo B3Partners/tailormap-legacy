@@ -1,22 +1,23 @@
 import { Component, OnInit } from '@angular/core';
-import {FormconfigRepositoryService} from "../../shared/formconfig-repository/formconfig-repository.service";
-import {AttributeService} from "../../shared/attribute-service/attribute.service";
-import {AttributeListParameters, RelationType} from "./models";
+import { FormconfigRepositoryService } from '../../shared/formconfig-repository/formconfig-repository.service';
+import { AttributeService } from '../../shared/attribute-service/attribute.service';
+import { AttributeListParameters, RelationType } from './models';
 import { TailorMapService } from '../../../../../bridge/src/tailor-map.service';
+import { LayerVisibilityEvent } from '../../shared/layer-visibility-service/layer-visibility-models';
 
 @Component({
-  selector: 'flamingo-test-attributeservice',
+  selector: 'tailormap-test-attributeservice',
   templateUrl: './test-attributeservice.component.html',
-  styleUrls: ['./test-attributeservice.component.css']
+  styleUrls: ['./test-attributeservice.component.css'],
 })
 export class TestAttributeserviceComponent implements OnInit {
 
   constructor(
       private tailorMap: TailorMapService,
-    private service: AttributeService
+      private service: AttributeService,
   ) { }
 
-  ngOnInit() {
+  public ngOnInit() {
   }
 
   public click() {
@@ -31,13 +32,20 @@ export class TestAttributeserviceComponent implements OnInit {
         console.log('testrelate', value.relations[0].type == RelationType.RELATE);
         console.log('testjoin', value.relations[0].type == RelationType.JOIN);
       });*/
-    let vc = this.tailorMap.getViewerController();
-    let mc = vc.mapComponent;
-    let map = mc.getMap();
-    map.addListener('ON_LAYER_VISIBILITY_CHANGED', this.layerVisChanged);
+
+    // via directe aanroep ext functies
+    const vc = this.tailorMap.getViewerController();
+    const mc = vc.mapComponent;
+    const map = mc.getMap();
+    map.addListener('ON_LAYER_VISIBILITY_CHANGED', function(object: any, event: LayerVisibilityEvent) {
+      this.layerVisChanged(event);
+    }.bind(this));
+
+    // via observables
+    this.tailorMap.layerVisibilityChanged$.subscribe(this.layerVisChanged);
   }
 
-  public layerVisChanged (a,b,c){
-    let d = 0;
+  public layerVisChanged ( event: LayerVisibilityEvent) {
+    console.log('layervischanged: ', event);
   }
 }
