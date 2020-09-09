@@ -1,7 +1,11 @@
 import { Injectable } from '@angular/core';
-import { LayerVisibilityEvent } from '../../core/src/lib/shared/models/layer-visibility-models';
 import { Subject } from 'rxjs';
-import { AppLoader, MapComponent, ViewerController } from '../typings';
+import { LayerVisibilityEvent } from '../../core/src/lib/shared/models/layer-visibility-models';
+import {
+  AppLoader,
+  MapComponent,
+  ViewerController,
+} from '../typings';
 
 @Injectable({
   providedIn: 'root',
