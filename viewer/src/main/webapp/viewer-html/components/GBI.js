@@ -45,8 +45,6 @@ Ext.define("viewer.components.GBI", {
         });
         this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_LAYERS_INITIALIZED,
             this.initialize,this);
-        this.config.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_VISIBILITY_CHANGED,
-            this.layerVisibilityChanged,this);
         return this;
     },
     initialize: function(){
@@ -91,6 +89,10 @@ Ext.define("viewer.components.GBI", {
 
 
         this.div.addEventListener('startGeometryDrawing', function(e){this.startDrawingGeometry(e.detail);}.bind(this));
+
+        this.config.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_VISIBILITY_CHANGED,
+            this.layerVisibilityChanged,this);
+
         this.div.setAttribute("config", JSON.stringify(this.formConfigs));
         document.body.appendChild(this.div);
 
