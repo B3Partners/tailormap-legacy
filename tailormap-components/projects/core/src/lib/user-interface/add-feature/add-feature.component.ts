@@ -62,7 +62,6 @@ export class AddFeatureComponent {
   private sanitzeLayername(layername : string) : string {
     const index = layername.indexOf(':');
     if (index !== -1) {
-      const featureType = layername.substring(0, index);
       layername = layername.substring(index + 1);
     }
     return layername.toLowerCase();

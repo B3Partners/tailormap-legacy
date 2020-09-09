@@ -13,7 +13,6 @@ import { TailorMapService } from '../../../../../bridge/src/tailor-map.service';
 export class FormconfigRepositoryService {
 
   private formConfigs: FormConfigurations;
-  private config: any;
 
   constructor(
     private http: HttpClient,
