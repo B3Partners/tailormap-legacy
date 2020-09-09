@@ -3,7 +3,7 @@ import { FormconfigRepositoryService } from '../../shared/formconfig-repository/
 import { AttributeService } from '../../shared/attribute-service/attribute.service';
 import { AttributeListParameters, RelationType } from './models';
 import { TailorMapService } from '../../../../../bridge/src/tailor-map.service';
-import { LayerVisibilityEvent } from '../../shared/layer-visibility-service/layer-visibility-models';
+import { LayerVisibilityEvent } from '../../shared/models/layer-visibility-models';
 
 @Component({
   selector: 'tailormap-test-attributeservice',

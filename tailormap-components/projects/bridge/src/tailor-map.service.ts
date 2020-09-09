@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
-import { LayerVisibilityEvent } from '../../core/src/lib/shared/layer-visibility-service/layer-visibility-models';
+import { LayerVisibilityEvent } from '../../core/src/lib/shared/models/layer-visibility-models';
 import { fromEvent, Observable, Subject } from 'rxjs';
-import { AppLoader, ViewerController } from '../typings';
+import { AppLoader, MapComponent, ViewerController } from '../typings';
+import { FormconfigRepositoryService } from '../../core/src/lib/shared/formconfig-repository/formconfig-repository.service';
 
 @Injectable({
   providedIn: 'root',
@@ -24,6 +25,10 @@ export class TailorMapService {
 
   public getViewerController(): ViewerController {
     return this.getAppLoader().get('viewerController') as ViewerController;
+  }
+
+  public getMapComponent(): MapComponent {
+    return this.getViewerController().mapComponent;
   }
 
   public init(): void {
