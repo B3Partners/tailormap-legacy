@@ -2,9 +2,11 @@ name: Angular components CI
 
 on:
   push:
-    paths:
-      - tailormap-components/**
-      - .github/workflows/angular-components.yml
+    branches:
+      - feat/gbi-component
+  pull_request:
+    branches:
+      - feat/gbi-component
 
 jobs:
   test:
