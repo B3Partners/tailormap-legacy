@@ -1,4 +1,5 @@
 import {
+  ChangeDetectorRef,
   Component,
   EventEmitter,
   Output,
@@ -17,6 +18,7 @@ export class AddFeatureComponent {
   constructor  (
       public tailorMapService: TailorMapService,
       private formConfigRepo: FormconfigRepositoryService,
+      private changeDetection : ChangeDetectorRef,
   ) {
     this.tailorMapService.layerVisibilityChanged$.subscribe(value => {
       this.calculateVisibleLayers();
@@ -45,6 +47,7 @@ export class AddFeatureComponent {
   }
 
   public calculateVisibleLayers(): void {
+    this.visibleLayers = [];
     const allowFts = this.formConfigRepo.getFeatureTypes();
 
     const appLayers = this.tailorMapService.getViewerController().getVisibleLayers() as number[];
@@ -57,6 +60,7 @@ export class AddFeatureComponent {
         this.visibleLayers.push(layerName);
       }
     });
+    this.changeDetection.detectChanges();
   }
 
   private sanitzeLayername(layername : string) : string {
