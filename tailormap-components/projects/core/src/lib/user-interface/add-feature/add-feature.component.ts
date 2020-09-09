@@ -1,7 +1,7 @@
 import {
-  ChangeDetectorRef,
   Component,
   EventEmitter,
+  NgZone,
   Output,
 } from '@angular/core';
 import { AddButtonEvent } from './add-feature-models';
@@ -15,13 +15,15 @@ import { FormconfigRepositoryService } from '../../shared/formconfig-repository/
 })
 export class AddFeatureComponent {
 
-  constructor  (
-      public tailorMapService: TailorMapService,
-      private formConfigRepo: FormconfigRepositoryService,
-      private changeDetection : ChangeDetectorRef,
+  constructor(
+    public tailorMapService: TailorMapService,
+    private formConfigRepo: FormconfigRepositoryService,
+    private ngZone: NgZone,
   ) {
     this.tailorMapService.layerVisibilityChanged$.subscribe(value => {
-      this.calculateVisibleLayers();
+      this.ngZone.run(() => {
+        this.calculateVisibleLayers();
+      });
     });
     this.init();
   }
@@ -29,13 +31,15 @@ export class AddFeatureComponent {
   @Output()
   public addFeature = new EventEmitter<AddButtonEvent>();
 
-  public visibleLayers : string[] = [];
+  public visibleLayers: string[] = [];
 
   public init(): void {
     if (this.formConfigRepo.isLoaded()) {
       this.calculateVisibleLayers();
-    }else {
-      setTimeout(function() {this.init()}.bind(this), 500);
+    } else {
+      setTimeout(function () {
+        this.init()
+      }.bind(this), 500);
     }
   }
 
@@ -53,17 +57,16 @@ export class AddFeatureComponent {
     const appLayers = this.tailorMapService.getViewerController().getVisibleLayers() as number[];
     appLayers.forEach(appLayerId => {
       const appLayer = this.tailorMapService.getViewerController().getAppLayerById(appLayerId);
-      let layerName : string = appLayer.layerName;
+      let layerName: string = appLayer.layerName;
       layerName = this.sanitzeLayername(layerName);
 
       if (allowFts.findIndex(l => l.toLowerCase() === layerName) !== -1) {
         this.visibleLayers.push(layerName);
       }
     });
-    this.changeDetection.detectChanges();
   }
 
-  private sanitzeLayername(layername : string) : string {
+  private sanitzeLayername(layername: string): string {
     const index = layername.indexOf(':');
     if (index !== -1) {
       layername = layername.substring(index + 1);
