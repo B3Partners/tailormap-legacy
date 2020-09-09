@@ -3,10 +3,33 @@ name: Angular components CI
 on:
   push:
     paths:
-      - tailormap-components/*
+      - tailormap-components/**
       - .github/workflows/angular-components.yml
 
 jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 14
+      - uses: actions/cache@v1
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+      - name: Test
+        run: |
+          cd tailormap-components
+          npm install
+          npm run test:ci
+      - uses: codecov/codecov-action@v1
+        with:
+          file: ./tailormap-components/coverage/core/lcov.info
+          flags: frontend # optional
+
   lint:
     runs-on: ubuntu-latest
     steps:

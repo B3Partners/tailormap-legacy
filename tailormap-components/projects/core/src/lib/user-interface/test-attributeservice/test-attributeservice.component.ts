@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
-import { FormconfigRepositoryService } from '../../shared/formconfig-repository/formconfig-repository.service';
+import {
+  Component,
+  OnInit,
+} from '@angular/core';
 import { AttributeService } from '../../shared/attribute-service/attribute.service';
-import { AttributeListParameters, RelationType } from './models';
 import { TailorMapService } from '../../../../../bridge/src/tailor-map.service';
 import { LayerVisibilityEvent } from '../../shared/models/layer-visibility-models';
 
@@ -14,7 +15,6 @@ export class TestAttributeserviceComponent implements OnInit {
 
   constructor(
       private tailorMap: TailorMapService,
-      private service: AttributeService,
   ) { }
 
   public ngOnInit() {

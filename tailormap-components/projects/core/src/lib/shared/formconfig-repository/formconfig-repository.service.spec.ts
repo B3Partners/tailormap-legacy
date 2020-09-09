@@ -1,22 +1,47 @@
-import { TestBed } from '@angular/core/testing';
-
+import {
+  getTestBed,
+  TestBed,
+} from '@angular/core/testing';
 import { FormconfigRepositoryService } from './formconfig-repository.service';
-import {FormConfiguration, FormConfigurations} from "../../feature-form/form/form-models";
+import {
+  HttpClientTestingModule,
+  HttpTestingController,
+} from '@angular/common/http/testing';
+import { mockConfigsJson } from './formconfig-mock.module.spec';
 
 describe('FormconfigRepositoryService', () => {
+  let httpMock: HttpTestingController;
+  let injector: TestBed;
 
-  let configsstring = '{"config": {"test": {"tabs": 1,"name": "testFT","featureType": "test","treeNodeColumn" : "colToShow","newPossible": true,"tabConfig": {"1": "test"},"relation":null,"fields": [{ "key": "colToShow","column" : 1,"tab": 1,"type": "textfield"}]}}}';
-  const formConfigs: FormConfigurations = JSON.parse(configsstring);
-  beforeEach(() => TestBed.configureTestingModule({}));
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [
+        HttpClientTestingModule,
+      ],
+    });
+    injector = getTestBed();
+    httpMock = TestBed.inject(HttpTestingController);
+
+  });
+
+  const expectConfigRequest = () => {
+    const req = httpMock.expectOne('/viewer/action/form');
+    req.flush(JSON.parse(mockConfigsJson));
+  };
+
+  afterEach(() => {
+    httpMock.verify();
+  });
 
   it('should be created', () => {
     const service: FormconfigRepositoryService = TestBed.inject(FormconfigRepositoryService);
+    expectConfigRequest();
     expect(service).toBeTruthy();
   });
 
   it('should return all formconfigs', () => {
     const service: FormconfigRepositoryService = TestBed.inject(FormconfigRepositoryService);
-    service.setFormConfigs(formConfigs);
+    expectConfigRequest();
     expect(service.getAllFormConfigs()).toBeTruthy();
     expect(service.getAllFormConfigs().config).toBeTruthy();
     expect(service.getAllFormConfigs().config['test']).toBeTruthy();
@@ -24,13 +49,15 @@ describe('FormconfigRepositoryService', () => {
 
   it('should return all featuretypes', () => {
     const service: FormconfigRepositoryService = TestBed.inject(FormconfigRepositoryService);
-    service.setFormConfigs(formConfigs);
+    expectConfigRequest();
     expect(service.getFeatureTypes()).toContain('test');
     expect(service.getFeatureTypes().length).toBe(1);
   });
 
   it('should return no featuretypes when no configs present', () => {
     const service: FormconfigRepositoryService = TestBed.inject(FormconfigRepositoryService);
+    const req = httpMock.expectOne('/viewer/action/form');
+    req.flush({ config: { }});
     expect(service.getFeatureTypes().length).toBe(0);
   });
 });

@@ -1,6 +1,5 @@
-import {Feature} from "../../shared/generated";
+import { Feature } from '../../shared/generated';
 
-import {FormConfigurations} from "../form/form-models";
 
 export interface DialogData {
   formFeatures: Feature[];
@@ -18,7 +17,7 @@ export interface GeometryInteractionData {
 }
 
 export enum GeometryType {
-  POLYGON = "Polygon",
-  LINESTRING = "LineString",
-  POINT = "Point",
+  POLYGON = 'Polygon',
+  LINESTRING = 'LineString',
+  POINT = 'Point',
 }

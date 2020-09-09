@@ -5,8 +5,9 @@ import {SharedModule} from "../../shared/shared.module";
 import {AddFeatureComponent} from "../../user-interface/add-feature/add-feature.component";
 import {FeatureControllerService} from "../../shared/generated";
 import {MatSnackBarModule} from "@angular/material/snack-bar";
+import { FormConfigMockModule } from '../../shared/formconfig-repository/formconfig-mock.module.spec';
 
-describe('WegvakPopupComponent', () => {
+describe('FormPopupComponent', () => {
   let component: FormPopupComponent;
   let fixture: ComponentFixture<FormPopupComponent>;
 
@@ -15,6 +16,7 @@ describe('WegvakPopupComponent', () => {
       imports: [
         SharedModule,
         MatSnackBarModule,
+        FormConfigMockModule,
       ],
       providers: [
         FeatureControllerService

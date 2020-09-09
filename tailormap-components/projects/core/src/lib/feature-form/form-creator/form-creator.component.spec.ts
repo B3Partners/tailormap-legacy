@@ -1,6 +1,11 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormCreatorComponent } from './form-creator.component';
-import {Feature, FeatureControllerService, Wegvakonderdeelplanning} from "../../shared/generated";
+import {
+  Feature,
+  FeatureControllerService,
+  Wegvakonderdeel,
+  Wegvakonderdeelplanning,
+} from '../../shared/generated';
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {SharedModule} from "../../shared/shared.module";
 import { FormConfiguration} from "../form/form-models";
@@ -9,9 +14,9 @@ import {FormComponent} from "../form/form.component";
 import {FormPopupComponent} from "../form-popup/form-popup.component";
 import {FormTreeComponent} from "../form-tree/form-tree.component";
 import {MatSnackBarModule} from "@angular/material/snack-bar";
-import {Wegvakonderdeel} from "../../shared/generated/model/wegvakonderdeel";
 import {AddFeatureComponent} from "../../user-interface/add-feature/add-feature.component";
 import {FeatureInitializerService} from "../../shared/feature-initializer/feature-initializer.service";
+import { FormConfigMockModule } from '../../shared/formconfig-repository/formconfig-mock.module.spec';
 
 describe('FormCreatorComponent', () => {
   let component: FormCreatorComponent;
@@ -24,6 +29,7 @@ describe('FormCreatorComponent', () => {
         ReactiveFormsModule,
         MatSnackBarModule,
         SharedModule,
+        FormConfigMockModule,
       ],
       providers:[
         FeatureControllerService,
@@ -135,7 +141,7 @@ describe('FormCreatorComponent', () => {
     };
     let baseFeature: Wegvakonderdeel  = {
       objecttype: "wegvakonderdeel",
-      objectGuid: FeatureInitializerService.STUB_objectGuid_NEW_OBJECT
+      objectGuid: FeatureInitializerService.STUB_OBJECT_GUID_NEW_OBJECT
     };
     let featuresArray = [baseFeature];
     let newArray = component.updateFeatureInArray(featureIsChanged, featuresArray);

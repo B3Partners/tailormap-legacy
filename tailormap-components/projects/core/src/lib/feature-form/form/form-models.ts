@@ -1,5 +1,5 @@
 export interface FormConfigurations {
-  config: Map <string, FormConfiguration> ;
+  config: Map<string, FormConfiguration>;
 }
 
 export interface FormConfiguration {
@@ -10,21 +10,21 @@ export interface FormConfiguration {
   idInTreeNodeColumn?: boolean;
   featureType: string;
   tabConfig: Map<number, string>;
-  relation ?: FormRelation;
+  relation?: FormRelation;
 }
 
 export interface Attribute {
   key: string;
   type: FormFieldType;
-  options ?: SelectOption[];
-  linkedList ?: number;
+  options?: SelectOption[];
+  linkedList?: number;
   column: number;
   tab: number;
 }
 
 export interface FeatureAttribute extends Attribute {
   key: string;
-  //type: FormFieldType;
+  // type: FormFieldType;
   value: string | number;
 }
 
@@ -39,7 +39,7 @@ export enum FormFieldType {
 export interface SelectOption {
   label: string;
   disabled: boolean;
-  val: string | number  ;
+  val: string | number;
 }
 
 export interface FormRelation {

@@ -1,11 +1,14 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import {FormConfiguration, FormConfigurations} from "../../feature-form/form/form-models";
-import {DomainRepositoryService} from "../../feature-form/linked-fields/domain-repository/domain-repository.service";
+import {
+  FormConfiguration,
+  FormConfigurations,
+} from '../../feature-form/form/form-models';
+import { DomainRepositoryService } from '../../feature-form/linked-fields/domain-repository/domain-repository.service';
 import { TailorMapService } from '../../../../../bridge/src/tailor-map.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class FormconfigRepositoryService {
 
@@ -24,25 +27,19 @@ export class FormconfigRepositoryService {
 
   }
 
-  public isLoaded():boolean{
+  public isLoaded(): boolean {
     return !!this.formConfigs;
   }
 
-  public getAllFormConfigs(): FormConfigurations{
+  public getAllFormConfigs(): FormConfigurations {
     return this.formConfigs;
   }
 
-  public getFormConfig(featureType: string) : FormConfiguration{
+  public getFormConfig(featureType: string): FormConfiguration {
     return this.formConfigs.config[featureType];
   }
 
-  public getFeatureTypes(): string[]{
-    let featuresTypes = [];
-    if(this.formConfigs) {
-      for (let key in this.formConfigs.config) {
-        featuresTypes.push(key);
-      }
-    }
-    return featuresTypes;
+  public getFeatureTypes(): string[] {
+    return this.formConfigs ? Object.keys(this.formConfigs.config) : [];
   }
 }
