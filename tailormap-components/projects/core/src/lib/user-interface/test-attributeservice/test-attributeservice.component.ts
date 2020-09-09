@@ -2,7 +2,6 @@ import {
   Component,
   OnInit,
 } from '@angular/core';
-import { AttributeService } from '../../shared/attribute-service/attribute.service';
 import { TailorMapService } from '../../../../../bridge/src/tailor-map.service';
 import { LayerVisibilityEvent } from '../../shared/models/layer-visibility-models';
 

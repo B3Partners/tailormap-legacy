@@ -1,7 +1,6 @@
 import {
   Component,
   EventEmitter,
-  OnInit,
   Output,
 } from '@angular/core';
 import { AddButtonEvent } from './add-feature-models';

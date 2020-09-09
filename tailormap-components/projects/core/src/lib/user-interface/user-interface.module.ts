@@ -19,7 +19,7 @@ import { TestAttributeserviceComponent } from './test-attributeservice/test-attr
   exports: [
     AddFeatureComponent,
     MatIconModule,
-    TestAttributeserviceComponent
+    TestAttributeserviceComponent,
   ],
   entryComponents: [],
 })

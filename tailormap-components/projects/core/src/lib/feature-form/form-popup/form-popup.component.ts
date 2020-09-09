@@ -20,8 +20,6 @@ import {
 import { AddButtonEvent } from '../../user-interface/add-feature/add-feature-models';
 import * as wellknown from 'wellknown';
 import { FeatureInitializerService } from '../../shared/feature-initializer/feature-initializer.service';
-import { LayerVisibilityEvent } from '../../shared/layer-visibility-service/layer-visibility-models';
-import { LayerVisibilityServiceService } from '../../shared/layer-visibility-service/layer-visibility-service.service';
 
 @Component({
   selector: 'tailormap-form-popup',
@@ -38,12 +36,13 @@ export class FormPopupComponent implements OnInit {
     ) {
   }
 
+  // tslint:disable-next-line:no-unused-variable
   private popupOpen = false;
 
+  // tslint:disable-next-line:no-unused-variable
   private layers;
 
   private isBulk: string;
-
 
   public lookup: Map<string, string>;
 
@@ -53,13 +52,13 @@ export class FormPopupComponent implements OnInit {
   }
 
   @Input()
-  public set visibleLayers(layers: string){
+  public set visibleLayers(layers: string) {
     this.layers = JSON.parse(layers);
   }
 
 
   @Input()
-  public set mapClicked(data: string){
+  public set mapClicked(data: string) {
     const mapClickData = JSON.parse(data);
     const x = mapClickData.x;
     const y = mapClickData.y;
@@ -95,16 +94,6 @@ export class FormPopupComponent implements OnInit {
     this.openDialog(features);
       }
 
-  // tslint:disable-next-line:no-unused-variable
-  private popupOpen = false;
-
-  // tslint:disable-next-line:no-unused-variable
-  private layers;
-
-  private isBulk: string;
-
-
-  public lookup: Map<string, string>;
 
   @Output()
   public wanneerPopupClosed = new EventEmitter<DialogClosedData>();

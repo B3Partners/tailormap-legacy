@@ -17,7 +17,7 @@ export class FormconfigRepositoryService {
 
   constructor(
     private http: HttpClient,
-    private domainRepo :DomainRepositoryService,
+    private domainRepo : DomainRepositoryService,
     private tailorMap: TailorMapService,
   ) {
     this.http.get<FormConfigurations>( this.tailorMap.getContextPath() + '/action/form').subscribe((data: any) => {
