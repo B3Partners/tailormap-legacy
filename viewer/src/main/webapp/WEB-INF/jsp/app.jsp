@@ -29,26 +29,24 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <link rel="stylesheet" type="text/css" href="${contextPath}/extjs/resources/css/triton/theme-triton-all_1.css">
         <link rel="stylesheet" type="text/css" href="${contextPath}/extjs/resources/css/triton/theme-triton-all_2.css">
 
-        <c:if test="${(param.debug == true)}">
-            <link rel="stylesheet" type="text/css" href="http://localhost:3200/styles.css">
-            <script src="http://localhost:3200/runtime.js" type="module"></script>
-            <script src="http://localhost:3200/polyfills.js" type="module"></script>
-            <script src="http://localhost:3200/styles.js" type="module"></script>
-            <script src="http://localhost:3200/scripts.js" defer></script>
-            <script src="http://localhost:3200/vendor.js" type="module"></script>
-            <script src="http://localhost:3200/main.js" type="module"></script>
-        </c:if>
-        <c:if test="${(param.debug != true)}">
-            <link rel="stylesheet" type="text/css" href="${contextPath}/tailormap-components/bridge/styles.css">
-            <script src="${contextPath}/tailormap-components/bridge/runtime.js" type="module"></script>
-            <script src="${contextPath}/tailormap-components/bridge/runtime-es5.js" nomodule defer></script>
-            <script src="${contextPath}/tailormap-components/bridge/polyfills-es5.js" nomodule defer></script>
-            <script src="${contextPath}/tailormap-components/bridge/polyfills.js" type="module"></script>
-            <script src="${contextPath}/tailormap-components/bridge/scripts.js" defer></script>
-            <script src="${contextPath}/tailormap-components/bridge/main.js" type="module"></script>
-            <script src="${contextPath}/tailormap-components/bridge/main-es5.js" nomodule defer></script>
-        </c:if>
-        
+        <c:set var="tailorMapComponentsPath" value="${contextPath}/tailormap-components/bridge"/>
+        <c:set var="reviewPR">${param['review-pr']}</c:set>
+        <c:choose>
+            <c:when test="${!empty reviewPR && reviewPR.matches('[0-9]+')}">
+                <c:set var="tailorMapComponentsPath" value="${contextPath}/pr/${reviewPR}/tailormap-components"/>
+            </c:when>
+            <c:when test="${param.debug == true}">
+                <c:set var="tailorMapComponentsPath" value="http://localhost:3200"/>
+            </c:when>
+        </c:choose>
+        <link rel="stylesheet" type="text/css" href="${tailorMapComponentsPath}/styles.css">
+        <script src="${tailorMapComponentsPath}/runtime.js" type="module"></script>
+        <script src="${tailorMapComponentsPath}/polyfills.js" type="module"></script>
+        <script src="${tailorMapComponentsPath}/styles.js" type="module"></script>
+        <script src="${tailorMapComponentsPath}/scripts.js" defer></script>
+        <script src="${tailorMapComponentsPath}/vendor.js" type="module"></script>
+        <script src="${tailorMapComponentsPath}/main.js" type="module"></script>
+
         <script type="text/javascript" src="${contextPath}/viewer-html/common/FlamingoErrorLogger.js"></script>
         <script type="text/javascript">
             var FlamingoErrorLogger = createFlamingoErrorLogger(

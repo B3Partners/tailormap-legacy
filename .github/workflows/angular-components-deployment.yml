@@ -13,47 +13,55 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-#      - uses: actions/checkout@v2
-#      - uses: actions/setup-node@v1
-#        with:
-#          node-version: 14
-#      - uses: actions/cache@v1
-#        with:
-#          path: ~/.npm
-#          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-#          restore-keys: |
-#            ${{ runner.os }}-node-
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 14
+      - uses: actions/cache@v1
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
       - name: Build
         run: |
-          #cd tailormap-components
-          #npm install
-          #npm run build
-           mkdir -p tailormap-components/dist/bridge
-           echo test > tailormap-components/dist/bridge/example.js
+          cd tailormap-components
+          npm install
+          npm run build
       - name: Upload dist
         uses: actions/upload-artifact@v2
         with:
           name: tailormap-components-dist
           path: |
-            tailormap-components/dist/bridge/*.js
-            tailormap-components/dist/bridge/*.css
-            tailormap-components/dist/bridge/*.map
+            tailormap-components/dist/bridge/*
           
   deploy-pr:
     runs-on: ubuntu-latest
     needs: build
     steps:
+      - uses: chrnorm/deployment-action@releases/v1
+        name: Create GitHub deployment
+        id: deployment
+        with:
+          token: "${{ github.token }}"
+          # Example: https://my-server.com/viewer/app/myapp?debug=true&review-pr={0}
+          target_url: ${{ format(secrets.REVIEW_SERVER_URL, github.event.pull_request.number) }}
+          environment: pr-review/${{ github.event.pull_request.number }}
+          ref: ${{ github.head_ref }}
+
       - name: Download build
         uses: actions/download-artifact@v2
         with:
           name: tailormap-components-dist
+
       # For rsync to create the directory it is easiest if it exists locally.
       # Without the command line option to rsync to delete files other PR deployments' files will remain.
       - name: Create directory structure
         run: |
-          DIR=pr/${{ github.event.pull_request.number }}
+          DIR=pr/${{ github.event.pull_request.number }}/tailormap-components/
           mkdir -p $DIR
           mv * $DIR 2>/dev/null || true
+
       - name: Deploy to staging server
         uses: easingthemes/ssh-deploy@4f928a3efcb95f593a10caf74003bcd3674a769b
         env:
@@ -63,13 +71,25 @@ jobs:
           REMOTE_HOST: ${{ secrets.SERVER_HOST }}
           REMOTE_USER: ${{ secrets.SERVER_USER }}
           TARGET: ${{ secrets.SERVER_TARGET }}
-      - name: Deploy pull request
-        if: ${{ github.event_name == 'pull_request' }}
-        run: |
-          echo event: ${{ github.event_name }}
-          echo Deploy PR nr ${{ github.event.pull_request.number }}
-          ls -lR
-          
+
+      - name: Update deployment status (success)
+        if: success()
+        uses: chrnorm/deployment-status@releases/v1
+        with:
+          token: "${{ github.token }}"
+          environment_url: ${{ format(secrets.REVIEW_SERVER_URL, github.event.pull_request.number) }}
+          state: "success"
+          deployment_id: ${{ steps.deployment.outputs.deployment_id }}
+
+      - name: Update deployment status (failure)
+        if: failure()
+        uses: chrnorm/deployment-status@releases/v1
+        with:
+          token: "${{ github.token }}"
+          environment_url: ${{ format(secrets.REVIEW_SERVER_URL, github.event.pull_request.number) }}
+          state: "failure"
+          deployment_id: ${{ steps.deployment.outputs.deployment_id }}
+
 #  deploy-branch:
 #    runs-on: ubuntu-latest
 #    needs: build
@@ -79,5 +99,7 @@ jobs:
 #        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/feat/GBIW-142_continuous_deployment' }}
 #        run: |
 #          echo Deploy branch
+
+# TODO remove deployment on PR close
 
 
