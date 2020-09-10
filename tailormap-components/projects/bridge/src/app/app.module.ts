@@ -1,7 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule, Injector, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { createCustomElement } from '@angular/elements';
-
 import { AppComponent } from './app.component';
 import { CoreModule } from 'projects/core/src';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
