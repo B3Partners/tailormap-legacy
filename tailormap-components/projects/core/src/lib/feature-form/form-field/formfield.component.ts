@@ -45,6 +45,30 @@ export class FormfieldComponent {
     }
   }
 
+  public hasNonValidValue(): boolean {
+    if (this.attribute.value && (!this.attribute.options || this.attribute.options.length === 0)) {
+      return true;
+    }else {
+      if (this.attribute.options?.length !== 0 &&
+        this.attribute.options.findIndex(value => {
+          const attributeValue = this.attribute.value;
+          return (typeof attributeValue !== 'number' && attributeValue === value.label)
+            || (typeof attributeValue === 'number' && value.val === attributeValue);
+        } ) === -1) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  public getDomainValue() {
+    if (this.isBulk) {
+      return '';
+    } else {
+      return this.attribute.value;
+    }
+  }
+
   public isTextAttribute = (attr: Attribute): boolean => attr.type === FormFieldType.TEXTFIELD;
   public isSelectAttribute = (attr: Attribute): boolean => attr.type === FormFieldType.SELECT;
   public isHiddenAttribute = (attr: Attribute): boolean => attr.type === FormFieldType.HIDDEN;

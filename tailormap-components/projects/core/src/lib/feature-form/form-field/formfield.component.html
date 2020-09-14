@@ -13,8 +13,9 @@
       placeholder="{{attribute.key}}"
       [formControlName]="attribute.key"
       *ngIf="isSelectAttribute(attribute) || isDomainAttribute(attribute)"
-      [value]="!isBulk ?  value : ''" >
+      [value]="getDomainValue()" >
     <mat-option [value]="-1">-- Selecteer --</mat-option>
+    <mat-option *ngIf="hasNonValidValue()" [value]="this.attribute.value" disabled="true">{{this.attribute.value}}</mat-option>
     <mat-option *ngFor="let opt of attribute.options" [value]="opt.val" [hidden]="opt.disabled">{{opt.label}}</mat-option>
   </mat-select>
 
