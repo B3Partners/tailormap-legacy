@@ -18,6 +18,7 @@ import {
   SelectOption,
 } from '../form/form-models';
 import { LinkedAttributeRegistryService } from '../linked-fields/registry/linked-attribute-registry.service';
+import { FormFieldHelpers } from './form-field-helpers';
 
 @Component({
   selector: 'tailormap-formfield',
@@ -48,11 +49,10 @@ export class FormfieldComponent implements AfterViewInit {
 
   public ngAfterViewInit(): void {
     this.control = this.groep.controls[this.attribute.key];
-    if (this.hasNonValidValue()) {
-      // this.control.setValidators([this.forbiddenNameValidator]);
-     // this.control.setErrors({incorrect: true});
+    if (FormFieldHelpers.hasNonValidValue(this.attribute)) {
+       this.control.setValidators([FormFieldHelpers.nonExistingValueValidator(this.attribute)]);
     }else {
-      const comparableValue = this.getComparableValue();
+      const comparableValue = FormFieldHelpers.getComparableValue(this.attribute);
       if (comparableValue) {
         const val = comparableValue.val;
         this.control.setValue(val, {
@@ -71,37 +71,9 @@ export class FormfieldComponent implements AfterViewInit {
     }
   }
 
-  public hasNonValidValue(): boolean {
-    if (this.attribute.value && (!this.attribute.options || this.attribute.options.length === 0)) {
-      return true;
-    } else {
-      if (this.attribute.options && this.attribute.options?.length !== 0 &&
-        this.attribute.options.findIndex(value => {
-          const attributeValue = this.attribute.value;
-          return (!this.isNumber(attributeValue) && attributeValue === value.label)
-            || (this.isNumber(attributeValue) && value.val === parseInt( '' + attributeValue, 10));
-        }) === -1) {
-        return true;
-      }
-    }
-    return false;
+  public hasNonValidValue() : boolean {
+    return FormFieldHelpers.hasNonValidValue(this.attribute);
   }
-
-  private isNumber(n): boolean {
-    return !isNaN(parseFloat(n)) && isFinite(n);
-  }
-
-  private getComparableValue() : SelectOption {
-    if (this.attribute.options && this.attribute.options?.length !== 0 ) {
-      const ret = this.attribute.options.find(value => {
-        const attributeValue = this.attribute.value;
-        return (!this.isNumber(attributeValue) && attributeValue === value.label)
-          || (this.isNumber(attributeValue) && value.val === parseInt( '' + attributeValue, 10));
-      });
-      return ret;
-    }
-  }
-
 
   public isTextAttribute = (attr: Attribute): boolean => attr.type === FormFieldType.TEXTFIELD;
   public isSelectAttribute = (attr: Attribute): boolean => attr.type === FormFieldType.SELECT;
