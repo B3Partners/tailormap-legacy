@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import {
   Feature,
+  Geometry,
   Wegvakonderdeel,
   Wegvakonderdeelplanning,
 } from '../generated';
@@ -16,6 +17,14 @@ export class FeatureInitializerService {
   public static readonly STUB_OBJECT_GUID_NEW_OBJECT = '-1';
 
   constructor() {
+  }
+
+  public retrieveGeometry(feature: Feature): Geometry {
+    switch (feature.objecttype) {
+      case 'Wegvakonderdeel':
+        return (feature as Wegvakonderdeel).geometrie;
+    }
+    return null;
   }
 
   public create(type: string, params: any): Feature {

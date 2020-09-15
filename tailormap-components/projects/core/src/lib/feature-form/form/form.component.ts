@@ -16,7 +16,9 @@ import {
   take,
 } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
-import { DialogData } from '../form-popup/form-popup-models';
+import {
+  DialogData,
+} from '../form-popup/form-popup-models';
 import { FormConfiguration } from './form-models';
 import { Feature } from '../../shared/generated';
 import { FormActionsService } from '../form-actions/form-actions.service';

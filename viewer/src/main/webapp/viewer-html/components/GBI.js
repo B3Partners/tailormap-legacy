@@ -23,51 +23,52 @@
 Ext.define("viewer.components.GBI", {
     extend: "viewer.components.Component",
     div: null,
-    toolMapClick:null,
-    formConfigs:null,
+    toolMapClick: null,
+    formConfigs: null,
     vectorLayer: null,
+    highlightLayer: null,
     config: {
-        layers:[],
-        configUrl:null
+        layers: [],
+        configUrl: null
     },
     constructor: function (conf) {
         this.initConfig(conf);
         viewer.components.GBI.superclass.constructor.call(this, this.config);
         var me = this;
         this.renderButton({
-            handler: function() {
+            handler: function () {
                 var deferred = me.createDeferred();
                 me.showWindow();
-             
+
                 return deferred.promise;
             },
             text: "me.config.title"
         });
         this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_LAYERS_INITIALIZED,
-            this.initialize,this);
+            this.initialize, this);
         return this;
     },
-    initialize: function(){
+    initialize: function () {
         this.initializeForm();
         this.createVectorLayer();
-        this.toolMapClick =  this.config.viewerController.mapComponent.createTool({
+        this.toolMapClick = this.config.viewerController.mapComponent.createTool({
             type: viewer.viewercontroller.controller.Tool.MAP_CLICK,
             id: this.config.name + "toolMapClick",
-            handler:{
+            handler: {
                 fn: this.mapClicked,
-                scope:this
+                scope: this
             },
             viewerController: this.config.viewerController
         });
         this.toolMapClick.activateTool();
-   },
-   createVectorLayer: function () {
+    },
+    createVectorLayer: function () {
         this.vectorLayer = this.config.viewerController.mapComponent.createVectorLayer({
             name: this.name + 'VectorLayer',
             geometrytypes: ["Polygon", "Point", "LineString"],
             showmeasures: false,
-            mustCreateVertices:true,
-            allowselection:true,
+            mustCreateVertices: true,
+            allowselection: true,
             viewerController: this.config.viewerController,
             style: {
                 fillcolor: "FF0000",
@@ -76,60 +77,90 @@ Ext.define("viewer.components.GBI", {
                 strokeopacity: 50
             }
         });
-        this.vectorLayer.addListener(viewer.viewercontroller.controller.Event.ON_FEATURE_ADDED,this.geometryDrawn, this);
+
+        this.highlightLayer = this.config.viewerController.mapComponent.createVectorLayer({
+            name: this.name + 'HighlighVectorLayer',
+            geometrytypes: ["Polygon", "Point", "LineString"],
+            showmeasures: false,
+            mustCreateVertices: false,
+            allowselection: false,
+            viewerController: this.config.viewerController,
+            style: {
+                fillcolor: "0000FF",
+                fillopacity: 50,
+                strokecolor: "FF0000",
+                strokeopacity: 50
+            }
+        });
+        this.vectorLayer.addListener(viewer.viewercontroller.controller.Event.ON_FEATURE_ADDED, this.geometryDrawn, this);
         this.config.viewerController.mapComponent.getMap().addLayer(this.vectorLayer);
+        this.config.viewerController.mapComponent.getMap().addLayer(this.highlightLayer);
     },
-    initializeForm: function(){
+    initializeForm: function () {
         this.div = document.createElement("tailormap-wegvak-popup");
-        this.div.addEventListener('wanneerPopupClosed', function(evt){
-            console.log("wanneerPopupClosed", evt.detail);
-            this.vectorLayer.removeAllFeatures();
-            this.config.viewerController.mapComponent.getMap().update();
+        this.div.addEventListener('wanneerPopupClosed', this.popupClosed.bind(this));
+
+
+        this.div.addEventListener('startGeometryDrawing', function (e) {
+            this.startDrawingGeometry(e.detail);
         }.bind(this));
 
-
-        this.div.addEventListener('startGeometryDrawing', function(e){this.startDrawingGeometry(e.detail);}.bind(this));
+        this.div.addEventListener('highlightFeature', function (e) {
+            this.highlight(e);
+        }.bind(this));
 
         this.config.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_VISIBILITY_CHANGED,
-            this.layerVisibilityChanged,this);
+            this.layerVisibilityChanged, this);
 
         this.div.setAttribute("config", JSON.stringify(this.formConfigs));
         document.body.appendChild(this.div);
 
         var visibleAppLayers = this.config.viewerController.getVisibleAppLayers();
-        for(var key in visibleAppLayers){
+        for (var key in visibleAppLayers) {
             var appLayer = this.config.viewerController.getAppLayerById(key);
             this.processLayerVisible(appLayer, true);
         }
     },
-    layerVisibilityChanged: function(map,event) {
-        if(event.layer instanceof viewer.viewercontroller.controller.WMSLayer) {
+    popupClosed: function (evt) {
+        this.vectorLayer.removeAllFeatures();
+        this.highlightLayer.removeAllFeatures();
+        this.config.viewerController.mapComponent.getMap().update();
+    },
+    layerVisibilityChanged: function (map, event) {
+        if (event.layer instanceof viewer.viewercontroller.controller.WMSLayer) {
             var appLayer = this.config.viewerController.getAppLayerById(event.layer.appLayerId);
             this.processLayerVisible(appLayer, event.visible);
         }
-            },
-    processLayerVisible: function(appLayer, visible){
+    },
+    processLayerVisible: function (appLayer, visible) {
         var layerName = appLayer.layerName;
-        if(layerName.indexOf(":") !== -1){
+        if (layerName.indexOf(":") !== -1) {
             layerName = layerName.substring(layerName.indexOf(':') + 1);
-            }
+        }
         var evt = {
-            layername : layerName,
+            layername: layerName,
             visible: visible
         };
         this.div.setAttribute("layer-visibility-changed", JSON.stringify(evt));
     },
-    startDrawingGeometry: function(event){
+    startDrawingGeometry: function (event) {
         this.vectorLayer.drawFeature(event.type);
     },
-    geometryDrawn: function(vectorLayer, feature){
+    geometryDrawn: function (vectorLayer, feature) {
         this.div.setAttribute("geometry-drawn", feature.config.wktgeom);
     },
-    mapClicked : function(tool, comp){
+
+    highlight: function (event) {
+        var geojson = event.detail.geojson;
+        if (geojson) {
+            this.highlightLayer.readGeoJSON(geojson);
+        }
+    },
+    mapClicked: function (tool, comp) {
         var coords = comp.coord;
         var x = parseInt(coords.x);
         var y = parseInt(coords.y);
-        var scale = 25;
+        var scale = this.config.viewerController.mapComponent.getMap().getResolution() * 4;
 
         var json = {
             x: x,
@@ -140,8 +171,8 @@ Ext.define("viewer.components.GBI", {
         this.div.setAttribute("visible-layers", this.stringifyAppLayer(visibleLayers));
         this.div.setAttribute("map-clicked", JSON.stringify(json));
     },
-    
-    stringifyAppLayer: function(al){
+
+    stringifyAppLayer: function (al) {
         var culledObject = {
             id: al.id,
             layername: al.layername,
@@ -151,7 +182,7 @@ Ext.define("viewer.components.GBI", {
         var stringified = JSON.stringify([culledObject]);
         return stringified;
     },
-    failed: function(msg) {
+    failed: function (msg) {
         Ext.MessageBox.alert(i18next.t('viewer_components_graph_5'), i18next.t('viewer_components_graph_6'));
     }
 });
