@@ -1,21 +1,16 @@
 import {
-  AfterContentInit,
   AfterViewInit,
   Component,
   Input,
-  OnInit,
 } from '@angular/core';
 import {
   AbstractControl,
-  FormControl,
   FormGroup,
-  ValidatorFn,
 } from '@angular/forms';
 import {
   Attribute,
   FeatureAttribute,
   FormFieldType,
-  SelectOption,
 } from '../form/form-models';
 import { LinkedAttributeRegistryService } from '../linked-fields/registry/linked-attribute-registry.service';
 import { FormFieldHelpers } from './form-field-helpers';
