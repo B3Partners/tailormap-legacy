@@ -5,6 +5,7 @@ import {
   FormConfigurations,
 } from '../../feature-form/form/form-models';
 import { DomainRepositoryService } from '../../feature-form/linked-fields/domain-repository/domain-repository.service';
+import { TailorMapService } from '../../../../../bridge/src/tailor-map.service';
 
 @Injectable({
   providedIn: 'root',
@@ -13,9 +14,12 @@ export class FormconfigRepositoryService {
 
   private formConfigs: FormConfigurations;
 
-  constructor(private http: HttpClient,
-              private domainRepo: DomainRepositoryService) {
-    this.http.get<FormConfigurations>('/viewer/action/form').subscribe((data: any) => {
+  constructor(
+    private http: HttpClient,
+    private domainRepo : DomainRepositoryService,
+    private tailorMap: TailorMapService,
+  ) {
+    this.http.get<FormConfigurations>( this.tailorMap.getContextPath() + '/action/form').subscribe((data: any) => {
       this.formConfigs = data;
       this.domainRepo.initFormConfig(this.formConfigs);
     });
