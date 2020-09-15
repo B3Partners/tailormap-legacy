@@ -1,12 +1,21 @@
 import {
+  AfterContentInit,
+  AfterViewInit,
   Component,
   Input,
+  OnInit,
 } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import {
+  AbstractControl,
+  FormControl,
+  FormGroup,
+  ValidatorFn,
+} from '@angular/forms';
 import {
   Attribute,
   FeatureAttribute,
   FormFieldType,
+  SelectOption,
 } from '../form/form-models';
 import { LinkedAttributeRegistryService } from '../linked-fields/registry/linked-attribute-registry.service';
 
@@ -15,13 +24,10 @@ import { LinkedAttributeRegistryService } from '../linked-fields/registry/linked
   templateUrl: './formfield.component.html',
   styleUrls: ['./formfield.component.css'],
 })
-export class FormfieldComponent {
+export class FormfieldComponent implements AfterViewInit {
 
   @Input()
   public attribute: FeatureAttribute;
-
-  @Input()
-  public form: FormGroup;
 
   @Input()
   public value: string;
@@ -32,11 +38,31 @@ export class FormfieldComponent {
   @Input()
   public isBulk: boolean;
 
+  private control: AbstractControl;
 
   constructor(
     private registry: LinkedAttributeRegistryService,
   ) {
+  }
 
+
+  public ngAfterViewInit(): void {
+    this.control = this.groep.controls[this.attribute.key];
+    if (this.hasNonValidValue()) {
+      // this.control.setValidators([this.forbiddenNameValidator]);
+     // this.control.setErrors({incorrect: true});
+    }else {
+      const comparableValue = this.getComparableValue();
+      if (comparableValue) {
+        const val = comparableValue.val;
+        this.control.setValue(val, {
+          emitEvent: false,
+          onlySelf: false,
+          emitModelToViewChange: false,
+          emitViewToModelChange: false,
+        });
+      }
+    }
   }
 
   public valueChanged(event: any): void {
@@ -48,26 +74,34 @@ export class FormfieldComponent {
   public hasNonValidValue(): boolean {
     if (this.attribute.value && (!this.attribute.options || this.attribute.options.length === 0)) {
       return true;
-    }else {
-      if (this.attribute.options?.length !== 0 &&
+    } else {
+      if (this.attribute.options && this.attribute.options?.length !== 0 &&
         this.attribute.options.findIndex(value => {
           const attributeValue = this.attribute.value;
-          return (typeof attributeValue !== 'number' && attributeValue === value.label)
-            || (typeof attributeValue === 'number' && value.val === attributeValue);
-        } ) === -1) {
+          return (!this.isNumber(attributeValue) && attributeValue === value.label)
+            || (this.isNumber(attributeValue) && value.val === parseInt( '' + attributeValue, 10));
+        }) === -1) {
         return true;
       }
     }
     return false;
   }
 
-  public getDomainValue() {
-    if (this.isBulk) {
-      return '';
-    } else {
-      return this.attribute.value;
+  private isNumber(n): boolean {
+    return !isNaN(parseFloat(n)) && isFinite(n);
+  }
+
+  private getComparableValue() : SelectOption {
+    if (this.attribute.options && this.attribute.options?.length !== 0 ) {
+      const ret = this.attribute.options.find(value => {
+        const attributeValue = this.attribute.value;
+        return (!this.isNumber(attributeValue) && attributeValue === value.label)
+          || (this.isNumber(attributeValue) && value.val === parseInt( '' + attributeValue, 10));
+      });
+      return ret;
     }
   }
+
 
   public isTextAttribute = (attr: Attribute): boolean => attr.type === FormFieldType.TEXTFIELD;
   public isSelectAttribute = (attr: Attribute): boolean => attr.type === FormFieldType.SELECT;
