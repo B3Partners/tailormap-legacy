@@ -29,7 +29,6 @@ import { FormCreatorHelpers } from './form-creator-helpers';
 import { FormActionsService } from '../form-actions/form-actions.service';
 import { FeatureInitializerService } from '../../shared/feature-initializer/feature-initializer.service';
 import { LinkedAttributeRegistryService } from '../linked-fields/registry/linked-attribute-registry.service';
-import { FormfieldComponent } from '../form-field/formfield.component';
 import { FormFieldHelpers } from '../form-field/form-field-helpers';
 
 @Component({
