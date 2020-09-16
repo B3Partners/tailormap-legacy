@@ -1,0 +1,48 @@
+/* CONTAINER */
+.container {
+  border-top-width: 1px;
+  border-top-style: solid;
+  border-color: gray;
+
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+
+  /* as container */
+  display: flex;
+  flex-flow: column nowrap;
+
+}
+/* SPACER */
+.spacer {
+  flex: 1 1 auto;
+}
+/* CAPTIONBAR */
+.mat-toolbar {
+  height: 30px;
+}
+.mat-toolbar span {
+  margin: 5px;
+  font-size: 80%;
+}
+.mat-icon-button {
+  xwidth: 25px;
+  width: 24px;
+  height: 24px;
+  line-height: 24px;
+}
+/* TEST BUTTON */
+.mat-flat-button {
+  margin-right: 20px;
+  line-height: 22px;
+}
+/* DIVIDER */
+.mat-divider {
+  background: #e5e5e5;
+}
+/* TABS */
+:host ::ng-deep .mat-tab-label {
+  height: 30px;
+  margin: 5px;
+  min-width: 100px;
+}

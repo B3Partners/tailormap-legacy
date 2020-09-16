@@ -1,0 +1,41 @@
+<!--### RESIZE HANDLE ###-->
+<tailormap-panel-resize #panelResizer></tailormap-panel-resize>
+
+<!--### MAIN PANEL ###-->
+<div class="container" #container>
+  <!--### TOP TOOLBAR ###-->
+  <mat-toolbar #captionbar>
+    <!-- CAPTION -->
+    <span>Attributenlijst</span>
+    <!-- SPACER -->
+    <span class="spacer"></span>
+    <button mat-flat-button color="primary" (click)="onTestClick();">
+      <!-- TEST -->
+      <span>Test</span>
+    </button>
+    <button mat-icon-button>
+      <!-- MINIMIZE -->
+      <mat-icon (click)="onMinimizeClick();">remove</mat-icon>
+    </button>
+    <button mat-icon-button>
+      <!-- MAXIMIZE -->
+      <mat-icon (click)="onMaximizeClick();">keyboard_arrow_up</mat-icon>
+    </button>
+    <button mat-icon-button>
+      <!-- CLOSE -->
+      <mat-icon (click)="onCloseClick();">clear</mat-icon>
+    </button>
+  </mat-toolbar>
+  <mat-divider></mat-divider>
+
+  <!--### TABS ###-->
+  <mat-tab-group #tabgroup animationDuration="0ms">
+    <mat-tab *ngFor="let layer of layers; let index = index" [label]="layer.name">
+      <ng-template mat-tab-label>
+        {{layer.name}}
+        <mat-icon (click)="onTableOptionsClick($event,index)" >keyboard_arrow_down</mat-icon>
+      </ng-template>
+      <tailormap-attributelist-tab #tab [tabIndex]="index"></tailormap-attributelist-tab>
+    </mat-tab>
+  </mat-tab-group>
+</div>

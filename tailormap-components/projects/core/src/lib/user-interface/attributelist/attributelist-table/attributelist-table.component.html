@@ -1,0 +1,75 @@
+<mat-paginator [length]="5"
+               (page)="onPageChange($event)"></mat-paginator>
+<mat-divider></mat-divider>
+
+<!--VOOR NESTED-->
+<!--<mat-table #table [dataSource]="dataSource2" multiTemplateDataRows>-->
+
+<mat-table #table [dataSource]="dataSource"
+           matSort
+           (matSortChange) = "onSortClick($event)">
+  <ng-container *ngFor="let colName of getColumnNames()" matColumnDef="{{colName}}">
+
+    <ng-container *ngIf="colName == '_checked'; then optie1; else optie2">
+    </ng-container>
+    <ng-template #optie1>
+      <mat-header-cell *matHeaderCellDef [ngSwitch]="checkState">
+        <ng-template [ngSwitchCase]="'All'">
+          <mat-icon class="icon material-icons" color="primary"
+                    (click)="onHeaderCheckClick();$event.stopPropagation();" >
+            check_box
+          </mat-icon>
+        </ng-template>
+        <ng-template [ngSwitchCase]="'None'">
+          <mat-icon class="icon material-icons-outlined"
+                    (click)="onHeaderCheckClick();$event.stopPropagation();" >
+            check_box_outline_blank
+          </mat-icon>
+        </ng-template>
+        <ng-template [ngSwitchCase]="'Some'">
+          <mat-icon class="icon material-icons" color="primary"
+                    (click)="this.onHeaderCheckClick();$event.stopPropagation();" >
+            indeterminate_check_box
+          </mat-icon>
+        </ng-template>
+      </mat-header-cell>
+
+      <mat-cell *matCellDef="let element;let index = index">
+        <ng-container *ngIf="element._checked; then iconChecked; else iconNotChecked;">
+        </ng-container>
+        <ng-template #iconChecked>
+          <mat-icon class="icon material-icons" color="primary"
+                    (click)="onRowCheckClick(index);$event.stopPropagation();">
+            check_box
+          </mat-icon>
+        </ng-template>
+        <ng-template #iconNotChecked>
+          <mat-icon class="icon material-icons-outlined"
+                    (click)="onRowCheckClick(index);$event.stopPropagation();">
+            check_box_outline_blank
+          </mat-icon>
+        </ng-template>
+      </mat-cell>
+
+    </ng-template>
+    <ng-template #optie2>
+      <!-- normal columns -->
+      <mat-header-cell *matHeaderCellDef mat-sort-header >{{colName}}</mat-header-cell>
+      <mat-cell *matCellDef="let element" > {{element[colName]}}</mat-cell>
+    </ng-template>
+  </ng-container>
+  <mat-header-row *matHeaderRowDef="getColumnNames()"></mat-header-row>
+  <mat-row *matRowDef="let row; columns: getColumnNames();"
+           (click) = "onRowClicked(row);"></mat-row>
+</mat-table>
+
+<mat-toolbar *ngIf="(nrChecked > 0)">
+  <button mat-icon-button>
+    <mat-icon>subdirectory_arrow_right</mat-icon>
+  </button>
+  <button mat-flat-button color="primary" (click)="onObjectOptionsClick();">
+    <span *ngIf="(nrChecked == 1)">opties voor 1 object</span>
+    <span *ngIf="(nrChecked > 1)">opties voor {{nrChecked}} objecten</span>
+  </button>
+</mat-toolbar>
+

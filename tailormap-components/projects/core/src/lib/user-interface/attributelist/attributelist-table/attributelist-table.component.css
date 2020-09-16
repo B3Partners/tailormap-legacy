@@ -1,0 +1,41 @@
+.card {
+  min-width: 80%;
+}
+.mat-paginator-container {
+  max-height: 20px;
+}
+.mat-form-field {
+  line-height: 20px;
+}
+.mat-table {
+  overflow: auto;
+  max-height: 270px;
+}
+.mat-row, .mat-header-row {
+  min-height: 24px;
+}
+.material-icons, .material-icons-outlined {
+  font-size: 20px;
+}
+.mat-icon {
+  padding-top: 4px;
+  padding-left: 4px;
+}
+::ng-deep .mat-paginator-container {
+  min-height: 40px;
+  max-height: 40px;
+}
+::ng-deep .mat-paginator-range-label {
+  /*dit helpt niet*/
+  margin: 0px 0px 0px 10px;
+}
+.mat-toolbar {
+  background: rgba(0,0,0,0.0);
+  height: 40px;
+}
+.mat-flat-button {
+  line-height: 26px;
+}
+.attributelist-table-options-form {
+  background: aqua;
+}
