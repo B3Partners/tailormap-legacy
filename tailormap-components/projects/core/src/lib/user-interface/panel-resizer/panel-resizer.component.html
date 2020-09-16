@@ -1,0 +1,9 @@
+<div class="resize-panel" #resizepanel
+     (mouseenter)="onPanelMouseEnter();"
+     (mouseleave)="onPanelMouseLeave();" >
+  <div class="resize-handle" #resizehandle>
+    <div class="resize-handle-inner"
+       (mousedown)="onHandleMouseDown($event);">
+    </div>
+  </div>
+</div>
