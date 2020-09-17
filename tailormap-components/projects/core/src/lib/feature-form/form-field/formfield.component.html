@@ -1,20 +1,21 @@
-<mat-form-field [formGroup]="groep" [hidden]="isHiddenAttribute(attribute)" >
-
+<mat-form-field [formGroup]="groep" [hidden]="isHiddenAttribute(attribute)">
+  <mat-label>{{attribute.label}}</mat-label>
   <input *ngIf="isHiddenAttribute(attribute) || isTextAttribute(attribute)"
-   placeholder="{{attribute.key}}"
-    type="textfield"
-    [formControlName]="attribute.key"
-    matInput
-    name={{attribute.key}}
-    [value]="!isBulk ? value : ''"
-    />
+         placeholder="{{attribute.key}}"
+         type="textfield"
+         [formControlName]="attribute.key"
+         matInput
+         name={{attribute.key}}
+         [value]="!isBulk ? value : ''"
+  />
   <mat-select
-      (selectionChange)="valueChanged($event)"
-      placeholder="{{attribute.key}}"
-      [formControlName]="attribute.key"
-      *ngIf="isSelectAttribute(attribute) || isDomainAttribute(attribute)"
-      [value]="!isBulk ?  value : ''" >
+    (selectionChange)="valueChanged($event)"
+    placeholder="{{attribute.key}}"
+    [formControlName]="attribute.key"
+    *ngIf="isSelectAttribute(attribute) || isDomainAttribute(attribute)"
+  >
     <mat-option [value]="-1">-- Selecteer --</mat-option>
+    <mat-option *ngIf="hasNonValidValue()" [value]="this.attribute.value" disabled="true">{{this.attribute.value}}</mat-option>
     <mat-option *ngFor="let opt of attribute.options" [value]="opt.val" [hidden]="opt.disabled">{{opt.label}}</mat-option>
   </mat-select>
 

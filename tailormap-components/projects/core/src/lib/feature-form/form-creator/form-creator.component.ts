@@ -29,6 +29,7 @@ import { FormCreatorHelpers } from './form-creator-helpers';
 import { FormActionsService } from '../form-actions/form-actions.service';
 import { FeatureInitializerService } from '../../shared/feature-initializer/feature-initializer.service';
 import { LinkedAttributeRegistryService } from '../linked-fields/registry/linked-attribute-registry.service';
+import { FormFieldHelpers } from '../form-field/form-field-helpers';
 
 @Component({
   selector: 'tailormap-form-creator',
@@ -121,20 +122,21 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
     const formControls = {};
     this.domainValues = new Map<Attribute, any>();
     for (const attr of attrs) {
-      let value = !this.isBulk && this.indexedAttributes.attrs.get(attr.key)
-        ? this.indexedAttributes.attrs.get(attr.key).value : null;
+      const featureAttribute = this.indexedAttributes.attrs.get(attr.key);
+      let value = !this.isBulk && featureAttribute ? featureAttribute.value : null;
 
       if (attr.type === FormFieldType.DOMAIN) {
-        this.registry.registerDomainField(attr.linkedList, this.indexedAttributes.attrs.get(attr.key));
-        const val = this.indexedAttributes.attrs.get(attr.key);
-        if (val.value && val.value !== '-1') {
-          this.domainValues.set(attr, val.value);
+        this.registry.registerDomainField(attr.linkedList, featureAttribute);
+        if (featureAttribute.value && featureAttribute.value !== '-1') {
+          this.domainValues.set(attr, featureAttribute.value);
           value = parseInt('' + value, 10);
         }
       }
-      formControls[attr.key] = new FormControl(value);
+      formControls[attr.key] = new FormControl(value, [FormFieldHelpers.nonExistingValueValidator(featureAttribute)]);
+
     }
     this.formgroep = new FormGroup(formControls);
+    this.formgroep.markAllAsTouched();
   }
 
   public ngAfterViewInit() {
