@@ -181,7 +181,14 @@ Ext.define("viewer.viewercontroller.ViewerController", {
      * @returns {boolean}
      */
     hasSizeChanged: function() {
-        var doc = window.top || window;
+        var doc = window;
+        if (window.top) {
+            try {
+                var w = window.top.innerWidth;
+                // Exception is not thrown so we can access the top window
+                doc = window.top;
+            } catch (e) {}
+        }
         if (!this.windowWidth || !this.windowHeight) {
             this.windowWidth = doc.innerWidth;
             this.windowHeight = doc.innerHeight;
