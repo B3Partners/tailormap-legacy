@@ -36,6 +36,7 @@ Ext.define("viewer.components.SearchConfiguration",{
         if (configObject === null){
             configObject = {};
         }
+        configObject.willLoadLayers = true;
         viewer.components.SearchConfiguration.superclass.constructor.call(this, parentId, configObject, configPage);
         if (!this.hideRemovePinConfig) {
             this.form.add({
@@ -717,7 +718,9 @@ Ext.define("viewer.components.SearchConfiguration",{
     saveSolrconfig: function(searchconfigId) {
         var searchConfig = this.getConfig(searchconfigId);
         // Should not happen
-        if(searchConfig === null) return;
+        if(searchConfig === null) {
+            return;
+        }
         // Get old config or create new config object
         var solrConfig =  {};
         // Check if the solrconfig FilterableCheckboxes object exists
