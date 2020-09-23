@@ -1,12 +1,12 @@
-Flamingo
+Tailormap
 ========
 
-The Repository of Flamingo.
-Check out the [wiki](https://github.com/flamingo-geocms/flamingo/wiki) for more info.
+The Repository of Tailormap.
+Check out the [wiki](https://github.com/b3partners/Tailormap/wiki) for more info.
 
 For security related information please check the [security policy](./.github/SECURITY.md)
 
-![Flamingo logo](https://raw.githubusercontent.com/flamingo-geocms/flamingo/master/viewer/src/main/webapp/WEB-INF/xsl/print/logo.png)
+![Tailormap logo](https://tailormap.nl/portal/custom/images/logo.png)
 
 
 [![Travis-CI Build Status](https://travis-ci.com/flamingo-geocms/flamingo.svg?branch=master)](https://travis-ci.com/flamingo-geocms/flamingo)
