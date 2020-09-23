@@ -26,6 +26,6 @@ For security related information please check the [security policy](./.github/SE
 [![BrowserStack.com](http://files.b3p.nl/flamingo/bs.png)]()
 
 [![code coverage master](https://codecov.io/gh/B3Partners/tailormap/branch/master/graphs/sunburst.svg)](https://codecov.io/gh/B3Partners/tailormap/branch/master)
-
+[![deepcode](https://www.deepcode.ai/api/gh/badge?key=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwbGF0Zm9ybTEiOiJnaCIsIm93bmVyMSI6IkIzUGFydG5lcnMiLCJyZXBvMSI6InRhaWxvcm1hcCIsImluY2x1ZGVMaW50IjpmYWxzZSwiYXV0aG9ySWQiOjIyMDI2LCJpYXQiOjE2MDA4NTAzMzl9.of5ercHDbNlYcMKPiNKesTFg9-Jf1MQPwPv9p52wQLQ)](https://www.deepcode.ai/app/gh/B3Partners/tailormap/_/dashboard?utm_content=gh%2FB3Partners%2Ftailormap)
 [![BrowserStack.com](http://files.b3p.nl/flamingo/bs.png)]()
 
