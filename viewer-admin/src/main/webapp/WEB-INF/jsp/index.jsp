@@ -26,13 +26,32 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <jsp:include page="/WEB-INF/jsp/header.jsp"/>
     </stripes:layout-component>
     <stripes:layout-component name="body">
-        <c:choose>
-            <c:when test="${param.debug}">
-                <img class="flamingoLogo" src="${contextPath}/resources/images/FL2.png"/>
-            </c:when>
-            <c:otherwise>
-                <img class="flamingoLogo" src="${contextPath}/resources/images/FlamingoLogo.png"/>
-            </c:otherwise>
-        </c:choose>
+           <img class="flamingoLogo" src="${contextPath}/resources/images/TailormapLogo.png"/>
+
+            <c:if test="${param.debug}">
+                <script>
+                    var targethead = window.document.getElementsByTagName("head")[0],
+                            loadedSpiders = false,
+                            jst = window.document.createElement("script");
+                    jst.async = true;
+                    jst.type = "text/javascript";
+                    jst.src = "${contextPath}/resources/js/bug-min.js";
+                    jst.onload = jst.onreadystatechange = function () {
+                        if (!loadedSpiders && (!this.readyState || this.readyState == 'complete')) {
+                            loadedSpiders = true;
+                            // start fire the JS.
+                            new BugController({
+                                imageSprite: "${contextPath}/resources/images/fly-sprite.png"
+                            });
+                            new SpiderController({
+                                imageSprite: "${contextPath}/resources/images/spider-sprite.png",
+                                minBugs: 10,
+                                maxBugs: 50
+                            });
+                        }
+                    };
+                    targethead.appendChild(jst);
+                </script>
+            </c:if>
     </stripes:layout-component>
 </stripes:layout-render>
