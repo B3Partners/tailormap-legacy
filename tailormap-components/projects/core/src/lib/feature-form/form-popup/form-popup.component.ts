@@ -20,6 +20,8 @@ import {
 import { AddButtonEvent } from '../../user-interface/add-feature/add-feature-models';
 import * as wellknown from 'wellknown';
 import { FeatureInitializerService } from '../../shared/feature-initializer/feature-initializer.service';
+import { GbiControllerService } from '../../shared/gbi-controller/gbi-controller.service';
+import { FormCopyComponent } from '../form-copy/form-copy.component';
 
 @Component({
   selector: 'tailormap-form-popup',
@@ -33,7 +35,12 @@ export class FormPopupComponent implements OnInit {
     private service: FeatureControllerService,
     private _snackBar: MatSnackBar,
     private featureInitializerService: FeatureInitializerService,
+    private gbiService: GbiControllerService,
     ) {
+    this.gbiService.copyModeChange$.subscribe(feature => {
+      this.isCopy = true;
+      this.openCopyDialog(feature);
+    });
   }
 
   // tslint:disable-next-line:no-unused-variable
@@ -43,6 +50,8 @@ export class FormPopupComponent implements OnInit {
   private layers;
 
   private isBulk: string;
+
+  private isCopy = false;
 
   public lookup: Map<string, string>;
 
@@ -145,6 +154,27 @@ export class FormPopupComponent implements OnInit {
       lookup[originalName] = (alias || a.name);
     });*/
     return lookup;
+  }
+
+  public openCopyDialog(feature: Feature) {
+    const dialogRef = this.dialog.open(FormCopyComponent, {
+      width: '250px',
+      data: {
+        feature,
+      },
+      position: {
+        top: '50px',
+        right: '50px'
+      },
+      hasBackdrop: false,
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      this.isCopy = false;
+      this.wanneerPopupClosed.emit({
+        iets: 'hoi',
+      });
+    });
   }
 
 }
