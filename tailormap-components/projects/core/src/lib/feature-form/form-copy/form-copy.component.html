@@ -1,1 +1,9 @@
-<p>form-copy works!</p>
+<h1 mat-dialog-title cdkDrag cdkDragRootElement=".cdk-overlay-pane">Kopieren</h1>
+<div mat-dialog-content >
+  <p>Selecteer features om naar toe te kopieren</p>
+  {{destinationFeatures.length}}
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="cancel()">Annuleren</button>
+  <button mat-button [mat-dialog-close]="" cdkFocusInitial>Kopieren</button>
+</div>
