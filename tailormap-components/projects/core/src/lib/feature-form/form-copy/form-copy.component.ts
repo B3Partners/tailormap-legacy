@@ -8,6 +8,7 @@ import {
   MatDialogRef,
 } from '@angular/material/dialog';
 import { DialogData } from '../form-popup/form-popup-models';
+import { Feature } from '../../shared/generated';
 
 @Component({
   selector: 'flamingo-form-copy',
@@ -16,8 +17,16 @@ import { DialogData } from '../form-popup/form-popup-models';
 })
 export class FormCopyComponent implements OnInit {
 
+  public destinationFeatures: Feature[];
+
+  public originalFeature: Feature;
+
   constructor(public dialogRef: MatDialogRef<FormCopyComponent>,
-              @Inject(MAT_DIALOG_DATA) public data: DialogData,) { }
+              @Inject(MAT_DIALOG_DATA) public data: DialogData,) {
+
+    this.destinationFeatures = [];
+
+  }
 
   ngOnInit(): void {
   }
