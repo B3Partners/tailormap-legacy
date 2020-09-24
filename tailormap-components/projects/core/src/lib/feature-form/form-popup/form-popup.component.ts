@@ -100,14 +100,15 @@ export class FormPopupComponent implements OnInit {
 
   @Input()
   public set geometryDrawn(geom: string) {
-    const geoJson = wellknown.parse(geom);
-    const objecttype = this.temp.featuretype.charAt(0).toUpperCase() + this.temp.featuretype.slice(1);
-    const feat = this.featureInitializerService.create(objecttype, {geometrie: geoJson, clazz: this.temp.featuretype, children: []});
+    if(!this.isCopy) {
+      const geoJson = wellknown.parse(geom);
+      const objecttype = this.temp.featuretype.charAt(0).toUpperCase() + this.temp.featuretype.slice(1);
+      const feat = this.featureInitializerService.create(objecttype, {geometrie: geoJson, clazz: this.temp.featuretype, children: []});
 
-    const features : Feature[] = [feat];
-    this.openDialog(features);
-      }
-
+      const features: Feature[] = [feat];
+      this.openDialog(features);
+    }
+  }
 
   @Output()
   public wanneerPopupClosed = new EventEmitter<DialogClosedData>();
