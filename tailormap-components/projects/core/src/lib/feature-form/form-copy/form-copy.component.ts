@@ -7,9 +7,11 @@ import {
   MAT_DIALOG_DATA,
   MatDialogRef,
 } from '@angular/material/dialog';
-import { DialogData } from '../form-popup/form-popup-models';
+import { CopyData } from '../form-popup/form-popup-models';
 import { Feature } from '../../shared/generated';
 import { GbiControllerService } from '../../shared/gbi-controller/gbi-controller.service';
+import { FormconfigRepositoryService } from '../../shared/formconfig-repository/formconfig-repository.service';
+import { FormConfiguration } from '../form/form-models';
 
 @Component({
   selector: 'tailormap-form-copy',
@@ -22,9 +24,12 @@ export class FormCopyComponent implements OnInit {
 
   public originalFeature: Feature;
 
+  public formConfig: FormConfiguration;
+
   constructor(public dialogRef: MatDialogRef<FormCopyComponent>,
-              @Inject(MAT_DIALOG_DATA) public data: DialogData,
-              private gbiService: GbiControllerService) {
+              @Inject(MAT_DIALOG_DATA) public data: CopyData,
+              private gbiService: GbiControllerService,
+              private configService: FormconfigRepositoryService) {
     this.destinationFeatures = [];
     this.gbiService.addDestinationFeature$.subscribe(value => {
       this.addDestinationFeature(value);
@@ -32,6 +37,8 @@ export class FormCopyComponent implements OnInit {
   }
 
   public ngOnInit(): void {
+    this.originalFeature = this.data.feature;
+    this.formConfig = this.configService.getFormConfig(this.data.feature.clazz);
   }
 
   public cancel() {

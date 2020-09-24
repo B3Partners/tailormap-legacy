@@ -7,6 +7,10 @@ export interface DialogData {
   lookup: Map<string, string>;
 }
 
+export interface CopyData {
+  feature: Feature;
+}
+
 export interface DialogClosedData {
   iets: string;
 }

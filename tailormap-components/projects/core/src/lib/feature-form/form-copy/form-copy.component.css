@@ -4,3 +4,21 @@
   background: #369;
   color: #fff;
 }
+
+.container{
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  flex:1;
+  justify-content: stretch;
+  overflow: hidden;
+}
+
+.form{
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  overflow: auto;
+  height: 100%;
+}

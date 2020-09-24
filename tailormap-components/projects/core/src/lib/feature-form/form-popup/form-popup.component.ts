@@ -167,7 +167,7 @@ export class FormPopupComponent implements OnInit {
 
   public openCopyDialog(feature: Feature) {
     const dialogRef = this.dialog.open(FormCopyComponent, {
-      width: '250px',
+      width: '400px',
       data: {
         feature,
       },

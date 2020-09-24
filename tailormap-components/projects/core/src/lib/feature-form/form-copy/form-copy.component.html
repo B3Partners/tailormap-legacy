@@ -1,9 +1,12 @@
-<h1 mat-dialog-title cdkDrag cdkDragRootElement=".cdk-overlay-pane">Kopieren</h1>
-<div mat-dialog-content >
-  <p>Selecteer features om naar toe te kopieren</p>
-  {{destinationFeatures.length}}
+<h1 mat-dialog-title cdkDrag cdkDragRootElement=".cdk-overlay-pane">Kopiëren van {{originalFeature.clazz}}</h1>
+<p>Aantal geselecteerde features: {{destinationFeatures.length}} </p>
+<mat-divider></mat-divider>
+<div class="container">
+  <div class="form">
+    <tailormap-copy-creator [formConfig]="formConfig"></tailormap-copy-creator>
+  </div>
 </div>
-<div mat-dialog-actions>
+<div class="actions">
   <button mat-button (click)="cancel()">Annuleren</button>
-  <button mat-button [mat-dialog-close]="" cdkFocusInitial>Kopieren</button>
+  <button mat-button (click)="cancel()">Kopiëren</button>
 </div>
