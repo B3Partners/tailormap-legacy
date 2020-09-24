@@ -1,4 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import {
+  Component,
+  Inject,
+  OnInit,
+} from '@angular/core';
+import {
+  MAT_DIALOG_DATA,
+  MatDialogRef,
+} from '@angular/material/dialog';
+import { DialogData } from '../form-popup/form-popup-models';
 
 @Component({
   selector: 'flamingo-form-copy',
@@ -7,7 +16,8 @@ import { Component, OnInit } from '@angular/core';
 })
 export class FormCopyComponent implements OnInit {
 
-  constructor() { }
+  constructor(public dialogRef: MatDialogRef<FormCopyComponent>,
+              @Inject(MAT_DIALOG_DATA) public data: DialogData,) { }
 
   ngOnInit(): void {
   }
