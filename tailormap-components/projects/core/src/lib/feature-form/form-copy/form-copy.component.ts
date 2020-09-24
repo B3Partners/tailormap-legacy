@@ -9,6 +9,7 @@ import {
 } from '@angular/material/dialog';
 import { DialogData } from '../form-popup/form-popup-models';
 import { Feature } from '../../shared/generated';
+import { GbiControllerService } from '../../shared/gbi-controller/gbi-controller.service';
 
 @Component({
   selector: 'flamingo-form-copy',
@@ -22,10 +23,12 @@ export class FormCopyComponent implements OnInit {
   public originalFeature: Feature;
 
   constructor(public dialogRef: MatDialogRef<FormCopyComponent>,
-              @Inject(MAT_DIALOG_DATA) public data: DialogData,) {
-
+              @Inject(MAT_DIALOG_DATA) public data: DialogData,
+              private gbiService: GbiControllerService) {
     this.destinationFeatures = [];
-
+    this.gbiService.addDestinationFeature$.subscribe(value => {
+      this.addDestinationFeature(value);
+    });
   }
 
   ngOnInit(): void {
