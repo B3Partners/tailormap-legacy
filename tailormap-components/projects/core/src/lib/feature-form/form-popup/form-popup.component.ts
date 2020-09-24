@@ -75,7 +75,11 @@ export class FormPopupComponent implements OnInit {
     this.service.onPoint({x, y, scale}).subscribe(
       (features: Feature[]) => {
         if (features && features.length > 0) {
-          this.openDialog(features);
+          if (this.isCopy) {
+
+          }else {
+            this.openDialog(features);
+          }
         }
       },
       error => {
