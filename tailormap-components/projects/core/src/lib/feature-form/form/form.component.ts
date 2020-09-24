@@ -21,6 +21,7 @@ import { FormConfiguration } from './form-models';
 import { Feature } from '../../shared/generated';
 import { FormActionsService } from '../form-actions/form-actions.service';
 import { FormconfigRepositoryService } from '../../shared/formconfig-repository/formconfig-repository.service';
+import { GbiControllerService } from '../../shared/gbi-controller/gbi-controller.service';
 
 @Component({
   selector: 'tailormap-form',
@@ -44,7 +45,8 @@ export class FormComponent implements OnDestroy, OnChanges {
               @Inject(MAT_DIALOG_DATA) public data: DialogData,
               private _snackBar: MatSnackBar,
               private formConfigRepo: FormconfigRepositoryService,
-              public actions: FormActionsService) {
+              public actions: FormActionsService,
+              public gbiService: GbiControllerService) {
 
     this.features = data.formFeatures;
     this.feature = this.features[0];
