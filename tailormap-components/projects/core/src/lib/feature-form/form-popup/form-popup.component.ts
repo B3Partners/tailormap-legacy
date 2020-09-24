@@ -76,7 +76,7 @@ export class FormPopupComponent implements OnInit {
       (features: Feature[]) => {
         if (features && features.length > 0) {
           if (this.isCopy) {
-
+            this.gbiService.addDestinationFeature$.next(features[0]);
           }else {
             this.openDialog(features);
           }
