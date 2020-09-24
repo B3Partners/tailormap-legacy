@@ -127,6 +127,11 @@ export class FormComponent implements OnDestroy, OnChanges {
     });
   }
 
+  public copy() {
+    this.closeDialog();
+    this.gbiService.copyModeChange$.next(this.feature);
+  }
+
   public closeDialog() {
     if (this.formDirty) {
       this.closeNotification(function () {
