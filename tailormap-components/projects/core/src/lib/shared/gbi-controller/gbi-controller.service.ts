@@ -10,4 +10,6 @@ export class GbiControllerService {
   constructor() { }
 
   public copyModeChange$: Subject<Feature> = new Subject<Feature>();
+
+  public addDestinationFeature$: Subject<Feature> = new Subject<Feature>();
 }
