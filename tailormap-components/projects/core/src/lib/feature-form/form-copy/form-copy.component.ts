@@ -12,9 +12,9 @@ import { Feature } from '../../shared/generated';
 import { GbiControllerService } from '../../shared/gbi-controller/gbi-controller.service';
 
 @Component({
-  selector: 'flamingo-form-copy',
+  selector: 'tailormap-form-copy',
   templateUrl: './form-copy.component.html',
-  styleUrls: ['./form-copy.component.css']
+  styleUrls: ['./form-copy.component.css'],
 })
 export class FormCopyComponent implements OnInit {
 
@@ -31,7 +31,7 @@ export class FormCopyComponent implements OnInit {
     });
   }
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
   }
 
   public cancel() {
@@ -39,7 +39,7 @@ export class FormCopyComponent implements OnInit {
     this.dialogRef.close();
   }
 
-  public addDestinationFeature(feature: Feature){
+  public addDestinationFeature(feature: Feature) {
     this.destinationFeatures.push(feature);
   }
 

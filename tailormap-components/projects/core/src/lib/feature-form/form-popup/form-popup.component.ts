@@ -100,7 +100,7 @@ export class FormPopupComponent implements OnInit {
 
   @Input()
   public set geometryDrawn(geom: string) {
-    if(!this.isCopy) {
+    if (!this.isCopy) {
       const geoJson = wellknown.parse(geom);
       const objecttype = this.temp.featuretype.charAt(0).toUpperCase() + this.temp.featuretype.slice(1);
       const feat = this.featureInitializerService.create(objecttype, {geometrie: geoJson, clazz: this.temp.featuretype, children: []});
@@ -173,7 +173,7 @@ export class FormPopupComponent implements OnInit {
       },
       position: {
         top: '50px',
-        right: '50px'
+        right: '50px',
       },
       hasBackdrop: false,
     });

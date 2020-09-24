@@ -3,7 +3,7 @@ import { Subject } from 'rxjs';
 import { Feature } from '../generated';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class GbiControllerService {
 
