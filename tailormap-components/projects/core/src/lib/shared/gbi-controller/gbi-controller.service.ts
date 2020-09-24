@@ -1,4 +1,6 @@
 import { Injectable } from '@angular/core';
+import { Subject } from 'rxjs';
+import { Feature } from '../generated';
 
 @Injectable({
   providedIn: 'root'
@@ -6,4 +8,6 @@ import { Injectable } from '@angular/core';
 export class GbiControllerService {
 
   constructor() { }
+
+  public copyModeChange$: Subject<Feature> = new Subject<Feature>();
 }
