@@ -77,6 +77,7 @@ export class FormPopupComponent implements OnInit {
         if (features && features.length > 0) {
           if (this.isCopy) {
             this.gbiService.addDestinationFeature$.next(features[0]);
+            this.addCopyFeatureToLayer.emit(features[0]);
           }else {
             this.openDialog(features);
           }
@@ -113,6 +114,9 @@ export class FormPopupComponent implements OnInit {
 
   @Output()
   public startGeometryDrawing = new EventEmitter<GeometryInteractionData>();
+
+  @Output()
+  public addCopyFeatureToLayer = new EventEmitter<Feature>();
 
   public temp: AddButtonEvent;
 
