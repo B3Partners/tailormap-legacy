@@ -31,4 +31,13 @@ export class FormCopyComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  public cancel() {
+    this.destinationFeatures = [];
+    this.dialogRef.close();
+  }
+
+  public addDestinationFeature(feature: Feature){
+    this.destinationFeatures.push(feature);
+  }
+
 }
