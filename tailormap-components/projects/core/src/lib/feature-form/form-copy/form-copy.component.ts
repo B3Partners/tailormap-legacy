@@ -60,7 +60,7 @@ export class FormCopyComponent implements OnInit {
     if (this.destinationFeatures.length > 0) {
       const valuesToCopy = this.getPropertiesToMerge();
       for (let i  = 0; i <= this.destinationFeatures.length - 1; i++) {
-        this.destinationFeatures[i] = {...this.destinationFeatures[i], ...valuesToCopy}
+        this.destinationFeatures[i] = {...this.destinationFeatures[i], ...valuesToCopy};
         this.actionService.save$(false, this.destinationFeatures[i], this.destinationFeatures[i]).subscribe(savedFeature => {
             successCopied++;
             if (successCopied === this.destinationFeatures.length) {
@@ -78,7 +78,7 @@ export class FormCopyComponent implements OnInit {
           });
       }
     }
-    this._snackBar.open('Er zijn geen objecten geselecteerd om naar toe te kopiëren!', '', {
+    this._snackBar.open('Er zijn geen objecten geselecteerd!', '', {
       duration: 5000,
     });
   }
