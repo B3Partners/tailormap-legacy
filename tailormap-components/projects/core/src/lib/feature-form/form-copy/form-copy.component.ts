@@ -13,6 +13,7 @@ import { GbiControllerService } from '../../shared/gbi-controller/gbi-controller
 import { FormconfigRepositoryService } from '../../shared/formconfig-repository/formconfig-repository.service';
 import { FormConfiguration } from '../form/form-models';
 import { FormActionsService } from '../form-actions/form-actions.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'tailormap-form-copy',
@@ -33,7 +34,8 @@ export class FormCopyComponent implements OnInit {
               @Inject(MAT_DIALOG_DATA) public data: CopyData,
               private gbiService: GbiControllerService,
               private configService: FormconfigRepositoryService,
-              private actionService: FormActionsService) {
+              private actionService: FormActionsService,
+              private _snackBar: MatSnackBar) {
     this.destinationFeatures = [];
     this.gbiService.addDestinationFeature$.subscribe(value => {
       this.addDestinationFeature(value);
@@ -54,18 +56,31 @@ export class FormCopyComponent implements OnInit {
   }
 
   public copy() {
+    let successCopied = 0;
     if (this.destinationFeatures.length > 0) {
       const valuesToCopy = this.getPropertiesToMerge();
       for (let i  = 0; i <= this.destinationFeatures.length - 1; i++) {
         this.destinationFeatures[i] = {...this.destinationFeatures[i], ...valuesToCopy}
         this.actionService.save$(false, this.destinationFeatures[i], this.destinationFeatures[i]).subscribe(savedFeature => {
-            console.log('yesy');
+            successCopied++;
+            if (successCopied === this.destinationFeatures.length) {
+              this._snackBar.open('Er zijn ' + successCopied + 'features gekopieerd', '', {
+                duration: 5000,
+              });
+              this.destinationFeatures = [];
+              this.dialogRef.close();
+            }
           },
           error => {
-            console.log('Fout: Feature niet kunnen opslaan: ' + error.error.message);
+            this._snackBar.open('Fout: Feature niet kunnen opslaan: ' + error.error.message, '', {
+              duration: 5000,
+            });
           });
       }
     }
+    this._snackBar.open('Er zijn geen objecten geselecteerd om naar toe te kopiëren!', '', {
+      duration: 5000,
+    });
   }
 
   public addDestinationFeature(feature: Feature) {
