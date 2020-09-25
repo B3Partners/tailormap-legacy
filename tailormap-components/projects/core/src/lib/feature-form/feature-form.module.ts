@@ -11,7 +11,6 @@ import { ApiModule } from '../shared/generated';
 import { FormTreeComponent } from './form-tree/form-tree.component';
 import { UserIntefaceModule } from '../user-interface/user-interface.module';
 import { FormCopyComponent } from './form-copy/form-copy.component';
-import { CopyCreatorComponent } from './copy-creator/copy-creator.component';
 
 @NgModule({
   declarations: [
@@ -21,7 +20,6 @@ import { CopyCreatorComponent } from './copy-creator/copy-creator.component';
     FormfieldComponent,
     FormCreatorComponent,
     FormCopyComponent,
-    CopyCreatorComponent,
   ],
   imports: [
     CommonModule,
