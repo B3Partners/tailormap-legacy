@@ -1,16 +1,19 @@
-<%-- this file can be used to overrides settings in overlays --%>
-<%--
-Note that if you want to override the proxy actionbean url you will need to:
-- add the following ovveride here:
-<script type="text/javascript">
-    actionBeans["proxy"]=<js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.OIGSProxyActionBean"/></js:quote>;
-...
+<%-- Google Analytics for tailormap.nl --%>
 
-- add the proxy url in your context.xml:
+<script>
+    (function (i, s, o, g, r, a, m) {
+        i['GoogleAnalyticsObject'] = r;
+        i[r] = i[r] || function () {
+            (i[r].q = i[r].q || []).push(arguments)
+        }, i[r].l = 1 * new Date();
+        a = s.createElement(o),
+            m = s.getElementsByTagName(o)[0];
+        a.async = 1;
+        a.src = g;
+        m.parentNode.insertBefore(a, m)
+    })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+    ga('create', 'UA-xxxxxxxxx-1', 'auto');
+    ga('set', 'anonymizeIp', true);
+    ga('send', 'pageview');
+</script>
 
-<Parameter name="proxy" override="false" value="/action/oigsproxy/wms"/>
-
-see also:
-- https://github.com/flamingo-geocms/flamingo/issues/1456
-
---%>
