@@ -90,6 +90,8 @@ Ext.define("viewer.components.GBI", {
 
         this.div.addEventListener('startGeometryDrawing', function(e){this.startDrawingGeometry(e.detail);}.bind(this));
 
+        this.div.addEventListener('addCopyFeatureToLayer', function(e){this.addFeatureToLayer(e.detail);}.bind(this));
+
         this.config.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_VISIBILITY_CHANGED,
             this.layerVisibilityChanged,this);
 
@@ -122,6 +124,9 @@ Ext.define("viewer.components.GBI", {
     startDrawingGeometry: function(event){
         this.vectorLayer.drawFeature(event.type);
     },
+    addFeatureToLayer: function(event){
+        this.vectorLayer.readGeoJSON(event.geometrie);
+    },
     geometryDrawn: function(vectorLayer, feature){
         this.div.setAttribute("geometry-drawn", feature.config.wktgeom);
     },
@@ -129,7 +134,7 @@ Ext.define("viewer.components.GBI", {
         var coords = comp.coord;
         var x = parseInt(coords.x);
         var y = parseInt(coords.y);
-        var scale = 25;
+        var scale = 3;
 
         var json = {
             x: x,
