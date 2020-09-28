@@ -8,7 +8,13 @@ import { RequestBuilder } from '../request-builder';
 import { Observable } from 'rxjs';
 import { map, filter } from 'rxjs/operators';
 
-import { Feature } from '../models/feature';
+import { Boom } from '../models/boom';
+import { Boominspectie } from '../models/boominspectie';
+import { Boomplanning } from '../models/boomplanning';
+import { Rioolput } from '../models/rioolput';
+import { Weginspectie } from '../models/weginspectie';
+import { Wegvakonderdeel } from '../models/wegvakonderdeel';
+import { Wegvakonderdeelplanning } from '../models/wegvakonderdeelplanning';
 
 @Injectable({
   providedIn: 'root',
@@ -36,7 +42,7 @@ export class FeatureControllerService extends BaseService {
     featuretype: string;
     objectGuid: string;
 
-  }): Observable<StrictHttpResponse<Feature>> {
+  }): Observable<StrictHttpResponse<Boom | Boominspectie | Boomplanning | Rioolput | Weginspectie | Wegvakonderdeel | Wegvakonderdeelplanning>> {
 
     const rb = new RequestBuilder(this.rootUrl, FeatureControllerService.GetPath, 'get');
     if (params) {
@@ -51,7 +57,7 @@ export class FeatureControllerService extends BaseService {
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<Feature>;
+        return r as StrictHttpResponse<Boom | Boominspectie | Boomplanning | Rioolput | Weginspectie | Wegvakonderdeel | Wegvakonderdeelplanning>;
       })
     );
   }
@@ -66,10 +72,10 @@ export class FeatureControllerService extends BaseService {
     featuretype: string;
     objectGuid: string;
 
-  }): Observable<Feature> {
+  }): Observable<Boom | Boominspectie | Boomplanning | Rioolput | Weginspectie | Wegvakonderdeel | Wegvakonderdeelplanning> {
 
     return this.get$Response(params).pipe(
-      map((r: StrictHttpResponse<Feature>) => r.body as Feature)
+      map((r: StrictHttpResponse<Boom | Boominspectie | Boomplanning | Rioolput | Weginspectie | Wegvakonderdeel | Wegvakonderdeelplanning>) => r.body as Boom | Boominspectie | Boomplanning | Rioolput | Weginspectie | Wegvakonderdeel | Wegvakonderdeelplanning)
     );
   }
 
@@ -138,8 +144,8 @@ export class FeatureControllerService extends BaseService {
    */
   update$Response(params: {
     objectGuid: string;
-      body: Feature
-  }): Observable<StrictHttpResponse<Feature>> {
+      body: Boom | Boominspectie | Boomplanning | Rioolput | Weginspectie | Wegvakonderdeel | Wegvakonderdeelplanning
+  }): Observable<StrictHttpResponse<Boom | Boominspectie | Boomplanning | Rioolput | Weginspectie | Wegvakonderdeel | Wegvakonderdeelplanning>> {
 
     const rb = new RequestBuilder(this.rootUrl, FeatureControllerService.UpdatePath, 'put');
     if (params) {
@@ -154,7 +160,7 @@ export class FeatureControllerService extends BaseService {
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<Feature>;
+        return r as StrictHttpResponse<Boom | Boominspectie | Boomplanning | Rioolput | Weginspectie | Wegvakonderdeel | Wegvakonderdeelplanning>;
       })
     );
   }
@@ -167,11 +173,11 @@ export class FeatureControllerService extends BaseService {
    */
   update(params: {
     objectGuid: string;
-      body: Feature
-  }): Observable<Feature> {
+      body: Boom | Boominspectie | Boomplanning | Rioolput | Weginspectie | Wegvakonderdeel | Wegvakonderdeelplanning
+  }): Observable<Boom | Boominspectie | Boomplanning | Rioolput | Weginspectie | Wegvakonderdeel | Wegvakonderdeelplanning> {
 
     return this.update$Response(params).pipe(
-      map((r: StrictHttpResponse<Feature>) => r.body as Feature)
+      map((r: StrictHttpResponse<Boom | Boominspectie | Boomplanning | Rioolput | Weginspectie | Wegvakonderdeel | Wegvakonderdeelplanning>) => r.body as Boom | Boominspectie | Boomplanning | Rioolput | Weginspectie | Wegvakonderdeel | Wegvakonderdeelplanning)
     );
   }
 
@@ -188,8 +194,8 @@ export class FeatureControllerService extends BaseService {
    */
   save$Response(params: {
     parentId?: string;
-      body: Feature
-  }): Observable<StrictHttpResponse<Feature>> {
+      body: Boom | Boominspectie | Boomplanning | Rioolput | Weginspectie | Wegvakonderdeel | Wegvakonderdeelplanning
+  }): Observable<StrictHttpResponse<Boom | Boominspectie | Boomplanning | Rioolput | Weginspectie | Wegvakonderdeel | Wegvakonderdeelplanning>> {
 
     const rb = new RequestBuilder(this.rootUrl, FeatureControllerService.SavePath, 'post');
     if (params) {
@@ -204,7 +210,7 @@ export class FeatureControllerService extends BaseService {
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<Feature>;
+        return r as StrictHttpResponse<Boom | Boominspectie | Boomplanning | Rioolput | Weginspectie | Wegvakonderdeel | Wegvakonderdeelplanning>;
       })
     );
   }
@@ -217,11 +223,11 @@ export class FeatureControllerService extends BaseService {
    */
   save(params: {
     parentId?: string;
-      body: Feature
-  }): Observable<Feature> {
+      body: Boom | Boominspectie | Boomplanning | Rioolput | Weginspectie | Wegvakonderdeel | Wegvakonderdeelplanning
+  }): Observable<Boom | Boominspectie | Boomplanning | Rioolput | Weginspectie | Wegvakonderdeel | Wegvakonderdeelplanning> {
 
     return this.save$Response(params).pipe(
-      map((r: StrictHttpResponse<Feature>) => r.body as Feature)
+      map((r: StrictHttpResponse<Boom | Boominspectie | Boomplanning | Rioolput | Weginspectie | Wegvakonderdeel | Wegvakonderdeelplanning>) => r.body as Boom | Boominspectie | Boomplanning | Rioolput | Weginspectie | Wegvakonderdeel | Wegvakonderdeelplanning)
     );
   }
 
@@ -238,7 +244,7 @@ export class FeatureControllerService extends BaseService {
    */
   getAll$Response(params?: {
 
-  }): Observable<StrictHttpResponse<Array<Feature>>> {
+  }): Observable<StrictHttpResponse<Array<Boom | Boominspectie | Boomplanning | Rioolput | Weginspectie | Wegvakonderdeel | Wegvakonderdeelplanning>>> {
 
     const rb = new RequestBuilder(this.rootUrl, FeatureControllerService.GetAllPath, 'get');
     if (params) {
@@ -251,7 +257,7 @@ export class FeatureControllerService extends BaseService {
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<Array<Feature>>;
+        return r as StrictHttpResponse<Array<Boom | Boominspectie | Boomplanning | Rioolput | Weginspectie | Wegvakonderdeel | Wegvakonderdeelplanning>>;
       })
     );
   }
@@ -264,10 +270,10 @@ export class FeatureControllerService extends BaseService {
    */
   getAll(params?: {
 
-  }): Observable<Array<Feature>> {
+  }): Observable<Array<Boom | Boominspectie | Boomplanning | Rioolput | Weginspectie | Wegvakonderdeel | Wegvakonderdeelplanning>> {
 
     return this.getAll$Response(params).pipe(
-      map((r: StrictHttpResponse<Array<Feature>>) => r.body as Array<Feature>)
+      map((r: StrictHttpResponse<Array<Boom | Boominspectie | Boomplanning | Rioolput | Weginspectie | Wegvakonderdeel | Wegvakonderdeelplanning>>) => r.body as Array<Boom | Boominspectie | Boomplanning | Rioolput | Weginspectie | Wegvakonderdeel | Wegvakonderdeelplanning>)
     );
   }
 
@@ -287,7 +293,7 @@ export class FeatureControllerService extends BaseService {
     'y': number;
     scale: number;
 
-  }): Observable<StrictHttpResponse<Array<Feature>>> {
+  }): Observable<StrictHttpResponse<Array<Boom | Boominspectie | Boomplanning | Rioolput | Weginspectie | Wegvakonderdeel | Wegvakonderdeelplanning>>> {
 
     const rb = new RequestBuilder(this.rootUrl, FeatureControllerService.OnPointPath, 'get');
     if (params) {
@@ -303,7 +309,7 @@ export class FeatureControllerService extends BaseService {
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<Array<Feature>>;
+        return r as StrictHttpResponse<Array<Boom | Boominspectie | Boomplanning | Rioolput | Weginspectie | Wegvakonderdeel | Wegvakonderdeelplanning>>;
       })
     );
   }
@@ -319,10 +325,10 @@ export class FeatureControllerService extends BaseService {
     'y': number;
     scale: number;
 
-  }): Observable<Array<Feature>> {
+  }): Observable<Array<Boom | Boominspectie | Boomplanning | Rioolput | Weginspectie | Wegvakonderdeel | Wegvakonderdeelplanning>> {
 
     return this.onPoint$Response(params).pipe(
-      map((r: StrictHttpResponse<Array<Feature>>) => r.body as Array<Feature>)
+      map((r: StrictHttpResponse<Array<Boom | Boominspectie | Boomplanning | Rioolput | Weginspectie | Wegvakonderdeel | Wegvakonderdeelplanning>>) => r.body as Array<Boom | Boominspectie | Boomplanning | Rioolput | Weginspectie | Wegvakonderdeel | Wegvakonderdeelplanning>)
     );
   }
 

@@ -3,10 +3,14 @@ import { NgModule, ModuleWithProviders, SkipSelf, Optional } from '@angular/core
 import { HttpClient } from '@angular/common/http';
 import { ApiConfiguration, ApiConfigurationParams } from './api-configuration';
 
-import { AttribuutControllerService } from './services/attribuut-controller.service';
+import { AttributeControllerService } from './services/attribute-controller.service';
 import { FeatureControllerService } from './services/feature-controller.service';
-import { WegvakonderdeelControllerService } from './services/wegvakonderdeel-controller.service';
-import { WegvakonderdeelplanningControllerService } from './services/wegvakonderdeelplanning-controller.service';
+import { RoadInspectionControllerService } from './services/road-inspection-controller.service';
+import { RoadsectionPartControllerService } from './services/roadsection-part-controller.service';
+import { RoadsectionPartPlanningControllerService } from './services/roadsection-part-planning-controller.service';
+import { TreeControllerService } from './services/tree-controller.service';
+import { TreeInspectionControllerService } from './services/tree-inspection-controller.service';
+import { WellControllerService } from './services/well-controller.service';
 
 /**
  * Module that provides all services and configuration.
@@ -16,10 +20,14 @@ import { WegvakonderdeelplanningControllerService } from './services/wegvakonder
   exports: [],
   declarations: [],
   providers: [
-    AttribuutControllerService,
+    AttributeControllerService,
     FeatureControllerService,
-    WegvakonderdeelControllerService,
-    WegvakonderdeelplanningControllerService,
+    RoadInspectionControllerService,
+    RoadsectionPartControllerService,
+    RoadsectionPartPlanningControllerService,
+    TreeControllerService,
+    TreeInspectionControllerService,
+    WellControllerService,
     ApiConfiguration
   ],
 })
