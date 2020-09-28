@@ -16,6 +16,7 @@ import {
   DialogClosedData,
   GeometryInteractionData,
   GeometryType,
+  HighlightData,
 } from './form-popup-models';
 import { AddButtonEvent } from '../../user-interface/add-feature/add-feature-models';
 import * as wellknown from 'wellknown';
@@ -33,7 +34,7 @@ export class FormPopupComponent implements OnInit {
     private service: FeatureControllerService,
     private _snackBar: MatSnackBar,
     private featureInitializerService: FeatureInitializerService,
-    ) {
+  ) {
   }
 
   // tslint:disable-next-line:no-unused-variable
@@ -45,6 +46,17 @@ export class FormPopupComponent implements OnInit {
   private isBulk: string;
 
   public lookup: Map<string, string>;
+
+  @Output()
+  public wanneerPopupClosed = new EventEmitter<DialogClosedData>();
+
+  @Output()
+  public highlightFeature = new EventEmitter<HighlightData>();
+
+  @Output()
+  public startGeometryDrawing = new EventEmitter<GeometryInteractionData>();
+
+  public temp: AddButtonEvent;
 
   @Input()
   public set bulk(isBulk: string) {
@@ -66,7 +78,11 @@ export class FormPopupComponent implements OnInit {
     this.service.onPoint({x, y, scale}).subscribe(
       (features: Feature[]) => {
         if (features && features.length > 0) {
-          this.openDialog(features);
+          const feat = features[0];
+          this.highlightFeature.emit({
+            geojson: this.featureInitializerService.retrieveGeometry(feat),
+          });
+          this.openDialog([feat]);
         }
       },
       error => {
@@ -90,18 +106,10 @@ export class FormPopupComponent implements OnInit {
     const objecttype = this.temp.featuretype.charAt(0).toUpperCase() + this.temp.featuretype.slice(1);
     const feat = this.featureInitializerService.create(objecttype, {geometrie: geoJson, clazz: this.temp.featuretype, children: []});
 
-    const features : Feature[] = [feat];
+    const features: Feature[] = [feat];
     this.openDialog(features);
-      }
+  }
 
-
-  @Output()
-  public wanneerPopupClosed = new EventEmitter<DialogClosedData>();
-
-  @Output()
-  public startGeometryDrawing = new EventEmitter<GeometryInteractionData>();
-
-  public temp: AddButtonEvent;
 
   public ngOnInit() {
   }
@@ -137,13 +145,13 @@ export class FormPopupComponent implements OnInit {
 
   public createColumnLookup(): Map<string, string> {
     const lookup = new Map<string, string>();
-   /* this.tailormapAppLayer.attributes.forEach(a => {
-      const index = a.longname.indexOf('.');
-      const featureType = a.longname.substring(0, index);
-      const originalName = a.longname.substring(index + 1);
-      const alias = a.editAlias || a.alias;
-      lookup[originalName] = (alias || a.name);
-    });*/
+    /* this.tailormapAppLayer.attributes.forEach(a => {
+       const index = a.longname.indexOf('.');
+       const featureType = a.longname.substring(0, index);
+       const originalName = a.longname.substring(index + 1);
+       const alias = a.editAlias || a.alias;
+       lookup[originalName] = (alias || a.name);
+     });*/
     return lookup;
   }
 

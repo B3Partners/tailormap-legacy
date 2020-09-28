@@ -1,4 +1,8 @@
-import { Feature } from '../../shared/generated';
+import {
+  Feature,
+  Geometry,
+} from '../../shared/generated';
+
 
 
 export interface DialogData {
@@ -9,6 +13,10 @@ export interface DialogData {
 
 export interface DialogClosedData {
   iets: string;
+}
+
+export interface HighlightData {
+  geojson: Geometry;
 }
 
 export interface GeometryInteractionData {
