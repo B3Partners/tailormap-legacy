@@ -1,18 +1,16 @@
-/**============================================================================
- * Shows a resize "handle" on top of a panel.
+/**
+ * Shows a resize 'handle' on top of a panel.
  *
  * https://stackoverflow.com/questions/36273791/how-to-implement-a-draggable-div-in-angular-2-using-rx
- *===========================================================================*/
+ */
 
-import {Component, OnInit, HostListener,
-        ViewChild, AfterViewInit} from '@angular/core';
-
-import { LayoutService } from './layout.service';
+import { Component, OnInit, HostListener, AfterViewInit } from '@angular/core';
+import { LayoutService } from '../layout.service';
 
 @Component({
   selector: 'tailormap-panel-resize',
   templateUrl: './panel-resizer.component.html',
-  styleUrls: ['./panel-resizer.component.css']
+  styleUrls: ['./panel-resizer.component.css'],
 })
 export class PanelResizerComponent implements OnInit, AfterViewInit {
 
@@ -21,74 +19,59 @@ export class PanelResizerComponent implements OnInit, AfterViewInit {
   // mousemove = new EventEmitter<MouseEvent>();
   // mousedrag: Observable<{top, left}>;
 
-  // The drag handle.
-  @ViewChild("resizehandle") handle;
+  public visible = false;
 
-  dragStartY = 0;
+  private dragStartY = 0;
 
-  isMouseDown = false;
+  private isMouseDown = false;
 
-  /**----------------------------------------------------------------------------
-   */
   constructor(private layoutService: LayoutService) {
   }
-  /**----------------------------------------------------------------------------
-   */
-  ngOnInit(): void {
+
+  public ngOnInit(): void {
   }
-  /**----------------------------------------------------------------------------
-   */
-  ngAfterViewInit(): void {
-    //console.log("#Resizer - ngAfterViewInit");
+
+  public ngAfterViewInit(): void {
+    // console.log('#Resizer - ngAfterViewInit');
     // Hide handle at startup.
     this.showHandle(false);
   }
-  /**----------------------------------------------------------------------------
-   */
-  onPanelMouseEnter(): void {
-    //console.log("#Resizer - onMouseEnter");
+
+  public onPanelMouseEnter(): void {
+    // console.log('#Resizer - onMouseEnter');
     this.showHandle(true);
   }
-  /**----------------------------------------------------------------------------
-   */
-  onPanelMouseLeave(): void {
-    //console.log("#Resizer - onMouseLeave");
+
+  public onPanelMouseLeave(): void {
+    // console.log('#Resizer - onMouseLeave');
     if (!this.isMouseDown) {
       this.showHandle(false);
     }
   }
-  /**----------------------------------------------------------------------------
-   */
-  onHandleMouseDown(event: MouseEvent): void {
-    //console.log("#Resizer - onHandleMouseDown");
+
+  public onHandleMouseDown(event: MouseEvent): void {
+    // console.log('#Resizer - onHandleMouseDown');
     this.isMouseDown = true;
     this.dragStartY = event.screenY;
   }
-  /**----------------------------------------------------------------------------
-   */
+
   @HostListener('window:mousemove', ['$event'])
-  onWindowMouseMove(event: MouseEvent): void {
+  // @ts-ignore
+  private onWindowMouseMove(event: MouseEvent): void {
     if (this.isMouseDown) {
       const deltaY = event.screenY - this.dragStartY;
       this.layoutService.updateComponent(this, deltaY);
       this.dragStartY += deltaY;
     }
   }
-  /**----------------------------------------------------------------------------
-   */
+
   @HostListener('window:mouseup', ['$event'])
-  onWindowMouseUp(event: MouseEvent): void {
+  // @ts-ignore
+  private onWindowMouseUp(event: MouseEvent): void {
     this.isMouseDown = false;
   }
-  /**----------------------------------------------------------------------------
-   */
-  showHandle(show: boolean): void {
-    if (show) {
-      this.handle.nativeElement.style.display = "flex";
-      this.handle.nativeElement.style.cursor = "ns-resize";
-    } else {
-      this.handle.nativeElement.style.display = "none";
-      this.handle.nativeElement.style.cursor = "auto";
-    }
+
+  public showHandle(show: boolean): void {
+    this.visible = show;
   }
 }

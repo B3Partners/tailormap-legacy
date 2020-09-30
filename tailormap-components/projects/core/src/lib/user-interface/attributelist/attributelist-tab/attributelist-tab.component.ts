@@ -1,37 +1,36 @@
-/**============================================================================
- *===========================================================================*/
+/**
+ * Remarks: a tab is created for each layer discovered in the layers property
+ *          of the panel.
+ */
 
-import {Component, OnInit, AfterViewInit, Input, ViewChild} from '@angular/core';
-import {LayerService} from '../layer.service';
+import { Component, OnInit, AfterViewInit, Input, ViewChild } from '@angular/core';
+import { LayerService } from '../layer.service';
 
 @Component({
   selector: 'tailormap-attributelist-tab',
   templateUrl: './attributelist-tab.component.html',
-  styleUrls: ['./attributelist-tab.component.css']
+  styleUrls: ['./attributelist-tab.component.css'],
 })
 export class AttributelistTabComponent implements OnInit, AfterViewInit {
 
-  // The index of the tab in the tabgroup/layers.
+  // The index of the tab in the tabgroup/layers. The first layer gets index 0.
   @Input()
-  tabIndex: number;
+  public tabIndex: number;
 
-  @ViewChild("table") table;
+  @ViewChild('table') public table;
 
-  /**----------------------------------------------------------------------------
-   */
   constructor(private layerService: LayerService) {
     // Init tab index.
     this.tabIndex = -1;
   }
-  /**----------------------------------------------------------------------------
-   */
-  ngOnInit(): void {
-    // Register this tab at the layer service.
+
+  public ngOnInit(): void {
+    // When a tab is initialized the tab index can be registered with
+    // the layer service.
     this.layerService.registerTabComponent(this.tabIndex, this);
   }
-  /**----------------------------------------------------------------------------
-   */
-  ngAfterViewInit(): void {
+
+  public ngAfterViewInit(): void {
     // Set table tab index (only here the table is defined).
     this.table.setTabIndex(this.tabIndex);
   }

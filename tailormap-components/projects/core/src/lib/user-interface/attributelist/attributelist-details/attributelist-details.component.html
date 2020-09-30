@@ -1,0 +1,15 @@
+<div class="container">
+  <div class="table-container">
+    <mat-table #table [dataSource]="dataSource"
+               matSort
+               (matSortChange) = "onSortClick($event)">
+      <ng-container *ngFor="let colName of getColumnNames()">
+        <mat-header-cell *matHeaderCellDef mat-sort-header >{{colName}}</mat-header-cell>
+        <mat-cell *matCellDef="let element;"> {{element[colName]}}</mat-cell>
+      </ng-container>
+      <mat-header-row *matHeaderRowDef="getColumnNames(); sticky: true;"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: getColumnNames();"
+               (click) = "onRowClicked(row);"></mat-row>
+    </mat-table>
+  </div>
+</div>
