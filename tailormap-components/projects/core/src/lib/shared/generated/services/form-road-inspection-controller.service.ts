@@ -23,22 +23,22 @@ export class FormRoadInspectionControllerService extends BaseService {
   }
 
   /**
-   * Path part for operation get5
+   * Path part for operation get7
    */
-  static readonly Get5Path = '/weginspectie/{objectGuid}';
+  static readonly Get7Path = '/weginspectie/{objectGuid}';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `get5()` instead.
+   * To access only the response body, use `get7()` instead.
    *
    * This method doesn't expect any request body.
    */
-  get5$Response(params: {
+  get7$Response(params: {
     objectGuid: string;
 
   }): Observable<StrictHttpResponse<Weginspectie>> {
 
-    const rb = new RequestBuilder(this.rootUrl, FormRoadInspectionControllerService.Get5Path, 'get');
+    const rb = new RequestBuilder(this.rootUrl, FormRoadInspectionControllerService.Get7Path, 'get');
     if (params) {
 
       rb.path('objectGuid', params.objectGuid, {});
@@ -57,16 +57,16 @@ export class FormRoadInspectionControllerService extends BaseService {
 
   /**
    * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `get5$Response()` instead.
+   * To access the full response (for headers, for example), `get7$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  get5(params: {
+  get7(params: {
     objectGuid: string;
 
   }): Observable<Weginspectie> {
 
-    return this.get5$Response(params).pipe(
+    return this.get7$Response(params).pipe(
       map((r: StrictHttpResponse<Weginspectie>) => r.body as Weginspectie)
     );
   }

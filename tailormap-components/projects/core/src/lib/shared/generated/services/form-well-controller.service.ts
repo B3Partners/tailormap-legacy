@@ -22,22 +22,22 @@ export class FormWellControllerService extends BaseService {
   }
 
   /**
-   * Path part for operation get10
+   * Path part for operation get13
    */
-  static readonly Get10Path = '/rioolput/{objectGuid}';
+  static readonly Get13Path = '/rioolput/{objectGuid}';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `get10()` instead.
+   * To access only the response body, use `get13()` instead.
    *
    * This method doesn't expect any request body.
    */
-  get10$Response(params: {
+  get13$Response(params: {
     objectGuid: string;
 
   }): Observable<StrictHttpResponse<Rioolput>> {
 
-    const rb = new RequestBuilder(this.rootUrl, FormWellControllerService.Get10Path, 'get');
+    const rb = new RequestBuilder(this.rootUrl, FormWellControllerService.Get13Path, 'get');
     if (params) {
 
       rb.path('objectGuid', params.objectGuid, {});
@@ -56,39 +56,39 @@ export class FormWellControllerService extends BaseService {
 
   /**
    * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `get10$Response()` instead.
+   * To access the full response (for headers, for example), `get13$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  get10(params: {
+  get13(params: {
     objectGuid: string;
 
   }): Observable<Rioolput> {
 
-    return this.get10$Response(params).pipe(
+    return this.get13$Response(params).pipe(
       map((r: StrictHttpResponse<Rioolput>) => r.body as Rioolput)
     );
   }
 
   /**
-   * Path part for operation onPoint7
+   * Path part for operation onPoint9
    */
-  static readonly OnPoint7Path = '/rioolput/{x}/{y}/{scale}';
+  static readonly OnPoint9Path = '/rioolput/{x}/{y}/{scale}';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `onPoint7()` instead.
+   * To access only the response body, use `onPoint9()` instead.
    *
    * This method doesn't expect any request body.
    */
-  onPoint7$Response(params: {
+  onPoint9$Response(params: {
     'x': number;
     'y': number;
     scale: number;
 
   }): Observable<StrictHttpResponse<Array<Rioolput>>> {
 
-    const rb = new RequestBuilder(this.rootUrl, FormWellControllerService.OnPoint7Path, 'get');
+    const rb = new RequestBuilder(this.rootUrl, FormWellControllerService.OnPoint9Path, 'get');
     if (params) {
 
       rb.path('x', params['x'], {});
@@ -109,18 +109,18 @@ export class FormWellControllerService extends BaseService {
 
   /**
    * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `onPoint7$Response()` instead.
+   * To access the full response (for headers, for example), `onPoint9$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  onPoint7(params: {
+  onPoint9(params: {
     'x': number;
     'y': number;
     scale: number;
 
   }): Observable<Array<Rioolput>> {
 
-    return this.onPoint7$Response(params).pipe(
+    return this.onPoint9$Response(params).pipe(
       map((r: StrictHttpResponse<Array<Rioolput>>) => r.body as Array<Rioolput>)
     );
   }

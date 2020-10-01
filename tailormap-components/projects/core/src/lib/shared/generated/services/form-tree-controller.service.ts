@@ -22,22 +22,22 @@ export class FormTreeControllerService extends BaseService {
   }
 
   /**
-   * Path part for operation get8
+   * Path part for operation get10
    */
-  static readonly Get8Path = '/boom/{objectGuid}';
+  static readonly Get10Path = '/boom/{objectGuid}';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `get8()` instead.
+   * To access only the response body, use `get10()` instead.
    *
    * This method doesn't expect any request body.
    */
-  get8$Response(params: {
+  get10$Response(params: {
     objectGuid: string;
 
   }): Observable<StrictHttpResponse<Boom>> {
 
-    const rb = new RequestBuilder(this.rootUrl, FormTreeControllerService.Get8Path, 'get');
+    const rb = new RequestBuilder(this.rootUrl, FormTreeControllerService.Get10Path, 'get');
     if (params) {
 
       rb.path('objectGuid', params.objectGuid, {});
@@ -56,39 +56,39 @@ export class FormTreeControllerService extends BaseService {
 
   /**
    * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `get8$Response()` instead.
+   * To access the full response (for headers, for example), `get10$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  get8(params: {
+  get10(params: {
     objectGuid: string;
 
   }): Observable<Boom> {
 
-    return this.get8$Response(params).pipe(
+    return this.get10$Response(params).pipe(
       map((r: StrictHttpResponse<Boom>) => r.body as Boom)
     );
   }
 
   /**
-   * Path part for operation onPoint6
+   * Path part for operation onPoint8
    */
-  static readonly OnPoint6Path = '/boom/{x}/{y}/{scale}';
+  static readonly OnPoint8Path = '/boom/{x}/{y}/{scale}';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `onPoint6()` instead.
+   * To access only the response body, use `onPoint8()` instead.
    *
    * This method doesn't expect any request body.
    */
-  onPoint6$Response(params: {
+  onPoint8$Response(params: {
     'x': number;
     'y': number;
     scale: number;
 
   }): Observable<StrictHttpResponse<Array<Boom>>> {
 
-    const rb = new RequestBuilder(this.rootUrl, FormTreeControllerService.OnPoint6Path, 'get');
+    const rb = new RequestBuilder(this.rootUrl, FormTreeControllerService.OnPoint8Path, 'get');
     if (params) {
 
       rb.path('x', params['x'], {});
@@ -109,18 +109,18 @@ export class FormTreeControllerService extends BaseService {
 
   /**
    * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `onPoint6$Response()` instead.
+   * To access the full response (for headers, for example), `onPoint8$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  onPoint6(params: {
+  onPoint8(params: {
     'x': number;
     'y': number;
     scale: number;
 
   }): Observable<Array<Boom>> {
 
-    return this.onPoint6$Response(params).pipe(
+    return this.onPoint8$Response(params).pipe(
       map((r: StrictHttpResponse<Array<Boom>>) => r.body as Array<Boom>)
     );
   }
