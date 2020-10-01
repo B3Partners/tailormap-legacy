@@ -23,22 +23,22 @@ export class FormTreeInspectionControllerService extends BaseService {
   }
 
   /**
-   * Path part for operation get9
+   * Path part for operation get11
    */
-  static readonly Get9Path = '/boominspectie/{objectGuid}';
+  static readonly Get11Path = '/boominspectie/{objectGuid}';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `get9()` instead.
+   * To access only the response body, use `get11()` instead.
    *
    * This method doesn't expect any request body.
    */
-  get9$Response(params: {
+  get11$Response(params: {
     objectGuid: string;
 
   }): Observable<StrictHttpResponse<Boominspectie>> {
 
-    const rb = new RequestBuilder(this.rootUrl, FormTreeInspectionControllerService.Get9Path, 'get');
+    const rb = new RequestBuilder(this.rootUrl, FormTreeInspectionControllerService.Get11Path, 'get');
     if (params) {
 
       rb.path('objectGuid', params.objectGuid, {});
@@ -57,16 +57,16 @@ export class FormTreeInspectionControllerService extends BaseService {
 
   /**
    * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `get9$Response()` instead.
+   * To access the full response (for headers, for example), `get11$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  get9(params: {
+  get11(params: {
     objectGuid: string;
 
   }): Observable<Boominspectie> {
 
-    return this.get9$Response(params).pipe(
+    return this.get11$Response(params).pipe(
       map((r: StrictHttpResponse<Boominspectie>) => r.body as Boominspectie)
     );
   }

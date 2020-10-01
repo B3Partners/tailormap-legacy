@@ -8,12 +8,12 @@ import { RequestBuilder } from '../request-builder';
 import { Observable } from 'rxjs';
 import { map, filter } from 'rxjs/operators';
 
-import { Haag } from '../models/haag';
+import { VrijvLeiding } from '../models/vrijv-leiding';
 
 @Injectable({
   providedIn: 'root',
 })
-export class FormHedgeControllerService extends BaseService {
+export class FormFreeFallDuctControllerService extends BaseService {
   constructor(
     config: ApiConfiguration,
     http: HttpClient
@@ -22,22 +22,22 @@ export class FormHedgeControllerService extends BaseService {
   }
 
   /**
-   * Path part for operation get4
+   * Path part for operation get2
    */
-  static readonly Get4Path = '/haag/{objectGuid}';
+  static readonly Get2Path = '/vrijevervalleiding/{objectGuid}';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `get4()` instead.
+   * To access only the response body, use `get2()` instead.
    *
    * This method doesn't expect any request body.
    */
-  get4$Response(params: {
+  get2$Response(params: {
     objectGuid: string;
 
-  }): Observable<StrictHttpResponse<Haag>> {
+  }): Observable<StrictHttpResponse<VrijvLeiding>> {
 
-    const rb = new RequestBuilder(this.rootUrl, FormHedgeControllerService.Get4Path, 'get');
+    const rb = new RequestBuilder(this.rootUrl, FormFreeFallDuctControllerService.Get2Path, 'get');
     if (params) {
 
       rb.path('objectGuid', params.objectGuid, {});
@@ -49,46 +49,46 @@ export class FormHedgeControllerService extends BaseService {
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<Haag>;
+        return r as StrictHttpResponse<VrijvLeiding>;
       })
     );
   }
 
   /**
    * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `get4$Response()` instead.
+   * To access the full response (for headers, for example), `get2$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  get4(params: {
+  get2(params: {
     objectGuid: string;
 
-  }): Observable<Haag> {
+  }): Observable<VrijvLeiding> {
 
-    return this.get4$Response(params).pipe(
-      map((r: StrictHttpResponse<Haag>) => r.body as Haag)
+    return this.get2$Response(params).pipe(
+      map((r: StrictHttpResponse<VrijvLeiding>) => r.body as VrijvLeiding)
     );
   }
 
   /**
-   * Path part for operation onPoint4
+   * Path part for operation onPoint2
    */
-  static readonly OnPoint4Path = '/haag/{x}/{y}/{scale}';
+  static readonly OnPoint2Path = '/vrijevervalleiding/{x}/{y}/{scale}';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `onPoint4()` instead.
+   * To access only the response body, use `onPoint2()` instead.
    *
    * This method doesn't expect any request body.
    */
-  onPoint4$Response(params: {
+  onPoint2$Response(params: {
     'x': number;
     'y': number;
     scale: number;
 
-  }): Observable<StrictHttpResponse<Array<Haag>>> {
+  }): Observable<StrictHttpResponse<Array<VrijvLeiding>>> {
 
-    const rb = new RequestBuilder(this.rootUrl, FormHedgeControllerService.OnPoint4Path, 'get');
+    const rb = new RequestBuilder(this.rootUrl, FormFreeFallDuctControllerService.OnPoint2Path, 'get');
     if (params) {
 
       rb.path('x', params['x'], {});
@@ -102,26 +102,26 @@ export class FormHedgeControllerService extends BaseService {
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<Array<Haag>>;
+        return r as StrictHttpResponse<Array<VrijvLeiding>>;
       })
     );
   }
 
   /**
    * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `onPoint4$Response()` instead.
+   * To access the full response (for headers, for example), `onPoint2$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  onPoint4(params: {
+  onPoint2(params: {
     'x': number;
     'y': number;
     scale: number;
 
-  }): Observable<Array<Haag>> {
+  }): Observable<Array<VrijvLeiding>> {
 
-    return this.onPoint4$Response(params).pipe(
-      map((r: StrictHttpResponse<Array<Haag>>) => r.body as Array<Haag>)
+    return this.onPoint2$Response(params).pipe(
+      map((r: StrictHttpResponse<Array<VrijvLeiding>>) => r.body as Array<VrijvLeiding>)
     );
   }
 
