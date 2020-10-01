@@ -5,12 +5,16 @@ import { ApiConfiguration, ApiConfigurationParams } from './api-configuration';
 
 import { AttributeControllerService } from './services/attribute-controller.service';
 import { FeatureControllerService } from './services/feature-controller.service';
-import { RoadInspectionControllerService } from './services/road-inspection-controller.service';
-import { RoadsectionPartControllerService } from './services/roadsection-part-controller.service';
-import { RoadsectionPartPlanningControllerService } from './services/roadsection-part-planning-controller.service';
-import { TreeControllerService } from './services/tree-controller.service';
-import { TreeInspectionControllerService } from './services/tree-inspection-controller.service';
-import { WellControllerService } from './services/well-controller.service';
+import { FormCultPlantingControllerService } from './services/form-cult-planting-controller.service';
+import { FormGrassControllerService } from './services/form-grass-controller.service';
+import { FormHedgeControllerService } from './services/form-hedge-controller.service';
+import { FormNatPlantingControllerService } from './services/form-nat-planting-controller.service';
+import { FormRoadInspectionControllerService } from './services/form-road-inspection-controller.service';
+import { FormRoadsectionPartControllerService } from './services/form-roadsection-part-controller.service';
+import { FormRoadsectionPartPlanningControllerService } from './services/form-roadsection-part-planning-controller.service';
+import { FormTreeControllerService } from './services/form-tree-controller.service';
+import { FormTreeInspectionControllerService } from './services/form-tree-inspection-controller.service';
+import { FormWellControllerService } from './services/form-well-controller.service';
 
 /**
  * Module that provides all services and configuration.
@@ -22,12 +26,16 @@ import { WellControllerService } from './services/well-controller.service';
   providers: [
     AttributeControllerService,
     FeatureControllerService,
-    RoadInspectionControllerService,
-    RoadsectionPartControllerService,
-    RoadsectionPartPlanningControllerService,
-    TreeControllerService,
-    TreeInspectionControllerService,
-    WellControllerService,
+    FormCultPlantingControllerService,
+    FormGrassControllerService,
+    FormHedgeControllerService,
+    FormNatPlantingControllerService,
+    FormRoadInspectionControllerService,
+    FormRoadsectionPartControllerService,
+    FormRoadsectionPartPlanningControllerService,
+    FormTreeControllerService,
+    FormTreeInspectionControllerService,
+    FormWellControllerService,
     ApiConfiguration
   ],
 })
