@@ -25,6 +25,8 @@ install:
   - cmd: keytool -importcert -file .\RootCA-G2.cer -alias G2 -keystore "%JAVA_HOME%\jre\lib\security\cacerts" -storepass changeit -v -noprompt -trustcacerts
   - ps: Invoke-WebRequest http://cert.pkioverheid.nl/RootCA-G3.cer -OutFile .\RootCA-G3.cer
   - cmd: keytool -importcert -file .\RootCA-G3.cer -alias G3 -keystore "%JAVA_HOME%\jre\lib\security\cacerts" -storepass changeit -v -noprompt -trustcacerts
+  - ps: Invoke-WebRequest http://cert.pkioverheid.nl/EVRootCA.cer -OutFile .\EVRootCA.cer
+  - cmd: keytool -importcert -file .\EVRootCA.cer -alias EV -keystore "%JAVA_HOME%\jre\lib\security\cacerts" -storepass changeit -v -noprompt -trustcacerts
   - mvn install -U -DskipTests -Dtest.skip.integrationtests=true -B -V -fae
   
 before_test:
