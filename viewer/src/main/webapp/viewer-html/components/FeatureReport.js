@@ -41,37 +41,11 @@ Ext.define("viewer.components.FeatureReport", {
         viewer.components.FeatureReport.superclass.constructor.call(this, conf);
 
         this.layersArrayIndexesToAppLayerIds(this.config);
+        this.legendLayerList = this.config.viewerController.getAppLayersWithAttributes(this.config.restriction, this.config.legendLayers);
+        this.activatedLayerList = this.config.viewerController.getAppLayersWithAttributes(this.config.restriction, this.config.reportLayers);
+        this.reportLayersFetched();
 
-        var me = this;
-        var requestParams = {};
-        requestParams[this.config.restriction] = true;
-        requestParams["appId"] = FlamingoAppLoader.get('appId');
-        requestParams["layers"] = me.config.legendLayers;
-        requestParams["hasConfiguredLayers"] = true;
-        Ext.Ajax.request({
-            url: actionBeans["layerlist"],
-            params: requestParams,
-            success: function (result, request) {
-                me.legendLayerList = Ext.JSON.decode(result.responseText);
-            },
-            failure: function (a, b, c) {
-                Ext.MessageBox.alert(i18next.t('viewer_components_featurereport_1'), i18next.t('viewer_components_featurereport_2'));
-            }
-        });
-
-
-        requestParams["layers"] = me.config.reportLayers;
-        Ext.Ajax.request({
-            url: actionBeans["layerlist"],
-            params: requestParams,
-            scope: this,
-            success: this.reportLayersFetched,
-            failure: function (a, b, c) {
-                Ext.MessageBox.alert(i18next.t('viewer_components_featurereport_3'), i18next.t('viewer_components_featurereport_4'));
-            }
-        });
-
-        me.createForm();
+        this.createForm();
         this.config.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO, this.onFeatureInfoStart, this);
         return this;
     },
@@ -79,8 +53,7 @@ Ext.define("viewer.components.FeatureReport", {
      * Report Layers fetched
      * @param result
      */
-    reportLayersFetched: function(result) {
-        this.activatedLayerList = Ext.JSON.decode(result.responseText);
+    reportLayersFetched: function() {
         // register with featureinfo components
         var infoComponents = this.viewerController.getComponentsByClassNames(["viewer.components.FeatureInfo", "viewer.components.ExtendedFeatureInfo"]);
         for (var i = 0; i < infoComponents.length; i++) {

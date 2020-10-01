@@ -60,34 +60,9 @@ Ext.define("viewer.components.Snapping", {
     constructor: function (conf) {
         this.initConfig(conf);
         viewer.components.Snapping.superclass.constructor.call(this, this.config);
-
-        // ajax to get the list of available layers
-        var requestPath = actionBeans["layerlist"];
-        var requestParams = {};
-        requestParams[this.config.restriction] = true;
-        requestParams["appId"] = FlamingoAppLoader.get("appId");
         var me = this;
-        if (this.config.layers !== null && this.config.layers.length > 0) {
-            requestParams["layers"] = this.config.layers;
-            requestParams["hasConfiguredLayers"] = true;
-            requestParams["bufferable"] = true;
-        } else {
-            requestParams["hasConfiguredLayers"] = false;
-            requestParams["bufferable"] = true;
-        }
-
-        Ext.Ajax.request({
-            url: requestPath,
-            params: requestParams,
-            success: function (result, request) {
-                me.layerList = Ext.JSON.decode(result.responseText);
-                me.initWindow();
-            },
-            failure: function (a, b, c) {
-                Ext.MessageBox.alert(i18next.t('viewer_components_snapping_0'), i18next.t('viewer_components_snapping_1'));
-            }
-        });
-
+        this.layerList = this.config.viewerController.getAppLayersWithAttributes("bufferable", this.config.layers);
+        this.initWindow();
         this.renderButton({
             handler: function () {
                 me.showWindow();
