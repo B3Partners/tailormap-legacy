@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
 import { LayerVisibilityEvent } from '../../core/src/lib/shared/models/layer-visibility-models';
 import {
+  AppLayer,
   AppLoader,
   MapComponent,
   ViewerController,
@@ -17,6 +18,8 @@ export class TailorMapService {
   }
 
   public layerVisibilityChanged$: Subject<LayerVisibilityEvent> = new Subject<LayerVisibilityEvent>();
+  public selectedLayer$: Subject<AppLayer> = new Subject<AppLayer>();
+  public selectedLayer: AppLayer;
 
   public getAppLoader(): AppLoader {
     return (window as any).FlamingoAppLoader as AppLoader;
@@ -41,6 +44,10 @@ export class TailorMapService {
     const map = mc.getMap();
     map.addListener('ON_LAYER_VISIBILITY_CHANGED', (object, event) => {
       this.layerVisibilityChanged$.next(event);
+    });
+
+    vc.addListener('ON_LAYER_CLICKED', ( event) => {
+      this.selectedLayer = event.appLayer;
     });
   }
 }

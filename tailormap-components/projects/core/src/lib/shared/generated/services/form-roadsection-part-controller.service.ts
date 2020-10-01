@@ -343,24 +343,24 @@ export class FormRoadsectionPartControllerService extends BaseService {
   }
 
   /**
-   * Path part for operation wegvakkenOnPoint
+   * Path part for operation onPoint5
    */
-  static readonly WegvakkenOnPointPath = '/wegvakonderdelen/{x}/{y}/{scale}';
+  static readonly OnPoint5Path = '/wegvakonderdelen/{x}/{y}/{scale}';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `wegvakkenOnPoint()` instead.
+   * To access only the response body, use `onPoint5()` instead.
    *
    * This method doesn't expect any request body.
    */
-  wegvakkenOnPoint$Response(params: {
+  onPoint5$Response(params: {
     'x': number;
     'y': number;
     scale: number;
 
   }): Observable<StrictHttpResponse<Array<Wegvakonderdeel>>> {
 
-    const rb = new RequestBuilder(this.rootUrl, FormRoadsectionPartControllerService.WegvakkenOnPointPath, 'get');
+    const rb = new RequestBuilder(this.rootUrl, FormRoadsectionPartControllerService.OnPoint5Path, 'get');
     if (params) {
 
       rb.path('x', params['x'], {});
@@ -381,18 +381,18 @@ export class FormRoadsectionPartControllerService extends BaseService {
 
   /**
    * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `wegvakkenOnPoint$Response()` instead.
+   * To access the full response (for headers, for example), `onPoint5$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  wegvakkenOnPoint(params: {
+  onPoint5(params: {
     'x': number;
     'y': number;
     scale: number;
 
   }): Observable<Array<Wegvakonderdeel>> {
 
-    return this.wegvakkenOnPoint$Response(params).pipe(
+    return this.onPoint5$Response(params).pipe(
       map((r: StrictHttpResponse<Array<Wegvakonderdeel>>) => r.body as Array<Wegvakonderdeel>)
     );
   }

@@ -21,6 +21,9 @@ import {
 import { AddButtonEvent } from '../../user-interface/add-feature/add-feature-models';
 import * as wellknown from 'wellknown';
 import { FeatureInitializerService } from '../../shared/feature-initializer/feature-initializer.service';
+import { FormconfigRepositoryService } from '../../shared/formconfig-repository/formconfig-repository.service';
+import { TailorMapService } from '../../../../../bridge/src/tailor-map.service';
+import { LayerUtils } from '../../shared/layer-utils/layer-utils.service';
 
 @Component({
   selector: 'tailormap-form-popup',
@@ -33,7 +36,9 @@ export class FormPopupComponent implements OnInit {
     public dialog: MatDialog,
     private service: FeatureControllerService,
     private _snackBar: MatSnackBar,
+    private formConfigRepo: FormconfigRepositoryService,
     private featureInitializerService: FeatureInitializerService,
+    private tailorMapService: TailorMapService,
   ) {
   }
 
@@ -75,7 +80,8 @@ export class FormPopupComponent implements OnInit {
     const x = mapClickData.x;
     const y = mapClickData.y;
     const scale = mapClickData.scale;
-    this.service.onPoint({x, y, scale}).subscribe(
+    const featureTypes : string[] = this.getFeatureTypesAllowed();
+    this.service.featuretypeOnPoint({featureTypes, x, y, scale}).subscribe(
       (features: Feature[]) => {
         if (features && features.length > 0) {
           const feat = features[0];
@@ -91,6 +97,17 @@ export class FormPopupComponent implements OnInit {
         });
       },
     );
+  }
+
+  private getFeatureTypesAllowed(): string[] {
+    let allowedFeaturesTypes = [];
+    const sl = this.tailorMapService.selectedLayer;
+    if (sl) {
+      allowedFeaturesTypes.push(LayerUtils.sanitzeLayername(sl.layerName));
+    } else {
+      allowedFeaturesTypes = this.formConfigRepo.getFeatureTypes();
+    }
+    return allowedFeaturesTypes;
   }
 
   @Input()

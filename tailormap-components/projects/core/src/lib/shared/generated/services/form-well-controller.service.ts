@@ -71,24 +71,24 @@ export class FormWellControllerService extends BaseService {
   }
 
   /**
-   * Path part for operation rioolputOnPoint
+   * Path part for operation onPoint7
    */
-  static readonly RioolputOnPointPath = '/rioolput/{x}/{y}/{scale}';
+  static readonly OnPoint7Path = '/rioolput/{x}/{y}/{scale}';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `rioolputOnPoint()` instead.
+   * To access only the response body, use `onPoint7()` instead.
    *
    * This method doesn't expect any request body.
    */
-  rioolputOnPoint$Response(params: {
+  onPoint7$Response(params: {
     'x': number;
     'y': number;
     scale: number;
 
   }): Observable<StrictHttpResponse<Array<Rioolput>>> {
 
-    const rb = new RequestBuilder(this.rootUrl, FormWellControllerService.RioolputOnPointPath, 'get');
+    const rb = new RequestBuilder(this.rootUrl, FormWellControllerService.OnPoint7Path, 'get');
     if (params) {
 
       rb.path('x', params['x'], {});
@@ -109,18 +109,18 @@ export class FormWellControllerService extends BaseService {
 
   /**
    * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `rioolputOnPoint$Response()` instead.
+   * To access the full response (for headers, for example), `onPoint7$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  rioolputOnPoint(params: {
+  onPoint7(params: {
     'x': number;
     'y': number;
     scale: number;
 
   }): Observable<Array<Rioolput>> {
 
-    return this.rioolputOnPoint$Response(params).pipe(
+    return this.onPoint7$Response(params).pipe(
       map((r: StrictHttpResponse<Array<Rioolput>>) => r.body as Array<Rioolput>)
     );
   }
