@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
+import { LayerUtils } from './layer-utils.service';
 
-import { LayerUtilsService } from './layer-utils.service';
 
 describe('LayerUtilsService', () => {
-  let service: LayerUtilsService;
+  let service: LayerUtils;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(LayerUtilsService);
+    service = TestBed.inject(LayerUtils);
   });
 
   it('should be created', () => {
