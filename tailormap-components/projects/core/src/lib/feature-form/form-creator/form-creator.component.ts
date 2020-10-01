@@ -42,7 +42,6 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
     private actions: FormActionsService,
     private registry: LinkedAttributeRegistryService,
     private _snackBar: MatSnackBar) {
-    const a = 0;
   }
 
   @Input()
