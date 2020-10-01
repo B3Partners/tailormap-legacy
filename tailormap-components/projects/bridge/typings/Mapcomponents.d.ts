@@ -13,10 +13,10 @@ declare interface AppLayer {
   layerName: string;
 }
 
-type layerEventHandler = (object: any, event: LayerVisibilityEvent) => void;
+type layerVisibilityEvent = (object: any, event: LayerVisibilityEvent) => void;
 
 declare interface Map{
-  addListener: (eventName: string, handler: layerEventHandler) => void;
+  addListener: (eventName: string, handler: layerVisibilityEvent) => void;
 }
 
 declare interface MapComponent {

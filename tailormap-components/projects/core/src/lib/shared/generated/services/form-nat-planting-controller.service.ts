@@ -71,24 +71,24 @@ export class FormNatPlantingControllerService extends BaseService {
   }
 
   /**
-   * Path part for operation bomenOnPoint2
+   * Path part for operation onPoint4
    */
-  static readonly BomenOnPoint2Path = '/natbeplanting/{x}/{y}/{scale}';
+  static readonly OnPoint4Path = '/natbeplanting/{x}/{y}/{scale}';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `bomenOnPoint2()` instead.
+   * To access only the response body, use `onPoint4()` instead.
    *
    * This method doesn't expect any request body.
    */
-  bomenOnPoint2$Response(params: {
+  onPoint4$Response(params: {
     'x': number;
     'y': number;
     scale: number;
 
   }): Observable<StrictHttpResponse<Array<NatBeplanting>>> {
 
-    const rb = new RequestBuilder(this.rootUrl, FormNatPlantingControllerService.BomenOnPoint2Path, 'get');
+    const rb = new RequestBuilder(this.rootUrl, FormNatPlantingControllerService.OnPoint4Path, 'get');
     if (params) {
 
       rb.path('x', params['x'], {});
@@ -109,18 +109,18 @@ export class FormNatPlantingControllerService extends BaseService {
 
   /**
    * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `bomenOnPoint2$Response()` instead.
+   * To access the full response (for headers, for example), `onPoint4$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  bomenOnPoint2(params: {
+  onPoint4(params: {
     'x': number;
     'y': number;
     scale: number;
 
   }): Observable<Array<NatBeplanting>> {
 
-    return this.bomenOnPoint2$Response(params).pipe(
+    return this.onPoint4$Response(params).pipe(
       map((r: StrictHttpResponse<Array<NatBeplanting>>) => r.body as Array<NatBeplanting>)
     );
   }

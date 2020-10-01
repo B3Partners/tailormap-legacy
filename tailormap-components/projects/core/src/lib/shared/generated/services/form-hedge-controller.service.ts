@@ -71,24 +71,24 @@ export class FormHedgeControllerService extends BaseService {
   }
 
   /**
-   * Path part for operation bomenOnPoint1
+   * Path part for operation onPoint3
    */
-  static readonly BomenOnPoint1Path = '/haag/{x}/{y}/{scale}';
+  static readonly OnPoint3Path = '/haag/{x}/{y}/{scale}';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `bomenOnPoint1()` instead.
+   * To access only the response body, use `onPoint3()` instead.
    *
    * This method doesn't expect any request body.
    */
-  bomenOnPoint1$Response(params: {
+  onPoint3$Response(params: {
     'x': number;
     'y': number;
     scale: number;
 
   }): Observable<StrictHttpResponse<Array<Haag>>> {
 
-    const rb = new RequestBuilder(this.rootUrl, FormHedgeControllerService.BomenOnPoint1Path, 'get');
+    const rb = new RequestBuilder(this.rootUrl, FormHedgeControllerService.OnPoint3Path, 'get');
     if (params) {
 
       rb.path('x', params['x'], {});
@@ -109,18 +109,18 @@ export class FormHedgeControllerService extends BaseService {
 
   /**
    * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `bomenOnPoint1$Response()` instead.
+   * To access the full response (for headers, for example), `onPoint3$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  bomenOnPoint1(params: {
+  onPoint3(params: {
     'x': number;
     'y': number;
     scale: number;
 
   }): Observable<Array<Haag>> {
 
-    return this.bomenOnPoint1$Response(params).pipe(
+    return this.onPoint3$Response(params).pipe(
       map((r: StrictHttpResponse<Array<Haag>>) => r.body as Array<Haag>)
     );
   }

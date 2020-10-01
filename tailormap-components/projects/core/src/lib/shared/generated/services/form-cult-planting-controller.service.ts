@@ -71,24 +71,24 @@ export class FormCultPlantingControllerService extends BaseService {
   }
 
   /**
-   * Path part for operation cultPlantingOnPoint
+   * Path part for operation onPoint1
    */
-  static readonly CultPlantingOnPointPath = '/cultbeplanting/{x}/{y}/{scale}';
+  static readonly OnPoint1Path = '/cultbeplanting/{x}/{y}/{scale}';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `cultPlantingOnPoint()` instead.
+   * To access only the response body, use `onPoint1()` instead.
    *
    * This method doesn't expect any request body.
    */
-  cultPlantingOnPoint$Response(params: {
+  onPoint1$Response(params: {
     'x': number;
     'y': number;
     scale: number;
 
   }): Observable<StrictHttpResponse<Array<CultBeplanting>>> {
 
-    const rb = new RequestBuilder(this.rootUrl, FormCultPlantingControllerService.CultPlantingOnPointPath, 'get');
+    const rb = new RequestBuilder(this.rootUrl, FormCultPlantingControllerService.OnPoint1Path, 'get');
     if (params) {
 
       rb.path('x', params['x'], {});
@@ -109,18 +109,18 @@ export class FormCultPlantingControllerService extends BaseService {
 
   /**
    * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `cultPlantingOnPoint$Response()` instead.
+   * To access the full response (for headers, for example), `onPoint1$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  cultPlantingOnPoint(params: {
+  onPoint1(params: {
     'x': number;
     'y': number;
     scale: number;
 
   }): Observable<Array<CultBeplanting>> {
 
-    return this.cultPlantingOnPoint$Response(params).pipe(
+    return this.onPoint1$Response(params).pipe(
       map((r: StrictHttpResponse<Array<CultBeplanting>>) => r.body as Array<CultBeplanting>)
     );
   }
