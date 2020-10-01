@@ -22,6 +22,7 @@ import { FormConfiguration } from '../form/form-models';
 import { Feature } from '../../shared/generated';
 import { FormTreeHelpers } from './form-tree-helpers';
 import { FormconfigRepositoryService } from '../../shared/formconfig-repository/formconfig-repository.service';
+import { FormHelpers } from '../form/form-helpers';
 
 @Component({
   selector: 'tailormap-form-tree',
@@ -73,7 +74,7 @@ export class FormTreeComponent implements OnInit, OnChanges {
           if (this.formConfigRepo.getFormConfig(featureType)) {
             if (!fts.hasOwnProperty(featureType)) {
               fts[featureType] = {
-                name: featureType,
+                name: FormHelpers.capitalize(featureType),
                 children: [],
                 id: featureType,
                 isFeatureType: true,
