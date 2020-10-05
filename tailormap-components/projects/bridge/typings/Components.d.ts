@@ -4,7 +4,7 @@ import {
   layerVisibilityEvent,
   MapComponent,
 } from './Mapcomponents';
-import { LayerVisibilityEvent } from '../../core/src/lib/shared/models/layer-visibility-models';
+import { LayerVisibilityEvent } from '../../core/src/lib/shared/models/event-models';
 
 declare interface LayerSelectedEvent{
   appLayer: AppLayer;

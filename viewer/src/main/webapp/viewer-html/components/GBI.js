@@ -23,6 +23,7 @@
 Ext.define("viewer.components.GBI", {
     extend: "viewer.components.Component",
     div: null,
+    divController: null,
     toolMapClick: null,
     formConfigs: null,
     vectorLayer: null,
@@ -49,8 +50,8 @@ Ext.define("viewer.components.GBI", {
         return this;
     },
     initialize: function () {
-        this.initializeForm();
         this.createVectorLayer();
+        this.initializeForm();
         this.toolMapClick = this.config.viewerController.mapComponent.createTool({
             type: viewer.viewercontroller.controller.Tool.MAP_CLICK,
             id: this.config.name + "toolMapClick",
@@ -117,6 +118,13 @@ Ext.define("viewer.components.GBI", {
         this.div.setAttribute("config", JSON.stringify(this.formConfigs));
         document.body.appendChild(this.div);
 
+
+        this.divController = document.createElement("tailormap-workflow-controller");
+        this.divController.setAttribute("vector-layer-id", this.vectorLayer.getId());
+        this.divController.setAttribute("highlight-layer-id", this.highlightLayer.getId());
+        this.divController.addEventListener('wanneerPopupClosed', this.popupClosed.bind(this));
+        document.body.appendChild(this.divController);
+
         var visibleAppLayers = this.config.viewerController.getVisibleAppLayers();
         for (var key in visibleAppLayers) {
             var appLayer = this.config.viewerController.getAppLayerById(key);
@@ -175,7 +183,8 @@ Ext.define("viewer.components.GBI", {
         };
         var visibleLayers = this.config.viewerController.getAppLayerById(this.config.layers[0]);
         this.div.setAttribute("visible-layers", this.stringifyAppLayer(visibleLayers));
-        this.div.setAttribute("map-clicked", JSON.stringify(json));
+        //this.div.setAttribute("map-clicked", JSON.stringify(json));
+        this.divController.setAttribute("map-clicked", JSON.stringify(json));
     },
 
     stringifyAppLayer: function (al) {

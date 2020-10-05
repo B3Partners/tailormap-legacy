@@ -4,7 +4,7 @@ import { createCustomElement } from '@angular/elements';
 import { AppComponent } from './app.component';
 import { CoreModule } from 'projects/core/src';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { FormPopupComponent } from 'projects/core/src/lib/feature-form/form-popup/form-popup.component';
+import { WorkflowControllerComponent } from '../../../core/src/lib/workflow/workflow-controller/workflow-controller.component';
 
 @NgModule({
   declarations: [
@@ -18,14 +18,14 @@ import { FormPopupComponent } from 'projects/core/src/lib/feature-form/form-popu
   providers: [
   ],
   entryComponents: [
-    FormPopupComponent,
+    WorkflowControllerComponent,
   ],
   bootstrap: [],
   schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
 })
 export class AppModule {
   constructor(injector: Injector) {
-    customElements.define('tailormap-wegvak-popup', createCustomElement(FormPopupComponent, {injector}));
+    customElements.define('tailormap-workflow-controller', createCustomElement(WorkflowControllerComponent, {injector}));
   }
   public ngDoBootstrap() {}
 }

@@ -3,7 +3,7 @@ import {
   OnInit,
 } from '@angular/core';
 import { TailorMapService } from '../../../../../bridge/src/tailor-map.service';
-import { LayerVisibilityEvent } from '../../shared/models/layer-visibility-models';
+import { LayerVisibilityEvent } from '../../shared/models/event-models';
 
 @Component({
   selector: 'tailormap-test-attributeservice',

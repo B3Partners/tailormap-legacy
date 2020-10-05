@@ -1,3 +1,5 @@
+import { Feature } from '../../shared/generated';
+
 export interface FormConfigurations {
   config: Map<string, FormConfiguration>;
 }
@@ -63,4 +65,10 @@ export interface TabbedFields {
 
 export interface ColumnizedFields {
   columns: Map<number, Attribute[]>;
+}
+
+export interface DialogData {
+  formFeatures: Feature[];
+  isBulk: boolean;
+  lookup: Map<string, string>;
 }

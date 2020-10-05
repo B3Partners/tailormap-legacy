@@ -10,6 +10,7 @@ import { FormconfigRepositoryService } from '../../shared/formconfig-repository/
 import {
   LayerUtils,
 } from '../../shared/layer-utils/layer-utils.service';
+import { WorkflowControllerService } from '../../workflow/workflow-controller/workflow-controller.service';
 
 @Component({
   selector: 'tailormap-add-feature',
@@ -21,6 +22,7 @@ export class AddFeatureComponent {
   constructor(
     public tailorMapService: TailorMapService,
     private formConfigRepo: FormconfigRepositoryService,
+    private workflowControllerService: WorkflowControllerService,
     private ngZone: NgZone,
   ) {
     this.tailorMapService.layerVisibilityChanged$.subscribe(value => {
@@ -30,9 +32,6 @@ export class AddFeatureComponent {
     });
     this.init();
   }
-
-  @Output()
-  public addFeature = new EventEmitter<AddButtonEvent>();
 
   public visibleLayers: string[] = [];
 
@@ -48,9 +47,10 @@ export class AddFeatureComponent {
 
   public click() {
     const first = this.visibleLayers[0];
-    this.addFeature.emit({
+    this.workflowControllerService.addFeature(first);
+   /* this.addFeature.emit({
       featuretype: first,
-    });
+    });*/
   }
 
   public calculateVisibleLayers(): void {

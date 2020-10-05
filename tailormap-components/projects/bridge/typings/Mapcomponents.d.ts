@@ -1,4 +1,5 @@
-import { LayerVisibilityEvent } from '../../core/src/lib/shared/models/layer-visibility-models';
+import { LayerVisibilityEvent } from '../../core/src/lib/shared/models/event-models';
+import { Geometry } from '../../core/src/lib/shared/generated';
 
 declare interface AppLoader {
   get: (varName: 'viewerController' | 'appId' | 'user' | 'contextPath' | 'absoluteURIPrefix') => any;
@@ -14,11 +15,26 @@ declare interface AppLayer {
 }
 
 type layerVisibilityEvent = (object: any, event: LayerVisibilityEvent) => void;
+type layerEvent = (object: any, event: any, a: any, b: any) => void;
 
-declare interface Map{
+declare interface Map {
   addListener: (eventName: string, handler: layerVisibilityEvent) => void;
+  getLayer: (id: string) => Layer;
+  update: () => void;
 }
 
 declare interface MapComponent {
-  getMap : () => Map;
+  getMap: () => Map;
+}
+
+declare interface Layer {
+  id: string;
+  addListener: (eventName: string, handler: layerEvent) => void;
+  removeListener: (eventName: string, handler: layerEvent) => void;
+}
+
+declare interface VectorLayer extends Layer {
+  drawFeature: (geometryType: string) => void;
+  readGeoJSON: (geojson: Geometry) => void;
+  removeAllFeatures: () => void;
 }

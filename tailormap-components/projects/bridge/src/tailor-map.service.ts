@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
-import { LayerVisibilityEvent } from '../../core/src/lib/shared/models/layer-visibility-models';
+import { LayerVisibilityEvent } from '../../core/src/lib/shared/models/event-models';
 import {
   AppLayer,
   AppLoader,
