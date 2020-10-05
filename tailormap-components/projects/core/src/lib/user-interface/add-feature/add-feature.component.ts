@@ -1,10 +1,7 @@
 import {
   Component,
-  EventEmitter,
   NgZone,
-  Output,
 } from '@angular/core';
-import { AddButtonEvent } from './add-feature-models';
 import { TailorMapService } from '../../../../../bridge/src/tailor-map.service';
 import { FormconfigRepositoryService } from '../../shared/formconfig-repository/formconfig-repository.service';
 import {
