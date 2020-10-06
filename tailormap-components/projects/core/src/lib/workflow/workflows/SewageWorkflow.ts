@@ -8,23 +8,49 @@ import {
   MapClickedEvent,
 } from '../../shared/models/event-models';
 import { VectorLayer } from '../../../../../bridge/typings';
+import { GeoJSONPoint } from 'wellknown';
 
-export class StandardFormWorkflow extends Workflow {
+export class SewageWorkflow extends Workflow {
 
+
+  private currentStep: Step;
+  private well1: [number, number] | [number, number, number];
+  private well2: [number, number] | [number, number, number];
   private featureType: string;
 
   constructor() {
     super();
+    this.currentStep = Step.WELL1;
   }
 
+
   public addFeature(featureType: string) {
-    this.featureType = featureType;
-    this.vectorLayer.drawFeature('Polygon');
+    if (this.currentStep === Step.WELL1 || this.currentStep === Step.WELL2) {
+      this.vectorLayer.drawFeature('Point');
+      this.featureType = 'rioolput';
+    }
+    if (this.currentStep === Step.DUCT) {
+      const linedstring = 'LINESTRING(' + this.well1[0] + ' ' + this.well1[1] + ', '
+        + this.well2[0] + ' ' + this.well2[1] + ')';
+
+      this.featureType = 'mech_leiding';
+      this.geometryDrawn(this.vectorLayer, {
+        config: {
+          wktgeom: linedstring,
+        },
+      });
+    }
   }
 
   public geometryDrawn(vectorLayer: VectorLayer, feature: any) {
     const geom = feature.config.wktgeom;
     const geoJson = wellknown.parse(geom);
+    if (this.currentStep === Step.WELL1) {
+      this.well1 = (geoJson as GeoJSONPoint).coordinates;
+    }
+    if (this.currentStep === Step.WELL2) {
+      this.well2 = (geoJson as GeoJSONPoint).coordinates;
+    }
     const objecttype = this.featureType.charAt(0).toUpperCase() + this.featureType.slice(1);
     const feat = this.featureInitializerService.create(objecttype,
       {geometrie: geoJson, clazz: this.featureType, children: []});
@@ -50,45 +76,32 @@ export class StandardFormWorkflow extends Workflow {
   }
 
   public mapClick(data: MapClickedEvent): void {
-    const x = data.x;
-    const y = data.y;
-    const scale = data.scale;
-    const featureTypes: string[] = this.getFeatureTypesAllowed();
-    this.service.featuretypeOnPoint({featureTypes, x, y, scale}).subscribe(
-      (features: Feature[]) => {
-        if (features && features.length > 0) {
-          const feat = features[0];
-
-          this.highlightLayer.readGeoJSON(this.featureInitializerService.retrieveGeometry(feat));
-
-          this.openDialog([feat]);
-        }
-      },
-      error => {
-        this.snackBar.open('Fout: Feature niet kunnen ophalen: ' + error, '', {
-          duration: 5000,
-        });
-      },
-    );
   }
 
-  private getFeatureTypesAllowed(): string[] {
-    let allowedFeaturesTypes = [];
-    const sl = this.tailorMap.selectedLayer;
-    if (sl) {
-      allowedFeaturesTypes.push(LayerUtils.sanitzeLayername(sl.layerName));
-    } else {
-      allowedFeaturesTypes = this.formConfigRepo.getFeatureTypes();
-    }
-    return allowedFeaturesTypes;
-  }
 
   public afterEditting(): void {
-    this.vectorLayer.removeAllFeatures();
-    this.highlightLayer.removeAllFeatures();
+    switch (this.currentStep) {
+      case Step.WELL1:
 
+        this.currentStep = Step.WELL2;
+        this.addFeature('');
+        break;
+      case Step.WELL2:
+        this.currentStep = Step.DUCT;
+        this.addFeature('');
+        break;
+      case Step.DUCT:
+        this.vectorLayer.removeAllFeatures();
+        this.highlightLayer.removeAllFeatures();
+        break;
+    }
     this.tailorMap.getViewerController().mapComponent.getMap().update();
   }
 
+}
 
+enum Step {
+  WELL1 = 'well1',
+  WELL2 = 'well2',
+  DUCT = 'duct',
 }

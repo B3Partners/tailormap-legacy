@@ -42,12 +42,8 @@ export class AddFeatureComponent {
     }
   }
 
-  public click() {
-    const first = this.visibleLayers[0];
-    this.workflowControllerService.addFeature(first);
-   /* this.addFeature.emit({
-      featuretype: first,
-    });*/
+  public click(featuretype) {
+    this.workflowControllerService.addFeature(featuretype);
   }
 
   public calculateVisibleLayers(): void {

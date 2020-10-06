@@ -26,18 +26,21 @@ export abstract class Workflow {
     formConfigRepo: FormconfigRepositoryService,
     snackBar: MatSnackBar,
     service: FeatureControllerService): void {
+
     this.tailorMap = tailorMap;
     this.dialog = dialog;
     this.featureInitializerService = featureInitializerService;
     this.formConfigRepo = formConfigRepo;
     this.snackBar = snackBar;
     this.service = service;
-    this.afterInit();
+    this.vectorLayer.addListener('ON_FEATURE_ADDED', this.geometryDrawn, this);
   }
 
-  public abstract destroy(): void;
+  public destroy(): void {
+    this.vectorLayer.removeListener('ON_FEATURE_ADDED', this.geometryDrawn, this);
+  }
 
-  public abstract afterInit(): void;
+  public abstract geometryDrawn(vectorLayer: VectorLayer, feature: any): void;
 
   public abstract addFeature(featureType: string): void;
 

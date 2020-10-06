@@ -8,6 +8,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { FormconfigRepositoryService } from '../../shared/formconfig-repository/formconfig-repository.service';
 import { FeatureControllerService } from '../../shared/generated';
 import { VectorLayer } from '../../../../../bridge/typings';
+import { SewageWorkflow } from '../workflows/SewageWorkflow';
 
 @Injectable({
   providedIn: 'root',
@@ -17,6 +18,7 @@ export class WorkflowFactoryService {
   public vectorLayer: VectorLayer;
   public numWorkflows = 0;
   public highlightLayer: VectorLayer;
+
   constructor(
     private tailorMap: TailorMapService,
     private dialog: MatDialog,
@@ -33,10 +35,13 @@ export class WorkflowFactoryService {
       case 'wegvakonderdeel':
         workflow = new StandardFormWorkflow();
         break;
+      case 'rioolput':
+        workflow = new SewageWorkflow();
+        break;
       default:
         workflow = new StandardFormWorkflow();
     }
-    this.numWorkflows ++;
+    this.numWorkflows++;
     workflow.vectorLayer = this.vectorLayer;
     workflow.highlightLayer = this.highlightLayer;
     workflow.id = this.numWorkflows;
