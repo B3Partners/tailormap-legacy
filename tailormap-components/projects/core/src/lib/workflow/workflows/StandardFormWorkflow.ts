@@ -3,36 +3,35 @@ import * as wellknown from 'wellknown';
 import { Feature } from '../../shared/generated';
 import { FormComponent } from '../../feature-form/form/form.component';
 import { LayerUtils } from '../../shared/layer-utils/layer-utils.service';
-import { MapClickedEvent } from '../../shared/models/event-models';
+import {
+  LayerVisibilityEvent,
+  MapClickedEvent,
+} from '../../shared/models/event-models';
+import { VectorLayer } from '../../../../../bridge/typings';
 
 export class StandardFormWorkflow extends Workflow {
 
   private featureType: string;
 
-  constructor(
-  ) {
+  constructor() {
     super();
   }
 
   public afterInit(): void {
-    this.vectorLayer.addListener('ON_FEATURE_ADDED', (vectorLayer, feature) => {
-      this.geometryDrawn(feature.config.wktgeom);
-    });
+    this.vectorLayer.addListener('ON_FEATURE_ADDED', this.geometryDrawn, this);
   }
 
   public destroy(): void {
-    this.vectorLayer.removeListener('ON_FEATURE_ADDED', (vectorLayer, feature) => {
-      this.geometryDrawn(feature.config.wktgeom);
-    });
+    this.vectorLayer.removeListener('ON_FEATURE_ADDED', this.geometryDrawn, this);
   }
 
   public addFeature(featureType: string) {
     this.featureType = featureType;
-
     this.vectorLayer.drawFeature('Polygon');
   }
 
-  public geometryDrawn(geom: string) {
+  public geometryDrawn(vectorLayer: VectorLayer, feature: any) {
+    const geom = feature.config.wktgeom;
     const geoJson = wellknown.parse(geom);
     const objecttype = this.featureType.charAt(0).toUpperCase() + this.featureType.slice(1);
     const feat = this.featureInitializerService.create(objecttype,
@@ -62,7 +61,7 @@ export class StandardFormWorkflow extends Workflow {
     const x = data.x;
     const y = data.y;
     const scale = data.scale;
-    const featureTypes : string[] = this.getFeatureTypesAllowed();
+    const featureTypes: string[] = this.getFeatureTypesAllowed();
     this.service.featuretypeOnPoint({featureTypes, x, y, scale}).subscribe(
       (features: Feature[]) => {
         if (features && features.length > 0) {
@@ -98,7 +97,6 @@ export class StandardFormWorkflow extends Workflow {
 
     this.tailorMap.getViewerController().mapComponent.getMap().update();
   }
-
 
 
 }

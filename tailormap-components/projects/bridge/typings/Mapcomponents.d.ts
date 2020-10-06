@@ -15,7 +15,7 @@ declare interface AppLayer {
 }
 
 type layerVisibilityEvent = (object: any, event: LayerVisibilityEvent) => void;
-type layerEvent = (object: any, event: any, a: any, b: any) => void;
+type layerEvent = (object: any, event: any) => void;
 
 declare interface Map {
   addListener: (eventName: string, handler: layerVisibilityEvent) => void;
@@ -29,8 +29,8 @@ declare interface MapComponent {
 
 declare interface Layer {
   id: string;
-  addListener: (eventName: string, handler: layerEvent) => void;
-  removeListener: (eventName: string, handler: layerEvent) => void;
+  addListener: (eventName: string, handler: layerEvent, scope: any) => void;
+  removeListener: (eventName: string, handler: layerEvent, scope: any) => void;
 }
 
 declare interface VectorLayer extends Layer {
