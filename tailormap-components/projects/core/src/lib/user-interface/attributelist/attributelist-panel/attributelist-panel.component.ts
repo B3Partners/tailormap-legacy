@@ -1,104 +1,103 @@
-/**============================================================================
- *===========================================================================*/
 
-import { Component, ElementRef, OnInit, AfterViewInit, ViewChild,
-         Renderer2, HostBinding} from '@angular/core';
+import { Component, ElementRef, OnInit, AfterViewInit, ViewChild, Renderer2 } from '@angular/core';
 
-import {ILayer} from '../layer.model';
-import {LayerService} from '../layer.service';
-import {LayoutService, ILayoutComponent, Dock, WindowState} from '../../panel-resizer/layout.service';
+import { MatToolbar } from '@angular/material/toolbar';
+import { MatTabGroup } from '@angular/material/tabs';
 
-import {PanelResizerComponent} from '../../panel-resizer/panel-resizer.component';
+import { Layer } from '../layer.model';
+import { LayerService } from '../layer.service';
+import { LayoutService } from '../../layout.service';
+import { LayoutConfig } from '../../layout-config';
+import { LayoutComponent } from '../../models';
+import { Dock } from '../../enums';
 
-import {MatToolbar} from '@angular/material/toolbar';
+import { AttributeService } from '../../../shared/attribute-service/attribute.service';
+import { PanelResizerComponent } from '../../panel-resizer/panel-resizer.component';
+import { Test } from '../test';
 
 @Component({
   selector: 'tailormap-attributelist-panel',
   templateUrl: './attributelist-panel.component.html',
-  styleUrls: ['./attributelist-panel.component.css']
+  styleUrls: ['./attributelist-panel.component.css'],
 })
-export class AttributelistPanelComponent implements OnInit, AfterViewInit, ILayoutComponent {
+export class AttributelistPanelComponent implements OnInit, AfterViewInit, LayoutComponent {
 
   // For the layout service.
-  @ViewChild('captionbar') captionbar: MatToolbar;
-  @ViewChild("panelResizer") panelResizer: PanelResizerComponent;
+  @ViewChild('captionbar') public captionbar: MatToolbar;
+  @ViewChild('panelResizer') public panelResizer: PanelResizerComponent;
 
   // For the layout service.
-  // TODO: DIT IN EEN APARTE STRUCTURE/CLASS???
-  canResize = true;
-  componentRef = this.elementRef;
-  dock = Dock.Bottom;
-  initialHeight = 300;
-  windowState = WindowState.Initial;
+  public layoutConfig: LayoutConfig;
+
+  @ViewChild(MatTabGroup, { static: true, read: ElementRef }) private tabgroupElem: ElementRef<HTMLDivElement>;
 
   // For getting the selected tab index.
-  @ViewChild("tabgroup") tabgroup;
+  @ViewChild('tabgroup') private tabgroup;
 
-  // For showing/hiding the panel.
-  @HostBinding("style.display") cssDisplay: string;
-
-  layers: ILayer[];
+  // Is used in the template. Generates for each layer a tab.
+  public layers: Layer[];
 
   // The height of the caption bar.
   private captionbarHeight = 30;
 
-  /**----------------------------------------------------------------------------
-   */
   constructor(private elementRef: ElementRef,
               private layerService: LayerService,
               private layoutService: LayoutService,
+              private attributeService: AttributeService,
               private renderer: Renderer2) {
   }
-  /**----------------------------------------------------------------------------
-   */
-  ngOnInit(): void {
-    console.log("#Panel.ngOnInit");
-    // Register panel.
-    this.layoutService.register(this);
-    // Set custom css style.
-    this.setCustomStyle();
+
+  public ngOnInit(): void {
     // Get the layers.
     this.getLayers();
   }
-  /**----------------------------------------------------------------------------
-   */
-  ngAfterViewInit(): void {
+
+  public ngAfterViewInit(): void {
+    // console.log('#Panel.ngAfterViewInit');
+    // Set layout config settings.
+    this.layoutConfig = new LayoutConfig(this.elementRef, this.panelResizer);
+    this.layoutConfig.dock = Dock.Bottom;
+    this.layoutConfig.initialHeight = 300;
+    this.layoutConfig.initialHeight = 250;
+    this.layoutConfig.initialHeight = 350;
+    // Register panel.
+    this.layoutService.register(this);
   }
-  /**----------------------------------------------------------------------------
-   */
-  getCaptionbarHeight(): number {
+
+  public getCaptionbarHeight(): number {
     return this.captionbarHeight;
   }
-  /**----------------------------------------------------------------------------
+
+  /**
    * https://phpenthusiast.com/blog/develop-angular-php-app-getting-the-list-of-items
    */
-  getLayers(): void {
-    this.layerService.getRows().subscribe(
-        (data: ILayer[]) => {
-          this.layers = data;
-        }
+  public getLayers(): void {
+    this.layerService.getLayers$().subscribe(
+      (data: Layer[]) => {
+        this.layers = data;
+        // console.log('#Panel - getLayers');
+        // console.log(this.layers);
+      },
     );
   }
-  /**----------------------------------------------------------------------------
-   */
-  onCloseClick(): void {
+
+  public onCloseClick(): void {
     this.show(false);
-    //this.layoutService.close(this);
+    // this.layoutService.close(this);
   }
-  /**----------------------------------------------------------------------------
-   */
-  onMaximizeClick(): void {
+
+  public onMaximizeClick(): void {
     this.layoutService.maximize(this);
   }
-  /**----------------------------------------------------------------------------
-   */
-  onMinimizeClick(): void {
+
+  public onMinimizeClick(): void {
     this.layoutService.minimize(this);
   }
-  /**----------------------------------------------------------------------------
+
+  /**
    * Fired when clicked on the icon in a tab.
    */
-  onTableOptionsClick(evt: MouseEvent, iconIndex: number): void {
+  public onTableOptionsClick(evt: MouseEvent, iconIndex: number): void {
 
     // Get the current active tab index.
     const currentIndex = this.tabgroup.selectedIndex;
@@ -116,28 +115,25 @@ export class AttributelistPanelComponent implements OnInit, AfterViewInit, ILayo
       tab.table.onTableOptionsClick(evt);
     }
   }
-  /**----------------------------------------------------------------------------
-   */
-  onTestClick(): void {
+
+  public onTestClick(): void {
+    console.log("# Test - WegvakonderdeelPlanning");
+    Test.getAttrWegvakonderdeelPlanning(this.attributeService);
   }
-  /**----------------------------------------------------------------------------
+
+  /**
+   * Shows of hides the panel.
+   *
+   * Remark:
+   *   Using a div with *ngIf in the template consumes space on the page
+   *   even when the panel is not visible.
    */
   public show(show: boolean): void {
+    const domElem = this.elementRef.nativeElement;
     if (show) {
-      this.cssDisplay = "block";
+      domElem.style.display = 'block';
     } else {
-      this.cssDisplay = "none";
+      domElem.style.display = 'none';
     }
-  }
-  /**----------------------------------------------------------------------------
-   * Sets custom css style for dom elements which style cannot been set in
-   * the css file.
-   */
-  setCustomStyle(): void {
-    // console.log("Panel.setCustomStyle");
-    // // Get parent dom element, i.e. the dialog container.
-    // const dlgDomElem = this.elementRef.nativeElement.parentElement;
-    // //this.renderer.setStyle(dlgDomElem, 'background', 'red');
-    // this.renderer.setStyle(dlgDomElem, 'padding', '0px');
   }
 }

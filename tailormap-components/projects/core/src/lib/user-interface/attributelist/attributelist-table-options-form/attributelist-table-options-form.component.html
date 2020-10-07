@@ -1,19 +1,15 @@
 
-<!--### TITLE ###-->
 <h3 mat-dialog-title
     (click)="onTitleClick()">
 Tabel opties
 </h3>
 
-<!--### DIVIDER ###-->
 <mat-divider></mat-divider>
 
-<!--### CONTENT ###-->
 <mat-dialog-content class="mat-typography" cdkDropList
                     (cdkDropListDropped)="onDrop($event)">
   <div class="row" cdkDrag *ngFor="let column of columns; let index = index;">
     <ng-container *ngIf="column.name != '_checked';">
-      <!-- CHECKBOX -->
       <ng-container *ngIf="column.visible; then iconChecked; else iconNotChecked;">
       </ng-container>
       <ng-template #iconChecked>
@@ -29,11 +25,8 @@ Tabel opties
         </mat-icon>
       </ng-template>
 
-      <!-- COLUMN NAME -->
       <span class="text">{{column.name}}</span>
-      <!-- SPACER -->
       <span class="spacer"></span>
-      <!-- DRAG -->
       <mat-icon class="icon material-icons-outlined icon-drag">
         drag_handle
       </mat-icon>
@@ -41,10 +34,8 @@ Tabel opties
   </div>
 </mat-dialog-content>
 
-<!--### DIVIDER ###-->
 <mat-divider></mat-divider>
 
-<!--### ACTIONS ###-->
 <!--<mat-dialog-actions align="center"-->
 <!--                    (click)="onActionsClick()">-->
 <mat-dialog-actions align="center">

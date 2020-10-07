@@ -1,13 +1,13 @@
 import { NgModule } from '@angular/core';
 
-import { AddFeatureComponent } from './add-feature/add-feature.component';
 import { MatIconModule } from '@angular/material/icon';
-import { SharedModule } from '../shared/shared.module';
-import { CommonModule } from '@angular/common';
+import { MatPaginatorIntl } from '@angular/material/paginator';
+
+import { AddFeatureComponent } from './add-feature/add-feature.component';
 import { AttributelistModule } from './attributelist/attributelist.module';
-
-import { PanelResizerModule } from './panel-resizer/panel-resizer.module';
-
+import { CommonModule } from '@angular/common';
+import { PaginatorLabels } from './paginator-labels';
+import { SharedModule } from '../shared/shared.module';
 import { TestAttributeserviceComponent } from './test-attributeservice/test-attributeservice.component';
 
 @NgModule({
@@ -20,7 +20,6 @@ import { TestAttributeserviceComponent } from './test-attributeservice/test-attr
     SharedModule,
     MatIconModule,
     AttributelistModule,
-    PanelResizerModule,
   ],
   exports: [
     AddFeatureComponent,
@@ -28,6 +27,12 @@ import { TestAttributeserviceComponent } from './test-attributeservice/test-attr
     TestAttributeserviceComponent,
   ],
   entryComponents: [],
+  providers: [
+    {
+      provide: MatPaginatorIntl,
+      useClass: PaginatorLabels,
+    },
+  ],
 })
 export class UserIntefaceModule {
 }

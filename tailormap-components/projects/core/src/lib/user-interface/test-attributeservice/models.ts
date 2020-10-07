@@ -1,7 +1,7 @@
 export interface AttributeListParameters {
   application: number;
   appLayer: number;
-  featureType: number;
+  featureType?: number;
   layer?: number;  // only needed when featureType is not present
   limit?: number;  // default 10
   page?: number; // default 1

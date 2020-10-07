@@ -1,91 +1,138 @@
-/**============================================================================
- *===========================================================================*/
 
-import { Injectable } from '@angular/core';
-import { Observable, throwError } from 'rxjs';
-import { map, catchError } from 'rxjs/operators';
+import { Injectable, NgZone } from '@angular/core';
+import { Observable, of } from 'rxjs';
 
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-
-import { ILayer } from './layer.model';
+import { Layer } from './layer.model';
 import { AttributelistTabComponent } from './attributelist-tab/attributelist-tab.component';
+import { TailorMapService } from '../../../../../bridge/src/tailor-map.service';
+import { FormconfigRepositoryService } from '../../shared/formconfig-repository/formconfig-repository.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class LayerService {
 
-  // Zie angular.json.
-  // "assets": [
-  //   "projects/bridge/src/favicon.ico",
-  //   "projects/bridge/src/assets"
+  // List of layers. The index is also the associated tab index.
+  public layers: Layer[] = [];
 
-  //private url = "assets/json/layers.json";
-  private url = "http://localhost:3200/assets/json/layers.json";
+  constructor(public tailorMapService: TailorMapService,
+              private formConfigRepo: FormconfigRepositoryService,
+              private ngZone: NgZone) {
+    // Install the layerVisibilityChanged handler.
+    this.tailorMapService.layerVisibilityChanged$.subscribe(value => {
+      this.ngZone.run(() => {
+        this.loadLayers();
+      });
+    });
+  }
 
-  public rows: ILayer[];
+  public getAppId(): number {
+    const vc = this.tailorMapService.getViewerController();
+    return vc.app.id;
+  }
 
-  /**----------------------------------------------------------------------------
-   */
-  constructor(private http: HttpClient) {
+  public getLayers$(): Observable<Layer[]> {
+    this.loadLayers();
+    return of(this.layers);
   }
-  /**----------------------------------------------------------------------------
+
+  /**
+   * Returns the id of an app layer. It can be a layer which is not
+   * visible in the map.
+   * Returns -1 when not found.
    */
-  addLayer(name: string): void {
-    this.rows.push({name});
-  }
-  /**----------------------------------------------------------------------------
-   * https://phpenthusiast.com/blog/develop-angular-php-app-getting-the-list-of-items
-   */
-  public getRows(): Observable<ILayer[]> {
-    return this.http.get(this.url).pipe(
-      map((data: any) => {
-        this.rows = data;
-        return this.rows;
-      }),
-      catchError(this.handleError)
-    );
-  }
-  /**----------------------------------------------------------------------------
-   * Returns an observable with a user friendly message.
-   *
-   * TODO: Waarom <never>?
-   */
-  private handleError(error: HttpErrorResponse): Observable<never> {
-    console.log(error);
-    return throwError('An error occurred while getting the layers.');
-  }
-  /**----------------------------------------------------------------------------
-   */
-  public getRowsAsArray(): ILayer[] {
-    return this.rows;
-  }
-  /**----------------------------------------------------------------------------
-   * Returns an empty string when no valid index.
-   */
-  public getLayerName(index: number): string {
-    if ((index < 0) || (index > this.rows.length - 1)) {
-      console.log("LayerService.getLayerName - No valid index.");
-      return "";
+  public getAppLayerId(appId: number, layerName: string): number {
+    const vc = this.tailorMapService.getViewerController();
+    const appLayer = vc.getAppLayer(appId, layerName);
+    if (appLayer) {
+      return parseInt(appLayer.id,10);
+    }  else {
+      return -1;
     }
-    return this.rows[index].name;
   }
-  /**----------------------------------------------------------------------------
+
+  /**
+   * Returns null when not found.
    */
-  public getTabComponent(index: number): AttributelistTabComponent {
-    if ((index < 0) || (index > this.rows.length - 1)) {
-      console.log("LayerService.getTabComponent - No valid index.");
+  public getLayerByName(layerName: string): Layer {
+    for (const layer of this.layers) {
+      if (layer.name === layerName) {
+        return layer;
+      }
+    }
+    return null;
+  }
+
+  /**
+   * Returns null when no valid tab index.
+   */
+  public getLayerByTabIndex(tabIndex: number): Layer {
+    if ((tabIndex < 0) || (tabIndex > this.layers.length - 1)) {
+      console.log('LayerService.getLayer - No valid index.');
       return null;
     }
-    return this.rows[index].tabComponent;
+    return this.layers[tabIndex];
   }
-  /**----------------------------------------------------------------------------
+
+  /**
+   * Returns null when no valid index.
+   */
+  public getTabComponent(index: number): AttributelistTabComponent {
+    if ((index < 0) || (index > this.layers.length - 1)) {
+      console.log('LayerService.getTabComponent - No valid index.');
+      return null;
+    }
+    return this.layers[index].tabComponent;
+  }
+
+  public loadLayers(): void {
+    // console.log('#LayerService - loadLayers');
+
+    // Clear the array, but keep the array reference for automatic update.
+    this.layers.splice(0,this.layers.length);
+
+    const vc = this.tailorMapService.getViewerController();
+    const layerIds = vc.getVisibleLayers() as number[];
+    //console.log(layerIds);
+
+    layerIds.forEach(layerId => {
+      const appLayer = vc.getAppLayerById(layerId);
+
+      // Is there a attribute table?
+      if (appLayer.attribute) {
+        const layerName = this.sanitizeLayername(appLayer.layerName);
+        //console.log('layerName: ' + layerName);
+        //console.log(appLayer);
+        const layer: Layer = {
+          name: layerName,
+          id: layerId,
+          tabComponent: null
+        };
+        //console.log(layer);
+        this.layers.push(layer);
+      }
+    });
+  }
+
+  /**
+   * Binds the tab to the layer.
    */
   public registerTabComponent(index: number, tab: AttributelistTabComponent): void {
-    if ((index < 0) || (index > this.rows.length - 1)) {
-      console.log("LayerService.registerTabComponent - No valid index.");
+    if ((index < 0) || (index > this.layers.length - 1)) {
+      console.log('LayerService.registerTabComponent - No valid index.');
       return;
     }
-    this.rows[index].tabComponent = tab;
+    this.layers[index].tabComponent = tab;
+  }
+
+  /**
+   * Returns part from full layer name before ":". Converts to lowercase too.
+   */
+  private sanitizeLayername(layername: string): string {
+    const index = layername.indexOf(':');
+    if (index !== -1) {
+      layername = layername.substring(index + 1);
+    }
+    return layername.toLowerCase();
   }
 }
