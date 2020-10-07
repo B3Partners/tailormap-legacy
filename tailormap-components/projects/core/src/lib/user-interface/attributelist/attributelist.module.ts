@@ -14,9 +14,7 @@ import { AttributelistTableOptionsFormComponent } from './attributelist-table-op
 import { AttributelistObjectOptionsFormComponent } from './attributelist-object-options-form/attributelist-object-options-form.component';
 
 import { PanelResizerComponent } from '../panel-resizer/panel-resizer.component';
-
-// 20200925
-//import {ScrollingModule} from '@angular/cdk/scrolling';
+import { DetailsrowDirective } from './attributelist-common/detailsrow.directive';
 
 @NgModule({
   // The components, directives, and pipes that belong to this NgModule.
@@ -29,20 +27,16 @@ import { PanelResizerComponent } from '../panel-resizer/panel-resizer.component'
     AttributelistDetailsComponent,
     AttributelistTableOptionsFormComponent,
     AttributelistObjectOptionsFormComponent,
+    DetailsrowDirective,
     PanelResizerComponent,
   ],
   imports: [
     CommonModule,
     SharedModule,
-    //ScrollingModule,
   ],
   exports: [
     AttributelistFormComponent,
     AttributelistPanelComponent,
-    AttributelistTabComponent,
-    // AttributelistDetailsComponent,
-    // AttributelistTabToolbarComponent,
-    // AttributelistTableComponent,
   ],
 })
 export class AttributelistModule { }

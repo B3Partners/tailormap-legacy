@@ -3,26 +3,118 @@
  */
 
 import { AttributelistHelpers } from './attributelist-common/attributelist-helpers';
+import {
+  AttributeListParameters,
+  AttributeListResponse,
+  AttributeMetadataParameters,
+  AttributeMetadataResponse,
+} from '../test-attributeservice/models';
+import { AttributeService } from '../../shared/attribute-service/attribute.service';
 
-export class TestData {
+export class Test {
+
+  public static getAttrWegvakonderdeel(attrService: AttributeService): void {
+    let appId = 3;
+    let layerId = 16;
+    let featTypeId = 0;
+    let filter = '';
+
+    const metaParams: AttributeMetadataParameters = {
+      application: appId,
+      appLayer: layerId,
+      //featureType: featTypeId,
+    };
+    const params: AttributeListParameters = {
+      application: appId,
+      appLayer: layerId,
+      //featureType: featTypeId,
+      dir: 'ASC',
+      sort: '',
+      filter: filter,
+    };
+
+    attrService.featureTypeMetadata$(metaParams).subscribe(
+      (metaData: AttributeMetadataResponse) => {
+        console.log('====');
+        console.log(metaData);
+      },
+      () => {
+        console.log("Error!!!")
+      },
+    );
+    attrService.features$(params).subscribe(
+      (data: AttributeListResponse) => {
+        console.log('====');
+        console.log(data);
+      },
+      () => {
+        console.log("Error!!!")
+      },
+    );
+  }
+
+  public static getAttrWegvakonderdeelPlanning(attrService: AttributeService): void {
+    // filter: "wegvakonderdeel_id = 'A0ABA09EB3F045AE80A293639EBEA701'"
+    // foreignFeatureTypeName: "wegvakonderdeelplanning"
+    // id: 170
+    let appId = 3;
+    let layerId = 16;
+    let featTypeId = 170;
+    let filter = "wegvakonderdeel_id = 'A0ABA09EB3F045AE80A293639EBEA701'";
+
+    const metaParams: AttributeMetadataParameters = {
+      application: appId,
+      appLayer: layerId,
+    };
+
+    layerId = 16;
+    featTypeId = 170;
+    const params: AttributeListParameters = {
+      application: appId,
+      appLayer: layerId,
+      featureType: featTypeId,
+      dir: 'ASC',
+      sort: '',
+      filter: filter,
+    };
+
+    attrService.featureTypeMetadata$(metaParams).subscribe(
+      (metaData: AttributeMetadataResponse) => {
+        console.log('====');
+        console.log(metaData);
+      },
+      () => {
+        console.log("Error!!!")
+      },
+    );
+    attrService.features$(params).subscribe(
+      (data: AttributeListResponse) => {
+        console.log('---');
+        console.log(data);
+      },
+      () => {
+        console.log("Error!!!")
+      },
+    );
+  }
 
   public static getData(layerName: string): any[] {
     if (AttributelistHelpers.sameText(layerName, 'Panden')) {
-      return TestData.getPanden();
+      return Test.getPanden();
     } else if (AttributelistHelpers.sameText(layerName, 'Bomen')) {
-      return TestData.getBomen();
+      return Test.getBomen();
     } else {
-      return TestData.getStraten();
+      return Test.getStraten();
     }
   }
 
   public static getData123(layerName: string): any[] {
     if (AttributelistHelpers.sameText(layerName, 'Panden')) {
-      return TestData.getBomen1();
+      return Test.getBomen1();
     } else if (AttributelistHelpers.sameText(layerName, 'Bomen')) {
-      return TestData.getBomen2();
+      return Test.getBomen2();
     } else {
-      return TestData.getBomen3();
+      return Test.getBomen3();
     }
   }
 
@@ -186,18 +278,24 @@ export class TestData {
 
   public static getPassport(layerName: string): string[] {
     if (AttributelistHelpers.sameText(layerName, 'wegvakonderdeel')) {
-      return TestData.getPassportWegvakonderdeel();
+      return Test.getPassportWegvakonderdeel();
+    } else if (AttributelistHelpers.sameText(layerName, 'wegvakonderdeelplanning')) {
+        return Test.getPassportWegvakonderdeelPlanning();
     } else if (AttributelistHelpers.sameText(layerName, 'Panden')) {
-      return TestData.getPassportPanden();
+      return Test.getPassportPanden();
     } else if (AttributelistHelpers.sameText(layerName, 'Bomen')) {
-      return TestData.getPassportBomen();
+      return Test.getPassportBomen();
     } else {
-      return TestData.getPassportStraten();
+      return Test.getPassportStraten();
     }
   }
 
   public static getPassportWegvakonderdeel(): string[] {
     return ['buurt', 'wijk', 'woonplaats', 'verhardingsfunctie', 'verhardingssoort', 'aanzien'];
+  }
+
+  public static getPassportWegvakonderdeelPlanning(): string[] {
+    return ['planstatus', 'frequentie', 'hoeveelheid', 'jaarvanuitvoering', 'kosten', 'maatregel_wvko', 'maatregeltype'];
   }
 
   public static getPassportBomen(): string[] {

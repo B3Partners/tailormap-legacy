@@ -1,37 +1,36 @@
 /**
+ * Datasource for the main table and details tables.
+ *
  * Remarks:
- * - Add an extra '_checked' column to the rows.
+ * - In case of the main table, adds an extra '_checked' column to the rows.
+ * - In case of the main table, adds an extra '_details' column to the rows.
  */
 
-import { Observable, of } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
 import { DataSource } from '@angular/cdk/table';
+import { Observable, of } from 'rxjs';
 import { MatSort } from '@angular/material/sort';
 import { MatPaginator } from '@angular/material/paginator';
 
-import { AttributelistParams } from './attributelist-params';
 import { AttributelistTable } from './attributelist-models';
 import { AttributelistColumnController } from './attributelist-column-controller';
-import { AttributelistHelpers } from './attributelist-helpers';
-import { AttributelistTableComponent } from '../attributelist-table/attributelist-table.component';
-import { CheckState, DetailsState } from './attributelist-enums';
-
-import { PassportService } from '../passport.service';
-import { LayerService } from '../layer.service';
-//import { AttributeService } from '../attribute.service';
 import { AttributeService } from '../../../shared/attribute-service/attribute.service';
 import { AttributeListParameters, AttributeListResponse,
          AttributeMetadataParameters, AttributeMetadataResponse } from '../../test-attributeservice/models';
+import { CheckState, DetailsState } from './attributelist-enums';
+import { DatasourceParams } from './datasource-params';
+import { LayerService } from '../layer.service';
+import { PassportService } from '../passport.service';
 
 export class AttributeDataSource extends DataSource<any> {
 
+  // Controls whether all or only the passport columns are visible.
   public columnController = new AttributelistColumnController();
 
   // The REST API params (layerName,filter,...) for retrieving the data.
-  public params = new AttributelistParams();
+  public params = new DatasourceParams();
 
   // The paginator for paging.
-  public paginator: MatPaginator;
+  public paginator?: MatPaginator;
 
   // The sorter for sorting.
   public sorter: MatSort;
@@ -49,20 +48,16 @@ export class AttributeDataSource extends DataSource<any> {
   }
 
   /**
-   * Override the connect method.
+   * Overrides the "connect" method, so don't want to add a "$"!
    */
   // tslint:disable-next-line:rxjs-finnish
   public connect(): Observable<any[]> {
-    console.log('-----------------------------');
-    console.log('#AttributeDataSource - connect');
+    // console.log('-----------------------------');
+    // console.log('#AttributeDataSource - connect');
     return of(this.rows);
   }
 
   public disconnect(): void {
-  }
-
-  public addRow(row: any): void {
-    this.rows.push(row);
   }
 
   public checkAll(): void {
@@ -90,6 +85,20 @@ export class AttributeDataSource extends DataSource<any> {
   }
 
   /**
+   * Returns the associated layer id.
+   */
+  public getLayerId(): number {
+    return this.params.layerId;
+  }
+
+  /**
+   * Returns the associated layer name.
+   */
+  public getLayerName(): string {
+    return this.params.layerName;
+  }
+
+  /**
    * Returns the number of checked rows.
    */
   public getNrChecked(): number {
@@ -103,16 +112,26 @@ export class AttributeDataSource extends DataSource<any> {
   }
 
   /**
-   * Loads the data.
+   * Loads the data of a main or details table.
    */
   public loadData(attrTable: AttributelistTable): void {
 
-    console.log('#AttributeDataSource - loadData - ' + this.params.layerName);
+    if (!this.params.hasDetail()) {
+      console.log('#DataSource - loadData - ' + this.params.layerName);
+    } else {
+      console.log('#DataSource - loadData - ' + this.params.featureTypeName);
+    }
 
     // Passport columns not yet loaded?
     if (!this.columnController.hasPassportColumns()) {
-      // Get Passport column names.
-      this.passportService.getColumnNames$(this.params.layerName).subscribe(
+      let passportName = "";
+      if (this.params.hasDetail()) {
+        passportName = this.params.featureTypeName;
+      } else {
+        passportName = this.params.layerName;
+      }
+      // Get passport column names.
+      this.passportService.getColumnNames$(passportName).subscribe(
         (columnNames: string[]) => {
           // And set as initial column names.
           this.columnController.setPassportColumnNames(columnNames);
@@ -120,54 +139,57 @@ export class AttributeDataSource extends DataSource<any> {
       );
     }
 
+    // if (this.paginator) {
+    //   console.log(this.paginator.pageSize);
+    //   console.log(this.paginator.pageIndex);
+    // }
+
+    // Get the app id.
     const appId = this.layerService.getAppId();
-    const layerId = this.params.layerId;
-    const featType = this.layerService.getFeatureType(layerId);
 
-    const metaParams: AttributeMetadataParameters = {
+    // Set params for getting the metadata (contains main and detail metadata).
+    const attrMetaParams: AttributeMetadataParameters = {
       application: appId,
-      appLayer: layerId,
+      appLayer: this.params.layerId,
     };
 
-    console.log(this.paginator.pageSize);
-    console.log(this.paginator.pageIndex);
-
-    const params: AttributeListParameters = {
+    // Set params for getting the actual data.
+    const attrParams: AttributeListParameters = {
       application: appId,
-      appLayer: layerId,
-      featureType: featType,
-      limit: this.paginator.pageSize,
-      //page: this.paginator.pageIndex,   // TODO: Waar is deze voor?
-      start: this.paginator.pageIndex,
+      appLayer: this.params.layerId,
     };
+
+    // Set details params.
+    if (this.params.hasDetail()) {
+      attrParams.featureType = this.params.featureTypeId;
+      attrParams.filter = this.params.featureFilter;
+    }
+
+    // Set paging params.
+    if (this.paginator) {
+      attrParams.limit = this.paginator.pageSize;
+      //attrParams.page: this.paginator.pageIndex,   // TODO: Waar is page voor?
+      attrParams.start = this.paginator.pageIndex;
+    } else {
+      attrParams.limit = 999;
+      attrParams.start = 0;
+    }
 
     // Set sorting params.
-    params.dir = this.sorter.direction.toUpperCase();
-    if (params.dir ==='') {
-      params.dir = "ASC";
+    attrParams.dir = this.sorter.direction.toUpperCase();
+    if (attrParams.dir ==='') {
+      attrParams.dir = "ASC";
     }
-    params.sort = this.sorter.active;
-    if (params.sort === undefined) {
-      params.sort = '';
+    attrParams.sort = this.sorter.active;
+    if (attrParams.sort === undefined) {
+      attrParams.sort = '';
     }
-    //console.log(params)
 
     // Remove all rows.
     this.rows.splice(0, this.rows.length);
 
-    // OK!
-    // Add new rows.
-    // this.attributeService.featureTypeMetadata$(metaParams).subscribe(
-    //   (metaData: AttributeMetadataResponse) => {
-    //     console.log(metaData);
-    //     this.attributeService.features$(params).subscribe(
-    //       (data: AttributeListResponse) => console.log(data)
-    //     );
-    //   }
-    // );
-
     // Get the metadata, i.e. the columns.
-    this.attributeService.featureTypeMetadata$(metaParams)
+    this.attributeService.featureTypeMetadata$(attrMetaParams)
       .subscribe(
         (metadata: AttributeMetadataResponse) => {
 
@@ -176,121 +198,102 @@ export class AttributeDataSource extends DataSource<any> {
           // Not already loaded?
           if (!this.columnController.hasDataColumns()) {
             // Extract column names from the metadata.
-            const columnNames: string[] = this.metadataGetColumnNames(metadata);
+            let prefix = "";
+            if (this.params.hasDetail()) {
+              prefix = this.params.featureTypeName;
+            } else {
+              prefix = this.params.layerName;
+            }
+            const columnNames: string[] =
+              this.metadataGetColumnNames(prefix, metadata);
 
-            console.log(columnNames);
+            //console.log(columnNames);
 
             // And set as initial column names.
             this.columnController.setDataColumnNames(columnNames);
           }
 
           // Get the features.
-          this.attributeService.features$(params).subscribe(
+          this.attributeService.features$(attrParams).subscribe(
             (data: AttributeListResponse) => {
-              //console.log(data);
+
+              // if (this.params.hasDetail()) {
+              //   console.log(data);
+              // }
+
               if (data.success) {
                 this.totalNrOfRows = data.total;
 
-                console.log(data.features[0]);
-                console.log(data.features[0].related_featuretypes);
-                // ### DEBUG !!!
-                data.features[0].related_featuretypes = [];
+                // console.log(data.features[0]);
+                // console.log(data.features[0].related_featuretypes);
+                // // ### DEBUG --- SET FIRST ROW WITH NO DETAILS!!!
+                // data.features[0].related_featuretypes = [];
 
                 data.features.forEach(d => {
                   //console.log(d);
                   //console.log(d.related_featuretypes);
 
-                  // Add property _checked.
-                  d._checked = false;
-                  // Add property related_featuretypes if not exists.
-                  if (!d.hasOwnProperty('related_featuretypes')) {
-                    d.related_featuretypes = [];
+                  // Main data?
+                  if (!this.params.hasDetail()) {
+                    // Add property _checked.
+                    d._checked = false;
+                    // Add property related_featuretypes if not exists.
+                    if (!d.hasOwnProperty('related_featuretypes')) {
+                      d.related_featuretypes = [];
+                    }
+                    // Add property _details and set initial state.
+                    if (d.related_featuretypes.length > 0) {
+                      d._details = DetailsState.YesCollapsed;
+                    } else {
+                      d._details = DetailsState.No;
+                    }
                   }
-                  // Add property _details.
-                  if (d.related_featuretypes.length > 0) {
-                    d._details = DetailsState.YesCollapsed;
-                  } else {
-                    d._details = DetailsState.No;
-                  }
-
-                  // if (d.hasOwnProperty('related_featuretypes')) {
-                  //   if (d.related_featuretypes.length > 0) {
-                  //     d._details = DetailsState.YesCollapsed;
-                  //   } else {
-                  //     d._details = DetailsState.No;
-                  //   }
-                  // } else {
-                  //   d._details = DetailsState.No;
-                  // }
-                  // if (d.related_featuretypes) {
-                  //   d._details = DetailsState.YesCollapsed;
-                  // } else {
-                  //   d._details = DetailsState.No;
-                  // }
-                  this.rows.push(d);
+                 this.rows.push(d);
                 });
               }
             },
             () => {},
             () => {
-              // console.log('loadData - competed');
-              //console.log(this.rows);
               // Update the table.
               attrTable.onAfterLoadData();
             },
           );
-          // // Get the features.
-          // this.attributeService.features$(params).subscribe(
-          //   (data: AttributeListResponse) => {
-          //     //console.log(data);
-          //     if (data.success) {
-          //       this.totalNrOfRows = data.total;
-          //       data.features.forEach(d => {
-          //         this.rows.push(d);
-          //       });
-          //     }
-          //   },
-          //   () => {},
-          //   () => {
-          //     // console.log('loadData - competed');
-          //     //console.log(this.rows);
-          //     // Update the table.
-          //     attrTable.onAfterLoadData();
-          //   },
-          // );
         }
       );
   }
 
-  private metadataGetColumnNames(metadata: AttributeMetadataResponse): string[] {
+  /**
+   * Uses the attribute longname to get the proper column name starting with the prefix.
+   */
+  private metadataGetColumnNames(prefix: string, metadata: AttributeMetadataResponse): string[] {
     if (!metadata.success) {
       return [];
     }
     const colNames = [];
-    for (const att of metadata.attributes) {
-      colNames.push(att.name);
+    prefix += '.';
+    for (const attr of metadata.attributes) {
+      if (attr.longname.startsWith(prefix)) {
+        colNames.push(attr.name);
+      }
     }
     return colNames;
   }
 
-  public toggleChecked(index: number): void {
-    this.rows[index]._checked = !this.rows[index]._checked;
+  /**
+   * Reset the "_details" property to "collapsed".
+   */
+  public resetExpanded(): void {
+    this.rows.forEach(row => {
+      if (row._details === DetailsState.YesExpanded) {
+        row._details = DetailsState.YesCollapsed;
+      };
+    })
   }
 
-  public toggleExpanded(row: any): void {
-    if (row._details === DetailsState.YesCollapsed) {
-      row._details = DetailsState.YesExpanded;
-    } else if (row._details === DetailsState.YesExpanded) {
-      row._details = DetailsState.YesCollapsed;
-    };
+  /**
+   * Toggles the "_checked" property.
+   */
+  public toggleChecked(row: any): void {
+    row._checked = !row._checked;
   }
-  // public toggleExpanded(index: number): void {
-  //   console.log(index);
-  //   if (this.rows[index]._details === DetailsState.YesCollapsed) {
-  //     this.rows[index]._details = DetailsState.YesExpanded;
-  //   } else if (this.rows[index]._details === DetailsState.YesExpanded) {
-  //     this.rows[index]._details = DetailsState.YesCollapsed;
-  //   };
-  // }
-
 }

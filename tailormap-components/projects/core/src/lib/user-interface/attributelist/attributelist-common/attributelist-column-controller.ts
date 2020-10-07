@@ -15,6 +15,9 @@ export class AttributelistColumnController {
   // List of active (i.e. visible) columns.
   private activeColumns: AttributelistColumn[] = [];
 
+  // List of active (i.e. visible) column names.
+  private activeColumnNames: string[] = [];
+
   // Passport flag.
   private isPassportActive = false;
 
@@ -88,15 +91,15 @@ export class AttributelistColumnController {
    */
   public getActiveColumnNames(includeSpecial: boolean): string[] {
     const columns = this.getActiveColumns(includeSpecial);
-    const names: string[] = [];
-    // console.log('#AttColumns - getActiveNames');
-    // console.log(columns);
+    // Remove all names.
+    this.activeColumnNames.splice(0, this.activeColumnNames.length);
+    // Add active names.
     for (const column of columns) {
       if (column.visible) {
-        names.push(column.name);
+        this.activeColumnNames.push(column.name);
       }
     }
-    return names;
+    return this.activeColumnNames;
   }
 
   /**

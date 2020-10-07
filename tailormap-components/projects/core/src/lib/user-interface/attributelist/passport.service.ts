@@ -2,7 +2,7 @@
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 
-import { TestData } from './test-data';
+import { Test } from './test';
 
 @Injectable({
   providedIn: 'root',
@@ -13,6 +13,6 @@ export class PassportService {
   }
 
   public getColumnNames$(layerName: string): Observable<string[]> {
-    return of(TestData.getPassport(layerName));
+    return of(Test.getPassport(layerName));
   }
 }

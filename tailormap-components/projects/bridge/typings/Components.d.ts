@@ -1,10 +1,13 @@
 import {
+  App,
   AppLayer,
   GeoService,
   MapComponent,
 } from './Mapcomponents';
 
 declare interface ViewerController {
+
+  app: App;
   mapComponent: MapComponent;
 
   isDebug: () => boolean;

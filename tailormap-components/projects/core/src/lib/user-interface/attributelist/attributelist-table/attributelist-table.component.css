@@ -1,11 +1,8 @@
 .container {
   xbackground: lightblue;
-
   overflow: auto;
-
   /* as child */
   flex: 1;
-
   /* as container */
   display: flex;
   flex-flow: column nowrap;
@@ -19,10 +16,8 @@
 .table-container {
   xbackground: mistyrose;
   xmargin: 10px;
-
   max-width: 100%;
   overflow: auto;
-
   /* as child */
   flex: 1;
 }
@@ -44,38 +39,6 @@ mat-table {
 .iconCharNo {
   color: lightgray;
 }
-
-/*================*/
-.row-expanded {
-  margin-left: 50px;
-  height: 40px;
-  min-height: 40px;
-}
-.row-collapsed {
-  margin-left: 50px;
-  height: 0px;
-  min-height: 0px;
-}
-.row-detail {
-  height: 0px;
-  xheight: 20px;
-  min-height: 0px !important;
-}
-/*tr.example-element-row:not(.example-expanded-row):hover {*/
-/*  background: whitesmoke;*/
-/*}*/
-/*tr.example-element-row:not(.example-expanded-row):active {*/
-/*  background: #efefef;*/
-/*}*/
-/*.example-element-row td {*/
-/*  border-bottom-width: 0;*/
-/*}*/
-.element-detail {
-  overflow: hidden;
-  display: flex;
-}
-/*================*/
-
 .mat-cell:first-of-type,
 .mat-header-cell:first-of-type,
 .mat-footer-cell:first-of-type {
@@ -101,8 +64,7 @@ mat-table {
   max-height: 40px;
 }
 ::ng-deep .mat-paginator-range-label {
-  /*dit helpt niet*/
-  margin: 0px 0px 0px 10px;
+  margin: 0px 0px 0px 10px !important;
 }
 .mat-toolbar {
   background: rgba(0,0,0,0.0);
@@ -111,6 +73,6 @@ mat-table {
 .mat-flat-button {
   line-height: 26px;
 }
-.attributelist-table-options-form {
-  background: aqua;
+.details-container {
+  overflow: hidden;
 }

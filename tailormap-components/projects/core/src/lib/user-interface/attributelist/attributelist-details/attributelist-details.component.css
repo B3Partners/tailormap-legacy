@@ -1,3 +1,4 @@
+
 .container {
   xbackground: lightblue;
   overflow: auto;
@@ -33,4 +34,17 @@ mat-table {
   width: 150px;
   padding-right: 5px;
   margin-right: 5px;
+}
+
+/* Details specific */
+.container {
+  xbackground: lightblue;
+  margin: 10px;
+  margin-left: 40px;
+}
+.table-header {
+  xbackground: lightblue;
+  font-size: 14px;
+  line-height: 17px;
+  vertical-align: center;
 }

@@ -11,11 +11,9 @@ import { LayoutConfig } from '../../layout-config';
 import { LayoutComponent } from '../../models';
 import { Dock } from '../../enums';
 
-import { PanelResizerComponent } from '../../panel-resizer/panel-resizer.component';
-import { AttributeListParameters, AttributeListResponse,
-         AttributeMetadataParameters, AttributeMetadataResponse } from '../../test-attributeservice/models';
 import { AttributeService } from '../../../shared/attribute-service/attribute.service';
-import { AppLayer } from '../../../../../../bridge/typings';
+import { PanelResizerComponent } from '../../panel-resizer/panel-resizer.component';
+import { Test } from '../test';
 
 @Component({
   selector: 'tailormap-attributelist-panel',
@@ -31,7 +29,6 @@ export class AttributelistPanelComponent implements OnInit, AfterViewInit, Layou
   // For the layout service.
   public layoutConfig: LayoutConfig;
 
-  // @ViewChild('tabgroup', { static: true, read: ElementRef }) private tabgroupElem: ElementRef<HTMLDivElement>;
   @ViewChild(MatTabGroup, { static: true, read: ElementRef }) private tabgroupElem: ElementRef<HTMLDivElement>;
 
   // For getting the selected tab index.
@@ -51,17 +48,12 @@ export class AttributelistPanelComponent implements OnInit, AfterViewInit, Layou
   }
 
   public ngOnInit(): void {
-    // console.log('#Panel.ngOnInit');
-    // Set custom css style.
-    //this.setCustomStyle();
     // Get the layers.
     this.getLayers();
   }
 
   public ngAfterViewInit(): void {
     // console.log('#Panel.ngAfterViewInit');
-    // Set custom css style.
-    this.setCustomStyle();
     // Set layout config settings.
     this.layoutConfig = new LayoutConfig(this.elementRef, this.panelResizer);
     this.layoutConfig.dock = Dock.Bottom;
@@ -125,56 +117,8 @@ export class AttributelistPanelComponent implements OnInit, AfterViewInit, Layou
   }
 
   public onTestClick(): void {
-    let appId = 3;
-    let layerId = 16;
-    let featType = 0;
-    let filter = '';
-
-    // const layerName = 'wegvakonderdeel';
-    // //const layerName = 'wegvakonderdeelplanning';
-    // const layer = this.layerService.getLayerByName(layerName);
-    // console.log(layer.id);
-    // const appLayerId = this.layerService.getAppLayerId(appId,layerName);
-    // console.log(appLayerId);
-
-    // filter: "wegvakonderdeel_id = 'A0ABA09EB3F045AE80A293639EBEA701'"
-    // foreignFeatureTypeName: "wegvakonderdeelplanning"
-    // id: 170
-    appId = 3;
-    layerId = 170;
-    featType = 0;
-    filter = "wegvakonderdeel_id = 'A0ABA09EB3F045AE80A293639EBEA701'";
-
-    const metaParams: AttributeMetadataParameters = {
-      application: appId,
-      appLayer: layerId,
-    };
-    const params: AttributeListParameters = {
-      application: appId,
-      appLayer: layerId,
-      featureType: featType,
-      dir: 'ASC',
-      //sort: 'verhardingsfunctie',
-      sort: '',
-      filter: filter,
-    };
-
-    this.attributeService.featureTypeMetadata$(metaParams).subscribe(
-      (metaData: AttributeMetadataResponse) => {
-        console.log(metaData);
-        this.attributeService.features$(params).subscribe(
-          (data: AttributeListResponse) => console.log(data)
-        );
-      }
-    );
-
-    // this.attributeService.featureTypeMetadata$(metaParams).subscribe(
-    //   (data: AttributeMetadataResponse) => console.log(data)
-    // );
-    // this.attributeService.features$(params).subscribe(
-    //   (data: AttributeListResponse) => console.log(data)
-    // );
-
+    console.log("# Test - WegvakonderdeelPlanning");
+    Test.getAttrWegvakonderdeelPlanning(this.attributeService);
   }
 
   /**
@@ -191,26 +135,5 @@ export class AttributelistPanelComponent implements OnInit, AfterViewInit, Layou
     } else {
       domElem.style.display = 'none';
     }
-  }
-
-  /**
-   * Sets custom css style for dom elements which style cannot been set in
-   * the css file.
-   */
-  private setCustomStyle(): void {
-    // console.log('Panel.setCustomStyle');
-    // const parentElem = this.elementRef.nativeElement;
-    // const elems = parentElem.getElementsByClassName('mat-tab-body-content');
-    // console.log(elems);
-    // // if (!!elems) {
-    // if (elems) {
-    //   console.log('Panel.setCustomStyle - for.....');
-    //   for (let i = 0; i < elems.length; i++) {
-    //     this.renderer.setStyle(elems[i], 'overflow', 'auto');
-    //     this.renderer.setStyle(elems[i], 'flex', '1');
-    //     this.renderer.setStyle(elems[i], 'display', 'flex');
-    //     this.renderer.setStyle(elems[i], 'flex-flow', 'column nowrap');
-    //   }
-    // }
   }
 }
