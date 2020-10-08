@@ -38,7 +38,8 @@ import { ConfirmDialogService } from './confirm-dialog/confirm-dialog.service';
 
 @NgModule({
   declarations: [
-    ConfirmDialogComponent],
+    ConfirmDialogComponent,
+    ExportServiceComponent],
   imports: [
     ApiModule.forRoot({ rootUrl: window.location.origin + '/form-api' }),
     CommonModule,
@@ -107,6 +108,8 @@ import { ConfirmDialogService } from './confirm-dialog/confirm-dialog.service';
     MatTreeModule,
 
     DragDropModule,
+
+    ExportServiceComponent,
   ],
   entryComponents: [
   ],
