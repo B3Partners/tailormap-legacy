@@ -4,7 +4,6 @@ import { Feature } from '../../shared/generated';
 import { FormComponent } from '../../feature-form/form/form.component';
 import { LayerUtils } from '../../shared/layer-utils/layer-utils.service';
 import {
-  LayerVisibilityEvent,
   MapClickedEvent,
 } from '../../shared/models/event-models';
 import { VectorLayer } from '../../../../../bridge/typings';

@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { FormHelpers } from '../../feature-form/form/form-helpers';
 
 @Injectable({
   providedIn: 'root',
@@ -13,6 +14,6 @@ export class LayerUtils {
     if (index !== -1) {
       layername = layername.substring(index + 1);
     }
-    return layername.toLowerCase();
+    return FormHelpers.snakecaseToCamel(layername).toLowerCase();
   }
 }

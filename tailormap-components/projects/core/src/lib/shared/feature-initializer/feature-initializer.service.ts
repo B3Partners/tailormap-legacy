@@ -8,6 +8,7 @@ import {
   Wegvakonderdeel,
   Wegvakonderdeelplanning,
 } from '../generated';
+import { FormHelpers } from '../../feature-form/form/form-helpers';
 
 
 @Injectable({
@@ -15,12 +16,13 @@ import {
 })
 export class FeatureInitializerService {
 
+  constructor() {
+  }
+
   public static enum
 
   public static readonly STUB_OBJECT_GUID_NEW_OBJECT = '-1';
 
-  constructor() {
-  }
 
   public retrieveGeometry(feature: Feature): Geometry {
     switch (feature.objecttype) {
@@ -30,17 +32,9 @@ export class FeatureInitializerService {
     return null;
   }
 
-  private constructObjectType(s: string): string {
-    return s.replace(/([-_][a-z])/ig, ($1) => {
-      return $1.toUpperCase()
-        .replace('-', '')
-        .replace('_', '');
-    });
-  }
-
   public create(type: string, params: any): Feature {
     params.clazz = type.toLowerCase();
-    params.objecttype = this.constructObjectType(type);
+    params.objecttype = FormHelpers.snakecaseToCamel(type);
     params.objectGuid = FeatureInitializerService.STUB_OBJECT_GUID_NEW_OBJECT;
     switch (type) {
       case 'Wegvakonderdeel':
@@ -268,7 +262,7 @@ export class FeatureInitializerService {
           ...params,
         };
         return rp;
-      case 'Mech_leiding':
+      case 'Mechleiding':
         const ml: MechLeiding = {
           aanlegjaar: 0,
           aantal_buizen: 0,

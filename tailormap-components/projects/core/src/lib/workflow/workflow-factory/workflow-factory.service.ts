@@ -1,4 +1,7 @@
-import { Injectable } from '@angular/core';
+import {
+  Injectable,
+  NgZone,
+} from '@angular/core';
 import { Workflow } from '../workflows/Workflow';
 import { StandardFormWorkflow } from '../workflows/StandardFormWorkflow';
 import { TailorMapService } from '../../../../../bridge/src/tailor-map.service';
@@ -25,6 +28,7 @@ export class WorkflowFactoryService {
     private formConfigRepo: FormconfigRepositoryService,
     private snackBar: MatSnackBar,
     private service: FeatureControllerService,
+    private ngZone: NgZone,
     private featureInitializerService: FeatureInitializerService) {
   }
 
@@ -45,7 +49,8 @@ export class WorkflowFactoryService {
     workflow.vectorLayer = this.vectorLayer;
     workflow.highlightLayer = this.highlightLayer;
     workflow.id = this.numWorkflows;
-    workflow.init(this.tailorMap, this.dialog, this.featureInitializerService, this.formConfigRepo, this.snackBar, this.service);
+    workflow.init(this.tailorMap, this.dialog, this.featureInitializerService,
+      this.formConfigRepo, this.snackBar, this.service, this.ngZone);
 
     return workflow;
   }

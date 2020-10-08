@@ -2,17 +2,14 @@ import { Workflow } from './Workflow';
 import * as wellknown from 'wellknown';
 import { Feature } from '../../shared/generated';
 import { FormComponent } from '../../feature-form/form/form.component';
-import { LayerUtils } from '../../shared/layer-utils/layer-utils.service';
 import {
-  LayerVisibilityEvent,
   MapClickedEvent,
 } from '../../shared/models/event-models';
 import { VectorLayer } from '../../../../../bridge/typings';
 import { GeoJSONPoint } from 'wellknown';
+import { DialogData } from '../../feature-form/form/form-models';
 
 export class SewageWorkflow extends Workflow {
-
-
   private currentStep: Step;
   private well1: [number, number] | [number, number, number];
   private well2: [number, number] | [number, number, number];
@@ -21,6 +18,7 @@ export class SewageWorkflow extends Workflow {
   constructor() {
     super();
     this.currentStep = Step.WELL1;
+    this.closeAfterSave = true;
   }
 
 
@@ -33,7 +31,7 @@ export class SewageWorkflow extends Workflow {
       const linedstring = 'LINESTRING(' + this.well1[0] + ' ' + this.well1[1] + ', '
         + this.well2[0] + ' ' + this.well2[1] + ')';
 
-      this.featureType = 'mech_leiding';
+      this.featureType = 'mechleiding';
       this.geometryDrawn(this.vectorLayer, {
         config: {
           wktgeom: linedstring,
@@ -60,14 +58,16 @@ export class SewageWorkflow extends Workflow {
   }
 
   public openDialog(formFeatures ?: Feature[]): void {
+    const dialogData : DialogData = {
+      formFeatures,
+      isBulk: false,
+      closeAfterSave: true,
+    };
     const dialogRef = this.dialog.open(FormComponent, {
       width: '1050px',
       height: '800px',
       disableClose: true,
-      data: {
-        formFeatures,
-        isBulk: false,
-      },
+      data: dialogData,
     });
     // tslint:disable-next-line: rxjs-no-ignored-subscription
     dialogRef.afterClosed().subscribe(result => {

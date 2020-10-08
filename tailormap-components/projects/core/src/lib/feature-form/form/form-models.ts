@@ -20,7 +20,7 @@ export interface Attribute {
   type: FormFieldType;
   options?: SelectOption[];
   linkedList?: number;
-  label ?: string;
+  label?: string;
   column: number;
   tab: number;
 }
@@ -70,5 +70,5 @@ export interface ColumnizedFields {
 export interface DialogData {
   formFeatures: Feature[];
   isBulk: boolean;
-  lookup: Map<string, string>;
+  closeAfterSave?: boolean;
 }

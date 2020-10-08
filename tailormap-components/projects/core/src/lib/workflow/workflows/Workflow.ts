@@ -6,6 +6,7 @@ import { FormconfigRepositoryService } from '../../shared/formconfig-repository/
 import { FeatureControllerService } from '../../shared/generated';
 import { VectorLayer } from '../../../../../bridge/typings';
 import { MapClickedEvent } from '../../shared/models/event-models';
+import { NgZone } from '@angular/core';
 
 export abstract class Workflow {
 
@@ -18,6 +19,8 @@ export abstract class Workflow {
   protected snackBar: MatSnackBar;
   protected formConfigRepo: FormconfigRepositoryService;
   protected service: FeatureControllerService;
+  protected ngZone: NgZone;
+  public closeAfterSave: boolean;
 
   public init(
     tailorMap: TailorMapService,
@@ -25,7 +28,8 @@ export abstract class Workflow {
     featureInitializerService: FeatureInitializerService,
     formConfigRepo: FormconfigRepositoryService,
     snackBar: MatSnackBar,
-    service: FeatureControllerService): void {
+    service: FeatureControllerService,
+    ngZone: NgZone): void {
 
     this.tailorMap = tailorMap;
     this.dialog = dialog;
@@ -33,11 +37,18 @@ export abstract class Workflow {
     this.formConfigRepo = formConfigRepo;
     this.snackBar = snackBar;
     this.service = service;
-    this.vectorLayer.addListener('ON_FEATURE_ADDED', this.geometryDrawn, this);
+    this.ngZone = ngZone;
+    this.vectorLayer.addListener('ON_FEATURE_ADDED', this.geometryDrawnProxy, this);
   }
 
   public destroy(): void {
-    this.vectorLayer.removeListener('ON_FEATURE_ADDED', this.geometryDrawn, this);
+    this.vectorLayer.removeListener('ON_FEATURE_ADDED', this.geometryDrawnProxy, this);
+  }
+
+  public geometryDrawnProxy(vectorLayer: VectorLayer, feature: any): void {
+    this.ngZone.run(() => {
+      this.geometryDrawn(vectorLayer, feature);
+    });
   }
 
   public abstract geometryDrawn(vectorLayer: VectorLayer, feature: any): void;
