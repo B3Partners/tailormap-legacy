@@ -1,12 +1,13 @@
 import {
   Component,
-  EventEmitter,
   NgZone,
-  Output,
 } from '@angular/core';
-import { AddButtonEvent } from './add-feature-models';
 import { TailorMapService } from '../../../../../bridge/src/tailor-map.service';
 import { FormconfigRepositoryService } from '../../shared/formconfig-repository/formconfig-repository.service';
+import {
+  LayerUtils,
+} from '../../shared/layer-utils/layer-utils.service';
+import { WorkflowControllerService } from '../../workflow/workflow-controller/workflow-controller.service';
 
 @Component({
   selector: 'tailormap-add-feature',
@@ -18,6 +19,7 @@ export class AddFeatureComponent {
   constructor(
     public tailorMapService: TailorMapService,
     private formConfigRepo: FormconfigRepositoryService,
+    private workflowControllerService: WorkflowControllerService,
     private ngZone: NgZone,
   ) {
     this.tailorMapService.layerVisibilityChanged$.subscribe(value => {
@@ -27,9 +29,6 @@ export class AddFeatureComponent {
     });
     this.init();
   }
-
-  @Output()
-  public addFeature = new EventEmitter<AddButtonEvent>();
 
   public visibleLayers: string[] = [];
 
@@ -43,11 +42,8 @@ export class AddFeatureComponent {
     }
   }
 
-  public click() {
-    const first = this.visibleLayers[0];
-    this.addFeature.emit({
-      featuretype: first,
-    });
+  public click(featuretype) {
+    this.workflowControllerService.addFeature(featuretype);
   }
 
   public calculateVisibleLayers(): void {
@@ -58,7 +54,7 @@ export class AddFeatureComponent {
     appLayers.forEach(appLayerId => {
       const appLayer = this.tailorMapService.getViewerController().getAppLayerById(appLayerId);
       let layerName: string = appLayer.layerName;
-      layerName = this.sanitzeLayername(layerName);
+      layerName = LayerUtils.sanitzeLayername(layerName);
 
       if (allowFts.findIndex(l => l.toLowerCase() === layerName) !== -1) {
         this.visibleLayers.push(layerName);
@@ -66,11 +62,4 @@ export class AddFeatureComponent {
     });
   }
 
-  private sanitzeLayername(layername: string): string {
-    const index = layername.indexOf(':');
-    if (index !== -1) {
-      layername = layername.substring(index + 1);
-    }
-    return layername.toLowerCase();
-  }
 }

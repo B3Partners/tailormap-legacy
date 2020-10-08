@@ -1,6 +1,7 @@
 import {
   Component,
   Inject,
+  NgZone,
   OnChanges,
   OnDestroy,
   SimpleChanges,
@@ -18,8 +19,8 @@ import {
 import { Subscription } from 'rxjs';
 import {
   DialogData,
-} from '../form-popup/form-popup-models';
-import { FormConfiguration } from './form-models';
+  FormConfiguration,
+} from './form-models';
 import { Feature } from '../../shared/generated';
 import { FormActionsService } from '../form-actions/form-actions.service';
 import { FormconfigRepositoryService } from '../../shared/formconfig-repository/formconfig-repository.service';
@@ -36,7 +37,6 @@ export class FormComponent implements OnDestroy, OnChanges {
 
   public isBulk: boolean;
   public formsForNew: FormConfiguration[] = [];
-  public lookup: Map<string, string>;
   public formDirty: boolean;
 
   private subscriptions = new Subscription();
@@ -45,13 +45,13 @@ export class FormComponent implements OnDestroy, OnChanges {
               private confirmDialogService: ConfirmDialogService,
               @Inject(MAT_DIALOG_DATA) public data: DialogData,
               private _snackBar: MatSnackBar,
+              private ngZone: NgZone,
               private formConfigRepo: FormconfigRepositoryService,
               public actions: FormActionsService) {
 
     this.features = data.formFeatures;
     this.feature = this.features[0];
     this.isBulk = !!data.isBulk;
-    this.lookup = data.lookup;
     const configs = this.formConfigRepo.getAllFormConfigs().config;
     for (const key in configs) {
       if (configs.hasOwnProperty(key)) {
@@ -95,6 +95,9 @@ export class FormComponent implements OnDestroy, OnChanges {
     if (!result.changed) {
       this.features = result.features;
       this.feature = result.feature;
+      if (this.data.closeAfterSave) {
+        this.dialogRef.close();
+      }
     }
   }
 
@@ -128,13 +131,15 @@ export class FormComponent implements OnDestroy, OnChanges {
   }
 
   public closeDialog() {
-    if (this.formDirty) {
-      this.closeNotification(function () {
+    this.ngZone.run(() => {
+      if (this.formDirty) {
+        this.closeNotification(function () {
+          this.dialogRef.close();
+        });
+      } else {
         this.dialogRef.close();
-      });
-    } else {
-      this.dialogRef.close();
-    }
+      }
+    });
   }
 
   private closeNotification(afterAction) {
