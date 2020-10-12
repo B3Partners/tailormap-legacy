@@ -855,6 +855,7 @@ Ext.define("viewer.components.Edit", {
                 var n = "filesuploadContainer" + this.config.name;
                 this.filescontainer = Ext.create("Ext.panel.Panel", {
                     name: n,
+                    itemId: n,
                     border:0,
                     items: []
                 });
@@ -887,6 +888,7 @@ Ext.define("viewer.components.Edit", {
             title: t,
             border: 0,
             name: "uploadContainer" + this.name + t,
+            itemId: "uploadContainer" + this.name + t,
             collapsable: false,
             items:items
         });
@@ -903,7 +905,7 @@ Ext.define("viewer.components.Edit", {
                 change: function(fld,value){
                     var newValue = value.replace(/C:\\fakepath\\/g, '');
                     fld.setRawValue(newValue);
-                    var container = Ext.getCmp("uploadContainer" + this.name + t);
+                    var container = Ext.ComponentQuery.query("#" + "uploadContainer" + this.name + t)[0];
                     var size = container.items.length;
                     var upload = this.createUploadBox(t,size);
                     container.insert(size,upload);
@@ -1215,7 +1217,7 @@ Ext.define("viewer.components.Edit", {
                 for(var key in uploads){
                     if(uploads.hasOwnProperty(key)){
                         var files = uploads[key];
-                        var container = Ext.getCmp("uploadContainer" + this.name + key);
+                        var container = Ext.ComponentQuery.query("#" + "uploadContainer" + this.name + key)[0];
                         if(!container){
                            container = this.createFileForm(key, false);
                            this.filescontainer.add(container);
@@ -1554,7 +1556,7 @@ Ext.define("viewer.components.Edit", {
             var types = Ext.JSON.decode(this.appLayer.details["editfeature.uploadDocument.types"]);
             for (var i = 0; i < types.length; i++) {
                 var t = types[i];
-                var form = Ext.getCmp("uploadContainer" + this.name + t);
+                var form = Ext.ComponentQuery.query("#" + "uploadContainer" + this.name + t)[0];
                 var hasFile = false;
                 for (var j = 0; j < form.items.length; j++) {
                     var inputEl = form.items.get(j).fileInputEl;
