@@ -51,8 +51,8 @@
         <powermock.version>2.0.7</powermock.version>
         <hsqldb.version>2.5.1</hsqldb.version>
         <test.persistence.unit>viewer-config-hsqldb</test.persistence.unit>
-        <postgresql.version>42.2.15</postgresql.version>
-        <mssql.version>8.2.2.jre8</mssql.version>
+        <postgresql.version>42.2.17</postgresql.version>
+        <mssql.version>8.4.1.jre8</mssql.version>
         <apache.poi.version>4.0.1</apache.poi.version>
         <javax.mail.version>1.6.2</javax.mail.version>
         <apache.httpcomponents.version>4.5.12</apache.httpcomponents.version>
