@@ -18,7 +18,9 @@
         <minify.outputdir>${project.name}-${project.version}/viewer-html</minify.outputdir>
         <viewerhtml.path>${basedir}/src/main/webapp/viewer-html</viewerhtml.path>
         <test.persistence.unit>viewer-config-hsqldb</test.persistence.unit>
-        <rest.api.outputdoc>${basedir}/../tailormap-components/projects/core/src/lib/shared/generated</rest.api.outputdoc>
+        <tailormap-components.source.dir>../tailormap-components</tailormap-components.source.dir>
+        <tailormap-components.dist.dir>${tailormap-components.source.dir}/dist/</tailormap-components.dist.dir>
+        <rest.api.outputdoc>${tailormap-components.source.dir}/projects/core/src/lib/shared/generated</rest.api.outputdoc>
     </properties>
     <dependencies>
         <dependency>
@@ -199,6 +201,16 @@
     <build>
         <plugins>
             <plugin>
+                <artifactId>maven-clean-plugin</artifactId>
+                <configuration>
+                    <filesets>
+                        <fileset>
+                            <directory>${tailormap-components.dist.dir}</directory>
+                        </fileset>
+                    </filesets>
+                </configuration>
+            </plugin>
+            <plugin>
                 <groupId>com.github.eirslett</groupId>
                 <artifactId>frontend-maven-plugin</artifactId>
                 <executions>
@@ -207,14 +219,14 @@
                         <goals>
                             <goal>install-node-and-npm</goal>
                         </goals>
-                        <phase>generate-resources</phase>
+                        <phase>initialize</phase>
                     </execution>
                     <execution>
                         <id>Run npm install</id>
                         <goals>
                             <goal>npm</goal>
                         </goals>
-                        <phase>process-resources</phase>
+                        <phase>generate-sources</phase>
                         <configuration>
                             <arguments>install</arguments>
                         </configuration>
@@ -224,18 +236,41 @@
                         <goals>
                             <goal>npm</goal>
                         </goals>
-                        <phase>compile</phase>
+                        <phase>process-resources</phase>
                         <configuration>
                             <arguments>run build-prod</arguments>
                         </configuration>
                     </execution>
                 </executions>
                 <configuration>
-                    <workingDirectory>../tailormap-components</workingDirectory>
+                    <workingDirectory>${tailormap-components.source.dir}</workingDirectory>
                     <installDirectory>${project.build.directory}/</installDirectory>
                     <nodeVersion>v13.8.0</nodeVersion>
-                    <npmVersion>6.13.6</npmVersion>
+                    <npmVersion>6.14.8</npmVersion>
                 </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-resources</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/${project.artifactId}-${project.version}/tailormap-components</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${tailormap-components.dist.dir}/</directory>
+                                    <!--includes>
+                                        <include>... misschien *.js</include>
+                                    </includes-->
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -266,30 +301,6 @@
                     <attachClasses>true</attachClasses>
                     <classesClassifier>classes</classesClassifier>
                 </configuration>
-            </plugin>
-            <plugin>
-                <artifactId>maven-resources-plugin</artifactId>
-                <version>3.1.0</version>
-                <executions>
-                    <execution>
-                        <id>copy-resources</id>
-                        <phase>generate-resources</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${project.build.directory}/${project.artifactId}-${project.version}/tailormap-components</outputDirectory>
-                            <resources>
-                                <resource>
-                                    <directory>../tailormap-components/dist/</directory>
-                                    <!--includes>
-                                        <include>... misschien *.js</include>
-                                    </includes-->
-                                </resource>
-                            </resources>
-                        </configuration>
-                    </execution>
-                </executions>
             </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
