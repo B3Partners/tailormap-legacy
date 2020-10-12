@@ -203,45 +203,29 @@
                 <artifactId>frontend-maven-plugin</artifactId>
                 <executions>
                     <execution>
-                        <!-- optional: you don't really need execution ids, but it looks nice in your build log. -->
                         <id>install node and npm</id>
                         <goals>
                             <goal>install-node-and-npm</goal>
                         </goals>
-                        <!-- optional: default phase is "generate-resources" -->
                         <phase>generate-resources</phase>
                     </execution>
                     <execution>
-                        <id>npm install</id>
+                        <id>Run npm install</id>
                         <goals>
                             <goal>npm</goal>
                         </goals>
-
-                        <!-- optional: default phase is "generate-resources" -->
                         <phase>process-resources</phase>
-
                         <configuration>
-                            <!-- optional: The default argument is actually
-                            "install", so unless you need to run some other npm command,
-                            you can remove this whole <configuration> section.
-                            -->
                             <arguments>install</arguments>
                         </configuration>
                     </execution>
                     <execution>
-                        <id>Build artifacts</id>
+                        <id>Build tailormap-components artifacts</id>
                         <goals>
                             <goal>npm</goal>
                         </goals>
-
-                        <!-- optional: default phase is "generate-resources" -->
                         <phase>compile</phase>
-
                         <configuration>
-                            <!-- optional: The default argument is actually
-                            "install", so unless you need to run some other npm command,
-                            you can remove this whole <configuration> section.
-                            -->
                             <arguments>run build-prod</arguments>
                         </configuration>
                     </execution>
