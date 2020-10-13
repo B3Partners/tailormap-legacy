@@ -7,6 +7,8 @@ import { FeatureControllerService } from '../../shared/generated';
 import { VectorLayer } from '../../../../../bridge/typings';
 import { MapClickedEvent } from '../../shared/models/event-models';
 import { NgZone } from '@angular/core';
+import { WorkflowControllerService } from '../workflow-controller/workflow-controller.service';
+import { Subject } from 'rxjs';
 
 export abstract class Workflow {
 
@@ -21,6 +23,8 @@ export abstract class Workflow {
   protected service: FeatureControllerService;
   protected ngZone: NgZone;
   public closeAfterSave: boolean;
+
+  public close$ = new Subject<boolean>();
 
   public init(
     tailorMap: TailorMapService,
@@ -58,4 +62,8 @@ export abstract class Workflow {
   public abstract mapClick(data: MapClickedEvent): void;
 
   public abstract afterEditting(): void;
+
+  public endWorkflow(): void {
+    this.close$.next(true);
+  }
 }

@@ -8,6 +8,7 @@ import {
 import { VectorLayer } from '../../../../../bridge/typings';
 import { GeoJSONPoint } from 'wellknown';
 import { DialogData } from '../../feature-form/form/form-models';
+import { ChooseTypesComponent } from '../../user-interface/sewage/choose-types/choose-types.component';
 
 export class SewageWorkflow extends Workflow {
   private currentStep: Step;
@@ -15,23 +16,32 @@ export class SewageWorkflow extends Workflow {
   private well2: [number, number] | [number, number, number];
   private featureType: string;
 
+  private choice: Choice;
+
   constructor() {
     super();
-    this.currentStep = Step.WELL1;
+    this.currentStep = Step.START;
     this.closeAfterSave = true;
   }
 
 
   public addFeature(featureType: string) {
+    if (this.currentStep === Step.START) {
+      this.makeChoices();
+    }
     if (this.currentStep === Step.WELL1 || this.currentStep === Step.WELL2) {
+      if (this.currentStep === Step.WELL1) {
+        this.featureType = this.choice.well1;
+      } else {
+        this.featureType = this.choice.well2;
+      }
       this.vectorLayer.drawFeature('Point');
-      this.featureType = 'rioolput';
     }
     if (this.currentStep === Step.DUCT) {
       const linedstring = 'LINESTRING(' + this.well1[0] + ' ' + this.well1[1] + ', '
         + this.well2[0] + ' ' + this.well2[1] + ')';
 
-      this.featureType = 'mechleiding';
+      this.featureType = this.choice.duct;
       this.geometryDrawn(this.vectorLayer, {
         config: {
           wktgeom: linedstring,
@@ -57,8 +67,28 @@ export class SewageWorkflow extends Workflow {
     this.openDialog(features);
   }
 
+  private makeChoices() {
+
+    const dialogRef = this.dialog.open(ChooseTypesComponent, {
+      width: '350px',
+      height: '400px',
+      disableClose: true,
+    });
+    // tslint:disable-next-line: rxjs-no-ignored-subscription
+    dialogRef.afterClosed().subscribe(result => {
+      const choice = (result as Choice);
+      if (choice.cancelled) {
+        this.endWorkflow();
+      } else {
+        this.choice = choice;
+        this.currentStep = Step.WELL1;
+        this.addFeature(null);
+      }
+    });
+  }
+
   public openDialog(formFeatures ?: Feature[]): void {
-    const dialogData : DialogData = {
+    const dialogData: DialogData = {
       formFeatures,
       isBulk: false,
       closeAfterSave: true,
@@ -101,7 +131,15 @@ export class SewageWorkflow extends Workflow {
 }
 
 enum Step {
+  START = 'start',
   WELL1 = 'well1',
   WELL2 = 'well2',
   DUCT = 'duct',
 }
+
+export interface Choice {
+  well1?: string;
+  well2?: string;
+  duct?: string;
+  cancelled: boolean;
+};

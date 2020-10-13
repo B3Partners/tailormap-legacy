@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import {
+  Boom,
   Feature,
   Geometry,
   MechLeiding,
@@ -28,6 +29,14 @@ export class FeatureInitializerService {
     switch (feature.objecttype) {
       case 'Wegvakonderdeel':
         return (feature as Wegvakonderdeel).geometrie;
+      case 'Rioolput':
+        return (feature as Rioolput).geometrie;
+      case 'Mechleiding':
+        return (feature as MechLeiding).geometrie;
+      case 'Vrijvleidin':
+        return (feature as VrijvLeiding).geometrie;
+      case 'Boom':
+        return (feature as Boom).geometrie;
     }
     return null;
   }
@@ -365,7 +374,7 @@ export class FeatureInitializerService {
           ...params,
         };
         return ml;
-      case 'VrijvLeiding':
+      case 'Vrijvleiding':
         const vl: VrijvLeiding = {
           aanlegjaar: 0,
           aant_ie_bedrijven: 0,

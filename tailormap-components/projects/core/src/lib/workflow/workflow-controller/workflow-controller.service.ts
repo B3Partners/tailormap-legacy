@@ -1,14 +1,19 @@
-import { Injectable } from '@angular/core';
+import {
+  Injectable,
+  OnDestroy,
+} from '@angular/core';
 import { Workflow } from '../workflows/Workflow';
 import { WorkflowFactoryService } from '../workflow-factory/workflow-factory.service';
 import { MapClickedEvent } from '../../shared/models/event-models';
+import { Subscription } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
-export class WorkflowControllerService {
+export class WorkflowControllerService implements OnDestroy{
 
   private currentWorkflow: Workflow;
+  private subscriptions = new Subscription();
 
   constructor(
     private workflowFactory: WorkflowFactoryService,
@@ -17,6 +22,14 @@ export class WorkflowControllerService {
 
   public init(): void {
     this.currentWorkflow = this.getWorkflow();
+  }
+
+  public ngOnDestroy() {
+    this.subscriptions.unsubscribe();
+  }
+
+  public workflowFinished() : void{
+    this.init();
   }
 
   public addFeature(featureType: string): void {
@@ -29,7 +42,9 @@ export class WorkflowControllerService {
     if (this.currentWorkflow) {
       this.currentWorkflow.destroy();
     }
-    return this.workflowFactory.getWorkflow(featureType);
+    const wf = this.workflowFactory.getWorkflow(featureType);
+    this.subscriptions.add(wf.close$.subscribe(value => this.init()));
+    return wf;
   }
 
   public mapClicked(data: MapClickedEvent): void {
