@@ -17,13 +17,12 @@ import { FormHelpers } from '../../feature-form/form/form-helpers';
 })
 export class FeatureInitializerService {
 
-  constructor() {
-  }
-
   public static enum
 
   public static readonly STUB_OBJECT_GUID_NEW_OBJECT = '-1';
 
+  constructor() {
+  }
 
   public retrieveGeometry(feature: Feature): Geometry {
     switch (feature.objecttype) {
