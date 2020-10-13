@@ -12,6 +12,7 @@ import { FormconfigRepositoryService } from '../../shared/formconfig-repository/
 import { FeatureControllerService } from '../../shared/generated';
 import { VectorLayer } from '../../../../../bridge/typings';
 import { SewageWorkflow } from '../workflows/SewageWorkflow';
+import { ConfirmDialogService } from '../../shared/confirm-dialog/confirm-dialog.service';
 
 @Injectable({
   providedIn: 'root',
@@ -29,6 +30,7 @@ export class WorkflowFactoryService {
     private snackBar: MatSnackBar,
     private service: FeatureControllerService,
     private ngZone: NgZone,
+    private confirmService: ConfirmDialogService,
     private featureInitializerService: FeatureInitializerService) {
   }
 
@@ -50,7 +52,7 @@ export class WorkflowFactoryService {
     workflow.highlightLayer = this.highlightLayer;
     workflow.id = this.numWorkflows;
     workflow.init(this.tailorMap, this.dialog, this.featureInitializerService,
-      this.formConfigRepo, this.snackBar, this.service, this.ngZone);
+      this.formConfigRepo, this.snackBar, this.service, this.ngZone, this.confirmService);
 
     return workflow;
   }

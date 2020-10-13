@@ -21,6 +21,7 @@ declare interface Map {
   addListener: (eventName: string, handler: layerVisibilityEvent) => void;
   getLayer: (id: string) => Layer;
   update: () => void;
+  getResolution: () => number;
 }
 
 declare interface MapComponent {

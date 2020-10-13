@@ -1,6 +1,21 @@
 import { Workflow } from './Workflow';
 import * as wellknown from 'wellknown';
-import { Feature } from '../../shared/generated';
+import {
+  Boom,
+  Boominspectie,
+  Boomplanning,
+  CultBeplanting,
+  Feature,
+  Gras,
+  Haag,
+  MechLeiding,
+  NatBeplanting,
+  Rioolput,
+  VrijvLeiding,
+  Weginspectie,
+  Wegvakonderdeel,
+  Wegvakonderdeelplanning,
+} from '../../shared/generated';
 import { FormComponent } from '../../feature-form/form/form.component';
 import {
   MapClickedEvent,
@@ -9,6 +24,11 @@ import { VectorLayer } from '../../../../../bridge/typings';
 import { GeoJSONPoint } from 'wellknown';
 import { DialogData } from '../../feature-form/form/form-models';
 import { ChooseTypesComponent } from '../../user-interface/sewage/choose-types/choose-types.component';
+import { Observable } from 'rxjs';
+import {
+  filter,
+  take,
+} from 'rxjs/operators';
 
 export class SewageWorkflow extends Workflow {
   private currentStep: Step;
@@ -53,22 +73,49 @@ export class SewageWorkflow extends Workflow {
   public geometryDrawn(vectorLayer: VectorLayer, feature: any) {
     const geom = feature.config.wktgeom;
     const geoJson = wellknown.parse(geom);
-    if (this.currentStep === Step.WELL1) {
-      this.well1 = (geoJson as GeoJSONPoint).coordinates;
+
+    if (this.currentStep === Step.WELL1 || this.currentStep === Step.WELL2) {
+      const coords = (geoJson as GeoJSONPoint).coordinates;
+      if (this.currentStep === Step.WELL1) {
+        this.well1 = coords
+      }
+      if (this.currentStep === Step.WELL2) {
+        this.well2 = coords
+      }
+      this.retrieveFeatures(coords).subscribe(features => {
+        let feat = null;
+        if (features.length > 0) {
+          const message = 'Wilt u de bestaande ' + this.featureType + ' met naam \"' + this.formConfigRepo.getFeatureLabel(features[0]) +
+            '\" gebruiken?';
+
+          feat = features[0];
+          this.confirmService.confirm$('Bestaande feature gebruiken?',
+            message, false)
+            .pipe(take(1)).subscribe(useExisting => {
+            if (!useExisting) {
+              feat = this.createFeature(geoJson);
+            }
+            this.openDialog(feat);
+          });
+        } else {
+          feat = this.createFeature(geoJson);
+          this.openDialog(feat);
+        }
+      });
+    } else {
+      const feat = this.createFeature(geoJson);
+      this.openDialog(feat);
     }
-    if (this.currentStep === Step.WELL2) {
-      this.well2 = (geoJson as GeoJSONPoint).coordinates;
-    }
+  }
+
+  private createFeature(geoJson: wellknown.GeoJSONGeometry): Feature {
     const objecttype = this.featureType.charAt(0).toUpperCase() + this.featureType.slice(1);
     const feat = this.featureInitializerService.create(objecttype,
       {geometrie: geoJson, clazz: this.featureType, children: []});
-
-    const features: Feature[] = [feat];
-    this.openDialog(features);
+    return feat;
   }
 
   private makeChoices() {
-
     const dialogRef = this.dialog.open(ChooseTypesComponent, {
       width: '240px',
       height: '370px',
@@ -87,9 +134,9 @@ export class SewageWorkflow extends Workflow {
     });
   }
 
-  public openDialog(formFeatures ?: Feature[]): void {
+  public openDialog(feature ?: Feature): void {
     const dialogData: DialogData = {
-      formFeatures,
+      formFeatures: [feature],
       isBulk: false,
       closeAfterSave: true,
     };
@@ -106,13 +153,25 @@ export class SewageWorkflow extends Workflow {
   }
 
   public mapClick(data: MapClickedEvent): void {
+
+  }
+
+  private retrieveFeatures(coords: [number, number] | [number, number, number]):
+    Observable<Array<Boom | Boominspectie | Boomplanning | CultBeplanting | Gras | Haag
+      | MechLeiding | NatBeplanting | Rioolput | VrijvLeiding | Weginspectie | Wegvakonderdeel
+      | Wegvakonderdeelplanning>> {
+    const x = coords[0];
+    const y = coords[1];
+
+    const scale = this.tailorMap.getMapComponent().getMap().getResolution() * 4;
+    const featureTypes: string[] = [this.featureType];
+    return this.service.featuretypeOnPoint({featureTypes, x, y, scale});
   }
 
 
   public afterEditting(): void {
     switch (this.currentStep) {
       case Step.WELL1:
-
         this.currentStep = Step.WELL2;
         this.addFeature('');
         break;
@@ -128,7 +187,6 @@ export class SewageWorkflow extends Workflow {
     }
     this.tailorMap.getViewerController().mapComponent.getMap().update();
   }
-
 }
 
 enum Step {
