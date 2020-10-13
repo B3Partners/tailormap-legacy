@@ -26,7 +26,6 @@ import { DialogData } from '../../feature-form/form/form-models';
 import { ChooseTypesComponent } from '../../user-interface/sewage/choose-types/choose-types.component';
 import { Observable } from 'rxjs';
 import {
-  filter,
   take,
 } from 'rxjs/operators';
 
@@ -156,7 +155,7 @@ export class SewageWorkflow extends Workflow {
 
   }
 
-  private retrieveFeatures(coords: [number, number] | [number, number, number]):
+  private retrieveFeatures$(coords: [number, number] | [number, number, number]):
     Observable<Array<Boom | Boominspectie | Boomplanning | CultBeplanting | Gras | Haag
       | MechLeiding | NatBeplanting | Rioolput | VrijvLeiding | Weginspectie | Wegvakonderdeel
       | Wegvakonderdeelplanning>> {

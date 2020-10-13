@@ -1,16 +1,11 @@
 import {
   Component,
-  Inject,
   NgZone,
   OnInit,
 } from '@angular/core';
 import {
-  MAT_DIALOG_DATA,
   MatDialogRef,
 } from '@angular/material/dialog';
-import { ConfirmDialogService } from '../../../shared/confirm-dialog/confirm-dialog.service';
-import { DialogData } from '../../../feature-form/form/form-models';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import {
   FormBuilder,
   FormGroup,

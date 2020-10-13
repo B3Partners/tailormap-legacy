@@ -18,7 +18,6 @@ import {
   FeatureNode,
   FlatNode,
 } from './form-tree-models';
-import { FormConfiguration } from '../form/form-models';
 import { Feature } from '../../shared/generated';
 import { FormTreeHelpers } from './form-tree-helpers';
 import { FormconfigRepositoryService } from '../../shared/formconfig-repository/formconfig-repository.service';

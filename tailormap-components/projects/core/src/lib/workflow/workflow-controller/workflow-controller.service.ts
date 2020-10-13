@@ -28,7 +28,7 @@ export class WorkflowControllerService implements OnDestroy{
     this.subscriptions.unsubscribe();
   }
 
-  public workflowFinished() : void{
+  public workflowFinished() : void {
     this.init();
   }
 

@@ -53,7 +53,7 @@ export class FormconfigRepositoryService {
     return this.formConfigs ? Object.keys(this.formConfigs.config) : [];
   }
 
-  public getFeatureLabel(feature: Feature) : string{
+  public getFeatureLabel(feature: Feature) : string {
     const config: FormConfiguration = this.getFormConfig(feature.clazz);
     let label = this.getFeatureValue(feature, config.treeNodeColumn);
     if (config.idInTreeNodeColumn) {
