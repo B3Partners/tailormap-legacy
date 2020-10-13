@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AttributelistTabTbComponent } from './attributelist-tab-tb.component';
+import { AttributelistTabToolbarComponent } from './attributelist-tab-toolbar.component';
 
 describe('AttrlistTabTbComponent', () => {
-  let component: AttributelistTabTbComponent;
-  let fixture: ComponentFixture<AttributelistTabTbComponent>;
+  let component: AttributelistTabToolbarComponent;
+  let fixture: ComponentFixture<AttributelistTabToolbarComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ AttributelistTabTbComponent ]
+      declarations: [ AttributelistTabToolbarComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(AttributelistTabTbComponent);
+    fixture = TestBed.createComponent(AttributelistTabToolbarComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

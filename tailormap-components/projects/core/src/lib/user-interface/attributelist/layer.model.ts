@@ -1,11 +1,8 @@
-/**============================================================================
- *===========================================================================*/
 
-import {AttributelistTabComponent} from './attributelist-tab/attributelist-tab.component';
+import { AttributelistTabComponent } from './attributelist-tab/attributelist-tab.component';
 
-/**----------------------------------------------------------------------------
- */
-export interface ILayer {
+export interface Layer {
   name: string;
+  id: number;
   tabComponent?: AttributelistTabComponent;
 }

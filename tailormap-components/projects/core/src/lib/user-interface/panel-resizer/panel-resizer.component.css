@@ -19,6 +19,7 @@
   border-radius: 50%;
   width: 20px;
   height: 20px;
+  cursor: ns-resize;
 
   /* as container */
   display: flex;

@@ -1,7 +1,7 @@
-<!--### TOOLBAR ###-->
-<tailormap-attributelist-tab-tb></tailormap-attributelist-tab-tb>
-<!--### DIVIDER ###-->
+<tailormap-attributelist-tab-toolbar></tailormap-attributelist-tab-toolbar>
 <mat-divider></mat-divider>
-<!--### TABLE ###-->
-<tailormap-attributelist-table #table ><</tailormap-attributelist-table>
-
+<tailormap-attributelist-table
+  #table
+  (pageChange)="onPageChange();"
+  (rowClick)="onRowClick($event);">
+</tailormap-attributelist-table>

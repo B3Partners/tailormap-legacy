@@ -8,8 +8,6 @@ h3 {
   font-size: 16px;
   line-height: 16px;
 }
-/*.mat-dialog-content {*/
-/*}*/
 .row {
   height: 26px;
   line-height: 26px;
@@ -47,10 +45,6 @@ h3 {
 /* While dragging. */
 .cdk-drag-preview {
   background-color: white;
-  xbackground-color: red;
-  opacity: 0;
-  display: block;
-
   box-sizing: border-box;
   border-radius: 4px;
   box-shadow:
