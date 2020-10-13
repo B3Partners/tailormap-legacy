@@ -1,15 +1,17 @@
 
-import { Directive, HostBinding, HostListener, Input,
+import { Directive, HostBinding, Input,
          TemplateRef, ViewContainerRef } from '@angular/core';
 import { DetailsState } from '../attributelist-common/attributelist-enums';
+import { RowData } from './attributelist-models';
 
 @Directive({
-  selector: '[cdkDetailsRow]'
+  // tslint:disable-next-line:directive-selector
+  selector: '[cdkDetailsRow]',
 })
 export class DetailsrowDirective {
 
   // The parent row.
-  private row: any;
+  private row: RowData;
   private templateRef: TemplateRef<any>;
   private isExpanded: boolean;
 
@@ -19,7 +21,7 @@ export class DetailsrowDirective {
   }
 
   @Input()
-  public set cdkDetailsRow(value: any) {
+  public set cdkDetailsRow(value: RowData) {
     if (value !== this.row) {
       this.row = value;
       this.row._detailsRow = this;
@@ -49,7 +51,7 @@ export class DetailsrowDirective {
     if (!this.row) {
       return;
     }
-    if (!this.row.hasOwnProperty("related_featuretypes")) {
+    if (!this.row.hasOwnProperty('related_featuretypes')) {
       return;
     }
     if (this.row.related_featuretypes.length === 0) {

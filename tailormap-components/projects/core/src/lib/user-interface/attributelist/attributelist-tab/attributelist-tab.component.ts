@@ -3,8 +3,9 @@
  *          of the panel.
  */
 
-import { Component, OnInit, AfterViewInit, Input, ViewChild } from '@angular/core';
+import { Component, OnInit, AfterViewInit, Input, Output, ViewChild, EventEmitter } from '@angular/core';
 import { LayerService } from '../layer.service';
+import { RowClickData } from '../attributelist-common/attributelist-models';
 
 @Component({
   selector: 'tailormap-attributelist-tab',
@@ -16,6 +17,12 @@ export class AttributelistTabComponent implements OnInit, AfterViewInit {
   // The index of the tab in the tabgroup/layers. The first layer gets index 0.
   @Input()
   public tabIndex: number;
+
+  @Output()
+  public pageChange = new EventEmitter();
+
+  @Output()
+  public rowClick = new EventEmitter<RowClickData>();
 
   @ViewChild('table') public table;
 
@@ -33,5 +40,13 @@ export class AttributelistTabComponent implements OnInit, AfterViewInit {
   public ngAfterViewInit(): void {
     // Set table tab index (only here the table is defined).
     this.table.setTabIndex(this.tabIndex);
+  }
+
+  public onPageChange(): void {
+    this.pageChange.emit();
+  }
+
+  public onRowClick(data: RowClickData): void {
+    this.rowClick.emit(data);
   }
 }

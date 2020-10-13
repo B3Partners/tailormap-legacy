@@ -210,7 +210,7 @@ export class LayoutService implements OnDestroy {
       let top = this.calcTopOfComp(comp);
 
       // DEBUG
-      //top = top - 50;
+      // top = top - 50;
 
       if (top < 0) { top = 0; }
       const topPx = `${top}px`;

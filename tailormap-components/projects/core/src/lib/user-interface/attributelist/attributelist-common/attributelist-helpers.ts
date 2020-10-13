@@ -1,3 +1,5 @@
+import { RowData } from './attributelist-models';
+
 /**
  * Bare typescript utilities (no additional libs are required).
  */
@@ -61,7 +63,7 @@ export class AttributelistHelpers {
    * Add a column/property to all objects in an array (rows) and sets its
    * initial value.
    */
-  public static rowsAddColumn(rows: any[], columnName: string, initialValue: any): any[] {
+  public static rowsAddColumn(rows: RowData[], columnName: string, initialValue: any): RowData[] {
     const newRows = [...rows];
     for (const row of newRows) {
       row[columnName] = initialValue;
@@ -75,7 +77,7 @@ export class AttributelistHelpers {
    * To get the column names only the first row is used.
    * Returns [] when there are no rows.
    */
-  public static rowsGetColumnNames(rows: any[]): string[] {
+  public static rowsGetColumnNames(rows: RowData[]): string[] {
     // Check the rows.
     if (rows.length === 0) {
       return [];
