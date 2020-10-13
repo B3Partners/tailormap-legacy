@@ -70,8 +70,8 @@ export class SewageWorkflow extends Workflow {
   private makeChoices() {
 
     const dialogRef = this.dialog.open(ChooseTypesComponent, {
-      width: '350px',
-      height: '400px',
+      width: '240px',
+      height: '370px',
       disableClose: true,
     });
     // tslint:disable-next-line: rxjs-no-ignored-subscription
@@ -123,6 +123,7 @@ export class SewageWorkflow extends Workflow {
       case Step.DUCT:
         this.vectorLayer.removeAllFeatures();
         this.highlightLayer.removeAllFeatures();
+        this.endWorkflow();
         break;
     }
     this.tailorMap.getViewerController().mapComponent.getMap().update();

@@ -1,15 +1,4 @@
-.container{
-}
-
-.close-button{
-  float: right;
-  bottom: 20px;
-}
-
-.add-button{
-  float: right;
+.button{
+  bottom: -30px;
   margin-left: 15px;
-}
-
-.bottombar{
 }

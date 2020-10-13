@@ -1,30 +1,28 @@
-<div class="container">
+<div>
 
   <h1>Maak keuzes
-    <button mat-button mat-mini-fab color="" (click)="cancel();" class="close-button">
+    <!--button mat-button mat-mini-fab color="" (click)="cancel();" class="close-button">
       <mat-icon>close</mat-icon>
-    </button>
+    </button-->
   </h1>
-  <div class="form">
+  <div>
     <form [formGroup]="form">
-      <mat-form-field appearance="fill">
-        <mat-label>Select</mat-label>
+      <mat-form-field appearance="standard">
+        <mat-label>Puttype 1</mat-label>
         <mat-select formControlName="well1">
-          <mat-option value="rioolput">rioolput</mat-option>
-          <mat-option value="kolk">kolk</mat-option>
+          <mat-option value="rioolput">Rioolput</mat-option>
         </mat-select>
       </mat-form-field>
       <br>
-      <mat-form-field appearance="fill">
-        <mat-label>Select</mat-label>
+      <mat-form-field appearance="standard">
+        <mat-label>Puttype 2</mat-label>
         <mat-select formControlName="well2">
-          <mat-option value="rioolput">rioolput</mat-option>
-          <mat-option value="kolk">kolk</mat-option>
+          <mat-option value="rioolput">Rioolput</mat-option>
         </mat-select>
       </mat-form-field>
       <br>
-      <mat-form-field appearance="fill">
-        <mat-label>Select</mat-label>
+      <mat-form-field appearance="standard">
+        <mat-label>Leiding type</mat-label>
         <mat-select formControlName="duct">
           <mat-option value="mechleiding">Mechanische leiding</mat-option>
           <mat-option value="vrijvleiding">Vrije vervalleiding</mat-option>
@@ -33,12 +31,12 @@
       <br>
     </form>
   </div>
-  <div class="bottombar">
-    <button color="primary" mat-raised-button mat-fab aria-label="Ga verder" class="add-button" (click)="next()">
-      <mat-icon>navigate_next</mat-icon>
-    </button>
-    <button color="warn" mat-raised-button mat-fab aria-label="Annuleren" class="add-button" (click)="cancel()">
+  <div>
+    <button color="warn" mat-raised-button mat-fab aria-label="Annuleren" class="button" (click)="cancel()">
       <mat-icon>cancel</mat-icon>
+    </button>
+    <button color="primary" mat-raised-button mat-fab aria-label="Ga verder" class="button" (click)="next()">
+      <mat-icon>navigate_next</mat-icon>
     </button>
   </div>
 </div>
