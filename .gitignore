@@ -17,3 +17,4 @@ target/
 # GH-issue 1493
 viewer/src/main/webapp/viewer-html/package-lock.json
 node_modules
+/docker/src/main/docker/bin_unzipped/

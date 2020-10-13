@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context>
+    <Parameter name="componentregistry.path" override="false" value="/viewer-html/components"/>
+    <Parameter name="flamingo.data.dir" override="false" value="${FLA_DATA_DIR}"/>
+    <Parameter name="flamingo.download.maxfeatures" override="false" value="1000"/>
+    <Parameter name="flamingo.solr.url" value="http://localhost:8080/solr/" override="false"/>
+    <Parameter name="flamingo.solr.schedule" value="0 0 7 1/1 * ? *" override="false"/>
+    <Parameter name="flamingo.solr.setup" value="false" override="false"/>
+
+    <ResourceLink global="jdbc/geo_viewer" name="jdbc/geo_viewer" type="javax.sql.DataSource"/>
+    <ResourceLink global="mail/session" name="mail/session" type="javax.mail.Session"/>
+
+    <Realm className="org.apache.catalina.realm.LockOutRealm">
+        <Realm allRolesMode="authOnly" className="org.apache.catalina.realm.DataSourceRealm"
+               dataSourceName="jdbc/geo_viewer" roleNameCol="group_" userCredCol="password" userNameCol="username"
+               userRoleTable="user_groups" userTable="user_">
+            <CredentialHandler algorithm="SHA-1" className="org.apache.catalina.realm.MessageDigestCredentialHandler"/>
+        </Realm>
+    </Realm>
+</Context>
