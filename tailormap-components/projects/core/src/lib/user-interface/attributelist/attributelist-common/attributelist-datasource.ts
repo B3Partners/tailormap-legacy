@@ -131,8 +131,8 @@ export class AttributeDataSource extends DataSource<any> {
       }
 
       // Get passport field/column names.
-      if (this.formconfigRepoService.isLoaded()) {
-        const formConfig = this.formconfigRepoService.getFormConfig(passportName);
+      this.formconfigRepoService.formConfigs$.subscribe(formConfigs => {
+        const formConfig = formConfigs.config[passportName];
         console.log(this.params);
         console.log(this.formconfigRepoService.getAllFormConfigs());
         console.log(this.formconfigRepoService.getFeatureTypes());
@@ -141,9 +141,7 @@ export class AttributeDataSource extends DataSource<any> {
         const columnNames = formConfig.fields.map(attr => attr.key);
         console.log(columnNames);
         this.columnController.setPassportColumnNames(columnNames);
-      } else {
-        console.log('#DataSource - FormconfigRepo not loaded.');
-      }
+      });
     }
 
     // if (this.paginator) {
