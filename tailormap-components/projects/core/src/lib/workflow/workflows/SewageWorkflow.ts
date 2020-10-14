@@ -81,7 +81,7 @@ export class SewageWorkflow extends Workflow {
       if (this.currentStep === Step.WELL2) {
         this.well2 = coords
       }
-      this.retrieveFeatures(coords).subscribe(features => {
+      this.retrieveFeatures$(coords).subscribe(features => {
         let feat = null;
         if (features.length > 0) {
           const message = 'Wilt u de bestaande ' + this.featureType + ' met naam \"' + this.formConfigRepo.getFeatureLabel(features[0]) +
