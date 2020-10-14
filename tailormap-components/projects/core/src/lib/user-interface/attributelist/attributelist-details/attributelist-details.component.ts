@@ -1,4 +1,10 @@
-import { Component, OnInit, AfterViewInit, Renderer2, Input, ViewChild } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Input,
+  ViewChild,
+  AfterViewInit,
+} from '@angular/core';
 
 import { MatSort, Sort } from '@angular/material/sort';
 import { MatTable } from '@angular/material/table';
@@ -7,16 +13,18 @@ import { AttributelistTable } from '../attributelist-common/attributelist-models
 import { AttributeDataSource } from '../attributelist-common/attributelist-datasource';
 import { AttributeService } from '../../../shared/attribute-service/attribute.service';
 import { LayerService } from '../layer.service';
-import { PassportService } from '../passport.service';
+import { FormconfigRepositoryService } from '../../../shared/formconfig-repository/formconfig-repository.service';
 import { RelatedFeatureType } from '../../test-attributeservice/models';
-// import { ExportService } from '../../../shared/export-service/export.service';
 
 @Component({
   selector: 'tailormap-attributelist-details',
   templateUrl: './attributelist-details.component.html',
-  styleUrls: ['./attributelist-details.component.css']
+  styleUrls: ['./attributelist-details.component.css'],
 })
-export class AttributelistDetailsComponent implements OnInit, AttributelistTable {
+// export class AttributelistDetailsComponent implements OnInit, AttributelistTable {
+export class AttributelistDetailsComponent implements OnInit,
+                                                      AttributelistTable,
+                                                      AfterViewInit {
 
   @ViewChild(MatSort) private sort: MatSort;
 
@@ -29,7 +37,7 @@ export class AttributelistDetailsComponent implements OnInit, AttributelistTable
 
   // The parent layer name for this detail table.
   @Input()
-  public parentLayerName = "";
+  public parentLayerName = '';
 
   // The parent row featuretype for this detail table.
   @Input()
@@ -37,23 +45,20 @@ export class AttributelistDetailsComponent implements OnInit, AttributelistTable
 
   public dataSource = new AttributeDataSource(this.layerService,
                                               this.attributeService,
-                                              // this.exportService,
-                                              this.passportService);
+    this.formconfigRepoService);
 
   constructor(private attributeService: AttributeService,
               private layerService: LayerService,
-              // private exportService: ExportService,
-              private passportService: PassportService) {
-    // console.log('=============================');
+              private formconfigRepoService: FormconfigRepositoryService) {
     // console.log('#Details - constructor');
   }
 
   public ngOnInit(): void {
-    //console.log('#Details - ngOnInit');
+    // console.log('#Details - ngOnInit');
   }
 
   public ngAfterViewInit(): void {
-    // console.log('#Details - ngAfterViewInit');
+    console.log('#Details - ngAfterViewInit');
 
     // Set datasource sort.
     this.dataSource.sorter = this.sort;

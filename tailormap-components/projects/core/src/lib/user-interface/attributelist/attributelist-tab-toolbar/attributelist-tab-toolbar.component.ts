@@ -15,6 +15,9 @@ import { PassportService } from '../passport.service';
 import { MatDialog } from '@angular/material/dialog';
 
 
+import { Layer } from '../layer.model';
+import { LayerService } from '../layer.service';
+
 @Component({
   selector: 'tailormap-attributelist-tab-toolbar',
   templateUrl: './attributelist-tab-toolbar.component.html',
@@ -44,13 +47,23 @@ export class AttributelistTabToolbarComponent implements OnInit {
     private passportService: PassportService,
     private dialog: MatDialog,
     private renderer: Renderer2) {
+  private layer: Layer;
+
+  constructor(private layerService: LayerService) {
   }
 
   public ngOnInit(): void {
     this.exportParams.application = this.layerService.getAppId();
   }
 
+  /**
+   * @param format      Can be "csv" or "json".
+   */
   public onExportClick(format: string): void {
+    // const layerId = this.layer.id;
+    // const layerName = this.layer.name;
+    // console.log(layerId);
+    alert('Not yet implemented.');
     alert('In development, trying export to: ' + format);
     //this.attributeDataSource.exportFeatures (format)
     this.exportParams.appLayer =  this.attributelistTableComponent.getLayerIdOnTab(this.attibuteListTabComponent.tabIndex);
@@ -64,5 +77,10 @@ export class AttributelistTabToolbarComponent implements OnInit {
 
   public onSearchClick(): void {
     alert('Not yet implemented.');
+  }
+
+  public setTabIndex(tabIndex: number): void {
+    // Get the corresponding layer.
+    this.layer = this.layerService.getLayerByTabIndex(tabIndex);
   }
 }

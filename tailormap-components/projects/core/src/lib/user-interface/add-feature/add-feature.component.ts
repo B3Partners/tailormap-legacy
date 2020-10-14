@@ -34,13 +34,9 @@ export class AddFeatureComponent {
   public visibleLayers: string[] = [];
 
   public init(): void {
-    if (this.formConfigRepo.isLoaded()) {
+    this.formConfigRepo.formConfigs$.subscribe(formConfigs => {
       this.calculateVisibleLayers();
-    } else {
-      setTimeout(function () {
-        this.init()
-      }.bind(this), 500);
-    }
+    });
   }
 
   public click() {

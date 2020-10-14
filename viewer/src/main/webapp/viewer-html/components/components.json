@@ -209,22 +209,6 @@
         }
     },
     {
-        "className": "viewer.components.tools.SuperPan",
-        "name": "Super Pan",
-        "shortName": "Sp",
-        "group": "Tools",
-        "sources": ["tools/Tool.js","tools/SuperPan.js"],
-        "closureCompilerSafe": true,
-
-        "singleton": true,
-        "restrictions": ["top_menu"],
-
-        "extPropertyGridConfigs": {
-            "propertyNames": {"tooltip": "Tooltip"},
-            "source": {"tooltip": "SuperPan"}
-        }
-    },
-    {
         "className": "viewer.components.tools.Measure.Line",
         "name": "Measure Distance",
         "shortName": "ML",
@@ -467,18 +451,6 @@
         "configSource": ["ConfigObject.js","Legend-config.js"]
     },
     {
-        "className": "viewer.components.RelatedDocuments",
-        "name": "Related documents",
-        "shortName": "Rd",
-        "group": "Component",
-        "sources": ["RelatedDocuments.js"],
-        "configSource": ["ConfigObject.js","SelectionWindowConfig.js","RelatedDocuments-config.js"],
-        "singleton": true,
-        "type": "popup",
-        "restrictions": ["left_menu"],
-        "showHelp": true
-    },
-    {
         "className": "viewer.components.SelectionModule",
         "name": "Layer Selection Module",
         "shortName": "Sm",
@@ -714,18 +686,6 @@
         "showHelp": false
      },
     {
-        "className": "viewer.components.InfluenceImage",
-        "name": "Influence Area",
-        "group": "Component",
-        "singleton": true,
-        "shortName": "Igi",
-        "sources": ["Search.js","Influence.js","InfluenceImage.js"],
-        "configSource": ["ConfigObject.js","SelectionWindowConfig.js","Influence-config.js"],
-        "restrictions": ["left_menu"],
-        "type": "popup",
-        "showHelp": true
-    },
-    {
         "className": "viewer.components.Overview",
         "name": "Overview Map",
         "shortName": "Oz",
@@ -780,19 +740,6 @@
         "configSource": ["ConfigObject.js","LayerSwitch-config.js"],
         "restrictions": ["content"],
         "singleton": true
-    },
-    {
-        "className": "viewer.components.PopupButton",
-        "name": "Popup Button",
-        "shortName": "PB",
-        "sources": ["PopupButton.js"],
-        "closureCompilerSafe": true,
-        "singleton": true,
-        "restrictions": ["left_menu"],
-        "extPropertyGridConfigs": {
-            "propertyNames": {"tooltip": "Tooltip", "iconUrl": "Icoon"},
-            "source": {"tooltip": "Pop up", "iconUrl": ""}
-        }
     },
     {
         "className": "viewer.components.Divider",
@@ -999,7 +946,7 @@
         "sources": ["NgAttributeList.js"],
         "type": "popup",
         "singleton": true,
-        "configSource": ["ConfigObject.js","SelectionWindowConfig.js"],
-        "restrictions": ["content", "left_menu"]
+        "configSource": ["ConfigObject.js","SelectionWindowConfig.js","NgAttributeList-config.js"],
+        "restrictions": ["left_menu"]
     }
 ]

@@ -1,5 +1,13 @@
 
-import { Component, ElementRef, OnInit, AfterViewInit, Renderer2, ViewChild } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  OnInit,
+  AfterViewInit,
+  ViewChild,
+  Output,
+  EventEmitter,
+} from '@angular/core';
 
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort, Sort } from '@angular/material/sort';
@@ -7,16 +15,15 @@ import { MatTable } from '@angular/material/table';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 
-import { AttributelistTable } from '../attributelist-common/attributelist-models';
+import { AttributelistTable, RowClickData, RowData } from '../attributelist-common/attributelist-models';
 import { AttributeDataSource } from '../attributelist-common/attributelist-datasource';
 import { AttributelistColumn } from '../attributelist-common/attributelist-column-models';
 import { AttributelistTableOptionsFormComponent } from '../attributelist-table-options-form/attributelist-table-options-form.component';
+import { AttributelistService } from '../attributelist.service';
 import { AttributeService } from '../../../shared/attribute-service/attribute.service';
-import { CheckState, DetailsState } from '../attributelist-common/attributelist-enums';
-import { ExportService } from '../../../shared/export-service/export.service';
+import { CheckState } from '../attributelist-common/attributelist-enums';
+import { FormconfigRepositoryService } from '../../../shared/formconfig-repository/formconfig-repository.service';
 import { LayerService } from '../layer.service';
-import { PassportService } from '../passport.service';
-
 
 @Component({
   selector: 'tailormap-attributelist-table',
@@ -35,17 +42,21 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
   @ViewChild(MatPaginator) private paginator: MatPaginator;
   @ViewChild(MatSort) private sort: MatSort;
 
-  // Get the paginator element.
-  @ViewChild(MatPaginator, {
-    static: true, read: ElementRef }) private paginatorElem: ElementRef<HTMLDivElement>;
-
   // Table reference for 'manually' rendering.
   @ViewChild('table') public table: MatTable<any>;
 
+  @Output()
+  public pageChange = new EventEmitter();
+
+  @Output()
+  public rowClick = new EventEmitter<RowClickData>();
+
+  @Output()
+  public tabChange = new EventEmitter();
+
   public dataSource = new AttributeDataSource(this.layerService,
                                               this.attributeService,
-                                              // this.exportService,
-                                              this.passportService);
+                                              this.formconfigRepoService);
 
   // Number of checked rows.
   public nrChecked = 0;
@@ -62,10 +73,9 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
    */
   constructor(private attributeService: AttributeService,
               private layerService: LayerService,
-              private exportService: ExportService,
-              private passportService: PassportService,
-              private dialog: MatDialog,
-              private renderer: Renderer2) {
+              private attributelistService: AttributelistService,
+              private formconfigRepoService: FormconfigRepositoryService,
+              private dialog: MatDialog) {
     // console.log('=============================');
     // console.log('#Table - constructor');
   }
@@ -75,6 +85,9 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
 
   public ngAfterViewInit(): void {
     // console.log('#Table - ngAfterViewInit');
+
+    // Set the default pagesize.
+    this.defaultPageSize = this.attributelistService.config.pageSize;
 
     // Set datasource paginator.
     this.dataSource.paginator = this.paginator;
@@ -90,7 +103,7 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
   }
 
   public onAfterLoadData(): void {
-    //console.log('#Table - onAfterLoadData');
+    // console.log('#Table - onAfterLoadData');
 
     // Update paginator page size and total number of rows.
     this.paginator.pageSize = this.defaultPageSize;
@@ -115,49 +128,20 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
   }
 
   public getColumnWidth(name: string): string {
-    console.log("#Table - getColumnWidth - " + name);
+    console.log('#Table - getColumnWidth - ' + name);
     return '180px';
   }
-
-  // public getDetailsInfo(row: any): string {
-  //   console.log('#Table - getDetailInfo');
-  //   console.log(row);
-  //   if (row.related_featuretypes.length > 0) {
-  //     return row.related_featuretypes[0].foreignFeatureTypeName;
-  //   } else {
-  //     return '';
-  //   }
-  // }
 
   /**
    * Returns if the bar with the button should be visible.
    */
   public getFooterBarVisible(): string {
-    if (this.nrChecked == 0) {
+    if (this.nrChecked === 0) {
       return 'none';
     } else {
       return 'block';
     }
   };
-
-  public getLayerIdOnTab(index): number {
-    // console.log('#Table - setTabIndex');
-    // Set corresponding tab index.
-    this.tabIndex = index;
-    // Get layer.
-    const layer = this.layerService.getLayerByTabIndex(this.tabIndex);
-    // console.log(layer);
-    if ((!layer) || ((layer) && (layer.name === ''))) {
-      return;
-    } else if (layer) {
-      return layer.id;
-    }
-
-  }
-
-  public getTabIndex(): number {
-    return this.tabIndex;
-  }
 
   /**
    * Fired when the checkbox in the header is clicked.
@@ -166,8 +150,6 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
     const currCheckState = this.checkState;
     if (currCheckState === CheckState.All) {
       this.dataSource.checkNone();
-    } else if (currCheckState === CheckState.None) {
-      this.dataSource.checkAll();
     } else {
       this.dataSource.checkAll();
     }
@@ -181,6 +163,8 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
 
   public onPageChange(event): void {
     console.log('#Table - onPageChange');
+    // Fire page change event.
+    this.pageChange.emit();
     // Update the table.
     this.updateTable();
   }
@@ -188,9 +172,9 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
   /**
    * Fired when a checkbox is clicked.
    */
-  public onRowCheckClick(row: any): void {
-    //console.log('#Table - onRowCheckClick');
-    //console.log(row);
+  public onRowCheckClick(row: RowData): void {
+    // console.log('#Table - onRowCheckClick');
+    // console.log(row);
     // Toggle the checkbox in the checked row.
     this.dataSource.toggleChecked(row);
     // Update check info.
@@ -200,10 +184,10 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
   /**
    * Fired when a expand/collapse icon/char is clicked.
    */
-  public onRowExpandClick(row: any): void {
-    // console.log('#Table - onRowExpandClick');
-    // console.log(row);
-    if (row.hasOwnProperty("_detailsRow")) {
+  public onRowExpandClick(row: RowData): void {
+    console.log('#Table - onRowExpandClick');
+    console.log(row);
+    if (row.hasOwnProperty('_detailsRow')) {
       // Toggle the expanded/collapsed state of the row.
       row._detailsRow.toggle();
     }
@@ -212,8 +196,13 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
   /**
    * Fired when a row is clicked.
    */
-  public onRowClick(row: any): void {
-    console.log('#Table - onRowClicked');
+  public onRowClick(row: RowData): void {
+    // console.log('#Table - onRowClicked');
+    const data: RowClickData = {
+      feature: row,
+      layerId: this.dataSource.getLayerId(),
+    };
+    this.rowClick.emit(data);
   }
 
   /**
@@ -256,7 +245,7 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
     const dialogRef = this.dialog.open(AttributelistTableOptionsFormComponent, config);
     dialogRef.afterClosed().subscribe(value => {
       // Collapse all rows.
-      columnController: this.dataSource.resetExpanded();
+      this.dataSource.resetExpanded();
     });
   }
 
@@ -265,10 +254,10 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
     this.table.renderRows();
   }
 
-  public setTabIndex(index: number): void {
+  public setTabIndex(tabIndex: number): void {
     // console.log('#Table - setTabIndex');
     // Set corresponding tab index.
-    this.tabIndex = index;
+    this.tabIndex = tabIndex;
     // Get layer.
     const layer = this.layerService.getLayerByTabIndex(this.tabIndex);
     // console.log(layer);

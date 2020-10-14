@@ -90,6 +90,7 @@ input[type="submit"]:hover,
 #header #menu {
   height: 40px;
   color: #ffffff;
+  font-weight: bold;
 }
 #header #menu ul {
   position: absolute;
@@ -799,4 +800,73 @@ input.error[type="radio"], input.error[type="checkbox"], select.error {
 
 .filterableCheckboxesLabel{
     border: 1px solid black;
+}
+/** Overrides for Tailormap */
+.tailormap {
+    color: #E5E5E5;
+    color: #d6eee2;
+    color: #fad4d7;
+    
+    color: #ef5765;
+    color: #ff6666;
+}
+.fla5geocms {
+    color: #1c6ca7;	
+    color: #207abd;
+}
+.extjsfla5 {
+   color: #1c6ca7;	
+    color: #00FFFF;
+    color: #5fa2dd;
+    color: #7fb5e4;
+    color: #a4cf6d;
+}
+
+body {
+ color: #ef5765;
+}
+body.x-body {
+ color: #ef5765;
+}
+#header {
+ background-color: #ef5765;
+}
+#header #menu ul li {
+ background-color: #ef5765;
+}
+#header #menu ul li a:hover {
+  background-color: #ff6666;
+}
+#header #menu ul li ul {
+ background-color: #ef5765;
+}
+#header #menu ul li ul li a {
+ color: #ef5765;
+}
+#header #menu ul li ul li ul {
+ border: 2px solid #ef5765;
+}
+#component-container {
+ border: 2px solid #ef5765;
+}
+#component-container .component-view .component-block {
+ border: 2px solid #ef5765;
+}
+#layout-container {
+ border: 2px solid #ef5765;
+}
+.globalconfig {
+ border: 1px solid #ef5765;
+}
+#layout-container .content-container .component-block {
+ border: 2px solid #ef5765;
+}
+#layout-container .content-container.content-container-hover {
+ border: 2px dashed #ef5765;
+}
+.helplink {
+ color: #ef5765;
+}
+.helpBlock h1 {
+ background-color: #ef5765;
 }

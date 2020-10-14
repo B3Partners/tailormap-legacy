@@ -18,6 +18,7 @@ export interface Attribute {
   type: FormFieldType;
   options?: SelectOption[];
   linkedList?: number;
+  label ?: string;
   column: number;
   tab: number;
 }

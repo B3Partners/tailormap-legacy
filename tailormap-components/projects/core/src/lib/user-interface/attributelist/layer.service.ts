@@ -5,7 +5,7 @@ import { Observable, of } from 'rxjs';
 import { Layer } from './layer.model';
 import { AttributelistTabComponent } from './attributelist-tab/attributelist-tab.component';
 import { TailorMapService } from '../../../../../bridge/src/tailor-map.service';
-import { FormconfigRepositoryService } from '../../shared/formconfig-repository/formconfig-repository.service';
+// import { FormconfigRepositoryService } from '../../shared/formconfig-repository/formconfig-repository.service';
 
 @Injectable({
   providedIn: 'root',
@@ -16,7 +16,6 @@ export class LayerService {
   public layers: Layer[] = [];
 
   constructor(public tailorMapService: TailorMapService,
-              private formConfigRepo: FormconfigRepositoryService,
               private ngZone: NgZone) {
     // Install the layerVisibilityChanged handler.
     this.tailorMapService.layerVisibilityChanged$.subscribe(value => {
@@ -45,7 +44,7 @@ export class LayerService {
     const vc = this.tailorMapService.getViewerController();
     const appLayer = vc.getAppLayer(appId, layerName);
     if (appLayer) {
-      return parseInt(appLayer.id,10);
+      return parseInt(appLayer.id, 10);
     }  else {
       return -1;
     }
@@ -89,11 +88,11 @@ export class LayerService {
     // console.log('#LayerService - loadLayers');
 
     // Clear the array, but keep the array reference for automatic update.
-    this.layers.splice(0,this.layers.length);
+    this.layers.splice(0, this.layers.length);
 
     const vc = this.tailorMapService.getViewerController();
     const layerIds = vc.getVisibleLayers() as number[];
-    //console.log(layerIds);
+    // console.log(layerIds);
 
     layerIds.forEach(layerId => {
       const appLayer = vc.getAppLayerById(layerId);
@@ -101,14 +100,14 @@ export class LayerService {
       // Is there a attribute table?
       if (appLayer.attribute) {
         const layerName = this.sanitizeLayername(appLayer.layerName);
-        //console.log('layerName: ' + layerName);
-        //console.log(appLayer);
+        // console.log('layerName: ' + layerName);
+        // console.log(appLayer);
         const layer: Layer = {
           name: layerName,
           id: layerId,
-          tabComponent: null
+          tabComponent: null,
         };
-        //console.log(layer);
+        // console.log(layer);
         this.layers.push(layer);
       }
     });
@@ -134,5 +133,10 @@ export class LayerService {
       layername = layername.substring(index + 1);
     }
     return layername.toLowerCase();
+  }
+
+  public test(): void {
+    // const vc = this.tailorMapService.getViewerController();
+    // const layerIds = vc.get;
   }
 }

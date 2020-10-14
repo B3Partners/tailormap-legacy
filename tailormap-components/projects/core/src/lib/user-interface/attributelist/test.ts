@@ -3,6 +3,7 @@
  */
 
 import { AttributelistHelpers } from './attributelist-common/attributelist-helpers';
+import { RowData } from './attributelist-common/attributelist-models';
 import {
   AttributeListParameters,
   AttributeListResponse,
@@ -14,23 +15,22 @@ import { AttributeService } from '../../shared/attribute-service/attribute.servi
 export class Test {
 
   public static getAttrWegvakonderdeel(attrService: AttributeService): void {
-    let appId = 3;
-    let layerId = 16;
-    let featTypeId = 0;
-    let filter = '';
+    const appId = 3;
+    const layerId = 16;
+    const filter = '';
 
     const metaParams: AttributeMetadataParameters = {
       application: appId,
       appLayer: layerId,
-      //featureType: featTypeId,
+      // featureType: featTypeId,
     };
     const params: AttributeListParameters = {
       application: appId,
       appLayer: layerId,
-      //featureType: featTypeId,
+      // featureType: featTypeId,
       dir: 'ASC',
       sort: '',
-      filter: filter,
+      filter,
     };
 
     attrService.featureTypeMetadata$(metaParams).subscribe(
@@ -39,7 +39,7 @@ export class Test {
         console.log(metaData);
       },
       () => {
-        console.log("Error!!!")
+        console.log('Error!!!')
       },
     );
     attrService.features$(params).subscribe(
@@ -48,19 +48,19 @@ export class Test {
         console.log(data);
       },
       () => {
-        console.log("Error!!!")
+        console.log('Error!!!')
       },
     );
   }
 
   public static getAttrWegvakonderdeelPlanning(attrService: AttributeService): void {
-    // filter: "wegvakonderdeel_id = 'A0ABA09EB3F045AE80A293639EBEA701'"
-    // foreignFeatureTypeName: "wegvakonderdeelplanning"
+    // filter: 'wegvakonderdeel_id = 'A0ABA09EB3F045AE80A293639EBEA701''
+    // foreignFeatureTypeName: 'wegvakonderdeelplanning'
     // id: 170
-    let appId = 3;
+    const appId = 3;
     let layerId = 16;
     let featTypeId = 170;
-    let filter = "wegvakonderdeel_id = 'A0ABA09EB3F045AE80A293639EBEA701'";
+    const filter = 'wegvakonderdeel_id = "A0ABA09EB3F045AE80A293639EBEA701"';
 
     const metaParams: AttributeMetadataParameters = {
       application: appId,
@@ -75,7 +75,7 @@ export class Test {
       featureType: featTypeId,
       dir: 'ASC',
       sort: '',
-      filter: filter,
+      filter,
     };
 
     attrService.featureTypeMetadata$(metaParams).subscribe(
@@ -84,7 +84,7 @@ export class Test {
         console.log(metaData);
       },
       () => {
-        console.log("Error!!!")
+        console.log('Error!!!')
       },
     );
     attrService.features$(params).subscribe(
@@ -93,12 +93,12 @@ export class Test {
         console.log(data);
       },
       () => {
-        console.log("Error!!!")
+        console.log('Error!!!')
       },
     );
   }
 
-  public static getData(layerName: string): any[] {
+  public static getData(layerName: string): RowData[] {
     if (AttributelistHelpers.sameText(layerName, 'Panden')) {
       return Test.getPanden();
     } else if (AttributelistHelpers.sameText(layerName, 'Bomen')) {
@@ -108,7 +108,7 @@ export class Test {
     }
   }
 
-  public static getData123(layerName: string): any[] {
+  public static getData123(layerName: string): RowData[] {
     if (AttributelistHelpers.sameText(layerName, 'Panden')) {
       return Test.getBomen1();
     } else if (AttributelistHelpers.sameText(layerName, 'Bomen')) {
@@ -118,7 +118,7 @@ export class Test {
     }
   }
 
-  public static getBomen(): any[] {
+  public static getBomen(): RowData[] {
     return [
       {
         naam: 'Acer',
@@ -148,7 +148,7 @@ export class Test {
     ];
   }
 
-  public static getBomen1(): any[] {
+  public static getBomen1(): RowData[] {
     return [
       {
         naam: 'Acer',
@@ -158,7 +158,7 @@ export class Test {
     ];
   }
 
-  public static getBomen2(): any[] {
+  public static getBomen2(): RowData[] {
     return [
       {
         naam: 'Prunus',
@@ -168,7 +168,7 @@ export class Test {
     ];
   }
 
-  public static getBomen3(): any[] {
+  public static getBomen3(): RowData[] {
     return [
       {
         naam: 'Rosa',
@@ -178,7 +178,7 @@ export class Test {
     ];
   }
 
-  public static getStraten(): any[] {
+  public static getStraten(): RowData[] {
     return [
       {
         type: 'A1',
@@ -222,7 +222,7 @@ export class Test {
       }];
   }
 
-  public static getPanden(): any[] {
+  public static getPanden(): RowData[] {
     return [
       {
         sectie: 'A',

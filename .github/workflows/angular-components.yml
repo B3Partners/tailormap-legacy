@@ -1,10 +1,6 @@
 name: Angular components CI
 
-on:
-  push:
-    paths:
-      - tailormap-components/**
-      - .github/workflows/angular-components.yml
+on: [push, pull_request]
 
 jobs:
   test:

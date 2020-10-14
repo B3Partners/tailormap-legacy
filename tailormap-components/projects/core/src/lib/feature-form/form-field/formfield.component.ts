@@ -1,27 +1,29 @@
 import {
+  AfterViewInit,
   Component,
   Input,
 } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import {
+  AbstractControl,
+  FormGroup,
+} from '@angular/forms';
 import {
   Attribute,
   FeatureAttribute,
   FormFieldType,
 } from '../form/form-models';
 import { LinkedAttributeRegistryService } from '../linked-fields/registry/linked-attribute-registry.service';
+import { FormFieldHelpers } from './form-field-helpers';
 
 @Component({
   selector: 'tailormap-formfield',
   templateUrl: './formfield.component.html',
   styleUrls: ['./formfield.component.css'],
 })
-export class FormfieldComponent {
+export class FormfieldComponent implements AfterViewInit {
 
   @Input()
   public attribute: FeatureAttribute;
-
-  @Input()
-  public form: FormGroup;
 
   @Input()
   public value: string;
@@ -32,17 +34,40 @@ export class FormfieldComponent {
   @Input()
   public isBulk: boolean;
 
+  private control: AbstractControl;
 
   constructor(
     private registry: LinkedAttributeRegistryService,
   ) {
+  }
 
+
+  public ngAfterViewInit(): void {
+    this.control = this.groep.controls[this.attribute.key];
+    if (FormFieldHelpers.hasNonValidValue(this.attribute)) {
+       this.control.setValidators([FormFieldHelpers.nonExistingValueValidator(this.attribute)]);
+    }else {
+      const comparableValue = FormFieldHelpers.getComparableValue(this.attribute);
+      if (comparableValue) {
+        const val = comparableValue.val;
+        this.control.setValue(val, {
+          emitEvent: false,
+          onlySelf: false,
+          emitModelToViewChange: false,
+          emitViewToModelChange: false,
+        });
+      }
+    }
   }
 
   public valueChanged(event: any): void {
     if (this.isDomainAttribute(this.attribute)) {
       this.registry.domainFieldChanged(this.attribute, event.value);
     }
+  }
+
+  public hasNonValidValue() : boolean {
+    return FormFieldHelpers.hasNonValidValue(this.attribute);
   }
 
   public isTextAttribute = (attr: Attribute): boolean => attr.type === FormFieldType.TEXTFIELD;

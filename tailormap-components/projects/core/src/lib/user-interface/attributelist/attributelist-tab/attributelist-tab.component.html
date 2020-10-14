@@ -1,10 +1,9 @@
-<tailormap-attributelist-tab-toolbar></tailormap-attributelist-tab-toolbar>
+<tailormap-attributelist-tab-toolbar
+  #toolbar >
+</tailormap-attributelist-tab-toolbar>
 <mat-divider></mat-divider>
-<tailormap-attributelist-table #table ></tailormap-attributelist-table>
-
-<!--20200928-->
-<!--<div class="container">-->
-<!--  <tailormap-attributelist-tab-toolbar></tailormap-attributelist-tab-toolbar>-->
-<!--  <mat-divider></mat-divider>-->
-<!--  <tailormap-attributelist-table #table ></tailormap-attributelist-table>-->
-<!--</div>-->
+<tailormap-attributelist-table
+  #table
+  (pageChange)="onPageChange();"
+  (rowClick)="onRowClick($event);">
+</tailormap-attributelist-table>

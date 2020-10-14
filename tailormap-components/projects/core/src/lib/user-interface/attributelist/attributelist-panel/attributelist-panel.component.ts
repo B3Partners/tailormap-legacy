@@ -1,8 +1,15 @@
 
-import { Component, ElementRef, OnInit, AfterViewInit, ViewChild, Renderer2 } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  OnInit,
+  AfterViewInit,
+  ViewChild,
+  Output,
+  EventEmitter,
+} from '@angular/core';
 
 import { MatToolbar } from '@angular/material/toolbar';
-import { MatTabGroup } from '@angular/material/tabs';
 
 import { Layer } from '../layer.model';
 import { LayerService } from '../layer.service';
@@ -11,9 +18,9 @@ import { LayoutConfig } from '../../layout-config';
 import { LayoutComponent } from '../../models';
 import { Dock } from '../../enums';
 
-import { AttributeService } from '../../../shared/attribute-service/attribute.service';
 import { PanelResizerComponent } from '../../panel-resizer/panel-resizer.component';
-import { Test } from '../test';
+import { RowClickData } from '../attributelist-common/attributelist-models';
+// import { Test } from '../test';
 
 @Component({
   selector: 'tailormap-attributelist-panel',
@@ -29,10 +36,20 @@ export class AttributelistPanelComponent implements OnInit, AfterViewInit, Layou
   // For the layout service.
   public layoutConfig: LayoutConfig;
 
-  @ViewChild(MatTabGroup, { static: true, read: ElementRef }) private tabgroupElem: ElementRef<HTMLDivElement>;
-
   // For getting the selected tab index.
   @ViewChild('tabgroup') private tabgroup;
+
+  @Output()
+  public pageChange = new EventEmitter();
+
+  @Output()
+  public panelClose = new EventEmitter();
+
+  @Output()
+  public rowClick = new EventEmitter<RowClickData>();
+
+  @Output()
+  public tabChange = new EventEmitter();
 
   // Is used in the template. Generates for each layer a tab.
   public layers: Layer[];
@@ -42,13 +59,10 @@ export class AttributelistPanelComponent implements OnInit, AfterViewInit, Layou
 
   constructor(private elementRef: ElementRef,
               private layerService: LayerService,
-              private layoutService: LayoutService,
-              private attributeService: AttributeService,
-              private renderer: Renderer2) {
+              private layoutService: LayoutService) {
   }
 
   public ngOnInit(): void {
-    // Get the layers.
     this.getLayers();
   }
 
@@ -57,8 +71,8 @@ export class AttributelistPanelComponent implements OnInit, AfterViewInit, Layou
     // Set layout config settings.
     this.layoutConfig = new LayoutConfig(this.elementRef, this.panelResizer);
     this.layoutConfig.dock = Dock.Bottom;
-    this.layoutConfig.initialHeight = 300;
-    this.layoutConfig.initialHeight = 250;
+    // this.layoutConfig.initialHeight = 300;
+    // this.layoutConfig.initialHeight = 250;
     this.layoutConfig.initialHeight = 350;
     // Register panel.
     this.layoutService.register(this);
@@ -84,6 +98,7 @@ export class AttributelistPanelComponent implements OnInit, AfterViewInit, Layou
   public onCloseClick(): void {
     this.show(false);
     // this.layoutService.close(this);
+    this.panelClose.emit();
   }
 
   public onMaximizeClick(): void {
@@ -92,6 +107,18 @@ export class AttributelistPanelComponent implements OnInit, AfterViewInit, Layou
 
   public onMinimizeClick(): void {
     this.layoutService.minimize(this);
+  }
+
+  public onPageChange(): void {
+    this.pageChange.emit();
+  }
+
+  public onRowClick(data: RowClickData): void {
+    this.rowClick.emit(data);
+  }
+
+  public onSelectedTabChange(): void {
+    this.tabChange.emit();
   }
 
   /**
@@ -117,8 +144,13 @@ export class AttributelistPanelComponent implements OnInit, AfterViewInit, Layou
   }
 
   public onTestClick(): void {
-    console.log("# Test - WegvakonderdeelPlanning");
-    Test.getAttrWegvakonderdeelPlanning(this.attributeService);
+    // console.log("# Test - WegvakonderdeelPlanning");
+    // Test.getAttrWegvakonderdeelPlanning(this.attributeService);
+    // console.log(this.elementRef.nativeElement.parentElement);
+    // this.elementRef.nativeElement.parentElement.zoomToFeature({});
+    // this.onZoomToFeature.emit({
+    //   feature: 'hoi',
+    // });
   }
 
   /**
