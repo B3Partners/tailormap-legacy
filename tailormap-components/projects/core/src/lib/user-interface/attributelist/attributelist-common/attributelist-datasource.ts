@@ -18,6 +18,8 @@ import { AttributeListParameters, AttributeListResponse,
          AttributeMetadataParameters, AttributeMetadataResponse } from '../../test-attributeservice/models';
 import { CheckState, DetailsState } from './attributelist-enums';
 import { DatasourceParams } from './datasource-params';
+// import { ExportService } from '../../../shared/export-service/export.service';
+// import { ExportFeaturesParameters } from '../../../shared/export-service/export-models'
 import { LayerService } from '../layer.service';
 import { PassportService } from '../passport.service';
 
@@ -41,8 +43,12 @@ export class AttributeDataSource extends DataSource<any> {
   // The loaded data rows (i.e. page).
   private rows: any[] = [];
 
+  // // The params for export
+  // private exportParams: ExportFeaturesParameters;
+
   constructor(private layerService: LayerService,
               private attributeService: AttributeService,
+              // private exportService: ExportService,
               private passportService: PassportService) {
     super();
   }
@@ -296,4 +302,15 @@ export class AttributeDataSource extends DataSource<any> {
   public toggleChecked(row: any): void {
     row._checked = !row._checked;
   }
+
+  // /**
+  //  * Export features to the specified format.
+  //  */
+  // public exportFeatures (type: string): void {
+  //   this.exportParams.application = this.layerService.getAppId();
+  //   this.exportParams.appLayer =  this.params.layerId;
+  //   this.exportParams.type = type;
+  //   this.exportService.exportFeatures(this.exportParams);
+  // }
+
 }

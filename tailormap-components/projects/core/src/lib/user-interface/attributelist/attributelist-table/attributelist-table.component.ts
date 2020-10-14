@@ -13,8 +13,10 @@ import { AttributelistColumn } from '../attributelist-common/attributelist-colum
 import { AttributelistTableOptionsFormComponent } from '../attributelist-table-options-form/attributelist-table-options-form.component';
 import { AttributeService } from '../../../shared/attribute-service/attribute.service';
 import { CheckState, DetailsState } from '../attributelist-common/attributelist-enums';
+import { ExportService } from '../../../shared/export-service/export.service';
 import { LayerService } from '../layer.service';
 import { PassportService } from '../passport.service';
+
 
 @Component({
   selector: 'tailormap-attributelist-table',
@@ -42,6 +44,7 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
 
   public dataSource = new AttributeDataSource(this.layerService,
                                               this.attributeService,
+                                              // this.exportService,
                                               this.passportService);
 
   // Number of checked rows.
@@ -59,6 +62,7 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
    */
   constructor(private attributeService: AttributeService,
               private layerService: LayerService,
+              private exportService: ExportService,
               private passportService: PassportService,
               private dialog: MatDialog,
               private renderer: Renderer2) {
@@ -135,6 +139,25 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
       return 'block';
     }
   };
+
+  public getLayerIdOnTab(index): number {
+    // console.log('#Table - setTabIndex');
+    // Set corresponding tab index.
+    this.tabIndex = index;
+    // Get layer.
+    const layer = this.layerService.getLayerByTabIndex(this.tabIndex);
+    // console.log(layer);
+    if ((!layer) || ((layer) && (layer.name === ''))) {
+      return;
+    } else if (layer) {
+      return layer.id;
+    }
+
+  }
+
+  public getTabIndex(): number {
+    return this.tabIndex;
+  }
 
   /**
    * Fired when the checkbox in the header is clicked.

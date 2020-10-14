@@ -9,6 +9,7 @@ import { AttributeService } from '../../../shared/attribute-service/attribute.se
 import { LayerService } from '../layer.service';
 import { PassportService } from '../passport.service';
 import { RelatedFeatureType } from '../../test-attributeservice/models';
+// import { ExportService } from '../../../shared/export-service/export.service';
 
 @Component({
   selector: 'tailormap-attributelist-details',
@@ -36,10 +37,12 @@ export class AttributelistDetailsComponent implements OnInit, AttributelistTable
 
   public dataSource = new AttributeDataSource(this.layerService,
                                               this.attributeService,
+                                              // this.exportService,
                                               this.passportService);
 
   constructor(private attributeService: AttributeService,
               private layerService: LayerService,
+              // private exportService: ExportService,
               private passportService: PassportService) {
     // console.log('=============================');
     // console.log('#Details - constructor');
