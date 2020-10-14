@@ -82,7 +82,7 @@ Ext.define ("viewer.components.NgAttributeList",{
 
         // Add event handler.
         this.div.addEventListener('pageChange', function(){
-            console.log("pageChange");
+            //console.log("pageChange");
             this.hideMarker()
         }.bind(this));
 
@@ -93,8 +93,8 @@ Ext.define ("viewer.components.NgAttributeList",{
 
         // Add event handler.
         this.div.addEventListener('rowClick', function(evt){
-            console.log("rowClick",evt);
-            console.log("rowClick",evt.detail);
+            //console.log("rowClick",evt);
+            //console.log("rowClick",evt.detail);
             this.showMarker(evt.detail.layerId, evt.detail.feature);
             //this.zoomToFeature(evt.detail.layerId, evt.detail.feature);
         }.bind(this));
@@ -127,7 +127,7 @@ Ext.define ("viewer.components.NgAttributeList",{
             (function (extent) {
                 var x = extent.minx + (extent.maxx - extent.minx) / 2;
                 var y = extent.miny + (extent.maxy - extent.miny) / 2;
-                console.log([x,y]);
+                // console.log([x,y]);
                 this.map.setMarker(this.markerId, x, y, 'default');
             }).bind(this),
             function(msg) {

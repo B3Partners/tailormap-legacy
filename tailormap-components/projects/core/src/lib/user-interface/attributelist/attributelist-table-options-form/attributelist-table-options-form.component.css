@@ -8,6 +8,9 @@ h3 {
   font-size: 16px;
   line-height: 16px;
 }
+.mat-dialog-content {
+  max-height: 150px;
+}
 .row {
   height: 26px;
   line-height: 26px;

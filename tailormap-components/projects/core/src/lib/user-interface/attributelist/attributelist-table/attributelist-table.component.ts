@@ -254,10 +254,10 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
     this.table.renderRows();
   }
 
-  public setTabIndex(index: number): void {
+  public setTabIndex(tabIndex: number): void {
     // console.log('#Table - setTabIndex');
     // Set corresponding tab index.
-    this.tabIndex = index;
+    this.tabIndex = tabIndex;
     // Get layer.
     const layer = this.layerService.getLayerByTabIndex(this.tabIndex);
     // console.log(layer);

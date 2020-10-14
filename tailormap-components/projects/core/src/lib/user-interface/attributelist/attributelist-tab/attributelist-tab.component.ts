@@ -24,6 +24,8 @@ export class AttributelistTabComponent implements OnInit, AfterViewInit {
   @Output()
   public rowClick = new EventEmitter<RowClickData>();
 
+  @ViewChild('toolbar') public toolbar;
+
   @ViewChild('table') public table;
 
   constructor(private layerService: LayerService) {
@@ -38,6 +40,8 @@ export class AttributelistTabComponent implements OnInit, AfterViewInit {
   }
 
   public ngAfterViewInit(): void {
+    // Set toolbar tab index.
+    this.toolbar.setTabIndex(this.tabIndex);
     // Set table tab index (only here the table is defined).
     this.table.setTabIndex(this.tabIndex);
   }

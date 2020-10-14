@@ -133,13 +133,12 @@ export class AttributeDataSource extends DataSource<any> {
       // Get passport field/column names.
       this.formconfigRepoService.formConfigs$.subscribe(formConfigs => {
         const formConfig = formConfigs.config[passportName];
-        console.log(this.params);
-        console.log(this.formconfigRepoService.getAllFormConfigs());
-        console.log(this.formconfigRepoService.getFeatureTypes());
-
-        console.log(formConfig.fields);
+        // console.log(this.params);
+        // console.log(this.formconfigRepoService.getAllFormConfigs());
+        // console.log(this.formconfigRepoService.getFeatureTypes());
+        // console.log(formConfig.fields);
         const columnNames = formConfig.fields.map(attr => attr.key);
-        console.log(columnNames);
+        // console.log(columnNames);
         this.columnController.setPassportColumnNames(columnNames);
       });
     }
