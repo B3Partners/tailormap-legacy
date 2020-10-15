@@ -1,20 +1,11 @@
 
 import {
   Component,
-  OnInit,
-  Renderer2,
+  OnInit
 } from '@angular/core';
-// import { AttributeDataSource } from '../attributelist-common/attributelist-datasource';
-import { AttributelistTabComponent } from '../attributelist-tab/attributelist-tab.component';
-import { AttributelistTableComponent } from '../attributelist-table/attributelist-table.component';
-import { AttributeService } from '../../../shared/attribute-service/attribute.service';
-import { LayerService } from '../layer.service';
+
 import { ExportService } from '../../../shared/export-service/export.service';
 import { ExportFeaturesParameters } from '../../../shared/export-service/export-models'
-import { PassportService } from '../passport.service';
-import { MatDialog } from '@angular/material/dialog';
-
-
 import { Layer } from '../layer.model';
 import { LayerService } from '../layer.service';
 
@@ -25,31 +16,17 @@ import { LayerService } from '../layer.service';
 })
 export class AttributelistTabToolbarComponent implements OnInit {
 
-  // The params for export
+  private layer: Layer;
+
   private exportParams: ExportFeaturesParameters= {
     application: 0,
     appLayer:0,
     type: ""
   };
 
-  // public dataSource = new AttributeDataSource(this.layerService,
-  //   this.attributeService,
-  //   // this.exportService,
-  //   this.passportService);
-
-  public attibuteListTabComponent = new AttributelistTabComponent(this.layerService);
-
-  public attributelistTableComponent = new AttributelistTableComponent(this.attributeService, this.layerService, this.exportService, this.passportService, this.dialog, this.renderer )
   constructor(
-    private attributeService: AttributeService,
-    private layerService: LayerService,
-    private exportService: ExportService,
-    private passportService: PassportService,
-    private dialog: MatDialog,
-    private renderer: Renderer2) {
-  private layer: Layer;
-
-  constructor(private layerService: LayerService) {
+      private exportService: ExportService,
+      private layerService: LayerService) {
   }
 
   public ngOnInit(): void {
@@ -57,20 +34,17 @@ export class AttributelistTabToolbarComponent implements OnInit {
   }
 
   /**
-   * @param format      Can be "csv" or "json".
+   * @param {string} format - "CSV", "GEOJSON", "XLS", "SHP"
    */
   public onExportClick(format: string): void {
-    // const layerId = this.layer.id;
-    // const layerName = this.layer.name;
-    // console.log(layerId);
-    alert('Not yet implemented.');
-    alert('In development, trying export to: ' + format);
-    //this.attributeDataSource.exportFeatures (format)
-    this.exportParams.appLayer =  this.attributelistTableComponent.getLayerIdOnTab(this.attibuteListTabComponent.tabIndex);
+    this.exportParams.appLayer =  this.layer.id;
     this.exportParams.type = format;
-    this.exportService.exportFeatures(this.exportParams);
+    this.exportService.exportFeatures(this.exportParams).subscribe((response => {
+      window.location.href = response.url;
+    }), (error) => console.log('Error downloading the export:\n  '+ error.message),
+      () => console.info('File exported successfully'));
   }
-
+ 
   public onFilterClick(): void {
     alert('Not yet implemented.');
   }

@@ -1,3 +1,5 @@
+// Parameters as defined in viewer/src/main/java/nl.b3p.viewer/stripes/DownloadFeaturesActionBean
+
 export interface ExportFeaturesParameters {
   application: number;
   appLayer: number;
