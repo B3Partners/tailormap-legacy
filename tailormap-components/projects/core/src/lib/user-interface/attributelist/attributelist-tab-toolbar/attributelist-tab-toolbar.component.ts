@@ -47,7 +47,6 @@ export class AttributelistTabToolbarComponent implements OnInit {
 
   public onFilterClick(): void {
     alert('Not yet implemented.');
-    this.onExportClick()
   }
 
   public onSearchClick(): void {
