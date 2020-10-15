@@ -1,11 +1,11 @@
 
 import {
   Component,
-  OnInit
+  OnInit,
 } from '@angular/core';
 
 import { ExportService } from '../../../shared/export-service/export.service';
-import { ExportFeaturesParameters } from '../../../shared/export-service/export-models'
+import { ExportFeaturesParameters } from '../../../shared/export-service/export-models';
 import { Layer } from '../layer.model';
 import { LayerService } from '../layer.service';
 
@@ -18,10 +18,10 @@ export class AttributelistTabToolbarComponent implements OnInit {
 
   private layer: Layer;
 
-  private exportParams: ExportFeaturesParameters= {
+  private exportParams: ExportFeaturesParameters = {
     application: 0,
-    appLayer:0,
-    type: ""
+    appLayer: 0,
+    type: '',
   };
 
   constructor(
@@ -34,19 +34,20 @@ export class AttributelistTabToolbarComponent implements OnInit {
   }
 
   /**
-   * @param {string} format - "CSV", "GEOJSON", "XLS", "SHP"
+   * format = 'CSV', 'GEOJSON', 'XLS', 'SHP'
    */
   public onExportClick(format: string): void {
     this.exportParams.appLayer =  this.layer.id;
     this.exportParams.type = format;
     this.exportService.exportFeatures(this.exportParams).subscribe((response => {
       window.location.href = response.url;
-    }), (error) => console.log('Error downloading the export:\n  '+ error.message),
+    }), (error) => console.log('Error downloading the export:\n  ' + error.message),
       () => console.info('File exported successfully'));
   }
- 
+
   public onFilterClick(): void {
     alert('Not yet implemented.');
+    this.onExportClick()
   }
 
   public onSearchClick(): void {
