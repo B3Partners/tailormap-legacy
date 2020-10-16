@@ -9,9 +9,14 @@ import { MatDialog } from '@angular/material/dialog';
 import { FeatureInitializerService } from '../../shared/feature-initializer/feature-initializer.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { FormconfigRepositoryService } from '../../shared/formconfig-repository/formconfig-repository.service';
-import { FeatureControllerService } from '../../shared/generated';
+import {
+  Feature,
+  FeatureControllerService,
+} from '../../shared/generated';
 import { VectorLayer } from '../../../../../bridge/typings';
 import { SewageWorkflow } from '../workflows/SewageWorkflow';
+import { Subject } from 'rxjs';
+import { CopyWorkflow } from '../workflows/CopyWorkflow';
 
 @Injectable({
   providedIn: 'root',
@@ -41,6 +46,9 @@ export class WorkflowFactoryService {
         break;
       case 'rioolput':
         workflow = new SewageWorkflow();
+        break;
+      case 'copyMode':
+        workflow = new CopyWorkflow();
         break;
       default:
         workflow = new StandardFormWorkflow();

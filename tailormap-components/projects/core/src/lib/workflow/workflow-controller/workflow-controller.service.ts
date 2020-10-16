@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { Workflow } from '../workflows/Workflow';
 import { WorkflowFactoryService } from '../workflow-factory/workflow-factory.service';
 import { MapClickedEvent } from '../../shared/models/event-models';
+import { Subject } from 'rxjs';
+import { Feature } from '../../shared/generated';
 
 @Injectable({
   providedIn: 'root',
@@ -25,11 +27,21 @@ export class WorkflowControllerService {
     this.currentWorkflow.addFeature(featureType);
   }
 
+  public setCopyMode(feature: Feature): void {
+    this.currentWorkflow = this.getWorkflow('copyMode');
+
+    this.currentWorkflow.setFeature(feature);
+  }
+
   public getWorkflow(featureType ?: string): Workflow {
     if (this.currentWorkflow) {
       this.currentWorkflow.destroy();
     }
     return this.workflowFactory.getWorkflow(featureType);
+  }
+
+  public getDestinationFeatures(): Feature[]{
+    return this.currentWorkflow.getDestinationFeatures();
   }
 
   public mapClicked(data: MapClickedEvent): void {

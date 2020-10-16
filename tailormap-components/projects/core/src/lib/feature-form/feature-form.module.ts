@@ -9,6 +9,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { ApiModule } from '../shared/generated';
 import { FormTreeComponent } from './form-tree/form-tree.component';
 import { UserIntefaceModule } from '../user-interface/user-interface.module';
+import { FormCopyComponent } from './form-copy/form-copy.component';
 
 @NgModule({
   declarations: [
@@ -16,6 +17,7 @@ import { UserIntefaceModule } from '../user-interface/user-interface.module';
     FormTreeComponent,
     FormfieldComponent,
     FormCreatorComponent,
+    FormCopyComponent,
   ],
   imports: [
     CommonModule,
