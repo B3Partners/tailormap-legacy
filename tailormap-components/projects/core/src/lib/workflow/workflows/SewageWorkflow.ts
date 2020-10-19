@@ -193,7 +193,7 @@ export class SewageWorkflow extends Workflow {
   public setFeature(feature: Feature): void {
   }
 
-  getDestinationFeatures(): Feature[] {
+  public getDestinationFeatures(): Feature[] {
     return [];
   }
 
