@@ -5,7 +5,6 @@ import {
 import { Workflow } from '../workflows/Workflow';
 import { WorkflowFactoryService } from '../workflow-factory/workflow-factory.service';
 import { MapClickedEvent } from '../../shared/models/event-models';
-import { Subject } from 'rxjs';
 import { Feature } from '../../shared/generated';
 import { Subscription } from 'rxjs';
 
