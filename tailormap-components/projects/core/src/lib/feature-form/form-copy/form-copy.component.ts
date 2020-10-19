@@ -17,6 +17,7 @@ import {
 import { FormActionsService } from '../form-actions/form-actions.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { WorkflowControllerService } from '../../workflow/workflow-controller/workflow-controller.service';
+import { CopyDialogData } from './form-copy-models';
 
 @Component({
   selector: 'tailormap-form-copy',
@@ -32,8 +33,7 @@ export class FormCopyComponent implements OnInit {
   public featuresToCopy = new Map<number, Map<string, string>>();
 
   constructor(public dialogRef: MatDialogRef<FormCopyComponent>,
-              @Inject(MAT_DIALOG_DATA) public data: DialogData,
-              public controller: WorkflowControllerService,
+              @Inject(MAT_DIALOG_DATA) public data: CopyDialogData,
               private configService: FormconfigRepositoryService,
               private actionService: FormActionsService,
               private _snackBar: MatSnackBar,
@@ -41,8 +41,8 @@ export class FormCopyComponent implements OnInit {
   }
 
   public ngOnInit(): void {
-    this.originalFeature = this.data.formFeatures[0];
-    this.formConfig = this.configService.getFormConfig(this.data.formFeatures[0].clazz);
+    this.originalFeature = this.data.originalFeature;
+    this.formConfig = this.configService.getFormConfig(this.data.originalFeature.clazz);
     const fieldsToCopy = new Map<string, string>();
     for (const field of this.formConfig.fields) {
       fieldsToCopy.set(field.key, field.label);
@@ -64,13 +64,12 @@ export class FormCopyComponent implements OnInit {
   }
 
   public cancel() {
-    this.controller.init();
     this.dialogRef.close();
   }
 
   public copy() {
     let successCopied = 0;
-    const destinationFeatures = this.controller.getDestinationFeatures();
+    const destinationFeatures = this.data.destinationFeatures;
     if (destinationFeatures.length > 0) {
       const valuesToCopy = this.getPropertiesToMerge();
       for (let i  = 0; i <= destinationFeatures.length - 1; i++) {
@@ -81,12 +80,11 @@ export class FormCopyComponent implements OnInit {
               this._snackBar.open('Er zijn ' + successCopied + ' features gekopieerd', '', {
                 duration: 5000,
               });
-              this.controller.init();
+
               this.dialogRef.close();
             }
           },
           error => {
-            this.controller.init();
             this._snackBar.open('Fout: Feature niet kunnen opslaan: ' + error.error.message, '', {
               duration: 5000,
             });
