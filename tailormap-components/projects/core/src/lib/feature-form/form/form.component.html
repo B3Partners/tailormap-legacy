@@ -34,8 +34,9 @@
     <button color="accent" mat-raised-button mat-fab aria-label="kopieren" class="add-button" (click)="this.copy();">
       <mat-icon>content_copy</mat-icon>
     </button>
-    <button [disabled]="!formDirty" mat-raised-button mat-fab aria-label="Sla op" class="add-button save-button" (click)="formCreator.save();">
-      <mat-icon>save</mat-icon>
+    <button [disabled]="!formDirty && !data.closeAfterSave" mat-raised-button mat-fab aria-label="Sla op" class="add-button save-button" (click)="formCreator.save();">
+      <mat-icon *ngIf="!data.closeAfterSave" >save</mat-icon>
+      <mat-icon *ngIf="data.closeAfterSave" >navigate_next</mat-icon>
     </button>
     <mat-menu #menu="matMenu">
       <button *ngFor="let co of formsForNew" [id]="co.featureType" mat-menu-item (click)="this.newItem($event);">

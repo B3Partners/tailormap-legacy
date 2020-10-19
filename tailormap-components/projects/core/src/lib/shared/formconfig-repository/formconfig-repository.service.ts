@@ -7,6 +7,7 @@ import {
 import { DomainRepositoryService } from '../../feature-form/linked-fields/domain-repository/domain-repository.service';
 import { TailorMapService } from '../../../../../bridge/src/tailor-map.service';
 import { LayerUtils } from '../layer-utils/layer-utils.service';
+import { Feature } from '../generated';
 
 @Injectable({
   providedIn: 'root',
@@ -51,4 +52,22 @@ export class FormconfigRepositoryService {
   public getFeatureTypes(): string[] {
     return this.formConfigs ? Object.keys(this.formConfigs.config) : [];
   }
+
+  public getFeatureLabel(feature: Feature) : string {
+    const config: FormConfiguration = this.getFormConfig(feature.clazz);
+    let label = this.getFeatureValue(feature, config.treeNodeColumn);
+    if (config.idInTreeNodeColumn) {
+      const id = feature.objectGuid;
+
+      label = (label ? label : config.name) + ' (id: ' + id + ')';
+    }
+    return label;
+
+  }
+
+  private getFeatureValue(feature: Feature, key: string): any {
+    const val = feature[key];
+    return val;
+  }
+
 }

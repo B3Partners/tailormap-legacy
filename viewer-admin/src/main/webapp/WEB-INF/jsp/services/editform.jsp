@@ -49,7 +49,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                             <fmt:message key="viewer_admin.editattribute.3" var="editattribute3" />
                             <fmt:message key="viewer_admin.editattribute.4" var="editattribute4" />
                             <stripes:submit name="save" value="${editattribute3}"/>
-                            <stripes:reset name="cancel" class="extlikebutton" value="${editattribute4}"/>
+                            <stripes:submit name="cancel" class="extlikebutton" value="${editattribute4}"/>
                         </div>
                     </c:when>
                     <c:when test="${actionBean.context.eventName == 'save' || actionBean.context.eventName == 'delete'}">
