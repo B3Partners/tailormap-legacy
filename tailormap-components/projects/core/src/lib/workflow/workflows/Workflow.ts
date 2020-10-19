@@ -7,6 +7,8 @@ import { FeatureControllerService } from '../../shared/generated';
 import { VectorLayer } from '../../../../../bridge/typings';
 import { MapClickedEvent } from '../../shared/models/event-models';
 import { NgZone } from '@angular/core';
+import { Subject } from 'rxjs';
+import { ConfirmDialogService } from '../../shared/confirm-dialog/confirm-dialog.service';
 
 export abstract class Workflow {
 
@@ -19,8 +21,11 @@ export abstract class Workflow {
   protected snackBar: MatSnackBar;
   protected formConfigRepo: FormconfigRepositoryService;
   protected service: FeatureControllerService;
+  protected confirmService: ConfirmDialogService;
   protected ngZone: NgZone;
   public closeAfterSave: boolean;
+
+  public close$ = new Subject<boolean>();
 
   public init(
     tailorMap: TailorMapService,
@@ -29,7 +34,8 @@ export abstract class Workflow {
     formConfigRepo: FormconfigRepositoryService,
     snackBar: MatSnackBar,
     service: FeatureControllerService,
-    ngZone: NgZone): void {
+    ngZone: NgZone,
+    confirmService: ConfirmDialogService): void {
 
     this.tailorMap = tailorMap;
     this.dialog = dialog;
@@ -38,6 +44,7 @@ export abstract class Workflow {
     this.snackBar = snackBar;
     this.service = service;
     this.ngZone = ngZone;
+    this.confirmService = confirmService;
     this.vectorLayer.addListener('ON_FEATURE_ADDED', this.geometryDrawnProxy, this);
   }
 
@@ -58,4 +65,8 @@ export abstract class Workflow {
   public abstract mapClick(data: MapClickedEvent): void;
 
   public abstract afterEditting(): void;
+
+  public endWorkflow(): void {
+    this.close$.next(true);
+  }
 }

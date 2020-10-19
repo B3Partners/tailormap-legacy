@@ -31,8 +31,9 @@
     <button color="warn" mat-raised-button mat-fab aria-label="Verwijder" class="add-button" (click)="this.remove();">
       <mat-icon>delete</mat-icon>
     </button>
-    <button [disabled]="!formDirty" mat-raised-button mat-fab aria-label="Sla op" class="add-button save-button" (click)="formCreator.save();">
-      <mat-icon>save</mat-icon>
+    <button [disabled]="!formDirty && !data.closeAfterSave" mat-raised-button mat-fab aria-label="Sla op" class="add-button save-button" (click)="formCreator.save();">
+      <mat-icon *ngIf="!data.closeAfterSave" >save</mat-icon>
+      <mat-icon *ngIf="data.closeAfterSave" >navigate_next</mat-icon>
     </button>
     <mat-menu #menu="matMenu">
       <button *ngFor="let co of formsForNew" [id]="co.featureType" mat-menu-item (click)="this.newItem($event);">
