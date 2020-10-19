@@ -3,7 +3,10 @@ import { MatDialog } from '@angular/material/dialog';
 import { FeatureInitializerService } from '../../shared/feature-initializer/feature-initializer.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { FormconfigRepositoryService } from '../../shared/formconfig-repository/formconfig-repository.service';
-import { FeatureControllerService } from '../../shared/generated';
+import {
+  Feature,
+  FeatureControllerService,
+} from '../../shared/generated';
 import { VectorLayer } from '../../../../../bridge/typings';
 import { MapClickedEvent } from '../../shared/models/event-models';
 import { NgZone } from '@angular/core';
@@ -15,6 +18,7 @@ export abstract class Workflow {
   public id = 0;
   public vectorLayer: VectorLayer;
   public highlightLayer: VectorLayer;
+  public destinationFeatures;
   protected tailorMap: TailorMapService;
   protected dialog: MatDialog;
   protected featureInitializerService: FeatureInitializerService;
@@ -44,6 +48,7 @@ export abstract class Workflow {
     this.snackBar = snackBar;
     this.service = service;
     this.ngZone = ngZone;
+    this.destinationFeatures = [];
     this.confirmService = confirmService;
     this.vectorLayer.addListener('ON_FEATURE_ADDED', this.geometryDrawnProxy, this);
   }
@@ -60,7 +65,11 @@ export abstract class Workflow {
 
   public abstract geometryDrawn(vectorLayer: VectorLayer, feature: any): void;
 
+  public abstract setFeature(feature: Feature): void;
+
   public abstract addFeature(featureType: string): void;
+
+  public abstract getDestinationFeatures(): Feature [];
 
   public abstract mapClick(data: MapClickedEvent): void;
 

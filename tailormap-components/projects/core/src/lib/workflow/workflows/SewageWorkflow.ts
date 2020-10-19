@@ -186,6 +186,17 @@ export class SewageWorkflow extends Workflow {
     }
     this.tailorMap.getViewerController().mapComponent.getMap().update();
   }
+
+  public setCopyMode(feature: Feature): void {
+  }
+
+  public setFeature(feature: Feature): void {
+  }
+
+  public getDestinationFeatures(): Feature[] {
+    return [];
+  }
+
 }
 
 enum Step {

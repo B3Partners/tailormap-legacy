@@ -5,6 +5,7 @@ import {
 import { Workflow } from '../workflows/Workflow';
 import { WorkflowFactoryService } from '../workflow-factory/workflow-factory.service';
 import { MapClickedEvent } from '../../shared/models/event-models';
+import { Feature } from '../../shared/generated';
 import { Subscription } from 'rxjs';
 
 @Injectable({
@@ -38,6 +39,12 @@ export class WorkflowControllerService implements OnDestroy{
     this.currentWorkflow.addFeature(featureType);
   }
 
+  public setCopyMode(feature: Feature): void {
+    this.currentWorkflow = this.getWorkflow('copyMode');
+
+    this.currentWorkflow.setFeature(feature);
+  }
+
   public getWorkflow(featureType ?: string): Workflow {
     if (this.currentWorkflow) {
       this.currentWorkflow.destroy();
@@ -45,6 +52,10 @@ export class WorkflowControllerService implements OnDestroy{
     const wf = this.workflowFactory.getWorkflow(featureType);
     this.subscriptions.add(wf.close$.subscribe(value => this.init()));
     return wf;
+  }
+
+  public getDestinationFeatures(): Feature[] {
+    return this.currentWorkflow.getDestinationFeatures();
   }
 
   public mapClicked(data: MapClickedEvent): void {

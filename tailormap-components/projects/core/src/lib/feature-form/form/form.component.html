@@ -31,6 +31,9 @@
     <button color="warn" mat-raised-button mat-fab aria-label="Verwijder" class="add-button" (click)="this.remove();">
       <mat-icon>delete</mat-icon>
     </button>
+    <button color="accent" mat-raised-button mat-fab aria-label="kopieren" class="add-button" (click)="this.copy();">
+      <mat-icon>content_copy</mat-icon>
+    </button>
     <button [disabled]="!formDirty && !data.closeAfterSave" mat-raised-button mat-fab aria-label="Sla op" class="add-button save-button" (click)="formCreator.save();">
       <mat-icon *ngIf="!data.closeAfterSave" >save</mat-icon>
       <mat-icon *ngIf="data.closeAfterSave" >navigate_next</mat-icon>
