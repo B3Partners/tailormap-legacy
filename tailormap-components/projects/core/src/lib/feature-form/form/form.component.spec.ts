@@ -13,7 +13,6 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { SharedModule } from '../../shared/shared.module';
 import { FormCreatorComponent } from '../form-creator/form-creator.component';
 import { AddFeatureComponent } from '../../user-interface/add-feature/add-feature.component';
-import { FormPopupComponent } from '../form-popup/form-popup.component';
 import { FormTreeComponent } from '../form-tree/form-tree.component';
 import { FormfieldComponent } from '../form-field/formfield.component';
 import {
@@ -44,7 +43,6 @@ describe('FormComponent', () => {
 
         FormCreatorComponent,
         AddFeatureComponent,
-        FormPopupComponent,
         FormTreeComponent,
         FormfieldComponent,
         FormCreatorComponent,

@@ -18,10 +18,10 @@ import {
   FeatureNode,
   FlatNode,
 } from './form-tree-models';
-import { FormConfiguration } from '../form/form-models';
 import { Feature } from '../../shared/generated';
 import { FormTreeHelpers } from './form-tree-helpers';
 import { FormconfigRepositoryService } from '../../shared/formconfig-repository/formconfig-repository.service';
+import { FormHelpers } from '../form/form-helpers';
 
 @Component({
   selector: 'tailormap-form-tree',
@@ -73,7 +73,7 @@ export class FormTreeComponent implements OnInit, OnChanges {
           if (this.formConfigRepo.getFormConfig(featureType)) {
             if (!fts.hasOwnProperty(featureType)) {
               fts[featureType] = {
-                name: featureType,
+                name: FormHelpers.capitalize(featureType),
                 children: [],
                 id: featureType,
                 isFeatureType: true,
@@ -90,7 +90,7 @@ export class FormTreeComponent implements OnInit, OnChanges {
         }
       }
       nodes.push({
-        name: this.getNodeLabel(feature),
+        name: this.formConfigRepo.getFeatureLabel(feature),
         children,
         objectGuid: feature.objectGuid,
         feature,
@@ -99,22 +99,6 @@ export class FormTreeComponent implements OnInit, OnChanges {
       });
     });
     return nodes;
-  }
-
-  private getNodeLabel(feature: Feature): string {
-    const config: FormConfiguration = this.formConfigRepo.getFormConfig(feature.clazz);
-    let label = this.getFeatureValue(feature, config.treeNodeColumn);
-    if (config.idInTreeNodeColumn) {
-      const id = feature.objectGuid;
-
-      label = (label ? label : config.name) + ' (id: ' + id + ')';
-    }
-    return label;
-  }
-
-  private getFeatureValue(feature: Feature, key: string): any {
-    const val = feature[key];
-    return val;
   }
 
   public getNodeClassName(node: FlatNode) {

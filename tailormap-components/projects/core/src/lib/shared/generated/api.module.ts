@@ -3,10 +3,21 @@ import { NgModule, ModuleWithProviders, SkipSelf, Optional } from '@angular/core
 import { HttpClient } from '@angular/common/http';
 import { ApiConfiguration, ApiConfigurationParams } from './api-configuration';
 
-import { AttribuutControllerService } from './services/attribuut-controller.service';
+import { AttributeControllerService } from './services/attribute-controller.service';
 import { FeatureControllerService } from './services/feature-controller.service';
-import { WegvakonderdeelControllerService } from './services/wegvakonderdeel-controller.service';
-import { WegvakonderdeelplanningControllerService } from './services/wegvakonderdeelplanning-controller.service';
+import { FormCultPlantingControllerService } from './services/form-cult-planting-controller.service';
+import { FormFreeFallDuctControllerService } from './services/form-free-fall-duct-controller.service';
+import { FormGrassControllerService } from './services/form-grass-controller.service';
+import { FormHedgeControllerService } from './services/form-hedge-controller.service';
+import { FormMechanicalDuctControllerService } from './services/form-mechanical-duct-controller.service';
+import { FormNatPlantingControllerService } from './services/form-nat-planting-controller.service';
+import { FormRoadInspectionControllerService } from './services/form-road-inspection-controller.service';
+import { FormRoadsectionPartControllerService } from './services/form-roadsection-part-controller.service';
+import { FormRoadsectionPartPlanningControllerService } from './services/form-roadsection-part-planning-controller.service';
+import { FormTreeControllerService } from './services/form-tree-controller.service';
+import { FormTreeInspectionControllerService } from './services/form-tree-inspection-controller.service';
+import { FormTreePlanningControllerService } from './services/form-tree-planning-controller.service';
+import { FormWellControllerService } from './services/form-well-controller.service';
 
 /**
  * Module that provides all services and configuration.
@@ -16,10 +27,21 @@ import { WegvakonderdeelplanningControllerService } from './services/wegvakonder
   exports: [],
   declarations: [],
   providers: [
-    AttribuutControllerService,
+    AttributeControllerService,
     FeatureControllerService,
-    WegvakonderdeelControllerService,
-    WegvakonderdeelplanningControllerService,
+    FormCultPlantingControllerService,
+    FormFreeFallDuctControllerService,
+    FormGrassControllerService,
+    FormHedgeControllerService,
+    FormMechanicalDuctControllerService,
+    FormNatPlantingControllerService,
+    FormRoadInspectionControllerService,
+    FormRoadsectionPartControllerService,
+    FormRoadsectionPartPlanningControllerService,
+    FormTreeControllerService,
+    FormTreeInspectionControllerService,
+    FormTreePlanningControllerService,
+    FormWellControllerService,
     ApiConfiguration
   ],
 })

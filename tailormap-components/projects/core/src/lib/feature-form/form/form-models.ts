@@ -1,3 +1,5 @@
+import { Feature } from '../../shared/generated';
+
 export interface FormConfigurations {
   config: Map<string, FormConfiguration>;
 }
@@ -18,7 +20,7 @@ export interface Attribute {
   type: FormFieldType;
   options?: SelectOption[];
   linkedList?: number;
-  label ?: string;
+  label?: string;
   column: number;
   tab: number;
 }
@@ -63,4 +65,10 @@ export interface TabbedFields {
 
 export interface ColumnizedFields {
   columns: Map<number, Attribute[]>;
+}
+
+export interface DialogData {
+  formFeatures: Feature[];
+  isBulk: boolean;
+  closeAfterSave?: boolean;
 }

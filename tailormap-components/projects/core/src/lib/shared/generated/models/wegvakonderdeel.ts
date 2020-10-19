@@ -1,6 +1,7 @@
 /* tslint:disable */
 import { Feature } from './feature';
 import { Geometry } from './geometry';
+import { Weginspectie } from './weginspectie';
 import { Wegvakonderdeelplanning } from './wegvakonderdeelplanning';
 export interface Wegvakonderdeel extends Feature {
   a1_rafeling?: number;
@@ -27,7 +28,6 @@ export interface Wegvakonderdeel extends Feature {
   categorie?: string;
   cbs_berekening?: number;
   cbs_code?: string;
-  clazz?: string;
   comfort?: string;
   constructieopbouw?: string;
   d1_afwatering?: number;
@@ -123,6 +123,7 @@ export interface Wegvakonderdeel extends Feature {
   w1_langsonvlakheid?: number;
   w2_spoorvorming?: number;
   w3_comfort?: number;
+  weginspecties?: Array<Weginspectie>;
   wegtype?: string;
   wegvak_id?: string;
   wegvakonderdeelnr?: string;
