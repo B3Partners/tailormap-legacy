@@ -89,10 +89,10 @@ export class StandardFormWorkflow extends Workflow {
     this.tailorMap.getViewerController().mapComponent.getMap().update();
   }
 
-  setFeature(feature: Feature): void {
+  public setFeature(feature: Feature): void {
   }
 
-  getDestinationFeatures(): Feature[] {
+  public getDestinationFeatures(): Feature[] {
     return [];
   }
 

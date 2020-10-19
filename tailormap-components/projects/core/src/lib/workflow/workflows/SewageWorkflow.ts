@@ -98,7 +98,7 @@ export class SewageWorkflow extends Workflow {
     this.tailorMap.getViewerController().mapComponent.getMap().update();
   }
 
-  setCopyMode(feature: Feature): void {
+  public setCopyMode(feature: Feature): void {
   }
 
   public setFeature(feature: Feature): void {

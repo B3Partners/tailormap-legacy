@@ -13,18 +13,18 @@ export class CopyWorkflow extends Workflow {
     super();
   }
 
-  setFeature(feature: Feature): void {
+  public setFeature(feature: Feature): void {
     this.feature = feature;
     this.openDialog();
   }
 
-  addFeature(featureType: string): void {
+  public addFeature(featureType: string): void {
   }
 
-  afterEditting(): void {
+  public afterEditting(): void {
   }
 
-  geometryDrawn(vectorLayer: VectorLayer, feature: any): void {
+  public geometryDrawn(vectorLayer: VectorLayer, feature: any): void {
   }
 
   public mapClick(data: MapClickedEvent): void {
@@ -48,7 +48,7 @@ export class CopyWorkflow extends Workflow {
     );
   }
 
-  openDialog(){
+  public openDialog() {
     const dialogData : DialogData = {
       formFeatures: [this.feature],
       isBulk: false,
@@ -82,7 +82,7 @@ export class CopyWorkflow extends Workflow {
     return allowedFeaturesTypes;
   }
 
-  getDestinationFeatures(): Feature[] {
+  public getDestinationFeatures(): Feature[] {
     return this.destinationFeatures;
   }
 }
