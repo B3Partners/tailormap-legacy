@@ -55,7 +55,7 @@ export class WorkflowControllerService implements OnDestroy{
     return wf;
   }
 
-  public getDestinationFeatures(): Feature[]{
+  public getDestinationFeatures(): Feature[] {
     return this.currentWorkflow.getDestinationFeatures();
   }
 
