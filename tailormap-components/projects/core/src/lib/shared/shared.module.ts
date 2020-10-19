@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 
+import { MatSortModule } from '@angular/material/sort';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -48,6 +49,7 @@ import { ApiModule } from './generated';
     MatDividerModule,
     MatButtonToggleModule,
     MatListModule,
+    MatSortModule,
     HttpClientModule,
     MatStepperModule,
     MatProgressSpinnerModule,
@@ -65,6 +67,7 @@ import { ApiModule } from './generated';
     MatTabsModule,
     MatInputModule,
     MatTooltipModule,
+    MatSortModule,
     MatSelectModule,
     MatGridListModule,
     MatSliderModule,
