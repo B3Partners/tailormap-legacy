@@ -6,6 +6,8 @@ import {
 } from '../../feature-form/form/form-models';
 import { DomainRepositoryService } from '../../feature-form/linked-fields/domain-repository/domain-repository.service';
 import { TailorMapService } from '../../../../../bridge/src/tailor-map.service';
+import { LayerUtils } from '../layer-utils/layer-utils.service';
+import { Feature } from '../generated';
 import { ReplaySubject } from 'rxjs';
 
 @Injectable({
@@ -19,14 +21,41 @@ export class FormconfigRepositoryService {
 
   constructor(
     private http: HttpClient,
-    private domainRepo : DomainRepositoryService,
+    private domainRepo: DomainRepositoryService,
     private tailorMap: TailorMapService,
   ) {
-    this.http.get<FormConfigurations>( this.tailorMap.getContextPath() + '/action/form').subscribe((data: any) => {
-      this.formConfigs = data;
-      this.formConfigs$.next(data);
-      this.domainRepo.initFormConfig(this.formConfigs);
-    });
+    this.http.get<FormConfigurations>(this.tailorMap.getContextPath() + '/action/form')
+      .subscribe((data: FormConfigurations) => {
+        this.formConfigs = {
+          config: new Map<string, FormConfiguration>(),
+        };
+        for (const key in data.config) {
+          if (data.config.hasOwnProperty(key)) {
+            const sanitized = LayerUtils.sanitzeLayername(key);
+            this.formConfigs.config[sanitized] = data.config[key];
+          }
+        }
+        this.formConfigs$.next(data);
+
+        this.domainRepo.initFormConfig(this.formConfigs);
+      });
+  }
+
+  public getFeatureLabel(feature: Feature): string {
+    const config: FormConfiguration = this.getFormConfig(feature.clazz);
+    let label = this.getFeatureValue(feature, config.treeNodeColumn);
+    if (config.idInTreeNodeColumn) {
+      const id = feature.objectGuid;
+
+      label = (label ? label : config.name) + ' (id: ' + id + ')';
+    }
+    return label;
+
+  }
+
+  private getFeatureValue(feature: Feature, key: string): any {
+    const val = feature[key];
+    return val;
   }
 
   public getAllFormConfigs(): FormConfigurations {

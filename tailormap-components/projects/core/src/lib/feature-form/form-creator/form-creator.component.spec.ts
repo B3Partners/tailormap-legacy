@@ -11,7 +11,6 @@ import {SharedModule} from "../../shared/shared.module";
 import { FormConfiguration} from "../form/form-models";
 import {FormfieldComponent} from "../form-field/formfield.component";
 import {FormComponent} from "../form/form.component";
-import {FormPopupComponent} from "../form-popup/form-popup.component";
 import {FormTreeComponent} from "../form-tree/form-tree.component";
 import {MatSnackBarModule} from "@angular/material/snack-bar";
 import {AddFeatureComponent} from "../../user-interface/add-feature/add-feature.component";
@@ -38,7 +37,6 @@ describe('FormCreatorComponent', () => {
       declarations: [
         FormComponent,
         AddFeatureComponent,
-        FormPopupComponent,
         FormTreeComponent,
         FormfieldComponent,
         FormCreatorComponent,]
