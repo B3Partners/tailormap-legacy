@@ -17,6 +17,7 @@ import {
 import { FormActionsService } from '../form-actions/form-actions.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { WorkflowControllerService } from '../../workflow/workflow-controller/workflow-controller.service';
+import { FeatureInitializerService } from '../../shared/feature-initializer/feature-initializer.service';
 
 @Component({
   selector: 'tailormap-form-copy',
@@ -26,6 +27,8 @@ import { WorkflowControllerService } from '../../workflow/workflow-controller/wo
 export class FormCopyComponent implements OnInit {
 
   public originalFeature: Feature;
+
+  public parentFeature: Feature;
 
   public formConfig: FormConfiguration;
 
@@ -37,11 +40,13 @@ export class FormCopyComponent implements OnInit {
               private configService: FormconfigRepositoryService,
               private actionService: FormActionsService,
               private _snackBar: MatSnackBar,
-              private formConfigRepo: FormconfigRepositoryService) {
+              private formConfigRepo: FormconfigRepositoryService,
+              private featureInitializer: FeatureInitializerService) {
   }
 
   public ngOnInit(): void {
     this.originalFeature = this.data.formFeatures[0];
+    this.parentFeature = this.data.formFeatures[0];
     this.formConfig = this.configService.getFormConfig(this.data.formFeatures[0].clazz);
     const fieldsToCopy = new Map<string, string>();
     for (const field of this.formConfig.fields) {
@@ -57,6 +62,7 @@ export class FormCopyComponent implements OnInit {
           for (const field of config.fields) {
             fieldsToCopy.set(field.key, field.label);
           }
+          fieldsToCopy.set('objecttype', child.objecttype);
           this.featuresToCopy.set(child.fid, fieldsToCopy);
         }
       }
@@ -73,8 +79,14 @@ export class FormCopyComponent implements OnInit {
     const destinationFeatures = this.controller.getDestinationFeatures();
     if (destinationFeatures.length > 0) {
       const valuesToCopy = this.getPropertiesToMerge();
+      const childsToCopy = this.getNewChildFeatures();
       for (let i  = 0; i <= destinationFeatures.length - 1; i++) {
         destinationFeatures[i] = {...destinationFeatures[i], ...valuesToCopy};
+        for (let n = 0; n <= childsToCopy.length - 1; n++) {
+          this.actionService.save$(false, childsToCopy[n], destinationFeatures[i]).subscribe(childSaved => {
+            console.log('child saved');
+          })
+        }
         this.actionService.save$(false, destinationFeatures[i], destinationFeatures[i]).subscribe(savedFeature => {
             successCopied++;
             if (successCopied === destinationFeatures.length) {
@@ -121,11 +133,32 @@ export class FormCopyComponent implements OnInit {
 
   private getPropertiesToMerge(): any {
     const valuesToCopy = {};
-
-    // this.fieldsToCopy.forEach((value, key) => {
-    //  valuesToCopy[key] = this.originalFeature[key];
-    // })
+    const fieldsToCopy = this.featuresToCopy.get(this.parentFeature['fid']);
+    fieldsToCopy.forEach((value, key) => {
+      valuesToCopy[key] = this.originalFeature[key];
+    })
     return valuesToCopy;
+  }
+
+  private getNewChildFeatures(): Feature[] {
+    const newChilds = [];
+    this.featuresToCopy.forEach((fieldsToCopy, key) => {
+      let newChild = {};
+      if (key !== this.parentFeature['fid']) {
+        const valuesToCopy = {};
+        for (let i = 0; i <= this.parentFeature.children.length - 1; i++) {
+          const child = this.parentFeature.children[i];
+          if (child.fid === key) {
+            fieldsToCopy.forEach((value, key1) => {
+              valuesToCopy[key1] = child[key1];
+            })
+          }
+        }
+        newChild = this.featureInitializer.create(fieldsToCopy.get('objecttype'), valuesToCopy);
+        newChilds.push(newChild);
+      }
+    })
+    return newChilds;
   }
 
   public openForm(feature) {

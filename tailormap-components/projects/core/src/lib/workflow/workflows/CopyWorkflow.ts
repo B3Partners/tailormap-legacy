@@ -56,6 +56,7 @@ export class CopyWorkflow extends Workflow {
     };
     const dialogRef = this.dialog.open(FormCopyComponent, {
       width: '400px',
+      height: '500px',
       data: dialogData,
       position: {
         top: '5px',
