@@ -23,7 +23,7 @@ Ext.define("viewer.components.CustomConfiguration",{
     constructor: function (parentId, configObject, configPage) {
         configObject.showLabelconfig =true;
         viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId, configObject, configPage);
-        configObject.willLoadLayers = true;
+        configObject.willLoadLayers = false;
 
         this.form.add({
             xtype: 'numberfield',
