@@ -1,6 +1,11 @@
 
-import { Component, OnInit } from '@angular/core';
+import {
+  Component,
+  OnInit,
+} from '@angular/core';
 
+import { ExportService } from '../../../shared/export-service/export.service';
+import { ExportFeaturesParameters } from '../../../shared/export-service/export-models';
 import { Layer } from '../layer.model';
 import { LayerService } from '../layer.service';
 
@@ -13,20 +18,31 @@ export class AttributelistTabToolbarComponent implements OnInit {
 
   private layer: Layer;
 
-  constructor(private layerService: LayerService) {
+  private exportParams: ExportFeaturesParameters = {
+    application: 0,
+    appLayer: 0,
+    type: '',
+  };
+
+  constructor(
+      private exportService: ExportService,
+      private layerService: LayerService) {
   }
 
   public ngOnInit(): void {
+    this.exportParams.application = this.layerService.getAppId();
   }
 
   /**
-   * @param format      Can be "csv" or "json".
+   * format = 'CSV', 'GEOJSON', 'XLS', 'SHP'
    */
   public onExportClick(format: string): void {
-    // const layerId = this.layer.id;
-    // const layerName = this.layer.name;
-    // console.log(layerId);
-    alert('Not yet implemented.');
+    this.exportParams.appLayer =  this.layer.id;
+    this.exportParams.type = format;
+    this.exportService.exportFeatures(this.exportParams).subscribe((response => {
+      window.location.href = response.url;
+    }), (error) => console.log('Error downloading the export:\n  ' + error.message),
+      () => console.info('File exported successfully'));
   }
 
   public onFilterClick(): void {

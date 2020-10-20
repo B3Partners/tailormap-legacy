@@ -20,11 +20,20 @@
   </button>
   <mat-menu #menu="matMenu">
     <button mat-menu-item
-            (click)="onExportClick('csv');">
+            (click)="onExportClick('CSV');">
       CSV
     </button>
-    <button mat-menu-item (click)="onExportClick('json');">
-      Json
+    <button mat-menu-item
+            (click)="onExportClick('GEOJSON');">
+      GeoJSON
+    </button>
+    <button mat-menu-item
+            (click)="onExportClick('XLS');">
+      Excel
+    </button>
+    <button mat-menu-item
+            (click)="onExportClick('SHP');">
+      Shape
     </button>
   </mat-menu>
 
