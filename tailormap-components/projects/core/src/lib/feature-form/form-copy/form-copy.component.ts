@@ -11,12 +11,11 @@ import {
 import { Feature } from '../../shared/generated';
 import { FormconfigRepositoryService } from '../../shared/formconfig-repository/formconfig-repository.service';
 import {
-  DialogData,
   FormConfiguration,
 } from '../form/form-models';
 import { FormActionsService } from '../form-actions/form-actions.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { WorkflowControllerService } from '../../workflow/workflow-controller/workflow-controller.service';
+import { CopyDialogData } from './form-copy-models';
 import { FeatureInitializerService } from '../../shared/feature-initializer/feature-initializer.service';
 
 @Component({
@@ -35,8 +34,7 @@ export class FormCopyComponent implements OnInit {
   public featuresToCopy = new Map<number, Map<string, string>>();
 
   constructor(public dialogRef: MatDialogRef<FormCopyComponent>,
-              @Inject(MAT_DIALOG_DATA) public data: DialogData,
-              public controller: WorkflowControllerService,
+              @Inject(MAT_DIALOG_DATA) public data: CopyDialogData,
               private configService: FormconfigRepositoryService,
               private actionService: FormActionsService,
               private _snackBar: MatSnackBar,
@@ -45,9 +43,9 @@ export class FormCopyComponent implements OnInit {
   }
 
   public ngOnInit(): void {
-    this.originalFeature = this.data.formFeatures[0];
-    this.parentFeature = this.data.formFeatures[0];
-    this.formConfig = this.configService.getFormConfig(this.data.formFeatures[0].clazz);
+    this.originalFeature = this.data.originalFeature;
+    this.parentFeature = this.data.originalFeature;
+    this.formConfig = this.configService.getFormConfig(this.originalFeature.clazz);
     const fieldsToCopy = new Map<string, string>();
     for (const field of this.formConfig.fields) {
       fieldsToCopy.set(field.key, field.label);
@@ -70,13 +68,12 @@ export class FormCopyComponent implements OnInit {
   }
 
   public cancel() {
-    this.controller.init();
     this.dialogRef.close();
   }
 
   public copy() {
     let successCopied = 0;
-    const destinationFeatures = this.controller.getDestinationFeatures();
+    const destinationFeatures = this.data.destinationFeatures;
     if (destinationFeatures.length > 0) {
       const valuesToCopy = this.getPropertiesToMerge();
       const childsToCopy = this.getNewChildFeatures();
@@ -93,12 +90,10 @@ export class FormCopyComponent implements OnInit {
               this._snackBar.open('Er zijn ' + successCopied + ' features gekopieerd', '', {
                 duration: 5000,
               });
-              this.controller.init();
               this.dialogRef.close();
             }
           },
           error => {
-            this.controller.init();
             this._snackBar.open('Fout: Feature niet kunnen opslaan: ' + error.error.message, '', {
               duration: 5000,
             });
