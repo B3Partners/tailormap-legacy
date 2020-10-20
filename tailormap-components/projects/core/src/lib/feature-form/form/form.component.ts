@@ -24,7 +24,8 @@ import {
 import { Feature } from '../../shared/generated';
 import { FormActionsService } from '../form-actions/form-actions.service';
 import { FormconfigRepositoryService } from '../../shared/formconfig-repository/formconfig-repository.service';
-import { WorkflowControllerService } from '../../workflow/workflow-controller/workflow-controller.service';
+import { WorkflowActionManagerService } from '../../workflow/workflow-controller/workflow-action-manager.service';
+import { WORKFLOW_ACTION } from '../../workflow/workflow-controller/workflow-models';
 
 @Component({
   selector: 'tailormap-form',
@@ -49,7 +50,7 @@ export class FormComponent implements OnDestroy, OnChanges {
               private ngZone: NgZone,
               private formConfigRepo: FormconfigRepositoryService,
               public actions: FormActionsService,
-              public controller: WorkflowControllerService) {
+              public workflowAction: WorkflowActionManagerService) {
 
     this.features = data.formFeatures;
     this.feature = this.features[0];
@@ -134,7 +135,10 @@ export class FormComponent implements OnDestroy, OnChanges {
 
   public copy() {
     this.closeDialog();
-    this.controller.setCopyMode(this.features[0]);
+    this.workflowAction.setAction({
+      feature: this.features[0],
+      action: WORKFLOW_ACTION.COPY,
+    });
   }
 
   public closeDialog() {
