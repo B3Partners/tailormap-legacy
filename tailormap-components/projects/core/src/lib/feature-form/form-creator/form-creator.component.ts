@@ -55,8 +55,6 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
 
   @Input()
   public isBulk = false;
-  @Input()
-  public lookup: Map<string, string>;
   @Output()
   public formChanged = new EventEmitter<any>();
 

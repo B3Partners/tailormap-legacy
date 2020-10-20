@@ -1,6 +1,6 @@
 <button *ngIf="this.visibleLayers.length < 2"
         [disabled]="this.visibleLayers.length == 0" color="primary"
-        mat-raised-button mat-fab aria-label="Voeg toe" class="add-button" (click)="click()">
+        mat-raised-button mat-fab aria-label="Voeg toe" class="add-button" (click)="click(this.visibleLayers[0])">
   <mat-icon>add</mat-icon>
 </button>
 
@@ -10,5 +10,5 @@
 </button>
 
 <mat-menu #menu="matMenu">
-  <button *ngFor="let ft of this.visibleLayers" mat-menu-item [id]="ft">{{ft}}</button>
+  <button *ngFor="let ft of this.visibleLayers" (click)="click(ft)"  mat-menu-item [id]="ft">{{ft}}</button>
 </mat-menu>

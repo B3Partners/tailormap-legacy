@@ -113,3 +113,20 @@ updates:
     timezone: Europe/Amsterdam
   labels:
   - build infrastructure
+- package-ecosystem: npm
+  directory: "/tailormap-components"
+  schedule:
+    interval: weekly
+    day: saturday
+    timezone: Europe/Amsterdam
+  open-pull-requests-limit: 25
+  reviewers:
+    - mtoonen
+    - mvdstruijk
+    - matthijsln
+  assignees:
+    - mtoonen
+    - mvdstruijk
+    - matthijsln
+  labels:
+    - dependencies

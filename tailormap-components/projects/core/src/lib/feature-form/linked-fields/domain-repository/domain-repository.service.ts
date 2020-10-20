@@ -8,8 +8,8 @@ import {
 } from '../../form/form-models';
 import { LinkedAttributeRegistryService } from '../registry/linked-attribute-registry.service';
 import {
+  AttributeControllerService,
   Attribuut,
-  AttribuutControllerService,
 } from '../../../shared/generated';
 
 @Injectable({
@@ -22,7 +22,7 @@ export class DomainRepositoryService {
   private domainToAttribute: { [key: string]: Attribute; }
 
   constructor(
-    private repo: AttribuutControllerService,
+    private repo: AttributeControllerService,
     private registry: LinkedAttributeRegistryService) {
   }
 
