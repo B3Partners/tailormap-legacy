@@ -11,12 +11,10 @@ import {
 import { Feature } from '../../shared/generated';
 import { FormconfigRepositoryService } from '../../shared/formconfig-repository/formconfig-repository.service';
 import {
-  DialogData,
   FormConfiguration,
 } from '../form/form-models';
 import { FormActionsService } from '../form-actions/form-actions.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { WorkflowControllerService } from '../../workflow/workflow-controller/workflow-controller.service';
 import { CopyDialogData } from './form-copy-models';
 
 @Component({

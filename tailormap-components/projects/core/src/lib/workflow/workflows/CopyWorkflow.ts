@@ -3,7 +3,6 @@ import { VectorLayer } from '../../../../../bridge/typings';
 import { MapClickedEvent } from '../../shared/models/event-models';
 import { Feature } from '../../shared/generated';
 import { FormCopyComponent } from '../../feature-form/form-copy/form-copy.component';
-import { DialogData } from '../../feature-form/form/form-models';
 import { LayerUtils } from '../../shared/layer-utils/layer-utils.service';
 import { CopyDialogData } from '../../feature-form/form-copy/form-copy-models';
 
@@ -52,7 +51,7 @@ export class CopyWorkflow extends Workflow {
   public openDialog() {
     const dialogData : CopyDialogData = {
       originalFeature: this.feature,
-      destinationFeatures: this.destinationFeatures
+      destinationFeatures: this.destinationFeatures,
 
     };
     const dialogRef = this.dialog.open(FormCopyComponent, {

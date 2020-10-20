@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import {
-  WORKFLOW_ACTION,
   WorkflowActionEvent,
 } from './workflow-models';
 import { Subject } from 'rxjs';
@@ -14,7 +13,7 @@ export class WorkflowActionManagerService {
   constructor() {
   }
 
-  public setAction(event: WorkflowActionEvent){
+  public setAction(event: WorkflowActionEvent) {
     this.actionChanged$.next(event);
   }
 
