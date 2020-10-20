@@ -34,6 +34,7 @@ export class FormconfigRepositoryService {
           this.formConfigs.config[sanitized] = data.config[key];
         }
       }
+      this.formConfigs$.next(data);
       this.domainRepo.initFormConfig(this.formConfigs);
     });
   }
@@ -66,5 +67,4 @@ export class FormconfigRepositoryService {
     const val = feature[key];
     return val;
   }
-
 }
