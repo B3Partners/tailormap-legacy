@@ -15,7 +15,7 @@ import { AttributelistTable, RowData } from './attributelist-models';
 import { AttributelistColumnController } from './attributelist-column-controller';
 import { AttributeService } from '../../../shared/attribute-service/attribute.service';
 import { AttributeListParameters, AttributeListResponse,
-         AttributeMetadataParameters, AttributeMetadataResponse } from '../../test-attributeservice/models';
+  AttributeMetadataParameters, AttributeMetadataResponse } from '../../test-attributeservice/models';
 import { CheckState, DetailsState } from './attributelist-enums';
 import { DatasourceParams } from './datasource-params';
 import { FormconfigRepositoryService } from '../../../shared/formconfig-repository/formconfig-repository.service';
@@ -129,17 +129,18 @@ export class AttributeDataSource extends DataSource<any> {
       } else {
         passportName = this.params.layerName;
       }
+      // console.log('passportName: '+passportName);
 
       // Get passport field/column names.
       this.formconfigRepoService.formConfigs$.subscribe(formConfigs => {
-        const formConfig = formConfigs.config[passportName];
-        // console.log(this.params);
-        // console.log(this.formconfigRepoService.getAllFormConfigs());
-        // console.log(this.formconfigRepoService.getFeatureTypes());
-        // console.log(formConfig.fields);
-        const columnNames = formConfig.fields.map(attr => attr.key);
-        // console.log(columnNames);
-        this.columnController.setPassportColumnNames(columnNames);
+          const formConfig = formConfigs.config[passportName];
+          // console.log(this.params);
+          // console.log(this.formconfigRepoService.getAllFormConfigs());
+          // console.log(this.formconfigRepoService.getFeatureTypes());
+          // console.log(formConfig);
+          const columnNames = formConfig.fields.map(attr => attr.key);
+          // console.log(columnNames);
+          this.columnController.setPassportColumnNames(columnNames);
       });
     }
 
@@ -168,7 +169,6 @@ export class AttributeDataSource extends DataSource<any> {
       attrParams.featureType = this.params.featureTypeId;
       attrParams.filter = this.params.featureFilter;
     }
-
 
     // Set paging params.
     if (this.paginator) {

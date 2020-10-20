@@ -58,7 +58,7 @@ export class AttributelistDetailsComponent implements OnInit,
   }
 
   public ngAfterViewInit(): void {
-    console.log('#Details - ngAfterViewInit');
+    // console.log('#Details - ngAfterViewInit');
 
     // Set datasource sort.
     this.dataSource.sorter = this.sort;

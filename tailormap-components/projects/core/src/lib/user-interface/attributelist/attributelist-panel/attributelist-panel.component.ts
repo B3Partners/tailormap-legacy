@@ -144,6 +144,7 @@ export class AttributelistPanelComponent implements OnInit, AfterViewInit, Layou
   }
 
   public onTestClick(): void {
+
     // console.log("# Test - WegvakonderdeelPlanning");
     // Test.getAttrWegvakonderdeelPlanning(this.attributeService);
     // console.log(this.elementRef.nativeElement.parentElement);
@@ -151,6 +152,12 @@ export class AttributelistPanelComponent implements OnInit, AfterViewInit, Layou
     // this.onZoomToFeature.emit({
     //   feature: 'hoi',
     // });
+
+    // const currentIndex = this.tabgroup.selectedIndex;
+    // const tab = this.layerService.getTabComponent(currentIndex);
+    // if (tab !== null) {
+    //   tab.table.onTest();
+    // }
   }
 
   /**
