@@ -29,6 +29,8 @@ import {
   take,
 } from 'rxjs/operators';
 import { Choice } from './WorkflowModels';
+import { FormComponent } from '../../feature-form/form/form.component';
+import { DialogData } from '../../feature-form/form/form-models';
 
 export class SewageWorkflow extends Workflow {
   private currentStep: Step;
@@ -135,21 +137,21 @@ export class SewageWorkflow extends Workflow {
   }
 
   public openDialog(feature ?: Feature): void {
-    // const dialogData: DialogData = {
-    //   formFeatures: [feature],
-    //   isBulk: false,
-    //   closeAfterSave: true,
-    // };
-    // const dialogRef = this.dialog.open(FormComponent, {
-    //   width: '1050px',
-    //   height: '800px',
-    //   disableClose: true,
-    //   data: dialogData,
-    // });
-    // // tslint:disable-next-line: rxjs-no-ignored-subscription
-    // dialogRef.afterClosed().subscribe(result => {
-    //   this.afterEditting();
-    // });
+     const dialogData: DialogData = {
+       formFeatures: [feature],
+       isBulk: false,
+       closeAfterSave: true,
+     };
+     const dialogRef = this.dialog.open(FormComponent, {
+       width: '1050px',
+       height: '800px',
+       disableClose: true,
+       data: dialogData,
+     });
+     // tslint:disable-next-line: rxjs-no-ignored-subscription
+     dialogRef.afterClosed().subscribe(result => {
+       this.afterEditting();
+     });
   }
 
   public mapClick(data: MapClickedEvent): void {
