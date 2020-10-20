@@ -11,7 +11,7 @@ import {
   FormGroup,
   Validators,
 } from '@angular/forms';
-import { Choice } from '../../../workflow/workflows/SewageWorkflow';
+import { Choice } from '../../../workflow/workflows/WorkflowModels';
 
 @Component({
   selector: 'tailormap-choose-types',
