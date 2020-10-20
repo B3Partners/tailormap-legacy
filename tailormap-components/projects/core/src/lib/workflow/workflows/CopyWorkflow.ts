@@ -2,9 +2,9 @@ import { Workflow } from './Workflow';
 import { VectorLayer } from '../../../../../bridge/typings';
 import { MapClickedEvent } from '../../shared/models/event-models';
 import { Feature } from '../../shared/generated';
-// import { FormCopyComponent } from '../../feature-form/form-copy/form-copy.component';
-// import { DialogData } from '../../feature-form/form/form-models';
+import { FormCopyComponent } from '../../feature-form/form-copy/form-copy.component';
 import { LayerUtils } from '../../shared/layer-utils/layer-utils.service';
+import { CopyDialogData } from '../../feature-form/form-copy/form-copy-models';
 
 export class CopyWorkflow extends Workflow {
   private feature: Feature;
@@ -49,26 +49,27 @@ export class CopyWorkflow extends Workflow {
   }
 
   public openDialog() {
-    // const dialogData : DialogData = {
-    //   formFeatures: [this.feature],
-    //   isBulk: false,
-    //   closeAfterSave: true,
-    // };
-    // const dialogRef = this.dialog.open(FormCopyComponent, {
-    //   width: '400px',
-    //   data: dialogData,
-    //   position: {
-    //     top: '5px',
-    //     right: '50px',
-    //   },
-    //   hasBackdrop: false,
-    // });
-    //
-    // dialogRef.afterClosed().subscribe(result => {
-    //     console.log('copy dialog gesloten');
-    //     this.highlightLayer.removeAllFeatures();
-    //     this.destinationFeatures = [];
-    // });
+    const dialogData : CopyDialogData = {
+      originalFeature: this.feature,
+      destinationFeatures: this.destinationFeatures,
+
+    };
+    const dialogRef = this.dialog.open(FormCopyComponent, {
+      width: '400px',
+      data: dialogData,
+      position: {
+        top: '5px',
+        right: '50px',
+      },
+      hasBackdrop: false,
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('copy dialog gesloten');
+      this.highlightLayer.removeAllFeatures();
+      this.destinationFeatures = [];
+      this.endWorkflow();
+    });
   }
 
   private getFeatureTypesAllowed(): string[] {

@@ -28,6 +28,7 @@ import { Observable } from 'rxjs';
 import {
   take,
 } from 'rxjs/operators';
+import { Choice } from './WorkflowModels';
 
 export class SewageWorkflow extends Workflow {
   private currentStep: Step;
@@ -205,10 +206,3 @@ enum Step {
   WELL2 = 'well2',
   DUCT = 'duct',
 }
-
-export interface Choice {
-  well1?: string;
-  well2?: string;
-  duct?: string;
-  cancelled: boolean;
-};

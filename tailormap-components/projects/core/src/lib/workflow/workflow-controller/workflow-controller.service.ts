@@ -7,18 +7,23 @@ import { WorkflowFactoryService } from '../workflow-factory/workflow-factory.ser
 import { MapClickedEvent } from '../../shared/models/event-models';
 import { Feature } from '../../shared/generated';
 import { Subscription } from 'rxjs';
+import { WorkflowActionManagerService } from './workflow-action-manager.service';
 
 @Injectable({
   providedIn: 'root',
 })
-export class WorkflowControllerService implements OnDestroy{
+export class WorkflowControllerService implements OnDestroy {
 
   private currentWorkflow: Workflow;
   private subscriptions = new Subscription();
 
   constructor(
     private workflowFactory: WorkflowFactoryService,
+    private workflowActionManagerService: WorkflowActionManagerService,
   ) {
+    this.workflowActionManagerService.actionChanged$.subscribe(value => {
+      this.setCopyMode(value.feature);
+    })
   }
 
   public init(): void {
@@ -29,7 +34,7 @@ export class WorkflowControllerService implements OnDestroy{
     this.subscriptions.unsubscribe();
   }
 
-  public workflowFinished() : void {
+  public workflowFinished(): void {
     this.init();
   }
 
