@@ -45,3 +45,24 @@ jobs:
           cd tailormap-components
           npm install
           npm run lint
+
+  checkCircular:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      # Copy/paste unfortunately required, see https://github.community/t/reusing-sharing-inheriting-steps-between-jobs-declarations/16851/14
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 14
+      - uses: actions/cache@v1
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+      - name: Check for circular dependencies
+        run: |
+          cd tailormap-components
+          npm install
+          npm run test-circular
+          
