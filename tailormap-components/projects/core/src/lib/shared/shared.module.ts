@@ -1,5 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { HttpClientModule } from '@angular/common/http';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { MatSortModule } from '@angular/material/sort';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -18,13 +21,7 @@ import { MatStepperModule } from '@angular/material/stepper';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatTreeModule } from '@angular/material/tree';
-import {
-  FormsModule,
-  ReactiveFormsModule,
-} from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
 import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.component';
-
 import { ConfirmDialogService } from './confirm-dialog/confirm-dialog.service';
 import { ApiModule } from './generated';
 
@@ -50,6 +47,7 @@ import { ApiModule } from './generated';
     MatDividerModule,
     MatButtonToggleModule,
     MatListModule,
+    MatSortModule,
     HttpClientModule,
     MatStepperModule,
     MatProgressSpinnerModule,
@@ -67,6 +65,7 @@ import { ApiModule } from './generated';
     MatTabsModule,
     MatInputModule,
     MatTooltipModule,
+    MatSortModule,
     MatSelectModule,
     MatGridListModule,
     MatSliderModule,

@@ -1,0 +1,15 @@
+.spacer {
+  flex: 1 1 auto;
+}
+.mat-toolbar {
+  background: rgba(0,0,0,0.0);
+  overflow: hidden;
+  height: 40px;
+}
+.mat-flat-button {
+  line-height: 26px;
+}
+.mat-menu-item {
+  height: 24px;
+  line-height: 24px;
+}

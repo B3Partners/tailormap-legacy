@@ -1,9 +1,13 @@
 import { NgModule } from '@angular/core';
 
-import { AddFeatureComponent } from './add-feature/add-feature.component';
 import { MatIconModule } from '@angular/material/icon';
-import { SharedModule } from '../shared/shared.module';
+import { MatPaginatorIntl } from '@angular/material/paginator';
+
+import { AddFeatureComponent } from './add-feature/add-feature.component';
+import { AttributelistModule } from './attributelist/attributelist.module';
 import { CommonModule } from '@angular/common';
+import { PaginatorLabels } from './paginator-labels';
+import { SharedModule } from '../shared/shared.module';
 import { TestAttributeserviceComponent } from './test-attributeservice/test-attributeservice.component';
 import { ChooseTypesComponent } from './sewage/choose-types/choose-types.component';
 
@@ -17,6 +21,7 @@ import { ChooseTypesComponent } from './sewage/choose-types/choose-types.compone
     CommonModule,
     SharedModule,
     MatIconModule,
+    AttributelistModule,
   ],
   exports: [
     AddFeatureComponent,
@@ -24,7 +29,12 @@ import { ChooseTypesComponent } from './sewage/choose-types/choose-types.compone
     TestAttributeserviceComponent,
   ],
   entryComponents: [],
+  providers: [
+    {
+      provide: MatPaginatorIntl,
+      useClass: PaginatorLabels,
+    },
+  ],
 })
 export class UserIntefaceModule {
 }
-

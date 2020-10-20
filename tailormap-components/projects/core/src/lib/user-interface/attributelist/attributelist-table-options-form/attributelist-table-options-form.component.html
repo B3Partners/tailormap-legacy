@@ -1,0 +1,44 @@
+
+<h3 mat-dialog-title
+    (click)="onTitleClick()">
+Tabel opties
+</h3>
+
+<mat-divider></mat-divider>
+
+<mat-dialog-content class="mat-typography" cdkDropList
+                    (cdkDropListDropped)="onDrop($event)">
+  <div class="row" cdkDrag *ngFor="let column of columns; let index = index;">
+    <ng-container *ngIf="column.name != '_checked';">
+      <ng-container *ngIf="column.visible; then iconChecked; else iconNotChecked;">
+      </ng-container>
+      <ng-template #iconChecked>
+       <mat-icon class="icon material-icons icon-checkbox" color="primary"
+                  (click)="onRowCheckClick(index);$event.stopPropagation();">
+          check_box
+        </mat-icon>
+      </ng-template>
+      <ng-template #iconNotChecked>
+        <mat-icon class="icon material-icons-outlined icon-checkbox"
+                  (click)="onRowCheckClick(index);$event.stopPropagation();">
+          check_box_outline_blank
+        </mat-icon>
+      </ng-template>
+
+      <span class="text">{{column.name}}</span>
+      <span class="spacer"></span>
+      <mat-icon class="icon material-icons-outlined icon-drag">
+        drag_handle
+      </mat-icon>
+    </ng-container>
+  </div>
+</mat-dialog-content>
+
+<mat-divider></mat-divider>
+
+<!--<mat-dialog-actions align="center"-->
+<!--                    (click)="onActionsClick()">-->
+<mat-dialog-actions align="center">
+  <button mat-raised-button color="primary"
+          (click)="onButtonClick()">Laat alle attributen zien</button>
+</mat-dialog-actions>

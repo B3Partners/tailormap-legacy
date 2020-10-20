@@ -1,0 +1,50 @@
+
+.container {
+  xbackground: lightblue;
+  overflow: auto;
+  /* as child */
+  flex: 1;
+  /* as container */
+  display: flex;
+  flex-flow: column nowrap;
+}
+.table-container {
+  xbackground: mistyrose;
+  xmargin: 10px;
+  max-width: 100%;
+  overflow: auto;
+  /* as child */
+  flex: 1;
+}
+mat-table {
+  min-width: min-content;
+}
+.mat-row, .mat-header-row {
+  min-height: 24px;
+}
+.mat-cell:first-of-type,
+.mat-header-cell:first-of-type,
+.mat-footer-cell:first-of-type {
+  padding-left: 5px;
+}
+.mat-cell, .mat-header-cell {
+  overflow-x: hidden;
+  white-space: nowrap;
+  width: 150px;
+  max-width: 150px;
+  padding-right: 5px;
+  margin-right: 5px;
+}
+
+/* Details specific */
+.container {
+  xbackground: lightblue;
+  margin: 10px;
+  margin-left: 40px;
+}
+.table-header {
+  xbackground: lightblue;
+  font-size: 14px;
+  line-height: 17px;
+  vertical-align: center;
+}

@@ -1,0 +1,10 @@
+<!--<app-root></app-root>-->
+<div class="container">
+  <tailormap-attributelist-panel
+    #attrpanel
+    (pageChange)="onPageChange();"
+    (panelClose)="onPanelClose();"
+    (rowClick)="onRowClick($event);"
+    (tabChange)="onTabChange();">
+  </tailormap-attributelist-panel>
+</div>

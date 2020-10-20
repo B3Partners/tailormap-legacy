@@ -1,0 +1,52 @@
+<!--
+Remark:
+  Using a div with *ngIf consumes space on the page even when the panel
+  is not visible.
+-->
+<!--<div class="container" *ngIf="visible">-->
+<tailormap-panel-resize #panelResizer></tailormap-panel-resize>
+<div class="container">
+
+  <mat-toolbar #captionbar>
+    <span>Attributenlijst</span>
+    <span class="spacer"></span>
+    <button mat-flat-button color="primary" (click)="onTestClick();">
+      <span>Test</span>
+    </button>
+    <button mat-icon-button>
+      <mat-icon (click)="onMinimizeClick();">remove</mat-icon>
+    </button>
+    <button mat-icon-button>
+      <mat-icon (click)="onMaximizeClick();">keyboard_arrow_up</mat-icon>
+    </button>
+    <button mat-icon-button>
+      <mat-icon (click)="onCloseClick();">clear</mat-icon>
+    </button>
+  </mat-toolbar>
+
+  <mat-divider></mat-divider>
+
+  <ng-container *ngIf="layers.length === 0; then noLayers; else withLayers">
+  </ng-container>
+  <ng-template #noLayers>
+    <span class="nolayers">Geen geldige kaartlagen aanwezig.</span>
+  </ng-template>
+  <ng-template #withLayers>
+    <mat-tab-group #tabgroup animationDuration="0ms"
+                   (selectedTabChange)="onSelectedTabChange();">
+      <mat-tab *ngFor="let layer of layers; let index = index" [label]="layer.name">
+        <ng-template mat-tab-label>
+          {{layer.name}}
+          <mat-icon (click)="onTableOptionsClick($event,index)" >keyboard_arrow_down</mat-icon>
+        </ng-template>
+        <tailormap-attributelist-tab
+          #tab
+          [tabIndex]="index"
+          (pageChange)="onPageChange();"
+          (rowClick)="onRowClick($event);">
+        </tailormap-attributelist-tab>
+      </mat-tab>
+    </mat-tab-group>
+  </ng-template>
+</div>
+<!--</div>-->

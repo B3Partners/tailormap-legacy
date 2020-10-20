@@ -5,6 +5,7 @@ import { AppComponent } from './app.component';
 import { CoreModule } from 'projects/core/src';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { WorkflowControllerComponent } from '../../../core/src/lib/workflow/workflow-controller/workflow-controller.component';
+import { AttributelistFormComponent } from '../../../core/src/lib/user-interface/attributelist/attributelist-form/attributelist-form.component';
 
 @NgModule({
   declarations: [
@@ -18,6 +19,7 @@ import { WorkflowControllerComponent } from '../../../core/src/lib/workflow/work
   providers: [
   ],
   entryComponents: [
+    AttributelistFormComponent,
     WorkflowControllerComponent,
   ],
   bootstrap: [],
@@ -26,6 +28,8 @@ import { WorkflowControllerComponent } from '../../../core/src/lib/workflow/work
 export class AppModule {
   constructor(injector: Injector) {
     customElements.define('tailormap-workflow-controller', createCustomElement(WorkflowControllerComponent, {injector}));
+    customElements.define('tailormap-attributelist-form',
+                           createCustomElement(AttributelistFormComponent, {injector}));
   }
   public ngDoBootstrap() {}
 }

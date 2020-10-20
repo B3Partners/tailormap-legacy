@@ -1,7 +1,7 @@
 import { Workflow } from './Workflow';
 import * as wellknown from 'wellknown';
 import { Feature } from '../../shared/generated';
-import { FormComponent } from '../../feature-form/form/form.component';
+// import { FormComponent } from '../../feature-form/form/form.component';
 import { LayerUtils } from '../../shared/layer-utils/layer-utils.service';
 import {
   MapClickedEvent,
@@ -33,19 +33,19 @@ export class StandardFormWorkflow extends Workflow {
   }
 
   public openDialog(formFeatures ?: Feature[]): void {
-    const dialogRef = this.dialog.open(FormComponent, {
-      width: '1050px',
-      height: '800px',
-      disableClose: true,
-      data: {
-        formFeatures,
-        isBulk: false,
-      },
-    });
-    // tslint:disable-next-line: rxjs-no-ignored-subscription
-    dialogRef.afterClosed().subscribe(result => {
-      this.afterEditting();
-    });
+    // const dialogRef = this.dialog.open(FormComponent, {
+    //   width: '1050px',
+    //   height: '800px',
+    //   disableClose: true,
+    //   data: {
+    //     formFeatures,
+    //     isBulk: false,
+    //   },
+    // });
+    // // tslint:disable-next-line: rxjs-no-ignored-subscription
+    // dialogRef.afterClosed().subscribe(result => {
+    //   this.afterEditting();
+    // });
   }
 
   public mapClick(data: MapClickedEvent): void {

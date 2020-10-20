@@ -1,0 +1,40 @@
+<mat-toolbar>
+
+  <input matInput placeholder="Zoeken..." value="">
+  <button mat-icon-button
+          (click)="onSearchClick();">
+    <mat-icon>search</mat-icon>
+  </button>
+
+  <button mat-flat-button color="primary"
+          (click)="onFilterClick();">
+    <mat-icon>filter_list</mat-icon>
+    <span>Filter</span>
+  </button>
+
+  <span class="spacer"></span>
+
+  <button mat-button [matMenuTriggerFor]="menu">
+    <span>Exporteren</span>
+    <mat-icon>keyboard_arrow_down</mat-icon>
+  </button>
+  <mat-menu #menu="matMenu">
+    <button mat-menu-item
+            (click)="onExportClick('CSV');">
+      CSV
+    </button>
+    <button mat-menu-item
+            (click)="onExportClick('GEOJSON');">
+      GeoJSON
+    </button>
+    <button mat-menu-item
+            (click)="onExportClick('XLS');">
+      Excel
+    </button>
+    <button mat-menu-item
+            (click)="onExportClick('SHP');">
+      Shape
+    </button>
+  </mat-menu>
+
+</mat-toolbar>

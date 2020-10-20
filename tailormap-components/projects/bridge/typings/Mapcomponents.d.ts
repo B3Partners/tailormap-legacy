@@ -1,6 +1,10 @@
 import { LayerVisibilityEvent } from '../../core/src/lib/shared/models/event-models';
 import { Geometry } from '../../core/src/lib/shared/generated';
 
+declare interface App {
+  id: number;
+}
+
 declare interface AppLoader {
   get: (varName: 'viewerController' | 'appId' | 'user' | 'contextPath' | 'absoluteURIPrefix') => any;
 }
@@ -12,6 +16,9 @@ declare interface GeoService {
 declare interface AppLayer {
   id: string;
   layerName: string;
+
+  attribute: boolean;   // has attribute table???
+  featureType: number;
 }
 
 type layerVisibilityEvent = (object: any, event: LayerVisibilityEvent) => void;

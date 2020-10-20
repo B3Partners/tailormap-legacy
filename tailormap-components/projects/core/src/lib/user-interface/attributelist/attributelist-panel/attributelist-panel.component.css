@@ -1,0 +1,96 @@
+/* CONTAINER */
+.container {
+  border-top-width: 1px;
+  border-top-style: solid;
+  border-color: gray;
+
+  width: 100%;
+  height: 100%;
+  /*20200928*/
+  /*overflow: hidden;*/
+  overflow: auto;
+
+  /* as container */
+  display: flex;
+  flex-flow: column nowrap;
+}
+.nolayers {
+  font-size: 16px;
+  margin: 10px;
+}
+/* SPACER */
+.spacer {
+  flex: 1 1 auto;
+}
+/* CAPTIONBAR */
+.mat-toolbar {
+  height: 30px;
+}
+.mat-toolbar span {
+  margin: 5px;
+  font-size: 80%;
+}
+.mat-icon-button {
+  xwidth: 25px;
+  width: 24px;
+  height: 24px;
+  line-height: 24px;
+}
+/* TEST BUTTON */
+.mat-flat-button {
+  margin-right: 20px;
+  line-height: 22px;
+}
+/* DIVIDER */
+.mat-divider {
+  background: #e5e5e5;
+}
+/*20200928*/
+mat-tab-group {
+  xbackground: lightcyan;
+  /*20200928 BELANGRIJK*/
+  overflow: auto;
+  /* as child */
+  flex: 1;
+  /* as container */
+  display: flex;
+  flex-flow: column nowrap;
+}
+/*.mat-tab-group {*/
+/*  !* as child *!*/
+/*  flex: 1;*/
+/*  !* as container *!*/
+/*  display: flex;*/
+/*  flex-flow: column nowrap;*/
+/*}*/
+/*20200928*/
+/*.mat-tab-body {*/
+/*  !* as container *!*/
+/*  display: flex;*/
+/*  flex-flow: column nowrap;*/
+/*}*/
+/*!*20200928*!*/
+/*mat-tab-body-content {*/
+/*  !* as container *!*/
+/*  display: flex;*/
+/*  flex-flow: column nowrap;*/
+/*}*/
+/*tailormap-attributelist-tab {*/
+
+/*}*/
+
+/*:host ::ng-deep .mat-tab-body-content {*/
+::ng-deep .mat-tab-body-content {
+  xbackground: red;
+  overflow: auto;
+  flex: 1;
+  display: flex;
+  flex-flow: column nowrap;
+}
+
+ /* TAB LABELS */
+:host ::ng-deep .mat-tab-label {
+  height: 30px;
+  margin: 5px;
+  min-width: 100px;
+}

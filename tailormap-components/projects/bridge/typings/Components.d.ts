@@ -1,4 +1,5 @@
 import {
+  App,
   AppLayer,
   GeoService,
   layerVisibilityEvent,
@@ -16,6 +17,8 @@ declare interface LayerSelectedEvent{
 type layerEventHandler = ( payload: LayerSelectedEvent) => void;
 
 declare interface ViewerController {
+
+  app: App;
   mapComponent: MapComponent;
 
   isDebug: () => boolean;

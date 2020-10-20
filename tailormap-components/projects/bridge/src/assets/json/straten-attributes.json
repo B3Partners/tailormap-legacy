@@ -1,0 +1,40 @@
+[{
+  "type": "A1",
+  "gemeente": "Bennebroek"
+  },
+  {
+    "type": "E2",
+    "gemeente": "Deventer"
+  },
+  {
+    "type": "R3",
+    "gemeente": "Rucphen"
+  },
+  {
+    "type": "C4",
+    "gemeente": "Zoetermeer"
+  },
+  {
+    "type": "A5",
+    "gemeente": "Ubach over Worms"
+  },
+  {
+    "type": "C6",
+    "gemeente": "Meerkerk"
+  },
+  {
+    "type": "V7",
+    "gemeente": "Apeldoorn"
+  },
+  {
+    "type": "M8",
+    "gemeente": "Vollenhove"
+  },
+  {
+    "type": "H9",
+    "gemeente": "Haarlem"
+  },
+  {
+    "type": "D1",
+    "gemeente": "Berg en Terblijt"
+  }]

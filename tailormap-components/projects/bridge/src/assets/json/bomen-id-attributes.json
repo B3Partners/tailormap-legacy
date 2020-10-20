@@ -1,0 +1,32 @@
+[
+  {
+    "id": 1,
+    "naam": "Acer",
+    "gemeente": "Bennebroek",
+    "hoogte": 3307
+  },
+  {
+    "id": 2,
+    "naam": "Prunus",
+    "gemeente": "Deventer",
+    "hoogte": 12911
+  },
+  {
+    "id": 3,
+    "naam": "Acer",
+    "gemeente": "Rucphen",
+    "hoogte": 65
+  },
+  {
+    "id": 4,
+    "naam": "Prunus",
+    "gemeente": "Zoetermeer",
+    "hoogte": 4952
+  },
+  {
+    "id": 5,
+    "naam": "Prunus",
+    "gemeente": "Ubach over Worms",
+    "hoogte": 5512
+  }
+]

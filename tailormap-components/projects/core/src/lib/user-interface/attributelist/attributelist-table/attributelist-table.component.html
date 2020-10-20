@@ -1,0 +1,116 @@
+<div class="container">
+  <mat-paginator [length]="5"
+                 (page)="onPageChange($event)"></mat-paginator>
+  <mat-divider></mat-divider>
+
+  <div class="table-container">
+    <mat-table #table [dataSource]="dataSource"
+               matSort multiTemplateDataRows
+               (matSortChange) = "onSortClick($event)">
+
+      <ng-container *ngFor="let colName of getColumnNames()"
+                    [ngSwitch]="colName">
+
+        <ng-container *ngSwitchCase="'_checked'" matColumnDef="{{colName}}">
+          <!-- Header -->
+          <mat-header-cell class="column_small" *matHeaderCellDef [ngSwitch]="checkState">
+            <ng-template [ngSwitchCase]="'All'">
+              <mat-icon class="icon material-icons" color="primary"
+                        (click)="$event.stopPropagation();onHeaderCheckClick();" >
+                check_box
+              </mat-icon>
+            </ng-template>
+            <ng-template [ngSwitchCase]="'None'">
+              <mat-icon class="icon material-icons-outlined"
+                        (click)="onHeaderCheckClick();$event.stopPropagation();" >
+                check_box_outline_blank
+              </mat-icon>
+            </ng-template>
+            <ng-template [ngSwitchCase]="'Some'">
+              <mat-icon class="icon material-icons" color="primary"
+                        (click)="$event.stopPropagation();this.onHeaderCheckClick();" >
+                indeterminate_check_box
+              </mat-icon>
+            </ng-template>
+          </mat-header-cell>
+          <!-- Cell -->
+          <mat-cell class="column_small"  *matCellDef="let currRow;">
+            <ng-container *ngIf="currRow._checked; then iconChecked; else iconNotChecked;">
+            </ng-container>
+            <ng-template #iconChecked>
+              <mat-icon class="icon material-icons" color="primary"
+                        (click)="$event.stopPropagation();onRowCheckClick(currRow);">
+                check_box
+              </mat-icon>
+            </ng-template>
+            <ng-template #iconNotChecked>
+              <mat-icon class="icon material-icons-outlined"
+                        (click)="$event.stopPropagation();onRowCheckClick(currRow);">
+                check_box_outline_blank
+              </mat-icon>
+            </ng-template>
+          </mat-cell>
+        </ng-container>
+
+        <ng-container *ngSwitchCase="'_details'" matColumnDef="{{colName}}">
+          <!-- Header -->
+          <mat-header-cell class="column_small" *matHeaderCellDef
+                           [ngSwitch]="colName" ></mat-header-cell>
+          <!-- Cell -->
+          <mat-cell class="column_small"
+                    *matCellDef="let currRow;"
+                    [ngSwitch]="currRow._details">
+            <ng-template [ngSwitchCase]="'No'">
+              <span class="iconCharNo">+</span>
+            </ng-template>
+            <ng-template [ngSwitchCase]="'YesExpanded'">
+              <span class="iconChar"
+                    (click)="$event.stopPropagation();onRowExpandClick(currRow);">-</span>
+            </ng-template>
+            <ng-template [ngSwitchCase]="'YesCollapsed'">
+              <span class="iconChar"
+                    (click)="$event.stopPropagation();onRowExpandClick(currRow);">+</span>
+            </ng-template>
+            <ng-template *ngSwitchDefault>
+              <span class="iconCharNo">+</span>
+            </ng-template>
+          </mat-cell>
+        </ng-container>
+
+        <ng-container *ngSwitchDefault matColumnDef="{{colName}}">
+          <!-- Header -->
+          <mat-header-cell *matHeaderCellDef mat-sort-header >{{colName}}</mat-header-cell>
+          <!-- Cell -->
+          <mat-cell *matCellDef="let currRow" >{{currRow[colName]}}</mat-cell>
+        </ng-container>
+      </ng-container>
+
+      <mat-header-row *matHeaderRowDef="getColumnNames(); sticky: true;"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: getColumnNames();"
+               [cdkDetailsRow]="row"
+               [cdkDetailsRowTpl]="detailsTpl"
+               (click)="$event.stopPropagation();onRowClick(row);">
+      </mat-row>
+      <ng-template #detailsTpl let-currRow>
+        <div class="details-container" [@onDetailsExpand] *ngFor="let featureType of currRow.related_featuretypes">
+          <tailormap-attributelist-details
+            [parentLayerId]="dataSource.getLayerId()"
+            [parentLayerName]="dataSource.getLayerName()"
+            [featureType]="featureType">
+          </tailormap-attributelist-details>
+        </div>
+      </ng-template>
+
+    </mat-table>
+  </div>
+  <mat-toolbar [style.display]="getFooterBarVisible()">
+    <button mat-icon-button>
+      <mat-icon>subdirectory_arrow_right</mat-icon>
+    </button>
+    <button mat-flat-button color="primary"
+            (click)="onObjectOptionsClick();">
+      <span *ngIf="(nrChecked == 1)">opties voor 1 object</span>
+      <span *ngIf="(nrChecked > 1)">opties voor {{nrChecked}} objecten</span>
+    </button>
+  </mat-toolbar>
+</div>

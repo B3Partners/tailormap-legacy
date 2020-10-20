@@ -16,13 +16,13 @@ import {
   Wegvakonderdeel,
   Wegvakonderdeelplanning,
 } from '../../shared/generated';
-import { FormComponent } from '../../feature-form/form/form.component';
+// import { FormComponent } from '../../feature-form/form/form.component';
 import {
   MapClickedEvent,
 } from '../../shared/models/event-models';
 import { VectorLayer } from '../../../../../bridge/typings';
 import { GeoJSONPoint } from 'wellknown';
-import { DialogData } from '../../feature-form/form/form-models';
+// import { DialogData } from '../../feature-form/form/form-models';
 import { ChooseTypesComponent } from '../../user-interface/sewage/choose-types/choose-types.component';
 import { Observable } from 'rxjs';
 import {
@@ -135,21 +135,21 @@ export class SewageWorkflow extends Workflow {
   }
 
   public openDialog(feature ?: Feature): void {
-    const dialogData: DialogData = {
-      formFeatures: [feature],
-      isBulk: false,
-      closeAfterSave: true,
-    };
-    const dialogRef = this.dialog.open(FormComponent, {
-      width: '1050px',
-      height: '800px',
-      disableClose: true,
-      data: dialogData,
-    });
-    // tslint:disable-next-line: rxjs-no-ignored-subscription
-    dialogRef.afterClosed().subscribe(result => {
-      this.afterEditting();
-    });
+    // const dialogData: DialogData = {
+    //   formFeatures: [feature],
+    //   isBulk: false,
+    //   closeAfterSave: true,
+    // };
+    // const dialogRef = this.dialog.open(FormComponent, {
+    //   width: '1050px',
+    //   height: '800px',
+    //   disableClose: true,
+    //   data: dialogData,
+    // });
+    // // tslint:disable-next-line: rxjs-no-ignored-subscription
+    // dialogRef.afterClosed().subscribe(result => {
+    //   this.afterEditting();
+    // });
   }
 
   public mapClick(data: MapClickedEvent): void {
