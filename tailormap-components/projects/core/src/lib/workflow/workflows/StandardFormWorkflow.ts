@@ -7,6 +7,7 @@ import {
   MapClickedEvent,
 } from '../../shared/models/event-models';
 import { VectorLayer } from '../../../../../bridge/typings';
+import { FormComponent } from '../../feature-form/form/form.component';
 
 export class StandardFormWorkflow extends Workflow {
 
@@ -33,19 +34,19 @@ export class StandardFormWorkflow extends Workflow {
   }
 
   public openDialog(formFeatures ?: Feature[]): void {
-    // const dialogRef = this.dialog.open(FormComponent, {
-    //   width: '1050px',
-    //   height: '800px',
-    //   disableClose: true,
-    //   data: {
-    //     formFeatures,
-    //     isBulk: false,
-    //   },
-    // });
-    // // tslint:disable-next-line: rxjs-no-ignored-subscription
-    // dialogRef.afterClosed().subscribe(result => {
-    //   this.afterEditting();
-    // });
+     const dialogRef = this.dialog.open(FormComponent, {
+       width: '1050px',
+       height: '800px',
+       disableClose: true,
+       data: {
+         formFeatures,
+         isBulk: false,
+       },
+     });
+     // tslint:disable-next-line: rxjs-no-ignored-subscription
+     dialogRef.afterClosed().subscribe(result => {
+       this.afterEditting();
+     });
   }
 
   public mapClick(data: MapClickedEvent): void {
