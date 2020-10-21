@@ -79,7 +79,7 @@ export class FeatureInitializerService {
         return wv;
       case 'Wegvakonderdeelplanning':
         const wvp: Wegvakonderdeelplanning = {
-          children: [],
+          children: null,
           fid: 0,
           geometrie: undefined,
           hoeveelheid: 0,

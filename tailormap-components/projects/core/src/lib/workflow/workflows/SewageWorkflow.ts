@@ -16,18 +16,21 @@ import {
   Wegvakonderdeel,
   Wegvakonderdeelplanning,
 } from '../../shared/generated';
-import { FormComponent } from '../../feature-form/form/form.component';
+// import { FormComponent } from '../../feature-form/form/form.component';
 import {
   MapClickedEvent,
 } from '../../shared/models/event-models';
 import { VectorLayer } from '../../../../../bridge/typings';
 import { GeoJSONPoint } from 'wellknown';
-import { DialogData } from '../../feature-form/form/form-models';
+// import { DialogData } from '../../feature-form/form/form-models';
 import { ChooseTypesComponent } from '../../user-interface/sewage/choose-types/choose-types.component';
 import { Observable } from 'rxjs';
 import {
   take,
 } from 'rxjs/operators';
+import { Choice } from './WorkflowModels';
+import { FormComponent } from '../../feature-form/form/form.component';
+import { DialogData } from '../../feature-form/form/form-models';
 
 export class SewageWorkflow extends Workflow {
   private currentStep: Step;
@@ -134,21 +137,21 @@ export class SewageWorkflow extends Workflow {
   }
 
   public openDialog(feature ?: Feature): void {
-    const dialogData: DialogData = {
-      formFeatures: [feature],
-      isBulk: false,
-      closeAfterSave: true,
-    };
-    const dialogRef = this.dialog.open(FormComponent, {
-      width: '1050px',
-      height: '800px',
-      disableClose: true,
-      data: dialogData,
-    });
-    // tslint:disable-next-line: rxjs-no-ignored-subscription
-    dialogRef.afterClosed().subscribe(result => {
-      this.afterEditting();
-    });
+     const dialogData: DialogData = {
+       formFeatures: [feature],
+       isBulk: false,
+       closeAfterSave: true,
+     };
+     const dialogRef = this.dialog.open(FormComponent, {
+       width: '1050px',
+       height: '800px',
+       disableClose: true,
+       data: dialogData,
+     });
+     // tslint:disable-next-line: rxjs-no-ignored-subscription
+     dialogRef.afterClosed().subscribe(result => {
+       this.afterEditting();
+     });
   }
 
   public mapClick(data: MapClickedEvent): void {
@@ -186,6 +189,17 @@ export class SewageWorkflow extends Workflow {
     }
     this.tailorMap.getViewerController().mapComponent.getMap().update();
   }
+
+  public setCopyMode(feature: Feature): void {
+  }
+
+  public setFeature(feature: Feature): void {
+  }
+
+  public getDestinationFeatures(): Feature[] {
+    return [];
+  }
+
 }
 
 enum Step {
@@ -194,10 +208,3 @@ enum Step {
   WELL2 = 'well2',
   DUCT = 'duct',
 }
-
-export interface Choice {
-  well1?: string;
-  well2?: string;
-  duct?: string;
-  cancelled: boolean;
-};

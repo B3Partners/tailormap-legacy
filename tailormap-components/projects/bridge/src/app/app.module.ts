@@ -4,8 +4,8 @@ import { createCustomElement } from '@angular/elements';
 import { AppComponent } from './app.component';
 import { CoreModule } from 'projects/core/src';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { AttributelistFormComponent } from 'projects/core/src/lib/user-interface/attributelist/attributelist-form/attributelist-form.component';
-import { WorkflowControllerComponent } from 'projects/core/src/lib/workflow/workflow-controller/workflow-controller.component';
+import { WorkflowControllerComponent } from '../../../core/src/lib/workflow/workflow-controller/workflow-controller.component';
+import { AttributelistFormComponent } from '../../../core/src/lib/user-interface/attributelist/attributelist-form/attributelist-form.component';
 
 @NgModule({
   declarations: [

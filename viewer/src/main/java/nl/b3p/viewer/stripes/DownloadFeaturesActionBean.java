@@ -400,14 +400,17 @@ public class DownloadFeaturesActionBean extends LocalizableApplicationActionBean
         }
     }
 
-    private static final String COMPONENT_NAME = "viewer.components.AttributeList";
+    private static final String COMPONENT_NAME_EXTVERSION = "viewer.components.AttributeList";
+    private static final String COMPONENT_NAME_NGVERSION = "viewer.components.NgAttributeList";
     private int getMaxFeatures(){
         EntityManager em = Stripersist.getEntityManager();
         int max = 1000;
         Set components = application.getComponents();
         for (Iterator it = components.iterator(); it.hasNext();) {
             ConfiguredComponent comp = (ConfiguredComponent) it.next();
-            if (comp.getClassName().equals(COMPONENT_NAME)) {
+            if ( (comp.getClassName().equals(COMPONENT_NAME_EXTVERSION)
+                    || comp.getClassName().equals(COMPONENT_NAME_NGVERSION))
+                    && comp.getConfig() != null) {
                 JSONObject config = new JSONObject(comp.getConfig());
                 String maxFeatures = config.optString("maxFeatures");
                 if (maxFeatures != null && !maxFeatures.isEmpty()) {

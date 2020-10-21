@@ -1,0 +1,28 @@
+<h1 mat-dialog-title cdkDrag cdkDragRootElement=".cdk-overlay-pane">Kopiëren van {{originalFeature.clazz}}</h1>
+<p>Aantal geselecteerde features: {{this.data.destinationFeatures.length}} </p>
+<mat-divider></mat-divider>
+<div class="tree">
+  <tailormap-form-tree
+    (nodeClicked)='openForm($event)'
+    [features]=[this.data.originalFeature]
+    [feature]=originalFeature></tailormap-form-tree>
+</div>
+<div class="container">
+  <div class="form">
+    <mat-tab-group>
+      <mat-tab *ngFor="let tab of formConfig.tabConfig | keyvalue" label="{{tab.value}}">
+        <div class="tab">
+          <div *ngFor="let field of formConfig.fields" class="column">
+              <span *ngIf="field.column === stringToNumber(tab.key)" class="cellfield">
+                <mat-checkbox name="{{field.label}}" id="{{field.key}}" [checked]="true" (change)="updateFieldToCopy($event)">{{field.label}}</mat-checkbox>
+              </span>
+          </div>
+        </div>
+      </mat-tab>
+    </mat-tab-group>
+  </div>
+</div>
+<div class="actions">
+  <button mat-button (click)="cancel()">Annuleren</button>
+  <button mat-button (click)="copy()">Kopiëren</button>
+</div>

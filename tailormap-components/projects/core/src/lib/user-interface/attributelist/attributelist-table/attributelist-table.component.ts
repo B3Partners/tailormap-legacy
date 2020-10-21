@@ -162,7 +162,7 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
   }
 
   public onPageChange(event): void {
-    console.log('#Table - onPageChange');
+    // console.log('#Table - onPageChange');
     // Fire page change event.
     this.pageChange.emit();
     // Update the table.
@@ -185,8 +185,8 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
    * Fired when a expand/collapse icon/char is clicked.
    */
   public onRowExpandClick(row: RowData): void {
-    console.log('#Table - onRowExpandClick');
-    console.log(row);
+    // console.log('#Table - onRowExpandClick');
+    // console.log(row);
     if (row.hasOwnProperty('_detailsRow')) {
       // Toggle the expanded/collapsed state of the row.
       row._detailsRow.toggle();
@@ -250,8 +250,20 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
   }
 
   public onTest(): void {
-    console.log('#Table.onTest');
-    this.table.renderRows();
+    // console.log('#Table.onTest');
+    // this.table.renderRows();
+
+    // // Get passport field/column names.
+    // console.log(this.formconfigRepoService.getAllFormConfigs());
+    // const passportName = 'wegvakonderdeel';
+    // this.formconfigRepoService.formConfigs$.subscribe(formConfigs => {
+    //     const formConfig = formConfigs.config[passportName];
+    //     console.log(formConfig);
+    //   },
+    //   ()=>{},
+    //   ()=> {
+    //     console.log('onTest - complete');
+    // });
   }
 
   public setTabIndex(tabIndex: number): void {
