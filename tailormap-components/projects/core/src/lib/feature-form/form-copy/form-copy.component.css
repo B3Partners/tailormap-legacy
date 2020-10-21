@@ -22,3 +22,7 @@
   overflow: auto;
   height: 50%;
 }
+
+.copy-side-panel{
+  width: 50%;
+}

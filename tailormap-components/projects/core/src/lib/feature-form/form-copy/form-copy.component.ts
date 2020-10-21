@@ -29,6 +29,8 @@ export class FormCopyComponent implements OnInit {
 
   public originalFeature: Feature;
 
+  public panelOpenState = false;
+
   public showSidePanel = 'false';
 
   public parentFeature: Feature;
@@ -167,7 +169,7 @@ export class FormCopyComponent implements OnInit {
     }
   }
 
-  public test() {
+  public settings() {
     if (this.width === '400px') {
       this.width = '800px';
       this.dialogRef.updateSize(this.width);
