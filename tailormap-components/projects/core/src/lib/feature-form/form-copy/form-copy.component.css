@@ -1,5 +1,4 @@
 [mat-dialog-title] {
-  margin: -24px -24px 0px -24px !important;
   padding: 10px 24px;
   background: #369;
   color: #fff;
@@ -15,6 +14,7 @@
 }
 
 .form{
+  float: right;
   flex: 1;
   display: flex;
   flex-direction: column;

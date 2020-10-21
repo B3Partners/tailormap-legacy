@@ -25,7 +25,11 @@ import { FeatureInitializerService } from '../../shared/feature-initializer/feat
 })
 export class FormCopyComponent implements OnInit {
 
+  private width = '400px';
+
   public originalFeature: Feature;
+
+  public showSidePanel = 'false';
 
   public parentFeature: Feature;
 
@@ -160,6 +164,18 @@ export class FormCopyComponent implements OnInit {
     if (feature) {
         this.originalFeature = feature;
         this.formConfig = this.formConfigRepo.getFormConfig(this.originalFeature.clazz);
+    }
+  }
+
+  public test() {
+    if (this.width === '400px') {
+      this.width = '800px';
+      this.dialogRef.updateSize(this.width);
+      this.showSidePanel = 'true';
+    } else {
+      this.width = '400px';
+      this.dialogRef.updateSize(this.width);
+      this.showSidePanel = 'false';
     }
   }
 
