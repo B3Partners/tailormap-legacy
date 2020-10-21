@@ -29,8 +29,6 @@ export class FormCopyComponent implements OnInit {
 
   public originalFeature: Feature;
 
-  public panelOpenState = false;
-
   public showSidePanel = 'false';
 
   public parentFeature: Feature;
