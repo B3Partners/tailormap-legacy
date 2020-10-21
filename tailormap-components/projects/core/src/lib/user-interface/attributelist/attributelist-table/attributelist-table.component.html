@@ -79,7 +79,11 @@
 
         <ng-container *ngSwitchDefault matColumnDef="{{colName}}">
           <!-- Header -->
-          <mat-header-cell *matHeaderCellDef mat-sort-header >{{colName}}</mat-header-cell>
+          <mat-header-cell *matHeaderCellDef mat-sort-header >{{colName}}
+            <mat-icon (click) = "$event.stopPropagation();">
+              filter_list
+            </mat-icon>
+          </mat-header-cell>
           <!-- Cell -->
           <mat-cell *matCellDef="let currRow" >{{currRow[colName]}}</mat-cell>
         </ng-container>

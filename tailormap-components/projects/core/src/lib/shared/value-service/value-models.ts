@@ -1,7 +1,7 @@
 // Parameters as defined in viewer/src/main/java/nl/b3p/viewer/stripes/UniqueValuesActionBean.java
 
 export interface ValueParameters {
-  applicationLayer: number;  //appLayer in export-models?
+  applicationLayer: number;  // appLayer in export-models?
   featureType?: number;
   attributes: string[];
   attribute?: string;

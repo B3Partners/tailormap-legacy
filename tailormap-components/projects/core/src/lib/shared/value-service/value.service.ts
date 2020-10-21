@@ -9,7 +9,7 @@ import {
 } from './value-models';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 
 export class ValueService {

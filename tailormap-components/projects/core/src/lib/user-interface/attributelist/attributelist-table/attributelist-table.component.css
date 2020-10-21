@@ -42,13 +42,13 @@ mat-table {
 .mat-cell:first-of-type,
 .mat-header-cell:first-of-type,
 .mat-footer-cell:first-of-type {
-  padding-left: 24px;
   padding-left: 5px;
+  margin-left: 5px;
 }
 .mat-cell, .mat-header-cell {
   overflow-x: hidden;
   white-space: nowrap;
-  width: 150px;
+  width: 170px;
   padding-right: 5px;
   margin-right: 5px;
 }
