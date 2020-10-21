@@ -1,7 +1,10 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
-import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+import {
+  ReactiveFormsModule,
+  FormsModule,
+} from '@angular/forms';
 import { MatSortModule } from '@angular/material/sort';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
@@ -29,7 +32,10 @@ import { ApiModule } from './generated';
   declarations: [
     ConfirmDialogComponent],
   imports: [
-    ApiModule.forRoot({ rootUrl: window.location.origin + '/form-api' }),
+    ApiModule.forRoot({
+      rootUrl: window.location.origin + '/viewer/action/proxyrest?url=' +
+        window.location.origin + '/form-api',
+    }),
     CommonModule,
     ReactiveFormsModule,
     FormsModule,
@@ -78,10 +84,10 @@ import { ApiModule } from './generated';
     MatMenuModule,
     MatDialogModule,
   ],
-  entryComponents: [
-  ],
+  entryComponents: [],
   providers: [
     ConfirmDialogService,
   ],
 })
-export class SharedModule { }
+export class SharedModule {
+}
