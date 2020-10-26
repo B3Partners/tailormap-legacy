@@ -25,8 +25,12 @@ Ext.define("viewer.components.CustomConfiguration",{
             fields: ["id", "filename"],
             data: []
         });
-        var me = this;
+        this.getFilterableLayers();
+    },
 
+    initForm: function(){
+
+        var me = this;
         this.form.add([
             {
                 xtype: "textfield",
@@ -123,8 +127,8 @@ Ext.define("viewer.components.CustomConfiguration",{
             Ext.getCmp("attributeCombo2").setValue(this.configObject.imageDescriptionAttribute);
 
         }
-
     },
+
     populateAttributeCombos : function(id){
         if (id === null) {
             return;
@@ -176,6 +180,33 @@ Ext.define("viewer.components.CustomConfiguration",{
         store.add({id: "-666", serviceId: "-666", layerName: i18next.t('cyclorama_config_8'), alias: i18next.t('cyclorama_config_9')});
         return store;
     },
+
+    getFilterableLayers: function(){
+        var me = this;
+        Ext.Ajax.request({
+            url: me.requestPath,
+            params: {
+                filterable: true,
+                appId: this.getApplicationId(),
+                includeAttributes:true,
+            },
+            timeout:120000,
+            success: function ( result, request ) {
+                var layers = Ext.JSON.decode(result.responseText);
+                var appLayers = {};
+                for(var i = 0 ; i < layers.length ;i++){
+                    var l = layers[i];
+                    appLayers[l.id] =l ;
+                }
+                me.getAppConfig().appLayers = appLayers;
+                me.initForm();
+            },
+            failure: function() {
+                Ext.MessageBox.alert(i18next.t('viewer_admin_filterablecheckboxes_1'), i18next.t('viewer_admin_filterablecheckboxes_2'));
+            }
+        });
+    },
+
     loadKeys : function(value){
         var me = this;
         Ext.Ajax.request({
