@@ -80,7 +80,8 @@
         <ng-container *ngSwitchDefault matColumnDef="{{colName}}">
           <!-- Header -->
           <mat-header-cell *matHeaderCellDef mat-sort-header >{{colName}}
-            <mat-icon (click) = "$event.stopPropagation();">
+<!--            <mat-icon (click) = "$event.stopPropagation();onTableOptionsClick($event)">-->
+              <mat-icon (click) = "$event.stopPropagation();onFilterClick(colName)">
               filter_list
             </mat-icon>
           </mat-header-cell>

@@ -277,9 +277,9 @@ export class AttributeDataSource extends DataSource<any> {
     const colNames = [];
     prefix += '.';
     for (const attr of metadata.attributes) {
-      if (attr.longname.startsWith(prefix)) {
+      // if (attr.longname.startsWith(prefix)) {
         colNames.push(attr.name);
-      }
+      // }
     }
     return colNames;
   }

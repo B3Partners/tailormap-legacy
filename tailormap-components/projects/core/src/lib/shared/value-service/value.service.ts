@@ -22,7 +22,7 @@ export class ValueService {
     Object.entries(params).forEach(([key, value ]) => {
       httpParams = httpParams.set(key, String(value));
     });
-    return this.http.get<UniqueValuesResponse>('/viewer/action/uniquevalues', {params: httpParams, observe: 'response'});
+    return this.http.get<UniqueValuesResponse>('/viewer/action/uniquevalues', {params: httpParams});
   }
 
 }

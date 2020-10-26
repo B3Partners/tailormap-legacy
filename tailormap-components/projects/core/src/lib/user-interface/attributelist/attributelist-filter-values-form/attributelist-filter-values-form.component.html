@@ -1,0 +1,39 @@
+<h3 mat-dialog-title>
+  Filter op {{colName}}
+</h3>
+
+  <div class="row">
+    <mat-checkbox class="icon-checkbox" color="primary"
+                  [checked]="allOn"
+                  [indeterminate]="someOn()"
+                  (change)="setAll($event.checked)">
+      Selecteer alles
+    </mat-checkbox>
+
+  </div>
+
+<mat-divider></mat-divider>
+
+<mat-dialog-content class="mat-typography">
+  <div class="row"  *ngFor="let value of this.values; let index = index">
+    <mat-checkbox class="icon-checkbox" color="primary"
+                  [(ngModel)]="value.select"
+                  (ngModelChange)="updateOn()">
+      {{value.key}}
+    </mat-checkbox>
+
+  </div>
+</mat-dialog-content>
+
+<mat-divider></mat-divider>
+
+<mat-dialog-actions>
+  <button mat-raised-button color="primary"
+          (click)="createFilter()">
+    OK
+  </button>
+  <button mat-raised-button color="primary"
+          (click)="onCancel()">
+    Cancel</button>
+
+</mat-dialog-actions>

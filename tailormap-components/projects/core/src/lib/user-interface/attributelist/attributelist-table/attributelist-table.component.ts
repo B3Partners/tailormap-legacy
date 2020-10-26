@@ -17,13 +17,21 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
 
 import { AttributelistTable, RowClickData, RowData } from '../attributelist-common/attributelist-models';
 import { AttributeDataSource } from '../attributelist-common/attributelist-datasource';
+import { AttributelistFilterValuesFormComponent } from '../attributelist-filter-values-form/attributelist-filter-values-form.component';
 import { AttributelistColumn } from '../attributelist-common/attributelist-column-models';
 import { AttributelistTableOptionsFormComponent } from '../attributelist-table-options-form/attributelist-table-options-form.component';
 import { AttributelistService } from '../attributelist.service';
 import { AttributeService } from '../../../shared/attribute-service/attribute.service';
 import { CheckState } from '../attributelist-common/attributelist-enums';
+import { LayerFilterValues,
+  // FilterColumns,
+  FilterValueSettings,
+} from '../attributelist-common/attributelist-filter-models';
 import { FormconfigRepositoryService } from '../../../shared/formconfig-repository/formconfig-repository.service';
 import { LayerService } from '../layer.service';
+import { ValueService } from '../../../shared/value-service/value.service';
+import { ValueParameters, UniqueValuesResponse } from '../../../shared/value-service/value-models';
+// import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'tailormap-attributelist-table',
@@ -54,6 +62,8 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
   @Output()
   public tabChange = new EventEmitter();
 
+  public layerFilterValues: LayerFilterValues;
+
   public dataSource = new AttributeDataSource(this.layerService,
                                               this.attributeService,
                                               this.formconfigRepoService);
@@ -68,11 +78,16 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
 
   private defaultPageSize = 5;
 
+  private valueParams: ValueParameters = {
+    applicationLayer: 0,
+    attributes: [],
+  }
   /**
    * Remark: The Renderer2 is needed for setting a custom css style.
    */
   constructor(private attributeService: AttributeService,
               private layerService: LayerService,
+              private valueService: ValueService,
               private attributelistService: AttributelistService,
               private formconfigRepoService: FormconfigRepositoryService,
               private dialog: MatDialog) {
@@ -213,6 +228,46 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
     this.paginator.pageIndex = 0;
     // Update the table.
     this.updateTable();
+  }
+
+  /**
+   * Fired when a column filter is clicked.
+   */
+  public onFilterClick(columnName: string): void {
+    // Get the unique values for this column
+    this.valueParams.applicationLayer = this.dataSource.params.layerId;
+    this.valueParams.attributes = [];
+    this.valueParams.attributes.push (columnName);
+    this.valueService.uniqueValues(this.valueParams).subscribe((data: UniqueValuesResponse) => {
+      if (data.success) {
+        // this.layerFilterValues.layerId = this.dataSource.params.layerId;
+        // let filterColumns: FilterColumns;
+        let uniqueValues: FilterValueSettings[];
+        uniqueValues = [];
+        data.uniqueValues[columnName].forEach(val => {
+          console.log(val);
+
+          let filterValueSettings: FilterValueSettings;
+          filterValueSettings = {key: val, select: true};
+          uniqueValues.push(filterValueSettings);
+
+          // this.layerFilterValues.columns[columnName].uniqueValues[val].select= true;
+        })
+        // filterColumns = {key: columnName, uniqueValues: uniqueValues};
+        // this.layerFilterValues.columns.push(filterColumns);
+        const config = new MatDialogConfig();
+        // config.data = this.layerFilterValues;
+        config.data = {
+          colName: columnName,
+          values: uniqueValues,
+        };
+        const dialogRef = this.dialog.open(AttributelistFilterValuesFormComponent, config);
+        dialogRef.afterClosed().subscribe(value => {
+          // Do the filtering
+          // ..
+        });
+      }
+    });
   }
 
   /**
