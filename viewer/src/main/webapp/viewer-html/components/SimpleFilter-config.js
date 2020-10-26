@@ -27,11 +27,15 @@ Ext.define("viewer.components.CustomConfiguration",{
     filterConfigurer: null,
 
     currentEditIndex: null,
+    parentId: null,
+    layerStore:null,
+    configObject:null,
 
     constructor: function (parentId, configObject, configPage) {
         viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId, configObject, configPage);
         this.mixins.observable.constructor.call(this, config);
-
+        this.parentId = parentId;
+        this.configObject = configObject;
         Ext.tip.QuickTipManager.init();  // enable tooltips
 
         this.filterTypes = Ext.create("Ext.data.Store", {
@@ -57,15 +61,22 @@ Ext.define("viewer.components.CustomConfiguration",{
 
         this.filterConfigs = [];
 
-        if(configObject && configObject.filters) {
+        this.getFilterableLayers();
+
+        return this;
+    },
+
+    initConfiguration: function(){
+        if(this.configObject && this.configObject.filters) {
             var me = this;
-            Ext.Array.each(configObject.filters, function(filter) {
-                me.addFilter(filter,configObject);
+            Ext.Array.each(this.configObject.filters, function(filter) {
+                me.addFilter(filter,me.configObject);
             });
         }
+        this.createForm();
+    },
 
-        var layerStore = this.createLayerStore();
-
+    createForm: function(){
         var me = this;
 
         Ext.create('Ext.panel.Panel', {
@@ -76,7 +87,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                 type: 'vbox',
                 align: 'stretch'
             },
-            renderTo: Ext.get(parentId),
+            renderTo: Ext.get(this.parentId),
             items: [{
                 xtype: 'textfield',
                 fieldLabel: i18next.t('simplefilter_config_10'),
@@ -134,7 +145,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                             xtype: "combo",
                             itemId: "layerCombo",
                             fieldLabel: i18next.t('simplefilter_config_14'),
-                            store: layerStore,
+                            store: this.layerStore,
                             queryMode: "local",
                             displayField: "alias",
                             editable: false,
@@ -290,7 +301,6 @@ Ext.define("viewer.components.CustomConfiguration",{
                 }]
             }]
         });
-        return this;
     },
     createFilterConfig: function(type,config){
         var configurerClass = "viewer.components.sf." + type.substring(0,1).toUpperCase() + type.substring(1) + "Config";
@@ -432,7 +442,34 @@ Ext.define("viewer.components.CustomConfiguration",{
                 store.add({id: id, serviceId: appLayer.serviceId, layerName: appLayer.layerName, alias: appLayer.alias});
             }
         });
-        return store;
+        this.layerStore = store;
+        this.initConfiguration();
+    },
+
+    getFilterableLayers: function(){
+        var me = this;
+        Ext.Ajax.request({
+            url: me.requestPath,
+            params: {
+                filterable: true,
+                appId: this.getApplicationId(),
+                includeAttributes:true,
+            },
+            timeout:120000,
+            success: function ( result, request ) {
+               var layers = Ext.JSON.decode(result.responseText);
+               var appLayers = {};
+               for(var i = 0 ; i < layers.length ;i++){
+                   var l = layers[i];
+                   appLayers[l.id] =l ;
+               }
+                me.getAppConfig().appLayers = appLayers;
+                me.createLayerStore();
+            },
+            failure: function() {
+                Ext.MessageBox.alert(i18next.t('viewer_admin_filterablecheckboxes_1'), i18next.t('viewer_admin_filterablecheckboxes_2'));
+            }
+        });
     },
     resetConfig: function (alsoType) {
         if(alsoType){
