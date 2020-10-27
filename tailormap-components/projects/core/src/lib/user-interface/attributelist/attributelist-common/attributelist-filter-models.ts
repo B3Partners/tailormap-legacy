@@ -5,6 +5,7 @@ export interface LayerFilterValues {
 
 export interface FilterColumns {
   key: string;
+  status: boolean;
   uniqueValues: FilterValueSettings[]
 }
 

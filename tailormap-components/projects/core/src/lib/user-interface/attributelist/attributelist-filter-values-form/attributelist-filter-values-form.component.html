@@ -3,9 +3,9 @@
 </h3>
 
   <div class="row">
-    <mat-checkbox class="icon-checkbox" color="primary"
+    <mat-checkbox color="primary"
                   [checked]="allOn"
-                  [indeterminate]="someOn()"
+                  [indeterminate]="someSelected()"
                   (change)="setAll($event.checked)">
       Selecteer alles
     </mat-checkbox>
@@ -18,7 +18,7 @@
   <div class="row"  *ngFor="let value of this.values; let index = index">
     <mat-checkbox class="icon-checkbox" color="primary"
                   [(ngModel)]="value.select"
-                  (ngModelChange)="updateOn()">
+                  (ngModelChange)="updateSelected()">
       {{value.key}}
     </mat-checkbox>
 
@@ -29,11 +29,10 @@
 
 <mat-dialog-actions>
   <button mat-raised-button color="primary"
-          (click)="createFilter()">
+          (click)="onOk()">
     OK
   </button>
   <button mat-raised-button color="primary"
           (click)="onCancel()">
     Cancel</button>
-
 </mat-dialog-actions>

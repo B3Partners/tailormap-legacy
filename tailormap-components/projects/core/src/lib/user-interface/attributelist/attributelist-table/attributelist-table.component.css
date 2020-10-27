@@ -55,6 +55,12 @@ mat-table {
 .material-icons, .material-icons-outlined {
   font-size: 20px;
 }
+.material-icons-set {
+  color: rgba(0, 0, 0, 1);
+}
+.material-icons-unset {
+  color: rgba(0, 0, 0, 0.26);
+}
 .mat-icon {
   padding-top: 4px;
   padding-left: 4px;
@@ -64,7 +70,7 @@ mat-table {
   max-height: 40px;
 }
 ::ng-deep .mat-paginator-range-label {
-  margin: 0px 0px 0px 10px !important;
+  margin: 0 0 0 10px !important;
 }
 .mat-toolbar {
   background: rgba(0,0,0,0.0);

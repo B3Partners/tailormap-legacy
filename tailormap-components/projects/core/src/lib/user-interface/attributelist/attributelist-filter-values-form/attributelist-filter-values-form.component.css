@@ -3,14 +3,18 @@ h3 {
   font-size: 16px;
   line-height: 16px;
 }
+.mat-checkbox {
+  margin-right: 4px;
+  font-size: 16px;
+}
+.mat-dialog-actions {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 .mat-dialog-title {
   width: 100%;
   text-align: center;
   vertical-align: center;
 }
 
-.icon-checkbox {
-  margin-right: 4px;
-  font-size: 16px;
-  /*line-height: 24px;*/
-}

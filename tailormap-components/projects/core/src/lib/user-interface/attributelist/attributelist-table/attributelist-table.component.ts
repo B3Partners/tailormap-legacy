@@ -23,14 +23,18 @@ import { AttributelistTableOptionsFormComponent } from '../attributelist-table-o
 import { AttributelistService } from '../attributelist.service';
 import { AttributeService } from '../../../shared/attribute-service/attribute.service';
 import { CheckState } from '../attributelist-common/attributelist-enums';
-import { LayerFilterValues,
-  // FilterColumns,
+import {
+  LayerFilterValues,
+  FilterColumns,
   FilterValueSettings,
 } from '../attributelist-common/attributelist-filter-models';
 import { FormconfigRepositoryService } from '../../../shared/formconfig-repository/formconfig-repository.service';
 import { LayerService } from '../layer.service';
 import { ValueService } from '../../../shared/value-service/value.service';
-import { ValueParameters, UniqueValuesResponse } from '../../../shared/value-service/value-models';
+import {
+  ValueParameters,
+  UniqueValuesResponse,
+} from '../../../shared/value-service/value-models';
 // import { filter } from 'rxjs/operators';
 
 @Component({
@@ -62,7 +66,10 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
   @Output()
   public tabChange = new EventEmitter();
 
-  public layerFilterValues: LayerFilterValues;
+  public layerFilterValues: LayerFilterValues = {
+    layerId: 0,
+    columns: [],
+  };
 
   public dataSource = new AttributeDataSource(this.layerService,
                                               this.attributeService,
@@ -126,6 +133,8 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
 
     // Update the table rows.
     this.table.renderRows();
+
+    this.initFiltering();
 
     // FOR TESTING. SHOW TABLE OPTIONS FORM AT STARTUP.
     // this.onTableOptionsClick(null);
@@ -244,15 +253,23 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
         // let filterColumns: FilterColumns;
         let uniqueValues: FilterValueSettings[];
         uniqueValues = [];
-        data.uniqueValues[columnName].forEach(val => {
-          console.log(val);
+        const colObject = this.layerFilterValues.columns.find(c => c.key === columnName);
+        const colIndex = this.layerFilterValues.columns.findIndex(obj => obj.key === columnName);
+        if (colObject.uniqueValues.length === 0) {
 
-          let filterValueSettings: FilterValueSettings;
-          filterValueSettings = {key: val, select: true};
-          uniqueValues.push(filterValueSettings);
+          data.uniqueValues[columnName].forEach(val => {
+            console.log('  ' + val);
 
-          // this.layerFilterValues.columns[columnName].uniqueValues[val].select= true;
-        })
+            let filterValueSettings: FilterValueSettings;
+            filterValueSettings = {key: val, select: true};
+            uniqueValues.push(filterValueSettings);
+
+            // this.layerFilterValues.columns[columnName].uniqueValues[val].select= true;
+          })
+        } else {
+            colObject.uniqueValues.forEach(val => uniqueValues.push(Object.assign({}, val)))
+        }
+
         // filterColumns = {key: columnName, uniqueValues: uniqueValues};
         // this.layerFilterValues.columns.push(filterColumns);
         const config = new MatDialogConfig();
@@ -262,12 +279,41 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
           values: uniqueValues,
         };
         const dialogRef = this.dialog.open(AttributelistFilterValuesFormComponent, config);
-        dialogRef.afterClosed().subscribe(value => {
+        dialogRef.afterClosed().subscribe(result => {
           // Do the filtering
-          // ..
+          if (result === 'ON') {
+            console.log('In TABLE component in filter:')
+            config.data.values.forEach(v => {
+              if (v.select) {
+                console.log('  ' + v.key);
+              }
+            })
+            this.layerFilterValues.columns[colIndex].uniqueValues = config.data.values;
+            this.layerFilterValues.columns[colIndex].status = true;
+          } else if (result === 'OFF') {
+            console.log('Filter is uitgezet.')
+            this.layerFilterValues.columns[colIndex].uniqueValues = [];
+            this.layerFilterValues.columns[colIndex].status = false;
+          } else {
+            console.log('Filter zetten niet gewijzigd.')
+          }
         });
       }
     });
+  }
+
+  /**
+   * Check if a filter is active on a column
+   */
+  public getIsFilterActive(columnName): boolean {
+    const colObject = this.layerFilterValues.columns.find(c => c.key === columnName);
+    let result: boolean;
+    if (colObject) {
+      result = colObject.status;
+    } else {
+      result = false;
+    }
+    return result;
   }
 
   /**
@@ -350,5 +396,16 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
     this.dataSource.loadData(this);
     // Update check info (number checked/check state).
     this.updateCheckedInfo();
+  }
+
+  private initFiltering(): void {
+    // Init the filter structure
+    this.layerFilterValues.layerId = this.dataSource.params.layerId;
+    const colNames = this.getColumnNames();
+    for (const colName of colNames) {
+      let filterColumn: FilterColumns;
+      filterColumn = {key: colName, status: false, uniqueValues: []};
+      this.layerFilterValues.columns.push(filterColumn);
+    }
   }
 }

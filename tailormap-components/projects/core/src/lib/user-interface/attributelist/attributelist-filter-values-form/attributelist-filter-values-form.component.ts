@@ -28,18 +28,19 @@ export class AttributelistFilterValuesFormComponent implements OnInit {
     this.colName = data.colName;
     this.values = data.values;
     this.allOn = true
+    this.updateSelected();
   }
 
   public ngOnInit(): void {
   }
 
-  public updateOn() {
+  public updateSelected() {
     if (Array.isArray(this.values)) {
       this.allOn = this.values != null && this.values.every(v => v.select)
     }
   }
 
-  public someOn() {
+  public someSelected() {
     if (this.values === null) {
       return false;
     }
@@ -60,21 +61,21 @@ export class AttributelistFilterValuesFormComponent implements OnInit {
     }
   }
 
-  public createFilter() {
+  public onOk() {
     console.log ('Filter zetten op waarden: ');
     if (Array.isArray(this.values)) {
       this.values.forEach(v => {
         if (v.select) {
-          console.log(v.key);
+          console.log('  ' + v.key);
         }
       })
     }
 
-    this.dialogRef.close();
+    this.dialogRef.close((this.someSelected()) ? 'ON' : 'OFF');
   }
 
   public onCancel() {
-    this.dialogRef.close();
+    this.dialogRef.close('CANCEL');
   }
 
 }
