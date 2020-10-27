@@ -9,6 +9,7 @@ import nl.b3p.viewer.audit.Auditable;
 import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.security.Authorizations;
 import nl.b3p.viewer.config.services.GeoService;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpEntity;
@@ -22,10 +23,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.io.StringReader;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.Set;
+import java.nio.charset.StandardCharsets;
 
 @UrlBinding("/action/proxyrest")
 @StrictBinding
@@ -57,10 +59,17 @@ public class ProxyRESTActionBean implements ActionBean, Auditable {
         // Session must exist
         HttpSession sess = request.getSession(false);
         if (unauthorized) {
-            return new ErrorResolution(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized proxying");
+            return new StreamingResolution("application/json") {
+                @Override
+                public void stream(HttpServletResponse response) throws Exception {
+                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    IOUtils.copy(new StringReader("Unauthorized proxying"), response.getOutputStream(), StandardCharsets.UTF_8);
+
+                }
+            };
         }
         EntityManager em = Stripersist.getEntityManager();
-        URL theUrl = new URL(url);
+        URL theUrl = constructURL();
         HttpClientConfigured client = getHttpClient(theUrl, em);
         HttpUriRequest req = getHttpRequest(theUrl);
         HttpResponse response;
@@ -94,6 +103,12 @@ public class ProxyRESTActionBean implements ActionBean, Auditable {
         }
     }
 
+    private URL constructURL() throws MalformedURLException {
+        URL requestUrl = new URL(context.getRequest().getRequestURL().toString());
+        String constructedURL = "http://localhost:" + requestUrl.getPort() + "/form-api" + url;
+        URL u = new URL(constructedURL);
+        return u;
+    }
 
     public HttpClientConfigured getHttpClient(URL theUrl, EntityManager em) {
         String username = null;

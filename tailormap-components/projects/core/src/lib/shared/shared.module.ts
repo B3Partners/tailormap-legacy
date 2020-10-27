@@ -33,8 +33,7 @@ import { ApiModule } from './generated';
     ConfirmDialogComponent],
   imports: [
     ApiModule.forRoot({
-      rootUrl: window.location.origin + '/viewer/action/proxyrest?url=' +
-        window.location.origin + '/form-api',
+      rootUrl: window.location.origin + '/viewer/action/proxyrest?url=',
     }),
     CommonModule,
     ReactiveFormsModule,
