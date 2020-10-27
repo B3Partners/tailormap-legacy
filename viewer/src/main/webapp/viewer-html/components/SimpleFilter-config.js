@@ -65,8 +65,14 @@ Ext.define("viewer.components.CustomConfiguration",{
         });
         this.filterConfigs = [];
         this.createForm();
-        this.getFilterableLayers();
+        this.getFilterableLayers(this.initLayers);
         return this;
+    },
+
+    initLayers: function(layers){
+
+        this.getAppConfig().appLayers = layers;
+        this.createLayerStore();
     },
 
     initConfiguration: function(){
@@ -447,31 +453,6 @@ Ext.define("viewer.components.CustomConfiguration",{
         this.initConfiguration();
     },
 
-    getFilterableLayers: function(){
-        var me = this;
-        Ext.Ajax.request({
-            url: me.requestPath,
-            params: {
-                filterable: true,
-                appId: this.getApplicationId(),
-                includeAttributes:true,
-            },
-            timeout:120000,
-            success: function ( result, request ) {
-               var layers = Ext.JSON.decode(result.responseText);
-               var appLayers = {};
-               for(var i = 0 ; i < layers.length ;i++){
-                   var l = layers[i];
-                   appLayers[l.id] =l ;
-               }
-                me.getAppConfig().appLayers = appLayers;
-                me.createLayerStore();
-            },
-            failure: function() {
-                Ext.MessageBox.alert(i18next.t('viewer_admin_filterablecheckboxes_1'), i18next.t('viewer_admin_filterablecheckboxes_2'));
-            }
-        });
-    },
     resetConfig: function (alsoType) {
         if(alsoType){
             Ext.ComponentQuery.query("#filterType")[0].setValue(null);
