@@ -30,6 +30,7 @@ Ext.define("viewer.components.CustomConfiguration",{
     parentId: null,
     layerStore:null,
     configObject:null,
+    simplefilterForm:null,
 
     constructor: function (parentId, configObject, configPage) {
         viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId, configObject, configPage);
@@ -59,10 +60,12 @@ Ext.define("viewer.components.CustomConfiguration",{
             data: []
         });
 
+        this.layerStore = Ext.create("Ext.data.Store", {
+            fields: [{name: "id", type: 'int'}, "serviceId", "layerName", "alias"]
+        });
         this.filterConfigs = [];
-
+        this.createForm();
         this.getFilterableLayers();
-
         return this;
     },
 
@@ -73,16 +76,16 @@ Ext.define("viewer.components.CustomConfiguration",{
                 me.addFilter(filter,me.configObject);
             });
         }
-        this.createForm();
+        this.simplefilterForm.setLoading(false);
     },
 
     createForm: function(){
         var me = this;
-
-        Ext.create('Ext.panel.Panel', {
+        this.simplefilterForm = Ext.create('Ext.panel.Panel', {
             border: 0,
             width: 730,
             height: 800,
+
             layout: {
                 type: 'vbox',
                 align: 'stretch'
@@ -301,6 +304,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                 }]
             }]
         });
+        this.simplefilterForm.setLoading(i18next.t('viewer_components_configobject_1'));
     },
     createFilterConfig: function(type,config){
         var configurerClass = "viewer.components.sf." + type.substring(0,1).toUpperCase() + type.substring(1) + "Config";
@@ -433,16 +437,13 @@ Ext.define("viewer.components.CustomConfiguration",{
     },
 
     createLayerStore: function() {
-        var store = Ext.create("Ext.data.Store", {
-            fields: [{name: "id", type: 'int'}, "serviceId", "layerName", "alias"]
-        });
-
+        var me = this;
         Ext.Object.each(this.getAppConfig().appLayers, function(id, appLayer) {
             if(appLayer.attributes.length > 0) {
-                store.add({id: id, serviceId: appLayer.serviceId, layerName: appLayer.layerName, alias: appLayer.alias});
+                me.layerStore.add({id: id, serviceId: appLayer.serviceId, layerName: appLayer.layerName, alias: appLayer.alias});
             }
         });
-        this.layerStore = store;
+
         this.initConfiguration();
     },
 

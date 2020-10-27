@@ -214,12 +214,6 @@ public class LayoutManagerActionBean extends ApplicationActionBean {
         EntityManager em = Stripersist.getEntityManager();
 
         try {
-            appConfigJSON = application.toJSON(context.getRequest(),false,
-                    true, false, false,em, false).toString();
-        } catch(JSONException je) {
-        }
-        
-        try {
             if(component == null){
                 component = (ConfiguredComponent) em.createQuery(
                         "from ConfiguredComponent where application = :application and name = :name").setParameter("application", application).setParameter("name", name).getSingleResult();
