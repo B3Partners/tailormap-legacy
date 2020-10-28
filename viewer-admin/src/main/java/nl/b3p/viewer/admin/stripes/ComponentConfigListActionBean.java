@@ -70,6 +70,8 @@ public class ComponentConfigListActionBean implements ActionBean {
     private Boolean wfs = false;
     @Validate
     private Boolean attribute = false;
+    @Validate
+    private Boolean includeAttributes = false;
     
     @Validate
     private String type;
@@ -147,7 +149,14 @@ public class ComponentConfigListActionBean implements ActionBean {
         this.type = type;
     }
 
-    //</editor-fold>
+    public Boolean getIncludeAttributes() {
+        return includeAttributes;
+    }
+
+    public void setIncludeAttributes(Boolean includeAttributes) {
+        this.includeAttributes = includeAttributes;
+    }
+//</editor-fold>
     
     @DefaultHandler
     public Resolution layerlist() {
@@ -159,7 +168,7 @@ public class ComponentConfigListActionBean implements ActionBean {
             List<ApplicationLayer> layers =LayerListHelper.getLayers(app, filterable, bufferable, editable, influence, arc, wfs, attribute, false, null,em);
             for (ApplicationLayer layer : layers) {
                 try {
-                    jsonArray.put(layer.toJSONObject(em));
+                    jsonArray.put(layer.toJSONObject(includeAttributes, includeAttributes,em, app));
                 } catch (JSONException je) {
                     log.error("Error while getting JSONObject of Layer with id: " + layer.getId(), je);
                 }
