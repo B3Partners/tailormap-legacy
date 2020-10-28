@@ -1,6 +1,7 @@
 /* tslint:disable */
 import { Feature } from './feature';
 import { Geometry } from './geometry';
+import { Rioolput } from './rioolput';
 export interface VrijvLeiding extends Feature {
   aanlegjaar?: number;
   aant_ie_bedrijven?: number;
@@ -39,6 +40,7 @@ export interface VrijvLeiding extends Feature {
   bbv?: string;
   bdd_waterpeil?: number;
   begin_tijd?: string;
+  beginput?: Rioolput;
   beheercluster?: string;
   beheerder?: string;
   beheerder_vakgeb?: string;
@@ -66,6 +68,7 @@ export interface VrijvLeiding extends Feature {
   domein?: string;
   drainagetype?: string;
   eind_tijd?: string;
+  eindput?: Rioolput;
   eisvoorzorgsmaatregel?: string;
   fid?: number;
   functie_vrijv_leiding?: string;

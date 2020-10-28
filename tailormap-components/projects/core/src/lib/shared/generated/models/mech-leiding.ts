@@ -1,6 +1,7 @@
 /* tslint:disable */
 import { Feature } from './feature';
 import { Geometry } from './geometry';
+import { Rioolput } from './rioolput';
 export interface MechLeiding extends Feature {
   aanlegjaar?: number;
   aantal_buizen?: number;
@@ -40,7 +41,7 @@ export interface MechLeiding extends Feature {
   imgeo_id?: string;
   lengte?: number;
   leverancier_fabrikant?: string;
-  lozingsput_id?: string;
+  lozingsput?: Rioolput;
   materiaal_gwsw?: string;
   materiaal_leiding?: string;
   materiaal_rioolleiding?: string;
@@ -52,7 +53,7 @@ export interface MechLeiding extends Feature {
   ontluchtingspunten?: number;
   openbare_ruimte?: string;
   persleidingtype?: string;
-  pompput_id?: string;
+  pompput?: Rioolput;
   product_leiding?: string;
   rayon?: string;
   reg_begin?: string;
