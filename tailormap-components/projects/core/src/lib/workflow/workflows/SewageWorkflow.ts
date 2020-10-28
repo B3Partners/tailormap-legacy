@@ -98,43 +98,42 @@ export class SewageWorkflow extends Workflow {
             message, false)
             .pipe(take(1)).subscribe(useExisting => {
             if (!useExisting) {
-              feat = this.createFeature(geoJson,this.getExtraParams());
+              feat = this.createFeature(geoJson, this.getExtraParams());
             }
             this.openDialog(feat);
           });
         } else {
-          feat = this.createFeature(geoJson,this.getExtraParams());
+          feat = this.createFeature(geoJson, this.getExtraParams());
           this.openDialog(feat);
         }
       });
     } else {
-      const feat = this.createFeature(geoJson,this.getExtraParams());
+      const feat = this.createFeature(geoJson, this.getExtraParams());
       this.openDialog(feat);
     }
   }
 
-  private getExtraParams(){
+  private getExtraParams() {
 
     if (this.currentStep === Step.DUCT) {
-      switch(this.choice.duct){
-        case "mechleiding":
+      switch (this.choice.duct){
+        case 'mechleiding':
           return {
             pompput_id: this.well1Feature.objectGuid,
-            lozingsput_id: this.well2Feature.objectGuid
+            lozingsput_id: this.well2Feature.objectGuid,
           };
-        case "vrijvleiding":
+        case 'vrijvleiding':
           return {
             beginput_id: this.well1Feature.objectGuid,
-            eindput_id: this.well2Feature.objectGuid
+            eindput_id: this.well2Feature.objectGuid,
           };
-          break;
       }
-    }else{
+    }else {
       return {};
     }
   }
 
-  private createFeature(geoJson: wellknown.GeoJSONGeometry, params :any): Feature {
+  private createFeature(geoJson: wellknown.GeoJSONGeometry, params : any): Feature {
     const objecttype = this.featureType.charAt(0).toUpperCase() + this.featureType.slice(1);
     const feat = this.featureInitializerService.create(objecttype,
       {...params, geometrie: geoJson, clazz: this.featureType, children: []});
