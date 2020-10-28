@@ -4,17 +4,19 @@ export interface LayerFilterValues {
  }
 
 export interface FilterColumns {
-  key: string;
+  name: string;
   status: boolean;
+  nullValue: boolean;
   uniqueValues: FilterValueSettings[]
 }
 
 export interface UniqueValues {
-  value: FilterValueSettings[];
+  values: FilterValueSettings[];
 }
+
 export interface FilterValueSettings {
   // value in column.
-  key: string;
-  // use value in filter select
+  value: string;
+  // value in filter selected
   select: boolean;
 }

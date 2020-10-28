@@ -164,6 +164,14 @@ export class AttributeDataSource extends DataSource<any> {
       appLayer: this.params.layerId,
     };
 
+    // TODO: onderstaande filters voor maintable en details zitten elkaar zo mogelijk in de weg.
+
+    // Set filter on values in main table
+    if (this.params.valueFilter) {
+      attrParams.filter = this.params.valueFilter;
+    }
+
+
     // Set details params.
     if (this.params.hasDetail()) {
       attrParams.featureType = this.params.featureTypeId;

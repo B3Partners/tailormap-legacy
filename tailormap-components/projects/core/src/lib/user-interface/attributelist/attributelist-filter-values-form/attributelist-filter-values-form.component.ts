@@ -15,16 +15,12 @@ export class AttributelistFilterValuesFormComponent implements OnInit {
 
   public values: UniqueValues;
 
-  // public layerFilterValues: LayerFilterValues;
-
   public colName: string;
 
   public allOn: boolean
 
   constructor(private dialogRef: MatDialogRef<AttributelistFilterValuesFormComponent>,
               @Inject(MAT_DIALOG_DATA) public data: any) {
-    // let layerId = data.layerFilterValues.layerId;
-    // this.colName = data.layerFilterValues.columns[0]
     this.colName = data.colName;
     this.values = data.values;
     this.allOn = true
@@ -66,12 +62,22 @@ export class AttributelistFilterValuesFormComponent implements OnInit {
     if (Array.isArray(this.values)) {
       this.values.forEach(v => {
         if (v.select) {
-          console.log('  ' + v.key);
+          console.log('  ' + v.value);
         }
       })
     }
+    let filterSetting: string;
+    if (this.allOn) {
+      // When all values selected we do not need a filter
+      filterSetting = 'OFF'
+    } else if (this.someSelected()) {
+      filterSetting = 'ON'
+    } else {
+      // no values are selected, so set the filter on NULL values
+      filterSetting = 'NONE'
+    }
 
-    this.dialogRef.close((this.someSelected()) ? 'ON' : 'OFF');
+    this.dialogRef.close(filterSetting);
   }
 
   public onCancel() {

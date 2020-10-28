@@ -35,6 +35,7 @@ import {
   ValueParameters,
   UniqueValuesResponse,
 } from '../../../shared/value-service/value-models';
+
 // import { filter } from 'rxjs/operators';
 
 @Component({
@@ -81,6 +82,8 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
   // State of checked rows ('All','None','Some').
   public checkState = CheckState.None;
 
+  public valueFilter: string;
+
   private tabIndex = -1;
 
   private defaultPageSize = 5;
@@ -115,6 +118,9 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
     this.dataSource.paginator = this.paginator;
     // Set datasource sort.
     this.dataSource.sorter = this.sort;
+
+    this.dataSource.params.valueFilter = this.valueFilter;
+
 
     // Hide the paginator pagesize combo.
     this.paginator.hidePageSize = true;
@@ -249,53 +255,56 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
     this.valueParams.attributes.push (columnName);
     this.valueService.uniqueValues(this.valueParams).subscribe((data: UniqueValuesResponse) => {
       if (data.success) {
-        // this.layerFilterValues.layerId = this.dataSource.params.layerId;
-        // let filterColumns: FilterColumns;
         let uniqueValues: FilterValueSettings[];
         uniqueValues = [];
-        const colObject = this.layerFilterValues.columns.find(c => c.key === columnName);
-        const colIndex = this.layerFilterValues.columns.findIndex(obj => obj.key === columnName);
+        const colObject = this.layerFilterValues.columns.find(c => c.name === columnName);
+        const colIndex = this.layerFilterValues.columns.findIndex(obj => obj.name === columnName);
         if (colObject.uniqueValues.length === 0) {
 
           data.uniqueValues[columnName].forEach(val => {
             console.log('  ' + val);
 
             let filterValueSettings: FilterValueSettings;
-            filterValueSettings = {key: val, select: true};
+            filterValueSettings = {value: val, select: true};
             uniqueValues.push(filterValueSettings);
-
-            // this.layerFilterValues.columns[columnName].uniqueValues[val].select= true;
           })
         } else {
             colObject.uniqueValues.forEach(val => uniqueValues.push(Object.assign({}, val)))
         }
 
-        // filterColumns = {key: columnName, uniqueValues: uniqueValues};
-        // this.layerFilterValues.columns.push(filterColumns);
         const config = new MatDialogConfig();
-        // config.data = this.layerFilterValues;
         config.data = {
           colName: columnName,
           values: uniqueValues,
         };
         const dialogRef = this.dialog.open(AttributelistFilterValuesFormComponent, config);
-        dialogRef.afterClosed().subscribe(result => {
+        dialogRef.afterClosed().subscribe(filterSetting => {
           // Do the filtering
-          if (result === 'ON') {
-            console.log('In TABLE component in filter:')
-            config.data.values.forEach(v => {
-              if (v.select) {
-                console.log('  ' + v.key);
-              }
-            })
-            this.layerFilterValues.columns[colIndex].uniqueValues = config.data.values;
-            this.layerFilterValues.columns[colIndex].status = true;
-          } else if (result === 'OFF') {
-            console.log('Filter is uitgezet.')
-            this.layerFilterValues.columns[colIndex].uniqueValues = [];
-            this.layerFilterValues.columns[colIndex].status = false;
+          if (filterSetting === 'CANCEL') {
+            console.log('Filter zetten niet gewijzigd.');
           } else {
-            console.log('Filter zetten niet gewijzigd.')
+            if (filterSetting === 'ON') {
+              console.log('In TABLE component in filter:')
+              config.data.values.forEach(v => {
+                if (v.select) {
+                  console.log('  ' + v.value);
+                }
+              })
+              this.layerFilterValues.columns[colIndex].uniqueValues = config.data.values;
+              this.layerFilterValues.columns[colIndex].nullValue = false;
+              this.layerFilterValues.columns[colIndex].status = true;
+            } else if (filterSetting === 'NONE') {
+              this.layerFilterValues.columns[colIndex].uniqueValues = config.data.values;
+              this.layerFilterValues.columns[colIndex].nullValue = true;
+              this.layerFilterValues.columns[colIndex].status = true;
+            } else if (filterSetting === 'OFF') {
+              console.log('Filter is uitgezet.')
+              this.layerFilterValues.columns[colIndex].uniqueValues = [];
+              this.layerFilterValues.columns[colIndex].nullValue = false;
+              this.layerFilterValues.columns[colIndex].status = false;
+            }
+            this.createFilter();
+            this.updateTable();
           }
         });
       }
@@ -303,10 +312,45 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
   }
 
   /**
+   * Create the CQL filter string
+   */
+  public createFilter(): void {
+    this.valueFilter = '';
+    let filteredColumns = 0;
+    this.layerFilterValues.columns.forEach((c) => {
+      if (c.status) {
+        filteredColumns++;
+        if (filteredColumns === 1) {
+          this.valueFilter = ' WHERE ';
+        } else {
+          this.valueFilter += ' AND';
+        }
+        if (c.nullValue) {
+          this.valueFilter += ' ' + c.name + ' IS NULL';
+        } else {
+          this.valueFilter += ' ' + c.name + ' IN (';
+          let filteredValues = 0;
+          c.uniqueValues.forEach((v) => {
+            if (v.select) {
+              filteredValues++;
+              if (filteredValues > 1) {
+                this.valueFilter += ',';
+              }
+              this.valueFilter += '\'' + v.value + '\'';
+            }
+          })
+          this.valueFilter += ')';
+        }
+      }
+    })
+    this.dataSource.params.valueFilter = this.valueFilter;
+  }
+
+  /**
    * Check if a filter is active on a column
    */
   public getIsFilterActive(columnName): boolean {
-    const colObject = this.layerFilterValues.columns.find(c => c.key === columnName);
+    const colObject = this.layerFilterValues.columns.find(c => c.name === columnName);
     let result: boolean;
     if (colObject) {
       result = colObject.status;
@@ -404,7 +448,7 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
     const colNames = this.getColumnNames();
     for (const colName of colNames) {
       let filterColumn: FilterColumns;
-      filterColumn = {key: colName, status: false, uniqueValues: []};
+      filterColumn = {name: colName, status: false, nullValue: false, uniqueValues: []};
       this.layerFilterValues.columns.push(filterColumn);
     }
   }

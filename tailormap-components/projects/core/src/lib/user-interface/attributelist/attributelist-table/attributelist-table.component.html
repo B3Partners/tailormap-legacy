@@ -80,20 +80,9 @@
         <ng-container *ngSwitchDefault matColumnDef="{{colName}}">
           <!-- Header -->
           <mat-header-cell *matHeaderCellDef mat-sort-header >{{colName}}
-            <ng-container
-              *ngIf="getIsFilterActive(colName); then filterOn; else filterOff">
-            </ng-container>
-            <ng-template #filterOn>
-              <mat-icon class="material-icons-set" (click) = "$event.stopPropagation();onFilterClick(colName)">
+              <mat-icon [ngClass]="(getIsFilterActive(colName))? 'material-icons-set': 'material-icons-unset' " (click) = "$event.stopPropagation();onFilterClick(colName)">
                 filter_list
               </mat-icon>
-
-            </ng-template>
-            <ng-template #filterOff>
-              <mat-icon class="material-icons-unset" (click) = "$event.stopPropagation();onFilterClick(colName)">
-                filter_list
-              </mat-icon>
-            </ng-template>
           </mat-header-cell>
           <!-- Cell -->
           <mat-cell *matCellDef="let currRow" >{{currRow[colName]}}</mat-cell>
