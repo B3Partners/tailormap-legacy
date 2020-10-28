@@ -58,14 +58,6 @@ export class AttributelistFilterValuesFormComponent implements OnInit {
   }
 
   public onOk() {
-    console.log ('Filter zetten op waarden: ');
-    if (Array.isArray(this.values)) {
-      this.values.forEach(v => {
-        if (v.select) {
-          console.log('  ' + v.value);
-        }
-      })
-    }
     let filterSetting: string;
     if (this.allOn) {
       // When all values selected we do not need a filter

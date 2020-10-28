@@ -41,8 +41,7 @@ export class AttributelistTabToolbarComponent implements OnInit {
     this.exportParams.type = format;
     this.exportService.exportFeatures(this.exportParams).subscribe((response => {
       window.location.href = response.url;
-    }), (error) => console.log('Error downloading the export:\n  ' + error.message),
-      () => console.info('File exported successfully'));
+    }), (error) => window.alert('Error downloading the export:\n  ' + error.message));
   }
 
   public onFilterClick(): void {

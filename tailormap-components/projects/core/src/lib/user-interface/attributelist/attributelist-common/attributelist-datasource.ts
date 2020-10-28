@@ -115,11 +115,11 @@ export class AttributeDataSource extends DataSource<any> {
    */
   public loadData(attrTable: AttributelistTable): void {
 
-    if (!this.params.hasDetail()) {
-      console.log('#DataSource - loadData - ' + this.params.layerName);
-    } else {
-      console.log('#DataSource - loadData - ' + this.params.featureTypeName);
-    }
+    // if (!this.params.hasDetail()) {
+    //   console.log('#DataSource - loadData - ' + this.params.layerName);
+    // } else {
+    //   console.log('#DataSource - loadData - ' + this.params.featureTypeName);
+    // }
 
     // Passport columns not yet loaded?
     if (!this.columnController.hasPassportColumns()) {

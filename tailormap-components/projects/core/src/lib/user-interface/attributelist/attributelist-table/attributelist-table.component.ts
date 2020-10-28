@@ -262,8 +262,6 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
         if (colObject.uniqueValues.length === 0) {
 
           data.uniqueValues[columnName].forEach(val => {
-            console.log('  ' + val);
-
             let filterValueSettings: FilterValueSettings;
             filterValueSettings = {value: val, select: true};
             uniqueValues.push(filterValueSettings);
@@ -280,16 +278,8 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
         const dialogRef = this.dialog.open(AttributelistFilterValuesFormComponent, config);
         dialogRef.afterClosed().subscribe(filterSetting => {
           // Do the filtering
-          if (filterSetting === 'CANCEL') {
-            console.log('Filter zetten niet gewijzigd.');
-          } else {
+          if (filterSetting !== 'CANCEL') {
             if (filterSetting === 'ON') {
-              console.log('In TABLE component in filter:')
-              config.data.values.forEach(v => {
-                if (v.select) {
-                  console.log('  ' + v.value);
-                }
-              })
               this.layerFilterValues.columns[colIndex].uniqueValues = config.data.values;
               this.layerFilterValues.columns[colIndex].nullValue = false;
               this.layerFilterValues.columns[colIndex].status = true;
@@ -298,7 +288,6 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
               this.layerFilterValues.columns[colIndex].nullValue = true;
               this.layerFilterValues.columns[colIndex].status = true;
             } else if (filterSetting === 'OFF') {
-              console.log('Filter is uitgezet.')
               this.layerFilterValues.columns[colIndex].uniqueValues = [];
               this.layerFilterValues.columns[colIndex].nullValue = false;
               this.layerFilterValues.columns[colIndex].status = false;
@@ -321,7 +310,7 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
       if (c.status) {
         filteredColumns++;
         if (filteredColumns === 1) {
-          this.valueFilter = ' WHERE ';
+          this.valueFilter = ' ';
         } else {
           this.valueFilter += ' AND';
         }
