@@ -73,7 +73,6 @@ public class LayoutManagerActionBean extends ApplicationActionBean {
     private String componentLayout;
     private Boolean loadCustomConfig = false;
     private JSONObject details;
-    private String appConfigJSON;
     private String defaultAppId;
     private List<Application> apps;
 
@@ -172,14 +171,6 @@ public class LayoutManagerActionBean extends ApplicationActionBean {
 
     public void setDetails(JSONObject details) {
         this.details = details;
-    }
-
-    public String getAppConfigJSON() {
-        return appConfigJSON;
-    }
-
-    public void setAppConfigJSON(String appConfigJSON) {
-        this.appConfigJSON = appConfigJSON;
     }
 
     public String getDefaultAppId() {

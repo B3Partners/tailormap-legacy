@@ -81,11 +81,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     className = metadata.className;
                 </c:if>
 
-                var appConfig = {};
-                <c:if test="${!empty actionBean.appConfigJSON}">
-                    appConfig = ${actionBean.appConfigJSON};
-                </c:if>
-
                 var configObject = {};
                 var details = {};
                 <c:if test="${!empty actionBean.component.config}">
@@ -102,7 +97,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     contextPath: "${contextPath}",
                     configObject: configObject,
                     details: details,
-                    appConfig: appConfig,
+                    appConfig: {},
                     actionBeans: {
                         "imageupload": <js:quote><stripes:url beanclass="nl.b3p.viewer.admin.stripes.ImageUploadActionBean"/></js:quote>
                     }
