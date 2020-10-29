@@ -31,6 +31,7 @@ export class AttributelistFilterValuesFormComponent implements OnInit {
   }
 
   public updateSelected() {
+    // this.values lijkt geen array, om foutmelding in InetelliJ te voorkomen: isArray
     if (Array.isArray(this.values)) {
       this.allOn = this.values != null && this.values.every(v => v.select)
     }
@@ -41,6 +42,7 @@ export class AttributelistFilterValuesFormComponent implements OnInit {
       return false;
     }
     let result = false;
+    // this.values lijkt geen array, om foutmelding in InetelliJ te voorkomen: isArray
     if (Array.isArray(this.values)) {
       result = this.values.filter(v => v.select).length > 0 && !this.allOn;
     }
@@ -52,6 +54,7 @@ export class AttributelistFilterValuesFormComponent implements OnInit {
     if (this.values === null) {
       return;
     }
+    // this.values lijkt geen array, om foutmelding in InetelliJ te voorkomen: isArray
     if (Array.isArray(this.values)) {
       this.values.forEach(v => v.select = select);
     }
