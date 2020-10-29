@@ -44,7 +44,8 @@ export class WorkflowFactoryService {
       case 'wegvakonderdeel':
         workflow = new StandardFormWorkflow();
         break;
-      case 'rioolput':
+      case 'mechleiding':
+      case 'vrijvleiding':
         workflow = new SewageWorkflow();
         break;
       case 'copyMode':
