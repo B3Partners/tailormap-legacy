@@ -59,7 +59,7 @@ public class StatisticAnalysisActionBean extends LocalizableApplicationActionBea
     private Layer layer = null;
 
     @Validate
-    private AnalysisType type;
+    private String type;
 
     @Validate
     private String column;
@@ -111,11 +111,11 @@ public class StatisticAnalysisActionBean extends LocalizableApplicationActionBea
         this.layer = layer;
     }
 
-    public AnalysisType getType() {
+    public String getType() {
         return type;
     }
 
-    public void setType(AnalysisType type) {
+    public void setType(String type) {
         this.type = type;
     }
 
@@ -159,8 +159,13 @@ public class StatisticAnalysisActionBean extends LocalizableApplicationActionBea
     @DefaultHandler
     public Resolution analyse() {
         JSONObject json = new JSONObject();
+        json.put("success", false);
         try {
-            if (featureType != null || (layer != null && layer.getFeatureType() != null)) {
+            AnalysisType analysis = getAnalysisType();
+            if(analysis == null){
+                json.put("message", "Wrong type of analysis :" + type);
+            }
+            if (analysis != null && (featureType != null || (layer != null && layer.getFeatureType() != null))) {
                 FeatureSource fs;
                 SimpleFeatureType ft = featureType;
                 if (ft == null) {
@@ -179,13 +184,10 @@ public class StatisticAnalysisActionBean extends LocalizableApplicationActionBea
                 SimpleFeatureCollection fc =(SimpleFeatureCollection) fs.getFeatures(q);
 
                 FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2(null);
-                Function unique = ff.function("Collection_Sum", ff.property(column));
-                /*
-                FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2();
-                Function sum = ff.function(type.geotoolsFunction, ff.property(column));*/
+                Function unique = ff.function(analysis.geotoolsFunction, ff.property(column));
 
                 Object value = unique.evaluate( fc );
-
+                json.put("result", value);
                 json.put("success", true);
 
                 this.auditMessageObject.addMessage(ft);
@@ -195,7 +197,6 @@ public class StatisticAnalysisActionBean extends LocalizableApplicationActionBea
         } catch (Exception e) {
             log.error("Error loading features", e);
 
-            json.put("success", false);
 
             String message = MessageFormat.format(getBundle().getString("viewer.downloadfeaturesactionbean.1"), e.toString() );
             Throwable cause = e.getCause();
@@ -208,9 +209,18 @@ public class StatisticAnalysisActionBean extends LocalizableApplicationActionBea
         return new StreamingResolution("application/json",new StringReader(json.toString()));
     }
 
+    private AnalysisType getAnalysisType(){
+        AnalysisType[] types = AnalysisType.values();
 
+        for (AnalysisType analysisType : types) {
+            if(analysisType.name().equals(type)){
+                return analysisType;
+            }
+        }
+        return null;
+    }
 
-    protected void setFilter(String filter, Query q, SimpleFeatureType ft, EntityManager em) throws Exception {
+    private void setFilter(String filter, Query q, SimpleFeatureType ft, EntityManager em) throws Exception {
         if (filter != null && filter.trim().length() > 0) {
             Filter f = FlamingoCQL.toFilter(filter, em);
             f = (Filter) f.accept(new RemoveDistanceUnit(), null);
@@ -232,6 +242,4 @@ public class StatisticAnalysisActionBean extends LocalizableApplicationActionBea
             this.geotoolsFunction = geotoolsFunction;
         }
     }
-
-    ;
 }
