@@ -99,7 +99,7 @@ export class FormComponent implements OnDestroy, OnChanges {
       this.features = result.features;
       this.feature = result.feature;
       if (this.data.closeAfterSave) {
-        this.dialogRef.close();
+        this.dialogRef.close(this.feature);
       }
     }
   }
