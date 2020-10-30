@@ -33,6 +33,14 @@ Ext.define("viewer.components.CustomConfiguration", {
         });
         this.form.add({
             xtype: 'textfield',
+            fieldLabel: i18next.t('mapbox3d_config_apiKey'),
+            value: this.configObject.apiKey || '',
+            name: 'apiKey',
+            labelWidth: this.labelWidth,
+            width: 700
+        });
+        this.form.add({
+            xtype: 'textfield',
             fieldLabel: i18next.t('mapbox3d_config_style'),
             value: this.configObject.style || '',
             name: 'style',

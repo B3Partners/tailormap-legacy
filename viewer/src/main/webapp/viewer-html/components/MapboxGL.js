@@ -128,7 +128,20 @@ Ext.define("viewer.components.MapboxGL", {
             pitch: me.config.pitch,
             bearing: me.config.bearing,
             preserveDrawingBuffer: true,
-            container: 'mapboxgl'
+            container: 'mapboxgl',
+            transformRequest: (url, resourceType) => {
+                // resourceType:
+                //     tile json = Source
+                //     pbf = Tile
+                if (/*resourceType === 'Source' && */url.indexOf('omgevingsserver.nl/') > -1) {
+                    return {
+                        url: url,
+                        headers: {'Authorization': 'Bearer ' + me.config.apiKey},
+                        // Include cookies for cross-origin requests
+                        // credentials: 'include'
+                    }
+                }
+            }
         });
         me._mapGl.addControl(new mapboxgl.NavigationControl({visualizePitch: true}), 'top-left');
         me._mapGl.addControl(new mapboxgl.ScaleControl());
@@ -147,12 +160,49 @@ Ext.define("viewer.components.MapboxGL", {
                 }
             }
 
-            me._addMapboxLayer({
-                'id': me.config.name + me.config.extrusionSource + me.config.extrusionSourceLayer,
-                'source': me.config.extrusionSource,
-                'source-layer': me.config.extrusionSourceLayer,
-            }, labelLayerId);
+            if (me.config.extrusionSource.indexOf('omgevingsserver.nl/') > -1) {
+                me._addOmgevingsServerLayer({
+                    id: me.config.name + me.config.extrusionSourceLayer,
+                    source: me.config.extrusionSource,
+                    'source-layer': me.config.extrusionSourceLayer,
+                }, labelLayerId);
+            } else {
+                me._addMapboxLayer({
+                    id: me.config.name + me.config.extrusionSourceLayer,
+                    source: me.config.extrusionSource,
+                    'source-layer': me.config.extrusionSourceLayer,
+                }, labelLayerId);
+            }
+
         });
+    },
+    /**
+     * Add an omgevingsserver vector layer to the Mapbox map.
+     * @param {Object} mbLyrOpts
+     * @param {String} beforeId
+     * @private
+     *
+     * @see #_addMapboxLayer
+     */
+    _addOmgevingsServerLayer(mbLyrOpts, beforeId) {
+        this._mapGl.addLayer({
+                id: mbLyrOpts['id'],
+                source: {
+                    type: "vector",
+                    // "https://b3partners.omgevingsserver.nl/vector-tiles/data/panden-map.json"
+                    url: mbLyrOpts['source']
+                },
+                // pand
+                'source-layer': mbLyrOpts['source-layer'],
+                'type': 'fill-extrusion',
+                paint: {
+                    'fill-extrusion-color': '#6f5117',
+                    'fill-extrusion-height': ['interpolate', ['linear'], ['zoom'], 15, 0, 15.05, ['get', 'hoogte']],
+                    'fill-extrusion-opacity': 1
+                }
+            },
+            beforeId
+        );
     },
     /**
      * Add a Mapbox style layer to the Mapbox map.
@@ -166,8 +216,10 @@ Ext.define("viewer.components.MapboxGL", {
         if (this._mapGl) {
             this._mapGl.addLayer({
                     'id': mbLyrOpts['id'],
-                    'source': mbLyrOpts['source'], // composite'
-                    'source-layer': mbLyrOpts['source-layer'], // building
+                    // composite'
+                    'source': mbLyrOpts['source'],
+                    // building
+                    'source-layer': mbLyrOpts['source-layer'],
                     'filter': ['==', 'extrude', 'true'],
                     'type': 'fill-extrusion',
                     'minzoom': 15,
