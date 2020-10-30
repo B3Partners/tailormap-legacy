@@ -1,5 +1,4 @@
 .container {
-  xbackground: lightblue;
   overflow: auto;
   /* as child */
   flex: 1;
@@ -14,8 +13,6 @@
   line-height: 20px;
 }
 .table-container {
-  xbackground: mistyrose;
-  xmargin: 10px;
   max-width: 100%;
   overflow: auto;
   /* as child */

@@ -3,8 +3,11 @@ import {
   Inject,
   OnInit,
 } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { UniqueValues } from '../attributelist-common/attributelist-filter-models';
+import {
+  MAT_DIALOG_DATA,
+  MatDialogRef,
+} from '@angular/material/dialog';
+import { FilterValueSettings } from '../attributelist-common/attributelist-filter-models';
 
 @Component({
   selector: 'tailormap-attributelist-filter-values-form',
@@ -13,8 +16,8 @@ import { UniqueValues } from '../attributelist-common/attributelist-filter-model
 })
 export class AttributelistFilterValuesFormComponent implements OnInit {
 
-  public values: UniqueValues;
-
+  public values: FilterValueSettings[];
+S
   public colName: string;
 
   public allOn: boolean
@@ -31,22 +34,15 @@ export class AttributelistFilterValuesFormComponent implements OnInit {
   }
 
   public updateSelected() {
-    // this.values lijkt geen array, om foutmelding in InetelliJ te voorkomen: isArray
-    if (Array.isArray(this.values)) {
-      this.allOn = this.values != null && this.values.every(v => v.select)
-    }
+    this.allOn = this.values != null && this.values.every(v => v.select)
   }
 
-  public someSelected() {
+  public someSelected(): boolean {
     if (this.values === null) {
       return false;
     }
-    let result = false;
-    // this.values lijkt geen array, om foutmelding in InetelliJ te voorkomen: isArray
-    if (Array.isArray(this.values)) {
-      result = this.values.filter(v => v.select).length > 0 && !this.allOn;
-    }
-    return result;
+
+    return this.values.filter(v => v.select).length > 0 && !this.allOn;
   }
 
   public setAll (select: boolean) {
@@ -54,10 +50,7 @@ export class AttributelistFilterValuesFormComponent implements OnInit {
     if (this.values === null) {
       return;
     }
-    // this.values lijkt geen array, om foutmelding in InetelliJ te voorkomen: isArray
-    if (Array.isArray(this.values)) {
-      this.values.forEach(v => v.select = select);
-    }
+    this.values.forEach(v => v.select = select);
   }
 
   public onOk() {

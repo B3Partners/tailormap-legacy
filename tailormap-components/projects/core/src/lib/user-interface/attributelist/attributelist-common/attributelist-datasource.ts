@@ -285,6 +285,7 @@ export class AttributeDataSource extends DataSource<any> {
     const colNames = [];
     prefix += '.';
     for (const attr of metadata.attributes) {
+      // longname is lang niet altijd aanwezig, dus eerst uitgezet (RH)
       // if (attr.longname.startsWith(prefix)) {
         colNames.push(attr.name);
       // }
@@ -299,7 +300,7 @@ export class AttributeDataSource extends DataSource<any> {
     this.rows.forEach(row => {
       if (row._details === DetailsState.YesExpanded) {
         row._details = DetailsState.YesCollapsed;
-      };
+      }
     })
   }
 

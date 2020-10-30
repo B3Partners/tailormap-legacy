@@ -10,13 +10,10 @@ export interface FilterColumns {
   uniqueValues: FilterValueSettings[]
 }
 
-export interface UniqueValues {
-  values: FilterValueSettings[];
-}
-
 export interface FilterValueSettings {
   // value in column.
   value: string;
   // value in filter selected
   select: boolean;
+  // [value:string]:boolean
 }

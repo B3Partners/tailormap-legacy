@@ -17,6 +17,7 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
 
 import { AttributelistTable, RowClickData, RowData } from '../attributelist-common/attributelist-models';
 import { AttributeDataSource } from '../attributelist-common/attributelist-datasource';
+import { AttributelistFilter } from '../attributelist-common/attributelist-filter';
 import { AttributelistFilterValuesFormComponent } from '../attributelist-filter-values-form/attributelist-filter-values-form.component';
 import { AttributelistColumn } from '../attributelist-common/attributelist-column-models';
 import { AttributelistTableOptionsFormComponent } from '../attributelist-table-options-form/attributelist-table-options-form.component';
@@ -24,7 +25,6 @@ import { AttributelistService } from '../attributelist.service';
 import { AttributeService } from '../../../shared/attribute-service/attribute.service';
 import { CheckState } from '../attributelist-common/attributelist-enums';
 import {
-  LayerFilterValues,
   FilterColumns,
   FilterValueSettings,
 } from '../attributelist-common/attributelist-filter-models';
@@ -67,22 +67,17 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
   @Output()
   public tabChange = new EventEmitter();
 
-  public layerFilterValues: LayerFilterValues = {
-    layerId: 0,
-    columns: [],
-  };
-
   public dataSource = new AttributeDataSource(this.layerService,
                                               this.attributeService,
                                               this.formconfigRepoService);
+
+  public filter = new AttributelistFilter();
 
   // Number of checked rows.
   public nrChecked = 0;
 
   // State of checked rows ('All','None','Some').
   public checkState = CheckState.None;
-
-  public valueFilter: string;
 
   private tabIndex = -1;
 
@@ -118,9 +113,6 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
     this.dataSource.paginator = this.paginator;
     // Set datasource sort.
     this.dataSource.sorter = this.sort;
-
-    this.dataSource.params.valueFilter = this.valueFilter;
-
 
     // Hide the paginator pagesize combo.
     this.paginator.hidePageSize = true;
@@ -171,7 +163,7 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
     } else {
       return 'block';
     }
-  };
+  }
 
   /**
    * Fired when the checkbox in the header is clicked.
@@ -257,8 +249,8 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
       if (data.success) {
         let uniqueValues: FilterValueSettings[];
         uniqueValues = [];
-        const colObject = this.layerFilterValues.columns.find(c => c.name === columnName);
-        const colIndex = this.layerFilterValues.columns.findIndex(obj => obj.name === columnName);
+        const colObject = this.filter.layerFilterValues.columns.find(c => c.name === columnName);
+        const colIndex = this.filter.layerFilterValues.columns.findIndex(obj => obj.name === columnName);
         if (colObject.uniqueValues.length === 0) {
 
           data.uniqueValues[columnName].forEach(val => {
@@ -280,19 +272,19 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
           // Do the filtering
           if (filterSetting !== 'CANCEL') {
             if (filterSetting === 'ON') {
-              this.layerFilterValues.columns[colIndex].uniqueValues = config.data.values;
-              this.layerFilterValues.columns[colIndex].nullValue = false;
-              this.layerFilterValues.columns[colIndex].status = true;
+              this.filter.layerFilterValues.columns[colIndex].uniqueValues = config.data.values;
+              this.filter.layerFilterValues.columns[colIndex].nullValue = false;
+              this.filter.layerFilterValues.columns[colIndex].status = true;
             } else if (filterSetting === 'NONE') {
-              this.layerFilterValues.columns[colIndex].uniqueValues = config.data.values;
-              this.layerFilterValues.columns[colIndex].nullValue = true;
-              this.layerFilterValues.columns[colIndex].status = true;
+              this.filter.layerFilterValues.columns[colIndex].uniqueValues = config.data.values;
+              this.filter.layerFilterValues.columns[colIndex].nullValue = true;
+              this.filter.layerFilterValues.columns[colIndex].status = true;
             } else if (filterSetting === 'OFF') {
-              this.layerFilterValues.columns[colIndex].uniqueValues = [];
-              this.layerFilterValues.columns[colIndex].nullValue = false;
-              this.layerFilterValues.columns[colIndex].status = false;
+              this.filter.layerFilterValues.columns[colIndex].uniqueValues = [];
+              this.filter.layerFilterValues.columns[colIndex].nullValue = false;
+              this.filter.layerFilterValues.columns[colIndex].status = false;
             }
-            this.createFilter();
+            this.dataSource.params.valueFilter = this.filter.createFilter();
             this.updateTable();
           }
         });
@@ -301,45 +293,10 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
   }
 
   /**
-   * Create the CQL filter string
-   */
-  public createFilter(): void {
-    this.valueFilter = '';
-    let filteredColumns = 0;
-    this.layerFilterValues.columns.forEach((c) => {
-      if (c.status) {
-        filteredColumns++;
-        if (filteredColumns === 1) {
-          this.valueFilter = ' ';
-        } else {
-          this.valueFilter += ' AND';
-        }
-        if (c.nullValue) {
-          this.valueFilter += ' ' + c.name + ' IS NULL';
-        } else {
-          this.valueFilter += ' ' + c.name + ' IN (';
-          let filteredValues = 0;
-          c.uniqueValues.forEach((v) => {
-            if (v.select) {
-              filteredValues++;
-              if (filteredValues > 1) {
-                this.valueFilter += ',';
-              }
-              this.valueFilter += '\'' + v.value + '\'';
-            }
-          })
-          this.valueFilter += ')';
-        }
-      }
-    })
-    this.dataSource.params.valueFilter = this.valueFilter;
-  }
-
-  /**
    * Check if a filter is active on a column
    */
   public getIsFilterActive(columnName): boolean {
-    const colObject = this.layerFilterValues.columns.find(c => c.name === columnName);
+    const colObject = this.filter.layerFilterValues.columns.find(c => c.name === columnName);
     let result: boolean;
     if (colObject) {
       result = colObject.status;
@@ -433,12 +390,12 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
 
   private initFiltering(): void {
     // Init the filter structure
-    this.layerFilterValues.layerId = this.dataSource.params.layerId;
+    this.filter.layerFilterValues.layerId = this.dataSource.params.layerId;
     const colNames = this.getColumnNames();
     for (const colName of colNames) {
       let filterColumn: FilterColumns;
       filterColumn = {name: colName, status: false, nullValue: false, uniqueValues: []};
-      this.layerFilterValues.columns.push(filterColumn);
+      this.filter.layerFilterValues.columns.push(filterColumn);
     }
   }
 }

@@ -22,5 +22,5 @@ export class LayoutConfig {
     this.initialHeight = 200;
     this.panelResizer = panelResizer;
     this.windowState = WindowState.Initial;
-  };
+  }
 }
