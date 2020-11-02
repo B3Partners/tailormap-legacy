@@ -46,7 +46,7 @@ export class TailorMapService {
       this.layerVisibilityChanged$.next(event);
     });
 
-    vc.addListener('ON_LAYER_CLICKED', ( event) => {
+    vc.addListener('ON_LAYER_SELECTED', ( event) => {
       this.selectedLayer = event.appLayer;
     });
   }

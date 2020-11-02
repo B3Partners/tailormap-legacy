@@ -170,7 +170,20 @@ Ext.define ("viewer.components.TOC",{
                     fn: function() {
                         this.renderPromise.resolve();
                     }
-                }
+                },
+                select: {
+                    scope: this,
+                    toc: this,
+                    fn: function(thisObj, record) {
+                        var node = record.raw;
+                        if(node ===undefined){
+                            node = record.data;
+                        }
+                        this.config.viewerController.layerSelected(node.layerObj);
+                    }
+                },
+
+
             },
             store: store,
             tools: this.getHelpToolConfig(),
