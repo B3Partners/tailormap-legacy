@@ -65,6 +65,30 @@ Ext.define("viewer.components.CustomConfiguration", {
             labelWidth: this.labelWidth,
             width: 700
         });
+        this.form.add({
+            xtype: 'combo',
+            displayField: 'type',
+            valueField: 'type',
+            // https://docs.mapbox.com/mapbox-gl-js/style-spec/layers/#type
+            //One of "fill", "line", "symbol", "circle", "heatmap", "fill-extrusion", "raster", "hillshade", "background"
+            store: {
+                fields:['type'],
+                data:[{type: "fill"},{type:"fill-extrusion"},{type:"line"},{type:"symbol"},{type:"circle"},{type:"heatmap"},{type:"raster"},{type:"hillshade"},{type:"background"}]
+            },
+            fieldLabel: i18next.t('mapbox3d_config_extrusionSourceLayerType'),
+            value: this.configObject.extrusionSourceLayerType || 'fill',
+            name: 'extrusionSourceLayerType',
+            labelWidth: this.labelWidth,
+            width: 700
+        });
+        this.form.add({
+            xtype: 'textareafield',
+            fieldLabel: i18next.t('mapbox3d_config_extrusionSourceLayerPaint'),
+            value: this.configObject.extrusionSourceLayerPaint || '{\n}',
+            name: 'extrusionSourceLayerPaint',
+            labelWidth: this.labelWidth,
+            width: 700
+        });
 
         // map config options
         this.form.add({

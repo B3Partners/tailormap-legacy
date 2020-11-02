@@ -32,6 +32,8 @@ Ext.define("viewer.components.MapboxGL", {
         bearing: 0,
         extrusionSource: '',
         extrusionSourceLayer: '',
+        extrusionSourceLayerType: '',
+        extrusionSourceLayerPaint: {},
         fullscreenBtn: true
     },
     _window: null,
@@ -159,18 +161,23 @@ Ext.define("viewer.components.MapboxGL", {
                     break;
                 }
             }
+            var paint = JSON.parse(me.config.extrusionSourceLayerPaint.replace(/(\r\n|\n|\r)/gm, ""));
 
             if (me.config.extrusionSource.indexOf('omgevingsserver.nl/') > -1) {
                 me._addOmgevingsServerLayer({
                     id: me.config.name + me.config.extrusionSourceLayer,
                     source: me.config.extrusionSource,
-                    'source-layer': me.config.extrusionSourceLayer,
+                    sourcelayer: me.config.extrusionSourceLayer,
+                    type: me.config.extrusionSourceLayerType,
+                    paint: paint,
                 }, labelLayerId);
             } else {
                 me._addMapboxLayer({
                     id: me.config.name + me.config.extrusionSourceLayer,
                     source: me.config.extrusionSource,
-                    'source-layer': me.config.extrusionSourceLayer,
+                    sourcelayer: me.config.extrusionSourceLayer,
+                    type: me.config.extrusionSourceLayerType,
+                    paint: paint,
                 }, labelLayerId);
             }
 
@@ -193,13 +200,15 @@ Ext.define("viewer.components.MapboxGL", {
                     url: mbLyrOpts['source']
                 },
                 // pand
-                'source-layer': mbLyrOpts['source-layer'],
-                'type': 'fill-extrusion',
-                paint: {
-                    'fill-extrusion-color': '#6f5117',
-                    'fill-extrusion-height': ['interpolate', ['linear'], ['zoom'], 15, 0, 15.05, ['get', 'hoogte']],
-                    'fill-extrusion-opacity': 1
-                }
+                'source-layer': mbLyrOpts['sourcelayer'],
+                // 'type': 'fill-extrusion',
+                type: mbLyrOpts['type'],
+                paint: mbLyrOpts['paint'],
+                // paint:  {
+                //     'fill-extrusion-color': '#6f5117',
+                //     'fill-extrusion-height': ['interpolate', ['linear'], ['zoom'], 15, 0, 15.05, ['get', 'hoogte']],
+                //     'fill-extrusion-opacity': 1
+                // }
             },
             beforeId
         );
@@ -219,24 +228,26 @@ Ext.define("viewer.components.MapboxGL", {
                     // composite'
                     'source': mbLyrOpts['source'],
                     // building
-                    'source-layer': mbLyrOpts['source-layer'],
+                    'source-layer': mbLyrOpts['sourcelayer'],
                     'filter': ['==', 'extrude', 'true'],
-                    'type': 'fill-extrusion',
                     'minzoom': 15,
-                    'paint': {
-                        'fill-extrusion-color': '#81ff6b',
-                        // use an 'interpolate' expression to add a smooth transition effect to the buildings as the user zooms in
-                        'fill-extrusion-height': ['interpolate', ['linear'], ['zoom'], 15, 0, 15.05, ['get', 'height']],
-                        'fill-extrusion-base': ['interpolate', ['linear'], ['zoom'], 15, 0, 15.05, ['get', 'min_height']],
-                        'fill-extrusion-opacity': 0.6
-                    }
+                    type: mbLyrOpts['type'],
+                    paint: mbLyrOpts['paint'],
+                    // 'type': 'fill-extrusion',
+                    // 'paint': {
+                    //     'fill-extrusion-color': '#81ff6b',
+                    //     // use an 'interpolate' expression to add a smooth transition effect to the buildings as the user zooms in
+                    //     'fill-extrusion-height': ['interpolate', ['linear'], ['zoom'], 15, 0, 15.05, ['get', 'height']],
+                    //     'fill-extrusion-base': ['interpolate', ['linear'], ['zoom'], 15, 0, 15.05, ['get', 'min_height']],
+                    //     'fill-extrusion-opacity': 0.6
+                    // }
                 },
                 beforeId
             );
         }
     },
     /**
-     * rezize event handler.
+     * resize event handler.
      *
      * @param win This window
      * @param {Number} newH New height
