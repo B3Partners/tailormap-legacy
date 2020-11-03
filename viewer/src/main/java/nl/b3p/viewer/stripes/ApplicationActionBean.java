@@ -305,7 +305,7 @@ public class ApplicationActionBean extends LocalizableApplicationActionBean impl
         EntityManager em = Stripersist.getEntityManager();
         JSONObject response = new JSONObject();
         response.put("success", false);
-        JSONObject obj = application.toJSON(context.getRequest(), false, false, em);
+        JSONObject obj = application.toJSON(context.getRequest(), false, false, em, true);
         JSONObject details = obj.optJSONObject("details");
         if (details != null) {
             details.remove(SelectedContentCache.DETAIL_CACHED_EXPANDED_SELECTED_CONTENT);

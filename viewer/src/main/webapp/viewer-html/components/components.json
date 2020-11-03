@@ -927,5 +927,15 @@
         "singleton": true,
         "configSource": ["ConfigObject.js","SelectionWindowConfig.js", "Highlight-config.js"],
         "restrictions": ["content", "left_menu"]
+    },
+    {
+        "className": "viewer.components.MapboxGL",
+        "name": "Mapbox GL map",
+        "group": "Map",
+        "shortName": "MapboxGL",
+        "sources": ["MapboxGL.js","resources/mapbox-gl/mapbox-gl.js"],
+        "singleton": false,
+        "configSource": ["ConfigObject.js","SelectionWindowConfig.js", "MapboxGL-config.js"],
+        "restrictions": ["left_menu"]
     }
 ]

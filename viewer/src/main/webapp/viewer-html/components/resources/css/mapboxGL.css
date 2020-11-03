@@ -1,0 +1,7 @@
+#mapboxDownloadLink{
+    position:relative;
+    top:-15px;
+    left:150px;
+    background-color: hsla(0,0%,100%,.75);
+    color:#000;font-weight:bolder;
+}
