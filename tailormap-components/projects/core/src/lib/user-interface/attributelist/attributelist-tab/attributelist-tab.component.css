@@ -1,5 +1,4 @@
 :host {
-  xbackground: lemonchiffon;
   /*!* as child *!*/
   /*flex: 1;*/
   /*!* as container *!*/
@@ -19,9 +18,6 @@
 /*}*/
 
 tailormap-attributelist-table {
-  xbackground: darkseagreen;
-  xpadding: 5px;
-
   overflow: auto;
   /* as child */
   flex: 1;

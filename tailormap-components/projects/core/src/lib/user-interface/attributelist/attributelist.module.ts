@@ -18,6 +18,7 @@ import { DetailsrowDirective } from './attributelist-common/detailsrow.directive
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatTableModule } from '@angular/material/table';
+import { AttributelistFilterValuesFormComponent } from './attributelist-filter-values-form/attributelist-filter-values-form.component';
 
 @NgModule({
   // The components, directives, and pipes that belong to this NgModule.
@@ -32,6 +33,7 @@ import { MatTableModule } from '@angular/material/table';
     AttributelistObjectOptionsFormComponent,
     DetailsrowDirective,
     PanelResizerComponent,
+    AttributelistFilterValuesFormComponent,
   ],
   imports: [
     CommonModule,

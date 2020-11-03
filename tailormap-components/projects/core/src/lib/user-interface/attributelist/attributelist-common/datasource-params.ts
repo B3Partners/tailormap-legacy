@@ -7,6 +7,7 @@ export class DatasourceParams {
   public featureTypeId = -1;
   public featureTypeName = '';
   public featureFilter = '';
+  public valueFilter = '';
 
   /**
    * Returns if the params are for getting data a detail table.

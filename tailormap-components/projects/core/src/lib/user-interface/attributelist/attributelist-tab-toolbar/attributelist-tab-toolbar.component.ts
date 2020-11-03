@@ -8,6 +8,7 @@ import { ExportService } from '../../../shared/export-service/export.service';
 import { ExportFeaturesParameters } from '../../../shared/export-service/export-models';
 import { Layer } from '../layer.model';
 import { LayerService } from '../layer.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'tailormap-attributelist-tab-toolbar',
@@ -26,7 +27,8 @@ export class AttributelistTabToolbarComponent implements OnInit {
 
   constructor(
       private exportService: ExportService,
-      private layerService: LayerService) {
+      private layerService: LayerService,
+      private _snackBar: MatSnackBar) {
   }
 
   public ngOnInit(): void {
@@ -41,8 +43,9 @@ export class AttributelistTabToolbarComponent implements OnInit {
     this.exportParams.type = format;
     this.exportService.exportFeatures(this.exportParams).subscribe((response => {
       window.location.href = response.url;
-    }), (error) => console.log('Error downloading the export:\n  ' + error.message),
-      () => console.info('File exported successfully'));
+    }), (error) => this._snackBar.open('Error downloading the ' + this.exportParams.type + ' export\n', 'Close', {
+      duration: 20000,
+    }))
   }
 
   public onFilterClick(): void {

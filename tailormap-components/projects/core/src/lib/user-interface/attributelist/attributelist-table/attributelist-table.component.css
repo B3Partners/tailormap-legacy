@@ -1,5 +1,4 @@
 .container {
-  xbackground: lightblue;
   overflow: auto;
   /* as child */
   flex: 1;
@@ -14,8 +13,6 @@
   line-height: 20px;
 }
 .table-container {
-  xbackground: mistyrose;
-  xmargin: 10px;
   max-width: 100%;
   overflow: auto;
   /* as child */
@@ -42,18 +39,24 @@ mat-table {
 .mat-cell:first-of-type,
 .mat-header-cell:first-of-type,
 .mat-footer-cell:first-of-type {
-  padding-left: 24px;
   padding-left: 5px;
+  margin-left: 5px;
 }
 .mat-cell, .mat-header-cell {
   overflow-x: hidden;
   white-space: nowrap;
-  width: 150px;
+  width: 170px;
   padding-right: 5px;
   margin-right: 5px;
 }
 .material-icons, .material-icons-outlined {
   font-size: 20px;
+}
+.material-icons-set {
+  color: rgba(0, 0, 0, 1);
+}
+.material-icons-unset {
+  color: rgba(0, 0, 0, 0.26);
 }
 .mat-icon {
   padding-top: 4px;
@@ -64,7 +67,7 @@ mat-table {
   max-height: 40px;
 }
 ::ng-deep .mat-paginator-range-label {
-  margin: 0px 0px 0px 10px !important;
+  margin: 0 0 0 10px !important;
 }
 .mat-toolbar {
   background: rgba(0,0,0,0.0);

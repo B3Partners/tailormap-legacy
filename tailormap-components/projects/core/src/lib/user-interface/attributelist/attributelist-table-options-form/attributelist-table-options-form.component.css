@@ -4,7 +4,7 @@
   vertical-align: center;
 }
 h3 {
-  margin: 0px 0px 5px 0px;
+  margin: 0 0 5px 0;
   font-size: 16px;
   line-height: 16px;
 }
@@ -31,8 +31,7 @@ h3 {
   line-height: 24px;
 }
 .icon-drag {
-  margin: 0px;
-  margin-left: 10px;
+  margin: 0 0 0 10px;
   font-size: 16px;
   line-height: 24px;
 }
@@ -41,8 +40,6 @@ h3 {
 }
 /* The empty place while dragging. */
 .cdk-drag-placeholder {
-  xbackground-color: green;
-  xopacity: 0.5;
   opacity: 0;
 }
 /* While dragging. */
