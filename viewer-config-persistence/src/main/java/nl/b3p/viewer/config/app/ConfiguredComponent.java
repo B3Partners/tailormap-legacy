@@ -16,13 +16,14 @@
  */
 package nl.b3p.viewer.config.app;
 
-import java.util.*;
-import javax.persistence.*;
 import nl.b3p.viewer.components.ComponentRegistry;
 import nl.b3p.viewer.components.ViewerComponent;
 import org.apache.commons.beanutils.BeanUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import javax.persistence.*;
+import java.util.*;
 
 /**
  *
@@ -34,6 +35,11 @@ import org.json.JSONObject;
             @UniqueConstraint(columnNames={"name", "application"})
 )
 public class ConfiguredComponent implements Comparable<ConfiguredComponent> {
+    /**
+     * {@value #ADMIN_ONLY} magic prefix for "admin only" config attributes.
+     */
+    public static final String ADMIN_ONLY = "adminOnly";
+
     @Id
     private Long id;
 
@@ -48,20 +54,20 @@ public class ConfiguredComponent implements Comparable<ConfiguredComponent> {
     private String className;
 
     @ElementCollection
-    private Map<String,String> details = new HashMap<String,String>();
+    private Map<String,String> details = new HashMap<>();
 
     @ManyToOne(optional=false)
     private Application application;
 
     @ElementCollection
     @Column(name="role_name")
-    private Set<String> readers = new HashSet<String>();
+    private Set<String> readers = new HashSet<>();
 
     @ManyToOne
     private ConfiguredComponent motherComponent;
 
     @OneToMany(mappedBy = "motherComponent")
-    private List<ConfiguredComponent> linkedComponents = new ArrayList<ConfiguredComponent>();
+    private List<ConfiguredComponent> linkedComponents = new ArrayList<>();
     
     //<editor-fold defaultstate="collapsed" desc="getters and setters">
     public Long getId() {
@@ -138,8 +144,7 @@ public class ConfiguredComponent implements Comparable<ConfiguredComponent> {
     
     //</editor-fold>
 
-
-    public final static List<String> classesExcludedFromPushing = new ArrayList<String>();
+    public final static List<String> classesExcludedFromPushing = new ArrayList<>();
     static {
         classesExcludedFromPushing.add("viewer.components.HTML");
     }
@@ -154,7 +159,25 @@ public class ConfiguredComponent implements Comparable<ConfiguredComponent> {
         return ComponentRegistry.getInstance().getViewerComponent(className);
     }
 
+    /**
+     * @return a JSON representation of this component
+     * @throws JSONException if any
+     * @deprecated use {@link #toJSON(boolean)}
+     */
+    @Deprecated
     public JSONObject toJSON() throws JSONException {
+        return this.toJSON(false);
+    }
+
+    /**
+     * render a JSON representation of this component.
+     *
+     * @param hideAdminOnly set to {@code true} to obtain this component JSON representation without any "admin-only"
+     *                     attributes.
+     * @return a JSON representation of this component
+     * @throws JSONException if ant
+     */
+    public JSONObject toJSON(boolean hideAdminOnly) throws JSONException {
         JSONObject o = new JSONObject();
         o.put("name", name);
         o.put("className", className);
@@ -166,6 +189,19 @@ public class ConfiguredComponent implements Comparable<ConfiguredComponent> {
         }
 
         o.put("config", config == null ? new JSONObject() : new JSONObject(config));
+        if (hideAdminOnly) {
+            // remove any config keys starting with adminOnly
+            JSONObject c = o.getJSONObject("config");
+            List<String> removeKeys = new ArrayList<>();
+            for (String key : c.keySet()) {
+                if (key.startsWith(ADMIN_ONLY)) {
+                    removeKeys.add(key);
+                }
+            }
+            for (String key : removeKeys) {
+                c.remove(key);
+            }
+        }
         return o;
     }
 
@@ -177,9 +213,9 @@ public class ConfiguredComponent implements Comparable<ConfiguredComponent> {
     ConfiguredComponent deepCopy(Application app) throws Exception {
         ConfiguredComponent copy = (ConfiguredComponent) BeanUtils.cloneBean(this);
         copy.setId(null);
-        copy.setDetails(new HashMap<String,String>(details));
-        copy.setReaders(new HashSet<String>(readers));
-        copy.setLinkedComponents(new ArrayList<ConfiguredComponent>());
+        copy.setDetails(new HashMap<>(details));
+        copy.setReaders(new HashSet<>(readers));
+        copy.setLinkedComponents(new ArrayList<>());
         copy.setApplication(app);
         return copy;
     }

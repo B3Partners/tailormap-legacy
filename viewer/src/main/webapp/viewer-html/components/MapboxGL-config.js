@@ -33,17 +33,50 @@ Ext.define("viewer.components.CustomConfiguration", {
         });
         this.form.add({
             xtype: 'textfield',
-            fieldLabel: i18next.t('mapbox3d_config_apiKey'),
-            value: this.configObject.apiKey || '',
-            name: 'apiKey',
+            fieldLabel: i18next.t('mapbox3d_config_style'),
+            value: this.configObject.style || '',
+            name: 'style',
             labelWidth: this.labelWidth,
             width: 700
         });
         this.form.add({
             xtype: 'textfield',
-            fieldLabel: i18next.t('mapbox3d_config_style'),
-            value: this.configObject.style || '',
-            name: 'style',
+            fieldLabel: i18next.t('mapbox3d_config_SpotInfoAccount'),
+            value: this.configObject.adminOnlyapiAccount || '',
+            name: 'adminOnlyapiAccount',
+            labelWidth: this.labelWidth,
+            width: 700
+        });
+        this.form.add({
+            xtype: 'textfield',
+            fieldLabel: i18next.t('mapbox3d_config_SpotInfoUser'),
+            value: this.configObject.adminOnlyapiUser || '',
+            name: 'adminOnlyapiUser',
+            labelWidth: this.labelWidth,
+            width: 700
+        });
+        this.form.add({
+            xtype: 'textfield',
+            fieldLabel: i18next.t('mapbox3d_config_SpotInfoPass'),
+            value: this.configObject.adminOnlyapiPass || '',
+            name: 'adminOnlyapiPass',
+            inputType: 'password',
+            labelWidth: this.labelWidth,
+            width: 700
+        });
+        this.form.add({
+            xtype: 'textfield',
+            fieldLabel: i18next.t('mapbox3d_config_SpotInfoDatasets'),
+            value: this.configObject.adminOnlyapiDatasets || '',
+            name: 'adminOnlyapiDatasets',
+            labelWidth: this.labelWidth,
+            width: 700
+        });
+        this.form.add({
+            xtype: 'textfield',
+            fieldLabel: i18next.t('mapbox3d_config_apiKey'),
+            value: this.configObject.apiKey || '',
+            name: 'apiKey',
             labelWidth: this.labelWidth,
             width: 700
         });

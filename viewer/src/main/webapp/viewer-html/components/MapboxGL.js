@@ -224,19 +224,18 @@ Ext.define("viewer.components.MapboxGL", {
     _addMapboxLayer(mbLyrOpts, beforeId) {
         if (this._mapGl) {
             this._mapGl.addLayer({
-                    'id': mbLyrOpts['id'],
+                    id: mbLyrOpts['id'],
                     // composite'
-                    'source': mbLyrOpts['source'],
+                    source: mbLyrOpts['source'],
                     // building
                     'source-layer': mbLyrOpts['sourcelayer'],
-                    'filter': ['==', 'extrude', 'true'],
-                    'minzoom': 15,
+                    filter: ['==', 'extrude', 'true'],
+                    minzoom: 15,
                     type: mbLyrOpts['type'],
                     paint: mbLyrOpts['paint'],
                     // 'type': 'fill-extrusion',
                     // 'paint': {
                     //     'fill-extrusion-color': '#81ff6b',
-                    //     // use an 'interpolate' expression to add a smooth transition effect to the buildings as the user zooms in
                     //     'fill-extrusion-height': ['interpolate', ['linear'], ['zoom'], 15, 0, 15.05, ['get', 'height']],
                     //     'fill-extrusion-base': ['interpolate', ['linear'], ['zoom'], 15, 0, 15.05, ['get', 'min_height']],
                     //     'fill-extrusion-opacity': 0.6
