@@ -17,7 +17,6 @@ import { FilterValueSettings } from '../attributelist-common/attributelist-filte
 export class AttributelistFilterValuesFormComponent implements OnInit {
 
   public values: FilterValueSettings[];
-S
   public colName: string;
 
   public allOn: boolean
