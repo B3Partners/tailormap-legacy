@@ -1647,6 +1647,13 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         this.fireEvent(viewer.viewercontroller.controller.Event.ON_LAYER_CLICKED, layerObj);
     },
     /**
+     * Layer is selected
+     * @param layerObj the layer object
+     */
+    layerSelected: function(layerObj) {
+        this.fireEvent(viewer.viewercontroller.controller.Event.ON_LAYER_SELECTED, layerObj);
+    },
+    /**
      * Layer is clicked
      * @param layerObj the layer object
      */
