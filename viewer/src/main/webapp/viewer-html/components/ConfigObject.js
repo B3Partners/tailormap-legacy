@@ -107,6 +107,32 @@ Ext.define("viewer.components.ConfigObject",{
             checkedDefaultOn: defaultOnIds
         });   
     },
+
+    getFilterableLayers: function(callback){
+        var me = this;
+        Ext.Ajax.request({
+            url: me.requestPath,
+            scope:this,
+            params: {
+                filterable: true,
+                appId: this.getApplicationId(),
+                includeAttributes:true,
+            },
+            timeout:120000,
+            success: function ( result, request ) {
+                var layers = Ext.JSON.decode(result.responseText);
+                var appLayers = {};
+                for(var i = 0 ; i < layers.length ;i++){
+                    var l = layers[i];
+                    appLayers[l.id] =l ;
+                }
+                callback.call(this, appLayers);
+            },
+            failure: function() {
+                Ext.MessageBox.alert(i18next.t('viewer_admin_filterablecheckboxes_1'), i18next.t('viewer_admin_filterablecheckboxes_2'));
+            }
+        });
+    },
     getActionBeanUrl: function(name) {
         return this.configPage.getActionBeanUrl(name);
     },

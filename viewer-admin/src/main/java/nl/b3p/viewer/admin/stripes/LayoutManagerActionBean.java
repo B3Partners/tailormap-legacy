@@ -73,7 +73,6 @@ public class LayoutManagerActionBean extends ApplicationActionBean {
     private String componentLayout;
     private Boolean loadCustomConfig = false;
     private JSONObject details;
-    private String appConfigJSON;
     private String defaultAppId;
     private List<Application> apps;
 
@@ -174,14 +173,6 @@ public class LayoutManagerActionBean extends ApplicationActionBean {
         this.details = details;
     }
 
-    public String getAppConfigJSON() {
-        return appConfigJSON;
-    }
-
-    public void setAppConfigJSON(String appConfigJSON) {
-        this.appConfigJSON = appConfigJSON;
-    }
-
     public String getDefaultAppId() {
         return defaultAppId;
     }
@@ -213,11 +204,6 @@ public class LayoutManagerActionBean extends ApplicationActionBean {
     public Resolution config() {
         EntityManager em = Stripersist.getEntityManager();
 
-        try {
-            appConfigJSON = application.toJSON(context.getRequest(),false, true, true, true,em, false).toString();
-        } catch(JSONException je) {
-        }
-        
         try {
             if(component == null){
                 component = (ConfiguredComponent) em.createQuery(

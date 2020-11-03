@@ -27,11 +27,16 @@ Ext.define("viewer.components.CustomConfiguration",{
     filterConfigurer: null,
 
     currentEditIndex: null,
+    parentId: null,
+    layerStore:null,
+    configObject:null,
+    simplefilterForm:null,
 
     constructor: function (parentId, configObject, configPage) {
         viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId, configObject, configPage);
         this.mixins.observable.constructor.call(this, config);
-
+        this.parentId = parentId;
+        this.configObject = configObject;
         Ext.tip.QuickTipManager.init();  // enable tooltips
 
         this.filterTypes = Ext.create("Ext.data.Store", {
@@ -55,28 +60,43 @@ Ext.define("viewer.components.CustomConfiguration",{
             data: []
         });
 
+        this.layerStore = Ext.create("Ext.data.Store", {
+            fields: [{name: "id", type: 'int'}, "serviceId", "layerName", "alias"]
+        });
         this.filterConfigs = [];
+        this.createForm();
+        this.getFilterableLayers(this.initLayers);
+        return this;
+    },
 
-        if(configObject && configObject.filters) {
+    initLayers: function(layers){
+
+        this.getAppConfig().appLayers = layers;
+        this.createLayerStore();
+    },
+
+    initConfiguration: function(){
+        if(this.configObject && this.configObject.filters) {
             var me = this;
-            Ext.Array.each(configObject.filters, function(filter) {
-                me.addFilter(filter,configObject);
+            Ext.Array.each(this.configObject.filters, function(filter) {
+                me.addFilter(filter,me.configObject);
             });
         }
+        this.simplefilterForm.setLoading(false);
+    },
 
-        var layerStore = this.createLayerStore();
-
+    createForm: function(){
         var me = this;
-
-        Ext.create('Ext.panel.Panel', {
+        this.simplefilterForm = Ext.create('Ext.panel.Panel', {
             border: 0,
             width: 730,
             height: 800,
+
             layout: {
                 type: 'vbox',
                 align: 'stretch'
             },
-            renderTo: Ext.get(parentId),
+            renderTo: Ext.get(this.parentId),
             items: [{
                 xtype: 'textfield',
                 fieldLabel: i18next.t('simplefilter_config_10'),
@@ -134,7 +154,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                             xtype: "combo",
                             itemId: "layerCombo",
                             fieldLabel: i18next.t('simplefilter_config_14'),
-                            store: layerStore,
+                            store: this.layerStore,
                             queryMode: "local",
                             displayField: "alias",
                             editable: false,
@@ -290,7 +310,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                 }]
             }]
         });
-        return this;
+        this.simplefilterForm.setLoading(i18next.t('viewer_components_configobject_1'));
     },
     createFilterConfig: function(type,config){
         var configurerClass = "viewer.components.sf." + type.substring(0,1).toUpperCase() + type.substring(1) + "Config";
@@ -423,17 +443,16 @@ Ext.define("viewer.components.CustomConfiguration",{
     },
 
     createLayerStore: function() {
-        var store = Ext.create("Ext.data.Store", {
-            fields: [{name: "id", type: 'int'}, "serviceId", "layerName", "alias"]
-        });
-
+        var me = this;
         Ext.Object.each(this.getAppConfig().appLayers, function(id, appLayer) {
             if(appLayer.attributes.length > 0) {
-                store.add({id: id, serviceId: appLayer.serviceId, layerName: appLayer.layerName, alias: appLayer.alias});
+                me.layerStore.add({id: id, serviceId: appLayer.serviceId, layerName: appLayer.layerName, alias: appLayer.alias});
             }
         });
-        return store;
+
+        this.initConfiguration();
     },
+
     resetConfig: function (alsoType) {
         if(alsoType){
             Ext.ComponentQuery.query("#filterType")[0].setValue(null);

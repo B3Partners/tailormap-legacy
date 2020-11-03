@@ -18,6 +18,7 @@ Ext.define("viewer.components.CustomConfiguration",{
     extend: "viewer.components.SelectionWindowConfig",
     form: null,
     keyStore:null,
+    layerStore:null,
     constructor: function (parentId, configObject, configPage) {
         configObject.showLabelconfig =true;
         viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId, configObject, configPage);
@@ -25,8 +26,29 @@ Ext.define("viewer.components.CustomConfiguration",{
             fields: ["id", "filename"],
             data: []
         });
-        var me = this;
+        this.layerStore = Ext.create("Ext.data.Store", {
+            fields: ["id", "serviceId", "layerName", "alias"]
+        });
 
+        this.form.setLoading(i18next.t('viewer_components_configobject_1'));
+        this.initForm();
+        this.getFilterableLayers(this.initLayers);
+    },
+
+    initLayers: function(layers){
+        this.getAppConfig().appLayers = layers;
+        this.createLayerStore();
+        if(this.configObject.layers){
+            this.populateAttributeCombos(this.configObject.layers);
+            Ext.getCmp("attributeCombo1").setValue(this.configObject.imageIdAttribute);
+            Ext.getCmp("attributeCombo2").setValue(this.configObject.imageDescriptionAttribute);
+        }
+        this.form.setLoading(false);
+    },
+
+    initForm: function(){
+
+        var me = this;
         this.form.add([
             {
                 xtype: "textfield",
@@ -64,7 +86,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                 id: "layerCombo",
                 fieldLabel: i18next.t('cyclorama_config_3'),
                 labelWidth:this.labelWidth,
-                store: this.createLayerStore(),
+                store: this.layerStore,
                 queryMode: "local",
                 displayField: "alias",
                 editable: false,
@@ -117,14 +139,8 @@ Ext.define("viewer.components.CustomConfiguration",{
             }
         ]);
         this.loadKeys(this.configObject.keyCombo);
-        if(this.configObject.layers){
-            this.populateAttributeCombos(this.configObject.layers);
-            Ext.getCmp("attributeCombo1").setValue(this.configObject.imageIdAttribute);
-            Ext.getCmp("attributeCombo2").setValue(this.configObject.imageDescriptionAttribute);
-
-        }
-
     },
+
     populateAttributeCombos : function(id){
         if (id === null) {
             return;
@@ -164,18 +180,18 @@ Ext.define("viewer.components.CustomConfiguration",{
         });
     },
     createLayerStore: function() {
-        var store = Ext.create("Ext.data.Store", {
-            fields: ["id", "serviceId", "layerName", "alias"]
-        });
-
+        var me = this;
         Ext.Object.each(this.getAppConfig().appLayers, function(id, appLayer) {
             if(appLayer.attributes.length > 0) {
-                store.add({id: id, serviceId: appLayer.serviceId, layerName: appLayer.layerName, alias: appLayer.alias});
+                me.layerStore.add({id: id, serviceId: appLayer.serviceId, layerName: appLayer.layerName, alias: appLayer.alias});
             }
         });
-        store.add({id: "-666", serviceId: "-666", layerName: i18next.t('cyclorama_config_8'), alias: i18next.t('cyclorama_config_9')});
-        return store;
+        this.layerStore.add({id: "-666", serviceId: "-666", layerName: i18next.t('cyclorama_config_8'), alias: i18next.t('cyclorama_config_9')});
+        if(this.configObject.layers){
+            Ext.getCmp("layerCombo").setValue(this.configObject.layers);
+        }
     },
+
     loadKeys : function(value){
         var me = this;
         Ext.Ajax.request({
