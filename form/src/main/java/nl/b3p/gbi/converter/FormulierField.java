@@ -7,6 +7,7 @@ public class FormulierField {
     private int column;
     private int tab;
     private String label;
+    private boolean mandatory;
 
     public String getKey() {
         return key;
@@ -46,5 +47,13 @@ public class FormulierField {
 
     public void setLabel(String label) {
         this.label = label;
+    }
+
+    public Boolean getMandatory() {
+        return mandatory;
+    }
+
+    public void setMandatory(Boolean mandatory) {
+        this.mandatory = mandatory;
     }
 }

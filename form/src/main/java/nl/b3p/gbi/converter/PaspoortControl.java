@@ -18,10 +18,14 @@ public class PaspoortControl {
     private int height;
     @JsonProperty("Width")
     private int width;
+    @JsonProperty("Left")
+    private int left;
     @JsonProperty("Domain")
     private String domein;
     @JsonProperty("Locked")
     private Boolean locked;
+    @JsonProperty("Mandatory")
+    private Boolean mandatory;
 
     public String getNaam() {
         return naam;
@@ -93,5 +97,21 @@ public class PaspoortControl {
 
     public void setLocked(Boolean locked) {
         this.locked = locked;
+    }
+
+    public int getLeft() {
+        return left;
+    }
+
+    public void setLeft(int left) {
+        this.left = left;
+    }
+
+    public Boolean getMandatory() {
+        return mandatory;
+    }
+
+    public void setMandatory(Boolean mandatory) {
+        this.mandatory = mandatory;
     }
 }

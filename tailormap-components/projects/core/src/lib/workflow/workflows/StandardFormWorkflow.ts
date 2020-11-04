@@ -34,19 +34,19 @@ export class StandardFormWorkflow extends Workflow {
   }
 
   public openDialog(formFeatures ?: Feature[]): void {
-     const dialogRef = this.dialog.open(FormComponent, {
-       width: '1050px',
-       height: '800px',
-       disableClose: true,
-       data: {
-         formFeatures,
-         isBulk: false,
-       },
-     });
-     // tslint:disable-next-line: rxjs-no-ignored-subscription
-     dialogRef.afterClosed().subscribe(result => {
-       this.afterEditting();
-     });
+    const dialogRef = this.dialog.open(FormComponent, {
+      width: '1050px',
+      height: '800px',
+      disableClose: true,
+      data: {
+        formFeatures,
+        isBulk: false,
+      },
+    });
+    // tslint:disable-next-line: rxjs-no-ignored-subscription
+    dialogRef.afterClosed().subscribe(result => {
+      this.afterEditting();
+    });
   }
 
   public mapClick(data: MapClickedEvent): void {
@@ -84,10 +84,12 @@ export class StandardFormWorkflow extends Workflow {
   }
 
   public afterEditting(): void {
-    this.vectorLayer.removeAllFeatures();
-    this.highlightLayer.removeAllFeatures();
+    this.ngZone.runOutsideAngular(() => {
+      this.vectorLayer.removeAllFeatures();
+      this.highlightLayer.removeAllFeatures();
 
-    this.tailorMap.getViewerController().mapComponent.getMap().update();
+      this.tailorMap.getViewerController().mapComponent.getMap().update();
+    });
   }
 
   public setFeature(feature: Feature): void {

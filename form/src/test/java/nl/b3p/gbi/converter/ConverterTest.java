@@ -25,7 +25,7 @@ public class ConverterTest {
     public void init() throws IOException {
         instance = new Converter();
 
-        String filename = "paspoorten" + File.separator + "Element.txt";
+        String filename = "paspoorten" + File.separator + "Wegvakonderdeelplanning.txt";
         URL u = this.getClass().getResource(filename);
         assumeNotNull("Het test bestand moet er zijn.", u);
         File element = new File(u.getFile());
@@ -40,9 +40,9 @@ public class ConverterTest {
         Formulier form = instance.convert(paspoort);
         assertNotNull(form);
 
-        assertEquals("Element", form.getName());
-        assertEquals("kw_element", form.getFeatureType());
-        assertEquals("element_type", form.getTreeNodeColumn());
+        assertEquals("Wegvakonderdeelplanning", form.getName());
+        assertEquals("wegvakonderdeel_planning", form.getFeatureType());
+        assertEquals("maatregel_wvko", form.getTreeNodeColumn());
         //assertEquals(2, form.getFields().size());
         assertEquals(null, form.getRelation());
         assertEquals(1, form.getTabs());
@@ -72,10 +72,11 @@ public class ConverterTest {
 
         form.getFields().forEach(f->{
             assertTrue(f.getColumn() >= prev.get());
+            assertFalse(f.getMandatory());
             assertNotEquals(0, f.getColumn());
             prev.set(f.getColumn());
         });
-        assertEquals(3, prev.get());
+        assertEquals(2, prev.get());
         int a = 0;
     }
 
@@ -85,12 +86,12 @@ public class ConverterTest {
         assertNotNull(form);
 
         List<FormulierField> fields = form.getFields();
-        assertEquals(2, fields.size());
+        assertEquals(8, fields.size());
 
         FormulierField field = fields.get(0);
-        assertEquals("element_type", field.getKey());
-        assertEquals("Elementtype", field.getLabel());
-        assertEquals("select", field.getType());
+        assertEquals("maatregel_wvko", field.getKey());
+        assertEquals("Maatregel", field.getLabel());
+        assertEquals("textfield", field.getType());
         assertEquals(1, field.getColumn());
         assertEquals(1, field.getTab());
 
@@ -105,7 +106,7 @@ public class ConverterTest {
         assertNotNull(conf);
         Map<String, String> tabs = conf.getTabs();
         assertNotNull(tabs);
-        assertEquals("Element", tabs.get("1"));
+        assertEquals("Planning", tabs.get("1"));
     }
 
     @Test
@@ -116,9 +117,9 @@ public class ConverterTest {
 
         Parser p = new Parser();
         List<Paspoort> ps = p.parse(dir);
-        assertEquals(118 ,ps.size());
+        assertEquals(22 ,ps.size());
         List<Formulier> forms = instance.convert(ps);
         assertNotNull(forms);
-        assertEquals(118 ,forms.size());
+        assertEquals(22 ,forms.size());
     }
 }
