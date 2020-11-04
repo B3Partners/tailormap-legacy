@@ -38,15 +38,18 @@ before_install:
 install:
   - wget http://cert.pkioverheid.nl/RootCA-G3.cer
   - wget http://cert.pkioverheid.nl/RootCA-G2.cer
-  # load pki-overheid G2/G3 certificates on java 8
+  - wget http://cert.pkioverheid.nl/EVRootCA.cer
+  # load pki-overheid G2/G3/EV certificates on java 8
   - if [ "$TRAVIS_JDK_VERSION" == openjdk8 ]; then
        sudo keytool -importcert -file ./RootCA-G3.cer -alias G3 -keystore $JAVA_HOME/jre/lib/security/cacerts -storepass 'changeit' -v -noprompt -trustcacerts;
        sudo keytool -importcert -file ./RootCA-G2.cer -alias G2 -keystore $JAVA_HOME/jre/lib/security/cacerts -storepass 'changeit' -v -noprompt -trustcacerts;
+       sudo keytool -importcert -file ./EVRootCA.cer -alias EV -keystore $JAVA_HOME/jre/lib/security/cacerts -storepass changeit -v -noprompt -trustcacerts;
     fi
-  # load pki-overheid G2/G3 certificates on java 11
+  # load pki-overheid G2/G3/EV certificates on java 11
   - if [ "$TRAVIS_JDK_VERSION" == openjdk11 ]; then
        sudo keytool -importcert -file ./RootCA-G3.cer -alias G3 -keystore $JAVA_HOME/lib/security/cacerts -storepass 'changeit' -v -noprompt -trustcacerts;
        sudo keytool -importcert -file ./RootCA-G2.cer -alias G2 -keystore $JAVA_HOME/lib/security/cacerts -storepass 'changeit' -v -noprompt -trustcacerts;
+       sudo keytool -importcert -file ./EVRootCA.cer -alias EV -keystore $JAVA_HOME/lib/security/cacerts -storepass 'changeit' -v -noprompt -trustcacerts;
     fi
   # install without testing
   - travis_wait 40 mvn --settings .travis/settings.xml -Ptravis-ci-prebuild install -DskipTests -Dtest.skip.integrationtests=true -B -V -fae
