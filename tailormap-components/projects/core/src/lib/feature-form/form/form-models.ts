@@ -1,4 +1,7 @@
-import { Feature } from '../../shared/generated';
+import {
+  Feature,
+  FeaturetypeMetadata,
+} from '../../shared/generated';
 
 export interface FormConfigurations {
   config: Map<string, FormConfiguration>;
@@ -13,6 +16,7 @@ export interface FormConfiguration {
   featureType: string;
   tabConfig: Map<number, string>;
   relation?: FormRelation;
+  featuretypeMetadata?: FeaturetypeMetadata;
 }
 
 export interface Attribute {
