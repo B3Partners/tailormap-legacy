@@ -1,10 +1,6 @@
 /* tslint:disable */
 import { Feature } from './feature';
-export interface Boomplanning extends Feature {
-  boom_id?: string;
-  calc_plan_code?: string;
-  calc_plan_id?: string;
-  calc_plan_name?: string;
+export interface RioolputPlanning extends Feature {
   data_guid?: string;
   frequentie?: number;
   gepland_uitgevoerd?: string;
@@ -12,8 +8,8 @@ export interface Boomplanning extends Feature {
   id?: number;
   jaarvanuitvoering?: number;
   kosten?: number;
-  maatregel_boom?: string;
+  maatregel_rlput?: string;
   maatregeltype?: string;
   planstatus?: string;
-  werkeenheid?: string;
+  rioolput_id?: string;
 }

@@ -59,7 +59,10 @@ export class StandardFormWorkflow extends Workflow {
         if (features && features.length > 0) {
           const feat = features[0];
 
-          this.highlightLayer.readGeoJSON(this.featureInitializerService.retrieveGeometry(feat));
+          const geom = this.featureInitializerService.retrieveGeometry(feat);
+          if(geom){
+            this.highlightLayer.readGeoJSON(geom);
+          }
 
           this.openDialog([feat]);
         }

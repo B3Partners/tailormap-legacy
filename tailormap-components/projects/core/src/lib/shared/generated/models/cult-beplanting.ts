@@ -1,4 +1,5 @@
 /* tslint:disable */
+import { CultBeplantingPlanning } from './cult-beplanting-planning';
 import { Feature } from './feature';
 import { Geometry } from './geometry';
 export interface CultBeplanting extends Feature {
@@ -39,6 +40,7 @@ export interface CultBeplanting extends Feature {
   oppervlakte?: number;
   optalud?: string;
   orig_id?: number;
+  planningen?: Array<CultBeplantingPlanning>;
   ploegindeling?: string;
   rayon?: string;
   reg_begin?: string;

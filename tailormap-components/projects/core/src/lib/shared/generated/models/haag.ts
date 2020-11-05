@@ -18,7 +18,6 @@ export interface Haag extends Feature {
   categorie?: string;
   domein?: string;
   eind_tijd?: string;
-  fid?: number;
   gebruiksdruk?: string;
   gemeente?: string;
   geometrie?: Geometry;

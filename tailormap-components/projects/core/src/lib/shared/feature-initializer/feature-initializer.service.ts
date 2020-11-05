@@ -4,6 +4,7 @@ import {
   Feature,
   Geometry,
   MechLeiding,
+  NatBeplanting,
   Rioolput,
   VrijvLeiding,
   Wegvakonderdeel,
@@ -36,6 +37,8 @@ export class FeatureInitializerService {
         return (feature as VrijvLeiding).geometrie;
       case 'Boom':
         return (feature as Boom).geometrie;
+      case 'NatBeplanting':
+        return (feature as NatBeplanting).geometrie;
     }
     return null;
   }

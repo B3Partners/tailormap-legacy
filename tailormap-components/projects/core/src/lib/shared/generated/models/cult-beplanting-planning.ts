@@ -1,10 +1,11 @@
 /* tslint:disable */
 import { Feature } from './feature';
-export interface Boomplanning extends Feature {
-  boom_id?: string;
+export interface CultBeplantingPlanning extends Feature {
+  belang?: number;
   calc_plan_code?: string;
   calc_plan_id?: string;
   calc_plan_name?: string;
+  cult_beplanting_id?: string;
   data_guid?: string;
   frequentie?: number;
   gepland_uitgevoerd?: string;
@@ -12,7 +13,8 @@ export interface Boomplanning extends Feature {
   id?: number;
   jaarvanuitvoering?: number;
   kosten?: number;
-  maatregel_boom?: string;
+  maatregel_cultbepl?: string;
+  maatregelgroep?: string;
   maatregeltype?: string;
   planstatus?: string;
   werkeenheid?: string;
