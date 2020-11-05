@@ -106,20 +106,25 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
   public ngAfterViewInit(): void {
     // console.log('#Table - ngAfterViewInit');
 
-    // Set the default pagesize.
-    this.defaultPageSize = this.attributelistService.config.pageSize;
-
     // Set datasource paginator.
     this.dataSource.paginator = this.paginator;
     // Set datasource sort.
     this.dataSource.sorter = this.sort;
 
-    // Hide the paginator pagesize combo.
-    this.paginator.hidePageSize = true;
+    // Prevent ExpressionChangedAfterItHasBeenCheckedErrors using setTimeout
+    // maybe loadData and paginator settings in ngOnInit would be better
+    setTimeout(() => {
+      // console.log('#Table - ngAfterViewInit - paginator settings');
+      // Set the default pagesize.
+      this.defaultPageSize = this.attributelistService.config.pageSize;
 
-    // Init the paginator with the startup page index and page size.
-    this.paginator.pageIndex = 0;
-    this.paginator.pageSize = this.defaultPageSize;
+      // Hide the paginator pagesize combo.
+      this.paginator.hidePageSize = true;
+
+      // Init the paginator with the startup page index and page size.
+      this.paginator.pageIndex = 0;
+      this.paginator.pageSize = this.defaultPageSize;
+    }, 0)
   }
 
   public onAfterLoadData(): void {
