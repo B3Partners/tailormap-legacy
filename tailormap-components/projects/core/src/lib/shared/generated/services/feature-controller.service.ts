@@ -293,6 +293,8 @@ export class FeatureControllerService extends BaseService {
 
     return this.getAll$Response(params).pipe(
       map((r: StrictHttpResponse<Array<Boom | Boominspectie | Boomonderhoud | Boomplanning | CultBeplanting | CultBeplantingPlanning | Gras | GrasPlanning | Haag | HaagPlanning | MechLeiding | MechLeidingPlanning | NatBeplanting | NatBeplantingOnderhoud | Rioolput | RioolputInspectie | RioolputPlanning | VrijvLeiding | VrijvLeidingPlanning | Weginspectie | Wegvakonderdeel | Wegvakonderdeelplanning>>) => r.body as Array<Boom | Boominspectie | Boomonderhoud | Boomplanning | CultBeplanting | CultBeplantingPlanning | Gras | GrasPlanning | Haag | HaagPlanning | MechLeiding | MechLeidingPlanning | NatBeplanting | NatBeplantingOnderhoud | Rioolput | RioolputInspectie | RioolputPlanning | VrijvLeiding | VrijvLeidingPlanning | Weginspectie | Wegvakonderdeel | Wegvakonderdeelplanning>)
+<<<<<<< HEAD
+=======
     );
   }
 
@@ -348,55 +350,7 @@ export class FeatureControllerService extends BaseService {
 
     return this.onPoint$Response(params).pipe(
       map((r: StrictHttpResponse<Array<Boom | Boominspectie | Boomonderhoud | Boomplanning | CultBeplanting | CultBeplantingPlanning | Gras | GrasPlanning | Haag | HaagPlanning | MechLeiding | MechLeidingPlanning | NatBeplanting | NatBeplantingOnderhoud | Rioolput | RioolputInspectie | RioolputPlanning | VrijvLeiding | VrijvLeidingPlanning | Weginspectie | Wegvakonderdeel | Wegvakonderdeelplanning>>) => r.body as Array<Boom | Boominspectie | Boomonderhoud | Boomplanning | CultBeplanting | CultBeplantingPlanning | Gras | GrasPlanning | Haag | HaagPlanning | MechLeiding | MechLeidingPlanning | NatBeplanting | NatBeplantingOnderhoud | Rioolput | RioolputInspectie | RioolputPlanning | VrijvLeiding | VrijvLeidingPlanning | Weginspectie | Wegvakonderdeel | Wegvakonderdeelplanning>)
-    );
-  }
-
-  /**
-   * Path part for operation featuretypeInformation
-   */
-  static readonly FeaturetypeInformationPath = '/features/info/{featureTypes}';
-
-  /**
-   * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `featuretypeInformation()` instead.
-   *
-   * This method doesn't expect any request body.
-   */
-  featuretypeInformation$Response(params: {
-    featureTypes: Array<string>;
-
-  }): Observable<StrictHttpResponse<Array<FeaturetypeMetadata>>> {
-
-    const rb = new RequestBuilder(this.rootUrl, FeatureControllerService.FeaturetypeInformationPath, 'get');
-    if (params) {
-
-      rb.path('featureTypes', params.featureTypes, {});
-
-    }
-    return this.http.request(rb.build({
-      responseType: 'json',
-      accept: 'application/json'
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<Array<FeaturetypeMetadata>>;
-      })
-    );
-  }
-
-  /**
-   * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `featuretypeInformation$Response()` instead.
-   *
-   * This method doesn't expect any request body.
-   */
-  featuretypeInformation(params: {
-    featureTypes: Array<string>;
-
-  }): Observable<Array<FeaturetypeMetadata>> {
-
-    return this.featuretypeInformation$Response(params).pipe(
-      map((r: StrictHttpResponse<Array<FeaturetypeMetadata>>) => r.body as Array<FeaturetypeMetadata>)
+>>>>>>> f990a1584... supersedes GBIW-200
     );
   }
 
@@ -448,6 +402,118 @@ export class FeatureControllerService extends BaseService {
     'y': number;
     scale: number;
 
+  }): Observable<Array<Boom | Boominspectie | Boomonderhoud | Boomplanning | CultBeplanting | CultBeplantingPlanning | Gras | GrasPlanning | Haag | HaagPlanning | MechLeiding | MechLeidingPlanning | NatBeplanting | NatBeplantingOnderhoud | Rioolput | RioolputInspectie | RioolputPlanning | VrijvLeiding | VrijvLeidingPlanning | Weginspectie | Wegvakonderdeel | Wegvakonderdeelplanning>> {
+
+<<<<<<< HEAD
+    return this.onPoint$Response(params).pipe(
+      map((r: StrictHttpResponse<Array<Boom | Boominspectie | Boomonderhoud | Boomplanning | CultBeplanting | CultBeplantingPlanning | Gras | GrasPlanning | Haag | HaagPlanning | MechLeiding | MechLeidingPlanning | NatBeplanting | NatBeplantingOnderhoud | Rioolput | RioolputInspectie | RioolputPlanning | VrijvLeiding | VrijvLeidingPlanning | Weginspectie | Wegvakonderdeel | Wegvakonderdeelplanning>>) => r.body as Array<Boom | Boominspectie | Boomonderhoud | Boomplanning | CultBeplanting | CultBeplantingPlanning | Gras | GrasPlanning | Haag | HaagPlanning | MechLeiding | MechLeidingPlanning | NatBeplanting | NatBeplantingOnderhoud | Rioolput | RioolputInspectie | RioolputPlanning | VrijvLeiding | VrijvLeidingPlanning | Weginspectie | Wegvakonderdeel | Wegvakonderdeelplanning>)
+    );
+  }
+
+  /**
+   * Path part for operation featuretypeInformation
+   */
+  static readonly FeaturetypeInformationPath = '/features/info/{featureTypes}';
+
+  /**
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `featuretypeInformation()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  featuretypeInformation$Response(params: {
+    featureTypes: Array<string>;
+
+  }): Observable<StrictHttpResponse<Array<FeaturetypeMetadata>>> {
+
+    const rb = new RequestBuilder(this.rootUrl, FeatureControllerService.FeaturetypeInformationPath, 'get');
+    if (params) {
+
+      rb.path('featureTypes', params.featureTypes, {});
+
+    }
+    return this.http.request(rb.build({
+      responseType: 'json',
+      accept: 'application/json'
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<Array<FeaturetypeMetadata>>;
+      })
+    );
+  }
+
+  /**
+   * This method provides access to only to the response body.
+   * To access the full response (for headers, for example), `featuretypeInformation$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  featuretypeInformation(params: {
+    featureTypes: Array<string>;
+
+  }): Observable<Array<FeaturetypeMetadata>> {
+
+    return this.featuretypeInformation$Response(params).pipe(
+      map((r: StrictHttpResponse<Array<FeaturetypeMetadata>>) => r.body as Array<FeaturetypeMetadata>)
+=======
+    return this.featuretypeOnPoint$Response(params).pipe(
+      map((r: StrictHttpResponse<Array<Boom | Boominspectie | Boomonderhoud | Boomplanning | CultBeplanting | CultBeplantingPlanning | Gras | GrasPlanning | Haag | HaagPlanning | MechLeiding | MechLeidingPlanning | NatBeplanting | NatBeplantingOnderhoud | Rioolput | RioolputInspectie | RioolputPlanning | VrijvLeiding | VrijvLeidingPlanning | Weginspectie | Wegvakonderdeel | Wegvakonderdeelplanning>>) => r.body as Array<Boom | Boominspectie | Boomonderhoud | Boomplanning | CultBeplanting | CultBeplantingPlanning | Gras | GrasPlanning | Haag | HaagPlanning | MechLeiding | MechLeidingPlanning | NatBeplanting | NatBeplantingOnderhoud | Rioolput | RioolputInspectie | RioolputPlanning | VrijvLeiding | VrijvLeidingPlanning | Weginspectie | Wegvakonderdeel | Wegvakonderdeelplanning>)
+>>>>>>> f990a1584... supersedes GBIW-200
+    );
+  }
+
+  /**
+   * Path part for operation featuretypeInformation
+   */
+  static readonly FeaturetypeInformationPath = '/features/info/{featureTypes}';
+
+  /**
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `featuretypeInformation()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  featuretypeInformation$Response(params: {
+    featureTypes: Array<string>;
+
+<<<<<<< HEAD
+  }): Observable<StrictHttpResponse<Array<Boom | Boominspectie | Boomonderhoud | Boomplanning | CultBeplanting | CultBeplantingPlanning | Gras | GrasPlanning | Haag | HaagPlanning | MechLeiding | MechLeidingPlanning | NatBeplanting | NatBeplantingOnderhoud | Rioolput | RioolputInspectie | RioolputPlanning | VrijvLeiding | VrijvLeidingPlanning | Weginspectie | Wegvakonderdeel | Wegvakonderdeelplanning>>> {
+=======
+  }): Observable<StrictHttpResponse<Array<FeaturetypeMetadata>>> {
+>>>>>>> f990a1584... supersedes GBIW-200
+
+    const rb = new RequestBuilder(this.rootUrl, FeatureControllerService.FeaturetypeInformationPath, 'get');
+    if (params) {
+
+      rb.path('featureTypes', params.featureTypes, {});
+
+    }
+    return this.http.request(rb.build({
+      responseType: 'json',
+      accept: 'application/json'
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+<<<<<<< HEAD
+        return r as StrictHttpResponse<Array<Boom | Boominspectie | Boomonderhoud | Boomplanning | CultBeplanting | CultBeplantingPlanning | Gras | GrasPlanning | Haag | HaagPlanning | MechLeiding | MechLeidingPlanning | NatBeplanting | NatBeplantingOnderhoud | Rioolput | RioolputInspectie | RioolputPlanning | VrijvLeiding | VrijvLeidingPlanning | Weginspectie | Wegvakonderdeel | Wegvakonderdeelplanning>>;
+=======
+        return r as StrictHttpResponse<Array<FeaturetypeMetadata>>;
+>>>>>>> f990a1584... supersedes GBIW-200
+      })
+    );
+  }
+
+  /**
+   * This method provides access to only to the response body.
+   * To access the full response (for headers, for example), `featuretypeInformation$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  featuretypeInformation(params: {
+    featureTypes: Array<string>;
+
+<<<<<<< HEAD
   }): Observable<Array<Boom | Boominspectie | Boomonderhoud | Boomplanning | CultBeplanting | CultBeplantingPlanning | Gras | GrasPlanning | Haag | HaagPlanning | MechLeiding | MechLeidingPlanning | NatBeplanting | NatBeplantingOnderhoud | Rioolput | RioolputInspectie | RioolputPlanning | VrijvLeiding | VrijvLeidingPlanning | Weginspectie | Wegvakonderdeel | Wegvakonderdeelplanning>> {
 
 <<<<<<< HEAD
@@ -551,6 +617,12 @@ export class FeatureControllerService extends BaseService {
     return this.featuretypeOnPoint$Response(params).pipe(
       map((r: StrictHttpResponse<Array<Boom | Boominspectie | Boomplanning | CultBeplanting | Gras | Haag | MechLeiding | NatBeplanting | Rioolput | VrijvLeiding | Weginspectie | Wegvakonderdeel | Wegvakonderdeelplanning>>) => r.body as Array<Boom | Boominspectie | Boomplanning | CultBeplanting | Gras | Haag | MechLeiding | NatBeplanting | Rioolput | VrijvLeiding | Weginspectie | Wegvakonderdeel | Wegvakonderdeelplanning>)
 >>>>>>> 74eb7c87d... added new controller to retrieve metadata
+=======
+  }): Observable<Array<FeaturetypeMetadata>> {
+
+    return this.featuretypeInformation$Response(params).pipe(
+      map((r: StrictHttpResponse<Array<FeaturetypeMetadata>>) => r.body as Array<FeaturetypeMetadata>)
+>>>>>>> f990a1584... supersedes GBIW-200
     );
   }
 
