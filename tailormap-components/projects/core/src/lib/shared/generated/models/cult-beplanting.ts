@@ -17,7 +17,6 @@ export interface CultBeplanting extends Feature {
   cult_bepl_type?: string;
   domein?: string;
   eind_tijd?: string;
-  fid?: number;
   functieondsteunwegdeel?: string;
   fysiekvkbegrterplus?: string;
   fysiekvkondsteunwd?: string;

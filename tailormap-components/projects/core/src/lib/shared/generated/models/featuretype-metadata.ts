@@ -2,5 +2,5 @@
 export interface FeaturetypeMetadata {
   featuretypeName?: string;
   geometryAttribute?: string;
-  geometryType?: 'LINESTRING' | 'POINT' | 'POLYGON';
+  geometryType?: 'LINESTRING' | 'POINT' | 'POLYGON' | 'GEOMETRY';
 }

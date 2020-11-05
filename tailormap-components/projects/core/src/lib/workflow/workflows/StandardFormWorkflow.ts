@@ -19,7 +19,21 @@ export class StandardFormWorkflow extends Workflow {
 
   public addFeature(featureType: string) {
     this.featureType = featureType;
-    this.vectorLayer.drawFeature('Polygon');
+    const geomtype = this.formConfigRepo.getFormConfig(featureType).featuretypeMetadata.geometryType;
+    this.vectorLayer.drawFeature(this.convertGeomType(geomtype));
+  }
+
+  private convertGeomType(type: string): string {
+    switch (type) {
+      case 'POLYGON':
+        return 'Polygon';
+      case 'LINESTRING':
+        return 'LineString';
+      case 'POINT':
+        return 'Point';
+      default:
+        return 'Geometry';
+    }
   }
 
   public geometryDrawn(vectorLayer: VectorLayer, feature: any) {

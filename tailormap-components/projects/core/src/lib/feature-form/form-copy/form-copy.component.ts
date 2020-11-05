@@ -37,7 +37,7 @@ export class FormCopyComponent implements OnInit {
 
   public formConfig: FormConfiguration;
 
-  public featuresToCopy = new Map<number, Map<string, string>>();
+  public featuresToCopy = new Map<string, Map<string, string>>();
 
   constructor(public dialogRef: MatDialogRef<FormCopyComponent>,
               @Inject(MAT_DIALOG_DATA) public data: CopyDialogData,
@@ -56,7 +56,7 @@ export class FormCopyComponent implements OnInit {
     for (const field of this.formConfig.fields) {
       fieldsToCopy.set(field.key, field.label);
     }
-    this.featuresToCopy.set(this.originalFeature['fid'], fieldsToCopy);
+    this.featuresToCopy.set(this.originalFeature['objectGuid'], fieldsToCopy);
     if (this.originalFeature.children) {
       for (const child of this.originalFeature.children) {
         const config = this.configService.getFormConfig(child.clazz);
@@ -67,7 +67,7 @@ export class FormCopyComponent implements OnInit {
             fieldsToCopy.set(field.key, field.label);
           }
           fieldsToCopy.set('objecttype', child.objecttype);
-          this.featuresToCopy.set(child.fid, fieldsToCopy);
+          this.featuresToCopy.set(child.objectGuid, fieldsToCopy);
         }
       }
     }
@@ -152,15 +152,15 @@ export class FormCopyComponent implements OnInit {
 
   public updateFieldToCopy(event: any) {
     if (!event.checked) {
-      if (this.featuresToCopy.has(this.originalFeature['fid'])) {
-        const fieldsToCopy = this.featuresToCopy.get(this.originalFeature['fid']);
+      if (this.featuresToCopy.has(this.originalFeature['objectGuid'])) {
+        const fieldsToCopy = this.featuresToCopy.get(this.originalFeature['objectGuid']);
         if (fieldsToCopy.has(event.source.id)) {
           fieldsToCopy.delete(event.source.id);
         }
       }
     } else {
-      if (this.featuresToCopy.has(this.originalFeature['fid'])) {
-        const fieldsToCopy = this.featuresToCopy.get(this.originalFeature['fid']);
+      if (this.featuresToCopy.has(this.originalFeature['objectGuid'])) {
+        const fieldsToCopy = this.featuresToCopy.get(this.originalFeature['objectGuid']);
         fieldsToCopy.set(event.source.id, event.source.name);
       }
     }
@@ -168,7 +168,7 @@ export class FormCopyComponent implements OnInit {
 
   private getPropertiesToMerge(): any {
     const valuesToCopy = {};
-    const fieldsToCopy = this.featuresToCopy.get(this.parentFeature['fid']);
+    const fieldsToCopy = this.featuresToCopy.get(this.parentFeature['objectGuid']);
     fieldsToCopy.forEach((value, key) => {
       valuesToCopy[key] = this.originalFeature[key];
     })
@@ -179,11 +179,11 @@ export class FormCopyComponent implements OnInit {
     const newChilds = [];
     this.featuresToCopy.forEach((fieldsToCopy, key) => {
       let newChild = {};
-      if (key !== this.parentFeature['fid']) {
+      if (key !== this.parentFeature['objectGuid']) {
         const valuesToCopy = {};
         for (let i = 0; i <= this.parentFeature.children.length - 1; i++) {
           const child = this.parentFeature.children[i];
-          if (child.fid === key) {
+          if (child.objectGuid === key) {
             fieldsToCopy.forEach((value, key1) => {
               valuesToCopy[key1] = child[key1];
             })

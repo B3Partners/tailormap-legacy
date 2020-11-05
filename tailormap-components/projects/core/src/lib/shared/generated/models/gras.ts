@@ -1,6 +1,7 @@
 /* tslint:disable */
 import { Feature } from './feature';
 import { Geometry } from './geometry';
+import { GrasPlanning } from './gras-planning';
 export interface Gras extends Feature {
   aanlegjaar?: number;
   afbeelding?: string;
@@ -40,6 +41,7 @@ export interface Gras extends Feature {
   oppervlakte?: number;
   optalud?: string;
   orig_id?: number;
+  planningen?: Array<GrasPlanning>;
   ploegindeling?: string;
   rayon?: string;
   reg_begin?: string;
