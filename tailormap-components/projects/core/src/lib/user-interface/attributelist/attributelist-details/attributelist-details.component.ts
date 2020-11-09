@@ -9,7 +9,10 @@ import {
 import { MatSort, Sort } from '@angular/material/sort';
 import { MatTable } from '@angular/material/table';
 
-import { AttributelistTable } from '../attributelist-common/attributelist-models';
+import {
+  AttributelistTable,
+  RelatedFeatureType,
+} from '../attributelist-common/attributelist-models';
 import { AttributeDataSource } from '../attributelist-common/attributelist-datasource';
 import { AttributeService } from '../../../shared/attribute-service/attribute.service';
 import { LayerService } from '../layer.service';

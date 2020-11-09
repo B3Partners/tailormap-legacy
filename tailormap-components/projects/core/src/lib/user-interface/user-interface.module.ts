@@ -8,13 +8,11 @@ import { AttributelistModule } from './attributelist/attributelist.module';
 import { CommonModule } from '@angular/common';
 import { PaginatorLabels } from './paginator-labels';
 import { SharedModule } from '../shared/shared.module';
-import { TestAttributeserviceComponent } from './test-attributeservice/test-attributeservice.component';
 import { ChooseTypesComponent } from './sewage/choose-types/choose-types.component';
 
 @NgModule({
   declarations: [
     AddFeatureComponent,
-    TestAttributeserviceComponent,
     ChooseTypesComponent,
   ],
   imports: [
@@ -26,7 +24,6 @@ import { ChooseTypesComponent } from './sewage/choose-types/choose-types.compone
   exports: [
     AddFeatureComponent,
     MatIconModule,
-    TestAttributeserviceComponent,
   ],
   entryComponents: [],
   providers: [
