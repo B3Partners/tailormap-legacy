@@ -722,7 +722,7 @@ Ext.define("viewer.components.SearchConfiguration",{
             return;
         }
         // Get old config or create new config object
-        var solrConfig =  {};
+        var solrConfig = searchConfig.solrConfig || {};
         // Check if the solrconfig FilterableCheckboxes object exists
         if(this.solrSearchconfigs.hasOwnProperty(searchconfigId)) {
             // Get the checked solr configs
