@@ -35,6 +35,7 @@ import net.sourceforge.stripes.action.StreamingResolution;
 import net.sourceforge.stripes.action.StrictBinding;
 import net.sourceforge.stripes.action.UrlBinding;
 import net.sourceforge.stripes.controller.LifecycleStage;
+import net.sourceforge.stripes.validation.OneToManyTypeConverter;
 import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.geotools.filter.visitor.RemoveDistanceUnit;
 import nl.b3p.viewer.audit.AuditMessageObject;
@@ -112,7 +113,7 @@ public class DownloadFeaturesActionBean extends LocalizableApplicationActionBean
     @Validate
     private String params;
 
-    @Validate
+    @Validate(converter = OneToManyTypeConverter.class)
     private List<String> columns = new ArrayList<>();
 
     private AuditMessageObject auditMessageObject;
