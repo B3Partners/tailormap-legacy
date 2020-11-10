@@ -52,7 +52,8 @@ public class UserLayerHandler {
 
 
     public boolean add() {
-        boolean succes = createView();
+        String viewName = this.dataBase.createViewName();
+        boolean succes = createView(viewName);
         if (succes) {
             succes = createWMSLayer();
         }
@@ -88,12 +89,11 @@ public class UserLayerHandler {
         return succes;
     }
 
-    private boolean createView() {
+    private boolean createView(String viewName) {
         boolean succes = false;
         try {
             FilterToSQL f = ((BasicSQLDialect) this.dataStore.getSQLDialect()).createFilterToSQL();
             String where = f.encodeToString(CQL.toFilter(this.query));
-            String viewName = this.dataBase.createViewName();
             String tableName = this.layer.getFeatureType().getTypeName();
             succes = this.dataBase.createView(viewName, tableName, where);
 

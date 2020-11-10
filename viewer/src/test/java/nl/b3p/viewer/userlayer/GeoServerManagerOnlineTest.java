@@ -1,0 +1,43 @@
+package nl.b3p.viewer.userlayer;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.assertTrue;
+
+public class GeoServerManagerOnlineTest {
+    private GeoServerManager serverManager;
+    private String layerName;
+
+    @Before
+    public void setUp() {
+        final String baseUrl = "http://localhost:8080/geoserver/";
+        final String userName = "admin";
+        final String passWord = "geoserver";
+        final String workSpace = "geoserver";
+
+        layerName = (new PostgreSQL(null)).createViewName();
+        serverManager = new GeoServerManager(
+                baseUrl, userName, passWord, workSpace
+        );
+    }
+
+    @After
+    public void cleanup(){
+        serverManager.deleteLayer(layerName);
+    }
+
+    @Test
+    public void createLayerTest() {
+        assertTrue(serverManager.createLayer(layerName, "test", "gemeenten2020", "dingetjes"));
+    }
+
+    @Test
+    public void deleteLayerTest() {
+        assertTrue(serverManager.createLayer("gemtest", "gemtest", "gemeenten2020", "dingetjes"));
+        assertTrue(serverManager.deleteLayer("gemtest"));
+    }
+
+
+}
