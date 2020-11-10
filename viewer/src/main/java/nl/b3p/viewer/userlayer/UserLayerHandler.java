@@ -3,6 +3,7 @@ package nl.b3p.viewer.userlayer;
 import nl.b3p.viewer.audit.AuditMessageObject;
 import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.ApplicationLayer;
+import nl.b3p.viewer.config.services.GeoService;
 import nl.b3p.viewer.config.services.Layer;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -20,9 +21,11 @@ public class UserLayerHandler {
     private final AuditMessageObject auditMessageObject;
     private final ApplicationLayer appLayer;
     private final String query;
+    private final String layerTitle;
     private final EntityManager entityManager;
     private final Application application;
     private Layer layer;
+    private GeoService service;
     private JDBCDataStore dataStore;
     private DataBase dataBase;
 
@@ -32,17 +35,20 @@ public class UserLayerHandler {
      * @param application        Application we're working for
      * @param appLayer           appLayer to remove or that is the base for the userlayer, {@code null}
      * @param query              CQL query, can be {@code null}
+     * @param layerTitle         user friendly layername
      */
     public UserLayerHandler(AuditMessageObject auditMessageObject, EntityManager entityManager, Application application,
-                            ApplicationLayer appLayer, String query) {
+                            ApplicationLayer appLayer, String query, String layerTitle) {
         this.auditMessageObject = auditMessageObject;
         this.entityManager = entityManager;
         this.application = application;
         this.appLayer = appLayer;
         this.query = query;
+        this.layerTitle = layerTitle;
 
         try {
-            this.layer = this.appLayer.getService().getLayer(this.appLayer.getLayerName(), this.entityManager);
+            this.service = this.appLayer.getService();
+            this.layer = this.service.getLayer(this.appLayer.getLayerName(), this.entityManager);
             this.dataStore = (JDBCDataStore) layer.getFeatureType().openGeoToolsFeatureSource().getDataStore();
             this.dataBase = DataBaseFactory.getDataBase(dataStore);
         } catch (Exception e) {
@@ -55,7 +61,7 @@ public class UserLayerHandler {
         String viewName = this.dataBase.createViewName();
         boolean succes = createView(viewName);
         if (succes) {
-            succes = createWMSLayer();
+            succes = createWMSLayer(viewName);
         }
         if (succes) {
             succes = createUserLayer();
@@ -82,7 +88,7 @@ public class UserLayerHandler {
         if (succes) {
             succes = dropview();
         } else {
-            createWMSLayer();
+            createWMSLayer("TODO name");
             updateApplication();
         }
 
@@ -113,9 +119,20 @@ public class UserLayerHandler {
         return succes;
     }
 
-    private boolean createWMSLayer() {
+    private boolean createWMSLayer(String viewName) {
         // TODO implement
-        return true;
+        GeoServerManager manager = new GeoServerManager(
+                // TODO geoserver base url herleiden
+                this.service.getUrl(),
+                this.service.getUsername(),
+                this.service.getPassword(),
+                // TODO workspace herleiden? of via via context param
+                "GBIuserlayers"
+        );
+        // TODO hoe komen we aan de geoserver "bron" - data bron in geoserver -
+        //  zou via REST calls te herleiden zijn denk ik, kan evt ook via context param
+
+        return manager.createLayer(viewName, this.layerTitle,viewName, "TODO geoserver source" );
     }
 
     private boolean deleteWMSLayer() {

@@ -35,6 +35,9 @@ public class UserLayerActionBean implements ActionBean, ValidationErrorHandler, 
     @Validate(required = true, on = "add")
     private String query;
 
+    @Validate(required = true, on="add")
+    private String title;
+
     private AuditMessageObject auditMessageObject;
     private boolean unauthorized;
 
@@ -110,7 +113,7 @@ public class UserLayerActionBean implements ActionBean, ValidationErrorHandler, 
             jsonObject.append("success", false);
         } else {
             final UserLayerHandler ulh = new UserLayerHandler(auditMessageObject, Stripersist.getEntityManager(),
-                    application, appLayer, query);
+                    application, appLayer, query, title);
             final JSONObject message = new JSONObject();
 
             jsonObject.append("appLayerId", ulh.getAppLayerId());
@@ -142,7 +145,7 @@ public class UserLayerActionBean implements ActionBean, ValidationErrorHandler, 
             jsonObject.append("success", false);
         } else {
             final UserLayerHandler ulh = new UserLayerHandler(auditMessageObject, Stripersist.getEntityManager(),
-                    application, appLayer, query);
+                    application, appLayer, query, title);
             jsonObject.append("success", ulh.delete());
 
             this.auditMessageObject.addMessage(
@@ -198,6 +201,14 @@ public class UserLayerActionBean implements ActionBean, ValidationErrorHandler, 
 
     public void setQuery(String query) {
         this.query = query;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public Application getApplication() {

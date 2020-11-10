@@ -11,7 +11,7 @@ public class UserLayerHandlerIntegrationTest extends TestUtil {
     @Test
     public void testAdd() {
         UserLayerHandler ulh = new UserLayerHandler(new AuditMessageObject(), entityManager, app, testAppLayer,
-                "id > 0");
+                "id > 0", "testlayer");
         assertTrue(ulh.add());
     }
 }
