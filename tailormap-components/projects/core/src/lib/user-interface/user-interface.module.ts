@@ -9,11 +9,15 @@ import { CommonModule } from '@angular/common';
 import { PaginatorLabels } from './paginator-labels';
 import { SharedModule } from '../shared/shared.module';
 import { ChooseTypesComponent } from './sewage/choose-types/choose-types.component';
+import { EditBarComponent } from './edit-bar/edit-bar/edit-bar.component';
+import { AddFeatureMenuComponent } from './edit-bar/add-feature-menu/add-feature-menu.component';
 
 @NgModule({
   declarations: [
     AddFeatureComponent,
     ChooseTypesComponent,
+    EditBarComponent,
+    AddFeatureMenuComponent,
   ],
   imports: [
     CommonModule,
@@ -24,6 +28,7 @@ import { ChooseTypesComponent } from './sewage/choose-types/choose-types.compone
   exports: [
     AddFeatureComponent,
     MatIconModule,
+    EditBarComponent,
   ],
   entryComponents: [],
   providers: [

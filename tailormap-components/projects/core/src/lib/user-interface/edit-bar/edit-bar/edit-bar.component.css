@@ -1,0 +1,9 @@
+.edit-bar{
+  position: absolute;
+  top: 150px;
+  left: 500px;
+  z-index: 100000;
+  background: darkgray;
+  width: 200px;
+  height: 50px;
+}

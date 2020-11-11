@@ -13,7 +13,10 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatGridListModule } from '@angular/material/grid-list';
-import { MatIconModule } from '@angular/material/icon';
+import {
+  MatIconModule,
+  MatIconRegistry,
+} from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
 import { MatMenuModule } from '@angular/material/menu';
@@ -27,6 +30,7 @@ import { MatTreeModule } from '@angular/material/tree';
 import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.component';
 import { ConfirmDialogService } from './confirm-dialog/confirm-dialog.service';
 import { ApiModule } from './generated';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @NgModule({
   declarations: [
@@ -89,4 +93,5 @@ import { ApiModule } from './generated';
   ],
 })
 export class SharedModule {
+
 }

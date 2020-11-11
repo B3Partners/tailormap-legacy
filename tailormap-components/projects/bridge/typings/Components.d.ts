@@ -7,6 +7,7 @@ import {
 } from './Mapcomponents';
 import { LayerVisibilityEvent } from '../../core/src/lib/shared/models/event-models';
 
+
 declare interface LayerSelectedEvent{
   appLayer: AppLayer;
   layerName: string;
@@ -32,4 +33,17 @@ declare interface ViewerController {
   getVisibleLayers(castToStrings: true): string[];
 
   addListener: (eventName: string, handler: layerEventHandler) => void;
+  getComponentsByClassNames: (classNames : string[]) => TailormapComponent[];
+}
+
+declare interface TailormapComponent{
+  getContentContainer: () => string;
+}
+
+declare interface SplitComponent extends TailormapComponent{
+  showWindow: () => void;
+}
+
+declare interface MergeComponent extends TailormapComponent{
+  showWindow: () => void;
 }
