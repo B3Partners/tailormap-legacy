@@ -114,6 +114,17 @@ export class FormCopyComponent implements OnInit {
     return Number(key);
   }
 
+  public test(event: any) {
+    const fieldsToCopy = this.featuresToCopy.get(this.originalFeature['fid']);
+    return fieldsToCopy.has(event);
+  }
+
+  public toggle(event: any) {
+    console.log(event.checked);
+    const fieldsToCopy = this.featuresToCopy.get(this.originalFeature['fid']);
+    fieldsToCopy.clear();
+  }
+
   public updateFieldToCopy(event: any) {
     if (!event.checked) {
       if (this.featuresToCopy.has(this.originalFeature['fid'])) {

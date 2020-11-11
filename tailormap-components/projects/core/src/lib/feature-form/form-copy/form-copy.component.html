@@ -35,9 +35,11 @@
         <mat-tab-group>
           <mat-tab *ngFor="let tab of formConfig.tabConfig | keyvalue" label="{{tab.value}}">
             <div class="tab">
+              <mat-checkbox name="alles aan/uit" id="toggle" [checked]="true" (change)="toggle($event)">alles aan/uit</mat-checkbox>
+              <mat-divider></mat-divider>
               <div *ngFor="let field of formConfig.fields" class="column">
                   <span *ngIf="field.column === stringToNumber(tab.key)" class="cellfield">
-                    <mat-checkbox name="{{field.label}}" id="{{field.key}}" [checked]="true" (change)="updateFieldToCopy($event)">{{field.label}}</mat-checkbox>
+                    <mat-checkbox name="{{field.label}}" id="{{field.key}}" [checked]="test(field.key)" (change)="updateFieldToCopy($event)">{{field.label}}</mat-checkbox>
                   </span>
               </div>
             </div>
