@@ -8,7 +8,7 @@
     <parent>
         <groupId>org.flamingo-mc</groupId>
         <artifactId>flamingo-mc</artifactId>
-        <version>5.7.8-GBI-M5</version>
+        <version>5.7.8-SNAPSHOT</version>
     </parent>
     <name>solr-commons</name>
 
