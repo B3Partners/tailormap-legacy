@@ -10,7 +10,7 @@ import { ApiModule } from '../shared/generated';
 import { FormTreeComponent } from './form-tree/form-tree.component';
 import { UserIntefaceModule } from '../user-interface/user-interface.module';
 import { FormCopyComponent } from './form-copy/form-copy.component';
-import { MatExpansionModule} from '@angular/material/expansion';
+import { MatExpansionModule } from '@angular/material/expansion';
 import { MatSidenavModule } from '@angular/material/sidenav';
 
 @NgModule({
