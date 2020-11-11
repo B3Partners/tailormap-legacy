@@ -22,7 +22,7 @@
             Instellingen
           </mat-panel-title>
         </mat-expansion-panel-header>
-        <p>I'm visible because I am open</p>
+        <p><mat-checkbox name="deleteRelated" id="deleteRelated" [checked]="false" (change)="setDeleteRelated($event)">Verwijder bestaande gerelateerde features</mat-checkbox></p>
       </mat-expansion-panel>
     </mat-accordion>
   </mat-sidenav>

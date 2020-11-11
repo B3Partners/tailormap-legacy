@@ -118,8 +118,9 @@ export class FormCopyComponent implements OnInit {
   public deleteRelatedFeatures() {
     for (let i  = 0; i <= this.data.destinationFeatures.length - 1; i++) {
       const feature = this.data.destinationFeatures[i];
-      for (let c  = 0; c <= feature.children.length - 1; c++) {
-        const child = feature.children[c];
+      const children = feature.children;
+      for (let c  = 0; c <= children.length - 1; c++) {
+        const child = children[c];
         this.actionService.removeFeature$(child, [feature]).subscribe(childRemoved => {
           console.log('child removed');
         });
