@@ -14,6 +14,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 import { AttributelistColumnController } from '../attributelist-common/attributelist-column-controller';
 import { AttributelistColumn } from '../attributelist-common/attributelist-column-models';
+import { AttributelistColumnsService } from '../attributelist-common/attributelist-columns.service';
 
 @Component({
   selector: 'tailormap-attributelist-table-options-form',
@@ -23,7 +24,6 @@ import { AttributelistColumn } from '../attributelist-common/attributelist-colum
 export class AttributelistTableOptionsFormComponent implements OnInit {
 
   public columns: AttributelistColumn[];
-
   // Dit helpt niet.
   // @Input('cdkDragPreviewClass')
   // previewClass: string;
@@ -36,12 +36,14 @@ export class AttributelistTableOptionsFormComponent implements OnInit {
   //             private dialogRef: MatDialogRef<AttributelistTableOptionsFormComponent>,
   //             @Inject(MAT_DIALOG_DATA) public data: any) {
   constructor(private dialogRef: MatDialogRef<AttributelistTableOptionsFormComponent>,
-              @Inject(MAT_DIALOG_DATA) public data: any) {
+              @Inject(MAT_DIALOG_DATA) public data: any,
+              private columnData: AttributelistColumnsService) {
 
     this.triggerElementRef = data.trigger;
     this.columnController = data.columnController;
     // Get active columns.
     this.columns = this.columnController.getActiveColumns(false);
+    this.columnData.changeMessage(this.columns);
   }
   public ngOnInit(): void {
     let rect;
@@ -60,6 +62,7 @@ export class AttributelistTableOptionsFormComponent implements OnInit {
     // console.log("#TableOptions - ngOnInit");
     // console.log(position);
     this.dialogRef.updatePosition(position);
+    this.columnData.column$.subscribe(message => this.columns = message)
   }
   public onActionsClick(): void {
     this.dialogRef.close(this.columns);
@@ -80,6 +83,7 @@ export class AttributelistTableOptionsFormComponent implements OnInit {
   public onRowCheckClick(index: number): void {
     // Toggle the checkbox in the checked row.
     this.columns[index].visible = !this.columns[index].visible;
+    this.columnData.changeMessage(this.columns);
   }
   public onTitleClick(): void {
     this.dialogRef.close(this.columns);

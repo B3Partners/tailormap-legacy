@@ -1,28 +1,56 @@
-<h1 mat-dialog-title cdkDrag cdkDragRootElement=".cdk-overlay-pane">Kopiëren van {{originalFeature.clazz}}</h1>
-<p>Aantal geselecteerde features: {{this.data.destinationFeatures.length}} </p>
-<mat-divider></mat-divider>
-<div class="tree">
-  <tailormap-form-tree
-    (nodeClicked)='openForm($event)'
-    [features]=[this.data.originalFeature]
-    [feature]=originalFeature></tailormap-form-tree>
-</div>
-<div class="container">
-  <div class="form">
-    <mat-tab-group>
-      <mat-tab *ngFor="let tab of formConfig.tabConfig | keyvalue" label="{{tab.value}}">
-        <div class="tab">
-          <div *ngFor="let field of formConfig.fields" class="column">
-              <span *ngIf="field.column === stringToNumber(tab.key)" class="cellfield">
-                <mat-checkbox name="{{field.label}}" id="{{field.key}}" [checked]="true" (change)="updateFieldToCopy($event)">{{field.label}}</mat-checkbox>
-              </span>
-          </div>
+<mat-sidenav-container class="example-container">
+  <mat-sidenav class="copy-side-panel" mode="side" opened="{{this.showSidePanel}}">
+    <mat-accordion>
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            Onderliggende features
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <div class="tree">
+          <tailormap-form-tree
+            (nodeClicked)='openForm($event)'
+            [features]=[this.data.originalFeature]
+            [feature]=originalFeature></tailormap-form-tree>
         </div>
-      </mat-tab>
-    </mat-tab-group>
-  </div>
-</div>
-<div class="actions">
-  <button mat-button (click)="cancel()">Annuleren</button>
-  <button mat-button (click)="copy()">Kopiëren</button>
-</div>
+      </mat-expansion-panel>
+    </mat-accordion>
+    <mat-accordion>
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            Instellingen
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <p><mat-checkbox name="deleteRelated" id="deleteRelated" [checked]="false" (change)="setDeleteRelated($event)">Verwijder bestaande gerelateerde features</mat-checkbox></p>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <h1 mat-dialog-title cdkDrag cdkDragRootElement=".cdk-overlay-pane">Kopiëren van {{originalFeature.clazz}}</h1>
+    <p>Aantal geselecteerde features: {{this.data.destinationFeatures.length}} </p>
+    <mat-divider></mat-divider>
+    <div class="container">
+      <div class="form">
+        <mat-tab-group>
+          <mat-tab *ngFor="let tab of formConfig.tabConfig | keyvalue" label="{{tab.value}}">
+            <div class="tab">
+              <mat-checkbox name="alles aan/uit" id="toggle" [checked]="true" (change)="toggle($event)">alles aan/uit</mat-checkbox>
+              <mat-divider></mat-divider>
+              <div *ngFor="let field of formConfig.fields" class="column">
+                  <span *ngIf="field.column === stringToNumber(tab.key)" class="cellfield">
+                    <mat-checkbox name="{{field.label}}" id="{{field.key}}" [checked]="isFieldChecked(field.key)" (change)="updateFieldToCopy($event)">{{field.label}}</mat-checkbox>
+                  </span>
+              </div>
+            </div>
+          </mat-tab>
+        </mat-tab-group>
+      </div>
+    </div>
+    <div class="actions">
+      <button mat-button (click)="settings()">Instellingen</button>
+      <button mat-button (click)="cancel()">Annuleren</button>
+      <button mat-button (click)="copy()">Bevestigen</button>
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>
