@@ -36,8 +36,10 @@ export class CopyWorkflow extends Workflow {
       (features: Feature[]) => {
         if (features && features.length > 0) {
           const feat = features[0];
-          this.destinationFeatures.push(feat);
-          this.highlightLayer.readGeoJSON(this.featureInitializerService.retrieveGeometry(feat));
+          if (!this.hasDestinationFeature(feat)) {
+            this.destinationFeatures.push(feat);
+          }
+          this.highlightDestinationFeatures();
         }
       },
       error => {
@@ -46,6 +48,26 @@ export class CopyWorkflow extends Workflow {
         });
       },
     );
+  }
+
+  private hasDestinationFeature(feat: Feature): boolean {
+    let hasDestinationFeature = false;
+    for (let i = 0 ; i <= this.destinationFeatures.length - 1; i++) {
+      if (this.destinationFeatures[i].objectGuid === feat.objectGuid ) {
+        hasDestinationFeature = true;
+        this.destinationFeatures.splice(i, 1);
+        break;
+      }
+    }
+    return hasDestinationFeature;
+  }
+
+  public highlightDestinationFeatures () {
+    this.highlightLayer.removeAllFeatures();
+    for (let i = 0 ; i <= this.destinationFeatures.length - 1; i++) {
+      const feat = this.destinationFeatures[i];
+      this.highlightLayer.readGeoJSON(this.featureInitializerService.retrieveGeometry(feat));
+    }
   }
 
   public openDialog() {
