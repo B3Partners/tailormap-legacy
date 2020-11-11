@@ -36,6 +36,9 @@ export class SewageWorkflow extends Workflow {
   private currentStep: Step;
   private well1: [number, number] | [number, number, number];
   private well2: [number, number] | [number, number, number];
+
+  private well1Feature: Feature;
+  private well2Feature: Feature;
   private featureType: string;
 
   private choice: Choice;
@@ -95,25 +98,45 @@ export class SewageWorkflow extends Workflow {
             message, false)
             .pipe(take(1)).subscribe(useExisting => {
             if (!useExisting) {
-              feat = this.createFeature(geoJson);
+              feat = this.createFeature(geoJson, this.getExtraParams());
             }
             this.openDialog(feat);
           });
         } else {
-          feat = this.createFeature(geoJson);
+          feat = this.createFeature(geoJson, this.getExtraParams());
           this.openDialog(feat);
         }
       });
     } else {
-      const feat = this.createFeature(geoJson);
+      const feat = this.createFeature(geoJson, this.getExtraParams());
       this.openDialog(feat);
     }
   }
 
-  private createFeature(geoJson: wellknown.GeoJSONGeometry): Feature {
+  private getExtraParams() {
+
+    if (this.currentStep === Step.DUCT) {
+      switch (this.choice.duct){
+        case 'mechleiding':
+          return {
+            pompput_id: this.well1Feature.objectGuid,
+            lozingsput_id: this.well2Feature.objectGuid,
+          };
+        case 'vrijvleiding':
+          return {
+            beginput_id: this.well1Feature.objectGuid,
+            eindput_id: this.well2Feature.objectGuid,
+          };
+      }
+    }else {
+      return {};
+    }
+  }
+
+  private createFeature(geoJson: wellknown.GeoJSONGeometry, params : any): Feature {
     const objecttype = this.featureType.charAt(0).toUpperCase() + this.featureType.slice(1);
     const feat = this.featureInitializerService.create(objecttype,
-      {geometrie: geoJson, clazz: this.featureType, children: []});
+      {...params, geometrie: geoJson, clazz: this.featureType, children: []});
     return feat;
   }
 
@@ -150,7 +173,7 @@ export class SewageWorkflow extends Workflow {
      });
      // tslint:disable-next-line: rxjs-no-ignored-subscription
      dialogRef.afterClosed().subscribe(result => {
-       this.afterEditting();
+       this.afterEditting(result);
      });
   }
 
@@ -171,13 +194,15 @@ export class SewageWorkflow extends Workflow {
   }
 
 
-  public afterEditting(): void {
+  public afterEditting(result?: any): void {
     switch (this.currentStep) {
       case Step.WELL1:
+        this.well1Feature = result;
         this.currentStep = Step.WELL2;
         this.addFeature('');
         break;
       case Step.WELL2:
+        this.well2Feature = result;
         this.currentStep = Step.DUCT;
         this.addFeature('');
         break;

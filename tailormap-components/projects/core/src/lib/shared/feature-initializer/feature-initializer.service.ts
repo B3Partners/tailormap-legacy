@@ -32,7 +32,7 @@ export class FeatureInitializerService {
         return (feature as Rioolput).geometrie;
       case 'Mechleiding':
         return (feature as MechLeiding).geometrie;
-      case 'Vrijvleidin':
+      case 'Vrijvleiding':
         return (feature as VrijvLeiding).geometrie;
       case 'Boom':
         return (feature as Boom).geometrie;

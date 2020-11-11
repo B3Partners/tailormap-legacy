@@ -17,13 +17,26 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
 
 import { AttributelistTable, RowClickData, RowData } from '../attributelist-common/attributelist-models';
 import { AttributeDataSource } from '../attributelist-common/attributelist-datasource';
+import { AttributelistFilter } from '../attributelist-common/attributelist-filter';
+import { AttributelistFilterValuesFormComponent } from '../attributelist-filter-values-form/attributelist-filter-values-form.component';
 import { AttributelistColumn } from '../attributelist-common/attributelist-column-models';
 import { AttributelistTableOptionsFormComponent } from '../attributelist-table-options-form/attributelist-table-options-form.component';
 import { AttributelistService } from '../attributelist.service';
 import { AttributeService } from '../../../shared/attribute-service/attribute.service';
 import { CheckState } from '../attributelist-common/attributelist-enums';
+import {
+  FilterColumns,
+  FilterValueSettings,
+} from '../attributelist-common/attributelist-filter-models';
 import { FormconfigRepositoryService } from '../../../shared/formconfig-repository/formconfig-repository.service';
 import { LayerService } from '../layer.service';
+import { ValueService } from '../../../shared/value-service/value.service';
+import {
+  ValueParameters,
+  UniqueValuesResponse,
+} from '../../../shared/value-service/value-models';
+
+// import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'tailormap-attributelist-table',
@@ -58,6 +71,8 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
                                               this.attributeService,
                                               this.formconfigRepoService);
 
+  public filter = new AttributelistFilter();
+
   // Number of checked rows.
   public nrChecked = 0;
 
@@ -68,11 +83,16 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
 
   private defaultPageSize = 5;
 
+  private valueParams: ValueParameters = {
+    applicationLayer: 0,
+    attributes: [],
+  }
   /**
    * Remark: The Renderer2 is needed for setting a custom css style.
    */
   constructor(private attributeService: AttributeService,
               private layerService: LayerService,
+              private valueService: ValueService,
               private attributelistService: AttributelistService,
               private formconfigRepoService: FormconfigRepositoryService,
               private dialog: MatDialog) {
@@ -86,20 +106,25 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
   public ngAfterViewInit(): void {
     // console.log('#Table - ngAfterViewInit');
 
-    // Set the default pagesize.
-    this.defaultPageSize = this.attributelistService.config.pageSize;
-
     // Set datasource paginator.
     this.dataSource.paginator = this.paginator;
     // Set datasource sort.
     this.dataSource.sorter = this.sort;
 
-    // Hide the paginator pagesize combo.
-    this.paginator.hidePageSize = true;
+    // Prevent ExpressionChangedAfterItHasBeenCheckedErrors using setTimeout
+    // maybe loadData and paginator settings in ngOnInit would be better
+    setTimeout(() => {
+      // console.log('#Table - ngAfterViewInit - paginator settings');
+      // Set the default pagesize.
+      this.defaultPageSize = this.attributelistService.config.pageSize;
 
-    // Init the paginator with the startup page index and page size.
-    this.paginator.pageIndex = 0;
-    this.paginator.pageSize = this.defaultPageSize;
+      // Hide the paginator pagesize combo.
+      this.paginator.hidePageSize = true;
+
+      // Init the paginator with the startup page index and page size.
+      this.paginator.pageIndex = 0;
+      this.paginator.pageSize = this.defaultPageSize;
+    }, 0)
   }
 
   public onAfterLoadData(): void {
@@ -111,6 +136,8 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
 
     // Update the table rows.
     this.table.renderRows();
+
+    this.initFiltering();
 
     // FOR TESTING. SHOW TABLE OPTIONS FORM AT STARTUP.
     // this.onTableOptionsClick(null);
@@ -141,7 +168,7 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
     } else {
       return 'block';
     }
-  };
+  }
 
   /**
    * Fired when the checkbox in the header is clicked.
@@ -213,6 +240,75 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
     this.paginator.pageIndex = 0;
     // Update the table.
     this.updateTable();
+  }
+
+  /**
+   * Fired when a column filter is clicked.
+   */
+  public onFilterClick(columnName: string): void {
+    // Get the unique values for this column
+    this.valueParams.applicationLayer = this.dataSource.params.layerId;
+    this.valueParams.attributes = [];
+    this.valueParams.attributes.push (columnName);
+    this.valueService.uniqueValues(this.valueParams).subscribe((data: UniqueValuesResponse) => {
+      if (data.success) {
+        let uniqueValues: FilterValueSettings[];
+        uniqueValues = [];
+        const colObject = this.filter.layerFilterValues.columns.find(c => c.name === columnName);
+        const colIndex = this.filter.layerFilterValues.columns.findIndex(obj => obj.name === columnName);
+        if (colObject.uniqueValues.length === 0) {
+
+          data.uniqueValues[columnName].forEach(val => {
+            let filterValueSettings: FilterValueSettings;
+            filterValueSettings = {value: val, select: true};
+            uniqueValues.push(filterValueSettings);
+          })
+        } else {
+            colObject.uniqueValues.forEach(val => uniqueValues.push(Object.assign({}, val)))
+        }
+
+        const config = new MatDialogConfig();
+        config.data = {
+          colName: columnName,
+          values: uniqueValues,
+        };
+        const dialogRef = this.dialog.open(AttributelistFilterValuesFormComponent, config);
+        dialogRef.afterClosed().subscribe(filterSetting => {
+          // Do the filtering
+          if (filterSetting !== 'CANCEL') {
+            if (filterSetting === 'ON') {
+              this.filter.layerFilterValues.columns[colIndex].uniqueValues = config.data.values;
+              this.filter.layerFilterValues.columns[colIndex].nullValue = false;
+              this.filter.layerFilterValues.columns[colIndex].status = true;
+            } else if (filterSetting === 'NONE') {
+              this.filter.layerFilterValues.columns[colIndex].uniqueValues = config.data.values;
+              this.filter.layerFilterValues.columns[colIndex].nullValue = true;
+              this.filter.layerFilterValues.columns[colIndex].status = true;
+            } else if (filterSetting === 'OFF') {
+              this.filter.layerFilterValues.columns[colIndex].uniqueValues = [];
+              this.filter.layerFilterValues.columns[colIndex].nullValue = false;
+              this.filter.layerFilterValues.columns[colIndex].status = false;
+            }
+            this.dataSource.params.valueFilter = this.filter.createFilter();
+            this.updateTable();
+          }
+        });
+      }
+    });
+  }
+
+  /**
+   * Check if a filter is active on a column
+   */
+  public getIsFilterActive(columnName): boolean {
+    const colObject = this.filter.layerFilterValues.columns.find(c => c.name === columnName);
+    let result: boolean;
+    if (colObject) {
+      result = colObject.status;
+    } else {
+      result = false;
+    }
+    return result;
   }
 
   /**
@@ -295,5 +391,16 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
     this.dataSource.loadData(this);
     // Update check info (number checked/check state).
     this.updateCheckedInfo();
+  }
+
+  private initFiltering(): void {
+    // Init the filter structure
+    this.filter.layerFilterValues.layerId = this.dataSource.params.layerId;
+    const colNames = this.getColumnNames();
+    for (const colName of colNames) {
+      let filterColumn: FilterColumns;
+      filterColumn = {name: colName, status: false, nullValue: false, uniqueValues: []};
+      this.filter.layerFilterValues.columns.push(filterColumn);
+    }
   }
 }

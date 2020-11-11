@@ -27,6 +27,7 @@ import net.sourceforge.stripes.action.Before;
 import net.sourceforge.stripes.action.DefaultHandler;
 import net.sourceforge.stripes.action.Resolution;
 import net.sourceforge.stripes.action.StreamingResolution;
+import net.sourceforge.stripes.action.UrlBinding;
 import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.viewer.config.app.ApplicationLayer;
 import nl.b3p.viewer.config.services.Layer;
@@ -44,6 +45,7 @@ import org.stripesstuff.stripersist.Stripersist;
  *
  * @author Meine Toonen meinetoonen@b3partners.nl
  */
+@UrlBinding("/action/uniquevalues")
 public class UniqueValuesActionBean extends LocalizableActionBean implements ActionBean {
     private static final Log log = LogFactory.getLog(UniqueValuesActionBean.class);
 

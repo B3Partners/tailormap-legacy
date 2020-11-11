@@ -1,6 +1,7 @@
 <div class="container">
   <mat-paginator [length]="5"
-                 (page)="onPageChange($event)"></mat-paginator>
+                 (page)="onPageChange($event)">
+  </mat-paginator>
   <mat-divider></mat-divider>
 
   <div class="table-container">
@@ -79,7 +80,11 @@
 
         <ng-container *ngSwitchDefault matColumnDef="{{colName}}">
           <!-- Header -->
-          <mat-header-cell *matHeaderCellDef mat-sort-header >{{colName}}</mat-header-cell>
+          <mat-header-cell *matHeaderCellDef mat-sort-header >{{colName}}
+              <mat-icon [ngClass]="(getIsFilterActive(colName))? 'material-icons-set': 'material-icons-unset' " (click) = "$event.stopPropagation();onFilterClick(colName)">
+                filter_list
+              </mat-icon>
+          </mat-header-cell>
           <!-- Cell -->
           <mat-cell *matCellDef="let currRow" >{{currRow[colName]}}</mat-cell>
         </ng-container>

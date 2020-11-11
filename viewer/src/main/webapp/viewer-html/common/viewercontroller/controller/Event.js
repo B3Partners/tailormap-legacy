@@ -119,6 +119,7 @@ Ext.define("viewer.viewercontroller.controller.Event",{
          * @param layerObj the layer object 
          */
         ON_LAYER_CLICKED                        : "ON_LAYER_CLICKED",
+        ON_LAYER_SELECTED                        : "ON_LAYER_SELECTED",
         /**
          * @field
          * Occures when a folder in the TOC is expanded.

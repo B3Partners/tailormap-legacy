@@ -115,11 +115,11 @@ export class AttributeDataSource extends DataSource<any> {
    */
   public loadData(attrTable: AttributelistTable): void {
 
-    if (!this.params.hasDetail()) {
-      console.log('#DataSource - loadData - ' + this.params.layerName);
-    } else {
-      console.log('#DataSource - loadData - ' + this.params.featureTypeName);
-    }
+    // if (!this.params.hasDetail()) {
+    //   console.log('#DataSource - loadData - ' + this.params.layerName);
+    // } else {
+    //   console.log('#DataSource - loadData - ' + this.params.featureTypeName);
+    // }
 
     // Passport columns not yet loaded?
     if (!this.columnController.hasPassportColumns()) {
@@ -163,6 +163,14 @@ export class AttributeDataSource extends DataSource<any> {
       application: appId,
       appLayer: this.params.layerId,
     };
+
+    // TODO: onderstaande filters voor maintable en details zitten elkaar zo mogelijk in de weg.
+
+    // Set filter on values in main table
+    if (this.params.valueFilter) {
+      attrParams.filter = this.params.valueFilter;
+    }
+
 
     // Set details params.
     if (this.params.hasDetail()) {
@@ -277,9 +285,10 @@ export class AttributeDataSource extends DataSource<any> {
     const colNames = [];
     prefix += '.';
     for (const attr of metadata.attributes) {
-      if (attr.longname.startsWith(prefix)) {
+      // longname is lang niet altijd aanwezig, dus eerst uitgezet (RH)
+      // if (attr.longname.startsWith(prefix)) {
         colNames.push(attr.name);
-      }
+      // }
     }
     return colNames;
   }
@@ -291,7 +300,7 @@ export class AttributeDataSource extends DataSource<any> {
     this.rows.forEach(row => {
       if (row._details === DetailsState.YesExpanded) {
         row._details = DetailsState.YesCollapsed;
-      };
+      }
     })
   }
 

@@ -31,7 +31,6 @@
   font-size: 80%;
 }
 .mat-icon-button {
-  xwidth: 25px;
   width: 24px;
   height: 24px;
   line-height: 24px;
@@ -47,7 +46,6 @@
 }
 /*20200928*/
 mat-tab-group {
-  xbackground: lightcyan;
   /*20200928 BELANGRIJK*/
   overflow: auto;
   /* as child */
@@ -81,7 +79,6 @@ mat-tab-group {
 
 /*:host ::ng-deep .mat-tab-body-content {*/
 ::ng-deep .mat-tab-body-content {
-  xbackground: red;
   overflow: auto;
   flex: 1;
   display: flex;

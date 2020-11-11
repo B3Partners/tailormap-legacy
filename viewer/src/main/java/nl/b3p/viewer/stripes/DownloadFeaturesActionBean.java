@@ -35,6 +35,7 @@ import net.sourceforge.stripes.action.StreamingResolution;
 import net.sourceforge.stripes.action.StrictBinding;
 import net.sourceforge.stripes.action.UrlBinding;
 import net.sourceforge.stripes.controller.LifecycleStage;
+import net.sourceforge.stripes.validation.OneToManyTypeConverter;
 import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.geotools.filter.visitor.RemoveDistanceUnit;
 import nl.b3p.viewer.audit.AuditMessageObject;
@@ -111,6 +112,9 @@ public class DownloadFeaturesActionBean extends LocalizableApplicationActionBean
 
     @Validate
     private String params;
+
+    @Validate(converter = OneToManyTypeConverter.class)
+    private List<String> columns = new ArrayList<>();
 
     private AuditMessageObject auditMessageObject;
 
@@ -192,6 +196,15 @@ public class DownloadFeaturesActionBean extends LocalizableApplicationActionBean
     public AuditMessageObject getAuditMessageObject() {
         return this.auditMessageObject;
     }
+
+    public List<String> getColumns() {
+        return columns;
+    }
+
+    public void setColumns(List<String> columns) {
+        this.columns = columns;
+    }
+
     // </editor-fold>
 
     @After(stages=LifecycleStage.BindingAndValidation)
@@ -246,6 +259,8 @@ public class DownloadFeaturesActionBean extends LocalizableApplicationActionBean
 
                 List<ConfiguredAttribute> attributes =  appLayer.getAttributes();
 
+                attributes = filterAttributes(attributes);
+
                 output = convert(ft, fs, q, type, attributes,featureTypeAttributes);
 
                 json.put("success", true);
@@ -292,6 +307,23 @@ public class DownloadFeaturesActionBean extends LocalizableApplicationActionBean
         }else{
             return new ErrorMessageResolution (json.getString("message"));
         }
+    }
+
+    private List<ConfiguredAttribute> filterAttributes(List<ConfiguredAttribute> attributes) {
+        List<ConfiguredAttribute> newAttrs = new ArrayList<>();
+        if (!columns.isEmpty()) {
+            for (String column : columns) {
+                for (ConfiguredAttribute attr : attributes) {
+                    if(attr.getAttributeName().equals(column)){
+                        newAttrs.add(attr);
+                        break;
+                    }
+                }
+            }
+            attributes = newAttrs;
+
+        }
+        return attributes;
     }
 
     private File convert(SimpleFeatureType ft, FeatureSource fs, Query q, String type, List<ConfiguredAttribute> attributes, Map<String, AttributeDescriptor> featureTypeAttributes) throws IOException {
