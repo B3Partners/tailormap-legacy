@@ -58,7 +58,6 @@ export class CopyWorkflow extends Workflow {
       width: '400px',
       data: dialogData,
       position: {
-        top: '5px',
         right: '50px',
       },
       hasBackdrop: false,

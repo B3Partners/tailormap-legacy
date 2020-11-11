@@ -39,7 +39,7 @@
               <mat-divider></mat-divider>
               <div *ngFor="let field of formConfig.fields" class="column">
                   <span *ngIf="field.column === stringToNumber(tab.key)" class="cellfield">
-                    <mat-checkbox name="{{field.label}}" id="{{field.key}}" [checked]="test(field.key)" (change)="updateFieldToCopy($event)">{{field.label}}</mat-checkbox>
+                    <mat-checkbox name="{{field.label}}" id="{{field.key}}" [checked]="isFieldChecked(field.key)" (change)="updateFieldToCopy($event)">{{field.label}}</mat-checkbox>
                   </span>
               </div>
             </div>
@@ -50,7 +50,7 @@
     <div class="actions">
       <button mat-button (click)="settings()">Instellingen</button>
       <button mat-button (click)="cancel()">Annuleren</button>
-      <button mat-button (click)="copy()">Kopiëren</button>
+      <button mat-button (click)="copy()">Bevestigen</button>
     </div>
   </mat-sidenav-content>
 </mat-sidenav-container>
