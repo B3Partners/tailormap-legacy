@@ -37,7 +37,7 @@ export class LayoutService implements OnDestroy {
     // Get screen width and heigth.
     this.screenWidth = window.innerWidth;
     this.screenHeight = window.innerHeight;
-    console.log(`#LayoutService - ${this.screenWidth}x${this.screenHeight} px`);
+    // console.log(`#LayoutService - ${this.screenWidth}x${this.screenHeight} px`);
 
     // Subscribe to the window resize event.
     fromEvent(window, 'resize')
@@ -137,7 +137,7 @@ export class LayoutService implements OnDestroy {
    * Update component after resize.
    */
   public updateComponent(resizer: PanelResizerComponent, deltaY: number): void {
-    console.log('#LayoutService - updateComponent');
+    // console.log('#LayoutService - updateComponent');
 
     const comp = this.getComponentByResizer(resizer);
     if (comp === null) {

@@ -36,8 +36,6 @@ import {
   UniqueValuesResponse,
 } from '../../../shared/value-service/value-models';
 
-// import { filter } from 'rxjs/operators';
-
 @Component({
   selector: 'tailormap-attributelist-table',
   templateUrl: './attributelist-table.component.html',
@@ -225,6 +223,7 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
    */
   public onRowClick(row: RowData): void {
     // console.log('#Table - onRowClicked');
+    // console.log(row);
     const data: RowClickData = {
       feature: row,
       layerId: this.dataSource.getLayerId(),

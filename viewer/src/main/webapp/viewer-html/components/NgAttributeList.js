@@ -72,6 +72,9 @@ Ext.define ("viewer.components.NgAttributeList",{
         return "viewercomponentsAttributeList";
     },
     initialize: function(){
+        // Create highlight layer.
+        this.createHighLightLayer();
+
         // Create form div.
         this.div = document.createElement("tailormap-attributelist-form");
 
@@ -82,26 +85,26 @@ Ext.define ("viewer.components.NgAttributeList",{
 
         // Add event handler.
         this.div.addEventListener('pageChange', function(){
-            //console.log("pageChange");
-            this.hideMarker()
+            this.removeHighlight();
         }.bind(this));
 
         // Add event handler.
         this.div.addEventListener('panelClose', function(){
-            this.hideMarker()
+            this.removeHighlight();
         }.bind(this));
 
         // Add event handler.
         this.div.addEventListener('rowClick', function(evt){
             //console.log("rowClick",evt);
             //console.log("rowClick",evt.detail);
-            this.showMarker(evt.detail.layerId, evt.detail.feature);
-            //this.zoomToFeature(evt.detail.layerId, evt.detail.feature);
+            //this.showMarker(evt.detail.layerId, evt.detail.feature);
+            this.highlight(evt);
+            this.zoomToFeature(evt.detail.layerId, evt.detail.feature);
         }.bind(this));
 
         // Add event handler.
         this.div.addEventListener('tabChange', function(){
-            this.hideMarker()
+            this.removeHighlight();
         }.bind(this));
 
         // Add to body.
@@ -110,33 +113,40 @@ Ext.define ("viewer.components.NgAttributeList",{
     getExtComponents: function() {
         return [ this.container.getId() ];
     },
-    showMarker: function(layerId,feature) {
-        // Hide current marker.
-        this.map.removeMarker(this.markerId);
-        // Show new marker.
-        if (this.featureExtentService === null) {
-            this.featureExtentService = Ext.create('viewer.FeatureExtent');
-        }
-        var appLayer = this.config.viewerController.getAppLayerById(layerId);
-        //var zoomToBuffer = this.config.zoomToBuffer;
-        var zoomToBuffer = 0;
-        this.featureExtentService.getExtentForFeatures(
-            feature.__fid,
-            appLayer,
-            zoomToBuffer,
-            (function (extent) {
-                var x = extent.minx + (extent.maxx - extent.minx) / 2;
-                var y = extent.miny + (extent.maxy - extent.miny) / 2;
-                // console.log([x,y]);
-                this.map.setMarker(this.markerId, x, y, 'default');
-            }).bind(this),
-            function(msg) {
-                console.log(msg);
+    createHighLightLayer: function () {
+        this.highlightLayer = this.config.viewerController.mapComponent.createVectorLayer({
+            name: this.name + 'HighlighVectorLayer',
+            geometrytypes: ["Polygon", "Point", "LineString"],
+            showmeasures: false,
+            mustCreateVertices: false,
+            allowselection: false,
+            viewerController: this.config.viewerController,
+            style: {
+                fillcolor: "0000FF",
+                fillopacity: 50,
+                strokecolor: "FF0000",
+                strokeopacity: 50
             }
-        );
+        });
+        this.config.viewerController.mapComponent.getMap().addLayer(this.highlightLayer);
     },
-    hideMarker: function() {
-        this.map.removeMarker(this.markerId);
+    highlight: function (event) {
+        //console.log(event.detail);
+        //console.log(event.detail.feature.geometrie);
+        this.highlightLayer.removeAllFeatures();
+        const wkt = event.detail.feature.geometrie;
+        if ((wkt) && (wkt!="")) {
+            const feat = Ext.create(viewer.viewercontroller.controller.Feature, {
+                wktgeom: wkt
+            });
+            if (feat) {
+                this.highlightLayer.addFeature(feat);
+            }
+        }
+    },
+    removeHighlight: function () {
+        this.highlightLayer.removeAllFeatures();
+        this.config.viewerController.mapComponent.getMap().update();
     },
     zoomToFeature: function(layerId,feature) {
         if (this.featureExtentService === null) {
