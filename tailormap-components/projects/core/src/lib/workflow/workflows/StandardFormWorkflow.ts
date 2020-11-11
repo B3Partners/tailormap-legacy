@@ -17,9 +17,9 @@ export class StandardFormWorkflow extends Workflow {
     super();
   }
 
-  public addFeature(featureType: string) {
+  public addFeature(featureType: string, geometryType ?: string) {
     this.featureType = featureType;
-    const geomtype = this.formConfigRepo.getFormConfig(featureType).featuretypeMetadata.geometryType;
+    const geomtype = geometryType || this.formConfigRepo.getFormConfig(featureType).featuretypeMetadata.geometryType;
     this.vectorLayer.drawFeature(this.convertGeomType(geomtype));
   }
 

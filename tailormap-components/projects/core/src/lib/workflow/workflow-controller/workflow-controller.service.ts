@@ -38,10 +38,10 @@ export class WorkflowControllerService implements OnDestroy {
     this.init();
   }
 
-  public addFeature(featureType: string): void {
+  public addFeature(featureType: string, geometryType ?: string): void {
     this.currentWorkflow = this.getWorkflow(featureType);
 
-    this.currentWorkflow.addFeature(featureType);
+    this.currentWorkflow.addFeature(featureType, geometryType);
   }
 
   public setCopyMode(feature: Feature): void {

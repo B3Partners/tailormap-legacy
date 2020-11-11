@@ -93,5 +93,13 @@ import { DomSanitizer } from '@angular/platform-browser';
   ],
 })
 export class SharedModule {
-
+  constructor(
+    private matIconRegistry: MatIconRegistry,
+    private domSanitizer: DomSanitizer,
+  ) {
+    this.matIconRegistry.addSvgIcon(
+      'pietje',
+      this.domSanitizer.bypassSecurityTrustResourceUrl('http://localhost:3200/assets/imgs/pietje.svg'),
+    );
+  }
 }

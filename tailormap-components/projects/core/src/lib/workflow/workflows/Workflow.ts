@@ -67,7 +67,7 @@ export abstract class Workflow {
 
   public abstract setFeature(feature: Feature): void;
 
-  public abstract addFeature(featureType: string): void;
+  public abstract addFeature(featureType: string, geometryType ?: string): void;
 
   public abstract getDestinationFeatures(): Feature [];
 

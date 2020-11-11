@@ -28,12 +28,13 @@ export class EditBarComponent implements OnInit {
     const dialogRef = this.dialog.open(AddFeatureMenuComponent, {
       width: '400px',
       position: {
-        top: '200px',
-        left: '500px',
+        top: '220px',
+        left: '480px',
       },
-      height: '100px',
+      height: '77px',
       disableClose: true,
       hasBackdrop: false,
+      panelClass: 'panelClass',
 
     });
     // tslint:disable-next-line: rxjs-no-ignored-subscription

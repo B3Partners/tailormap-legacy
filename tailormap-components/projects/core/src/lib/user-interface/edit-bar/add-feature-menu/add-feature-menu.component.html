@@ -1,22 +1,23 @@
 <div class="container">
-  <div style="width:100px">
-
-    <mat-select [(value)]="this.layer" (selectionChange)="layerSelected($event)" >
-      <mat-option [value]="'-1'">Geen</mat-option>
-      <mat-option *ngFor="let layer of layers" [value]="layer">{{layer}}</mat-option>
-    </mat-select>
-  </div>
+    <mat-form-field>
+      <mat-select [(value)]="this.layer" (selectionChange)="layerSelected($event)">
+        <mat-option [value]="'-1'">Geen</mat-option>
+        <mat-option *ngFor="let layer of layers" [value]="layer">{{layer}}</mat-option>
+      </mat-select>
+    </mat-form-field>
   <button (click)="draw('Polygon')" [disabled]="!isPolygon()">
-    <mat-icon>pietje</mat-icon>
+    <mat-icon>crop_square</mat-icon>
   </button>
-  <button (click)="draw('LineString')"  [disabled]="!isLineString()">
-    <mat-icon>navigation_filter_outline</mat-icon>
+  <button (click)="draw('LineString')" [disabled]="!isLineString()">
+    <mat-icon>linear_scale</mat-icon>
   </button>
   <button (click)="draw('Point')" [disabled]="!isPoint()">
     <mat-icon>data_usage</mat-icon>
   </button>
-  |
+
+  <mat-divider [vertical]="true" inset="false"></mat-divider>
+
   <button (click)="close()">
-    <mat-icon>close</mat-icon>
+    <mat-icon color="warn">close</mat-icon>
   </button>
 </div>

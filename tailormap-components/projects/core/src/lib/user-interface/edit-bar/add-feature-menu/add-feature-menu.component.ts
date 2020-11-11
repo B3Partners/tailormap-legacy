@@ -12,6 +12,7 @@ import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
 import { MatSelectChange } from '@angular/material/select';
 import { FormConfiguration } from '../../../feature-form/form/form-models';
+import { WorkflowControllerService } from '../../../workflow/workflow-controller/workflow-controller.service';
 
 @Component({
   selector: 'tailormap-add-feature-menu',
@@ -20,7 +21,7 @@ import { FormConfiguration } from '../../../feature-form/form/form-models';
 })
 export class AddFeatureMenuComponent implements OnInit {
 
-  public layer = 'Buurten';
+  public layer = '-1';
   public layers: string[];
 
   private selectedConfig: FormConfiguration;
@@ -30,6 +31,7 @@ export class AddFeatureMenuComponent implements OnInit {
     private domSanitizer: DomSanitizer,
     public dialogRef: MatDialogRef<AddFeatureMenuComponent>,
     public tailorMapService: TailorMapService,
+    private workflowControllerService: WorkflowControllerService,
     private ngZone: NgZone,
     public formConfigRepo: FormconfigRepositoryService,
   ) {
@@ -76,7 +78,8 @@ export class AddFeatureMenuComponent implements OnInit {
   }
 
   public draw(type: string): void {
-    alert('draw: ' + type);
+    this.workflowControllerService.addFeature(this.layer);
+    this.dialogRef.close();
   }
 
   public isPolygon(): boolean {
