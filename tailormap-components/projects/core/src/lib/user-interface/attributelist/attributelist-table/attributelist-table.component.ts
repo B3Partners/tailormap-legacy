@@ -79,19 +79,15 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
 
   private tabIndex = -1;
 
-  private defaultPageSize = 5;
-
   private valueParams: ValueParameters = {
     applicationLayer: 0,
     attributes: [],
   }
-  /**
-   * Remark: The Renderer2 is needed for setting a custom css style.
-   */
+
   constructor(private attributeService: AttributeService,
               private layerService: LayerService,
               private valueService: ValueService,
-              private attributelistService: AttributelistService,
+              public attributelistService: AttributelistService,
               private formconfigRepoService: FormconfigRepositoryService,
               private dialog: MatDialog) {
     // console.log('=============================');
@@ -113,23 +109,19 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
     // maybe loadData and paginator settings in ngOnInit would be better
     setTimeout(() => {
       // console.log('#Table - ngAfterViewInit - paginator settings');
-      // Set the default pagesize.
-      this.defaultPageSize = this.attributelistService.config.pageSize;
 
       // Hide the paginator pagesize combo.
       this.paginator.hidePageSize = true;
 
-      // Init the paginator with the startup page index and page size.
+      // Init the paginator with the startup page index.
       this.paginator.pageIndex = 0;
-      this.paginator.pageSize = this.defaultPageSize;
     }, 0)
   }
 
   public onAfterLoadData(): void {
     // console.log('#Table - onAfterLoadData');
 
-    // Update paginator page size and total number of rows.
-    this.paginator.pageSize = this.defaultPageSize;
+    // Update paginator total number of rows (needed!)
     this.paginator.length = this.dataSource.totalNrOfRows;
 
     // Update the table rows.
@@ -149,7 +141,9 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
    * Return the column names. Include special column names.
    */
   public getColumnNames(): string[] {
-    return this.dataSource.columnController.getActiveColumnNames(true);
+    const colNames = this.dataSource.columnController.getActiveColumnNames(true);
+    // console.log(colNames);
+    return colNames;
   }
 
   public getColumnWidth(name: string): string {

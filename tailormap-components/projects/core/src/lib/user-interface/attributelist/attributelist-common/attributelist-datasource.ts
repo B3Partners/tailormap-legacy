@@ -171,7 +171,6 @@ export class AttributeDataSource extends DataSource<any> {
       attrParams.filter = this.params.valueFilter;
     }
 
-
     // Set details params.
     if (this.params.hasDetail()) {
       attrParams.featureType = this.params.featureTypeId;
@@ -181,10 +180,11 @@ export class AttributeDataSource extends DataSource<any> {
     // Set paging params.
     if (this.paginator) {
       attrParams.limit = this.paginator.pageSize;
-      // attrParams.page: this.paginator.pageIndex,   // TODO: Waar is page voor?
-      attrParams.start = this.paginator.pageIndex;
+      attrParams.page = 1;
+      attrParams.start = this.paginator.pageIndex * this.paginator.pageSize;
     } else {
       attrParams.limit = 999;
+      attrParams.page = 1
       attrParams.start = 0;
     }
 

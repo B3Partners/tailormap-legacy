@@ -20,6 +20,9 @@ import { Dock } from '../../enums';
 
 import { PanelResizerComponent } from '../../panel-resizer/panel-resizer.component';
 import { RowClickData } from '../attributelist-common/attributelist-models';
+import {
+  MatTabGroup,
+} from '@angular/material/tabs';
 // import { Test } from '../test';
 
 @Component({
@@ -37,7 +40,7 @@ export class AttributelistPanelComponent implements OnInit, AfterViewInit, Layou
   public layoutConfig: LayoutConfig;
 
   // For getting the selected tab index.
-  @ViewChild('tabgroup') private tabgroup;
+  @ViewChild('tabgroup') private tabgroup: MatTabGroup;
 
   @Output()
   public pageChange = new EventEmitter();
