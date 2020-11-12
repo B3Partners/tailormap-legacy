@@ -13,6 +13,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort, Sort } from '@angular/material/sort';
 import { MatTable } from '@angular/material/table';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 
 import { AttributelistTable, RowClickData, RowData } from '../attributelist-common/attributelist-models';
@@ -89,6 +90,7 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
               private valueService: ValueService,
               public attributelistService: AttributelistService,
               private formconfigRepoService: FormconfigRepositoryService,
+              private snackBar: MatSnackBar,
               private dialog: MatDialog) {
     // console.log('=============================');
     // console.log('#Table - constructor');
@@ -218,6 +220,18 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
   public onRowClick(row: RowData): void {
     // console.log('#Table - onRowClicked');
     // console.log(row);
+
+    // FOR TESTING
+    // row.geometrie = '';
+    // delete row.geometrie;
+
+    // Check for geometrie field (needed for highlighting).
+    if (!row.hasOwnProperty('geometrie') || (row.geometrie === '')) {
+      this.snackBar.open('Zoomen naar dit object is niet mogelijk.', 'Sluiten', {
+        duration: 1000,
+      });
+      return;
+    }
     const data: RowClickData = {
       feature: row,
       layerId: this.dataSource.getLayerId(),
