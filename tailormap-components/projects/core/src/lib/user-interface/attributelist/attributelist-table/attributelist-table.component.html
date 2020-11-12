@@ -12,6 +12,7 @@
       <ng-container *ngFor="let colName of getColumnNames()"
                     [ngSwitch]="colName">
 
+        <!-- First column with checkboxes -->
         <ng-container *ngSwitchCase="'_checked'" matColumnDef="{{colName}}">
           <!-- Header -->
           <mat-header-cell class="column_small" *matHeaderCellDef [ngSwitch]="checkState">
@@ -51,8 +52,11 @@
               </mat-icon>
             </ng-template>
           </mat-cell>
+          <!-- Footer -->
+          <mat-footer-cell  class="column_small" *matFooterCellDef></mat-footer-cell>
         </ng-container>
 
+        <!-- Column with + for expanding details -->
         <ng-container *ngSwitchCase="'_details'" matColumnDef="{{colName}}">
           <!-- Header -->
           <mat-header-cell class="column_small" *matHeaderCellDef
@@ -76,8 +80,11 @@
               <span class="iconCharNo">+</span>
             </ng-template>
           </mat-cell>
+          <!-- Footer -->
+          <mat-footer-cell  class="column_small" *matFooterCellDef></mat-footer-cell>
         </ng-container>
 
+        <!-- Columns with data -->
         <ng-container *ngSwitchDefault matColumnDef="{{colName}}">
           <!-- Header -->
           <mat-header-cell *matHeaderCellDef mat-sort-header >{{colName}}
@@ -87,9 +94,14 @@
           </mat-header-cell>
           <!-- Cell -->
           <mat-cell *matCellDef="let currRow" >{{currRow[colName]}}</mat-cell>
+          <!-- Footer -->
+          <mat-footer-cell *matFooterCellDef (contextmenu)="onStatisticsMenu($event, colName)">
+            {{getStatisticTypeText(colName)}}{{getStatisticValue(colName)}}
+          </mat-footer-cell>
         </ng-container>
       </ng-container>
 
+      <!-- Columns with related details data -->
       <mat-header-row *matHeaderRowDef="getColumnNames(); sticky: true;"></mat-header-row>
       <mat-row *matRowDef="let row; columns: getColumnNames();"
                [cdkDetailsRow]="row"
@@ -105,9 +117,11 @@
           </tailormap-attributelist-details>
         </div>
       </ng-template>
+      <mat-footer-row *matFooterRowDef="getColumnNames(); sticky: true;"></mat-footer-row>
 
     </mat-table>
   </div>
+
   <mat-toolbar [style.display]="getFooterBarVisible()">
     <button mat-icon-button>
       <mat-icon>subdirectory_arrow_right</mat-icon>
@@ -118,4 +132,22 @@
       <span *ngIf="(nrChecked > 1)">opties voor {{nrChecked}} objecten</span>
     </button>
   </mat-toolbar>
+
+  <div style="visibility: hidden; position: fixed"
+       [style.left]="contextMenuPosition.x"
+       [style.top]="contextMenuPosition.y"
+       [matMenuTriggerFor]="statisticsMenu">
+  </div>
+
+  <mat-menu #statisticsMenu="matMenu">
+    <ng-template matMenuContent let-colName="colName">
+      <button mat-menu-item (click)="onStatisticsMenuClick(colName, 'SUM')">Som</button>
+      <button mat-menu-item (click)="onStatisticsMenuClick(colName, 'MIN')">Min</button>
+      <button mat-menu-item (click)="onStatisticsMenuClick(colName, 'MAX')">Max</button>
+      <button mat-menu-item (click)="onStatisticsMenuClick(colName, 'COUNT')">Aantal</button>
+      <button mat-menu-item (click)="onStatisticsMenuClick(colName, 'AVERAGE')">Gemiddelde</button>
+      <mat-divider></mat-divider>
+      <button mat-menu-item (click)="onStatisticsMenuClick(colName, 'NONE')">Geen</button>
+    </ng-template>
+  </mat-menu>
 </div>
