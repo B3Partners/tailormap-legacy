@@ -86,7 +86,7 @@ export class AttributelistPanelComponent implements OnInit, AfterViewInit, Layou
    * https://phpenthusiast.com/blog/develop-angular-php-app-getting-the-list-of-items
    */
   public getLayers(): void {
-    this.layerService.getLayers$().subscribe(
+    this.layerService.layers$.subscribe(
       (data: Layer[]) => {
         this.layers = data;
         // console.log('#Panel - getLayers');
@@ -119,6 +119,10 @@ export class AttributelistPanelComponent implements OnInit, AfterViewInit, Layou
 
   public onSelectedTabChange(): void {
     this.tabChange.emit();
+  }
+
+  public trackByLayerId(layer) {
+    return layer.id;
   }
 
   /**

@@ -33,7 +33,7 @@ Remark:
   <ng-template #withLayers>
     <mat-tab-group #tabgroup animationDuration="0ms"
                    (selectedTabChange)="onSelectedTabChange();">
-      <mat-tab *ngFor="let layer of layers; let index = index" [label]="layer.name">
+      <mat-tab *ngFor="let layer of layers; let index = index; trackBy: trackByLayerId" [label]="layer.name">
         <ng-template mat-tab-label>
           {{layer.name}}
           <mat-icon (click)="onTableOptionsClick($event,index)" >keyboard_arrow_down</mat-icon>
