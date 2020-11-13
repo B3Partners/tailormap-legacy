@@ -24,6 +24,9 @@ public class UserLayerHandler {
     private final String layerTitle;
     private final EntityManager entityManager;
     private final Application application;
+    private final GeoServerManager manager;
+    private final String geoserverStore;
+    private final String geoserverWorkspace;
     private Layer layer;
     private GeoService service;
     private JDBCDataStore dataStore;
@@ -35,16 +38,19 @@ public class UserLayerHandler {
      * @param application        Application we're working for
      * @param appLayer           appLayer to remove or that is the base for the userlayer, {@code null}
      * @param query              CQL query, can be {@code null}
-     * @param layerTitle         user friendly layername
+     * @param userLayerTitle     user friendly layername
      */
     public UserLayerHandler(AuditMessageObject auditMessageObject, EntityManager entityManager, Application application,
-                            ApplicationLayer appLayer, String query, String layerTitle) {
+                            ApplicationLayer appLayer, String query, String userLayerTitle, String geoserverWorkspace,
+                            String geoserverStore) {
         this.auditMessageObject = auditMessageObject;
         this.entityManager = entityManager;
         this.application = application;
         this.appLayer = appLayer;
         this.query = query;
-        this.layerTitle = layerTitle;
+        this.layerTitle = userLayerTitle;
+        this.geoserverWorkspace = geoserverWorkspace;
+        this.geoserverStore = geoserverStore;
 
         try {
             this.service = this.appLayer.getService();
@@ -54,25 +60,36 @@ public class UserLayerHandler {
         } catch (Exception e) {
             LOG.fatal("Problem opening datastore. " + e.getLocalizedMessage());
         }
+
+        manager = new GeoServerManager(
+                this.service.getUrl(),
+                this.service.getUsername(),
+                this.service.getPassword(),
+                this.geoserverWorkspace,
+                this.geoserverStore
+        );
     }
 
 
     public boolean add() {
         String viewName = this.dataBase.createViewName();
+
         boolean succes = createView(viewName);
         if (succes) {
             succes = createWMSLayer(viewName);
         }
+
         if (succes) {
             succes = createUserLayer();
         } else {
-            dropview();
+            dropview(viewName);
         }
+
         if (succes) {
             succes = updateApplication();
         } else {
-            deleteWMSLayer();
-            dropview();
+            deleteWMSLayer(viewName);
+            dropview(viewName);
         }
 
         return succes;
@@ -81,14 +98,14 @@ public class UserLayerHandler {
     public boolean delete() {
         boolean succes = updateApplication(appLayer);
         if (succes) {
-            succes = deleteWMSLayer();
+            succes = deleteWMSLayer(this.layer.getName());
         } else {
             return succes;
         }
         if (succes) {
-            succes = dropview();
+            succes = dropview(this.layer.getName());
         } else {
-            createWMSLayer("TODO name");
+            createWMSLayer(this.layer.getName());
             updateApplication();
         }
 
@@ -96,52 +113,47 @@ public class UserLayerHandler {
     }
 
     private boolean createView(String viewName) {
-        boolean succes = false;
+        boolean ok = false;
         try {
             FilterToSQL f = ((BasicSQLDialect) this.dataStore.getSQLDialect()).createFilterToSQL();
             String where = f.encodeToString(CQL.toFilter(this.query));
             String tableName = this.layer.getFeatureType().getTypeName();
-            succes = this.dataBase.createView(viewName, tableName, where);
+            ok = this.dataBase.createView(viewName, tableName, where);
 
-            this.auditMessageObject.addMessage("Aanmaken van view " + viewName);
+            this.auditMessageObject.addMessage("Aanmaken van view " + viewName + " is " + (ok ? "gelukt" : "mislukt"));
         } catch (FilterToSQLException | CQLException e) {
             LOG.error("Problem converting CQL to SQL. " + e.getLocalizedMessage());
         }
-        return succes;
+        return ok;
     }
 
-    private boolean dropview() {
-        String viewName = this.layer.getName();
-        boolean succes = this.dataBase.dropView(viewName);
-
-        this.auditMessageObject.addMessage("Verwijderen van view " + viewName);
-
-        return succes;
+    private boolean dropview(String viewName) {
+        boolean ok = this.dataBase.dropView(viewName);
+        this.auditMessageObject.addMessage("Verwijderen van view " + viewName + " is " + (ok ? "gelukt" : "mislukt"));
+        return ok;
     }
 
     private boolean createWMSLayer(String viewName) {
-        // TODO implement
-        GeoServerManager manager = new GeoServerManager(
-                // TODO geoserver base url herleiden
-                this.service.getUrl(),
-                this.service.getUsername(),
-                this.service.getPassword(),
-                // TODO workspace herleiden? of via via context param
-                "GBIuserlayers"
-        );
-        // TODO hoe komen we aan de geoserver "bron" - data bron in geoserver -
-        //  zou via REST calls te herleiden zijn denk ik, kan evt ook via context param
-
-        return manager.createLayer(viewName, this.layerTitle,viewName, "TODO geoserver source" );
+        boolean ok = manager.createLayer(viewName, this.layerTitle, viewName);
+        this.auditMessageObject.addMessage("Aanmaken van WMS layer " + viewName + " is " + (ok ? "gelukt" : "mislukt"));
+        return ok;
     }
 
-    private boolean deleteWMSLayer() {
-        // TODO implement
-        return true;
+    private boolean deleteWMSLayer(String layerName) {
+        boolean ok = manager.deleteLayer(layerName);
+        this.auditMessageObject.addMessage(
+                "Verwijderen van WMS layer " + layerName + " is " + (ok ? "gelukt" : "mislukt"));
+        return ok;
     }
 
+    /**
+     * create the userlayer in the tailormap database.
+     *
+     * @return
+     */
     private boolean createUserLayer() {
         // TODO implement
+        // update this.appLayer and this.layer 
         return true;
     }
 

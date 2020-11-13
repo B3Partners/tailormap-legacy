@@ -11,7 +11,7 @@ public class UserLayerHandlerIntegrationTest extends TestUtil {
     @Test
     public void testAdd() {
         UserLayerHandler ulh = new UserLayerHandler(new AuditMessageObject(), entityManager, app, testAppLayer,
-                "id > 0", "testlayer");
+                "id > 0", "testlayer", "geoserverWorkspace", "geoserverStorename");
         assertTrue(ulh.add());
     }
 }

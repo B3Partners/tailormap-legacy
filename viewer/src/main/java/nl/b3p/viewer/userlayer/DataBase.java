@@ -29,10 +29,10 @@ public interface DataBase {
 
     /**
      * create a (random) name.
-     * @return {@code "userlayer_" + UUID.randomUUID();}
+     * @return {@code "userlayer_" + UUID.randomUUID();} with dash replaced bij underscore
      */
     default String createViewName() {
-        return PREFIX + UUID.randomUUID();
+        return (PREFIX + UUID.randomUUID()).replace('-','_');
     }
 }
 

@@ -20,7 +20,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.Principal;
 import java.util.Locale;
 
-@UrlBinding("/action/userlayer")
+@UrlBinding("/action/userlayer/{$event}/{application}/{appLayer}")
 @StrictBinding
 public class UserLayerActionBean implements ActionBean, ValidationErrorHandler, Auditable {
     private static final Log LOG = LogFactory.getLog(UserLayerActionBean.class);
@@ -35,11 +35,14 @@ public class UserLayerActionBean implements ActionBean, ValidationErrorHandler, 
     @Validate(required = true, on = "add")
     private String query;
 
-    @Validate(required = true, on="add")
+    @Validate(required = true, on = "add")
     private String title;
 
     private AuditMessageObject auditMessageObject;
     private boolean unauthorized;
+
+    private String wellKnownUserLayerWorkspaceName;
+    private String wellKnownUserLayerStoreName;
 
     // <editor-fold desc="Validation handlers" defaultstate="collapsed">
     @ValidationMethod(when = ValidationState.NO_ERRORS)
@@ -65,9 +68,17 @@ public class UserLayerActionBean implements ActionBean, ValidationErrorHandler, 
         }
     }
 
-    @Before(stages = LifecycleStage.EventHandling)
+    @Before(stages = LifecycleStage.BindingAndValidation)
     public void initializeAuditMessageObject() {
         this.auditMessageObject = new AuditMessageObject();
+    }
+
+    @Before(stages = LifecycleStage.EventHandling)
+    public void readContextParams() {
+        this.wellKnownUserLayerStoreName = this.getContext().getServletContext().getInitParameter(
+                "userlayer.geoserver.store");
+        this.wellKnownUserLayerWorkspaceName = this.getContext().getServletContext().getInitParameter(
+                "userlayer.geoserver.workspace");
     }
     // </editor-fold>
 
@@ -106,22 +117,34 @@ public class UserLayerActionBean implements ActionBean, ValidationErrorHandler, 
     }
 
     @DefaultHandler
+    public Resolution noop() {
+        JSONObject json = (new JSONObject()).put("success", Boolean.FALSE);
+        json.put("error", "invalid request");
+        return new StreamingResolution("application/json") {
+            @Override
+            public void stream(HttpServletResponse response) throws Exception {
+                IOUtils.copy(new StringReader(json.toString()), response.getOutputStream(), StandardCharsets.UTF_8);
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            }
+        };
+    }
+
     public Resolution add() {
         final JSONObject jsonObject = new JSONObject();
         if (unauthorized) {
-            // TODO
-            jsonObject.append("success", false);
+            jsonObject.put("success", false);
+            jsonObject.put("message", "not authorized to add");
         } else {
-            final UserLayerHandler ulh = new UserLayerHandler(auditMessageObject, Stripersist.getEntityManager(),
-                    application, appLayer, query, title);
             final JSONObject message = new JSONObject();
+            final UserLayerHandler ulh = new UserLayerHandler(auditMessageObject, Stripersist.getEntityManager(),
+                    application, appLayer, query, title, wellKnownUserLayerWorkspaceName, wellKnownUserLayerStoreName);
 
-            jsonObject.append("appLayerId", ulh.getAppLayerId());
-            jsonObject.append("layerName", ulh.getLayerName());
-            jsonObject.append("success", ulh.add());
+            jsonObject.put("success", ulh.add());
 
-            message.append("appLayer", ulh.getApplicationLayer());
-            jsonObject.append("message", message);
+            message.put("appLayerId", ulh.getAppLayerId());
+            message.put("layerName", ulh.getLayerName());
+            message.put("appLayer", ulh.getApplicationLayer().toJSONObject(Stripersist.getEntityManager()));
+            jsonObject.put("message", message);
 
             this.auditMessageObject.addMessage(
                     "UserLayer " + ulh.getLayerName() + " aangemaakt met id " + ulh.getAppLayerId());
@@ -131,7 +154,11 @@ public class UserLayerActionBean implements ActionBean, ValidationErrorHandler, 
             public void stream(HttpServletResponse response) throws Exception {
                 IOUtils.copy(new StringReader(jsonObject.toString()), response.getOutputStream(),
                         StandardCharsets.UTF_8);
-                if (!jsonObject.getBoolean("success")) {
+                if (unauthorized) {
+                    response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                } else if (jsonObject.getBoolean("success")) {
+                    response.setStatus(HttpServletResponse.SC_CREATED);
+                } else {
                     response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                 }
             }
@@ -141,22 +168,29 @@ public class UserLayerActionBean implements ActionBean, ValidationErrorHandler, 
     public Resolution delete() {
         final JSONObject jsonObject = new JSONObject();
         if (unauthorized) {
-            // TODO
-            jsonObject.append("success", false);
+            jsonObject.put("success", false);
+            jsonObject.put("message", "not authorized to delete");
         } else {
             final UserLayerHandler ulh = new UserLayerHandler(auditMessageObject, Stripersist.getEntityManager(),
-                    application, appLayer, query, title);
-            jsonObject.append("success", ulh.delete());
+                    application, appLayer, query, title, wellKnownUserLayerWorkspaceName, wellKnownUserLayerStoreName);
+
+            boolean ok = ulh.delete();
+            jsonObject.put("success", ok);
 
             this.auditMessageObject.addMessage(
-                    "UserLayer " + ulh.getLayerName() + " met id " + ulh.getAppLayerId() + " verwijderd.");
+                    "UserLayer " + ulh.getLayerName() + " met id " + ulh.getAppLayerId() + (ok ? "" : " niet") + " " +
+                            "verwijderd.");
         }
         return new StreamingResolution("application/json") {
             @Override
             public void stream(HttpServletResponse response) throws Exception {
                 IOUtils.copy(new StringReader(jsonObject.toString()), response.getOutputStream(),
                         StandardCharsets.UTF_8);
-                if (!jsonObject.getBoolean("success")) {
+                if (unauthorized) {
+                    response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                } else if (jsonObject.getBoolean("success")) {
+                    response.setStatus(HttpServletResponse.SC_OK);
+                } else {
                     response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                 }
             }

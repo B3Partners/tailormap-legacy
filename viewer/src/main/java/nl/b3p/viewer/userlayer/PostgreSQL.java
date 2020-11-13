@@ -9,7 +9,7 @@ import java.sql.SQLException;
 
 public class PostgreSQL implements DataBase {
     private static final Log LOG = LogFactory.getLog(PostgreSQL.class);
-    private static final String CREATE_SQL = "CREATE OR REPLACE VIEW %s AS SELECT * FROM %s WHERE %s";
+    private static final String CREATE_SQL = "CREATE OR REPLACE VIEW %s AS SELECT * FROM %s %s";
     private static final String DROP_SQL = "DROP VIEW IF EXISTS %s";
     private final Connection connection;
 
@@ -20,6 +20,7 @@ public class PostgreSQL implements DataBase {
     @Override
     public boolean createView(String viewName, String tableName, String filterSQL) {
         boolean result;
+        LOG.debug("try to create view " + viewName + " using table " + tableName + " and query " + filterSQL);
         try (PreparedStatement ps = connection.prepareStatement(
                 String.format(CREATE_SQL, viewName, tableName, filterSQL))
         ) {
@@ -34,6 +35,7 @@ public class PostgreSQL implements DataBase {
     @Override
     public boolean dropView(String viewName) {
         boolean result;
+        LOG.debug("try to drop view " + viewName);
         try (PreparedStatement ps = connection.prepareStatement(String.format(DROP_SQL, viewName))) {
             result = (0 == ps.executeUpdate());
         } catch (SQLException throwables) {

@@ -25,17 +25,39 @@ import java.util.Arrays;
 import java.util.Collection;
 
 public class GeoServerManager {
+    /**
+     * geoserver path part of the url.
+     *
+     * @value
+     * @see #getBaseUrl()
+     */
+    public static final String GEOSERVER_PATTERN = "/geoserver/";
     private static final Log LOG = LogFactory.getLog(GeoServerManager.class);
     private final String baseUrl;
+    private final String serviceUrl;
     private final String userName;
     private final String passWord;
     private final String workSpace;
+    private final String storeName;
 
-    public GeoServerManager(String baseUrl, String userName, String passWord, String workSpace) {
-        this.baseUrl = (baseUrl.endsWith("/") ? baseUrl : baseUrl + "/");
+    /**
+     * Constructs a manager.
+     *
+     * @param serviceUrl      Geoservice url, note that this mus have the substring "/geoserver/"
+     * @param userName        GeoServer credential
+     * @param passWord        GeoServer credential
+     * @param targetWorkSpace GeoServer workspace
+     * @param storeName       GeoServer datastore
+     */
+    public GeoServerManager(String serviceUrl, String userName, String passWord, String targetWorkSpace,
+                            String storeName) {
+        this.serviceUrl = serviceUrl;
         this.userName = userName;
         this.passWord = passWord;
-        this.workSpace = workSpace;
+        this.workSpace = targetWorkSpace;
+        this.storeName = storeName;
+
+        this.baseUrl = serviceUrl.substring(0, serviceUrl.indexOf(GEOSERVER_PATTERN) + GEOSERVER_PATTERN.length());
     }
 
     /**
@@ -44,10 +66,9 @@ public class GeoServerManager {
      * @param layerName    name of the new layer
      * @param layerTitle   user friendly name of the new layer
      * @param resourceName database table
-     * @param dataStore    GeoServer datastore
      * @return {@code true} when successful
      */
-    public boolean createLayer(String layerName, String layerTitle, String resourceName, String dataStore) {
+    public boolean createLayer(String layerName, String layerTitle, String resourceName) {
         boolean success = false;
 
         JSONObject content = new JSONObject();
@@ -60,13 +81,14 @@ public class GeoServerManager {
         // The title of the resource. This is usually something that is meant to be displayed in a user interface.
         content.put("title", layerTitle);
 
-//        // Namespace of the layer
-//        JSONObject namespace = new JSONObject();
-//        // Name of the namespace
-//        namespace.put("name", "myNamespace");
-//        // URL to the namespace representation.
-//        namespace.put("link", "http://b3p.nl/");
-//        content.put("namespace", namespace);
+        // optional - we assume that the workspace exists for now
+        //        // Namespace of the layer
+        //        JSONObject namespace = new JSONObject();
+        //        // Name of the namespace
+        //        namespace.put("name", "myNamespace");
+        //        // URL to the namespace representation.
+        //        namespace.put("link", "http://b3p.nl/");
+        //        content.put("namespace", namespace);
 
         // A description of the resource. This is usually something that is meant to be displayed in a user interface.
         content.put("abstract", "created by Tailormap GeoServerManager");
@@ -76,9 +98,10 @@ public class GeoServerManager {
         JSONArray keyword = new JSONArray();
         keyword.put("userlayer");
         keyword.put("Tailormap");
+        keyword.put("GBI");
         keywords.put("string", keyword);
         content.put("keywords", keywords);
-
+        // optional
         // "metadatalinks": {"metadataLink": [{"type": "string","metadataType": "string","content": "string"}]},
         // "dataLinks": {"metadataLink": [{"type": "string", "content": "string"}]},
 
@@ -94,7 +117,7 @@ public class GeoServerManager {
                         "rest/workspaces/" +
                         this.workSpace +
                         "/datastores/" +
-                        dataStore +
+                        this.storeName +
                         "/featuretypes"
         );
         try {
@@ -134,7 +157,6 @@ public class GeoServerManager {
 
         try (CloseableHttpClient httpClient = getClient();
              CloseableHttpResponse response = httpClient.execute(delete)) {
-
             LOG.debug(String.format("Result of deleting WMS layer %s is %s: %s", layerName,
                     response.getStatusLine().getStatusCode(),
                     response.getStatusLine().getReasonPhrase()));
@@ -147,6 +169,16 @@ public class GeoServerManager {
 
     public boolean addStyleToLayer(String layerName, String style) {
         return false;
+    }
+
+    /**
+     * get the geoserver url, as determined in the constructor.
+     *
+     * @return the geoserver url
+     * @see #GeoServerManager(String, String, String, String, String)
+     */
+    public String getBaseUrl() {
+        return this.baseUrl;
     }
 
     private CloseableHttpClient getClient() {

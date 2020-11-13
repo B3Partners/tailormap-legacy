@@ -16,28 +16,28 @@ public class GeoServerManagerOnlineTest {
         final String userName = "admin";
         final String passWord = "geoserver";
         final String workSpace = "geoserver";
+        final String storeName = "dingetjes";
 
         layerName = (new PostgreSQL(null)).createViewName();
         serverManager = new GeoServerManager(
-                baseUrl, userName, passWord, workSpace
+                baseUrl, userName, passWord, workSpace, storeName
         );
     }
 
     @After
-    public void cleanup(){
+    public void cleanup() {
         serverManager.deleteLayer(layerName);
     }
 
     @Test
     public void createLayerTest() {
-        assertTrue(serverManager.createLayer(layerName, "test", "gemeenten2020", "dingetjes"));
+        assertTrue(serverManager.createLayer(layerName, "test", "gemeenten2020"));
     }
 
     @Test
     public void deleteLayerTest() {
-        assertTrue(serverManager.createLayer("gemtest", "gemtest", "gemeenten2020", "dingetjes"));
+        assertTrue(serverManager.createLayer("gemtest", "gemtest", "gemeenten2020"));
         assertTrue(serverManager.deleteLayer("gemtest"));
     }
-
 
 }
