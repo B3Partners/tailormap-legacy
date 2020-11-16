@@ -551,7 +551,18 @@ public class EditFeatureActionBean extends LocalizableApplicationActionBean impl
                         } else if(ad.getType().getBinding().getCanonicalName().equals("byte[]")){
                             Object ba = jsonFeature.get(attribute);
                             values.add(ba);
-                        } else {
+                        } else if(ad.getType().getBinding().equals(java.sql.Date.class) || ad.getType().getBinding().equals(java.sql.Timestamp.class)){
+                            String v = jsonFeature.optString(ad.getLocalName());
+                            Date d = null;
+                            if (v != null && !v.isEmpty()) {
+                                if (ad.getType().getBinding().equals(java.sql.Timestamp.class)) {
+                                    d = datetime.parse(v);
+                                }else{
+                                    d = date.parse(v);
+                                }
+                            }
+                            values.add(d);
+                        }else{
                             String v = jsonFeature.optString(attribute);
                             values.add(StringUtils.defaultIfBlank(v, null));
                         }
