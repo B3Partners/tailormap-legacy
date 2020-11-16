@@ -88,8 +88,8 @@ public class EditFeatureActionBean extends LocalizableApplicationActionBean impl
     protected JSONObject jsonFeature;
 
     private AuditMessageObject auditMessageObject;
-    private final SimpleDateFormat datetime = new SimpleDateFormat("dd-MM-yyy HH:mm:ss");
-    private final SimpleDateFormat date = new SimpleDateFormat("dd-MM-yyy");
+    private final SimpleDateFormat datetime = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+    private final SimpleDateFormat date = new SimpleDateFormat("dd-MM-yyyy");
 
     //<editor-fold defaultstate="collapsed" desc="getters and setters">
     @Override
