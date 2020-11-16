@@ -1,4 +1,5 @@
 
+import { Attribute } from '../../test-attributeservice/models';
 import { AttributelistColumn } from './attributelist-column-models'
 
 export class AttributelistColumnController {
@@ -26,11 +27,13 @@ export class AttributelistColumnController {
     let column: AttributelistColumn = {
       name: '_checked',
       visible: true,
+      type: 'boolean',
     };
     this.specialColumns.push(column);
     column = {
       name: '_details',
       visible: true,
+      type: 'boolean',
     };
     this.specialColumns.push(column);
   }
@@ -68,6 +71,27 @@ export class AttributelistColumnController {
       const column: AttributelistColumn = {
         name: columnName,
         visible: true,
+      };
+      columns.push(column);
+    }
+    return columns;
+  }
+  public columnDefsToColumns(columnDefs: Attribute[]): AttributelistColumn[] {
+    // Check the columns.
+    if (columnDefs.length === 0) {
+      return;
+    }
+    const columns: AttributelistColumn[] = [];
+    // Add new columns.
+    for (const columnDef of columnDefs) {
+      if (columnDef.name === '_checked') {
+        // Skip.
+        continue;
+      }
+      const column: AttributelistColumn = {
+        name: columnDef.name,
+        visible: true,
+        type: columnDef.type,
       };
       columns.push(column);
     }
@@ -111,6 +135,11 @@ export class AttributelistColumnController {
     } else {
       return this.dataColumns;
     }
+  }
+
+  public getColumnType(colName: string): string {
+    const colIndex = this.arrayIndexOfColumn(this.dataColumns, colName)
+    return this.dataColumns[colIndex].type;
   }
 
   public hasDataColumns(): boolean {
@@ -171,8 +200,9 @@ export class AttributelistColumnController {
    * Sets the data column names. The list could contain a special column
    * '_checked'. If so, this column is promoted to the first column of the list.
    */
-  public setDataColumnNames(columnNames: string[]): void {
-    this.dataColumns = this.columnNamesToColumns(columnNames);
+  public setDataColumnNames(columnDefs: Attribute[]): void {
+    // this.dataColumns = this.columnNamesToColumns(columnNames);
+    this.dataColumns = this.columnDefsToColumns(columnDefs);
     // console.log('#AttColumns - setDataColumnNames');
     // console.log(this.dataColumns);
   }
@@ -182,7 +212,6 @@ export class AttributelistColumnController {
    */
   public setPassportColumnNames(columnNames: string[]): void {
     this.passportColumns = this.columnNamesToColumns(columnNames);
-
     // console.log('#AttColumns - setPassportColumnNames');
     // console.log(this.passportColumns);
 

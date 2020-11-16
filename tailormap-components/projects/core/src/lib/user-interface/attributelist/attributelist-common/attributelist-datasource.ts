@@ -14,8 +14,13 @@ import { MatPaginator } from '@angular/material/paginator';
 import { AttributelistTable, RowData } from './attributelist-models';
 import { AttributelistColumnController } from './attributelist-column-controller';
 import { AttributeService } from '../../../shared/attribute-service/attribute.service';
-import { AttributeListParameters, AttributeListResponse,
-  AttributeMetadataParameters, AttributeMetadataResponse } from '../../test-attributeservice/models';
+import {
+  Attribute,
+  AttributeListParameters,
+  AttributeListResponse,
+  AttributeMetadataParameters,
+  AttributeMetadataResponse,
+} from '../../test-attributeservice/models';
 import { CheckState, DetailsState } from './attributelist-enums';
 import { DatasourceParams } from './datasource-params';
 import { FormconfigRepositoryService } from '../../../shared/formconfig-repository/formconfig-repository.service';
@@ -217,13 +222,16 @@ export class AttributeDataSource extends DataSource<any> {
             } else {
               prefix = this.params.layerName;
             }
-            const columnNames: string[] =
-              this.metadataGetColumnNames(prefix, metadata);
+            // const columnNames: string[] =
+            //   this.metadataGetColumnNames(prefix, metadata);
+
+            const columnDefs: Attribute[] =
+              this.metadataGetColumns(prefix, metadata);
 
             // console.log(columnNames);
 
             // And set as initial column names.
-            this.columnController.setDataColumnNames(columnNames);
+            this.columnController.setDataColumnNames(columnDefs);
           }
 
           // Get the features.
@@ -278,21 +286,34 @@ export class AttributeDataSource extends DataSource<any> {
   /**
    * Uses the attribute longname to get the proper column name starting with the prefix.
    */
-  private metadataGetColumnNames(prefix: string, metadata: AttributeMetadataResponse): string[] {
+  // private metadataGetColumnNames(prefix: string, metadata: AttributeMetadataResponse): string[] {
+  //   if (!metadata.success) {
+  //     return [];
+  //   }
+  //   const colNames = [];
+  //   prefix += '.';
+  //   for (const attr of metadata.attributes) {
+  //     // TODO longname is lang niet altijd aanwezig, dus eerst uitgezet (RH)
+  //     // if (attr.longname.startsWith(prefix)) {
+  //       colNames.push(attr.name);
+  //     // }
+  //   }
+  //   return colNames;
+  // }
+  private metadataGetColumns(prefix: string, metadata: AttributeMetadataResponse): Attribute[] {
     if (!metadata.success) {
       return [];
     }
-    const colNames = [];
+    const columns = [];
     prefix += '.';
     for (const attr of metadata.attributes) {
-      // longname is lang niet altijd aanwezig, dus eerst uitgezet (RH)
+      // TODO longname is lang niet altijd aanwezig, dus eerst uitgezet (RH)
       // if (attr.longname.startsWith(prefix)) {
-        colNames.push(attr.name);
+      columns.push(attr);
       // }
     }
-    return colNames;
+    return columns;
   }
-
   /**
    * Reset the '_details' property to 'collapsed'.
    */

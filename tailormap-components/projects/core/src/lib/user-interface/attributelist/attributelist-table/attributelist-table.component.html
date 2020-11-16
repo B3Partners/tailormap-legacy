@@ -141,13 +141,16 @@
 
   <mat-menu #statisticsMenu="matMenu">
     <ng-template matMenuContent let-colName="colName">
-      <button mat-menu-item (click)="onStatisticsMenuClick(colName, 'SUM')">Som</button>
-      <button mat-menu-item (click)="onStatisticsMenuClick(colName, 'MIN')">Min</button>
-      <button mat-menu-item (click)="onStatisticsMenuClick(colName, 'MAX')">Max</button>
+      <div *ngIf="getStatisticFunctionColumnType(colName) === 'numeric'; then statisticsNum"></div>
+      <ng-template #statisticsNum>
+        <button mat-menu-item (click)="onStatisticsMenuClick(colName, 'SUM')">Som</button>
+        <button mat-menu-item (click)="onStatisticsMenuClick(colName, 'MIN')">Min</button>
+        <button mat-menu-item (click)="onStatisticsMenuClick(colName, 'MAX')">Max</button>
+        <button mat-menu-item (click)="onStatisticsMenuClick(colName, 'AVERAGE')">Gemiddelde</button>
+      </ng-template>
       <button mat-menu-item (click)="onStatisticsMenuClick(colName, 'COUNT')">Aantal</button>
-      <button mat-menu-item (click)="onStatisticsMenuClick(colName, 'AVERAGE')">Gemiddelde</button>
       <mat-divider></mat-divider>
       <button mat-menu-item (click)="onStatisticsMenuClick(colName, 'NONE')">Geen</button>
-    </ng-template>
+</ng-template>
   </mat-menu>
 </div>

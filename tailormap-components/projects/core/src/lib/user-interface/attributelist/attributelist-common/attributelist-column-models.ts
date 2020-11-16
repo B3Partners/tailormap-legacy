@@ -4,4 +4,6 @@ export interface AttributelistColumn {
     name: string;
     // Visible in the table.
     visible: boolean;
+    // Data type
+    type?: string;
 }

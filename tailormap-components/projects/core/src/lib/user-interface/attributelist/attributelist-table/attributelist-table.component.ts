@@ -188,6 +188,25 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
     return this.dataSource.columnController.getActiveColumnNames(true);
   }
 
+  public getColumnType(name: string): string {
+    let type = this.dataSource.columnController.getColumnType(name);
+    if (type === 'integer' || type === 'double' || type === 'number') {
+      type = 'number';
+    }
+    return type;
+  }
+
+  /**
+   * Returns numeric when statistic functions like min, max, average are possible
+   */
+  public getStatisticFunctionColumnType(name: string): string {
+    let type = this.getColumnType(name);
+    if (type === 'integer' || type === 'double' || type === 'number') {
+      type = 'numeric';
+    }
+    return type;
+  }
+
   public getColumnWidth(name: string): string {
     console.log('#Table - getColumnWidth - ' + name);
     return '180px';
@@ -380,13 +399,18 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
     })
   }
 
+  private isStatisticViewable (colName: string): boolean {
+    const colIndex = this.layerStatisticValues.columns.findIndex(obj => obj.name === colName);
+    return  (this.layerStatisticValues.columns[colIndex].statisticType !== 'NONE' &&
+      this.layerStatisticValues.columns[colIndex].statisticValue &&
+      typeof (this.layerStatisticValues.columns[colIndex].statisticValue) === 'number')
+  }
+
   public getStatisticTypeText(colName: string): string {
     const colIndex = this.layerStatisticValues.columns.findIndex(obj => obj.name === colName);
     let result = '';
     if (colIndex >= 0) {
-      if (this.layerStatisticValues.columns[colIndex].statisticType !== 'NONE' &&
-          this.layerStatisticValues.columns[colIndex].statisticValue &&
-          typeof (this.layerStatisticValues.columns[colIndex].statisticValue) === 'number') {
+      if (this.isStatisticViewable(colName)) {
         result = StatisticTypeText[this.layerStatisticValues.columns[colIndex].statisticType];
         if (result !== '') {
           result += '=';
@@ -400,11 +424,10 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
     const colIndex = this.layerStatisticValues.columns.findIndex(obj => obj.name === colName);
     let result: string;
     if (colIndex >= 0) {
-      if (this.layerStatisticValues.columns[colIndex].statisticType !== 'NONE' &&
-          this.layerStatisticValues.columns[colIndex].statisticValue &&
-          typeof (this.layerStatisticValues.columns[colIndex].statisticValue) === 'number') {
+      if (this.isStatisticViewable(colName)) {
         // Round the numbers to 0 or 2 decimals
-        if (this.layerStatisticValues.columns[colIndex].statisticType === 'COUNT') {
+        // NOTE: Some columns with integer values are defined as double, so we will see 2 unexpected fractiondigits
+        if (this.layerStatisticValues.columns[colIndex].statisticType === 'COUNT' || this.getColumnType(colName) === 'integer') {
           result = this.layerStatisticValues.columns[colIndex].statisticValue.toFixed();
         } else {
           result = this.layerStatisticValues.columns[colIndex].statisticValue.toFixed(2);
