@@ -36,7 +36,7 @@
             }
         }
     },
-    
+
     {
         "className": "viewer.components.Ontbrandingsaanvraag",
         "name": "Fireworks Permit",
@@ -948,5 +948,16 @@
         "singleton": true,
         "configSource": ["ConfigObject.js","SelectionWindowConfig.js","NgAttributeList-config.js"],
         "restrictions": ["left_menu"]
+    },
+    {
+        "className": "viewer.components.AnalysisLayerCreator",
+        "name": "GBI - Analyze / Laag maken",
+        "group": "Map",
+        "shortName": "GBI-A",
+        "sources": ["AnalysisLayerCreator.js"],
+        "type": "popup",
+        "singleton": true,
+        "configSource": ["ConfigObject.js","SelectionWindowConfig.js","AnalysisLayerCreator-config.js"],
+        "restrictions": ["content"]
     }
 ]

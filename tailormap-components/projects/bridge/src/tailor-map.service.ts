@@ -1,5 +1,8 @@
 import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs';
+import {
+  fromEvent,
+  Subject,
+} from 'rxjs';
 import { LayerVisibilityEvent } from '../../core/src/lib/shared/models/event-models';
 import {
   AppLayer,
@@ -7,6 +10,7 @@ import {
   MapComponent,
   ViewerController,
 } from '../typings';
+import { take } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
@@ -38,16 +42,27 @@ export class TailorMapService {
   }
 
   public init(): void {
+    if (this.getViewerController() !== null) {
+      this.initViewerController();
+      return;
+    }
+    fromEvent(window, 'viewerControllerReady')
+      .pipe(take(1))
+      .subscribe(() => {
+        this.initViewerController();
+      })
+  }
 
+  private initViewerController() {
     const vc = this.getViewerController();
     const mc = vc.mapComponent;
     const map = mc.getMap();
     map.addListener('ON_LAYER_VISIBILITY_CHANGED', (object, event) => {
       this.layerVisibilityChanged$.next(event);
     });
-
     vc.addListener('ON_LAYER_SELECTED', ( event) => {
       this.selectedLayer = event.appLayer;
     });
   }
+
 }

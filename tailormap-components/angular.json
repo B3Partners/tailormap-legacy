@@ -26,7 +26,8 @@
             ],
             "styles": [
               "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
-              "projects/bridge/src/styles.css"
+              "projects/bridge/src/styles.css",
+              "projects/core/src/lib/shared/style/styles.css"
             ],
             "scripts": [
               {
@@ -98,7 +99,8 @@
             ],
             "styles": [
               "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
-              "projects/bridge/src/styles.css"
+              "projects/bridge/src/styles.css",
+              "projects/core/src/lib/shared/style/styles.css"
             ],
             "scripts": []
           }
@@ -160,7 +162,7 @@
               "projects/core/src/assets"
             ],
             "styles": [
-              "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
+              "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css"
             ],
             "scripts": []
           }

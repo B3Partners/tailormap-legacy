@@ -192,8 +192,13 @@ Ext.define("viewer.AppLoader", {
      * Event handler is called when ViewerController is done loading
      */
     viewerControllerLoaded: function() {
-        document.getElementById("appLoader").className += " hide";
-        this.updateLoginInfo();
+        setTimeout((function() {
+            document.getElementById("appLoader").className += " hide";
+            this.updateLoginInfo();
+            console.log('viewerControllerLoaded');
+            const event = new Event('viewerControllerReady');
+            window.dispatchEvent(event);
+        }).bind(this), 0);
     },
 
     /**

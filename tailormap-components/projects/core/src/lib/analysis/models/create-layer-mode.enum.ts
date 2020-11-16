@@ -1,0 +1,7 @@
+export enum CreateLayerModeEnum {
+  BUFFER = 'BUFFER',
+  SPATIAL = 'SPATIAL',
+  ATTRIBUTES = 'ATTRIBUTES',
+  THEMATIC = 'THEMATIC',
+  REGIONAL = 'REGIONAL',
+}

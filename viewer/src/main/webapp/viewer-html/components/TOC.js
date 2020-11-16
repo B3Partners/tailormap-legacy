@@ -93,6 +93,7 @@ Ext.define ("viewer.components.TOC",{
         this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE,this.selectedContentChanged,this);
         this.config.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_FINISHED_CHANGE_EXTENT,this.extentChanged,this);
         this.config.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_VISIBILITY_CHANGED,this.layerVisibilityChanged,this);
+        this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_COMPONENTS_FINISHED_LOADING, this.showAnalysisButton, this);
         return this;
     },
     // Build the tree
@@ -192,6 +193,35 @@ Ext.define ("viewer.components.TOC",{
         var parent = this.getContentContainer();
         parent.add(this.panel);
     },
+    showAnalysisButton: function() {
+        var analysisComponents = this.viewerController.getComponentsByClassName("viewer.components.AnalysisLayerCreator");
+        console.log(analysisComponents);
+        if (analysisComponents.length === 0) {
+            return;
+        }
+        this.panel.addDocked({
+            xtype: 'toolbar',
+            dock: 'bottom',
+            height: '48px',
+            padding: '4px 0 4px 0',
+            layout: {
+                pack: 'end'
+            },
+            items: [
+                {
+                    xtype: 'container',
+                    html: '<div style="height: 36px;" class="button-container"></div>',
+                    listeners: {
+                        render: function(container) {
+                            console.log(container);
+                            analysisComponents[0].addButton(container.getEl().dom.querySelector('.button-container'));
+                        }
+                    }
+                }
+            ]
+        });
+        this.panel.updateLayout();
+    },
     renderButton: function() {
         var me = this;
         if(!this.config.isPopup) {
@@ -228,7 +258,7 @@ Ext.define ("viewer.components.TOC",{
         // Create background
         this.createBackgroundLevel(nodes);
         this.insertLayer(nodes);
-        
+
         // Large tree's where not rendered properly all the time. This fixes this issue
         // See https://github.com/flamingo-geocms/flamingo/issues/391
         this.panel.getView().refreshView();
@@ -393,7 +423,7 @@ Ext.define ("viewer.components.TOC",{
                 this.addQtip(i18next.t('viewer_components_toc_9'), 'span_'+layerId);
                 treeNodeLayer.layerObj.download = serviceLayer.details ["download.url"];
             }
-            
+
             if (appLayerObj.details && typeof appLayerObj.details ["stylesOrder"] !== "undefined") {
                 this.createStylesChildren(serviceLayer, layerId, treeNodeLayer, appLayerObj, retChecked);
             }
@@ -720,7 +750,7 @@ Ext.define ("viewer.components.TOC",{
 
     createStylesChildren: function(serviceLayer, layerId, treeNodeLayer, appLayerObj, parentChecked) {
         var stylesOrder = Ext.JSON.decode(appLayerObj.details ["stylesOrder"]);
-     
+
         if (stylesOrder.length > 1) {
             var sNodes = [];
             for (var i = 0; i < stylesOrder.length; i++) {

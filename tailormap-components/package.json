@@ -28,6 +28,8 @@
     "@angular/platform-browser": "~10.0.11",
     "@angular/platform-browser-dynamic": "~10.0.11",
     "@angular/router": "~10.0.11",
+    "@ngrx/store": "^10.0.1",
+    "@ngrx/store-devtools": "^10.0.1",
     "@types/wellknown": "^0.5.1",
     "document-register-element": "^1.14.5",
     "dpdm": "^3.5.0",

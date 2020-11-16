@@ -1,0 +1,10 @@
+<button mat-flat-button color="primary" [matMenuTriggerFor]="newLayerMenu">
+  Nieuwe kaartlaag
+</button>
+<mat-menu #newLayerMenu="matMenu" yPosition="above" class="tailormap-menu-panel">
+  <button mat-menu-item>Buffer</button>
+  <button mat-menu-item>Spatial</button>
+  <button mat-menu-item>Kenmerken</button>
+  <button mat-menu-item>Thematisch</button>
+  <button mat-menu-item>Regionaal</button>
+</mat-menu>
