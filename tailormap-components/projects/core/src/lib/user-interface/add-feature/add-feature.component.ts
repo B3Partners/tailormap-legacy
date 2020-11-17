@@ -1,6 +1,5 @@
 import {
   Component,
-  NgZone,
   OnDestroy,
 } from '@angular/core';
 import { TailorMapService } from '../../../../../bridge/src/tailor-map.service';

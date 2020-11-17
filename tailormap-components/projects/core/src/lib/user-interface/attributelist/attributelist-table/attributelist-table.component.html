@@ -1,5 +1,6 @@
 <div class="container">
-  <mat-paginator [length]="5"
+  <mat-paginator [pageSize]="attributelistService.config.pageSize"
+                 [length]="0"
                  (page)="onPageChange($event)">
   </mat-paginator>
   <mat-divider></mat-divider>
