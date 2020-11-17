@@ -96,8 +96,6 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
 
   private tabIndex = -1;
 
-  private defaultPageSize = 5;
-
   public layerStatisticValues: LayerStatisticValues = {
     layerId: 0,
     columns: [],
@@ -390,13 +388,18 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
     this.statisticParams.column = colName;
     this.statisticParams.type = statisticsType;
     this.statisticParams.filter = this.dataSource.params.valueFilter;
-    this.statisticsService.statisticValue(this.statisticParams).subscribe((data: StatisticResponse) => {
-      if (data.success) {
-        const colIndex = this.layerStatisticValues.columns.findIndex(obj => obj.name === colName);
-        this.layerStatisticValues.columns[colIndex].statisticType = statisticsType;
-        this.layerStatisticValues.columns[colIndex].statisticValue = data.result;
-      }
-    })
+    const colIndex = this.layerStatisticValues.columns.findIndex(obj => obj.name === colName);
+    if (statisticsType === 'NONE') {
+      this.layerStatisticValues.columns[colIndex].statisticType = statisticsType;
+      this.layerStatisticValues.columns[colIndex].statisticValue = null;
+    } else {
+      this.statisticsService.statisticValue(this.statisticParams).subscribe((data: StatisticResponse) => {
+        if (data.success) {
+          this.layerStatisticValues.columns[colIndex].statisticType = statisticsType;
+          this.layerStatisticValues.columns[colIndex].statisticValue = data.result;
+        }
+      })
+    }
   }
 
   private refreshStatistics () {
