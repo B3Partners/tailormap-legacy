@@ -27,6 +27,9 @@ declare interface ViewerController {
   getAppLayerById: (appLayerId: number) => AppLayer;
   getAppLayer: (serviceId: number, layerName: string) => AppLayer;
 
-  getVisibleLayers: (castToStrings?: boolean) => number[] | string[];
+  getVisibleLayers(): number[];
+  getVisibleLayers(castToStrings: false): number[];
+  getVisibleLayers(castToStrings: true): string[];
+
   addListener: (eventName: string, handler: layerEventHandler) => void;
 }
