@@ -25,7 +25,13 @@ import { FeatureInitializerService } from '../../shared/feature-initializer/feat
 })
 export class FormCopyComponent implements OnInit {
 
+  private width = '400px';
+
   public originalFeature: Feature;
+
+  public showSidePanel = 'false';
+
+  public deleteRelated = false;
 
   public parentFeature: Feature;
 
@@ -75,6 +81,9 @@ export class FormCopyComponent implements OnInit {
     let successCopied = 0;
     const destinationFeatures = this.data.destinationFeatures;
     if (destinationFeatures.length > 0) {
+      if (this.deleteRelated) {
+        this.deleteRelatedFeatures();
+      }
       const valuesToCopy = this.getPropertiesToMerge();
       const childsToCopy = this.getNewChildFeatures();
       for (let i  = 0; i <= destinationFeatures.length - 1; i++) {
@@ -106,8 +115,39 @@ export class FormCopyComponent implements OnInit {
     }
   }
 
+  public deleteRelatedFeatures() {
+    for (let i  = 0; i <= this.data.destinationFeatures.length - 1; i++) {
+      const feature = this.data.destinationFeatures[i];
+      const children = feature.children;
+      for (let c  = 0; c <= children.length - 1; c++) {
+        const child = children[c];
+        this.actionService.removeFeature$(child, [feature]).subscribe(childRemoved => {
+          console.log('child removed');
+        });
+      }
+    }
+  }
+
   public stringToNumber(key: string) {
     return Number(key);
+  }
+
+  public isFieldChecked(event: any) {
+    const fieldsToCopy = this.featuresToCopy.get(this.originalFeature['fid']);
+    return fieldsToCopy.has(event);
+  }
+
+  public toggle(event: any) {
+    if (!event.checked) {
+      const fieldsToCopy = this.featuresToCopy.get(this.originalFeature['fid']);
+      fieldsToCopy.clear();
+    } else {
+      const fieldsToCopy = this.featuresToCopy.get(this.originalFeature['fid']);
+      for (let i  = 0; i <= this.formConfig.fields.length - 1; i++) {
+        const config = this.formConfig.fields[i];
+        fieldsToCopy.set(config.key, config.label);
+      }
+    }
   }
 
   public updateFieldToCopy(event: any) {
@@ -152,7 +192,7 @@ export class FormCopyComponent implements OnInit {
         newChild = this.featureInitializer.create(fieldsToCopy.get('objecttype'), valuesToCopy);
         newChilds.push(newChild);
       }
-    })
+    });
     return newChilds;
   }
 
@@ -163,5 +203,19 @@ export class FormCopyComponent implements OnInit {
     }
   }
 
+  public setDeleteRelated(event: any) {
+    this.deleteRelated = !this.deleteRelated;
+  }
 
+  public settings() {
+    if (this.width === '400px') {
+      this.width = '800px';
+      this.dialogRef.updateSize(this.width);
+      this.showSidePanel = 'true';
+    } else {
+      this.width = '400px';
+      this.dialogRef.updateSize(this.width);
+      this.showSidePanel = 'false';
+    }
+  }
 }

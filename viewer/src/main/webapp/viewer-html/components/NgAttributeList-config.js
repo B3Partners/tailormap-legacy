@@ -83,15 +83,15 @@ Ext.define("viewer.components.CustomConfiguration",{
         // //     labelWidth: this.labelWidth
         // // });
         //
-        // this.form.add({
-        //     xtype: 'numberfield',
-        //     fieldLabel: i18next.t('attributelist_config_8'),
-        //     name: 'zoomToBuffer',
-        //     value: this.configObject.zoomToBuffer || 10,
-        //     minValue: 0,
-        //     step: 10,
-        //     labelWidth: this.labelWidth
-        // });
+        this.form.add({
+            xtype: 'numberfield',
+            fieldLabel: i18next.t('attributelist_config_8'),
+            name: 'zoomToBuffer',
+            value: this.configObject.zoomToBuffer || 10,
+            minValue: 0,
+            step: 10,
+            labelWidth: this.labelWidth
+        });
         //
         // this.form.add({
         //     xtype: 'numberfield',

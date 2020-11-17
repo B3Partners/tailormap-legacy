@@ -39,14 +39,14 @@
 .mat-flat-button {
   margin-right: 20px;
   line-height: 22px;
+  display: none;
 }
 /* DIVIDER */
 .mat-divider {
   background: #e5e5e5;
 }
-/*20200928*/
 mat-tab-group {
-  /*20200928 BELANGRIJK*/
+  /*BELANGRIJK*/
   overflow: auto;
   /* as child */
   flex: 1;
@@ -54,37 +54,12 @@ mat-tab-group {
   display: flex;
   flex-flow: column nowrap;
 }
-/*.mat-tab-group {*/
-/*  !* as child *!*/
-/*  flex: 1;*/
-/*  !* as container *!*/
-/*  display: flex;*/
-/*  flex-flow: column nowrap;*/
-/*}*/
-/*20200928*/
-/*.mat-tab-body {*/
-/*  !* as container *!*/
-/*  display: flex;*/
-/*  flex-flow: column nowrap;*/
-/*}*/
-/*!*20200928*!*/
-/*mat-tab-body-content {*/
-/*  !* as container *!*/
-/*  display: flex;*/
-/*  flex-flow: column nowrap;*/
-/*}*/
-/*tailormap-attributelist-tab {*/
-
-/*}*/
-
-/*:host ::ng-deep .mat-tab-body-content {*/
 ::ng-deep .mat-tab-body-content {
   overflow: auto;
   flex: 1;
   display: flex;
   flex-flow: column nowrap;
 }
-
  /* TAB LABELS */
 :host ::ng-deep .mat-tab-label {
   height: 30px;

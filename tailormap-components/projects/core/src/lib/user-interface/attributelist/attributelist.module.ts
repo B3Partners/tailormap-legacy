@@ -18,6 +18,7 @@ import { DetailsrowDirective } from './attributelist-common/detailsrow.directive
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatTableModule } from '@angular/material/table';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 import { AttributelistFilterValuesFormComponent } from './attributelist-filter-values-form/attributelist-filter-values-form.component';
 
 @NgModule({
@@ -38,6 +39,7 @@ import { AttributelistFilterValuesFormComponent } from './attributelist-filter-v
   imports: [
     CommonModule,
     SharedModule,
+    DragDropModule,
     MatToolbarModule,
     MatPaginatorModule,
     MatTableModule,

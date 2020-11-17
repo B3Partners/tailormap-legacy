@@ -13,6 +13,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort, Sort } from '@angular/material/sort';
 import { MatTable } from '@angular/material/table';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 
 import { AttributelistTable, RowClickData, RowData } from '../attributelist-common/attributelist-models';
@@ -48,8 +49,6 @@ import {
 import { MatMenuTrigger } from '@angular/material/menu';
 // import { LiteralMapKey } from '@angular/compiler';
 
-
-// import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'tailormap-attributelist-table',
@@ -118,15 +117,13 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
 
   public contextMenuPosition = { x: '0px', y: '0px' };
 
-  /**
-   * Remark: The Renderer2 is needed for setting a custom css style.
-   */
   constructor(private attributeService: AttributeService,
               private layerService: LayerService,
               private statisticsService: StatisticService,
               private valueService: ValueService,
-              private attributelistService: AttributelistService,
+              public attributelistService: AttributelistService,
               private formconfigRepoService: FormconfigRepositoryService,
+              private snackBar: MatSnackBar,
               private dialog: MatDialog) {
     // console.log('=============================');
     // console.log('#Table - constructor');
@@ -147,23 +144,19 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
     // maybe loadData and paginator settings in ngOnInit would be better
     setTimeout(() => {
       // console.log('#Table - ngAfterViewInit - paginator settings');
-      // Set the default pagesize.
-      this.defaultPageSize = this.attributelistService.config.pageSize;
 
       // Hide the paginator pagesize combo.
       this.paginator.hidePageSize = true;
 
-      // Init the paginator with the startup page index and page size.
+      // Init the paginator with the startup page index.
       this.paginator.pageIndex = 0;
-      this.paginator.pageSize = this.defaultPageSize;
     }, 0)
   }
 
   public onAfterLoadData(): void {
     // console.log('#Table - onAfterLoadData');
 
-    // Update paginator page size and total number of rows.
-    this.paginator.pageSize = this.defaultPageSize;
+    // Update paginator total number of rows (needed!)
     this.paginator.length = this.dataSource.totalNrOfRows;
 
     // Update the table rows.
@@ -185,7 +178,9 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
    * Return the column names. Include special column names.
    */
   public getColumnNames(): string[] {
-    return this.dataSource.columnController.getActiveColumnNames(true);
+    const colNames = this.dataSource.columnController.getActiveColumnNames(true);
+    // console.log(colNames);
+    return colNames;
   }
 
   public getColumnType(name: string): string {
@@ -278,6 +273,19 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
    */
   public onRowClick(row: RowData): void {
     // console.log('#Table - onRowClicked');
+    // console.log(row);
+
+    // FOR TESTING
+    // row.geometrie = '';
+    // delete row.geometrie;
+
+    // Check for geometrie field (needed for highlighting).
+    if (!row.hasOwnProperty('geometrie') || (row.geometrie === '')) {
+      this.snackBar.open('Zoomen naar dit object is niet mogelijk.', 'Sluiten', {
+        duration: 1000,
+      });
+      return;
+    }
     const data: RowClickData = {
       feature: row,
       layerId: this.dataSource.getLayerId(),
