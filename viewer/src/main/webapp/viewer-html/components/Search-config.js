@@ -36,7 +36,7 @@ Ext.define("viewer.components.SearchConfiguration",{
         if (configObject === null){
             configObject = {};
         }
-        configObject.willLoadLayers = true;
+        configObject.willLoadLayers = false;
         viewer.components.SearchConfiguration.superclass.constructor.call(this, parentId, configObject, configPage);
         if (!this.hideRemovePinConfig) {
             this.form.add({
