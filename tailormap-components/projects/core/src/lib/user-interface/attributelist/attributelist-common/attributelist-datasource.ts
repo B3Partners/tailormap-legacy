@@ -15,7 +15,7 @@ import { AttributelistTable, RowData } from './attributelist-models';
 import { AttributelistColumnController } from './attributelist-column-controller';
 import { AttributeService } from '../../../shared/attribute-service/attribute.service';
 import { AttributeListParameters, AttributeListResponse,
-  AttributeMetadataParameters, AttributeMetadataResponse } from '../../test-attributeservice/models';
+  AttributeMetadataParameters, AttributeMetadataResponse } from '../../../shared/attribute-service/attribute-models';
 import { CheckState, DetailsState } from './attributelist-enums';
 import { DatasourceParams } from './datasource-params';
 import { FormconfigRepositoryService } from '../../../shared/formconfig-repository/formconfig-repository.service';

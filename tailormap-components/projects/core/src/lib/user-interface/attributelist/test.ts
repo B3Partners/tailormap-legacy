@@ -9,7 +9,7 @@ import {
   AttributeListResponse,
   AttributeMetadataParameters,
   AttributeMetadataResponse,
-} from '../test-attributeservice/models';
+} from '../../shared/attribute-service/attribute-models';
 import { AttributeService } from '../../shared/attribute-service/attribute.service';
 
 export class Test {
