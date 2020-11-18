@@ -24,16 +24,6 @@ Ext.define("viewer.components.CustomConfiguration",{
         configObject.showLabelconfig =true;
         viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId, configObject, configPage);
 
-        this.form.add({
-            xtype: 'textfield',
-            fieldLabel: i18next.t('gbi_config_configURL'),
-            name: 'configURL',
-            value: this.configObject.configURL,
-            labelWidth: this.labelWidth,
-            width: 700
-        });
-
-        this.createCheckBoxes(this.configObject.layers,{editable:true});
     },
     getDefaultValues: function() {
         return {
