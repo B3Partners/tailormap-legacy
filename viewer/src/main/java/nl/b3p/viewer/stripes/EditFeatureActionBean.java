@@ -470,6 +470,9 @@ public class EditFeatureActionBean extends LocalizableApplicationActionBean impl
                     g = new WKTReader().read(wkt);
                 }
                 f.setDefaultGeometry(g);
+            } else  if(ad.getType().getBinding().getCanonicalName().equals("byte[]")){
+                Object ba = jsonFeature.opt(ad.getLocalName());
+                f.setAttribute(ad.getLocalName(), ba);
             } else if(ad.getType().getBinding().equals(java.sql.Date.class) || ad.getType().getBinding().equals(java.sql.Timestamp.class)){
                 String v = jsonFeature.optString(ad.getLocalName());
                 Date d = null;
