@@ -1558,9 +1558,25 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         var layer = this.app.services[serviceId].layers[layerName];
         return layer.details["metadata.stylesheet"];
     },
+
     /**
      * add ore replace the filter for the given layer.
-     * @param filter the filter
+     * @param filterString the filter: string type
+     * @param appLayer the application layer
+     * @param name The name the filter should have
+     */
+    setFilterString : function(filterString, appLayer, name){
+        var filter = Ext.create("viewer.components.CQLFilterWrapper",{
+            id: "filter_"+name,
+            cql: filterString,
+            operator : "AND",
+            type: "ATTRIBUTE"
+        });
+        this.setFilter(filter, appLayer);
+    },
+    /**
+     * add ore replace the filter for the given layer.
+     * @param filter the filter: CQLFilterWrapper type
      * @param appLayer the application layer
      */
     setFilter : function (filter, appLayer){
