@@ -8,7 +8,7 @@ import {
   AttributeListResponse,
   AttributeMetadataParameters,
   AttributeMetadataResponse,
-} from '../../user-interface/test-attributeservice/models';
+} from './attribute-models';
 import { Observable } from 'rxjs';
 
 @Injectable({
