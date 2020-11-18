@@ -4,7 +4,6 @@ import {
   OnInit,
 } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
-import { Layer } from '../../attributelist/layer.model';
 import { LayerUtils } from '../../../shared/layer-utils/layer-utils.service';
 import { TailorMapService } from '../../../../../../bridge/src/tailor-map.service';
 import { FormconfigRepositoryService } from '../../../shared/formconfig-repository/formconfig-repository.service';

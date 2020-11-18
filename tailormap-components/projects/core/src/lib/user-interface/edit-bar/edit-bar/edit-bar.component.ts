@@ -2,8 +2,6 @@ import {
   Component,
   OnInit,
 } from '@angular/core';
-import { DialogData } from '../../../feature-form/form/form-models';
-import { FormComponent } from '../../../feature-form/form/form.component';
 import { MatDialog } from '@angular/material/dialog';
 import { AddFeatureMenuComponent } from '../add-feature-menu/add-feature-menu.component';
 import { TailorMapService } from '../../../../../../bridge/src/tailor-map.service';

@@ -59,7 +59,7 @@ export class TailorMapService {
     const vc = this.getViewerController();
     const comps = vc.getComponentsByClassNames(['viewer.components.Split']);
     if (comps && comps.length > 0) {
-      const split = (comps[0] as SplitComponent).showWindow();
+      (comps[0] as SplitComponent).showWindow();
     }
   }
 
@@ -67,7 +67,7 @@ export class TailorMapService {
     const vc = this.getViewerController();
     const comps = vc.getComponentsByClassNames(['viewer.components.Merge']);
     if (comps && comps.length > 0) {
-      const split = (comps[0] as SplitComponent).showWindow();
+      (comps[0] as SplitComponent).showWindow();
     }
   }
 }
