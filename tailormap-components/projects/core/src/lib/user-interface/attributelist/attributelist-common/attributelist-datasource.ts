@@ -12,11 +12,7 @@ import { MatSort } from '@angular/material/sort';
 import { MatPaginator } from '@angular/material/paginator';
 
 import {
-  AttributeListParameters,
-  AttributeListResponse,
   AttributelistTable,
-  AttributeMetadataParameters,
-  AttributeMetadataResponse,
   RowData,
 } from './attributelist-models';
 import { AttributelistColumnController } from './attributelist-column-controller';

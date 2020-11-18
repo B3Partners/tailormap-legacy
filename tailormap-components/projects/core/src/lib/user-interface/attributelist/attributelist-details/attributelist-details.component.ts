@@ -11,7 +11,6 @@ import { MatTable } from '@angular/material/table';
 
 import {
   AttributelistTable,
-  RelatedFeatureType,
 } from '../attributelist-common/attributelist-models';
 import { AttributeDataSource } from '../attributelist-common/attributelist-datasource';
 import { AttributeService } from '../../../shared/attribute-service/attribute.service';
