@@ -184,10 +184,12 @@ export class AttributeDataSource extends DataSource<any> {
     // Set paging params.
     if (this.paginator) {
       attrParams.limit = this.paginator.pageSize;
+      attrParams.page = 1;
       // attrParams.page: this.paginator.pageIndex,   // TODO: Waar is page voor?
-      attrParams.start = this.paginator.pageIndex;
+      attrParams.start = this.paginator.pageIndex * this.paginator.pageSize;
     } else {
       attrParams.limit = 999;
+      attrParams.page = 1;
       attrParams.start = 0;
     }
 
