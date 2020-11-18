@@ -29,7 +29,6 @@ Ext.define("viewer.components.GBI", {
     vectorLayer: null,
     highlightLayer: null,
     config: {
-        layers: [],
         configUrl: null
     },
     constructor: function (conf) {
@@ -93,65 +92,20 @@ Ext.define("viewer.components.GBI", {
                 strokeopacity: 50
             }
         });
-        this.vectorLayer.addListener(viewer.viewercontroller.controller.Event.ON_FEATURE_ADDED, this.geometryDrawn, this);
         this.config.viewerController.mapComponent.getMap().addLayer(this.vectorLayer);
         this.config.viewerController.mapComponent.getMap().addLayer(this.highlightLayer);
     },
     initializeForm: function () {
-        this.div = document.createElement("tailormap-wegvak-popup");
-        this.div.addEventListener('wanneerPopupClosed', this.popupClosed.bind(this));
-
-
-        this.div.addEventListener('startGeometryDrawing', function (e) {
-            this.startDrawingGeometry(e.detail);
-        }.bind(this));
-
-        this.div.addEventListener('highlightFeature', function (e) {
-            this.highlight(e);
-        }.bind(this));
-
-        this.div.addEventListener('addCopyFeatureToLayer', function(e){this.addFeatureToLayer(e.detail);}.bind(this));
-
-        this.config.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_VISIBILITY_CHANGED,
-            this.layerVisibilityChanged, this);
-
-        this.div.setAttribute("config", JSON.stringify(this.formConfigs));
-        document.body.appendChild(this.div);
-
-
         this.divController = document.createElement("tailormap-workflow-controller");
         this.divController.setAttribute("vector-layer-id", this.vectorLayer.getId());
         this.divController.setAttribute("highlight-layer-id", this.highlightLayer.getId());
         this.divController.addEventListener('wanneerPopupClosed', this.popupClosed.bind(this));
         document.body.appendChild(this.divController);
-
-        var visibleAppLayers = this.config.viewerController.getVisibleAppLayers();
-        for (var key in visibleAppLayers) {
-            var appLayer = this.config.viewerController.getAppLayerById(key);
-            this.processLayerVisible(appLayer, true);
-        }
     },
     popupClosed: function (evt) {
         this.vectorLayer.removeAllFeatures();
         this.highlightLayer.removeAllFeatures();
         this.config.viewerController.mapComponent.getMap().update();
-    },
-    layerVisibilityChanged: function (map, event) {
-        if (event.layer instanceof viewer.viewercontroller.controller.WMSLayer) {
-            var appLayer = this.config.viewerController.getAppLayerById(event.layer.appLayerId);
-            this.processLayerVisible(appLayer, event.visible);
-        }
-    },
-    processLayerVisible: function (appLayer, visible) {
-        var layerName = appLayer.layerName;
-        if (layerName.indexOf(":") !== -1) {
-            layerName = layerName.substring(layerName.indexOf(':') + 1);
-        }
-        var evt = {
-            layername: layerName,
-            visible: visible
-        };
-        this.div.setAttribute("layer-visibility-changed", JSON.stringify(evt));
     },
     startDrawingGeometry: function (event) {
         this.vectorLayer.drawFeature(event.type);
@@ -160,10 +114,7 @@ Ext.define("viewer.components.GBI", {
     addFeatureToLayer: function(event){
         this.vectorLayer.readGeoJSON(event.geometrie);
     },
-    geometryDrawn: function (vectorLayer, feature) {
-        this.div.setAttribute("geometry-drawn", feature.config.wktgeom);
-    },
-
+    
     highlight: function (event) {
         var geojson = event.detail.geojson;
         if (geojson) {
@@ -181,21 +132,7 @@ Ext.define("viewer.components.GBI", {
             y: y,
             scale: scale
         };
-        var visibleLayers = this.config.viewerController.getAppLayerById(this.config.layers[0]);
-        this.div.setAttribute("visible-layers", this.stringifyAppLayer(visibleLayers));
-        //this.div.setAttribute("map-clicked", JSON.stringify(json));
         this.divController.setAttribute("map-clicked", JSON.stringify(json));
-    },
-
-    stringifyAppLayer: function (al) {
-        var culledObject = {
-            id: al.id,
-            layername: al.layername,
-            serviceId: al.serviceId,
-            attributes: al.attributes
-        };
-        var stringified = JSON.stringify([culledObject]);
-        return stringified;
     },
     failed: function (msg) {
         Ext.MessageBox.alert(i18next.t('viewer_components_graph_5'), i18next.t('viewer_components_graph_6'));
