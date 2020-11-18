@@ -28,12 +28,13 @@ declare interface ViewerController {
   getAppLayerById: (appLayerId: number) => AppLayer;
   getAppLayer: (serviceId: number, layerName: string) => AppLayer;
 
-  getVisibleLayers(): number[];
-  getVisibleLayers(castToStrings: false): number[];
-  getVisibleLayers(castToStrings: true): string[];
-
   addListener: (eventName: string, handler: layerEventHandler) => void;
   getComponentsByClassNames: (classNames : string[]) => TailormapComponent[];
+
+  getVisibleLayers(): number[];
+  // tslint:disable-next-line:unified-signatures
+  getVisibleLayers(castToStrings: false): number[];
+  getVisibleLayers(castToStrings: true): string[];
 }
 
 declare interface TailormapComponent{

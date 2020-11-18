@@ -7,8 +7,6 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { LayerUtils } from '../../../shared/layer-utils/layer-utils.service';
 import { TailorMapService } from '../../../../../../bridge/src/tailor-map.service';
 import { FormconfigRepositoryService } from '../../../shared/formconfig-repository/formconfig-repository.service';
-import { MatIconRegistry } from '@angular/material/icon';
-import { DomSanitizer } from '@angular/platform-browser';
 import { MatSelectChange } from '@angular/material/select';
 import { FormConfiguration } from '../../../feature-form/form/form-models';
 import { WorkflowControllerService } from '../../../workflow/workflow-controller/workflow-controller.service';
@@ -26,8 +24,6 @@ export class AddFeatureMenuComponent implements OnInit {
   private selectedConfig: FormConfiguration;
 
   constructor(
-    private matIconRegistry: MatIconRegistry,
-    private domSanitizer: DomSanitizer,
     public dialogRef: MatDialogRef<AddFeatureMenuComponent>,
     public tailorMapService: TailorMapService,
     private workflowControllerService: WorkflowControllerService,
