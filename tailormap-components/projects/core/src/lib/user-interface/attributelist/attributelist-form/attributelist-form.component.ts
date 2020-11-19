@@ -23,7 +23,6 @@ export class AttributelistFormComponent implements OnInit {
   public set config(value: any) {
     // console.log(value);
     this.attributelistService.config = JSON.parse(value);
-    // console.log(this.formConfig);
   }
 
   // Property/function to show the attribute list panel (caution: lowercase!).

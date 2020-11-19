@@ -15,7 +15,7 @@ import { AttributelistTable, RowData } from './attributelist-models';
 import { AttributelistColumnController } from './attributelist-column-controller';
 import { AttributeService } from '../../../shared/attribute-service/attribute.service';
 import { AttributeListParameters, AttributeListResponse,
-  AttributeMetadataParameters, AttributeMetadataResponse } from '../../test-attributeservice/models';
+  AttributeMetadataParameters, AttributeMetadataResponse } from '../../../shared/attribute-service/attribute-models';
 import { CheckState, DetailsState } from './attributelist-enums';
 import { DatasourceParams } from './datasource-params';
 import { FormconfigRepositoryService } from '../../../shared/formconfig-repository/formconfig-repository.service';
@@ -171,7 +171,6 @@ export class AttributeDataSource extends DataSource<any> {
       attrParams.filter = this.params.valueFilter;
     }
 
-
     // Set details params.
     if (this.params.hasDetail()) {
       attrParams.featureType = this.params.featureTypeId;
@@ -181,10 +180,11 @@ export class AttributeDataSource extends DataSource<any> {
     // Set paging params.
     if (this.paginator) {
       attrParams.limit = this.paginator.pageSize;
-      // attrParams.page: this.paginator.pageIndex,   // TODO: Waar is page voor?
-      attrParams.start = this.paginator.pageIndex;
+      attrParams.page = 1;
+      attrParams.start = this.paginator.pageIndex * this.paginator.pageSize;
     } else {
       attrParams.limit = 999;
+      attrParams.page = 1
       attrParams.start = 0;
     }
 

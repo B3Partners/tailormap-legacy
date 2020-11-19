@@ -1,6 +1,8 @@
 
-import { Injectable, NgZone } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Injectable } from '@angular/core';
+import {
+  BehaviorSubject,
+} from 'rxjs';
 
 import { Layer } from './layer.model';
 import { AttributelistTabComponent } from './attributelist-tab/attributelist-tab.component';
@@ -14,25 +16,20 @@ export class LayerService {
 
   // List of layers. The index is also the associated tab index.
   public layers: Layer[] = [];
+  private layersSubject = new BehaviorSubject<Layer[]>([]);
+  public layers$ = this.layersSubject.asObservable();
 
-  constructor(public tailorMapService: TailorMapService,
-              private ngZone: NgZone) {
+  constructor(private tailorMapService: TailorMapService) {
     // Install the layerVisibilityChanged handler.
     this.tailorMapService.layerVisibilityChanged$.subscribe(value => {
-      this.ngZone.run(() => {
-        this.loadLayers();
-      });
+      this.loadLayers();
     });
+    this.loadLayers();
   }
 
   public getAppId(): number {
     const vc = this.tailorMapService.getViewerController();
     return vc.app.id;
-  }
-
-  public getLayers$(): Observable<Layer[]> {
-    this.loadLayers();
-    return of(this.layers);
   }
 
   /**
@@ -91,7 +88,7 @@ export class LayerService {
     this.layers.splice(0, this.layers.length);
 
     const vc = this.tailorMapService.getViewerController();
-    const layerIds = vc.getVisibleLayers() as number[];
+    const layerIds = vc.getVisibleLayers();
     // console.log(layerIds);
 
     layerIds.forEach(layerId => {
@@ -111,6 +108,8 @@ export class LayerService {
         this.layers.push(layer);
       }
     });
+
+    this.layersSubject.next(this.layers);
   }
 
   /**
@@ -122,6 +121,7 @@ export class LayerService {
       return;
     }
     this.layers[index].tabComponent = tab;
+    this.layersSubject.next(this.layers);
   }
 
   /**

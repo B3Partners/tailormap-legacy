@@ -1,8 +1,8 @@
-import { Injectable } from '@angular/core';
 import {
-  fromEvent,
-  Subject,
-} from 'rxjs';
+  Injectable,
+  NgZone,
+} from '@angular/core';
+import { fromEvent, Subject } from 'rxjs';
 import { LayerVisibilityEvent } from '../../core/src/lib/shared/models/event-models';
 import {
   AppLayer,
@@ -17,11 +17,12 @@ import { take } from 'rxjs/operators';
 })
 export class TailorMapService {
 
-  constructor() {
+  constructor(private ngZone: NgZone) {
     this.init();
   }
 
-  public layerVisibilityChanged$: Subject<LayerVisibilityEvent> = new Subject<LayerVisibilityEvent>();
+  private layerVisibilityChangedSubject$: Subject<LayerVisibilityEvent> = new Subject<LayerVisibilityEvent>();
+  public layerVisibilityChanged$ = this.layerVisibilityChangedSubject$.asObservable();
   public selectedLayer$: Subject<AppLayer> = new Subject<AppLayer>();
   public selectedLayer: AppLayer;
 
@@ -58,7 +59,7 @@ export class TailorMapService {
     const mc = vc.mapComponent;
     const map = mc.getMap();
     map.addListener('ON_LAYER_VISIBILITY_CHANGED', (object, event) => {
-      this.layerVisibilityChanged$.next(event);
+      this.ngZone.run(() => this.layerVisibilityChangedSubject$.next(event));
     });
     vc.addListener('ON_LAYER_SELECTED', ( event) => {
       this.selectedLayer = event.appLayer;

@@ -56,10 +56,10 @@ Ext.define ("viewer.components.NgAttributeList",{
                 // return deferred.promise;
             },
             text: me.config.title,
-            //text: "Angular AttributeList",
-            //icon: "",
+            // text: "Angular AttributeList",
+            // icon: "",
             tooltip: "Angular Attributen Lijst",
-            //label: ""
+            // label: ""
             label: me.config.label
         });
         this.map = this.config.viewerController.mapComponent.getMap();
@@ -95,9 +95,8 @@ Ext.define ("viewer.components.NgAttributeList",{
 
         // Add event handler.
         this.div.addEventListener('rowClick', function(evt){
-            //console.log("rowClick",evt);
-            //console.log("rowClick",evt.detail);
-            //this.showMarker(evt.detail.layerId, evt.detail.feature);
+            // console.log("rowClick",evt);
+            // console.log("rowClick",evt.detail);
             this.highlight(evt);
             this.zoomToFeature(evt.detail.layerId, evt.detail.feature);
         }.bind(this));
@@ -131,8 +130,8 @@ Ext.define ("viewer.components.NgAttributeList",{
         this.config.viewerController.mapComponent.getMap().addLayer(this.highlightLayer);
     },
     highlight: function (event) {
-        //console.log(event.detail);
-        //console.log(event.detail.feature.geometrie);
+        // console.log(event.detail);
+        // console.log(event.detail.feature.geometrie);
         this.highlightLayer.removeAllFeatures();
         const wkt = event.detail.feature.geometrie;
         if ((wkt) && (wkt!="")) {
@@ -146,7 +145,6 @@ Ext.define ("viewer.components.NgAttributeList",{
     },
     removeHighlight: function () {
         this.highlightLayer.removeAllFeatures();
-        this.config.viewerController.mapComponent.getMap().update();
     },
     zoomToFeature: function(layerId,feature) {
         if (this.featureExtentService === null) {
