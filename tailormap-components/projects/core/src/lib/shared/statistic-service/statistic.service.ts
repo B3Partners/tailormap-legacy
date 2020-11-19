@@ -7,13 +7,18 @@ import {
   StatisticParameters,
   StatisticResponse,
 } from './statistic-models';
+import { TailorMapService } from '../../../../../bridge/src/tailor-map.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class StatisticService {
 
-  constructor(private http: HttpClient) {
+  constructor(
+    private http: HttpClient,
+    private tailorMap: TailorMapService,
+    ) {
+
   }
 
   public statisticValue (params: StatisticParameters): any {
@@ -21,7 +26,7 @@ export class StatisticService {
     Object.entries(params).forEach(([key, value ]) => {
       httpParams = httpParams.set(key, String(value));
     });
-    return this.http.get<StatisticResponse>('/viewer/action/statisticanalysis', {params: httpParams});
+    return this.http.get<StatisticResponse>(this.tailorMap.getContextPath() + '/action/statisticanalysis', {params: httpParams});
   }
 
 }
