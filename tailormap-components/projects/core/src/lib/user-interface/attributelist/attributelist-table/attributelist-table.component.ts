@@ -25,6 +25,7 @@ import { AttributelistTableOptionsFormComponent } from '../attributelist-table-o
 import { AttributelistService } from '../attributelist.service';
 import { AttributeService } from '../../../shared/attribute-service/attribute.service';
 import { CheckState } from '../attributelist-common/attributelist-enums';
+import { Feature } from '../../../shared/generated';
 import {
   FilterColumns,
   FilterValueSettings,
@@ -36,6 +37,7 @@ import {
   ValueParameters,
   UniqueValuesResponse,
 } from '../../../shared/value-service/value-models';
+import { FormComponent } from '../../../feature-form/form/form.component';
 
 @Component({
   selector: 'tailormap-attributelist-table',
@@ -85,11 +87,14 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
     attributes: [],
   }
 
+  // private standardFormWorkflow = new StandardFormWorkflow();
+
   constructor(private attributeService: AttributeService,
               private layerService: LayerService,
               private valueService: ValueService,
               public attributelistService: AttributelistService,
               private formconfigRepoService: FormconfigRepositoryService,
+              // private standardFormWorkflow: StandardFormWorkflow,
               private snackBar: MatSnackBar,
               private dialog: MatDialog) {
     // console.log('=============================');
@@ -179,7 +184,21 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
   }
 
   public onObjectOptionsClick(): void {
-    alert('Not yet implemented.');
+    let optionFeatures: Feature[];
+    optionFeatures = this.dataSource.getRowsCheckedAsFeatures();
+    this.openDialog(optionFeatures);
+  }
+
+  public openDialog(formFeatures ?: Feature[]): void {
+    const dialogRef = this.dialog.open(FormComponent, {
+      width: '1050px',
+      height: '800px',
+      disableClose: true,
+      data: {
+        formFeatures,
+        isBulk: false,
+      },
+    });
   }
 
   public onPageChange(event): void {

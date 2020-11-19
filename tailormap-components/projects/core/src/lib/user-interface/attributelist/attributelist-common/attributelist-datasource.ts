@@ -6,7 +6,10 @@
  * - In case of the main table, adds an extra '_details' column to the rows.
  */
 
-import { DataSource } from '@angular/cdk/table';
+import {
+  BaseRowDef,
+  DataSource,
+} from '@angular/cdk/table';
 import { Observable, of } from 'rxjs';
 import { MatSort } from '@angular/material/sort';
 import { MatPaginator } from '@angular/material/paginator';
@@ -18,6 +21,22 @@ import { AttributeListParameters, AttributeListResponse,
   AttributeMetadataParameters, AttributeMetadataResponse } from '../../test-attributeservice/models';
 import { CheckState, DetailsState } from './attributelist-enums';
 import { DatasourceParams } from './datasource-params';
+import {
+  Boom,
+  Boominspectie,
+  Boomplanning,
+  CultBeplanting,
+  Feature,
+  Gras,
+  Haag,
+  MechLeiding,
+  NatBeplanting,
+  Rioolput,
+  VrijvLeiding,
+  Weginspectie,
+  Wegvakonderdeel,
+  Wegvakonderdeelplanning,
+} from '../../../shared/generated';
 import { FormconfigRepositoryService } from '../../../shared/formconfig-repository/formconfig-repository.service';
 import { LayerService } from '../layer.service';
 
@@ -110,6 +129,24 @@ export class AttributeDataSource extends DataSource<any> {
     return cnt;
   }
 
+  /**
+   * Returns the checked rows.
+   */
+  public getRowsCheckedAsFeatures(): Feature[] {
+    let feature = <Feature>{};
+    let featuresChecked: Feature[] = [];
+    this.rows.forEach( (row:RowData) => {
+      if (row._checked) {
+        const { _detailsRow, ...rest } = row;
+        feature.clazz = this.getLayerName().toLowerCase();
+        feature.objecttype = this.getLayerName();
+        featuresChecked.push({ ...feature, ...rest });
+      }
+    });
+    return featuresChecked;
+  }
+
+  public strip
   /**
    * Loads the data of a main or details table.
    */
