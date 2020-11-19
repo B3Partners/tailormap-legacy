@@ -3,7 +3,7 @@
   <Parameter name="componentregistry.path" override="false" value="/viewer-html/components"/>
   <Parameter name="flamingo.data.dir" override="false" value="/opt/tailormap_data"/>
   <Parameter name="flamingo.solr.url" override="false" value="https://tailormap.nl/solr/"/>
-  <Parameter name="flamingo.restproxy.port" override="false" value="8082"/>
+  <Parameter name="flamingo.restproxy.port" override="false" value="8084"/>
   <!-- For Tomcat: define datasource in server.xml, for example:
     NOTE:
         each version of tomcat comes with it's own version of the pooling library

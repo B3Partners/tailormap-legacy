@@ -314,6 +314,7 @@ export class AttributeDataSource extends DataSource<any> {
     }
     return columns;
   }
+
   /**
    * Reset the '_details' property to 'collapsed'.
    */
