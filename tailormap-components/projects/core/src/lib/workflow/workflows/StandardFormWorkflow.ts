@@ -8,11 +8,7 @@ import {
 } from '../../shared/models/event-models';
 import { VectorLayer } from '../../../../../bridge/typings';
 import { FormComponent } from '../../feature-form/form/form.component';
-import { Injectable } from '@angular/core';
 
-@Injectable({
-  providedIn: 'root',
-})
 export class StandardFormWorkflow extends Workflow {
 
   private featureType: string;
