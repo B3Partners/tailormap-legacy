@@ -133,16 +133,16 @@ export class FormCopyComponent implements OnInit {
   }
 
   public isFieldChecked(event: any) {
-    const fieldsToCopy = this.featuresToCopy.get(this.originalFeature['fid']);
+    const fieldsToCopy = this.featuresToCopy.get(this.originalFeature['objectGuid']);
     return fieldsToCopy.has(event);
   }
 
   public toggle(event: any) {
     if (!event.checked) {
-      const fieldsToCopy = this.featuresToCopy.get(this.originalFeature['fid']);
+      const fieldsToCopy = this.featuresToCopy.get(this.originalFeature['objectGuid']);
       fieldsToCopy.clear();
     } else {
-      const fieldsToCopy = this.featuresToCopy.get(this.originalFeature['fid']);
+      const fieldsToCopy = this.featuresToCopy.get(this.originalFeature['objectGuid']);
       for (let i  = 0; i <= this.formConfig.fields.length - 1; i++) {
         const config = this.formConfig.fields[i];
         fieldsToCopy.set(config.key, config.label);
