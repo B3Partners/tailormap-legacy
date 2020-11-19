@@ -142,16 +142,22 @@
 
   <mat-menu #statisticsMenu="matMenu">
     <ng-template matMenuContent let-colName="colName">
-      <div *ngIf="getStatisticFunctionColumnType(colName) === 'numeric'; then statisticsNum"></div>
-      <ng-template #statisticsNum>
-        <button mat-menu-item (click)="onStatisticsMenuClick(colName, 'SUM')">Som</button>
-        <button mat-menu-item (click)="onStatisticsMenuClick(colName, 'MIN')">Min</button>
-        <button mat-menu-item (click)="onStatisticsMenuClick(colName, 'MAX')">Max</button>
-        <button mat-menu-item (click)="onStatisticsMenuClick(colName, 'AVERAGE')">Gemiddelde</button>
-      </ng-template>
-      <button mat-menu-item (click)="onStatisticsMenuClick(colName, 'COUNT')">Aantal</button>
+      <ng-container *ngFor="let statType of keys(eStatisticType) ">
+        <div *ngIf="getStatisticFunctionColumnType(colName) === 'numeric' && eStatisticType[statType] !== 'COUNT' && eStatisticType[statType] !== 'NONE'">
+           <button mat-menu-item (click)="onStatisticsMenuClick(colName, eStatisticType[statType])">{{eStatisticTypeText[statType]}}</button>
+        </div>
+      </ng-container>
+      <ng-container *ngFor="let statType of keys(eStatisticType) ">
+        <div *ngIf="eStatisticType[statType] === ('COUNT')">
+          <button mat-menu-item (click)="onStatisticsMenuClick(colName, eStatisticType[statType])">{{eStatisticTypeText[statType]}}</button>
+        </div>
+      </ng-container>
       <mat-divider></mat-divider>
-      <button mat-menu-item (click)="onStatisticsMenuClick(colName, 'NONE')">Geen</button>
-</ng-template>
+      <ng-container *ngFor="let statType of keys(eStatisticType) ">
+        <div *ngIf="eStatisticType[statType] === ('NONE')">
+          <button mat-menu-item (click)="onStatisticsMenuClick(colName, eStatisticType[statType])">{{eStatisticTypeText[statType]}}</button>
+        </div>
+      </ng-container>
+    </ng-template>
   </mat-menu>
 </div>

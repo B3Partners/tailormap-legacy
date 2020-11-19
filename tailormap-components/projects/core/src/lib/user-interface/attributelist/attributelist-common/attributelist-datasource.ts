@@ -20,7 +20,7 @@ import {
   AttributeListResponse,
   AttributeMetadataParameters,
   AttributeMetadataResponse,
-} from '../../test-attributeservice/models';
+} from '../../../shared/attribute-service/attribute-models';
 import { CheckState, DetailsState } from './attributelist-enums';
 import { DatasourceParams } from './datasource-params';
 import { FormconfigRepositoryService } from '../../../shared/formconfig-repository/formconfig-repository.service';

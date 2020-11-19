@@ -1,3 +1,5 @@
+import { StatisticType } from '../../../shared/statistic-service/statistic-models';
+
 export interface LayerStatisticValues {
   layerId: number;
   columns: StatisticColumns[];
@@ -5,7 +7,7 @@ export interface LayerStatisticValues {
 
 export interface StatisticColumns {
   name: string;
-  statisticType: string;
+  statisticType: StatisticType;
   statisticValue: number;
 }
 
@@ -14,6 +16,6 @@ export enum StatisticTypeText {
   MIN = 'Min',
   MAX = 'Max',
   AVERAGE = 'Gem',
-  COUNT = 'N',
-  NONE = '',
+  COUNT = 'Aantal',
+  NONE = 'Geen',
 }

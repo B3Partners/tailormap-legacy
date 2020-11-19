@@ -1,22 +1,37 @@
-
 import {
+  AfterViewInit,
   Component,
   ElementRef,
-  OnInit,
-  AfterViewInit,
-  ViewChild,
-  Output,
   EventEmitter,
+  OnInit,
+  Output,
+  ViewChild,
 } from '@angular/core';
 
 import { MatPaginator } from '@angular/material/paginator';
-import { MatSort, Sort } from '@angular/material/sort';
+import {
+  MatSort,
+  Sort,
+} from '@angular/material/sort';
 import { MatTable } from '@angular/material/table';
-import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import {
+  MatDialog,
+  MatDialogConfig,
+} from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { animate, state, style, transition, trigger } from '@angular/animations';
+import {
+  animate,
+  state,
+  style,
+  transition,
+  trigger,
+} from '@angular/animations';
 
-import { AttributelistTable, RowClickData, RowData } from '../attributelist-common/attributelist-models';
+import {
+  AttributelistTable,
+  RowClickData,
+  RowData,
+} from '../attributelist-common/attributelist-models';
 import { AttributeDataSource } from '../attributelist-common/attributelist-datasource';
 import { AttributelistFilter } from '../attributelist-common/attributelist-filter';
 import { AttributelistFilterValuesFormComponent } from '../attributelist-filter-values-form/attributelist-filter-values-form.component';
@@ -40,13 +55,15 @@ import { StatisticService } from '../../../shared/statistic-service/statistic.se
 import {
   StatisticParameters,
   StatisticResponse,
+  StatisticType,
 } from '../../../shared/statistic-service/statistic-models';
 import { ValueService } from '../../../shared/value-service/value.service';
 import {
-  ValueParameters,
   UniqueValuesResponse,
+  ValueParameters,
 } from '../../../shared/value-service/value-models';
 import { MatMenuTrigger } from '@angular/material/menu';
+
 // import { LiteralMapKey } from '@angular/compiler';
 
 
@@ -106,11 +123,21 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
     attributes: [],
   }
 
+  /**
+   * Declare enums to use in template
+   */
+  public eStatisticType = StatisticType;
+  public eStatisticTypeText = StatisticTypeText;
+
+  public keys = Object.keys;
+
+  public values = Object.values;
+
   public statisticParams: StatisticParameters = {
     application: 0,
     appLayer: 0,
     column: '',
-    type: '', // Statistic type: SUM, MIN, MAX etc
+    type: null, // Statistic type: SUM, MIN, MAX etc
   }
 
   public contextMenuPosition = { x: '0px', y: '0px' };
@@ -383,19 +410,19 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
     this.statisticsMenu.openMenu()
   }
 
-  public onStatisticsMenuClick(colName: string, statisticsType: string) {
+  public onStatisticsMenuClick(colName: string, statisticType: StatisticType) {
     this.statisticParams.appLayer = this.dataSource.params.layerId;
     this.statisticParams.column = colName;
-    this.statisticParams.type = statisticsType;
+    this.statisticParams.type = StatisticType[statisticType];
     this.statisticParams.filter = this.dataSource.params.valueFilter;
     const colIndex = this.layerStatisticValues.columns.findIndex(obj => obj.name === colName);
-    if (statisticsType === 'NONE') {
-      this.layerStatisticValues.columns[colIndex].statisticType = statisticsType;
+    if (statisticType === StatisticType.NONE) {
+      this.layerStatisticValues.columns[colIndex].statisticType = statisticType;
       this.layerStatisticValues.columns[colIndex].statisticValue = null;
     } else {
       this.statisticsService.statisticValue(this.statisticParams).subscribe((data: StatisticResponse) => {
         if (data.success) {
-          this.layerStatisticValues.columns[colIndex].statisticType = statisticsType;
+          this.layerStatisticValues.columns[colIndex].statisticType = statisticType;
           this.layerStatisticValues.columns[colIndex].statisticValue = data.result;
         }
       })
@@ -404,7 +431,7 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
 
   private refreshStatistics () {
     this.layerStatisticValues.columns.forEach( col => {
-      if (col.statisticType !== 'NONE') {
+      if (col.statisticType === StatisticType.NONE) {
         this.onStatisticsMenuClick(col.name, col.statisticType);
       }
     })
@@ -412,7 +439,7 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
 
   private isStatisticViewable (colName: string): boolean {
     const colIndex = this.layerStatisticValues.columns.findIndex(obj => obj.name === colName);
-    return  (this.layerStatisticValues.columns[colIndex].statisticType !== 'NONE' &&
+    return  (this.layerStatisticValues.columns[colIndex].statisticType !== StatisticType.NONE &&
       this.layerStatisticValues.columns[colIndex].statisticValue &&
       typeof (this.layerStatisticValues.columns[colIndex].statisticValue) === 'number')
   }
@@ -437,8 +464,9 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
     if (colIndex >= 0) {
       if (this.isStatisticViewable(colName)) {
         // Round the numbers to 0 or 2 decimals
-        // NOTE: Some columns with integer values are defined as double, so we will see 2 unexpected fractiondigits
-        if (this.layerStatisticValues.columns[colIndex].statisticType === 'COUNT' || this.getColumnType(colName) === 'integer') {
+        // NOTE: Some columns with integer values are defined as double, so we will see 2 unexpected fractionDigits
+        if (this.layerStatisticValues.columns[colIndex].statisticType === StatisticType.COUNT ||
+          this.getColumnType(colName) === 'integer') {
           result = this.layerStatisticValues.columns[colIndex].statisticValue.toFixed();
         } else {
           result = this.layerStatisticValues.columns[colIndex].statisticValue.toFixed(2);
@@ -547,7 +575,7 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
     const colNames = this.getColumnNames();
     for (const colName of colNames) {
       let statisticColumn: StatisticColumns;
-      statisticColumn = {name: colName, statisticType: 'NONE', statisticValue: null};
+      statisticColumn = {name: colName, statisticType: StatisticType.NONE, statisticValue: null};
       this.layerStatisticValues.columns.push(statisticColumn);
     }
   }

@@ -4,7 +4,7 @@ export interface StatisticParameters {
   application: number;
   appLayer: number;
   column: string;
-  type: string; // Statistic type: SUM, MIN, MAX etc
+  type: StatisticType;
   featureType?: number
   filter?: string;
 }
@@ -12,4 +12,13 @@ export interface StatisticParameters {
 export interface StatisticResponse {
   result: number;
   success: boolean;
+}
+
+export enum StatisticType {
+  SUM = 'SUM',
+  MIN = 'MIN',
+  MAX = 'MAX',
+  AVERAGE = 'AVERAGE',
+  COUNT = 'COUNT',
+  NONE = 'NONE',
 }

@@ -1,5 +1,5 @@
 
-import { Attribute } from '../../test-attributeservice/models';
+import { Attribute } from '../../../shared/attribute-service/attribute-models';
 import { AttributelistColumn } from './attributelist-column-models'
 
 export class AttributelistColumnController {
