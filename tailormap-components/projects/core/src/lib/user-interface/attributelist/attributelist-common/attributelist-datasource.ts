@@ -286,20 +286,6 @@ export class AttributeDataSource extends DataSource<any> {
   /**
    * Uses the attribute longname to get the proper column name starting with the prefix.
    */
-  // private metadataGetColumnNames(prefix: string, metadata: AttributeMetadataResponse): string[] {
-  //   if (!metadata.success) {
-  //     return [];
-  //   }
-  //   const colNames = [];
-  //   prefix += '.';
-  //   for (const attr of metadata.attributes) {
-  //     // TODO longname is lang niet altijd aanwezig, dus eerst uitgezet (RH)
-  //     // if (attr.longname.startsWith(prefix)) {
-  //       colNames.push(attr.name);
-  //     // }
-  //   }
-  //   return colNames;
-  // }
   private metadataGetColumns(prefix: string, metadata: AttributeMetadataResponse): Attribute[] {
     if (!metadata.success) {
       return [];

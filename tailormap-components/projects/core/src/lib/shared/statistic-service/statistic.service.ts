@@ -8,6 +8,7 @@ import {
   StatisticResponse,
 } from './statistic-models';
 import { TailorMapService } from '../../../../../bridge/src/tailor-map.service';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -21,7 +22,7 @@ export class StatisticService {
 
   }
 
-  public statisticValue (params: StatisticParameters): any {
+  public statisticValue$ (params: StatisticParameters): Observable<StatisticResponse> {
     let httpParams: HttpParams = new HttpParams();
     Object.entries(params).forEach(([key, value ]) => {
       httpParams = httpParams.set(key, String(value));

@@ -420,7 +420,7 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
       this.layerStatisticValues.columns[colIndex].statisticType = statisticType;
       this.layerStatisticValues.columns[colIndex].statisticValue = null;
     } else {
-      this.statisticsService.statisticValue(this.statisticParams).subscribe((data: StatisticResponse) => {
+      this.statisticsService.statisticValue$(this.statisticParams).subscribe((data: StatisticResponse) => {
         if (data.success) {
           this.layerStatisticValues.columns[colIndex].statisticType = statisticType;
           this.layerStatisticValues.columns[colIndex].statisticValue = data.result;
