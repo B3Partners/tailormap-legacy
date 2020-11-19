@@ -77,10 +77,6 @@ export class AttributelistColumnController {
     return columns;
   }
   public columnDefsToColumns(columnDefs: Attribute[]): AttributelistColumn[] {
-    // Check the columns.
-    if (columnDefs.length === 0) {
-      return;
-    }
     const columns: AttributelistColumn[] = [];
     // Add new columns.
     for (const columnDef of columnDefs) {
