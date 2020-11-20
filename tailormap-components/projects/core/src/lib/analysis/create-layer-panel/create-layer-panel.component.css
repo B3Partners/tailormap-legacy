@@ -1,14 +1,13 @@
-.overlay-panel {
-  position: absolute;
-  right: 10px;
-  top: 10px;
-  bottom: 10px;
-  width: 240px;
-  background-color: #ffffff;
-  z-index: 2000;
+.analysis-form {
+  display: flex;
+  flex-direction: column;
+  padding-top: 30px;
 }
 
-.overlay-panel ::ng-deep .mat-tab-label {
-  min-width: 48px;
-  padding: 10px;
+h1 {
+  padding: 14px 14px 2px;
+}
+
+mat-tab-group {
+  flex: 1;
 }

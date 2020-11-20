@@ -24,7 +24,7 @@ Ext.define ("viewer.components.AnalysisLayerCreator", {
         viewer.components.AnalysisLayerCreator.superclass.constructor.call(this, this.config);
         return this;
     },
-    addButton: function(buttonContainer) {
+    addButton: function(buttonContainer, extContainer) {
         if (viewer.components.AnalysisLayerCreator.buttonCreated) {
             return;
         }
@@ -33,5 +33,6 @@ Ext.define ("viewer.components.AnalysisLayerCreator", {
         var panel = document.createElement('tailormap-create-layer-panel');
         document.body.appendChild(panel);
         viewer.components.AnalysisLayerCreator.buttonCreated = true;
+        window.setTimeout(function() { extContainer.updateLayout(); }, 250);
     }
 });

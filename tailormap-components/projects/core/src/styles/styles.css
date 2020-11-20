@@ -1,0 +1,75 @@
+@import "inter-font.css";
+
+.tailormap-menu-panel.mat-menu-panel {
+  min-width: 170px;
+}
+
+[ng-version] {
+  font-family: Inter, sans-serif;
+  font-weight: 400;
+  color: rgb(0, 10, 30);
+  font-size: 14px;
+}
+
+h1 {
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 0;
+  line-height: 24px;
+  margin: 0;
+}
+
+.overlay-panel {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  bottom: 10px;
+  width: 300px;
+  background-color: #ffffff;
+  z-index: 2000;
+}
+
+.tab-group .mat-tab-label {
+  min-width: 48px;
+  padding: 0;
+  height: 40px;
+  font-weight: 600;
+  color: rgba(0, 10, 30, 0.4);
+}
+
+.tab-group .mat-tab-label + .mat-tab-label {
+  margin-left: 14px;
+}
+
+.tab-group .mat-tab-label-active {
+  color: rgb(0, 10, 30);
+}
+
+.tab-group .mat-tab-header {
+  border-bottom: 1px solid #E1E1E1;
+  padding: 0 14px;
+}
+
+.tab-group .mat-tab-body-wrapper {
+  flex: 1;
+}
+
+.form-field label {
+  font-weight: 600;
+  padding-bottom: 4px;
+  line-height: 24px;
+  display: block;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.form-field input {
+  height: 40px;
+  line-height: 38px;
+  width: 100%;
+  border: 1px solid #E1E1E1;
+  border-radius: 3px;
+  font-size: 14px;
+  padding: 0 10px;
+}

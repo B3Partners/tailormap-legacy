@@ -27,10 +27,13 @@ import { MatTreeModule } from '@angular/material/tree';
 import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.component';
 import { ConfirmDialogService } from './confirm-dialog/confirm-dialog.service';
 import { ApiModule } from './generated';
+import { DialogCloseButtonComponent } from './dialog-close-button/dialog-close-button.component';
 
 @NgModule({
   declarations: [
-    ConfirmDialogComponent],
+    ConfirmDialogComponent,
+    DialogCloseButtonComponent,
+  ],
   imports: [
     ApiModule.forRoot({
       rootUrl: window.location.origin + '/viewer/action/proxyrest?url=',
@@ -82,6 +85,7 @@ import { ApiModule } from './generated';
     MatProgressSpinnerModule,
     MatMenuModule,
     MatDialogModule,
+    DialogCloseButtonComponent,
   ],
   entryComponents: [],
   providers: [

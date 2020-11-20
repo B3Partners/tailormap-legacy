@@ -22,12 +22,13 @@
             "aot": true,
             "assets": [
               "projects/bridge/src/favicon.ico",
-              "projects/bridge/src/assets"
+              "projects/bridge/src/assets",
+              { "input": "projects/core/src/assets", "glob": "**/*", "output": "assets/core"}
             ],
             "styles": [
-              "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
+              "projects/core/src/styles/custom-theme.scss",
               "projects/bridge/src/styles.css",
-              "projects/core/src/lib/shared/style/styles.css"
+              "projects/core/src/styles/styles.css"
             ],
             "scripts": [
               {
@@ -95,12 +96,13 @@
             "karmaConfig": "projects/bridge/karma.conf.js",
             "assets": [
               "projects/bridge/src/favicon.ico",
-              "projects/bridge/src/assets"
+              "projects/bridge/src/assets",
+              { "input": "projects/core/src/assets", "glob": "**/*", "output": "assets/core"}
             ],
             "styles": [
-              "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
+              "projects/core/src/styles/custom-theme.scss",
               "projects/bridge/src/styles.css",
-              "projects/core/src/lib/shared/style/styles.css"
+              "projects/core/src/styles/styles.css"
             ],
             "scripts": []
           }
@@ -159,10 +161,11 @@
             "karmaConfig": "projects/core/karma.conf.js",
             "assets": [
               "projects/core/src/favicon.ico",
-              "projects/core/src/assets"
+              "projects/core/src/assets",
+              { "input": "projects/core/src/assets", "glob": "**/*", "output": "assets/core"}
             ],
             "styles": [
-              "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css"
+              "projects/core/src/styles/custom-theme.scss"
             ],
             "scripts": []
           }

@@ -9,6 +9,7 @@ import { selectCreateLayerMode } from '../state/analysis.selectors';
 import { CreateLayerModeEnum } from '../models/create-layer-mode.enum';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { clearCreateLayerMode } from '../state/analysis.actions';
 
 @Component({
   selector: 'tailormap-create-layer-panel',
@@ -17,21 +18,20 @@ import { takeUntil } from 'rxjs/operators';
 })
 export class CreateLayerPanelComponent implements OnInit, OnDestroy {
 
+  public createLayerEnum = CreateLayerModeEnum;
   public createLayerMode: CreateLayerModeEnum;
+  public selectedTabIndex = 0;
+
   private destroyed = new Subject();
 
   constructor(
     private store$: Store<AnalysisState>,
-  ) {
-    console.log('CreateLayerPanelComponent constructor');
-  }
+  ) {}
 
   public ngOnInit() {
-    console.log('CreateLayerPanelComponent ngOnInit');
     this.store$.select(selectCreateLayerMode)
       .pipe(takeUntil(this.destroyed))
       .subscribe(createLayerMode => {
-        console.log('createLayerMode', createLayerMode);
         this.createLayerMode = createLayerMode;
       });
   }
@@ -39,6 +39,14 @@ export class CreateLayerPanelComponent implements OnInit, OnDestroy {
   public ngOnDestroy() {
     this.destroyed.next();
     this.destroyed.complete();
+  }
+
+  public closePanel() {
+    this.store$.dispatch(clearCreateLayerMode());
+  }
+
+  public moveToStyling() {
+    this.selectedTabIndex = 1;
   }
 
 }

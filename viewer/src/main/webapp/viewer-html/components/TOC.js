@@ -214,7 +214,7 @@ Ext.define ("viewer.components.TOC",{
                     listeners: {
                         render: function(container) {
                             console.log(container);
-                            analysisComponents[0].addButton(container.getEl().dom.querySelector('.button-container'));
+                            analysisComponents[0].addButton(container.getEl().dom.querySelector('.button-container'), container);
                         }
                     }
                 }
