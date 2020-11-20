@@ -62,6 +62,7 @@ import {
   UniqueValuesResponse,
   ValueParameters,
 } from '../../../shared/value-service/value-models';
+import { TailorMapService } from '../../../../../../bridge/src/tailor-map.service';
 import { MatMenuTrigger } from '@angular/material/menu';
 
 // import { LiteralMapKey } from '@angular/compiler';
@@ -73,8 +74,8 @@ import { MatMenuTrigger } from '@angular/material/menu';
   styleUrls: ['./attributelist-table.component.css'],
   animations: [
     trigger('onDetailsExpand', [
-      state('void', style({ height: '0px', minHeight: '0', visibility: 'hidden' })),
-      state('*', style({ height: '*', visibility: 'visible' })),
+      state('void', style({height: '0px', minHeight: '0', visibility: 'hidden'})),
+      state('*', style({height: '*', visibility: 'visible'})),
       transition('void <=> *', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
     ]),
   ],
@@ -100,8 +101,8 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
   public tabChange = new EventEmitter();
 
   public dataSource = new AttributeDataSource(this.layerService,
-                                              this.attributeService,
-                                              this.formconfigRepoService);
+    this.attributeService,
+    this.formconfigRepoService);
 
   public filter = new AttributelistFilter();
 
@@ -145,6 +146,7 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
   constructor(private attributeService: AttributeService,
               private layerService: LayerService,
               private statisticsService: StatisticService,
+              private tailorMapService: TailorMapService,
               private valueService: ValueService,
               public attributelistService: AttributelistService,
               private formconfigRepoService: FormconfigRepositoryService,
@@ -335,7 +337,7 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
     // Get the unique values for this column
     this.valueParams.applicationLayer = this.dataSource.params.layerId;
     this.valueParams.attributes = [];
-    this.valueParams.attributes.push (columnName);
+    this.valueParams.attributes.push(columnName);
     this.valueService.uniqueValues(this.valueParams).subscribe((data: UniqueValuesResponse) => {
       if (data.success) {
         let uniqueValues: FilterValueSettings[];
@@ -350,7 +352,7 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
             uniqueValues.push(filterValueSettings);
           })
         } else {
-            colObject.uniqueValues.forEach(val => uniqueValues.push(Object.assign({}, val)))
+          colObject.uniqueValues.forEach(val => uniqueValues.push(Object.assign({}, val)))
         }
 
         const config = new MatDialogConfig();
@@ -377,11 +379,19 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
             }
             this.dataSource.params.valueFilter = this.filter.createFilter();
             this.updateTable();
+            this.setFilterInAppLayer();
             this.refreshStatistics();
           }
         });
       }
     });
+  }
+
+  private setFilterInAppLayer() {
+    const viewerController = this.tailorMapService.getViewerController();
+    const appLayer = viewerController.getAppLayerById(this.filter.layerFilterValues.layerId);
+    const cql = this.filter.createFilter();
+    viewerController.setFilterString(cql, appLayer, 'ngattributelist');
   }
 
   /**
