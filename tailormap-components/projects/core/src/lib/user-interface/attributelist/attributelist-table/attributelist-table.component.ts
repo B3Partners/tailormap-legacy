@@ -38,6 +38,7 @@ import { AttributelistFilterValuesFormComponent } from '../attributelist-filter-
 import { AttributelistColumn } from '../attributelist-common/attributelist-column-models';
 import { AttributelistTableOptionsFormComponent } from '../attributelist-table-options-form/attributelist-table-options-form.component';
 import { AttributelistService } from '../attributelist.service';
+import { AttributelistStatistic } from '../attributelist-common/attributelist-statistic';
 import { AttributeService } from '../../../shared/attribute-service/attribute.service';
 import { CheckState } from '../attributelist-common/attributelist-enums';
 import {
@@ -47,14 +48,14 @@ import {
 import { FormconfigRepositoryService } from '../../../shared/formconfig-repository/formconfig-repository.service';
 import { LayerService } from '../layer.service';
 import {
-  LayerStatisticValues,
+  // LayerStatisticValues,
   StatisticColumns,
   StatisticTypeText,
 } from '../attributelist-common/attributelist-statistic-models';
 import { StatisticService } from '../../../shared/statistic-service/statistic.service';
 import {
-  StatisticParameters,
-  StatisticResponse,
+  // StatisticParameters,
+  // StatisticResponse,
   StatisticType,
 } from '../../../shared/statistic-service/statistic-models';
 import { ValueService } from '../../../shared/value-service/value.service';
@@ -106,6 +107,11 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
 
   public filter = new AttributelistFilter();
 
+  public statistic = new AttributelistStatistic(
+    this.statisticsService,
+    this.dataSource,
+    );
+
   // Number of checked rows.
   public nrChecked = 0;
 
@@ -114,11 +120,11 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
 
   private tabIndex = -1;
 
-  public layerStatisticValues: LayerStatisticValues = {
-    layerId: 0,
-    columns: [],
-  };
-
+  // public layerStatisticValues: LayerStatisticValues = {
+  //   layerId: 0,
+  //   columns: [],
+  // };
+  //
   private valueParams: ValueParameters = {
     applicationLayer: 0,
     attributes: [],
@@ -134,12 +140,12 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
 
   public values = Object.values;
 
-  public statisticParams: StatisticParameters = {
-    application: 0,
-    appLayer: 0,
-    column: '',
-    type: null, // Statistic type: SUM, MIN, MAX etc
-  }
+  // public statisticParams: StatisticParameters = {
+  //   application: 0,
+  //   appLayer: 0,
+  //   column: '',
+  //   type: null, // Statistic type: SUM, MIN, MAX etc
+  // }
 
   public contextMenuPosition = { x: '0px', y: '0px' };
 
@@ -372,7 +378,7 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
             this.dataSource.params.valueFilter = this.filter.createFilter();
             this.updateTable();
             this.setFilterInAppLayer();
-            this.refreshStatistics();
+            this.statistic.refreshStatistics(this.dataSource.params.layerId, this.dataSource.params.valueFilter);
           }
         });
       }
@@ -413,70 +419,80 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
   }
 
   public onStatisticsMenuClick(colName: string, statisticType: StatisticType) {
-    this.statisticParams.appLayer = this.dataSource.params.layerId;
-    this.statisticParams.column = colName;
-    this.statisticParams.type = StatisticType[statisticType];
-    this.statisticParams.filter = this.dataSource.params.valueFilter;
-    const colIndex = this.layerStatisticValues.columns.findIndex(obj => obj.name === colName);
-    if (statisticType === StatisticType.NONE) {
-      this.layerStatisticValues.columns[colIndex].statisticType = statisticType;
-      this.layerStatisticValues.columns[colIndex].statisticValue = null;
-    } else {
-      this.statisticsService.statisticValue$(this.statisticParams).subscribe((data: StatisticResponse) => {
-        if (data.success) {
-          this.layerStatisticValues.columns[colIndex].statisticType = statisticType;
-          this.layerStatisticValues.columns[colIndex].statisticValue = data.result;
-        }
-      })
-    }
+    this.statistic.setStatistics(colName, statisticType, this.dataSource.params.layerId, this.dataSource.params.valueFilter);
   }
+  // public onStatisticsMenuClick(colName: string, statisticType: StatisticType) {
+  //   this.statisticParams.appLayer = this.dataSource.params.layerId;
+  //   this.statisticParams.column = colName;
+  //   this.statisticParams.type = StatisticType[statisticType];
+  //   this.statisticParams.filter = this.dataSource.params.valueFilter;
+  //   const colIndex = this.layerStatisticValues.columns.findIndex(obj => obj.name === colName);
+  //   if (statisticType === StatisticType.NONE) {
+  //     this.layerStatisticValues.columns[colIndex].statisticType = statisticType;
+  //     this.layerStatisticValues.columns[colIndex].statisticValue = null;
+  //   } else {
+  //     this.statisticsService.statisticValue$(this.statisticParams).subscribe((data: StatisticResponse) => {
+  //       if (data.success) {
+  //         this.layerStatisticValues.columns[colIndex].statisticType = statisticType;
+  //         this.layerStatisticValues.columns[colIndex].statisticValue = data.result;
+  //       }
+  //     })
+  //   }
+  // }
 
-  private refreshStatistics () {
-    this.layerStatisticValues.columns.forEach( col => {
-      if (col.statisticType === StatisticType.NONE) {
-        this.onStatisticsMenuClick(col.name, col.statisticType);
-      }
-    })
-  }
+  // private refreshStatistics () {
+  //   this.layerStatisticValues.columns.forEach( col => {
+  //     if (col.statisticType === StatisticType.NONE) {
+  //       this.onStatisticsMenuClick(col.name, col.statisticType);
+  //     }
+  //   })
+  // }
 
-  private isStatisticViewable (colName: string): boolean {
-    const colIndex = this.layerStatisticValues.columns.findIndex(obj => obj.name === colName);
-    return  (this.layerStatisticValues.columns[colIndex].statisticType !== StatisticType.NONE &&
-      this.layerStatisticValues.columns[colIndex].statisticValue &&
-      typeof (this.layerStatisticValues.columns[colIndex].statisticValue) === 'number')
-  }
-
+  // private isStatisticViewable (colName: string): boolean {
+  //   const colIndex = this.layerStatisticValues.columns.findIndex(obj => obj.name === colName);
+  //   return  (this.layerStatisticValues.columns[colIndex].statisticType !== StatisticType.NONE &&
+  //     this.layerStatisticValues.columns[colIndex].statisticValue &&
+  //     typeof (this.layerStatisticValues.columns[colIndex].statisticValue) === 'number')
+  // }
+  //
   public getStatisticTypeText(colName: string): string {
-    const colIndex = this.layerStatisticValues.columns.findIndex(obj => obj.name === colName);
-    let result = '';
-    if (colIndex >= 0) {
-      if (this.isStatisticViewable(colName)) {
-        result = StatisticTypeText[this.layerStatisticValues.columns[colIndex].statisticType];
-        if (result !== '') {
-          result += '=';
-        }
-      }
-    }
-    return result;
+    return this.statistic.getStatisticTypeText(colName);
   }
+
+  // public getStatisticTypeText(colName: string): string {
+  //   const colIndex = this.layerStatisticValues.columns.findIndex(obj => obj.name === colName);
+  //   let result = '';
+  //   if (colIndex >= 0) {
+  //     if (this.isStatisticViewable(colName)) {
+  //       result = StatisticTypeText[this.layerStatisticValues.columns[colIndex].statisticType];
+  //       if (result !== '') {
+  //         result += '=';
+  //       }
+  //     }
+  //   }
+  //   return result;
+  // }
 
   public getStatisticValue(colName: string): string {
-    const colIndex = this.layerStatisticValues.columns.findIndex(obj => obj.name === colName);
-    let result: string;
-    if (colIndex >= 0) {
-      if (this.isStatisticViewable(colName)) {
-        // Round the numbers to 0 or 2 decimals
-        // NOTE: Some columns with integer values are defined as double, so we will see 2 unexpected fractionDigits
-        if (this.layerStatisticValues.columns[colIndex].statisticType === StatisticType.COUNT ||
-          this.dataSource.columnController.getColumnType(colName) === 'integer') {
-          result = this.layerStatisticValues.columns[colIndex].statisticValue.toFixed();
-        } else {
-          result = this.layerStatisticValues.columns[colIndex].statisticValue.toFixed(2);
-        }
-      }
-    }
-    return result;
+    return this.statistic.getStatisticValue(colName);
   }
+  // public getStatisticValue(colName: string): string {
+  //   const colIndex = this.layerStatisticValues.columns.findIndex(obj => obj.name === colName);
+  //   let result: string;
+  //   if (colIndex >= 0) {
+  //     if (this.isStatisticViewable(colName)) {
+  //       // Round the numbers to 0 or 2 decimals
+  //       // NOTE: Some columns with integer values are defined as double, so we will see 2 unexpected fractionDigits
+  //       if (this.layerStatisticValues.columns[colIndex].statisticType === StatisticType.COUNT ||
+  //         this.dataSource.columnController.getColumnType(colName) === 'integer') {
+  //         result = this.layerStatisticValues.columns[colIndex].statisticValue.toFixed();
+  //       } else {
+  //         result = this.layerStatisticValues.columns[colIndex].statisticValue.toFixed(2);
+  //       }
+  //     }
+  //   }
+  //   return result;
+  // }
 
   /**
    * Shows a popup to set visible columns.
@@ -573,12 +589,12 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
 
   private initStatistics(): void {
     // Init the statistics structure
-    this.layerStatisticValues.layerId = this.dataSource.params.layerId;
+    this.statistic.layerStatisticValues.layerId = this.dataSource.params.layerId;
     const colNames = this.getColumnNames();
     for (const colName of colNames) {
       let statisticColumn: StatisticColumns;
       statisticColumn = {name: colName, statisticType: StatisticType.NONE, statisticValue: null};
-      this.layerStatisticValues.columns.push(statisticColumn);
+      this.statistic.layerStatisticValues.columns.push(statisticColumn);
     }
   }
 }
