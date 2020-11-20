@@ -10,15 +10,20 @@ import {
 import * as AnalysisActions from './analysis.actions';
 import { CreateLayerModeEnum } from '../models/create-layer-mode.enum';
 
-const onSetSelectedAssignmentType = (state: AnalysisState, payload: { createLayerMode: CreateLayerModeEnum }): AnalysisState => ({
+const onSetCreateLayerMode = (state: AnalysisState, payload: { createLayerMode: CreateLayerModeEnum }): AnalysisState => ({
   ...state,
   createLayerMode: payload.createLayerMode,
-})
+});
 
+const onClearCreateLayerMode = (state: AnalysisState): AnalysisState => ({
+  ...state,
+  createLayerMode: null,
+});
 
 const assignmentsReducerImpl = createReducer(
   initialAnalysisState,
-  on(AnalysisActions.setSelectedAssignmentType, onSetSelectedAssignmentType),
+  on(AnalysisActions.setCreateLayerMode, onSetCreateLayerMode),
+  on(AnalysisActions.clearCreateLayerMode, onClearCreateLayerMode),
 );
 
 export const analysisReducer = (state: AnalysisState | undefined, action: Action) => {

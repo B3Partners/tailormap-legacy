@@ -1,18 +1,30 @@
-import { Component, OnInit } from '@angular/core';
-import { LayerService } from '../../user-interface/attributelist/layer.service';
+import { Component } from '@angular/core';
+import { Store } from '@ngrx/store';
+import { AnalysisState } from '../state/analysis.state';
+import { CreateLayerModeEnum } from '../models/create-layer-mode.enum';
+import { setCreateLayerMode } from '../state/analysis.actions';
 
 @Component({
   selector: 'tailormap-analysis-button',
   templateUrl: './analysis-button.component.html',
   styleUrls: ['./analysis-button.component.css'],
 })
-export class AnalysisButtonComponent implements OnInit {
+export class AnalysisButtonComponent {
+
+  public CREATE_LAYER_MODE = {
+    BUFFER: CreateLayerModeEnum.BUFFER,
+    SPATIAL: CreateLayerModeEnum.SPATIAL,
+    ATTRIBUTES: CreateLayerModeEnum.ATTRIBUTES,
+    THEMATIC: CreateLayerModeEnum.THEMATIC,
+    REGIONAL: CreateLayerModeEnum.REGIONAL,
+  }
 
   constructor(
-    private layerService: LayerService,
-  ) { }
+    private store$: Store<AnalysisState>,
+  ) {}
 
-  public ngOnInit(): void {
+  public setCreateLayerMode(mode: CreateLayerModeEnum) {
+    this.store$.dispatch(setCreateLayerMode({ createLayerMode: mode }));
   }
 
 }

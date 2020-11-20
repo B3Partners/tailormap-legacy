@@ -1,0 +1,14 @@
+.overlay-panel {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  bottom: 10px;
+  width: 240px;
+  background-color: #ffffff;
+  z-index: 2000;
+}
+
+.overlay-panel ::ng-deep .mat-tab-label {
+  min-width: 48px;
+  padding: 10px;
+}

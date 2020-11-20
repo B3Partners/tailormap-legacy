@@ -16,13 +16,22 @@
  */
 Ext.define ("viewer.components.AnalysisLayerCreator", {
     extend: "viewer.components.Component",
+    statics: {
+        buttonCreated: false,
+    },
     constructor: function (conf) {
         this.initConfig(conf);
         viewer.components.AnalysisLayerCreator.superclass.constructor.call(this, this.config);
         return this;
     },
     addButton: function(buttonContainer) {
+        if (viewer.components.AnalysisLayerCreator.buttonCreated) {
+            return;
+        }
         var btn = document.createElement('tailormap-analysis-button');
         buttonContainer.appendChild(btn);
+        var panel = document.createElement('tailormap-create-layer-panel');
+        document.body.appendChild(panel);
+        viewer.components.AnalysisLayerCreator.buttonCreated = true;
     }
 });

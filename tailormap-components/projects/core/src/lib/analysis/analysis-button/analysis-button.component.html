@@ -2,9 +2,9 @@
   Nieuwe kaartlaag
 </button>
 <mat-menu #newLayerMenu="matMenu" yPosition="above" class="tailormap-menu-panel">
-  <button mat-menu-item>Buffer</button>
-  <button mat-menu-item>Spatial</button>
-  <button mat-menu-item>Kenmerken</button>
-  <button mat-menu-item>Thematisch</button>
-  <button mat-menu-item>Regionaal</button>
+  <button mat-menu-item (click)="setCreateLayerMode(CREATE_LAYER_MODE.BUFFER)">Buffer</button>
+  <button mat-menu-item (click)="setCreateLayerMode(CREATE_LAYER_MODE.SPATIAL)">Spatial</button>
+  <button mat-menu-item (click)="setCreateLayerMode(CREATE_LAYER_MODE.ATTRIBUTES)">Kenmerken</button>
+  <button mat-menu-item (click)="setCreateLayerMode(CREATE_LAYER_MODE.THEMATIC)">Thematisch</button>
+  <button mat-menu-item (click)="setCreateLayerMode(CREATE_LAYER_MODE.REGIONAL)">Regionaal</button>
 </mat-menu>
