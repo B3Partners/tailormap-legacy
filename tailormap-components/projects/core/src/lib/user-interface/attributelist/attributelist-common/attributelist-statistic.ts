@@ -22,18 +22,28 @@ export class AttributelistStatistic {
     application: 0,
     appLayer: 0,
     column: '',
-    type: null, // Statistic type: SUM, MIN, MAX etc
+    type: null,
   }
 
   constructor(private statisticsService: StatisticService,
               private dataSource: AttributeDataSource) {
   }
 
-  public setStatistics(colName: string, statisticType: StatisticType, layerId: number, valueFilter: string) {
+  public initStatistics(colNames: string[]): void {
+    // Init the statistics structure
+    this.layerStatisticValues.layerId = this.dataSource.params.layerId;
+    for (const colName of colNames) {
+      let statisticColumn: StatisticColumns;
+      statisticColumn = {name: colName, statisticType: StatisticType.NONE, statisticValue: null};
+      this.layerStatisticValues.columns.push(statisticColumn);
+    }
+  }
+
+  public setStatistics(colName: string, statisticType: StatisticType, layerId: number, filter: string) {
     this.statisticParams.appLayer = layerId;
     this.statisticParams.column = colName;
     this.statisticParams.type = StatisticType[statisticType];
-    this.statisticParams.filter = valueFilter;
+    this.statisticParams.filter = filter;
     const colIndex = this.layerStatisticValues.columns.findIndex(obj => obj.name === colName);
     if (statisticType === StatisticType.NONE) {
       this.layerStatisticValues.columns[colIndex].statisticType = statisticType;
@@ -93,6 +103,17 @@ export class AttributelistStatistic {
       }
     }
     return result;
+  }
+
+  /**
+   * Returns numeric when statistic functions like min, max, average are possible
+   */
+  public getStatisticFunctionColumnType(name: string): string {
+    let type = this.dataSource.columnController.getColumnType(name);
+    if (type === 'integer' || type === 'double' || type === 'number') {
+      type = 'numeric';
+    }
+    return type;
   }
 
 }

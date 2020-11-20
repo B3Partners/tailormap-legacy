@@ -47,17 +47,9 @@ import {
 } from '../attributelist-common/attributelist-filter-models';
 import { FormconfigRepositoryService } from '../../../shared/formconfig-repository/formconfig-repository.service';
 import { LayerService } from '../layer.service';
-import {
-  // LayerStatisticValues,
-  StatisticColumns,
-  StatisticTypeText,
-} from '../attributelist-common/attributelist-statistic-models';
+import { StatisticTypeText } from '../attributelist-common/attributelist-statistic-models';
 import { StatisticService } from '../../../shared/statistic-service/statistic.service';
-import {
-  // StatisticParameters,
-  // StatisticResponse,
-  StatisticType,
-} from '../../../shared/statistic-service/statistic-models';
+import { StatisticType } from '../../../shared/statistic-service/statistic-models';
 import { ValueService } from '../../../shared/value-service/value.service';
 import {
   UniqueValuesResponse,
@@ -120,11 +112,6 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
 
   private tabIndex = -1;
 
-  // public layerStatisticValues: LayerStatisticValues = {
-  //   layerId: 0,
-  //   columns: [],
-  // };
-  //
   private valueParams: ValueParameters = {
     applicationLayer: 0,
     attributes: [],
@@ -139,13 +126,6 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
   public keys = Object.keys;
 
   public values = Object.values;
-
-  // public statisticParams: StatisticParameters = {
-  //   application: 0,
-  //   appLayer: 0,
-  //   column: '',
-  //   type: null, // Statistic type: SUM, MIN, MAX etc
-  // }
 
   public contextMenuPosition = { x: '0px', y: '0px' };
 
@@ -197,7 +177,7 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
 
     this.initFiltering();
 
-    this.initStatistics();
+    this.statistic.initStatistics(this.getColumnNames());
 
     // FOR TESTING. SHOW TABLE OPTIONS FORM AT STARTUP.
     // this.onTableOptionsClick(null);
@@ -220,11 +200,7 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
    * Returns numeric when statistic functions like min, max, average are possible
    */
   public getStatisticFunctionColumnType(name: string): string {
-    let type = this.dataSource.columnController.getColumnType(name);
-    if (type === 'integer' || type === 'double' || type === 'number') {
-      type = 'numeric';
-    }
-    return type;
+    return this.statistic.getStatisticFunctionColumnType(name);
   }
 
   public getColumnWidth(name: string): string {
@@ -421,78 +397,14 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
   public onStatisticsMenuClick(colName: string, statisticType: StatisticType) {
     this.statistic.setStatistics(colName, statisticType, this.dataSource.params.layerId, this.dataSource.params.valueFilter);
   }
-  // public onStatisticsMenuClick(colName: string, statisticType: StatisticType) {
-  //   this.statisticParams.appLayer = this.dataSource.params.layerId;
-  //   this.statisticParams.column = colName;
-  //   this.statisticParams.type = StatisticType[statisticType];
-  //   this.statisticParams.filter = this.dataSource.params.valueFilter;
-  //   const colIndex = this.layerStatisticValues.columns.findIndex(obj => obj.name === colName);
-  //   if (statisticType === StatisticType.NONE) {
-  //     this.layerStatisticValues.columns[colIndex].statisticType = statisticType;
-  //     this.layerStatisticValues.columns[colIndex].statisticValue = null;
-  //   } else {
-  //     this.statisticsService.statisticValue$(this.statisticParams).subscribe((data: StatisticResponse) => {
-  //       if (data.success) {
-  //         this.layerStatisticValues.columns[colIndex].statisticType = statisticType;
-  //         this.layerStatisticValues.columns[colIndex].statisticValue = data.result;
-  //       }
-  //     })
-  //   }
-  // }
 
-  // private refreshStatistics () {
-  //   this.layerStatisticValues.columns.forEach( col => {
-  //     if (col.statisticType === StatisticType.NONE) {
-  //       this.onStatisticsMenuClick(col.name, col.statisticType);
-  //     }
-  //   })
-  // }
-
-  // private isStatisticViewable (colName: string): boolean {
-  //   const colIndex = this.layerStatisticValues.columns.findIndex(obj => obj.name === colName);
-  //   return  (this.layerStatisticValues.columns[colIndex].statisticType !== StatisticType.NONE &&
-  //     this.layerStatisticValues.columns[colIndex].statisticValue &&
-  //     typeof (this.layerStatisticValues.columns[colIndex].statisticValue) === 'number')
-  // }
-  //
   public getStatisticTypeText(colName: string): string {
     return this.statistic.getStatisticTypeText(colName);
   }
 
-  // public getStatisticTypeText(colName: string): string {
-  //   const colIndex = this.layerStatisticValues.columns.findIndex(obj => obj.name === colName);
-  //   let result = '';
-  //   if (colIndex >= 0) {
-  //     if (this.isStatisticViewable(colName)) {
-  //       result = StatisticTypeText[this.layerStatisticValues.columns[colIndex].statisticType];
-  //       if (result !== '') {
-  //         result += '=';
-  //       }
-  //     }
-  //   }
-  //   return result;
-  // }
-
   public getStatisticValue(colName: string): string {
     return this.statistic.getStatisticValue(colName);
   }
-  // public getStatisticValue(colName: string): string {
-  //   const colIndex = this.layerStatisticValues.columns.findIndex(obj => obj.name === colName);
-  //   let result: string;
-  //   if (colIndex >= 0) {
-  //     if (this.isStatisticViewable(colName)) {
-  //       // Round the numbers to 0 or 2 decimals
-  //       // NOTE: Some columns with integer values are defined as double, so we will see 2 unexpected fractionDigits
-  //       if (this.layerStatisticValues.columns[colIndex].statisticType === StatisticType.COUNT ||
-  //         this.dataSource.columnController.getColumnType(colName) === 'integer') {
-  //         result = this.layerStatisticValues.columns[colIndex].statisticValue.toFixed();
-  //       } else {
-  //         result = this.layerStatisticValues.columns[colIndex].statisticValue.toFixed(2);
-  //       }
-  //     }
-  //   }
-  //   return result;
-  // }
 
   /**
    * Shows a popup to set visible columns.
@@ -587,14 +499,4 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
     }
   }
 
-  private initStatistics(): void {
-    // Init the statistics structure
-    this.statistic.layerStatisticValues.layerId = this.dataSource.params.layerId;
-    const colNames = this.getColumnNames();
-    for (const colName of colNames) {
-      let statisticColumn: StatisticColumns;
-      statisticColumn = {name: colName, statisticType: StatisticType.NONE, statisticValue: null};
-      this.statistic.layerStatisticValues.columns.push(statisticColumn);
-    }
-  }
 }
