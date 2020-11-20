@@ -210,19 +210,11 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
     return colNames;
   }
 
-  public getColumnType(name: string): string {
-    let type = this.dataSource.columnController.getColumnType(name);
-    if (type === 'integer' || type === 'double' || type === 'number') {
-      type = 'number';
-    }
-    return type;
-  }
-
   /**
    * Returns numeric when statistic functions like min, max, average are possible
    */
   public getStatisticFunctionColumnType(name: string): string {
-    let type = this.getColumnType(name);
+    let type = this.dataSource.columnController.getColumnType(name);
     if (type === 'integer' || type === 'double' || type === 'number') {
       type = 'numeric';
     }
@@ -476,7 +468,7 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
         // Round the numbers to 0 or 2 decimals
         // NOTE: Some columns with integer values are defined as double, so we will see 2 unexpected fractionDigits
         if (this.layerStatisticValues.columns[colIndex].statisticType === StatisticType.COUNT ||
-          this.getColumnType(colName) === 'integer') {
+          this.dataSource.columnController.getColumnType(colName) === 'integer') {
           result = this.layerStatisticValues.columns[colIndex].statisticValue.toFixed();
         } else {
           result = this.layerStatisticValues.columns[colIndex].statisticValue.toFixed(2);
