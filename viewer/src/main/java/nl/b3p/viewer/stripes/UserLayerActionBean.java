@@ -27,16 +27,19 @@ public class UserLayerActionBean implements ActionBean, ValidationErrorHandler, 
     private ActionBeanContext context;
 
     @Validate(required = true)
-    private ApplicationLayer appLayer;
+    private Application application;
 
     @Validate(required = true)
-    private Application application;
+    private ApplicationLayer appLayer;
 
     @Validate(required = true, on = "add")
     private String query;
 
     @Validate(required = true, on = "add")
     private String title;
+
+    @Validate(required = true, on = "put")
+    private String style;
 
     private AuditMessageObject auditMessageObject;
     private boolean unauthorized;
@@ -110,8 +113,8 @@ public class UserLayerActionBean implements ActionBean, ValidationErrorHandler, 
         return new StreamingResolution("application/json") {
             @Override
             public void stream(HttpServletResponse response) throws Exception {
-                IOUtils.copy(new StringReader(json.toString()), response.getOutputStream(), StandardCharsets.UTF_8);
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                IOUtils.copy(new StringReader(json.toString()), response.getOutputStream(), StandardCharsets.UTF_8);
             }
         };
     }
@@ -123,8 +126,8 @@ public class UserLayerActionBean implements ActionBean, ValidationErrorHandler, 
         return new StreamingResolution("application/json") {
             @Override
             public void stream(HttpServletResponse response) throws Exception {
-                IOUtils.copy(new StringReader(json.toString()), response.getOutputStream(), StandardCharsets.UTF_8);
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                IOUtils.copy(new StringReader(json.toString()), response.getOutputStream(), StandardCharsets.UTF_8);
             }
         };
     }
@@ -133,7 +136,7 @@ public class UserLayerActionBean implements ActionBean, ValidationErrorHandler, 
         final JSONObject jsonObject = new JSONObject();
         if (unauthorized) {
             jsonObject.put("success", false);
-            jsonObject.put("message", "not authorized to add");
+            jsonObject.put("error", "not authorized to add");
         } else {
             final JSONObject message = new JSONObject();
             final UserLayerHandler ulh = new UserLayerHandler(auditMessageObject, Stripersist.getEntityManager(),
@@ -152,8 +155,6 @@ public class UserLayerActionBean implements ActionBean, ValidationErrorHandler, 
         return new StreamingResolution("application/json") {
             @Override
             public void stream(HttpServletResponse response) throws Exception {
-                IOUtils.copy(new StringReader(jsonObject.toString()), response.getOutputStream(),
-                        StandardCharsets.UTF_8);
                 if (unauthorized) {
                     response.setStatus(HttpServletResponse.SC_FORBIDDEN);
                 } else if (jsonObject.getBoolean("success")) {
@@ -161,6 +162,8 @@ public class UserLayerActionBean implements ActionBean, ValidationErrorHandler, 
                 } else {
                     response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                 }
+                IOUtils.copy(new StringReader(jsonObject.toString()), response.getOutputStream(),
+                        StandardCharsets.UTF_8);
             }
         };
     }
@@ -169,7 +172,7 @@ public class UserLayerActionBean implements ActionBean, ValidationErrorHandler, 
         final JSONObject jsonObject = new JSONObject();
         if (unauthorized) {
             jsonObject.put("success", false);
-            jsonObject.put("message", "not authorized to delete");
+            jsonObject.put("error", "not authorized to delete");
         } else {
             final UserLayerHandler ulh = new UserLayerHandler(auditMessageObject, Stripersist.getEntityManager(),
                     application, appLayer, query, title, wellKnownUserLayerWorkspaceName, wellKnownUserLayerStoreName);
@@ -184,8 +187,39 @@ public class UserLayerActionBean implements ActionBean, ValidationErrorHandler, 
         return new StreamingResolution("application/json") {
             @Override
             public void stream(HttpServletResponse response) throws Exception {
+                if (unauthorized) {
+                    response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                } else if (jsonObject.getBoolean("success")) {
+                    response.setStatus(HttpServletResponse.SC_OK);
+                } else {
+                    jsonObject.put("error", "verzoek kon niet verwerkt worden");
+                    response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                }
                 IOUtils.copy(new StringReader(jsonObject.toString()), response.getOutputStream(),
                         StandardCharsets.UTF_8);
+            }
+        };
+    }
+
+    public Resolution put() {
+        final JSONObject jsonObject = new JSONObject();
+        if (unauthorized) {
+            jsonObject.put("success", false);
+            jsonObject.put("error", "not authorized to change style");
+        } else {
+            final UserLayerHandler ulh = new UserLayerHandler(auditMessageObject, Stripersist.getEntityManager(),
+                    application, appLayer, query, title, wellKnownUserLayerWorkspaceName, wellKnownUserLayerStoreName);
+
+            boolean ok = ulh.updateStyle(this.style);
+            jsonObject.put("success", ok);
+
+            this.auditMessageObject.addMessage(
+                    "Stijl van userLayer " + ulh.getLayerName() + " met id " + ulh.getAppLayerId() +
+                            " is " +  (ok ? "" : "niet") + " aangepast.");
+        }
+        return new StreamingResolution("application/json") {
+            @Override
+            public void stream(HttpServletResponse response) throws Exception {
                 if (unauthorized) {
                     response.setStatus(HttpServletResponse.SC_FORBIDDEN);
                 } else if (jsonObject.getBoolean("success")) {
@@ -193,10 +227,11 @@ public class UserLayerActionBean implements ActionBean, ValidationErrorHandler, 
                 } else {
                     response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                 }
+                IOUtils.copy(new StringReader(jsonObject.toString()), response.getOutputStream(),
+                        StandardCharsets.UTF_8);
             }
         };
     }
-
     // <editor-fold desc="Getters and Setters" defaultstate="collapsed">
 
     /**
@@ -251,6 +286,14 @@ public class UserLayerActionBean implements ActionBean, ValidationErrorHandler, 
 
     public void setApplication(Application application) {
         this.application = application;
+    }
+
+    public String getStyle() {
+        return style;
+    }
+
+    public void setStyle(String style) {
+        this.style = style;
     }
     // </editor-fold>
 }

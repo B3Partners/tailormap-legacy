@@ -112,6 +112,13 @@ public class UserLayerHandler {
         return succes;
     }
 
+    public boolean updateStyle(String cssStyle){
+        return this.manager.addStyleToLayer(
+                this.layer.getName(),
+                cssStyle
+        );
+    }
+
     private boolean createView(String viewName) {
         boolean ok = false;
         try {

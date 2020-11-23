@@ -591,6 +591,7 @@
                     <skipTests>!${test.skip.integrationtests}</skipTests>
                     <systemPropertyVariables>
                         <flamingo.version>${flamingo.version}</flamingo.version>
+                        <test.persistence.unit>${test.persistence.unit}</test.persistence.unit>
                     </systemPropertyVariables>
                     <useFile>false</useFile>
                     <argLine>${failsafeArgLine}</argLine>
