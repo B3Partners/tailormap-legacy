@@ -222,7 +222,7 @@
     </build>
     <profiles>
         <profile>
-            <id>travis-ci</id>
+            <id>gh-action</id>
             <dependencies>
                 <dependency>
                     <groupId>org.postgresql</groupId>
