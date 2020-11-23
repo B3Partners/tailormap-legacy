@@ -54,11 +54,15 @@
             </ng-template>
           </mat-cell>
           <!-- Footer -->
-          <mat-footer-cell  class="column_small" *matFooterCellDef></mat-footer-cell>
-        </ng-container>
+          <mat-footer-cell  class="column_small" *matFooterCellDef>
+              <mat-icon (click)="onStatisticsHelp()">
+                functions
+              </mat-icon>
+            </mat-footer-cell>
+          </ng-container>
 
-        <!-- Column with + for expanding details -->
-        <ng-container *ngSwitchCase="'_details'" matColumnDef="{{colName}}">
+          <!-- Column with + for expanding details -->
+          <ng-container *ngSwitchCase="'_details'" matColumnDef="{{colName}}">
           <!-- Header -->
           <mat-header-cell class="column_small" *matHeaderCellDef
                            [ngSwitch]="colName" ></mat-header-cell>
@@ -100,7 +104,7 @@
             <div *ngIf="isStatisticsProcessing(colName)">
               <mat-spinner diameter="20"></mat-spinner>
             </div>
-            {{getStatisticTypeText(colName)}}{{getStatisticValue(colName)}}
+            {{getStatisticResult(colName)}}
           </mat-footer-cell>
         </ng-container>
       </ng-container>
@@ -147,18 +151,32 @@
     <ng-template matMenuContent let-colName="colName">
       <ng-container *ngFor="let statType of keys(eStatisticType) ">
         <div *ngIf="getStatisticFunctionColumnType(colName) === 'numeric' && eStatisticType[statType] !== 'COUNT' && eStatisticType[statType] !== 'NONE'">
-           <button mat-menu-item (click)="onStatisticsMenuClick(colName, eStatisticType[statType])">{{eStatisticTypeText[statType]}}</button>
+           <button mat-menu-item (click)="onStatisticsMenuClick(colName, eStatisticType[statType])">
+             <mat-icon [ngClass]="(getStatisticTypeInMenu(colName) === eStatisticTypeInMenu[statType])? 'menu-icon material-icons-set': 'menu-icon material-icons-off'">
+               check
+             </mat-icon>
+             {{eStatisticTypeInMenu[statType]}}
+           </button>
         </div>
       </ng-container>
       <ng-container *ngFor="let statType of keys(eStatisticType) ">
         <div *ngIf="eStatisticType[statType] === ('COUNT')">
-          <button mat-menu-item (click)="onStatisticsMenuClick(colName, eStatisticType[statType])">{{eStatisticTypeText[statType]}}</button>
+          <button mat-menu-item (click)="onStatisticsMenuClick(colName, eStatisticType[statType])">
+            <mat-icon [ngClass]="(getStatisticTypeInMenu(colName) === eStatisticTypeInMenu[statType])? 'menu-icon material-icons-set': 'menu-icon material-icons-off'">
+              check
+            </mat-icon>
+            {{eStatisticTypeInMenu[statType]}}
+          </button>
         </div>
       </ng-container>
       <mat-divider></mat-divider>
       <ng-container *ngFor="let statType of keys(eStatisticType) ">
         <div *ngIf="eStatisticType[statType] === ('NONE')">
-          <button mat-menu-item (click)="onStatisticsMenuClick(colName, eStatisticType[statType])">{{eStatisticTypeText[statType]}}</button>
+          <button mat-menu-item (click)="onStatisticsMenuClick(colName, eStatisticType[statType])">
+            <mat-icon [ngClass]="(getStatisticTypeInMenu(colName) === eStatisticTypeInMenu[statType])? 'menu-icon material-icons-set': 'menu-icon material-icons-off'">
+              check
+            </mat-icon>
+            {{eStatisticTypeInMenu[statType]}}</button>
         </div>
       </ng-container>
     </ng-template>

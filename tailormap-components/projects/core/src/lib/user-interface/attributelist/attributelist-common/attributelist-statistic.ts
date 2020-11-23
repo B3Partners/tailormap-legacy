@@ -2,7 +2,7 @@ import { AttributeDataSource } from '../attributelist-common/attributelist-datas
 import {
   LayerStatisticValues,
   StatisticColumns,
-  StatisticTypeText,
+  StatisticTypeInMenu,
 } from '../attributelist-common/attributelist-statistic-models';
 import { StatisticService } from '../../../shared/statistic-service/statistic.service';
 import {
@@ -22,7 +22,7 @@ export class AttributelistStatistic {
     application: 0,
     appLayer: 0,
     column: '',
-    type: null,
+    type: StatisticType.NONE,
   }
 
   constructor(private statisticsService: StatisticService,
@@ -75,23 +75,18 @@ export class AttributelistStatistic {
       typeof (this.layerStatisticValues.columns[colIndex].statisticValue) === 'number')
   }
 
-  public getStatisticTypeText(colName: string): string {
+  public getStatisticTypeInMenu(colName: string): string {
     const colIndex = this.layerStatisticValues.columns.findIndex(obj => obj.name === colName);
     let result = '';
     if (colIndex >= 0) {
-      if (this.isStatisticViewable(colIndex)) {
-        result = StatisticTypeText[this.layerStatisticValues.columns[colIndex].statisticType];
-        if (result !== '') {
-          result += '=';
-        }
-      }
+        result = StatisticTypeInMenu[this.layerStatisticValues.columns[colIndex].statisticType];
     }
     return result;
   }
 
   public getStatisticValue(colName: string): string {
     const colIndex = this.layerStatisticValues.columns.findIndex(obj => obj.name === colName);
-    let result: string;
+    let result = '';
     if (colIndex >= 0) {
       if (this.isStatisticViewable(colIndex)) {
         // Round the numbers to 0 or 2 decimals
@@ -107,6 +102,13 @@ export class AttributelistStatistic {
     return result;
   }
 
+  public getStatisticResult(colName: string): string {
+    let result = this.getStatisticValue(colName);
+    if (result !== '') {
+      result = this.getStatisticTypeInMenu(colName) + ' = ' + result;
+    }
+    return result;
+  }
   /**
    * Returns numeric when statistic functions like min, max, average are possible
    */

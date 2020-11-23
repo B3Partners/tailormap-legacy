@@ -47,7 +47,7 @@ import {
 } from '../attributelist-common/attributelist-filter-models';
 import { FormconfigRepositoryService } from '../../../shared/formconfig-repository/formconfig-repository.service';
 import { LayerService } from '../layer.service';
-import { StatisticTypeText } from '../attributelist-common/attributelist-statistic-models';
+import { StatisticTypeInMenu } from '../attributelist-common/attributelist-statistic-models';
 import { StatisticService } from '../../../shared/statistic-service/statistic.service';
 import { StatisticType } from '../../../shared/statistic-service/statistic-models';
 import { ValueService } from '../../../shared/value-service/value.service';
@@ -121,7 +121,7 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
    * Declare enums to use in template
    */
   public eStatisticType = StatisticType;
-  public eStatisticTypeText = StatisticTypeText;
+  public eStatisticTypeInMenu = StatisticTypeInMenu;
 
   public keys = Object.keys;
 
@@ -398,8 +398,8 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
     this.statistic.setStatistics(colName, statisticType, this.dataSource.params.layerId, this.dataSource.params.valueFilter);
   }
 
-  public getStatisticTypeText(colName: string): string {
-    return this.statistic.getStatisticTypeText(colName);
+  public getStatisticTypeInMenu(colName: string): string {
+    return this.statistic.getStatisticTypeInMenu(colName);
   }
 
   public getStatisticValue(colName: string): string {
@@ -407,10 +407,20 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
     return this.statistic.getStatisticValue(colName);
   }
 
+  public getStatisticResult(colName: string): string {
+    return this.statistic.getStatisticResult(colName);
+  }
+
   public isStatisticsProcessing(colName: string): boolean {
     return this.statistic.isStatisticsProcessing(colName);
   }
 
+  public onStatisticsHelp(): void {
+    this.snackBar.open('Open contextmenu in de betreffende kolom voor statistiche functies', 'Sluiten', {
+      duration: 5000,
+    });
+    return;
+  }
   /**
    * Shows a popup to set visible columns.
    */

@@ -58,6 +58,9 @@ mat-table {
 .material-icons-unset {
   color: rgba(0, 0, 0, 0.26);
 }
+.material-icons-off {
+  color: rgba(0, 0, 0, 0);
+}
 .mat-icon {
   padding-top: 4px;
   padding-left: 4px;
@@ -79,6 +82,10 @@ mat-table {
 .mat-menu-item {
   height: 24px;
   line-height: 24px;
+}
+.menu-icon {
+  margin: 0 !important;
+  padding: 0 !important;
 }
 .details-container {
   overflow: hidden;

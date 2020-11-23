@@ -12,7 +12,7 @@ export interface StatisticColumns {
   processing: boolean;
 }
 
-export enum StatisticTypeText {
+export enum StatisticTypeInMenu {
   SUM = 'Sum',
   MIN = 'Min',
   MAX = 'Max',
