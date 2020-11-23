@@ -34,7 +34,7 @@ export class AttributelistStatistic {
     this.layerStatisticValues.layerId = this.dataSource.params.layerId;
     for (const colName of colNames) {
       let statisticColumn: StatisticColumns;
-      statisticColumn = {name: colName, statisticType: StatisticType.NONE, statisticValue: null};
+      statisticColumn = {name: colName, statisticType: StatisticType.NONE, statisticValue: null, processing: false};
       this.layerStatisticValues.columns.push(statisticColumn);
     }
   }
@@ -49,8 +49,10 @@ export class AttributelistStatistic {
       this.layerStatisticValues.columns[colIndex].statisticType = statisticType;
       this.layerStatisticValues.columns[colIndex].statisticValue = null;
     } else {
+      this.layerStatisticValues.columns[colIndex].processing = true;
       this.statisticsService.statisticValue$(this.statisticParams).subscribe((data: StatisticResponse) => {
         if (data.success) {
+          this.layerStatisticValues.columns[colIndex].processing = false;
           this.layerStatisticValues.columns[colIndex].statisticType = statisticType;
           this.layerStatisticValues.columns[colIndex].statisticValue = data.result;
         }
@@ -60,16 +62,16 @@ export class AttributelistStatistic {
 
   public refreshStatistics (layerId: number, valueFilter: string) {
     this.layerStatisticValues.columns.forEach( col => {
-      if (col.statisticType === StatisticType.NONE) {
+      if (col.statisticType !== StatisticType.NONE) {
         this.setStatistics(col.name, col.statisticType, layerId, valueFilter);
       }
     })
   }
 
-  private isStatisticViewable (colName: string): boolean {
-    const colIndex = this.layerStatisticValues.columns.findIndex(obj => obj.name === colName);
+  private isStatisticViewable (colIndex: number): boolean {
+    // const colIndex = this.layerStatisticValues.columns.findIndex(obj => obj.name === colName);
     return  (this.layerStatisticValues.columns[colIndex].statisticType !== StatisticType.NONE &&
-      this.layerStatisticValues.columns[colIndex].statisticValue &&
+      this.layerStatisticValues.columns[colIndex].statisticValue !== null &&
       typeof (this.layerStatisticValues.columns[colIndex].statisticValue) === 'number')
   }
 
@@ -77,7 +79,7 @@ export class AttributelistStatistic {
     const colIndex = this.layerStatisticValues.columns.findIndex(obj => obj.name === colName);
     let result = '';
     if (colIndex >= 0) {
-      if (this.isStatisticViewable(colName)) {
+      if (this.isStatisticViewable(colIndex)) {
         result = StatisticTypeText[this.layerStatisticValues.columns[colIndex].statisticType];
         if (result !== '') {
           result += '=';
@@ -91,7 +93,7 @@ export class AttributelistStatistic {
     const colIndex = this.layerStatisticValues.columns.findIndex(obj => obj.name === colName);
     let result: string;
     if (colIndex >= 0) {
-      if (this.isStatisticViewable(colName)) {
+      if (this.isStatisticViewable(colIndex)) {
         // Round the numbers to 0 or 2 decimals
         // NOTE: Some columns with integer values are defined as double, so we will see 2 unexpected fractionDigits
         if (this.layerStatisticValues.columns[colIndex].statisticType === StatisticType.COUNT ||
@@ -115,5 +117,15 @@ export class AttributelistStatistic {
     }
     return type;
   }
+
+  public isStatisticsProcessing(colName: string): boolean {
+    const colIndex = this.layerStatisticValues.columns.findIndex(obj => obj.name === colName);
+    let result = false;
+    if (colIndex >= 0) {
+      result = this.layerStatisticValues.columns[colIndex].processing
+    }
+    return result;
+  }
+
 
 }

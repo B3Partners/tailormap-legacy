@@ -9,6 +9,7 @@ export interface StatisticColumns {
   name: string;
   statisticType: StatisticType;
   statisticValue: number;
+  processing: boolean;
 }
 
 export enum StatisticTypeText {

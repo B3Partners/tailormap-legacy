@@ -403,7 +403,12 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
   }
 
   public getStatisticValue(colName: string): string {
+
     return this.statistic.getStatisticValue(colName);
+  }
+
+  public isStatisticsProcessing(colName: string): boolean {
+    return this.statistic.isStatisticsProcessing(colName);
   }
 
   /**

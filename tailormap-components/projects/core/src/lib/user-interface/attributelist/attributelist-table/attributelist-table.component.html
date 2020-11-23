@@ -97,6 +97,9 @@
           <mat-cell *matCellDef="let currRow" >{{currRow[colName]}}</mat-cell>
           <!-- Footer -->
           <mat-footer-cell *matFooterCellDef (contextmenu)="onStatisticsMenu($event, colName)">
+            <div *ngIf="isStatisticsProcessing(colName)">
+              <mat-spinner diameter="20"></mat-spinner>
+            </div>
             {{getStatisticTypeText(colName)}}{{getStatisticValue(colName)}}
           </mat-footer-cell>
         </ng-container>
