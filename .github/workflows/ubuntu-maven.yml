@@ -42,8 +42,11 @@ jobs:
           docker-compose -f viewer-commons/docker/geoserver/docker-compose.yml up -d
           sudo npm install -g wait-on
           wait-on -t 120000 http-get://localhost:8600/geoserver && echo "docker geoserver is up" || true
-      - name: Build with Maven
+      - name: Priming build with Maven
+        run: mvn install -DskipTests -Dtest.skip.integrationtests=true -B -V -fae
+      - name: Test with Maven
         run: |
+          mvn -e clean test -B
           mvn -e verify -B -Pgh-action -pl '!viewer-admin'
           mvn -e verify -B -Pgh-action -pl 'viewer-admin'
       - name: build javadoc
