@@ -14,8 +14,8 @@
         <tag>v5.4-SNAPSHOT</tag>
     </scm>
     <ciManagement>
-        <system>Travis-CI</system>
-        <url>https://travis-ci.com/flamingo-geocms/flamingo</url>
+        <system>Jenkins</system>
+        <url>http://192.168.1.26:8080/job/Flamingo/</url>
     </ciManagement>
     <distributionManagement>
         <repository>
@@ -58,7 +58,7 @@
         <apache.httpcomponents.version>4.5.12</apache.httpcomponents.version>
         <slf4j.version>1.7.30</slf4j.version>
         <!-- skip integration tests by default, override this property from commandline
-        or as part of a profile, see eg. 'travis-ci' profile in viewer -->
+        or as part of a profile, see eg. 'gh-action' profile in viewer -->
         <test.skip.integrationtests>false</test.skip.integrationtests>
         <maven-surefire-plugin.version>3.0.0-M4</maven-surefire-plugin.version>
         <tomcat.version>7.0.104</tomcat.version>
@@ -900,7 +900,7 @@
     </reporting>
     <profiles>
         <profile>
-            <id>travis-ci</id>
+            <id>gh-action</id>
             <properties>
                 <!-- om unit tests met postgres te draaien gebruik je
                 -Dtest.persistence.unit=viewer-config-postgresql
