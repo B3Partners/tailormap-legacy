@@ -289,9 +289,6 @@
         <role-name>Admin</role-name>
     </security-role>
     <security-role>
-        <role-name>safetyct</role-name>
-    </security-role>
-    <security-role>
         <role-name>RegistryAdmin</role-name>
     </security-role>
     <security-role>
