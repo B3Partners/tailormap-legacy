@@ -314,6 +314,7 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
               this.filter.layerFilterValues.columns[colIndex].status = false;
             }
             this.dataSource.params.valueFilter = this.filter.createFilter();
+            this.paginator.pageIndex = 0;
             this.updateTable();
             this.setFilterInAppLayer();
           }
