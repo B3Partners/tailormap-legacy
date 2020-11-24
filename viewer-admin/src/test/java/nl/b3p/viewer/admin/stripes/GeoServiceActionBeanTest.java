@@ -37,33 +37,7 @@ public class GeoServiceActionBeanTest extends TestUtil{
     public GeoServiceActionBeanTest() {
     }
 
-    @Test
-    public void addWMSService(){
-        String url = "https://geodata.nationaalgeoregister.nl/au/wms?SERVICE=WMS&";
-        try {
-            Category cat = new Category();
-            cat.setId(1L);
-            ActionBeanContext context = new ActionBeanContext();
-            
-            GeoServiceActionBean ab = new GeoServiceActionBean();
-            ab.setUrl(url);
-            ab.setProtocol("wms");
-            ab.setOverrideUrl(false);
-            ab.setCategory(cat);
-            ab.setContext(context);
-            ab.addService(entityManager);
-            GeoService service = ab.getService();
 
-            List<Layer> layers = service.loadLayerTree(entityManager);
-            // hmmmp PDOK weirdness v1.1.0 caps file has 3 layers, v1.3.0 has 6
-            assertEquals("The number of layers should be the same", 3, layers.size());
-            //assertEquals("The number of layers should be the same", 3, layers.size());
-            assertEquals("The url should be the same", url, service.getUrl());
-        } catch (Exception ex) {
-            log.error("Error testing adding a geoservice: " + url, ex);
-            fail("Error testing adding a geoservice:" + url);
-        }
-    }
 
     @Test
     public void addArcGISService(){
