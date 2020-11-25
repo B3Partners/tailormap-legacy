@@ -4,6 +4,7 @@ import {
   GeoService,
   layerVisibilityEvent,
   MapComponent,
+  VectorLayer,
 } from './Mapcomponents';
 import { LayerVisibilityEvent } from '../../core/src/lib/shared/models/event-models';
 
@@ -35,4 +36,5 @@ declare interface ViewerController {
   getVisibleLayers(castToStrings: false): number[];
   getVisibleLayers(castToStrings: true): string[];
 
+  registerSnappingLayer: (vectorLayer: VectorLayer) => void;
 }

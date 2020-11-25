@@ -193,7 +193,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
         var featureStyleProps = featureStyle.getProperties();
         var fillColor = this.getStyleConfig('fillcolor');
         return Ext.Object.merge({}, {
-            'strokeColor' : '#FF0000',
+            'strokeColor' : '#ff0000',
             'strokeWidth': 2,
             'fillColor' : fillColor ? this.colorPrefix + fillColor : 'transparent',
             'fillOpacity': 0.4,
@@ -263,6 +263,17 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
         var features = new Array();
         features.push(feature);
         this.addFeatures(features);
+    },
+
+    addFeatureFromWKT : function(wkt){
+        var feature = Ext.create(viewer.viewercontroller.controller.Feature, {
+            wktgeom: wkt
+        });
+        if (feature) {
+            var features = new Array();
+            features.push(feature);
+            this.addFeatures(features);
+        }
     },
 
     /**
