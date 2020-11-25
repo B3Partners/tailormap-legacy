@@ -1,11 +1,11 @@
 import {
+  AfterViewInit,
   Component,
   ElementRef,
-  OnInit,
-  AfterViewInit,
-  ViewChild,
-  Output,
   EventEmitter,
+  OnInit,
+  Output,
+  ViewChild,
 } from '@angular/core';
 
 import { MatPaginator } from '@angular/material/paginator';
@@ -18,6 +18,7 @@ import {
   MatDialog,
   MatDialogConfig,
 } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import {
   animate,
   state,
@@ -37,6 +38,7 @@ import { AttributelistFilterValuesFormComponent } from '../attributelist-filter-
 import { AttributelistColumn } from '../attributelist-common/attributelist-column-models';
 import { AttributelistTableOptionsFormComponent } from '../attributelist-table-options-form/attributelist-table-options-form.component';
 import { AttributelistService } from '../attributelist.service';
+import { AttributelistStatistic } from '../attributelist-common/attributelist-statistic';
 import { AttributeService } from '../../../shared/attribute-service/attribute.service';
 import { CheckState } from '../attributelist-common/attributelist-enums';
 import {
@@ -45,13 +47,18 @@ import {
 } from '../attributelist-common/attributelist-filter-models';
 import { FormconfigRepositoryService } from '../../../shared/formconfig-repository/formconfig-repository.service';
 import { LayerService } from '../layer.service';
+import { StatisticTypeInMenu } from '../attributelist-common/attributelist-statistic-models';
+import { StatisticService } from '../../../shared/statistic-service/statistic.service';
+import { StatisticType } from '../../../shared/statistic-service/statistic-models';
 import { ValueService } from '../../../shared/value-service/value.service';
 import {
-  ValueParameters,
   UniqueValuesResponse,
+  ValueParameters,
 } from '../../../shared/value-service/value-models';
 import { TailorMapService } from '../../../../../../bridge/src/tailor-map.service';
 import { HighlightService } from '../../../shared/highlight-service/highlight.service';
+import { MatMenuTrigger } from '@angular/material/menu';
+// import { LiteralMapKey } from '@angular/compiler';
 
 @Component({
   selector: 'tailormap-attributelist-table',
@@ -73,6 +80,9 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
   // Table reference for 'manually' rendering.
   @ViewChild('table') public table: MatTable<any>;
 
+  @ViewChild(MatMenuTrigger)
+  private statisticsMenu: MatMenuTrigger;
+
   @Output()
   public pageChange = new EventEmitter();
 
@@ -88,6 +98,11 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
 
   public filter = new AttributelistFilter();
 
+  public statistic = new AttributelistStatistic(
+    this.statisticsService,
+    this.dataSource,
+    );
+
   // Number of checked rows.
   public nrChecked = 0;
 
@@ -101,13 +116,27 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
     attributes: [],
   }
 
+  /**
+   * Declare enums to use in template
+   */
+  public eStatisticType = StatisticType;
+  public eStatisticTypeInMenu = StatisticTypeInMenu;
+
+  public keys = Object.keys;
+
+  public values = Object.values;
+
+  public contextMenuPosition = { x: '0px', y: '0px' };
+
   constructor(private attributeService: AttributeService,
               private layerService: LayerService,
+              private statisticsService: StatisticService,
               private tailorMapService: TailorMapService,
               private valueService: ValueService,
               public attributelistService: AttributelistService,
               private formconfigRepoService: FormconfigRepositoryService,
               private highlightService: HighlightService,
+              private snackBar: MatSnackBar,
               private dialog: MatDialog) {
     // console.log('=============================');
     // console.log('#Table - constructor');
@@ -148,6 +177,8 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
 
     this.initFiltering();
 
+    this.statistic.initStatistics(this.getColumnNames());
+
     // FOR TESTING. SHOW TABLE OPTIONS FORM AT STARTUP.
     // this.onTableOptionsClick(null);
   }
@@ -163,6 +194,13 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
     const colNames = this.dataSource.columnController.getActiveColumnNames(true);
     // console.log(colNames);
     return colNames;
+  }
+
+  /**
+   * Returns numeric when statistic functions like min, max, average are possible
+   */
+  public getStatisticFunctionColumnType(name: string): string {
+    return this.statistic.getStatisticFunctionColumnType(name);
   }
 
   public getColumnWidth(name: string): string {
@@ -318,8 +356,10 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
             this.highlightService.clearHighlight();
 
             this.dataSource.params.valueFilter = this.filter.createFilter();
+            this.paginator.pageIndex = 0;
             this.updateTable();
             this.setFilterInAppLayer();
+            this.statistic.refreshStatistics(this.dataSource.params.layerId, this.dataSource.params.valueFilter);
           }
         });
       }
@@ -347,6 +387,45 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
     return result;
   }
 
+  /**
+   * Fired when a cell on footer row is clicked.
+   */
+  public onStatisticsMenu(event: MouseEvent, colName: string) {
+    event.preventDefault();
+    this.contextMenuPosition.x = event.clientX + 'px';
+    this.contextMenuPosition.y = event.clientY + 'px';
+    this.statisticsMenu.menuData = { colName };
+    this.statisticsMenu.menu.focusFirstItem('mouse');
+    this.statisticsMenu.openMenu()
+  }
+
+  public onStatisticsMenuClick(colName: string, statisticType: StatisticType) {
+    this.statistic.setStatistics(colName, statisticType, this.dataSource.params.layerId, this.dataSource.params.valueFilter);
+  }
+
+  public getStatisticTypeInMenu(colName: string): string {
+    return this.statistic.getStatisticTypeInMenu(colName);
+  }
+
+  public getStatisticValue(colName: string): string {
+
+    return this.statistic.getStatisticValue(colName);
+  }
+
+  public getStatisticResult(colName: string): string {
+    return this.statistic.getStatisticResult(colName);
+  }
+
+  public isStatisticsProcessing(colName: string): boolean {
+    return this.statistic.isStatisticsProcessing(colName);
+  }
+
+  public onStatisticsHelp(): void {
+    this.snackBar.open('Open contextmenu in de betreffende kolom voor statistiche functies', 'Sluiten', {
+      duration: 5000,
+    });
+    return;
+  }
   /**
    * Shows a popup to set visible columns.
    */
@@ -439,4 +518,5 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
       this.filter.layerFilterValues.columns.push(filterColumn);
     }
   }
+
 }
