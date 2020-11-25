@@ -26,7 +26,6 @@ import {
   transition,
   trigger,
 } from '@angular/animations';
-
 import {
   AttributelistTable,
   RowClickData,
@@ -35,7 +34,6 @@ import {
 import { AttributeDataSource } from '../attributelist-common/attributelist-datasource';
 import { AttributelistFilter } from '../attributelist-common/attributelist-filter';
 import { AttributelistFilterValuesFormComponent } from '../attributelist-filter-values-form/attributelist-filter-values-form.component';
-import { AttributelistColumn } from '../attributelist-common/attributelist-column-models';
 import { AttributelistTableOptionsFormComponent } from '../attributelist-table-options-form/attributelist-table-options-form.component';
 import { AttributelistService } from '../attributelist.service';
 import { AttributelistStatistic } from '../attributelist-common/attributelist-statistic';
@@ -183,15 +181,15 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
     // this.onTableOptionsClick(null);
   }
 
-  public getColumns(includeSpecial: boolean): AttributelistColumn[] {
-    return this.dataSource.columnController.getActiveColumns(includeSpecial);
-  }
+  // public getColumns(includeSpecial: boolean): AttributelistColumn[] {
+  //   return this.dataSource.columnController.getActiveColumns(includeSpecial);
+  // }
 
   /**
    * Return the column names. Include special column names.
    */
   public getColumnNames(): string[] {
-    const colNames = this.dataSource.columnController.getActiveColumnNames(true);
+    const colNames = this.dataSource.columnController.getVisibleColumnNames(true);
     // console.log(colNames);
     return colNames;
   }
