@@ -130,15 +130,18 @@ export class AttributeDataSource extends DataSource<any> {
   }
 
   /**
-   * Returns the checked rows.
+   * Returns the checked Rows refactored to Features
    */
-  public getRowsCheckedAsFeatures(): Feature[] {
+  public getCheckedRowsAsFeatures(): Feature[] {
     let feature = <Feature>{};
     let featuresChecked: Feature[] = [];
+    let children = [];
     this.rows.forEach( (row:RowData) => {
       if (row._checked) {
-        const { _detailsRow, ...rest } = row;
+        const { object_guid, related_featuretypes, __fid, _checked, _details, _detailsRow, ...rest } = row;
+        feature.children = children;
         feature.clazz = this.getLayerName().toLowerCase();
+        feature.objectGuid = row.object_guid;
         feature.objecttype = this.getLayerName();
         featuresChecked.push({ ...feature, ...rest });
       }

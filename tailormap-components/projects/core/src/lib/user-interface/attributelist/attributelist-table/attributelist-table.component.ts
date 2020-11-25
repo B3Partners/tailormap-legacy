@@ -185,7 +185,7 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
 
   public onObjectOptionsClick(): void {
     let optionFeatures: Feature[];
-    optionFeatures = this.dataSource.getRowsCheckedAsFeatures();
+    optionFeatures = this.dataSource.getCheckedRowsAsFeatures();
     this.openDialog(optionFeatures);
   }
 
