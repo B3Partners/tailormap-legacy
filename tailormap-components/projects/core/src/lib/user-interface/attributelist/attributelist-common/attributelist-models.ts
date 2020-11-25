@@ -5,6 +5,7 @@ export interface AttributelistTable {
 
 export interface AttributelistConfig {
   pageSize: number;
+  zoomToBuffer: number;
 }
 
 // Array of properties of type any.

@@ -23,6 +23,7 @@ import { RowClickData } from '../attributelist-common/attributelist-models';
 import {
   MatTabGroup,
 } from '@angular/material/tabs';
+import { HighlightService } from '../../../shared/highlight-service/highlight.service';
 // import { Test } from '../test';
 
 @Component({
@@ -62,6 +63,7 @@ export class AttributelistPanelComponent implements OnInit, AfterViewInit, Layou
 
   constructor(private elementRef: ElementRef,
               private layerService: LayerService,
+              private highlightService: HighlightService,
               private layoutService: LayoutService) {
   }
 
@@ -101,7 +103,11 @@ export class AttributelistPanelComponent implements OnInit, AfterViewInit, Layou
   public onCloseClick(): void {
     this.show(false);
     // this.layoutService.close(this);
+
     this.panelClose.emit();
+
+    // Clear highligthing.
+    this.highlightService.clearHighlight();
   }
 
   public onMaximizeClick(): void {
@@ -122,6 +128,8 @@ export class AttributelistPanelComponent implements OnInit, AfterViewInit, Layou
 
   public onSelectedTabChange(): void {
     this.tabChange.emit();
+    // Clear highligthing.
+    this.highlightService.clearHighlight();
   }
 
   public trackByLayerId(layer) {
