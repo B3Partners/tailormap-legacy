@@ -52,7 +52,7 @@ public class UserLayerActionBean implements ActionBean, ValidationErrorHandler, 
     public void validateUser(ValidationErrors errors) {
         Principal p = context.getRequest().getUserPrincipal();
         if (p == null) {
-            errors.addGlobalError(new SimpleError("Geen gebruiker gevonden of niet aangemeld"));
+         //   errors.addGlobalError(new SimpleError("Geen gebruiker gevonden of niet aangemeld"));
         } else {
             this.auditMessageObject.setUsername(p.getName());
             this.auditMessageObject.setEvent(this.context.getEventName() + " userlayer");

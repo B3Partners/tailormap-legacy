@@ -41,6 +41,7 @@ public class UserLayerHandler {
     private GeoService service;
     private JDBCDataStore dataStore;
     private DataBase dataBase;
+    private TailormapDBManager tmManager;
 
     /**
      * @param auditMessageObject for audit messages, not {@code null}
@@ -80,6 +81,14 @@ public class UserLayerHandler {
                 this.geoserverStore,
                 this.baseUrl
         );
+
+        tmManager = new TailormapDBManager(
+                entityManager,
+                application,
+                appLayer,
+                service,
+                geoserverWorkspace,
+                baseUrl);
     }
 
 
@@ -94,12 +103,6 @@ public class UserLayerHandler {
         if (succes) {
             succes = createUserLayer(viewName);
         } else {
-            dropview(viewName);
-        }
-
-        if (succes) {
-            succes = updateApplication();
-        } else {
             deleteWMSLayer(viewName);
             dropview(viewName);
         }
@@ -108,17 +111,18 @@ public class UserLayerHandler {
     }
 
     public boolean delete() {
-        boolean succes = updateApplication(appLayer);
+        boolean succes = removeApplayerFromApplication(appLayer);
         if (succes) {
             succes = deleteWMSLayer(this.layer.getName());
         } else {
+            // TODO recreate WMS layer?
             return succes;
         }
         if (succes) {
             succes = dropview(this.layer.getName());
         } else {
             createWMSLayer(this.layer.getName());
-            updateApplication();
+            createUserLayer(this.layer.getName());
         }
 
         return succes;
@@ -171,72 +175,15 @@ public class UserLayerHandler {
      * @return
      */
     private boolean createUserLayer(String viewName) {
+        boolean success = tmManager.addLayer(viewName);
+        this.auditMessageObject.addMessage("Aanmaken van laag in Tailormap database " + viewName + " is " + (success ? "gelukt" : "mislukt"));
 
-        GeoService gs = retrieveUserLayerService();
-        if(gs == null){
-            gs = createUserLayerService();
-        }
-
-        if(gs == null){
-            return false;
-        }
-        MutablePair<Layer, UpdateResult.Status> pair = null;
-        try {
-            // update service
-            UpdateResult result = ((Updatable) gs).update(entityManager);
-            gs.setName(USERLAYER_NAME);
-            entityManager.persist(gs);
-            if (result.getStatus() == UpdateResult.Status.FAILED) {
-                LOG.error("Updating service failed: " + result.getMessage(), result.getException());
-                return false;
-            }
-            pair = result.getLayerStatus().get(viewName);
-        }catch (Exception e){
-            LOG.error("Error updating service failed: ", e);
-        }
-
-        if(pair.right == UpdateResult.Status.NEW) {
-            try {
-                // maak applayer
-                Layer newLayer = pair.left;
-                ApplicationLayer newAppLayer = new ApplicationLayer();
-                newAppLayer.setService(gs);
-                newAppLayer.setLayerName(viewName);
-
-                StartLayer sl = new StartLayer();
-                sl.setApplication(application);
-                sl.setApplicationLayer(newAppLayer);
-
-                newAppLayer.getStartLayers().put(application, sl);
-                application.getStartLayers().add(sl);
-
-                Level currentLevel = application.getRoot().getParentInSubtree(this.appLayer);
-                currentLevel.getLayers().add(newAppLayer);
-
-                entityManager.persist(application);
-                entityManager.getTransaction().commit();
-                this.createdAppLayer = newAppLayer;
-                this.layer = newLayer;
-
-                entityManager.getTransaction().begin();
-                SelectedContentCache.setApplicationCacheDirty(application, Boolean.TRUE, true, entityManager);
-                entityManager.getTransaction().commit();
-                // update this.appLayer and this.layer MT: ???
-                return true;
-            }catch(Exception e){
-                LOG.error("Error while inserting new layer into tailormap database: ", e);
-            }
-        }
-        return false;
+        this.createdAppLayer = tmManager.getCreatedAppLayer();
+        this.layer = tmManager.getLayer();
+        return success;
     }
 
-    private boolean updateApplication() {
-        // TODO implement
-        // add appLayer, update application
-        return true;
-    }
-
-    private boolean updateApplication(ApplicationLayer applicationLayer) {
+    private boolean removeApplayerFromApplication(ApplicationLayer applicationLayer) {
         // TODO implement
         // delete appLayer, update application
         return true;
