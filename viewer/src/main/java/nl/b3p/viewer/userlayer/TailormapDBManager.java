@@ -37,6 +37,7 @@ public class TailormapDBManager {
                               Application application,
                               ApplicationLayer appLayer,
                               GeoService service,
+                              Layer layer,
                               String geoserverWorkspace,
                               String baseUrl) {
         this.entityManager = entityManager;
@@ -45,6 +46,7 @@ public class TailormapDBManager {
         this.geoserverWorkspace = geoserverWorkspace;
         this.baseUrl = baseUrl;
         this.service = service;
+        this.layer = layer;
     }
 
     public boolean addLayer(String viewName) {
@@ -66,6 +68,28 @@ public class TailormapDBManager {
         return appLayer != null;
     }
 
+    public boolean removeLayer(ApplicationLayer appLayer){
+        // verwijder uit level
+        // verwijder startlayers
+        // verwijder applayer
+
+        Level level = application.getRoot().getParentInSubtree(appLayer);
+        level.getLayers().remove(appLayer);
+
+        StartLayer sl = appLayer.getStartLayers().get(application);
+
+        application.getStartLayers().remove(sl);
+        entityManager.remove(sl);
+        entityManager.remove(appLayer);
+        entityManager.getTransaction().commit();
+
+        entityManager.getTransaction().begin();
+        SelectedContentCache.setApplicationCacheDirty(application, Boolean.TRUE, true, entityManager);
+        entityManager.getTransaction().commit();
+
+        return true;
+    }
+
     private Layer createLayer(String viewName, GeoService gs) {
         MutablePair<Layer, UpdateResult.Status> pair = null;
         try {
@@ -83,11 +107,12 @@ public class TailormapDBManager {
         }
 
         if (pair.right == UpdateResult.Status.NEW) {
-            return pair.left;
+            Layer l = pair.left;
+            l.setFeatureType(this.layer.getFeatureType());
+            return l;
         }
         return null;
     }
-
 
     private ApplicationLayer createAppLayer(Layer l, GeoService gs, String viewName) {
         try {

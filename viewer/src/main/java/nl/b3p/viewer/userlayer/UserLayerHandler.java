@@ -87,6 +87,7 @@ public class UserLayerHandler {
                 application,
                 appLayer,
                 service,
+                layer,
                 geoserverWorkspace,
                 baseUrl);
     }
@@ -111,21 +112,25 @@ public class UserLayerHandler {
     }
 
     public boolean delete() {
-        boolean succes = removeApplayerFromApplication(appLayer);
-        if (succes) {
-            succes = deleteWMSLayer(this.layer.getName());
+        boolean success = removeApplayerFromApplication(appLayer);
+        if (success) {
+            success = deleteWMSLayer(this.layer.getName());
         } else {
-            // TODO recreate WMS layer?
-            return succes;
+            return success;
         }
-        if (succes) {
-            succes = dropview(this.layer.getName());
+        if (success) {
+            success = dropview(this.layer.getName());
+
+            // @mprins: should a failing dropview not rollback the wms/userlayer?
+            if(!success){
+                createWMSLayer(this.layer.getName());
+                createUserLayer(this.layer.getName());
+            }
         } else {
-            createWMSLayer(this.layer.getName());
             createUserLayer(this.layer.getName());
         }
 
-        return succes;
+        return success;
     }
 
     public boolean updateStyle(String cssStyle){
@@ -184,7 +189,9 @@ public class UserLayerHandler {
     }
 
     private boolean removeApplayerFromApplication(ApplicationLayer applicationLayer) {
-        // TODO implement
+        boolean success = tmManager.removeLayer(applicationLayer);
+        this.auditMessageObject.addMessage("Verwijderen van laag uit Tailormap database " + applicationLayer.getLayerName() + " is " + (success ? "gelukt" : "mislukt"));
+        this.createdAppLayer = appLayer;
         // delete appLayer, update application
         return true;
     }
