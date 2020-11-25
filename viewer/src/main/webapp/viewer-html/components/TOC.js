@@ -695,9 +695,6 @@ Ext.define ("viewer.components.TOC",{
             }else{
                 this.config.viewerController.setLayerVisible(layer.appLayer, false);
             }
-            if(this.config.persistCheckedLayers) {
-                this.config.viewerController.saveCheckedState(layer.appLayer, checked);
-            }
         }
     },
 
