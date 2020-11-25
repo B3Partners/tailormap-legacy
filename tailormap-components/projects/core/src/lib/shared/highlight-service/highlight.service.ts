@@ -16,13 +16,15 @@ import { FeatureExtentService } from '../feature-extent-service/feature-extent.s
 })
 export class HighlightService {
 
-  private actionUrl = '/viewer/action/simplify';
+  private actionUrl = '';
 
   private vectorLayer: VectorLayer;
 
   constructor(private tailorMap: TailorMapService,
               private featureExtentService: FeatureExtentService,
               private http: HttpClient) {
+    // Set action url.
+    this.actionUrl = this.tailorMap.getContextPath() + '/action/simplify';
   }
 
   private createVectorLayer(): void {

@@ -9,15 +9,19 @@ import {
   FeatureExtentParams,
   FeatureExtentResponse,
 } from './feature-extent-models';
+import { TailorMapService } from '../../../../../bridge/src/tailor-map.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class FeatureExtentService {
 
-  private actionUrl = '/viewer/action/extent';
+  private actionUrl = '';
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient,
+              private tailorMap: TailorMapService) {
+    // Set action url.
+    this.actionUrl = this.tailorMap.getContextPath() + '/action/extent';
   }
 
   private doRequest$(filter: string,
