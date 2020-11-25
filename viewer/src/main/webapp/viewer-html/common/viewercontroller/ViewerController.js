@@ -762,7 +762,22 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         if (layer){
             layer.visible = visible;
             this.mapComponent.getMap().setLayerVisible(layer, visible);
+            if(this.shouldSaveCheckedstate()){
+                this.saveCheckedState(appLayer, visible);
+            }
         }
+    },
+
+    shouldSaveCheckedstate: function () {
+        var tocs = this.getComponentsByClassName('viewer.components.TOC');
+        var saveState = false;
+        for (var i = 0; i < tocs.length; i++) {
+            var toc = tocs[i];
+            if(toc.config.persistCheckedLayers){
+                return true;
+            }
+        }
+        return false;
     },
     /**
      * Get the layer or null if not found
