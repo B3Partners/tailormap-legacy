@@ -142,11 +142,14 @@ public class UserLayerActionBean implements ActionBean, ValidationErrorHandler, 
             final UserLayerHandler ulh = new UserLayerHandler(auditMessageObject, Stripersist.getEntityManager(),
                     application, appLayer, query, title, wellKnownUserLayerWorkspaceName, wellKnownUserLayerStoreName);
 
-            jsonObject.put("success", ulh.add());
+            boolean success = ulh.add();
+            jsonObject.put("success", success);
 
             message.put("appLayerId", ulh.getAppLayerId());
             message.put("layerName", ulh.getLayerName());
-            message.put("appLayer", ulh.getApplicationLayer().toJSONObject(Stripersist.getEntityManager()));
+            if(success){
+                message.put("appLayer", ulh.getCreatedAppLayer().toJSONObject(Stripersist.getEntityManager()));
+            }
             jsonObject.put("message", message);
 
             this.auditMessageObject.addMessage(

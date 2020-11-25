@@ -36,7 +36,6 @@ public class GeoServerManager {
     public static final String GEOSERVER_PATTERN = "/geoserver/";
     private static final Log LOG = LogFactory.getLog(GeoServerManager.class);
     private final String baseUrl;
-    private final String serviceUrl;
     private final String userName;
     private final String passWord;
     private final String workSpace;
@@ -45,21 +44,19 @@ public class GeoServerManager {
     /**
      * Constructs a manager.
      *
-     * @param serviceUrl      Geoservice url, note that this mus have the substring "/geoserver/"
      * @param userName        GeoServer credential
      * @param passWord        GeoServer credential
      * @param targetWorkSpace GeoServer workspace
      * @param storeName       GeoServer datastore
      */
-    public GeoServerManager(String serviceUrl, String userName, String passWord, String targetWorkSpace,
-                            String storeName) {
-        this.serviceUrl = serviceUrl;
+    public GeoServerManager(String userName, String passWord, String targetWorkSpace,
+                            String storeName, String baseUrl) {
         this.userName = userName;
         this.passWord = passWord;
         this.workSpace = targetWorkSpace;
         this.storeName = storeName;
+        this.baseUrl = baseUrl;
 
-        this.baseUrl = serviceUrl.substring(0, serviceUrl.indexOf(GEOSERVER_PATTERN) + GEOSERVER_PATTERN.length());
     }
 
     /**

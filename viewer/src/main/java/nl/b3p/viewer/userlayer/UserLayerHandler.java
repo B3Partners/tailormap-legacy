@@ -1,10 +1,15 @@
 package nl.b3p.viewer.userlayer;
 
+
 import nl.b3p.viewer.audit.AuditMessageObject;
 import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.ApplicationLayer;
-import nl.b3p.viewer.config.services.GeoService;
-import nl.b3p.viewer.config.services.Layer;
+import nl.b3p.viewer.config.app.Level;
+import nl.b3p.viewer.config.app.StartLayer;
+import nl.b3p.viewer.config.services.*;
+import nl.b3p.viewer.util.SelectedContentCache;
+import nl.b3p.web.WaitPageStatus;
+import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.geotools.data.jdbc.FilterToSQL;
@@ -15,11 +20,15 @@ import org.geotools.jdbc.BasicSQLDialect;
 import org.geotools.jdbc.JDBCDataStore;
 
 import javax.persistence.EntityManager;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class UserLayerHandler {
     private static final Log LOG = LogFactory.getLog(UserLayerHandler.class);
     private final AuditMessageObject auditMessageObject;
     private final ApplicationLayer appLayer;
+    private ApplicationLayer createdAppLayer;
     private final String query;
     private final String layerTitle;
     private final EntityManager entityManager;
@@ -27,6 +36,7 @@ public class UserLayerHandler {
     private final GeoServerManager manager;
     private final String geoserverStore;
     private final String geoserverWorkspace;
+    private final String baseUrl;
     private Layer layer;
     private GeoService service;
     private JDBCDataStore dataStore;
@@ -60,13 +70,15 @@ public class UserLayerHandler {
         } catch (Exception e) {
             LOG.fatal("Problem opening datastore. " + e.getLocalizedMessage());
         }
-
+        String serviceUrl = this.service.getUrl();
+        this.baseUrl = serviceUrl.substring(0, serviceUrl.indexOf(GeoServerManager.GEOSERVER_PATTERN)
+                + GeoServerManager.GEOSERVER_PATTERN.length());
         manager = new GeoServerManager(
-                this.service.getUrl(),
                 this.service.getUsername(),
                 this.service.getPassword(),
                 this.geoserverWorkspace,
-                this.geoserverStore
+                this.geoserverStore,
+                this.baseUrl
         );
     }
 
@@ -80,7 +92,7 @@ public class UserLayerHandler {
         }
 
         if (succes) {
-            succes = createUserLayer();
+            succes = createUserLayer(viewName);
         } else {
             dropview(viewName);
         }
@@ -158,10 +170,64 @@ public class UserLayerHandler {
      *
      * @return
      */
-    private boolean createUserLayer() {
-        // TODO implement
-        // update this.appLayer and this.layer 
-        return true;
+    private boolean createUserLayer(String viewName) {
+
+        GeoService gs = retrieveUserLayerService();
+        if(gs == null){
+            gs = createUserLayerService();
+        }
+
+        if(gs == null){
+            return false;
+        }
+        MutablePair<Layer, UpdateResult.Status> pair = null;
+        try {
+            // update service
+            UpdateResult result = ((Updatable) gs).update(entityManager);
+            gs.setName(USERLAYER_NAME);
+            entityManager.persist(gs);
+            if (result.getStatus() == UpdateResult.Status.FAILED) {
+                LOG.error("Updating service failed: " + result.getMessage(), result.getException());
+                return false;
+            }
+            pair = result.getLayerStatus().get(viewName);
+        }catch (Exception e){
+            LOG.error("Error updating service failed: ", e);
+        }
+
+        if(pair.right == UpdateResult.Status.NEW) {
+            try {
+                // maak applayer
+                Layer newLayer = pair.left;
+                ApplicationLayer newAppLayer = new ApplicationLayer();
+                newAppLayer.setService(gs);
+                newAppLayer.setLayerName(viewName);
+
+                StartLayer sl = new StartLayer();
+                sl.setApplication(application);
+                sl.setApplicationLayer(newAppLayer);
+
+                newAppLayer.getStartLayers().put(application, sl);
+                application.getStartLayers().add(sl);
+
+                Level currentLevel = application.getRoot().getParentInSubtree(this.appLayer);
+                currentLevel.getLayers().add(newAppLayer);
+
+                entityManager.persist(application);
+                entityManager.getTransaction().commit();
+                this.createdAppLayer = newAppLayer;
+                this.layer = newLayer;
+
+                entityManager.getTransaction().begin();
+                SelectedContentCache.setApplicationCacheDirty(application, Boolean.TRUE, true, entityManager);
+                entityManager.getTransaction().commit();
+                // update this.appLayer and this.layer MT: ???
+                return true;
+            }catch(Exception e){
+                LOG.error("Error while inserting new layer into tailormap database: ", e);
+            }
+        }
+        return false;
     }
 
     private boolean updateApplication() {
@@ -181,10 +247,61 @@ public class UserLayerHandler {
     }
 
     public long getAppLayerId() {
-        return this.appLayer.getId();
+        return this.createdAppLayer.getId();
     }
 
     public String getLayerName() {
         return this.layer.getName();
+    }
+
+    private static final String USERLAYER_NAME = "B3P - Gebruikerslagen (niet aanpassen)";
+
+    private GeoService retrieveUserLayerService(){
+
+        List<GeoService> services = entityManager.createQuery("select distinct gs from GeoService gs "
+                + "where gs.url like :q ")
+                .setParameter("q", "%" + this.geoserverWorkspace + "%")
+                .setMaxResults(1)
+                .getResultList();
+
+        return services.isEmpty() ? null : services.get(0);
+    }
+
+    private GeoService createUserLayerService(){
+        GeoService userlayerService = null;
+        try {
+            Map params = new HashMap();
+
+            params.put(GeoService.PARAM_USERNAME, this.service.getUsername());
+            params.put(GeoService.PARAM_PASSWORD, this.service.getPassword());
+
+            params.put(WMSService.PARAM_SKIP_DISCOVER_WFS, true);
+            String url = this.baseUrl + this.geoserverWorkspace + "/wms";
+            WaitPageStatus status = new WaitPageStatus();
+            userlayerService = new WMSService().loadFromUrl(url, params, status, entityManager);
+            ((WMSService) userlayerService).setException_type(WMSExceptionType.Inimage);
+
+            userlayerService.setName(USERLAYER_NAME);
+            userlayerService.setUsername(this.service.getUsername());
+            userlayerService.setPassword(this.service.getPassword());
+
+            userlayerService.getReaders().addAll(this.service.getReaders());
+
+            Category category = entityManager.find(Category.class, this.service.getCategory().getId());
+            userlayerService.setCategory(category);
+            category.getServices().add(userlayerService);
+            status.setCurrentAction("Service opslaan.");
+            entityManager.persist(userlayerService);
+            entityManager.getTransaction().commit();
+
+        } catch (Exception e) {
+            LOG.error("Error creating GeoService: ",e);
+        }
+
+        return userlayerService;
+    }
+
+    public ApplicationLayer getCreatedAppLayer(){
+        return createdAppLayer;
     }
 }
