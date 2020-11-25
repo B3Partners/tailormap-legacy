@@ -1,4 +1,4 @@
-import { AttributeDataSource } from '../attributelist-common/attributelist-datasource';
+import { AttributeDataSource } from './attributelist-datasource';
 import { AttributelistStatistic } from './attributelist-statistic';
 import { StatisticService } from '../../../shared/statistic-service/statistic.service';
 import {
