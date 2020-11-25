@@ -8,11 +8,11 @@ import {
   HighlightParams,
   HighlightResponse,
 } from './highlight-models';
-import { HttpClient, HttpParams, } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { FeatureExtentService } from '../feature-extent-service/feature-extent.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class HighlightService {
 
@@ -41,8 +41,8 @@ export class HighlightService {
         fillopacity: 50,
         strokecolor: '0000FF',
         strokewidth: 4,
-        strokeopacity: 100
-      }
+        strokeopacity: 100,
+      },
     });
     vc.registerSnappingLayer(this.vectorLayer)
     mapComponent.getMap().addLayer(this.vectorLayer);
@@ -80,7 +80,7 @@ export class HighlightService {
     Object.entries(hightlightParams).forEach(([key, value]) => {
       httpParams = httpParams.set(key, String(value));
     });
-    this.http.get(this.actionUrl,{params: httpParams})
+    this.http.get(this.actionUrl, {params: httpParams})
       .subscribe( (data: HighlightResponse) => {
         if (data.success) {
           this.vectorLayer.addFeatureFromWKT(data.geom);
@@ -88,7 +88,7 @@ export class HighlightService {
             this.zoomToFeature(featureFId, appLayerId, zoomToBuffer);
           }
         }
-      }
+      },
     );
   }
 
