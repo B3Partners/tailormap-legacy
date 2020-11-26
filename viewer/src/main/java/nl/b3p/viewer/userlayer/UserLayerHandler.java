@@ -4,12 +4,8 @@ package nl.b3p.viewer.userlayer;
 import nl.b3p.viewer.audit.AuditMessageObject;
 import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.ApplicationLayer;
-import nl.b3p.viewer.config.app.Level;
-import nl.b3p.viewer.config.app.StartLayer;
 import nl.b3p.viewer.config.services.*;
-import nl.b3p.viewer.util.SelectedContentCache;
 import nl.b3p.web.WaitPageStatus;
-import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.geotools.data.jdbc.FilterToSQL;
@@ -44,10 +40,14 @@ public class UserLayerHandler {
     private TailormapDBManager tmManager;
 
     /**
+     * Construct an instance with all the things we need to do our jobs.
+     * <strong>Note:</strong> You must call the {@link #dispose()} method when you are done, to prevent possible
+     * leakage of resources.
+     *
      * @param auditMessageObject for audit messages, not {@code null}
      * @param entityManager      needed to get access to the database, not {@code null}
      * @param application        Application we're working for
-     * @param appLayer           appLayer to remove or that is the base for the userlayer, {@code null}
+     * @param appLayer           appLayer to remove or that is the base for the userlayer, not {@code null}
      * @param query              CQL query, can be {@code null}
      * @param userLayerTitle     user friendly layername
      */
@@ -138,6 +138,27 @@ public class UserLayerHandler {
                 this.layer.getName(),
                 cssStyle
         );
+    }
+
+    /**
+     * Must be called when you are done with creating/modifying your userlayer.
+     * Will be implicitly called during GC/finalization.
+     *
+     * @see #finalize()
+     */
+    public void dispose() {
+        if (this.dataBase != null) {
+            this.dataBase.close();
+        }
+        if (this.dataStore != null) {
+            this.dataStore.dispose();
+        }
+    }
+
+    @Override
+    public void finalize() throws Throwable {
+        this.dispose();
+        super.finalize();
     }
 
     private boolean createView(String viewName) {

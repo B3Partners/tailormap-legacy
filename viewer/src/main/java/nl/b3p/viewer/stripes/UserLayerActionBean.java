@@ -154,6 +154,7 @@ public class UserLayerActionBean implements ActionBean, ValidationErrorHandler, 
 
             this.auditMessageObject.addMessage(
                     "UserLayer " + ulh.getLayerName() + " aangemaakt met id " + ulh.getAppLayerId());
+            ulh.dispose();
         }
         return new StreamingResolution("application/json") {
             @Override
@@ -186,6 +187,7 @@ public class UserLayerActionBean implements ActionBean, ValidationErrorHandler, 
             this.auditMessageObject.addMessage(
                     "UserLayer " + ulh.getLayerName() + " met id " + ulh.getAppLayerId() + (ok ? "" : " niet") + " " +
                             "verwijderd.");
+            ulh.dispose();
         }
         return new StreamingResolution("application/json") {
             @Override
@@ -219,6 +221,7 @@ public class UserLayerActionBean implements ActionBean, ValidationErrorHandler, 
             this.auditMessageObject.addMessage(
                     "Stijl van userLayer " + ulh.getLayerName() + " met id " + ulh.getAppLayerId() +
                             " is " +  (ok ? "" : "niet") + " aangepast.");
+            ulh.dispose();
         }
         return new StreamingResolution("application/json") {
             @Override
