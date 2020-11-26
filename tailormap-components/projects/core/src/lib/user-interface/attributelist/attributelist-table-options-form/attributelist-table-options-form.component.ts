@@ -14,7 +14,6 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 import { AttributelistColumnController } from '../attributelist-common/attributelist-column-controller';
 import { AttributelistColumn } from '../attributelist-common/attributelist-column-models';
-import { AttributelistColumnsService } from '../attributelist-common/attributelist-columns.service';
 
 @Component({
   selector: 'tailormap-attributelist-table-options-form',
@@ -31,20 +30,15 @@ export class AttributelistTableOptionsFormComponent implements OnInit {
   private triggerElementRef: ElementRef;
   private columnController: AttributelistColumnController;
 
-  // constructor(private elementRef: ElementRef,
-  //             private renderer: Renderer2,
-  //             private dialogRef: MatDialogRef<AttributelistTableOptionsFormComponent>,
-  //             @Inject(MAT_DIALOG_DATA) public data: any) {
   constructor(private dialogRef: MatDialogRef<AttributelistTableOptionsFormComponent>,
-              @Inject(MAT_DIALOG_DATA) public data: any,
-              private columnData: AttributelistColumnsService) {
+              @Inject(MAT_DIALOG_DATA) public data: any) {
 
     this.triggerElementRef = data.trigger;
     this.columnController = data.columnController;
     // Get active passport columns or if no passport all columns.
     this.columns = this.columnController.getActiveColumns(false);
-    this.columnData.changeMessage(this.columns);
   }
+
   public ngOnInit(): void {
     let rect;
     if (this.triggerElementRef === null) {
@@ -67,9 +61,6 @@ export class AttributelistTableOptionsFormComponent implements OnInit {
   public onActionsClick(): void {
     this.dialogRef.close(this.columns);
   }
-  public initColumns(): void {
-    this.columnData.changeMessage(this.columns);
-  }
   /**
    * Shows all columns.
    */
@@ -86,7 +77,6 @@ export class AttributelistTableOptionsFormComponent implements OnInit {
   public onRowCheckClick(index: number): void {
     // Toggle the checkbox in the checked row.
     this.columns[index].visible = !this.columns[index].visible;
-    this.columnData.changeMessage(this.columns);
   }
   public onTitleClick(): void {
     this.dialogRef.close(this.columns);

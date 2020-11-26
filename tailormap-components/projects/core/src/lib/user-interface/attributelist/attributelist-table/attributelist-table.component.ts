@@ -173,7 +173,7 @@ export class AttributelistTableComponent implements AttributelistTable, Attribut
     // this.onTableOptionsClick(null);
   }
 
-  public getColumns(includeSpecial: boolean): AttributelistColumn[] {
+  public getActiveColumns(includeSpecial: boolean): AttributelistColumn[] {
     return this.dataSource.columnController.getActiveColumns(includeSpecial);
   }
 
