@@ -121,7 +121,6 @@ public class UserLayerHandler {
         if (success) {
             success = dropview(this.layer.getName());
 
-            // @mprins: should a failing dropview not rollback the wms/userlayer?
             if(!success){
                 createWMSLayer(this.layer.getName());
                 createUserLayer(this.layer.getName());
