@@ -62,10 +62,13 @@ export class AttributelistTableOptionsFormComponent implements OnInit {
     // console.log("#TableOptions - ngOnInit");
     // console.log(position);
     this.dialogRef.updatePosition(position);
-    this.columnData.column$.subscribe(message => this.columns = message)
+        // this.columnData.column$.subscribe(message => this.columns = message)
   }
   public onActionsClick(): void {
     this.dialogRef.close(this.columns);
+  }
+  public initColumns(): void {
+    this.columnData.changeMessage(this.columns);
   }
   /**
    * Shows all columns.

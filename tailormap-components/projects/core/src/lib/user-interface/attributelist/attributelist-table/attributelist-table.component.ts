@@ -56,6 +56,7 @@ import {
 import { TailorMapService } from '../../../../../../bridge/src/tailor-map.service';
 import { HighlightService } from '../../../shared/highlight-service/highlight.service';
 import { MatMenuTrigger } from '@angular/material/menu';
+import { AttributelistColumn } from '../attributelist-common/attributelist-column-models';
 // import { LiteralMapKey } from '@angular/compiler';
 
 @Component({
@@ -181,9 +182,9 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
     // this.onTableOptionsClick(null);
   }
 
-  // public getColumns(includeSpecial: boolean): AttributelistColumn[] {
-  //   return this.dataSource.columnController.getActiveColumns(includeSpecial);
-  // }
+  public getColumns(includeSpecial: boolean): AttributelistColumn[] {
+    return this.dataSource.columnController.getActiveColumns(includeSpecial);
+  }
 
   /**
    * Return the column names. Include special column names.
