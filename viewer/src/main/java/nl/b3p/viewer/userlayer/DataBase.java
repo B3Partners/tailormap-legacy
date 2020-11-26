@@ -10,9 +10,10 @@ public interface DataBase {
      * @param viewName  Name of the view
      * @param tableName Name of the source table
      * @param filterSQL Filter definition of view (where clause)
+     * @param comments optional comments to add the the view, can be {@code null}
      * @return {@code true} after successful execution
      */
-    boolean createView(String viewName, String tableName, String filterSQL);
+    boolean createView(String viewName, String tableName, String filterSQL, String comments);
 
     /**
      * Drop the named view from the database.

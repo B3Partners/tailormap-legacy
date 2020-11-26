@@ -16,9 +16,7 @@ import org.geotools.jdbc.BasicSQLDialect;
 import org.geotools.jdbc.JDBCDataStore;
 
 import javax.persistence.EntityManager;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class UserLayerHandler {
     private static final Log LOG = LogFactory.getLog(UserLayerHandler.class);
@@ -166,7 +164,11 @@ public class UserLayerHandler {
             FilterToSQL f = ((BasicSQLDialect) this.dataStore.getSQLDialect()).createFilterToSQL();
             String where = f.encodeToString(CQL.toFilter(this.query));
             String tableName = this.layer.getFeatureType().getTypeName();
-            ok = this.dataBase.createView(viewName, tableName, where);
+            ok = this.dataBase.createView(viewName, tableName, where,
+                    String.format(Locale.forLanguageTag("nl"),
+                            "GBI userlayer gemaakt van %s met query %s op %tc door gebruiker %s",
+                            tableName, where, new Date(), this.auditMessageObject.getUsername())
+            );
 
             this.auditMessageObject.addMessage("Aanmaken van view " + viewName + " is " + (ok ? "gelukt" : "mislukt"));
         } catch (FilterToSQLException | CQLException e) {

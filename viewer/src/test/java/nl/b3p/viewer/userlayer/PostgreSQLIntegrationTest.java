@@ -22,6 +22,7 @@ public class PostgreSQLIntegrationTest extends ViewerIntegrationTest {
     private final String viewName = "PostGISDialect";
     private final String tableName = "metadata";
     private final String filterSQL = "id > 0";
+    private final String comments = "";
     private PostgreSQL db;
 
     @Before
@@ -44,13 +45,13 @@ public class PostgreSQLIntegrationTest extends ViewerIntegrationTest {
 
     @Test
     public void viewCreateDropSucces() {
-        assertTrue(db.createView(viewName, tableName, filterSQL));
+        assertTrue(db.createView(viewName, tableName, filterSQL,comments));
         assertTrue(db.dropView(viewName));
     }
 
     @Test
     public void createViewFail() {
-        assertFalse(db.createView(viewName, tableName + "doesnotexist", filterSQL));
+        assertFalse(db.createView(viewName, tableName + "doesnotexist", filterSQL, null));
     }
 
     @Test
@@ -67,6 +68,6 @@ public class PostgreSQLIntegrationTest extends ViewerIntegrationTest {
     @Test
     public void closedConnection() {
         db.close();
-        assertFalse(db.createView(viewName, tableName, filterSQL));
+        assertFalse(db.createView(viewName, tableName, filterSQL, comments));
     }
 }
