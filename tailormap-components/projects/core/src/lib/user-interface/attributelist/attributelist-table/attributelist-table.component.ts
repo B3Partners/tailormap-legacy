@@ -1,41 +1,54 @@
-
 import {
+  AfterViewInit,
   Component,
   ElementRef,
-  OnInit,
-  AfterViewInit,
-  ViewChild,
-  Output,
   EventEmitter,
+  OnInit,
+  Output,
+  ViewChild,
 } from '@angular/core';
 
 import { MatPaginator } from '@angular/material/paginator';
-import { MatSort, Sort } from '@angular/material/sort';
+import {
+  MatSort,
+  Sort,
+} from '@angular/material/sort';
 import { MatTable } from '@angular/material/table';
-import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import {
+  MatDialog,
+  MatDialogConfig,
+} from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { animate, state, style, transition, trigger } from '@angular/animations';
-
-import { AttributelistTable, RowClickData, RowData } from '../attributelist-common/attributelist-models';
+import {
+  animate,
+  state,
+  style,
+  transition,
+  trigger,
+} from '@angular/animations';
+import {
+  AttributelistTable,
+  AttributelistRefresh,
+  RowClickData,
+  RowData,
+} from '../attributelist-common/attributelist-models';
 import { AttributeDataSource } from '../attributelist-common/attributelist-datasource';
 import { AttributelistFilter } from '../attributelist-common/attributelist-filter';
-import { AttributelistFilterValuesFormComponent } from '../attributelist-filter-values-form/attributelist-filter-values-form.component';
-import { AttributelistColumn } from '../attributelist-common/attributelist-column-models';
 import { AttributelistTableOptionsFormComponent } from '../attributelist-table-options-form/attributelist-table-options-form.component';
 import { AttributelistService } from '../attributelist.service';
+import { AttributelistStatistic } from '../attributelist-common/attributelist-statistic';
 import { AttributeService } from '../../../shared/attribute-service/attribute.service';
 import { CheckState } from '../attributelist-common/attributelist-enums';
-import {
-  FilterColumns,
-  FilterValueSettings,
-} from '../attributelist-common/attributelist-filter-models';
 import { FormconfigRepositoryService } from '../../../shared/formconfig-repository/formconfig-repository.service';
 import { LayerService } from '../layer.service';
+import { StatisticTypeInMenu } from '../attributelist-common/attributelist-statistic-models';
+import { StatisticService } from '../../../shared/statistic-service/statistic.service';
+import { StatisticType } from '../../../shared/statistic-service/statistic-models';
 import { ValueService } from '../../../shared/value-service/value.service';
-import {
-  ValueParameters,
-  UniqueValuesResponse,
-} from '../../../shared/value-service/value-models';
+import { TailorMapService } from '../../../../../../bridge/src/tailor-map.service';
+import { HighlightService } from '../../../shared/highlight-service/highlight.service';
+import { MatMenuTrigger } from '@angular/material/menu';
+// import { LiteralMapKey } from '@angular/compiler';
 
 @Component({
   selector: 'tailormap-attributelist-table',
@@ -43,19 +56,22 @@ import {
   styleUrls: ['./attributelist-table.component.css'],
   animations: [
     trigger('onDetailsExpand', [
-      state('void', style({ height: '0px', minHeight: '0', visibility: 'hidden' })),
-      state('*', style({ height: '*', visibility: 'visible' })),
+      state('void', style({height: '0px', minHeight: '0', visibility: 'hidden'})),
+      state('*', style({height: '*', visibility: 'visible'})),
       transition('void <=> *', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
     ]),
   ],
 })
-export class AttributelistTableComponent implements AttributelistTable, OnInit, AfterViewInit {
+export class AttributelistTableComponent implements AttributelistTable, AttributelistRefresh, OnInit, AfterViewInit {
 
   @ViewChild(MatPaginator) private paginator: MatPaginator;
   @ViewChild(MatSort) private sort: MatSort;
 
   // Table reference for 'manually' rendering.
   @ViewChild('table') public table: MatTable<any>;
+
+  @ViewChild(MatMenuTrigger)
+  private statisticsMenu: MatMenuTrigger;
 
   @Output()
   public pageChange = new EventEmitter();
@@ -70,7 +86,16 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
                                               this.attributeService,
                                               this.formconfigRepoService);
 
-  public filter = new AttributelistFilter();
+  public filter = new AttributelistFilter(
+    this.dataSource,
+    this.valueService,
+    this.dialog,
+  );
+
+  public statistic = new AttributelistStatistic(
+    this.statisticsService,
+    this.dataSource,
+    );
 
   // Number of checked rows.
   public nrChecked = 0;
@@ -80,16 +105,26 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
 
   private tabIndex = -1;
 
-  private valueParams: ValueParameters = {
-    applicationLayer: 0,
-    attributes: [],
-  }
+  /**
+   * Declare enums to use in template
+   */
+  public eStatisticType = StatisticType;
+  public eStatisticTypeInMenu = StatisticTypeInMenu;
+
+  public keys = Object.keys;
+
+  public values = Object.values;
+
+  public contextMenuPosition = { x: '0px', y: '0px' };
 
   constructor(private attributeService: AttributeService,
               private layerService: LayerService,
+              private statisticsService: StatisticService,
+              private tailorMapService: TailorMapService,
               private valueService: ValueService,
               public attributelistService: AttributelistService,
               private formconfigRepoService: FormconfigRepositoryService,
+              private highlightService: HighlightService,
               private snackBar: MatSnackBar,
               private dialog: MatDialog) {
     // console.log('=============================');
@@ -129,23 +164,32 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
     // Update the table rows.
     this.table.renderRows();
 
-    this.initFiltering();
+    this.filter.initFiltering(this.getColumnNames());
+
+    this.statistic.initStatistics(this.getColumnNames());
 
     // FOR TESTING. SHOW TABLE OPTIONS FORM AT STARTUP.
     // this.onTableOptionsClick(null);
   }
 
-  public getColumns(includeSpecial: boolean): AttributelistColumn[] {
-    return this.dataSource.columnController.getActiveColumns(includeSpecial);
-  }
+  // public getColumns(includeSpecial: boolean): AttributelistColumn[] {
+  //   return this.dataSource.columnController.getActiveColumns(includeSpecial);
+  // }
 
   /**
    * Return the column names. Include special column names.
    */
   public getColumnNames(): string[] {
-    const colNames = this.dataSource.columnController.getActiveColumnNames(true);
+    const colNames = this.dataSource.columnController.getVisibleColumnNames(true);
     // console.log(colNames);
     return colNames;
+  }
+
+  /**
+   * Returns numeric when statistic functions like min, max, average are possible
+   */
+  public getStatisticFunctionColumnType(name: string): string {
+    return this.statistic.getStatisticFunctionColumnType(name);
   }
 
   public getColumnWidth(name: string): string {
@@ -184,8 +228,13 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
 
   public onPageChange(event): void {
     // console.log('#Table - onPageChange');
+
     // Fire page change event.
     this.pageChange.emit();
+
+    // Clear highligthing.
+    this.highlightService.clearHighlight();
+
     // Update the table.
     this.updateTable();
   }
@@ -221,22 +270,17 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
     // console.log('#Table - onRowClicked');
     // console.log(row);
 
-    // FOR TESTING
-    // row.geometrie = '';
-    // delete row.geometrie;
+    // OM TE TESTEN!!!
+    // if (row.__fid.indexOf('.2')>=0) {
+    //   row.__fid = '';
+    // }
 
-    // Check for geometrie field (needed for highlighting).
-    if (!row.hasOwnProperty('geometrie') || (row.geometrie === '')) {
-      this.snackBar.open('Zoomen naar dit object is niet mogelijk.', 'Sluiten', {
-        duration: 1000,
-      });
-      return;
-    }
-    const data: RowClickData = {
-      feature: row,
-      layerId: this.dataSource.getLayerId(),
-    };
-    this.rowClick.emit(data);
+    // Get zoomto buffer size.
+    const zoomToBuffer = this.attributelistService.config.zoomToBuffer;
+
+    // Highlight and zoom to clicked feature.
+    const appLayer = this.layerService.getLayerByTabIndex(this.tabIndex);
+    this.highlightService.highlightFeature(row.__fid, appLayer.id, true, zoomToBuffer);
   }
 
   /**
@@ -253,55 +297,24 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
    * Fired when a column filter is clicked.
    */
   public onFilterClick(columnName: string): void {
-    // Get the unique values for this column
-    this.valueParams.applicationLayer = this.dataSource.params.layerId;
-    this.valueParams.attributes = [];
-    this.valueParams.attributes.push (columnName);
-    this.valueService.uniqueValues(this.valueParams).subscribe((data: UniqueValuesResponse) => {
-      if (data.success) {
-        let uniqueValues: FilterValueSettings[];
-        uniqueValues = [];
-        const colObject = this.filter.layerFilterValues.columns.find(c => c.name === columnName);
-        const colIndex = this.filter.layerFilterValues.columns.findIndex(obj => obj.name === columnName);
-        if (colObject.uniqueValues.length === 0) {
+    this.filter.setFilter(this, columnName);
+  }
 
-          data.uniqueValues[columnName].forEach(val => {
-            let filterValueSettings: FilterValueSettings;
-            filterValueSettings = {value: val, select: true};
-            uniqueValues.push(filterValueSettings);
-          })
-        } else {
-            colObject.uniqueValues.forEach(val => uniqueValues.push(Object.assign({}, val)))
-        }
+  /**
+   * After setting filter(s) refresh the table
+   */
+  public refreshTable(): void {
+    this.paginator.pageIndex = 0;
+    this.updateTable();
+    this.setFilterInAppLayer();
+    this.statistic.refreshStatistics(this.dataSource.params.layerId, this.dataSource.params.valueFilter);
+  }
 
-        const config = new MatDialogConfig();
-        config.data = {
-          colName: columnName,
-          values: uniqueValues,
-        };
-        const dialogRef = this.dialog.open(AttributelistFilterValuesFormComponent, config);
-        dialogRef.afterClosed().subscribe(filterSetting => {
-          // Do the filtering
-          if (filterSetting !== 'CANCEL') {
-            if (filterSetting === 'ON') {
-              this.filter.layerFilterValues.columns[colIndex].uniqueValues = config.data.values;
-              this.filter.layerFilterValues.columns[colIndex].nullValue = false;
-              this.filter.layerFilterValues.columns[colIndex].status = true;
-            } else if (filterSetting === 'NONE') {
-              this.filter.layerFilterValues.columns[colIndex].uniqueValues = config.data.values;
-              this.filter.layerFilterValues.columns[colIndex].nullValue = true;
-              this.filter.layerFilterValues.columns[colIndex].status = true;
-            } else if (filterSetting === 'OFF') {
-              this.filter.layerFilterValues.columns[colIndex].uniqueValues = [];
-              this.filter.layerFilterValues.columns[colIndex].nullValue = false;
-              this.filter.layerFilterValues.columns[colIndex].status = false;
-            }
-            this.dataSource.params.valueFilter = this.filter.createFilter();
-            this.updateTable();
-          }
-        });
-      }
-    });
+  private setFilterInAppLayer() {
+    const viewerController = this.tailorMapService.getViewerController();
+    const appLayer = viewerController.getAppLayerById(this.filter.layerFilterValues.layerId);
+    const cql = this.filter.createFilter();
+    viewerController.setFilterString(cql, appLayer, 'ngattributelist');
   }
 
   /**
@@ -318,6 +331,40 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
     return result;
   }
 
+  /**
+   * Fired when a cell on footer row is clicked.
+   */
+  public onStatisticsMenu(event: MouseEvent, colName: string) {
+    event.preventDefault();
+    this.contextMenuPosition.x = event.clientX + 'px';
+    this.contextMenuPosition.y = event.clientY + 'px';
+    this.statisticsMenu.menuData = { colName };
+    this.statisticsMenu.menu.focusFirstItem('mouse');
+    this.statisticsMenu.openMenu()
+  }
+
+  public onStatisticsMenuClick(colName: string, statisticType: StatisticType) {
+    this.statistic.setStatistics(colName, statisticType, this.dataSource.params.layerId, this.dataSource.params.valueFilter);
+  }
+
+  public getStatisticTypeInMenu(colName: string): string {
+    return this.statistic.getStatisticTypeInMenu(colName);
+  }
+
+  public getStatisticResult(colName: string): string {
+    return this.statistic.getStatisticResult(colName);
+  }
+
+  public isStatisticsProcessing(colName: string): boolean {
+    return this.statistic.isStatisticsProcessing(colName);
+  }
+
+  public onStatisticsHelp(): void {
+    this.snackBar.open('Open contextmenu in de betreffende kolom voor statistiche functies', 'Sluiten', {
+      duration: 5000,
+    });
+    return;
+  }
   /**
    * Shows a popup to set visible columns.
    */
@@ -400,14 +447,4 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
     this.updateCheckedInfo();
   }
 
-  private initFiltering(): void {
-    // Init the filter structure
-    this.filter.layerFilterValues.layerId = this.dataSource.params.layerId;
-    const colNames = this.getColumnNames();
-    for (const colName of colNames) {
-      let filterColumn: FilterColumns;
-      filterColumn = {name: colName, status: false, nullValue: false, uniqueValues: []};
-      this.filter.layerFilterValues.columns.push(filterColumn);
-    }
-  }
 }

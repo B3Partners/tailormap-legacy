@@ -6,13 +6,17 @@ import {
 import {
   ExportFeaturesParameters,
 } from './export-models';
+import { TailorMapService } from '../../../../../bridge/src/tailor-map.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ExportService {
 
-  constructor(private http: HttpClient) {
+  constructor(
+    private http: HttpClient,
+    private tailorMap: TailorMapService,
+  ) {
   }
 
   public exportFeatures (params: ExportFeaturesParameters): any {
@@ -20,7 +24,7 @@ export class ExportService {
     Object.entries(params).forEach(([key, value ]) => {
       httpParams = httpParams.set(key, String(value));
     });
-    return this.http.get ('/viewer/action/downloadfeatures', {params: httpParams, responseType: 'blob', observe: 'response'});
+    return this.http.get (this.tailorMap.getContextPath() + '/action/downloadfeatures', {params: httpParams, responseType: 'blob', observe: 'response'});
   }
 
 }

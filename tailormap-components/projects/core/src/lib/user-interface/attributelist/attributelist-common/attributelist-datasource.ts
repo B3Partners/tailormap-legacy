@@ -14,8 +14,13 @@ import { MatPaginator } from '@angular/material/paginator';
 import { AttributelistTable, RowData } from './attributelist-models';
 import { AttributelistColumnController } from './attributelist-column-controller';
 import { AttributeService } from '../../../shared/attribute-service/attribute.service';
-import { AttributeListParameters, AttributeListResponse,
-  AttributeMetadataParameters, AttributeMetadataResponse } from '../../../shared/attribute-service/attribute-models';
+import {
+  Attribute,
+  AttributeListParameters,
+  AttributeListResponse,
+  AttributeMetadataParameters,
+  AttributeMetadataResponse,
+} from '../../../shared/attribute-service/attribute-models';
 import { CheckState, DetailsState } from './attributelist-enums';
 import { DatasourceParams } from './datasource-params';
 import { FormconfigRepositoryService } from '../../../shared/formconfig-repository/formconfig-repository.service';
@@ -133,14 +138,20 @@ export class AttributeDataSource extends DataSource<any> {
 
       // Get passport field/column names.
       this.formconfigRepoService.formConfigs$.subscribe(formConfigs => {
-          const formConfig = formConfigs.config[passportName];
-          // console.log(this.params);
-          // console.log(this.formconfigRepoService.getAllFormConfigs());
-          // console.log(this.formconfigRepoService.getFeatureTypes());
-          // console.log(formConfig);
+        const formConfig = formConfigs.config[passportName];
+
+        // FOR TESTING!!!
+        // const formConfig = null;
+
+        if (formConfig && formConfig.fields) {
           const columnNames = formConfig.fields.map(attr => attr.key);
+
+          // FOR TESTING!!!
+          // columnNames.push('xxx');
+
           // console.log(columnNames);
           this.columnController.setPassportColumnNames(columnNames);
+        }
       });
     }
 
@@ -217,13 +228,16 @@ export class AttributeDataSource extends DataSource<any> {
             } else {
               prefix = this.params.layerName;
             }
-            const columnNames: string[] =
-              this.metadataGetColumnNames(prefix, metadata);
+            // const columnNames: string[] =
+            //   this.metadataGetColumnNames(prefix, metadata);
+
+            const columnDefs: Attribute[] =
+              this.metadataGetColumns(prefix, metadata);
 
             // console.log(columnNames);
 
             // And set as initial column names.
-            this.columnController.setDataColumnNames(columnNames);
+            this.columnController.setDataColumnNames(columnDefs);
           }
 
           // Get the features.
@@ -278,19 +292,19 @@ export class AttributeDataSource extends DataSource<any> {
   /**
    * Uses the attribute longname to get the proper column name starting with the prefix.
    */
-  private metadataGetColumnNames(prefix: string, metadata: AttributeMetadataResponse): string[] {
+  private metadataGetColumns(prefix: string, metadata: AttributeMetadataResponse): Attribute[] {
     if (!metadata.success) {
       return [];
     }
-    const colNames = [];
+    const columns = [];
     prefix += '.';
     for (const attr of metadata.attributes) {
-      // longname is lang niet altijd aanwezig, dus eerst uitgezet (RH)
+      // TODO longname is lang niet altijd aanwezig, dus eerst uitgezet (RH)
       // if (attr.longname.startsWith(prefix)) {
-        colNames.push(attr.name);
+      columns.push(attr);
       // }
     }
-    return colNames;
+    return columns;
   }
 
   /**
