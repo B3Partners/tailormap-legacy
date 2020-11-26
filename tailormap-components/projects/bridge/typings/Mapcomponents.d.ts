@@ -26,13 +26,16 @@ type layerEvent = (object: any, event: any) => void;
 
 declare interface Map {
   addListener: (eventName: string, handler: layerVisibilityEvent) => void;
+  addLayer: (layer: Layer) => void;
   getLayer: (id: string) => Layer;
   update: () => void;
   getResolution: () => number;
+  zoomToExtent: (extent: Extent) => void;
 }
 
 declare interface MapComponent {
   getMap: () => Map;
+  createVectorLayer: (config: any) => VectorLayer;
 }
 
 declare interface Layer {
@@ -42,7 +45,15 @@ declare interface Layer {
 }
 
 declare interface VectorLayer extends Layer {
+  addFeatureFromWKT: (wkt: string) => void;
   drawFeature: (geometryType: string) => void;
   readGeoJSON: (geojson: Geometry) => void;
   removeAllFeatures: () => void;
+}
+
+declare interface Extent {
+  minx: number;
+  miny: number;
+  maxx: number;
+  maxy: number;
 }

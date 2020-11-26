@@ -26,7 +26,6 @@ import {
   transition,
   trigger,
 } from '@angular/animations';
-
 import {
   AttributelistTable,
   AttributelistRefresh,
@@ -35,7 +34,6 @@ import {
 } from '../attributelist-common/attributelist-models';
 import { AttributeDataSource } from '../attributelist-common/attributelist-datasource';
 import { AttributelistFilter } from '../attributelist-common/attributelist-filter';
-import { AttributelistColumn } from '../attributelist-common/attributelist-column-models';
 import { AttributelistTableOptionsFormComponent } from '../attributelist-table-options-form/attributelist-table-options-form.component';
 import { AttributelistService } from '../attributelist.service';
 import { AttributelistStatistic } from '../attributelist-common/attributelist-statistic';
@@ -48,10 +46,9 @@ import { StatisticService } from '../../../shared/statistic-service/statistic.se
 import { StatisticType } from '../../../shared/statistic-service/statistic-models';
 import { ValueService } from '../../../shared/value-service/value.service';
 import { TailorMapService } from '../../../../../../bridge/src/tailor-map.service';
+import { HighlightService } from '../../../shared/highlight-service/highlight.service';
 import { MatMenuTrigger } from '@angular/material/menu';
-
 // import { LiteralMapKey } from '@angular/compiler';
-
 
 @Component({
   selector: 'tailormap-attributelist-table',
@@ -86,8 +83,8 @@ export class AttributelistTableComponent implements AttributelistTable, Attribut
   public tabChange = new EventEmitter();
 
   public dataSource = new AttributeDataSource(this.layerService,
-    this.attributeService,
-    this.formconfigRepoService);
+                                              this.attributeService,
+                                              this.formconfigRepoService);
 
   public filter = new AttributelistFilter(
     this.dataSource,
@@ -127,6 +124,7 @@ export class AttributelistTableComponent implements AttributelistTable, Attribut
               private valueService: ValueService,
               public attributelistService: AttributelistService,
               private formconfigRepoService: FormconfigRepositoryService,
+              private highlightService: HighlightService,
               private snackBar: MatSnackBar,
               private dialog: MatDialog) {
     // console.log('=============================');
@@ -174,15 +172,15 @@ export class AttributelistTableComponent implements AttributelistTable, Attribut
     // this.onTableOptionsClick(null);
   }
 
-  public getColumns(includeSpecial: boolean): AttributelistColumn[] {
-    return this.dataSource.columnController.getActiveColumns(includeSpecial);
-  }
+  // public getColumns(includeSpecial: boolean): AttributelistColumn[] {
+  //   return this.dataSource.columnController.getActiveColumns(includeSpecial);
+  // }
 
   /**
    * Return the column names. Include special column names.
    */
   public getColumnNames(): string[] {
-    const colNames = this.dataSource.columnController.getActiveColumnNames(true);
+    const colNames = this.dataSource.columnController.getVisibleColumnNames(true);
     // console.log(colNames);
     return colNames;
   }
@@ -230,8 +228,13 @@ export class AttributelistTableComponent implements AttributelistTable, Attribut
 
   public onPageChange(event): void {
     // console.log('#Table - onPageChange');
+
     // Fire page change event.
     this.pageChange.emit();
+
+    // Clear highligthing.
+    this.highlightService.clearHighlight();
+
     // Update the table.
     this.updateTable();
   }
@@ -267,22 +270,17 @@ export class AttributelistTableComponent implements AttributelistTable, Attribut
     // console.log('#Table - onRowClicked');
     // console.log(row);
 
-    // FOR TESTING
-    // row.geometrie = '';
-    // delete row.geometrie;
+    // OM TE TESTEN!!!
+    // if (row.__fid.indexOf('.2')>=0) {
+    //   row.__fid = '';
+    // }
 
-    // Check for geometrie field (needed for highlighting).
-    if (!row.hasOwnProperty('geometrie') || (row.geometrie === '')) {
-      this.snackBar.open('Zoomen naar dit object is niet mogelijk.', 'Sluiten', {
-        duration: 1000,
-      });
-      return;
-    }
-    const data: RowClickData = {
-      feature: row,
-      layerId: this.dataSource.getLayerId(),
-    };
-    this.rowClick.emit(data);
+    // Get zoomto buffer size.
+    const zoomToBuffer = this.attributelistService.config.zoomToBuffer;
+
+    // Highlight and zoom to clicked feature.
+    const appLayer = this.layerService.getLayerByTabIndex(this.tabIndex);
+    this.highlightService.highlightFeature(row.__fid, appLayer.id, true, zoomToBuffer);
   }
 
   /**
