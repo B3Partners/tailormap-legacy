@@ -3,6 +3,7 @@ import {
   HttpClient,
   HttpParams,
 } from '@angular/common/http';
+import { TailorMapService } from '../../../../../bridge/src/tailor-map.service';
 import {
   UniqueValuesResponse,
   ValueParameters,
@@ -14,7 +15,10 @@ import {
 
 export class ValueService {
 
-  constructor(private http: HttpClient) {
+  constructor(
+    private http: HttpClient,
+    private tailorMap: TailorMapService,
+  ) {
   }
 
   public uniqueValues (params: ValueParameters): any {
@@ -22,7 +26,7 @@ export class ValueService {
     Object.entries(params).forEach(([key, value ]) => {
       httpParams = httpParams.set(key, String(value));
     });
-    return this.http.get<UniqueValuesResponse>('/viewer/action/uniquevalues', {params: httpParams});
+    return this.http.get<UniqueValuesResponse>(this.tailorMap.getContextPath() + '/action/uniquevalues', {params: httpParams});
   }
 
 }

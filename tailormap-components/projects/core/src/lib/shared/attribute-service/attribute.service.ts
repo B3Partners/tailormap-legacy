@@ -10,13 +10,17 @@ import {
   AttributeMetadataResponse,
 } from './attribute-models';
 import { Observable } from 'rxjs';
+import { TailorMapService } from '../../../../../bridge/src/tailor-map.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AttributeService {
 
-  constructor(private http: HttpClient) {
+  constructor(
+    private http: HttpClient,
+    private tailorMap: TailorMapService,
+  ) {
   }
 
   public featureTypeMetadata$(params: AttributeMetadataParameters): Observable<AttributeMetadataResponse> {
@@ -25,7 +29,7 @@ export class AttributeService {
       httpParams = httpParams.set(key, value);
     });
     httpParams = httpParams.set('attributes', 'true');
-    return this.http.get<AttributeMetadataResponse>('/viewer/action/attributes', {params: httpParams});
+    return this.http.get<AttributeMetadataResponse>(this.tailorMap.getContextPath() + '/action/attributes', {params: httpParams});
   }
 
   /**
@@ -42,6 +46,6 @@ export class AttributeService {
       httpParams = httpParams.set(key, value);
     });
     httpParams = httpParams.set('store', '1');
-    return this.http.get<AttributeListResponse>('/viewer/action/attributes', {params: httpParams});
+    return this.http.get<AttributeListResponse>(this.tailorMap.getContextPath() + '/action/attributes', {params: httpParams});
   }
 }
