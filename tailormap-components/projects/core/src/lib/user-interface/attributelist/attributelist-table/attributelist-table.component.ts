@@ -29,32 +29,24 @@ import {
 
 import {
   AttributelistTable,
+  AttributelistRefresh,
   RowClickData,
   RowData,
 } from '../attributelist-common/attributelist-models';
 import { AttributeDataSource } from '../attributelist-common/attributelist-datasource';
 import { AttributelistFilter } from '../attributelist-common/attributelist-filter';
-import { AttributelistFilterValuesFormComponent } from '../attributelist-filter-values-form/attributelist-filter-values-form.component';
 import { AttributelistColumn } from '../attributelist-common/attributelist-column-models';
 import { AttributelistTableOptionsFormComponent } from '../attributelist-table-options-form/attributelist-table-options-form.component';
 import { AttributelistService } from '../attributelist.service';
 import { AttributelistStatistic } from '../attributelist-common/attributelist-statistic';
 import { AttributeService } from '../../../shared/attribute-service/attribute.service';
 import { CheckState } from '../attributelist-common/attributelist-enums';
-import {
-  FilterColumns,
-  FilterValueSettings,
-} from '../attributelist-common/attributelist-filter-models';
 import { FormconfigRepositoryService } from '../../../shared/formconfig-repository/formconfig-repository.service';
 import { LayerService } from '../layer.service';
 import { StatisticTypeInMenu } from '../attributelist-common/attributelist-statistic-models';
 import { StatisticService } from '../../../shared/statistic-service/statistic.service';
 import { StatisticType } from '../../../shared/statistic-service/statistic-models';
 import { ValueService } from '../../../shared/value-service/value.service';
-import {
-  UniqueValuesResponse,
-  ValueParameters,
-} from '../../../shared/value-service/value-models';
 import { TailorMapService } from '../../../../../../bridge/src/tailor-map.service';
 import { MatMenuTrigger } from '@angular/material/menu';
 
@@ -73,7 +65,7 @@ import { MatMenuTrigger } from '@angular/material/menu';
     ]),
   ],
 })
-export class AttributelistTableComponent implements AttributelistTable, OnInit, AfterViewInit {
+export class AttributelistTableComponent implements AttributelistTable, AttributelistRefresh, OnInit, AfterViewInit {
 
   @ViewChild(MatPaginator) private paginator: MatPaginator;
   @ViewChild(MatSort) private sort: MatSort;
@@ -97,7 +89,11 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
     this.attributeService,
     this.formconfigRepoService);
 
-  public filter = new AttributelistFilter();
+  public filter = new AttributelistFilter(
+    this.dataSource,
+    this.valueService,
+    this.dialog,
+  );
 
   public statistic = new AttributelistStatistic(
     this.statisticsService,
@@ -111,11 +107,6 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
   public checkState = CheckState.None;
 
   private tabIndex = -1;
-
-  private valueParams: ValueParameters = {
-    applicationLayer: 0,
-    attributes: [],
-  }
 
   /**
    * Declare enums to use in template
@@ -175,7 +166,7 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
     // Update the table rows.
     this.table.renderRows();
 
-    this.initFiltering();
+    this.filter.initFiltering(this.getColumnNames());
 
     this.statistic.initStatistics(this.getColumnNames());
 
@@ -308,58 +299,17 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
    * Fired when a column filter is clicked.
    */
   public onFilterClick(columnName: string): void {
-    // Get the unique values for this column
-    this.valueParams.applicationLayer = this.dataSource.params.layerId;
-    this.valueParams.attributes = [];
-    this.valueParams.attributes.push(columnName);
-    this.valueService.uniqueValues(this.valueParams).subscribe((data: UniqueValuesResponse) => {
-      if (data.success) {
-        let uniqueValues: FilterValueSettings[];
-        uniqueValues = [];
-        const colObject = this.filter.layerFilterValues.columns.find(c => c.name === columnName);
-        const colIndex = this.filter.layerFilterValues.columns.findIndex(obj => obj.name === columnName);
-        if (colObject.uniqueValues.length === 0) {
+    this.filter.setFilter(this, columnName);
+  }
 
-          data.uniqueValues[columnName].forEach(val => {
-            let filterValueSettings: FilterValueSettings;
-            filterValueSettings = {value: val, select: true};
-            uniqueValues.push(filterValueSettings);
-          })
-        } else {
-          colObject.uniqueValues.forEach(val => uniqueValues.push(Object.assign({}, val)))
-        }
-
-        const config = new MatDialogConfig();
-        config.data = {
-          colName: columnName,
-          values: uniqueValues,
-        };
-        const dialogRef = this.dialog.open(AttributelistFilterValuesFormComponent, config);
-        dialogRef.afterClosed().subscribe(filterSetting => {
-          // Do the filtering
-          if (filterSetting !== 'CANCEL') {
-            if (filterSetting === 'ON') {
-              this.filter.layerFilterValues.columns[colIndex].uniqueValues = config.data.values;
-              this.filter.layerFilterValues.columns[colIndex].nullValue = false;
-              this.filter.layerFilterValues.columns[colIndex].status = true;
-            } else if (filterSetting === 'NONE') {
-              this.filter.layerFilterValues.columns[colIndex].uniqueValues = config.data.values;
-              this.filter.layerFilterValues.columns[colIndex].nullValue = true;
-              this.filter.layerFilterValues.columns[colIndex].status = true;
-            } else if (filterSetting === 'OFF') {
-              this.filter.layerFilterValues.columns[colIndex].uniqueValues = [];
-              this.filter.layerFilterValues.columns[colIndex].nullValue = false;
-              this.filter.layerFilterValues.columns[colIndex].status = false;
-            }
-            this.dataSource.params.valueFilter = this.filter.createFilter();
-            this.paginator.pageIndex = 0;
-            this.updateTable();
-            this.setFilterInAppLayer();
-            this.statistic.refreshStatistics(this.dataSource.params.layerId, this.dataSource.params.valueFilter);
-          }
-        });
-      }
-    });
+  /**
+   * After setting filter(s) refresh the table
+   */
+  public refreshTable(): void {
+    this.paginator.pageIndex = 0;
+    this.updateTable();
+    this.setFilterInAppLayer();
+    this.statistic.refreshStatistics(this.dataSource.params.layerId, this.dataSource.params.valueFilter);
   }
 
   private setFilterInAppLayer() {
@@ -401,11 +351,6 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
 
   public getStatisticTypeInMenu(colName: string): string {
     return this.statistic.getStatisticTypeInMenu(colName);
-  }
-
-  public getStatisticValue(colName: string): string {
-
-    return this.statistic.getStatisticValue(colName);
   }
 
   public getStatisticResult(colName: string): string {
@@ -502,17 +447,6 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
     this.dataSource.loadData(this);
     // Update check info (number checked/check state).
     this.updateCheckedInfo();
-  }
-
-  private initFiltering(): void {
-    // Init the filter structure
-    this.filter.layerFilterValues.layerId = this.dataSource.params.layerId;
-    const colNames = this.getColumnNames();
-    for (const colName of colNames) {
-      let filterColumn: FilterColumns;
-      filterColumn = {name: colName, status: false, nullValue: false, uniqueValues: []};
-      this.filter.layerFilterValues.columns.push(filterColumn);
-    }
   }
 
 }
