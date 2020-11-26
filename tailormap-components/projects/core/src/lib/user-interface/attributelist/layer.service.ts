@@ -7,6 +7,7 @@ import {
 import { Layer } from './layer.model';
 import { AttributelistTabComponent } from './attributelist-tab/attributelist-tab.component';
 import { TailorMapService } from '../../../../../bridge/src/tailor-map.service';
+import { HighlightService } from '../../shared/highlight-service/highlight.service';
 // import { FormconfigRepositoryService } from '../../shared/formconfig-repository/formconfig-repository.service';
 
 @Injectable({
@@ -19,7 +20,8 @@ export class LayerService {
   private layersSubject = new BehaviorSubject<Layer[]>([]);
   public layers$ = this.layersSubject.asObservable();
 
-  constructor(private tailorMapService: TailorMapService) {
+  constructor(private tailorMapService: TailorMapService,
+              private highlightService: HighlightService) {
     // Install the layerVisibilityChanged handler.
     this.tailorMapService.layerVisibilityChanged$.subscribe(value => {
       this.loadLayers();
@@ -81,8 +83,15 @@ export class LayerService {
     return this.layers[index].tabComponent;
   }
 
+  /**
+   * Loads the visible layers.
+   * Is triggered when a layer in the TOC is (un)checked.
+   */
   public loadLayers(): void {
     // console.log('#LayerService - loadLayers');
+
+    // Clear highligthing.
+    this.highlightService.clearHighlight();
 
     // Clear the array, but keep the array reference for automatic update.
     this.layers.splice(0, this.layers.length);

@@ -56,10 +56,9 @@ import {
   ValueParameters,
 } from '../../../shared/value-service/value-models';
 import { TailorMapService } from '../../../../../../bridge/src/tailor-map.service';
+import { HighlightService } from '../../../shared/highlight-service/highlight.service';
 import { MatMenuTrigger } from '@angular/material/menu';
-
 // import { LiteralMapKey } from '@angular/compiler';
-
 
 @Component({
   selector: 'tailormap-attributelist-table',
@@ -94,8 +93,8 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
   public tabChange = new EventEmitter();
 
   public dataSource = new AttributeDataSource(this.layerService,
-    this.attributeService,
-    this.formconfigRepoService);
+                                              this.attributeService,
+                                              this.formconfigRepoService);
 
   public filter = new AttributelistFilter();
 
@@ -136,6 +135,7 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
               private valueService: ValueService,
               public attributelistService: AttributelistService,
               private formconfigRepoService: FormconfigRepositoryService,
+              private highlightService: HighlightService,
               private snackBar: MatSnackBar,
               private dialog: MatDialog) {
     // console.log('=============================');
@@ -239,8 +239,13 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
 
   public onPageChange(event): void {
     // console.log('#Table - onPageChange');
+
     // Fire page change event.
     this.pageChange.emit();
+
+    // Clear highligthing.
+    this.highlightService.clearHighlight();
+
     // Update the table.
     this.updateTable();
   }
@@ -276,22 +281,17 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
     // console.log('#Table - onRowClicked');
     // console.log(row);
 
-    // FOR TESTING
-    // row.geometrie = '';
-    // delete row.geometrie;
+    // OM TE TESTEN!!!
+    // if (row.__fid.indexOf('.2')>=0) {
+    //   row.__fid = '';
+    // }
 
-    // Check for geometrie field (needed for highlighting).
-    if (!row.hasOwnProperty('geometrie') || (row.geometrie === '')) {
-      this.snackBar.open('Zoomen naar dit object is niet mogelijk.', 'Sluiten', {
-        duration: 1000,
-      });
-      return;
-    }
-    const data: RowClickData = {
-      feature: row,
-      layerId: this.dataSource.getLayerId(),
-    };
-    this.rowClick.emit(data);
+    // Get zoomto buffer size.
+    const zoomToBuffer = this.attributelistService.config.zoomToBuffer;
+
+    // Highlight and zoom to clicked feature.
+    const appLayer = this.layerService.getLayerByTabIndex(this.tabIndex);
+    this.highlightService.highlightFeature(row.__fid, appLayer.id, true, zoomToBuffer);
   }
 
   /**
@@ -351,6 +351,10 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
               this.filter.layerFilterValues.columns[colIndex].nullValue = false;
               this.filter.layerFilterValues.columns[colIndex].status = false;
             }
+
+            // Clear highligthing.
+            this.highlightService.clearHighlight();
+
             this.dataSource.params.valueFilter = this.filter.createFilter();
             this.paginator.pageIndex = 0;
             this.updateTable();
