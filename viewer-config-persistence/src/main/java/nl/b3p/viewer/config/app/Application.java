@@ -16,11 +16,8 @@
  */
 package nl.b3p.viewer.config.app;
 
-import nl.b3p.viewer.config.ClobElement;
-import java.util.*;
-import javax.persistence.*;
-import javax.servlet.http.HttpServletRequest;
 import net.sourceforge.stripes.action.ActionBeanContext;
+import nl.b3p.viewer.config.ClobElement;
 import nl.b3p.viewer.config.security.Authorizations;
 import nl.b3p.viewer.config.security.User;
 import nl.b3p.viewer.config.services.BoundingBox;
@@ -35,6 +32,10 @@ import org.hibernate.Session;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import javax.persistence.*;
+import javax.servlet.http.HttpServletRequest;
+import java.util.*;
 
 /**
  *
@@ -55,14 +56,10 @@ public class Application implements Comparable<Application>{
     public static final String DETAIL_GLOBAL_LAYOUT = "globalLayout";
     public static final String DETAIL_LAST_SPINUP_TIME = "lastSpinupTime";
 
-    private static Set adminOnlyDetails = new HashSet<String>(Arrays.asList(new String[]{
-        "opmerking"
-    }));
+    private static Set adminOnlyDetails = new HashSet<>(Arrays.asList("opmerking"));
 
-    public static final Set<String> preventClearDetails = new HashSet<String>(Arrays.asList(new String[]{
-        DETAIL_IS_MASHUP,
-        DETAIL_GLOBAL_LAYOUT
-    }));
+    public static final Set<String> preventClearDetails = new HashSet<>(Arrays.asList(DETAIL_IS_MASHUP,
+            DETAIL_GLOBAL_LAYOUT));
 
     @Id
     private Long id;
@@ -86,7 +83,7 @@ public class Application implements Comparable<Application>{
     @ElementCollection
     @JoinTable(joinColumns = @JoinColumn(name = "application"))
     // Element wrapper required because of http://opensource.atlassian.com/projects/hibernate/browse/JPA-11
-    private Map<String, ClobElement> details = new HashMap<String, ClobElement>();
+    private Map<String, ClobElement> details = new HashMap<>();
 
     @ManyToOne
     private User owner;
@@ -117,7 +114,7 @@ public class Application implements Comparable<Application>{
     private Level root;
 
     @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "application")
-    private Set<ConfiguredComponent> components = new HashSet<ConfiguredComponent>();
+    private Set<ConfiguredComponent> components = new HashSet<>();
 
     @Basic(optional = false)
     @Temporal(TemporalType.TIMESTAMP)
@@ -132,17 +129,17 @@ public class Application implements Comparable<Application>{
     Map originalToCopy;
 
     @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "application")
-    private List<Bookmark> bookmarks = new ArrayList<Bookmark>();
+    private List<Bookmark> bookmarks = new ArrayList<>();
 
     @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "application")
-    private List<StartLayer> startLayers = new ArrayList<StartLayer>();
+    private List<StartLayer> startLayers = new ArrayList<>();
 
     @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "application")
-    private List<StartLevel> startLevels = new ArrayList<StartLevel>();
+    private List<StartLevel> startLevels = new ArrayList<>();
 
     @ElementCollection
     @Column(name = "role_name")
-    private Set<String> readers = new HashSet<String>();
+    private Set<String> readers = new HashSet<>();
     private String projectionCode;
 
     // <editor-fold defaultstate="collapsed" desc="getters and setters">
@@ -404,7 +401,7 @@ public class Application implements Comparable<Application>{
                 if (l.getParent() != null) {
                     List<Level> parentChildren = treeCache.childrenByParent.get(l.getParent());
                     if (parentChildren == null) {
-                        parentChildren = new ArrayList<Level>();
+                        parentChildren = new ArrayList<>();
                         treeCache.childrenByParent.put(l.getParent(), parentChildren);
                     }
                     parentChildren.add(l);
@@ -419,10 +416,30 @@ public class Application implements Comparable<Application>{
         authorizationsModified = new Date();
     }
 
+    /**
+     * @deprecated gebruik
+     * @param request
+     * @param validXmlTags
+     * @param onlyServicesAndLayers
+     * @param em
+     * @return
+     * @throws JSONException
+     */
+    @Deprecated
     public JSONObject toJSON(HttpServletRequest request, boolean validXmlTags, boolean onlyServicesAndLayers, EntityManager em) throws JSONException {
         return toJSON(request, validXmlTags, onlyServicesAndLayers, false, false, em, true);
     }
 
+    public JSONObject toJSON(HttpServletRequest request, boolean validXmlTags, boolean onlyServicesAndLayers, EntityManager em, boolean hideAdminOnly) throws JSONException {
+        return toJSON(request, validXmlTags, onlyServicesAndLayers, false, false, em, true, hideAdminOnly);
+    }
+
+    public JSONObject toJSON(HttpServletRequest request, boolean validXmlTags, boolean onlyServicesAndLayers,
+                             boolean includeAppLayerAttributes, boolean includeRelations,
+                             EntityManager em, boolean shouldProcessCache) throws JSONException {
+        return toJSON(request, validXmlTags, onlyServicesAndLayers, includeAppLayerAttributes, includeRelations, em,
+                shouldProcessCache, false);
+    }
     /**
      * Create a JSON representation for use in browser to start this
      * application.
@@ -436,11 +453,12 @@ public class Application implements Comparable<Application>{
      * @param includeRelations {@code true} if relations should be included
      * @param em the entity manager to use
      * @param shouldProcessCache Flag if the cache should be processed (filtering the layers/levels according to the logged in user)
+     * @param hideAdminOnly True to prevent adminOnly config items from showing up in the output
      * @return a json representation of this object
      * @throws JSONException if transforming to json fails
      */
     public JSONObject toJSON(HttpServletRequest request, boolean validXmlTags, boolean onlyServicesAndLayers, boolean includeAppLayerAttributes, boolean includeRelations, 
-            EntityManager em, boolean shouldProcessCache) throws JSONException {
+            EntityManager em, boolean shouldProcessCache, boolean hideAdminOnly) throws JSONException {
         JSONObject o = null;
         SelectedContentCache cache = new SelectedContentCache();
         o = cache.getSelectedContent(request, this, validXmlTags, includeAppLayerAttributes, includeRelations, em, shouldProcessCache);
@@ -484,7 +502,7 @@ public class Application implements Comparable<Application>{
             o.put("components", c);
             for (ConfiguredComponent comp : components) {
                 if (Authorizations.isConfiguredComponentAuthorized(comp, request, em)) {
-                    c.put(comp.getName(), comp.toJSON());
+                    c.put(comp.getName(), comp.toJSON(hideAdminOnly));
                 }
             }
         }
@@ -556,7 +574,7 @@ public class Application implements Comparable<Application>{
 
             Set<String> usedLayers = usedLayersByService.get(gs);
             if (usedLayers == null) {
-                usedLayers = new HashSet<String>();
+                usedLayers = new HashSet<>();
                 usedLayersByService.put(gs, usedLayers);
             }
             usedLayers.add(al.getLayerName());

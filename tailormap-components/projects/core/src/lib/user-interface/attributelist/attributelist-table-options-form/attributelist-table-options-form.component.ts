@@ -41,7 +41,7 @@ export class AttributelistTableOptionsFormComponent implements OnInit {
 
     this.triggerElementRef = data.trigger;
     this.columnController = data.columnController;
-    // Get active columns.
+    // Get active passport columns or if no passport all columns.
     this.columns = this.columnController.getActiveColumns(false);
     this.columnData.changeMessage(this.columns);
   }

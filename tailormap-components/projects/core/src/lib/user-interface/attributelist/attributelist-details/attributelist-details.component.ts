@@ -14,7 +14,7 @@ import { AttributeDataSource } from '../attributelist-common/attributelist-datas
 import { AttributeService } from '../../../shared/attribute-service/attribute.service';
 import { LayerService } from '../layer.service';
 import { FormconfigRepositoryService } from '../../../shared/formconfig-repository/formconfig-repository.service';
-import { RelatedFeatureType } from '../../test-attributeservice/models';
+import { RelatedFeatureType } from '../../../shared/attribute-service/attribute-models';
 
 @Component({
   selector: 'tailormap-attributelist-details',
@@ -94,7 +94,7 @@ export class AttributelistDetailsComponent implements OnInit,
    * Return the column names. Do not include special column names.
    */
   public getColumnNames(): string[] {
-    const columnNames = this.dataSource.columnController.getActiveColumnNames(false);
+    const columnNames = this.dataSource.columnController.getVisibleColumnNames(false);
     // console.log(columnNames);
     return columnNames;
   }

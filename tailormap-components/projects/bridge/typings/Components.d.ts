@@ -4,6 +4,7 @@ import {
   GeoService,
   layerVisibilityEvent,
   MapComponent,
+  VectorLayer,
 } from './Mapcomponents';
 import { LayerVisibilityEvent } from '../../core/src/lib/shared/models/event-models';
 
@@ -26,10 +27,14 @@ declare interface ViewerController {
   getService: (serviceId: number) => GeoService;
   getAppLayerById: (appLayerId: number) => AppLayer;
   getAppLayer: (serviceId: number, layerName: string) => AppLayer;
+  setFilterString: (filter: string, appLayer : AppLayer, name: string) => void;
+
+  addListener: (eventName: string, handler: layerEventHandler) => void;
 
   getVisibleLayers(): number[];
+  // tslint:disable-next-line:unified-signatures
   getVisibleLayers(castToStrings: false): number[];
   getVisibleLayers(castToStrings: true): string[];
 
-  addListener: (eventName: string, handler: layerEventHandler) => void;
+  registerSnappingLayer: (vectorLayer: VectorLayer) => void;
 }

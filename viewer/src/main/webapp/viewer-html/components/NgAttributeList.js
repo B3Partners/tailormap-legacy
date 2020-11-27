@@ -72,39 +72,14 @@ Ext.define ("viewer.components.NgAttributeList",{
         return "viewercomponentsAttributeList";
     },
     initialize: function(){
-        // Create highlight layer.
-        this.createHighLightLayer();
-
         // Create form div.
         this.div = document.createElement("tailormap-attributelist-form");
 
         // Copy needed component config settings.
         var config = {};
         config.pageSize = this.config.pageSize;
+        config.zoomToBuffer = this.config.zoomToBuffer;
         this.div.setAttribute("config", JSON.stringify(config));
-
-        // Add event handler.
-        this.div.addEventListener('pageChange', function(){
-            this.removeHighlight();
-        }.bind(this));
-
-        // Add event handler.
-        this.div.addEventListener('panelClose', function(){
-            this.removeHighlight();
-        }.bind(this));
-
-        // Add event handler.
-        this.div.addEventListener('rowClick', function(evt){
-            // console.log("rowClick",evt);
-            // console.log("rowClick",evt.detail);
-            this.highlight(evt);
-            this.zoomToFeature(evt.detail.layerId, evt.detail.feature);
-        }.bind(this));
-
-        // Add event handler.
-        this.div.addEventListener('tabChange', function(){
-            this.removeHighlight();
-        }.bind(this));
 
         // Add to body.
         document.body.appendChild(this.div);
@@ -112,57 +87,4 @@ Ext.define ("viewer.components.NgAttributeList",{
     getExtComponents: function() {
         return [ this.container.getId() ];
     },
-    createHighLightLayer: function () {
-        this.highlightLayer = this.config.viewerController.mapComponent.createVectorLayer({
-            name: this.name + 'HighlighVectorLayer',
-            geometrytypes: ["Polygon", "Point", "LineString"],
-            showmeasures: false,
-            mustCreateVertices: false,
-            allowselection: false,
-            viewerController: this.config.viewerController,
-            style: {
-                fillcolor: "0000FF",
-                fillopacity: 50,
-                strokecolor: "FF0000",
-                strokeopacity: 50
-            }
-        });
-        this.config.viewerController.mapComponent.getMap().addLayer(this.highlightLayer);
-    },
-    highlight: function (event) {
-        // console.log(event.detail);
-        // console.log(event.detail.feature.geometrie);
-        this.highlightLayer.removeAllFeatures();
-        const wkt = event.detail.feature.geometrie;
-        if ((wkt) && (wkt!="")) {
-            const feat = Ext.create(viewer.viewercontroller.controller.Feature, {
-                wktgeom: wkt
-            });
-            if (feat) {
-                this.highlightLayer.addFeature(feat);
-            }
-        }
-    },
-    removeHighlight: function () {
-        this.highlightLayer.removeAllFeatures();
-    },
-    zoomToFeature: function(layerId,feature) {
-        if (this.featureExtentService === null) {
-            this.featureExtentService = Ext.create('viewer.FeatureExtent');
-        }
-        var appLayer = this.config.viewerController.getAppLayerById(layerId);
-        this.featureExtentService.getExtentForFeatures(
-            feature.__fid,
-            appLayer,
-            this.config.zoomToBuffer,
-            (function (extent) {
-                var e = Ext.create("viewer.viewercontroller.controller.Extent",
-                                   extent.minx, extent.miny, extent.maxx, extent.maxy);
-                this.config.viewerController.mapComponent.getMap().zoomToExtent(e);
-            }).bind(this),
-           function(msg) {
-                console.log(msg);
-            }
-        );
-    }
 });

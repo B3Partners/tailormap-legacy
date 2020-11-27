@@ -133,6 +133,15 @@
         <description>The class which initializes (and if configured sets up) the solr instance.</description>
         <listener-class>nl.b3p.viewer.solr.SolrUpdaterListener</listener-class>
     </listener>
+    <context-param>
+        <description>interval (in minutes) to use for refreshing SPOTinfo access tokens, default 60 minutes</description>
+        <param-name>spotinfo.token.refresh.interval</param-name>
+        <param-value>60</param-value>
+    </context-param>
+    <listener>
+        <description>Update access tokens for SPOTinfo / omgevingsserver.nl</description>
+        <listener-class>nl.b3p.viewer.admin.processes.SPOTinfoTokenRefresherListener</listener-class>
+    </listener>
     <!-- Localization context for the likes of the <fmt:message> JSTL tag -->
     <context-param>
         <param-name>javax.servlet.jsp.jstl.fmt.localizationContext</param-name>

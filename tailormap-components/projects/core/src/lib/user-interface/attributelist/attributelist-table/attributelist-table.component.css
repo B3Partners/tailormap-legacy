@@ -21,7 +21,7 @@
 mat-table {
   min-width: min-content;
 }
-.mat-row, .mat-header-row {
+.mat-row, .mat-header-row, mat-footer-row {
   min-height: 24px;
 }
 .column_small {
@@ -42,11 +42,11 @@ mat-table {
   padding-left: 5px;
   margin-left: 5px;
 }
-.mat-cell, .mat-header-cell {
+.mat-cell, .mat-header-cell, mat-footer-cell {
   overflow-x: hidden;
   white-space: nowrap;
   width: 170px;
-  padding-right: 5px;
+  padding-right: 5px !important;
   margin-right: 5px;
 }
 .material-icons, .material-icons-outlined {
@@ -57,6 +57,9 @@ mat-table {
 }
 .material-icons-unset {
   color: rgba(0, 0, 0, 0.26);
+}
+.material-icons-off {
+  color: rgba(0, 0, 0, 0);
 }
 .mat-icon {
   padding-top: 4px;
@@ -75,6 +78,14 @@ mat-table {
 }
 .mat-flat-button {
   line-height: 26px;
+}
+.mat-menu-item {
+  height: 24px;
+  line-height: 24px;
+}
+.menu-icon {
+  margin: 0 !important;
+  padding: 0 !important;
 }
 .details-container {
   overflow: hidden;
