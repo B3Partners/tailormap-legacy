@@ -3,10 +3,16 @@
     <label for="layerName">Naam kaartlaag</label>
     <input type="text" id="layerName" [formControl]="layerName" placeholder="Naam kaartlaag..." />
   </div>
+
+  <div class="form-field">
+    <label for="layerName">Selectiebron</label>
+    <button mat-button (click)="showSidePanel()">
+      Geen geselecteerd
+      <mat-icon>chevron_right</mat-icon>
+    </button>
+  </div>
 </div>
 <div class="buttons">
   <button mat-flat-button (click)="cancelCreateLayer()">Annuleren</button>
   <button mat-flat-button color="primary" (click)="next.emit()">Volgende</button>
 </div>
-
-<div class="side-panel" *ngIf="showSidePanel()"></div>

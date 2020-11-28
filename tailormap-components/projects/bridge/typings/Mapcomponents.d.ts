@@ -3,6 +3,14 @@ import { Geometry } from '../../core/src/lib/shared/generated';
 
 declare interface App {
   id: number;
+  selectedContent: SelectedContentItem[];
+  appLayers: Record<string, AppLayer>;
+  levels: Record<string, Level>;
+}
+
+declare interface SelectedContentItem {
+  type: 'level' | 'appLayer';
+  id: string;
 }
 
 declare interface AppLoader {
@@ -11,6 +19,14 @@ declare interface AppLoader {
 
 declare interface GeoService {
   id: string;
+}
+
+declare interface Level {
+  id: string;
+  name: string;
+  children: string[];
+  appLayers: string[];
+  background: boolean;
 }
 
 declare interface AppLayer {

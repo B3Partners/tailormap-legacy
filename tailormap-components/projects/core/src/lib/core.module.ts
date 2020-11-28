@@ -5,6 +5,7 @@ import { WorkflowModule } from './workflow/workflow.module';
 import { AnalysisModule } from './analysis/analysis.module';
 import { StoreModule } from '@ngrx/store';
 import { reducers } from './state/root.reducer';
+import { ApplicationModule } from './application/application.module';
 
 @NgModule({
   declarations: [],
@@ -19,6 +20,7 @@ import { reducers } from './state/root.reducer';
     FeatureFormModule,
     UserIntefaceModule,
     AnalysisModule,
+    ApplicationModule,
   ],
   exports: [],
 })

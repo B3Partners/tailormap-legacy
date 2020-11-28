@@ -12,6 +12,7 @@ import { analysisReducer } from './state/analysis.reducer';
 import { CreateLayerPanelComponent } from './create-layer-panel/create-layer-panel.component';
 import { CreateLayerFormComponent } from './create-layer-form/create-layer-form.component';
 import { CreateLayerStylingComponent } from './create-layer-styling/create-layer-styling.component';
+import { CreateLayerLayerSelectionComponent } from './create-layer-layer-selection/create-layer-layer-selection.component';
 
 
 @NgModule({
@@ -20,6 +21,7 @@ import { CreateLayerStylingComponent } from './create-layer-styling/create-layer
     CreateLayerPanelComponent,
     CreateLayerFormComponent,
     CreateLayerStylingComponent,
+    CreateLayerLayerSelectionComponent,
   ],
   imports: [
     CommonModule,

@@ -20,12 +20,12 @@ const onClearCreateLayerMode = (state: AnalysisState): AnalysisState => ({
   createLayerMode: null,
 });
 
-const assignmentsReducerImpl = createReducer(
+const analysisReducerImpl = createReducer(
   initialAnalysisState,
   on(AnalysisActions.setCreateLayerMode, onSetCreateLayerMode),
   on(AnalysisActions.clearCreateLayerMode, onClearCreateLayerMode),
 );
 
 export const analysisReducer = (state: AnalysisState | undefined, action: Action) => {
-  return assignmentsReducerImpl(state, action);
+  return analysisReducerImpl(state, action);
 }

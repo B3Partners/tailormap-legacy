@@ -28,11 +28,15 @@ import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.componen
 import { ConfirmDialogService } from './confirm-dialog/confirm-dialog.service';
 import { ApiModule } from './generated';
 import { DialogCloseButtonComponent } from './dialog-close-button/dialog-close-button.component';
+import { TreeComponent } from './tree/tree.component';
+import { OverlayComponent } from './overlay-service/overlay/overlay.component';
 
 @NgModule({
   declarations: [
     ConfirmDialogComponent,
     DialogCloseButtonComponent,
+    TreeComponent,
+    OverlayComponent,
   ],
   imports: [
     ApiModule.forRoot({
@@ -86,6 +90,7 @@ import { DialogCloseButtonComponent } from './dialog-close-button/dialog-close-b
     MatMenuModule,
     MatDialogModule,
     DialogCloseButtonComponent,
+    TreeComponent,
   ],
   entryComponents: [],
   providers: [

@@ -8,6 +8,10 @@ import { FormControl } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { AnalysisState } from '../state/analysis.state';
 import { clearCreateLayerMode } from '../state/analysis.actions';
+import { OverlayService } from '../../shared/overlay-service/overlay.service';
+import { selectApplicationTree } from '../../application/state/application.selectors';
+import { take } from 'rxjs/operators';
+import { CreateLayerLayerSelectionComponent } from '../create-layer-layer-selection/create-layer-layer-selection.component';
 
 @Component({
   selector: 'tailormap-create-layer-form',
@@ -23,6 +27,7 @@ export class CreateLayerFormComponent implements OnInit {
 
   constructor(
     private store$: Store<AnalysisState>,
+    private overlay: OverlayService,
   ) {}
 
   public ngOnInit() {
@@ -33,7 +38,13 @@ export class CreateLayerFormComponent implements OnInit {
   }
 
   public showSidePanel() {
-    return false;
+    this.store$.select(selectApplicationTree)
+      .pipe(take(1))
+      .subscribe(tree => {
+        CreateLayerLayerSelectionComponent.open(this.overlay, {
+          tree,
+        });
+      })
   }
 
 }

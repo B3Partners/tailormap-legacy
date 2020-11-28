@@ -2,7 +2,12 @@ import {
   Injectable,
   NgZone,
 } from '@angular/core';
-import { fromEvent, Subject } from 'rxjs';
+import {
+  fromEvent,
+  Observable,
+  ReplaySubject,
+  Subject,
+} from 'rxjs';
 import { LayerVisibilityEvent } from '../../core/src/lib/shared/models/event-models';
 import {
   AppLayer,
@@ -21,6 +26,8 @@ export class TailorMapService {
     this.init();
   }
 
+  private viewerControllerSubject$: ReplaySubject<ViewerController> = new ReplaySubject<ViewerController>(1);
+  public viewerController$: Observable<ViewerController> = this.viewerControllerSubject$.asObservable();
   private layerVisibilityChangedSubject$: Subject<LayerVisibilityEvent> = new Subject<LayerVisibilityEvent>();
   public layerVisibilityChanged$ = this.layerVisibilityChangedSubject$.asObservable();
   public selectedLayer$: Subject<AppLayer> = new Subject<AppLayer>();
@@ -64,6 +71,7 @@ export class TailorMapService {
     vc.addListener('ON_LAYER_SELECTED', ( event) => {
       this.selectedLayer = event.appLayer;
     });
+    this.viewerControllerSubject$.next(vc);
   }
 
 }
