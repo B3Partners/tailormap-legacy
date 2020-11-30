@@ -170,6 +170,8 @@ public class UserLayerHandler {
 
             ok = this.dataBase.createView(viewName, this.tableName, where,
                     String.format(Locale.forLanguageTag("nl"),
+                            /* Note that is you change this string you need to make sure that it does not contain
+                            user input, or that it is properly SQL sanititzed */
                             "GBI userlayer gemaakt van %s met query %s op %tc door gebruiker %s",
                             this.tableName, where, new Date(), this.auditMessageObject.getUsername())
             );
