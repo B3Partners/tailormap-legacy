@@ -44,7 +44,6 @@ public class GeoServiceActionBeanTest extends TestUtil{
             Category cat = new Category();
             cat.setId(1L);
             ActionBeanContext context = new ActionBeanContext();
-
             GeoServiceActionBean ab = new GeoServiceActionBean();
             ab.setUrl(url);
             ab.setProtocol("wms");

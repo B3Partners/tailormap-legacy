@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Context antiJARLocking="true" disableURLRewriting="true" path="/viewer">
-  <Parameter name="componentregistry.path" override="false" value="/viewer-html/components,/home/martijn/dev/safetyct/src/safetymaps-flamingo,/home/martijn/dev/safetyct/src/voertuiglocaties-flamingo/src"/>
+  <Parameter name="componentregistry.path" override="false" value="/viewer-html/components"/>
   <Parameter name="flamingo.data.dir" override="false" value="/opt/tailormap_data"/>
   <Parameter name="flamingo.solr.url" override="false" value="https://tailormap.nl/solr/"/>
   <!-- For Tomcat: define datasource in server.xml, for example:
@@ -74,9 +74,11 @@
     
     -->
   <ResourceLink global="jdbc/geo_viewer" name="jdbc/geo_viewer" type="javax.sql.DataSource"/>
+  
   <!-- USE THIS FOR SAFETYMAYPSCOMPONENT
   <ResourceLink global="jdbc/safetymaps-server" name="jdbc/safetymaps-server" type="javax.sql.DataSource"/>
   -->
+  
   <!-- For Tomcat: define JavaMail resource in server.xml. See:
 
     http://tomcat.apache.org/tomcat-8.0-doc/jndi-resources-howto.html#JavaMail_Sessions
