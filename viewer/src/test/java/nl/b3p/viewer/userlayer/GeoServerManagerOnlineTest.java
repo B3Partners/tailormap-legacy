@@ -18,7 +18,7 @@ public class GeoServerManagerOnlineTest {
         final String workSpace = "geoserver";
         final String storeName = "dingetjes";
 
-        layerName = (new PostgreSQL(null)).createViewName();
+        layerName = (new PostgreSQL(null)).createViewName("test");
         serverManager = new GeoServerManager(
                 baseUrl, userName, passWord, workSpace, storeName
         );

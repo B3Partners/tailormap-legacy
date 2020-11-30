@@ -10,16 +10,16 @@ public class DataBaseTest {
 
     @Test
     public void testCreateViewNameNotNull() {
-        assertNotNull(dataBase.createViewName());
+        assertNotNull(dataBase.createViewName("test"));
     }
 
     @Test
     public void testCreateViewNameUnique() {
-        assertNotEquals(dataBase.createViewName(), dataBase.createViewName());
+        assertNotEquals(dataBase.createViewName("test"), dataBase.createViewName("test"));
     }
 
     @Test
     public void testCreateViewNamePrefix() {
-        assertTrue(dataBase.createViewName().startsWith(DataBase.PREFIX));
+        assertTrue(dataBase.createViewName("test").startsWith(DataBase.PREFIX));
     }
 }

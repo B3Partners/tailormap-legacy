@@ -86,13 +86,15 @@ public class UserLayerHandler {
                 appLayer,
                 service,
                 layer,
+                this.query,
                 geoserverWorkspace,
-                baseUrl);
+                baseUrl,
+                this.auditMessageObject);
     }
 
 
     public boolean add() {
-        String viewName = this.dataBase.createViewName();
+        String viewName = this.dataBase.createViewName(this.layer.getName());
 
         boolean succes = createView(viewName);
         if (succes) {
@@ -100,7 +102,7 @@ public class UserLayerHandler {
         }
 
         if (succes) {
-            succes = createUserLayer(viewName);
+            succes = createUserLayer(viewName, this.layerTitle);
         } else {
             deleteWMSLayer(viewName);
             dropview(viewName);
@@ -121,10 +123,10 @@ public class UserLayerHandler {
 
             if(!success){
                 createWMSLayer(this.layer.getName());
-                createUserLayer(this.layer.getName());
+                createUserLayer(this.layer.getName(), this.layer.getTitle());
             }
         } else {
-            createUserLayer(this.layer.getName());
+            createUserLayer(this.layer.getName(), this.layer.getTitle());
         }
 
         return success;
@@ -201,9 +203,10 @@ public class UserLayerHandler {
      *
      * @return
      */
-    private boolean createUserLayer(String viewName) {
-        boolean success = tmManager.addLayer(viewName);
-        this.auditMessageObject.addMessage("Aanmaken van laag in Tailormap database " + viewName + " is " + (success ? "gelukt" : "mislukt"));
+    private boolean createUserLayer(String viewName, String title) {
+        boolean success = tmManager.addLayer(viewName, title);
+        this.auditMessageObject.addMessage("Aanmaken van laag in Tailormap database " + title + " - " +viewName
+                + " is " + (success ? "gelukt" : "mislukt"));
 
         this.createdAppLayer = tmManager.getCreatedAppLayer();
         this.layer = tmManager.getLayer();

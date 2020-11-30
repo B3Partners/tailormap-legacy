@@ -145,15 +145,15 @@ public class UserLayerActionBean implements ActionBean, ValidationErrorHandler, 
             boolean success = ulh.add();
             jsonObject.put("success", success);
 
-            message.put("appLayerId", ulh.getAppLayerId());
-            message.put("layerName", ulh.getLayerName());
             if(success){
+                message.put("appLayerId", ulh.getAppLayerId());
+                message.put("layerName", ulh.getLayerName());
                 message.put("appLayer", ulh.getCreatedAppLayer().toJSONObject(Stripersist.getEntityManager()));
+                this.auditMessageObject.addMessage(
+                        "UserLayer " + ulh.getLayerName() + " aangemaakt met id " + ulh.getAppLayerId());
             }
             jsonObject.put("message", message);
 
-            this.auditMessageObject.addMessage(
-                    "UserLayer " + ulh.getLayerName() + " aangemaakt met id " + ulh.getAppLayerId());
             ulh.dispose();
         }
         return new StreamingResolution("application/json") {

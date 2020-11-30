@@ -1,6 +1,7 @@
 package nl.b3p.viewer.userlayer;
 
 import nl.b3p.viewer.audit.AuditMessageObject;
+import nl.b3p.viewer.config.ClobElement;
 import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.ApplicationLayer;
 import nl.b3p.viewer.config.app.Level;
@@ -14,6 +15,9 @@ import org.apache.commons.logging.LogFactory;
 import org.geotools.jdbc.JDBCDataStore;
 
 import javax.persistence.EntityManager;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,9 +30,12 @@ public class TailormapDBManager {
     private String geoserverWorkspace;
     private String baseUrl;
     private Layer layer;
+    private String filter;
+    private AuditMessageObject auditMessageObject;
 
     private GeoService service;
 
+    private final DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
     private static final Log LOG = LogFactory.getLog(TailormapDBManager.class);
     private static final String USERLAYER_NAME = "B3P - Gebruikerslagen (niet aanpassen)";
 
@@ -38,8 +45,10 @@ public class TailormapDBManager {
                               ApplicationLayer appLayer,
                               GeoService service,
                               Layer layer,
+                              String filter,
                               String geoserverWorkspace,
-                              String baseUrl) {
+                              String baseUrl,
+                              AuditMessageObject auditMessageObject) {
         this.entityManager = entityManager;
         this.application = application;
         this.appLayer = appLayer;
@@ -47,9 +56,11 @@ public class TailormapDBManager {
         this.baseUrl = baseUrl;
         this.service = service;
         this.layer = layer;
+        this.filter = filter;
+        this.auditMessageObject = auditMessageObject;
     }
 
-    public boolean addLayer(String viewName) {
+    public boolean addLayer(String viewName, String title) {
         GeoService gs = retrieveUserLayerService();
         if (gs == null) {
             gs = createUserLayerService();
@@ -58,7 +69,7 @@ public class TailormapDBManager {
         if (gs == null) {
             return false;
         }
-        Layer newLayer = createLayer(viewName, gs);
+        Layer newLayer = createLayer(viewName, gs, title);
 
         ApplicationLayer appLayer = null;
         if(newLayer != null){
@@ -90,7 +101,7 @@ public class TailormapDBManager {
         return true;
     }
 
-    private Layer createLayer(String viewName, GeoService gs) {
+    private Layer createLayer(String viewName, GeoService gs, String title) {
         MutablePair<Layer, UpdateResult.Status> pair = null;
         try {
             // update service
@@ -108,6 +119,12 @@ public class TailormapDBManager {
 
         if (pair.right == UpdateResult.Status.NEW) {
             Layer l = pair.left;
+
+            l.getDetails().put(Layer.DETAIL_USERLAYER_DATE_ADDED, new ClobElement(dateFormat.format(new Date())));
+            l.getDetails().put(Layer.DETAIL_USERLAYER_FILTER,  new ClobElement(this.filter));
+            l.getDetails().put(Layer.DETAIL_USERLAYER_ORIGINAL_LAYER_ID, new ClobElement(this.layer.getId().toString()));
+            l.getDetails().put(Layer.DETAIL_USERLAYER_ORIGINAL_LAYERNAME, new ClobElement(this.layer.getName()));
+            l.getDetails().put(Layer.DETAIL_USERLAYER_USER, new ClobElement(this.auditMessageObject.getUsername()));
             l.setFeatureType(this.layer.getFeatureType());
             return l;
         }

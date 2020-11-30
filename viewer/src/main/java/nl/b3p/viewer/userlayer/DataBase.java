@@ -3,7 +3,7 @@ package nl.b3p.viewer.userlayer;
 import java.util.UUID;
 
 public interface DataBase {
-    String PREFIX = "userlayer_";
+    String PREFIX = "ul_";
     /**
      * Create a view in the database.
      *
@@ -32,8 +32,8 @@ public interface DataBase {
      * create a (random) name.
      * @return {@code "userlayer_" + UUID.randomUUID();} with dash replaced bij underscore
      */
-    default String createViewName() {
-        return (PREFIX + UUID.randomUUID()).replace('-','_');
+    default String createViewName(String tablename) {
+        return (PREFIX + tablename+ UUID.randomUUID()).replace('-','_');
     }
 }
 
