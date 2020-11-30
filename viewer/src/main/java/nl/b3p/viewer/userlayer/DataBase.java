@@ -7,7 +7,7 @@ public interface DataBase {
      * Prefix for userlayer view names, {@value #PREFIX}.
      * @see #createViewName(String)
      */
-    String PREFIX = "UL_";
+    String PREFIX = "ul_";
     /**
      * Create a view in the database.
      *
