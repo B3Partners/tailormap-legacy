@@ -143,11 +143,13 @@ export class AttributeDataSource extends DataSource<any> {
     let children = [];
     this.rows.forEach( (row:RowData) => {
       if (row._checked) {
+        // TODO geometrie moet van wkt naar geojson
+        // row.geometrie  = {"type":"Polygon","coordinates":[[[177866.75,503388.19],[177866.639,503390.657],[177864.471,503390.402],[177863.252,503390.178],[177861.662,503389.791],[177849.9,503387.633],[177843.588580274,503386.481192628],[177844.068,503384.098],[177847.83,503384.761],[177855.838,503386.297],[177864.627,503387.908],[177866.75,503388.19]]]};
         const { object_guid, related_featuretypes, __fid, _checked, _details, _detailsRow, ...rest } = row;
         feature.children = children;
         feature.clazz = this.getLayerName().toLowerCase();
         feature.objectGuid = row.object_guid;
-        feature.objecttype = this.getLayerName();
+        feature.objecttype = this.getLayerName()[0].toUpperCase() + this.getLayerName().substr(1);
         featuresChecked.push({ ...feature, ...rest });
       }
     });
