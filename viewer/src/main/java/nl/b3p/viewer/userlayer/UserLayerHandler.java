@@ -32,6 +32,7 @@ public class UserLayerHandler {
     private final String geoserverWorkspace;
     private final String baseUrl;
     private Layer layer;
+    private String tableName;
     private GeoService service;
     private JDBCDataStore dataStore;
     private DataBase dataBase;
@@ -64,6 +65,7 @@ public class UserLayerHandler {
         try {
             this.service = this.appLayer.getService();
             this.layer = this.service.getLayer(this.appLayer.getLayerName(), this.entityManager);
+            this.tableName = this.layer.getFeatureType().getTypeName();
             this.dataStore = (JDBCDataStore) layer.getFeatureType().openGeoToolsFeatureSource().getDataStore();
             this.dataBase = DataBaseFactory.getDataBase(dataStore);
         } catch (Exception e) {
@@ -94,7 +96,7 @@ public class UserLayerHandler {
 
 
     public boolean add() {
-        String viewName = this.dataBase.createViewName(this.layer.getName());
+        String viewName = this.dataBase.createViewName(tableName);
 
         boolean succes = createView(viewName);
         if (succes) {
@@ -165,11 +167,11 @@ public class UserLayerHandler {
         try {
             FilterToSQL f = ((BasicSQLDialect) this.dataStore.getSQLDialect()).createFilterToSQL();
             String where = f.encodeToString(CQL.toFilter(this.query));
-            String tableName = this.layer.getFeatureType().getTypeName();
-            ok = this.dataBase.createView(viewName, tableName, where,
+
+            ok = this.dataBase.createView(viewName, this.tableName, where,
                     String.format(Locale.forLanguageTag("nl"),
                             "GBI userlayer gemaakt van %s met query %s op %tc door gebruiker %s",
-                            tableName, where, new Date(), this.auditMessageObject.getUsername())
+                            this.tableName, where, new Date(), this.auditMessageObject.getUsername())
             );
 
             this.auditMessageObject.addMessage("Aanmaken van view " + viewName + " is " + (ok ? "gelukt" : "mislukt"));
