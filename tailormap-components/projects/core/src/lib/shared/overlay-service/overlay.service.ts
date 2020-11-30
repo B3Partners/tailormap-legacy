@@ -28,6 +28,7 @@ export class OverlayService {
     const configs = new OverlayConfig({
       width: '100%',
       height: '100%',
+      hasBackdrop: false,
       ...config,
     });
 

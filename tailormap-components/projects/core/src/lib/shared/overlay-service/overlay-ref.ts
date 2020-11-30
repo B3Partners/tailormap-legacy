@@ -12,7 +12,8 @@ export interface OverlayCloseEvent<R> {
 // R = Response Data Type, T = Data passed to Modal Type
 export class OverlayRef<R = any, T = any> {
 
-  public afterClosed$ = new Subject<OverlayCloseEvent<R>>();
+  private afterClosedSubject$ = new Subject<OverlayCloseEvent<R>>();
+  public afterClosed$ = this.afterClosedSubject$.asObservable();
 
   constructor(
     public overlay: CdkOverlayRef,
@@ -28,10 +29,10 @@ export class OverlayRef<R = any, T = any> {
 
   private _close(type: 'backdropClick' | 'close', data: R) {
     this.overlay.dispose();
-    this.afterClosed$.next({
+    this.afterClosedSubject$.next({
       type,
       data,
     });
-    this.afterClosed$.complete();
+    this.afterClosedSubject$.complete();
   }
 }

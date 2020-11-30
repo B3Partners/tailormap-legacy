@@ -195,7 +195,6 @@ Ext.define("viewer.AppLoader", {
         setTimeout((function() {
             document.getElementById("appLoader").className += " hide";
             this.updateLoginInfo();
-            console.log('viewerControllerLoaded');
             const event = new Event('viewerControllerReady');
             window.dispatchEvent(event);
         }).bind(this), 0);

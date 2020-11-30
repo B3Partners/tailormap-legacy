@@ -25,7 +25,7 @@ declare interface Level {
   id: string;
   name: string;
   children: string[];
-  appLayers: string[];
+  layers: string[];
   background: boolean;
 }
 

@@ -10,6 +10,7 @@ import { CreateLayerModeEnum } from '../models/create-layer-mode.enum';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { clearCreateLayerMode } from '../state/analysis.actions';
+import { MetadataService } from '../../application/services/metadata.service';
 
 @Component({
   selector: 'tailormap-create-layer-panel',

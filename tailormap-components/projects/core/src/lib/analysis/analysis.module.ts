@@ -13,6 +13,7 @@ import { CreateLayerPanelComponent } from './create-layer-panel/create-layer-pan
 import { CreateLayerFormComponent } from './create-layer-form/create-layer-form.component';
 import { CreateLayerStylingComponent } from './create-layer-styling/create-layer-styling.component';
 import { CreateLayerLayerSelectionComponent } from './create-layer-layer-selection/create-layer-layer-selection.component';
+import { ApplicationModule } from '../application/application.module';
 
 
 @NgModule({
@@ -26,6 +27,7 @@ import { CreateLayerLayerSelectionComponent } from './create-layer-layer-selecti
   imports: [
     CommonModule,
     SharedModule,
+    ApplicationModule,
     StoreModule.forFeature(analysisStateKey, analysisReducer),
   ],
 })

@@ -9,5 +9,5 @@ const applicationActionsPrefix = '[Application]';
 
 export const setApplicationContent = createAction(
   `${applicationActionsPrefix} Set Application Content`,
-  props<{ root: SelectedContentItem[], levels: Level[], layers: AppLayer[] }>(),
+  props<{ id: number, root: SelectedContentItem[], levels: Level[], layers: AppLayer[] }>(),
 );

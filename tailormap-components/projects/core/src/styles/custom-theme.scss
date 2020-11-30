@@ -2,7 +2,7 @@
 // Plus imports for other components in your app.
 
 $custom-typography: mat-typography-config(
-  $font-family: 'Inter, monospace',
+  $font-family: 'Inter, "Lucida Sans Unicode", "Lucida Grande", sans-serif',
   $display-4:     mat-typography-level(112px, 112px, 400, $letter-spacing: -0.05em),
   $display-3:     mat-typography-level(56px, 56px, 400, $letter-spacing: -0.02em),
   $display-2:     mat-typography-level(45px, 48px, 400, $letter-spacing: -0.005em),

@@ -1,13 +1,3 @@
-.analysis-form {
-  display: flex;
-  flex-direction: column;
-  padding-top: 30px;
-}
-
-h1 {
-  padding: 14px 14px 2px;
-}
-
 mat-tab-group {
   flex: 1;
 }

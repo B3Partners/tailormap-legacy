@@ -30,6 +30,7 @@ import { ApiModule } from './generated';
 import { DialogCloseButtonComponent } from './dialog-close-button/dialog-close-button.component';
 import { TreeComponent } from './tree/tree.component';
 import { OverlayComponent } from './overlay-service/overlay/overlay.component';
+import { MatRadioModule } from '@angular/material/radio';
 
 @NgModule({
   declarations: [
@@ -40,7 +41,7 @@ import { OverlayComponent } from './overlay-service/overlay/overlay.component';
   ],
   imports: [
     ApiModule.forRoot({
-      rootUrl: window.location.origin + '/viewer/action/proxyrest?url=',
+        rootUrl: window.location.origin + '/viewer/action/proxyrest?url=',
     }),
     CommonModule,
     ReactiveFormsModule,
@@ -65,6 +66,7 @@ import { OverlayComponent } from './overlay-service/overlay/overlay.component';
     MatProgressSpinnerModule,
     MatMenuModule,
     MatDialogModule,
+    MatRadioModule,
   ],
   exports: [
     ReactiveFormsModule,
@@ -91,6 +93,7 @@ import { OverlayComponent } from './overlay-service/overlay/overlay.component';
     MatDialogModule,
     DialogCloseButtonComponent,
     TreeComponent,
+    MatRadioModule,
   ],
   entryComponents: [],
   providers: [

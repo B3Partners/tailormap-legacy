@@ -13,9 +13,10 @@ import {
 
 const onSetApplicationContent = (
   state: ApplicationState,
-  payload: { root: SelectedContentItem[], levels: Level[], layers: AppLayer[] },
+  payload: { id: number, root: SelectedContentItem[], levels: Level[], layers: AppLayer[] },
 ): ApplicationState => ({
   ...state,
+  applicationId: payload.id,
   root: payload.root,
   layers: payload.layers,
   levels: payload.levels,

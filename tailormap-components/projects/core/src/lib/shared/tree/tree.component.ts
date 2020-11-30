@@ -5,6 +5,7 @@ import { FlatTreeHelper } from './helpers/flat-tree.helper';
 import { FlatTreeModel } from './models/flat-tree.model';
 import { Subscription } from 'rxjs';
 import { DropZoneOptions, TreeDragDropService, treeNodeBaseClass } from './tree-drag-drop.service';
+import { MatRadioChange } from '@angular/material/radio';
 
 @Component({
   selector: 'tailormap-tree',
@@ -19,6 +20,9 @@ export class TreeComponent implements OnDestroy {
   @Input()
   public additionalDropZones?: DropZoneOptions[];
 
+  @Input()
+  public useRadioInputs?: boolean;
+
   @ViewChild('treeElement', { static: false, read: ElementRef })
   private treeElement: ElementRef<HTMLDivElement>;
 
@@ -31,6 +35,8 @@ export class TreeComponent implements OnDestroy {
   public readOnlyMode: boolean;
 
   private scrollLeft = 0;
+
+  private checkedRadioNode: FlatTreeModel;
 
   constructor(
     private treeService: TreeService,
@@ -49,6 +55,7 @@ export class TreeComponent implements OnDestroy {
         map(enabled => this.treeDragDropServiceEnabled = enabled),
       ).subscribe());
     }
+    this.checkedRadioNode = this.getTreeControl().dataNodes.find(node => node.checked);
   }
 
   public getDataSource() {
@@ -170,4 +177,15 @@ export class TreeComponent implements OnDestroy {
       currentTarget.style.setProperty('--scroll-pos', this.scrollLeft + 'px');
     }
   }
+
+  public toggleRadioNode($event: MatRadioChange) {
+    const checkChangeMap: CheckStateChange = new Map();
+    if (this.checkedRadioNode) {
+      checkChangeMap.set(this.checkedRadioNode.id, false);
+    }
+    checkChangeMap.set($event.value.id, true);
+    this.treeService.checkStateChanged(checkChangeMap);
+    this.checkedRadioNode = $event.value;
+  }
+
 }

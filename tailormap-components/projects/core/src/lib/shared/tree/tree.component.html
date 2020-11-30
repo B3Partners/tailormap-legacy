@@ -2,6 +2,9 @@
   {{node.label}}
 </ng-template>
 
+<mat-radio-group *ngIf="useRadioInputs"
+                 [required]="false"
+                 (change)="toggleRadioNode($event)">
 <div class="tree-wrapper" (scroll)="handleTreeScroll($event.currentTarget)">
 <mat-tree #treeElement
           [dataSource]="getDataSource()"
@@ -15,18 +18,24 @@
          [draggable]="treeDragDropServiceEnabled ? true : null"
          [attr.data-nodeid]="node.id"
          (dragstart)="treeDragDropServiceEnabled ? handleDragStart($event, node) : null">
-      <mat-checkbox *ngIf="node.checkbox"
+      <mat-checkbox *ngIf="node.checkbox && !useRadioInputs"
                     class="checklist-leaf-node"
                     [checked]="node.checked"
                     [disabled]="readOnlyMode"
                     (click)="$event.stopPropagation()"
                     (change)="toggleLeaf(node)"></mat-checkbox>
+      <mat-radio-button *ngIf="useRadioInputs"
+                        class="checklist-leaf-node"
+                        [disabled]="readOnlyMode"
+                        [checked]="node.checked"
+                        [value]="node"></mat-radio-button>
       <ng-container class="tree-node-container" *ngTemplateOutlet="treeNodeTemplate ? treeNodeTemplate : defaultTreeNodeTemplate; context: {$implicit: node}"></ng-container>
     </div>
   </mat-tree-node>
 
   <mat-tree-node *matTreeNodeDef="let node; when: hasChild"
                  matTreeNodePadding
+                 class="mat-tree-node--folder"
                  (click)="setNodeSelected(node)">
     <div [className]="getNodeClassName(node)"
          [draggable]="treeDragDropServiceEnabled ? true : null"
@@ -39,7 +48,7 @@
           {{isExpanded(node) ? 'expand_more' : 'chevron_right'}}
         </mat-icon>
       </button>
-      <mat-checkbox *ngIf="node.checkbox"
+      <mat-checkbox *ngIf="node.checkbox && !useRadioInputs"
                     [indeterminate]="isIndeterminate(node)"
                     [checked]="isChecked(node)"
                     [disabled]="readOnlyMode"
@@ -51,3 +60,4 @@
 
 </mat-tree>
 </div>
+</mat-radio-group>

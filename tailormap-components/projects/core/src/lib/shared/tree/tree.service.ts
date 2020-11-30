@@ -207,4 +207,8 @@ export class TreeService implements OnDestroy {
     return this.checkedMap.get(node.id);
   }
 
+  public getNode(nodeId: string): FlatTreeModel {
+    return this.nodesMap.get(nodeId);
+  }
+
 }
