@@ -3,6 +3,7 @@ package nl.b3p.viewer.stripes;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.controller.LifecycleStage;
 import net.sourceforge.stripes.validation.*;
+import nl.b3p.i18n.LocalizableActionBean;
 import nl.b3p.viewer.audit.AuditMessageObject;
 import nl.b3p.viewer.audit.Auditable;
 import nl.b3p.viewer.config.app.Application;
@@ -22,7 +23,7 @@ import java.util.Locale;
 
 @UrlBinding("/action/userlayer/{$event}/{application}/{appLayer}")
 @StrictBinding
-public class UserLayerActionBean implements ActionBean, ValidationErrorHandler, Auditable {
+public class UserLayerActionBean  extends LocalizableActionBean implements ActionBean, ValidationErrorHandler, Auditable {
     private static final Log LOG = LogFactory.getLog(UserLayerActionBean.class);
     private ActionBeanContext context;
 

@@ -1,5 +1,6 @@
 package nl.b3p.viewer.userlayer;
 
+import net.sourceforge.stripes.action.ActionBeanContext;
 import nl.b3p.viewer.audit.AuditMessageObject;
 import nl.b3p.viewer.config.ClobElement;
 import nl.b3p.viewer.config.app.Application;
@@ -13,14 +14,12 @@ import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.geotools.jdbc.JDBCDataStore;
+import org.opengis.feature.simple.SimpleFeature;
 
 import javax.persistence.EntityManager;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class TailormapDBManager {
     private ApplicationLayer appLayer;
@@ -125,10 +124,27 @@ public class TailormapDBManager {
             l.getDetails().put(Layer.DETAIL_USERLAYER_ORIGINAL_LAYER_ID, new ClobElement(this.layer.getId().toString()));
             l.getDetails().put(Layer.DETAIL_USERLAYER_ORIGINAL_LAYERNAME, new ClobElement(this.layer.getName()));
             l.getDetails().put(Layer.DETAIL_USERLAYER_USER, new ClobElement(this.auditMessageObject.getUsername()));
-            l.setFeatureType(this.layer.getFeatureType());
+            processFeatureType(l, viewName);
             return l;
         }
         return null;
+    }
+
+    private void processFeatureType(Layer l, String viewName){
+        if(this.layer.getFeatureType()!= null && this.layer.getFeatureType().getFeatureSource() instanceof JDBCFeatureSource){
+            JDBCFeatureSource fs = (JDBCFeatureSource)this.layer.getFeatureType().getFeatureSource();
+            try {
+                Date start = new Date();
+                fs.update(entityManager);
+                Date end = new Date();
+                LOG.error("time: " + (end.getTime() - start.getTime()));
+                SimpleFeatureType newFt = fs.getFeatureType(viewName);
+                l.setFeatureType(newFt);
+            } catch (Exception e) {
+                LOG.error("Error processing featuretype/featuresource",e);
+            }
+
+        }
     }
 
     private ApplicationLayer createAppLayer(Layer l, GeoService gs, String viewName) {
@@ -156,7 +172,10 @@ public class TailormapDBManager {
             entityManager.getTransaction().begin();
             SelectedContentCache.setApplicationCacheDirty(application, Boolean.TRUE, true, entityManager);
             entityManager.getTransaction().commit();
-
+            entityManager.getTransaction().begin();
+            newAppLayer.synchronizeFeaturetype(entityManager, null, null, null);
+            entityManager.persist(newAppLayer);
+            entityManager.getTransaction().commit();
             return newAppLayer;
         } catch (Exception e) {
             LOG.error("Error while inserting new layer into tailormap database: ", e);

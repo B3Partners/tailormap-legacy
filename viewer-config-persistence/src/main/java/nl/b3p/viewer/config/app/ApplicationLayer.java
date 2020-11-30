@@ -18,12 +18,17 @@ package nl.b3p.viewer.config.app;
 
 import javax.persistence.*;
 import java.util.*;
+
+import net.sourceforge.stripes.action.ActionBeanContext;
+import net.sourceforge.stripes.action.SimpleMessage;
 import nl.b3p.viewer.config.ClobElement;
 import nl.b3p.viewer.config.services.*;
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.stripesstuff.stripersist.Stripersist;
 
 /**
  *
@@ -360,7 +365,102 @@ public class ApplicationLayer {
         
         return copy;
     }
-    
+
+    public void synchronizeFeaturetype(EntityManager em, ActionBeanContext context, ResourceBundle bundle, Map<String, String> attributeAliases){
+        Layer layer = this.getService().getSingleLayer(this.getLayerName(), em);
+        // Synchronize configured attributes with layer feature type
+        if (layer != null) {
+            if (layer.getFeatureType() == null || layer.getFeatureType().getAttributes().isEmpty()) {
+                this.getAttributes().clear();
+            } else {
+                List<String> attributesToRetain = new ArrayList();
+
+                SimpleFeatureType sft = layer.getFeatureType();
+                // Rebuild ApplicationLayer.attributes according to Layer FeatureType
+                // New attributes are added at the end of the list; the original
+                // order is only used when the Application.attributes list is empty
+                // So a feature for reordering attributes per applicationLayer is
+                // possible.
+                // New Attributes from a join or related featureType are added at the
+                //end of the list.
+                attributesToRetain = rebuildAttributes(sft, em, context, bundle, attributeAliases);
+
+                // Remove ConfiguredAttributes which are no longer present
+                List<ConfiguredAttribute> attributesToRemove = new ArrayList();
+                for (ConfiguredAttribute ca : this.getAttributes()) {
+                    if (ca.getFeatureType() == null) {
+                        ca.setFeatureType(layer.getFeatureType());
+                    }
+                    if (!attributesToRetain.contains(ca.getFullName())) {
+                        // Do not modify list we are iterating over
+                        attributesToRemove.add(ca);
+                        if (context != null && !"save".equals(context.getEventName()) ) {
+                            context.getMessages().add(new SimpleMessage(bundle.getString("viewer_admin.applicationtreelayeractionbean.unavailable"), ca.getAttributeName()));
+                        }
+                    }
+                }
+                for (ConfiguredAttribute ca : attributesToRemove) {
+                    this.getAttributes().remove(ca);
+                    em.remove(ca);
+                }
+
+            }
+        }
+    }
+
+    private List<String> rebuildAttributes(SimpleFeatureType sft, EntityManager em, ActionBeanContext context, ResourceBundle bundle, Map<String, String> attributeAliases) {
+        Layer layer = this.getService().getSingleLayer(this.getLayerName(),em);
+        List<String> attributesToRetain = new ArrayList<String>();
+        for(AttributeDescriptor ad: sft.getAttributes()) {
+            String name = ad.getName();
+
+            String fullName=sft.getId()+":"+name;
+            //if attribute already added return.
+            if (attributesToRetain.contains(fullName)){
+                return attributesToRetain;
+            }
+            attributesToRetain.add(fullName);
+
+            // Used for display in JSP
+            if(StringUtils.isNotBlank(ad.getAlias())) {
+                attributeAliases.put(fullName, ad.getAlias());
+            }
+
+            if(this.getAttribute(sft,name) == null) {
+                ConfiguredAttribute ca = new ConfiguredAttribute();
+                // default visible if not geometry type
+                // and not a attribute of a related featuretype
+                boolean defaultVisible=true;
+                if (!layer.getFeatureType().getId().equals(sft.getId())|| AttributeDescriptor.GEOMETRY_TYPES.contains(ad.getType())){
+                    defaultVisible=false;
+                }
+                ca.setVisible(defaultVisible);
+                ca.setAttributeName(name);
+                ca.setFeatureType(sft);
+                this.getAttributes().add(ca);
+                em.persist(ca);
+
+                if(context != null && !"save".equals(context.getEventName())) {
+                    String message =bundle.getString("viewer_admin.applicationtreelayeractionbean.newattr") + " ";
+                    if(!layer.getFeatureType().getId().equals(sft.getId())){
+                        message+=bundle.getString("viewer_admin.applicationtreelayeractionbean.joined") + " ";
+                    }
+                    message+=bundle.getString("viewer_admin.applicationtreelayeractionbean.attrsrc") + " ";
+                    if(layer.getFeatureType().getId().equals(sft.getId())){
+                        message+=": "+ bundle.getString("viewer_admin.applicationtreelayeractionbean.visible");
+                    }
+                    context.getMessages().add(new SimpleMessage(message, name));
+                }
+            }
+        }
+        if (sft.getRelations()!=null){
+            for (FeatureTypeRelation rel : sft.getRelations()){
+                attributesToRetain.addAll(rebuildAttributes(rel.getForeignFeatureType(), em, context,bundle, attributeAliases));
+            }
+        }
+        return attributesToRetain;
+    }
+
     @Override
     public String toString() {
         return String.format("Application layer [id=%d, service id=%d, layer=%s]",
