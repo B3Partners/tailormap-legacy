@@ -6,7 +6,7 @@ import { Feature } from '../../shared/generated';
 })
 export class FormCopyService {
 
-  public featuresToCopy = new Map<number, Map<string, string>>();
+  public featuresToCopy = new Map<string, Map<string, string>>();
 
   public parentFeature: Feature;
 

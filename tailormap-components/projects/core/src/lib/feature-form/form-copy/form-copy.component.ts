@@ -52,12 +52,12 @@ export class FormCopyComponent implements OnInit {
     this.originalFeature = this.data.originalFeature;
     if (this.formCopyService.parentFeature != null) {
       if (this.formCopyService.parentFeature.objecttype === this.data.originalFeature.objecttype) {
-        fieldsToCopy = this.formCopyService.featuresToCopy.get(this.formCopyService.parentFeature['fid']);
+        fieldsToCopy = this.formCopyService.featuresToCopy.get(this.formCopyService.parentFeature.objectGuid);
       }
     }
     this.formCopyService.parentFeature = this.data.originalFeature;
     this.formConfig = this.configService.getFormConfig(this.originalFeature.clazz);
-    this.formCopyService.featuresToCopy.set(this.originalFeature['fid'], fieldsToCopy);
+    this.formCopyService.featuresToCopy.set(this.originalFeature['objectGuid'], fieldsToCopy);
     if (this.originalFeature.children) {
       for (const child of this.originalFeature.children) {
         const config = this.configService.getFormConfig(child.clazz);
@@ -70,7 +70,7 @@ export class FormCopyComponent implements OnInit {
             }
           });
           fieldsToCopy.set('objecttype', child.objecttype);
-          this.formCopyService.featuresToCopy.set(child.fid, fieldsToCopy);
+          this.formCopyService.featuresToCopy.set(child.objectGuid, fieldsToCopy);
         }
       }
     }
@@ -136,12 +136,12 @@ export class FormCopyComponent implements OnInit {
   }
 
   public isFieldChecked(event: any) {
-    const fieldsToCopy = this.formCopyService.featuresToCopy.get(this.originalFeature['fid']);
+    const fieldsToCopy = this.formCopyService.featuresToCopy.get(this.originalFeature['objectGuid']);
     return fieldsToCopy.has(event);
   }
 
   public isEverythingChecked(tab: string): boolean {
-    const fieldsToCopy = this.formCopyService.featuresToCopy.get(this.originalFeature['fid']);
+    const fieldsToCopy = this.formCopyService.featuresToCopy.get(this.originalFeature['objectGuid']);
     for (let i  = 0; i <= this.formConfig.fields.length - 1; i++) {
       const config = this.formConfig.fields[i];
       if (config.tab.toString() === tab) {
@@ -155,7 +155,7 @@ export class FormCopyComponent implements OnInit {
 
   public toggle(event: any, tab: string) {
     if (!event.checked) {
-      const fieldsToCopy = this.formCopyService.featuresToCopy.get(this.originalFeature['fid']);
+      const fieldsToCopy = this.formCopyService.featuresToCopy.get(this.originalFeature['objectGuid']);
       for (let i  = 0; i <= this.formConfig.fields.length - 1; i++) {
         const config = this.formConfig.fields[i];
         if (config.tab.toString() === tab) {
@@ -163,7 +163,7 @@ export class FormCopyComponent implements OnInit {
         }
       }
     } else {
-      const fieldsToCopy = this.formCopyService.featuresToCopy.get(this.originalFeature['fid']);
+      const fieldsToCopy = this.formCopyService.featuresToCopy.get(this.originalFeature['objectGuid']);
       for (let i  = 0; i <= this.formConfig.fields.length - 1; i++) {
         const config = this.formConfig.fields[i];
         if (config.tab.toString() === tab) {
@@ -175,15 +175,15 @@ export class FormCopyComponent implements OnInit {
 
   public updateFieldToCopy(event: any) {
     if (!event.checked) {
-      if (this.formCopyService.featuresToCopy.has(this.originalFeature['fid'])) {
-        const fieldsToCopy = this.formCopyService.featuresToCopy.get(this.originalFeature['fid']);
+      if (this.formCopyService.featuresToCopy.has(this.originalFeature['objectGuid'])) {
+        const fieldsToCopy = this.formCopyService.featuresToCopy.get(this.originalFeature['objectGuid']);
         if (fieldsToCopy.has(event.source.id)) {
           fieldsToCopy.delete(event.source.id);
         }
       }
     } else {
-      if (this.formCopyService.featuresToCopy.has(this.originalFeature['fid'])) {
-        const fieldsToCopy = this.formCopyService.featuresToCopy.get(this.originalFeature['fid']);
+      if (this.formCopyService.featuresToCopy.has(this.originalFeature['objectGuid'])) {
+        const fieldsToCopy = this.formCopyService.featuresToCopy.get(this.originalFeature['objectGuid']);
         fieldsToCopy.set(event.source.id, event.source.name);
       }
     }
@@ -191,7 +191,7 @@ export class FormCopyComponent implements OnInit {
 
   private getPropertiesToMerge(): any {
     const valuesToCopy = {};
-    const fieldsToCopy = this.formCopyService.featuresToCopy.get(this.formCopyService.parentFeature['fid']);
+    const fieldsToCopy = this.formCopyService.featuresToCopy.get(this.formCopyService.parentFeature['objectGuid']);
     fieldsToCopy.forEach((value, key) => {
       valuesToCopy[key] = this.originalFeature[key];
     })
@@ -204,11 +204,11 @@ export class FormCopyComponent implements OnInit {
     const parentFeature = this.formCopyService.parentFeature;
     this.formCopyService.featuresToCopy.forEach((fieldsToCopy, key) => {
       let newChild = {};
-      if (key !== this.formCopyService.parentFeature['fid']) {
+      if (key !== this.formCopyService.parentFeature['objectGuid']) {
         const valuesToCopy = {};
         for (let i = 0; i <= parentFeature.children.length - 1; i++) {
           const child = parentFeature.children[i];
-          if (child.fid === key) {
+          if (child.objectGuid === key) {
             fieldsToCopy.forEach((value, key1) => {
               valuesToCopy[key1] = child[key1];
             })
@@ -242,7 +242,7 @@ export class FormCopyComponent implements OnInit {
        this.relatedFeatures = [];
       // tslint:disable-next-line:prefer-for-of
        for (let i = 0; i < this.formCopyService.parentFeature.children.length; i++) {
-         this.relatedFeatures.push(this.formCopyService.parentFeature.children[i].fid);
+         this.relatedFeatures.push(this.formCopyService.parentFeature.children[i].objectGuid);
        }
     }
   }
