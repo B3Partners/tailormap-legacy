@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Feature } from '../../shared/generated';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class FormCopyService {
 

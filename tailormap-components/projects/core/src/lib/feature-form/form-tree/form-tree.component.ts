@@ -41,7 +41,7 @@ export class FormTreeComponent implements OnInit, OnChanges {
   public features: Feature[];
 
   @Input()
-  public isCopy =false;
+  public isCopy = false;
 
   @Input()
   public feature: Feature;
@@ -107,17 +107,18 @@ export class FormTreeComponent implements OnInit, OnChanges {
     return nodes;
   }
 
-  public isFeatureForCopyChecked(featureId: number): boolean{
-    let isIn = false;
-    for (let i = 0; i < this.featuresToCopy.length; i++){
-      if (featureId === this.featuresToCopy[i]){
+  public isFeatureForCopyChecked(featureId: number): boolean {
+    const isIn = false;
+    // tslint:disable-next-line:prefer-for-of
+    for (let i = 0; i < this.featuresToCopy.length; i++) {
+      if (featureId === this.featuresToCopy[i]) {
         return true;
       }
     }
     return isIn;
   }
 
-  public addFeatureForCopy(event: any, featureId: number){
+  public addFeatureForCopy(event: any, featureId: number) {
     if (event.checked) {
       this.featuresToCopy.push(featureId);
     }
