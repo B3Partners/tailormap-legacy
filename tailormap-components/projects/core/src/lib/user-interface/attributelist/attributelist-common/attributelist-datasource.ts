@@ -6,10 +6,8 @@
  * - In case of the main table, adds an extra '_details' column to the rows.
  */
 
-import {
-  BaseRowDef,
-  DataSource,
-} from '@angular/cdk/table';
+import { DataSource } from '@angular/cdk/table';
+import * as wellknown from 'wellknown';
 import { Observable, of } from 'rxjs';
 import { MatSort } from '@angular/material/sort';
 import { MatPaginator } from '@angular/material/paginator';
@@ -26,22 +24,7 @@ import {
 } from '../../../shared/attribute-service/attribute-models';
 import { CheckState, DetailsState } from './attributelist-enums';
 import { DatasourceParams } from './datasource-params';
-import {
-  Boom,
-  Boominspectie,
-  Boomplanning,
-  CultBeplanting,
-  Feature,
-  Gras,
-  Haag,
-  MechLeiding,
-  NatBeplanting,
-  Rioolput,
-  VrijvLeiding,
-  Weginspectie,
-  Wegvakonderdeel,
-  Wegvakonderdeelplanning,
-} from '../../../shared/generated';
+import { Feature } from '../../../shared/generated';
 import { FormconfigRepositoryService } from '../../../shared/formconfig-repository/formconfig-repository.service';
 import { LayerService } from '../layer.service';
 
@@ -138,15 +121,15 @@ export class AttributeDataSource extends DataSource<any> {
    * Returns the checked Rows refactored to Features
    */
   public getCheckedRowsAsFeatures(): Feature[] {
-    let feature = <Feature>{};
-    let featuresChecked: Feature[] = [];
-    let children = [];
-    this.rows.forEach( (row:RowData) => {
+    const feature = {} as Feature;
+    const featuresChecked: Feature[] = [];
+    this.rows.forEach( (row: RowData) => {
       if (row._checked) {
-        // TODO geometrie moet van wkt naar geojson
-        // row.geometrie  = {"type":"Polygon","coordinates":[[[177866.75,503388.19],[177866.639,503390.657],[177864.471,503390.402],[177863.252,503390.178],[177861.662,503389.791],[177849.9,503387.633],[177843.588580274,503386.481192628],[177844.068,503384.098],[177847.83,503384.761],[177855.838,503386.297],[177864.627,503387.908],[177866.75,503388.19]]]};
-        const { object_guid, related_featuretypes, __fid, _checked, _details, _detailsRow, ...rest } = row;
-        feature.children = children;
+        const { object_guid, related_featuretypes, __fid, _checked, _details, _detailsRow, geometrie, ...rest } = row;
+        if (row.geometrie) {
+          rest.geometrie =  wellknown.parse(row.geometrie);
+        }
+        feature.children = [];
         feature.clazz = this.getLayerName().toLowerCase();
         feature.objectGuid = row.object_guid;
         feature.objecttype = this.getLayerName()[0].toUpperCase() + this.getLayerName().substr(1);
@@ -156,7 +139,6 @@ export class AttributeDataSource extends DataSource<any> {
     return featuresChecked;
   }
 
-  public strip
   /**
    * Loads the data of a main or details table.
    */

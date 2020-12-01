@@ -40,20 +40,12 @@ import { AttributelistStatistic } from '../attributelist-common/attributelist-st
 import { AttributeService } from '../../../shared/attribute-service/attribute.service';
 import { CheckState } from '../attributelist-common/attributelist-enums';
 import { Feature } from '../../../shared/generated';
-import {
-  FilterColumns,
-  FilterValueSettings,
-} from '../attributelist-common/attributelist-filter-models';
 import { FormconfigRepositoryService } from '../../../shared/formconfig-repository/formconfig-repository.service';
 import { LayerService } from '../layer.service';
 import { StatisticTypeInMenu } from '../attributelist-common/attributelist-statistic-models';
 import { StatisticService } from '../../../shared/statistic-service/statistic.service';
 import { StatisticType } from '../../../shared/statistic-service/statistic-models';
 import { ValueService } from '../../../shared/value-service/value.service';
-import {
-  ValueParameters,
-  UniqueValuesResponse,
-} from '../../../shared/value-service/value-models';
 import { FormComponent } from '../../../feature-form/form/form.component';
 import { TailorMapService } from '../../../../../../bridge/src/tailor-map.service';
 import { HighlightService } from '../../../shared/highlight-service/highlight.service';
@@ -251,6 +243,14 @@ export class AttributelistTableComponent implements AttributelistTable, Attribut
         isBulk: false,
       },
     });
+    // tslint:disable-next-line: rxjs-no-ignored-subscription
+    dialogRef.afterClosed().subscribe(result => {
+      this.afterEditting();
+    });
+  }
+
+  public afterEditting(): void {
+    this.updateTable();
   }
 
   public onPageChange(event): void {
