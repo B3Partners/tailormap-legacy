@@ -22,14 +22,15 @@ crossContext="true" is required to enable the viewer-admin to load the
   <!--Parameter name="monitoring.mail.from.name" value="Geo services monitoring" override="false"/-->
   <!--Parameter name="monitoring.schedule.minutes" value="30" override="false"/-->
   <!--Parameter name="flamingo.data.dir" value="/opt/flamingo_data" override="false"/-->
+  <!--  <Parameter name="spotinfo.token.refresh.interval" override="false" value="15"/>-->
   <!-- For Tomcat: define datasource in server.xml, for example:
     NOTE:
         each version of tomcat comes with it's own version of the pooling library
-        that can have subtle difference so you must check for your version:
+        that can have subtle differences so you must check for your version:
 
         - https://tomcat.apache.org/tomcat-7.0-doc/jndi-datasource-examples-howto.html
-        - https://tomcat.apache.org/tomcat-8.0-doc/jndi-resources-howto.html
         - https://tomcat.apache.org/tomcat-8.5-doc/jndi-datasource-examples-howto.html
+        - https://tomcat.apache.org/tomcat-9.0-doc/jndi-datasource-examples-howto.html
 
     <Server ...>
 
@@ -96,7 +97,7 @@ crossContext="true" is required to enable the viewer-admin to load the
   <ResourceLink global="jdbc/geo_viewer" name="jdbc/geo_viewer" type="javax.sql.DataSource"/>
   <!-- For Tomcat: define JavaMail resource in server.xml. See:
 
-    http://tomcat.apache.org/tomcat-8.0-doc/jndi-resources-howto.html#JavaMail_Sessions
+    https://tomcat.apache.org/tomcat-9.0-doc/jndi-resources-howto.html#JavaMail_Sessions
 
     Don't forget to put mail.jar in the Tomcat lib directory.
 
@@ -126,8 +127,8 @@ crossContext="true" is required to enable the viewer-admin to load the
     </Realm>
     <!-- Use JNDIRealm for authenticating against a LDAP server (such as
              Active Directory):
-             http://tomcat.apache.org/tomcat-8.0-doc/config/realm.html
-             http://tomcat.apache.org/tomcat-8.0-doc/realm-howto.html#JNDIRealm
+             http://tomcat.apache.org/tomcat-9.0-doc/config/realm.html
+             http://tomcat.apache.org/tomcat-9.0-doc/realm-howto.html#JNDIRealm
         -->
     <!--Realm className="org.apache.catalina.realm.JNDIRealm"
             allRolesMode="authOnly"

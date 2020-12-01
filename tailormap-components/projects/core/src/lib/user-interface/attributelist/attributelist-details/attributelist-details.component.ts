@@ -96,7 +96,7 @@ export class AttributelistDetailsComponent implements OnInit,
    * Return the column names. Do not include special column names.
    */
   public getColumnNames(): string[] {
-    const columnNames = this.dataSource.columnController.getActiveColumnNames(false);
+    const columnNames = this.dataSource.columnController.getVisibleColumnNames(false);
     // console.log(columnNames);
     return columnNames;
   }

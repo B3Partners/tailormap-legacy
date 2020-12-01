@@ -13,6 +13,7 @@
       <ng-container *ngFor="let colName of getColumnNames()"
                     [ngSwitch]="colName">
 
+        <!-- First column with checkboxes -->
         <ng-container *ngSwitchCase="'_checked'" matColumnDef="{{colName}}">
           <!-- Header -->
           <mat-header-cell class="column_small" *matHeaderCellDef [ngSwitch]="checkState">
@@ -52,9 +53,16 @@
               </mat-icon>
             </ng-template>
           </mat-cell>
-        </ng-container>
+          <!-- Footer -->
+          <mat-footer-cell  class="column_small" *matFooterCellDef>
+              <mat-icon (click)="onStatisticsHelp()">
+                functions
+              </mat-icon>
+            </mat-footer-cell>
+          </ng-container>
 
-        <ng-container *ngSwitchCase="'_details'" matColumnDef="{{colName}}">
+          <!-- Column with + for expanding details -->
+          <ng-container *ngSwitchCase="'_details'" matColumnDef="{{colName}}">
           <!-- Header -->
           <mat-header-cell class="column_small" *matHeaderCellDef
                            [ngSwitch]="colName" ></mat-header-cell>
@@ -77,8 +85,11 @@
               <span class="iconCharNo">+</span>
             </ng-template>
           </mat-cell>
+          <!-- Footer -->
+          <mat-footer-cell  class="column_small" *matFooterCellDef></mat-footer-cell>
         </ng-container>
 
+        <!-- Columns with data -->
         <ng-container *ngSwitchDefault matColumnDef="{{colName}}">
           <!-- Header -->
           <mat-header-cell *matHeaderCellDef mat-sort-header >{{colName}}
@@ -88,9 +99,17 @@
           </mat-header-cell>
           <!-- Cell -->
           <mat-cell *matCellDef="let currRow" >{{currRow[colName]}}</mat-cell>
+          <!-- Footer -->
+          <mat-footer-cell *matFooterCellDef (contextmenu)="onStatisticsMenu($event, colName)">
+            <div *ngIf="isStatisticsProcessing(colName)">
+              <mat-spinner diameter="20"></mat-spinner>
+            </div>
+            {{getStatisticResult(colName)}}
+          </mat-footer-cell>
         </ng-container>
       </ng-container>
 
+      <!-- Columns with related details data -->
       <mat-header-row *matHeaderRowDef="getColumnNames(); sticky: true;"></mat-header-row>
       <mat-row *matRowDef="let row; columns: getColumnNames();"
                [cdkDetailsRow]="row"
@@ -106,9 +125,11 @@
           </tailormap-attributelist-details>
         </div>
       </ng-template>
+      <mat-footer-row *matFooterRowDef="getColumnNames(); sticky: true;"></mat-footer-row>
 
     </mat-table>
   </div>
+
   <mat-toolbar [style.display]="getFooterBarVisible()">
     <button mat-icon-button>
       <mat-icon>subdirectory_arrow_right</mat-icon>
@@ -119,4 +140,45 @@
       <span *ngIf="(nrChecked > 1)">opties voor {{nrChecked}} objecten</span>
     </button>
   </mat-toolbar>
+
+  <div style="visibility: hidden; position: fixed"
+       [style.left]="contextMenuPosition.x"
+       [style.top]="contextMenuPosition.y"
+       [matMenuTriggerFor]="statisticsMenu">
+  </div>
+
+  <mat-menu #statisticsMenu="matMenu">
+    <ng-template matMenuContent let-colName="colName">
+      <ng-container *ngFor="let statType of keys(eStatisticType) ">
+        <div *ngIf="getStatisticFunctionColumnType(colName) === 'numeric' && eStatisticType[statType] !== 'COUNT' && eStatisticType[statType] !== 'NONE'">
+           <button mat-menu-item (click)="onStatisticsMenuClick(colName, eStatisticType[statType])">
+             <mat-icon [ngClass]="(getStatisticTypeInMenu(colName) === eStatisticTypeInMenu[statType])? 'menu-icon material-icons-set': 'menu-icon material-icons-off'">
+               check
+             </mat-icon>
+             {{eStatisticTypeInMenu[statType]}}
+           </button>
+        </div>
+      </ng-container>
+      <ng-container *ngFor="let statType of keys(eStatisticType) ">
+        <div *ngIf="eStatisticType[statType] === ('COUNT')">
+          <button mat-menu-item (click)="onStatisticsMenuClick(colName, eStatisticType[statType])">
+            <mat-icon [ngClass]="(getStatisticTypeInMenu(colName) === eStatisticTypeInMenu[statType])? 'menu-icon material-icons-set': 'menu-icon material-icons-off'">
+              check
+            </mat-icon>
+            {{eStatisticTypeInMenu[statType]}}
+          </button>
+        </div>
+      </ng-container>
+      <mat-divider></mat-divider>
+      <ng-container *ngFor="let statType of keys(eStatisticType) ">
+        <div *ngIf="eStatisticType[statType] === ('NONE')">
+          <button mat-menu-item (click)="onStatisticsMenuClick(colName, eStatisticType[statType])">
+            <mat-icon [ngClass]="(getStatisticTypeInMenu(colName) === eStatisticTypeInMenu[statType])? 'menu-icon material-icons-set': 'menu-icon material-icons-off'">
+              check
+            </mat-icon>
+            {{eStatisticTypeInMenu[statType]}}</button>
+        </div>
+      </ng-container>
+    </ng-template>
+  </mat-menu>
 </div>

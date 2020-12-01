@@ -1,4 +1,5 @@
 
+import { Attribute } from '../../../shared/attribute-service/attribute-models';
 import { AttributelistColumn } from './attributelist-column-models'
 
 export class AttributelistColumnController {
@@ -26,11 +27,13 @@ export class AttributelistColumnController {
     let column: AttributelistColumn = {
       name: '_checked',
       visible: true,
+      type: 'boolean',
     };
     this.specialColumns.push(column);
     column = {
       name: '_details',
       visible: true,
+      type: 'boolean',
     };
     this.specialColumns.push(column);
   }
@@ -54,11 +57,12 @@ export class AttributelistColumnController {
    * The special column name '_checked' is skipped.
    */
   public columnNamesToColumns(columnNames: string[]): AttributelistColumn[] {
+    const columns: AttributelistColumn[] = [];
+
     // Check the column names.
     if (columnNames.length === 0) {
-      return;
+      return columns;
     }
-    const columns: AttributelistColumn[] = [];
     // Add new columns.
     for (const columnName of columnNames) {
       if (columnName === '_checked') {
@@ -74,8 +78,26 @@ export class AttributelistColumnController {
     return columns;
   }
 
+  public columnDefsToColumns(columnDefs: Attribute[]): AttributelistColumn[] {
+    const columns: AttributelistColumn[] = [];
+    // Add new columns.
+    for (const columnDef of columnDefs) {
+      if (columnDef.name === '_checked') {
+        // Skip.
+        continue;
+      }
+      const column: AttributelistColumn = {
+        name: columnDef.name,
+        visible: true,
+        type: columnDef.type,
+      };
+      columns.push(column);
+    }
+    return columns;
+  }
+
   /**
-   * Returns a list of active (i.e. visible) columns.
+   * Returns a list of active passport columns or if no passport all columns.
    */
   public getActiveColumns(includeSpecial: boolean): AttributelistColumn[] {
     if (includeSpecial) {
@@ -87,23 +109,7 @@ export class AttributelistColumnController {
   }
 
   /**
-   * Returns a list of active (i.e. visible) column names.
-   */
-  public getActiveColumnNames(includeSpecial: boolean): string[] {
-    const columns = this.getActiveColumns(includeSpecial);
-    // Remove all names.
-    this.activeColumnNames.splice(0, this.activeColumnNames.length);
-    // Add active names.
-    for (const column of columns) {
-      if (column.visible) {
-        this.activeColumnNames.push(column.name);
-      }
-    }
-    return this.activeColumnNames;
-  }
-
-  /**
-   * Returns a list of all columns.
+   * Returns a list of all columns (i.e. all data columns).
    */
   public getAllColumns(includeSpecial: boolean): AttributelistColumn[] {
     if (includeSpecial) {
@@ -111,6 +117,28 @@ export class AttributelistColumnController {
     } else {
       return this.dataColumns;
     }
+  }
+
+  public getColumnType(colName: string): string {
+    const colIndex = this.arrayIndexOfColumn(this.dataColumns, colName)
+    return this.dataColumns[colIndex].type;
+  }
+
+  /**
+   * Returns a list of visible column names.
+   * Is called in table.getColumnNames().
+   */
+  public getVisibleColumnNames(includeSpecial: boolean): string[] {
+    const columns = this.getActiveColumns(includeSpecial);
+    // Remove all column names.
+    this.activeColumnNames.splice(0, this.activeColumnNames.length);
+    // Add names of visible columns.
+    for (const column of columns) {
+      if (column.visible) {
+        this.activeColumnNames.push(column.name);
+      }
+    }
+    return this.activeColumnNames;
   }
 
   public hasDataColumns(): boolean {
@@ -125,68 +153,74 @@ export class AttributelistColumnController {
    * Activates all columns, i.e. sets all columns visible.
    */
   public setActiveAll(): void {
-    if (!this.isPassportActive) {
-      return;
-    }
-    // Add not existing columns.
-    for (const column of this.dataColumns) {
-      if (this.arrayIndexOfColumn(this.activeColumns, column.name) < 0) {
-        this.activeColumns.push(column);
-      }
-    }
+    // Udate the active columns.
     this.isPassportActive = false;
+    this.updateActiveColumns();
   }
 
+  /**
+   * Activates only the passport columns.
+   */
   public setActivePassport(): void {
-    if (this.isPassportActive) {
-      return;
-    }
-    // 'Empty'?
-    if (this.activeColumns.length === 0) {
-      // Add.
-      for (const column of this.passportColumns) {
-        this.activeColumns.push(column);
-      }
-    } else {
-      const newColumns: AttributelistColumn[] = [];
-      // Remove not existing active columns.
-      for (const column of this.activeColumns) {
-        const index = this.arrayIndexOfColumn(this.passportColumns, column.name);
-        // Found in passport columns?
-        if (index >= 0) {
-          // Copy.
-          newColumns.push(column);
-        }
-      }
-      this.activeColumns = newColumns;
-    }
-
-    // console.log('#AttColumns - setActivePassport');
-    // console.log(this.activeColumns);
-
+    // Udate the active columns.
     this.isPassportActive = true;
+    this.updateActiveColumns();
   }
 
   /**
    * Sets the data column names. The list could contain a special column
    * '_checked'. If so, this column is promoted to the first column of the list.
    */
-  public setDataColumnNames(columnNames: string[]): void {
-    this.dataColumns = this.columnNamesToColumns(columnNames);
+  public setDataColumnNames(columnDefs: Attribute[]): void {
+    // this.dataColumns = this.columnNamesToColumns(columnNames);
+    this.dataColumns = this.columnDefsToColumns(columnDefs);
     // console.log('#AttColumns - setDataColumnNames');
     // console.log(this.dataColumns);
+
+    // Udate the active columns.
+    this.updateActiveColumns();
   }
 
   /**
    * Sets the passport column names.
    */
   public setPassportColumnNames(columnNames: string[]): void {
-    this.passportColumns = this.columnNamesToColumns(columnNames);
-
-    // console.log('#AttColumns - setPassportColumnNames');
-    // console.log(this.passportColumns);
-
-    // Set as active.
+    if (columnNames.length === 0) {
+      // Remove all columns.
+      this.passportColumns.splice(0, this.passportColumns.length);
+    } else {
+      // Set passport columns.
+      this.passportColumns = this.columnNamesToColumns(columnNames);
+    }
+    // Activate passport columns.
     this.setActivePassport();
   }
+
+  /**
+   * Udates the active columns.
+   */
+  private updateActiveColumns(): void {
+
+    // Are there passport columns and is passport active?
+    if ((this.passportColumns.length > 0) && (this.isPassportActive)) {
+      // Remove all columns.
+      this.activeColumns.splice(0, this.activeColumns.length);
+      // Add all passport columns which are valid.
+      for (const column of this.passportColumns) {
+        // A valid column?
+        if (this.arrayIndexOfColumn(this.dataColumns, column.name) >= 0) {
+          this.activeColumns.push(column);
+        }
+      }
+    } else {
+      // No passport columns or passport not active?
+      // Add data columns not already in the list.
+      for (const column of this.dataColumns) {
+        if (this.arrayIndexOfColumn(this.activeColumns, column.name) < 0) {
+          this.activeColumns.push(column);
+        }
+      }
+    }
+  }
+
 }

@@ -9,8 +9,9 @@ For security related information please check the [security policy](./.github/SE
 ![Tailormap logo](https://tailormap.nl/portal/custom/images/logo.png)
 
 
-[![Travis-CI Build Status](https://travis-ci.com/B3Partners/tailormap.svg?branch=master)](https://travis-ci.com/B3Partners/tailormap)
+![Ubuntu Maven build](https://github.com/B3Partners/tailormap/workflows/Ubuntu%20Maven%20build/badge.svg)
 [![Build status](https://ci.appveyor.com/api/projects/status/6wcsx39i2q3cx6k5/branch/master?svg=true)](https://ci.appveyor.com/project/mtoonen/tailormap/branch/master)
+![MacOS Maven build](https://github.com/B3Partners/tailormap/workflows/MacOS%20Maven%20build/badge.svg)
 [![GitHub issues](https://img.shields.io/github/issues/B3Partners/tailormap.svg)](https://github.com/B3Partners/tailormap/issues)
 [![GitHub forks](https://img.shields.io/github/forks/B3Partners/tailormap.svg)](https://github.com/B3Partners/tailormap/network)
 [![GitHub stars](https://img.shields.io/github/stars/B3Partners/tailormap.svg)](https://github.com/B3Partners/tailormap/stargazers)
@@ -23,7 +24,6 @@ For security related information please check the [security policy](./.github/SE
 [![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/B3Partners/tailormap.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/B3Partners/tailormap/context:javascript)
 [![Total alerts](https://img.shields.io/lgtm/alerts/g/B3Partners/tailormap.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/B3Partners/tailormap/alerts/)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=B3Partners_tailormap&metric=alert_status)](https://sonarcloud.io/dashboard?id=B3Partners_tailormap)
-[![BrowserStack.com](http://files.b3p.nl/flamingo/bs.png)]()
 
 [![code coverage master](https://codecov.io/gh/B3Partners/tailormap/branch/master/graphs/sunburst.svg)](https://codecov.io/gh/B3Partners/tailormap/branch/master)
 [![deepcode](https://www.deepcode.ai/api/gh/badge?key=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwbGF0Zm9ybTEiOiJnaCIsIm93bmVyMSI6IkIzUGFydG5lcnMiLCJyZXBvMSI6InRhaWxvcm1hcCIsImluY2x1ZGVMaW50IjpmYWxzZSwiYXV0aG9ySWQiOjIyMDI2LCJpYXQiOjE2MDA4NTAzMzl9.of5ercHDbNlYcMKPiNKesTFg9-Jf1MQPwPv9p52wQLQ)](https://www.deepcode.ai/app/gh/B3Partners/tailormap/_/dashboard?utm_content=gh%2FB3Partners%2Ftailormap)

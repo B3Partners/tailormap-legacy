@@ -104,9 +104,14 @@ public class ProxyRESTActionBean implements ActionBean, Auditable {
     }
 
     private URL constructURL() throws MalformedURLException {
+        HttpServletRequest request = getContext().getRequest();
+        String parentId = "";
+        if(request.getParameter("parentId") != null) {
+            parentId = "?parentId="+request.getParameter("parentId");
+        }
         URL requestUrl = new URL(context.getRequest().getRequestURL().toString());
         String port = context.getServletContext().getInitParameter("flamingo.restproxy.port");
-        String constructedURL = "http://localhost:" + (port != null ? port : "8084") + "/form-api" + url;
+        String constructedURL = "http://localhost:" + (port != null ? port : "8084") + "/form-api" + url + parentId;
         URL u = new URL(constructedURL);
         return u;
     }

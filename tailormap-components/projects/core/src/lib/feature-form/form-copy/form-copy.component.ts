@@ -17,6 +17,7 @@ import { FormActionsService } from '../form-actions/form-actions.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CopyDialogData } from './form-copy-models';
 import { FeatureInitializerService } from '../../shared/feature-initializer/feature-initializer.service';
+import { FormCopyService } from './form-copy.service';
 
 @Component({
   selector: 'tailormap-form-copy',
@@ -33,41 +34,43 @@ export class FormCopyComponent implements OnInit {
 
   public deleteRelated = false;
 
-  public parentFeature: Feature;
-
   public formConfig: FormConfiguration;
 
-  public featuresToCopy = new Map<string, Map<string, string>>();
+  public relatedFeatures = [];
 
   constructor(public dialogRef: MatDialogRef<FormCopyComponent>,
               @Inject(MAT_DIALOG_DATA) public data: CopyDialogData,
               private configService: FormconfigRepositoryService,
               private actionService: FormActionsService,
               private _snackBar: MatSnackBar,
-              private formConfigRepo: FormconfigRepositoryService,
-              private featureInitializer: FeatureInitializerService) {
+              private featureInitializer: FeatureInitializerService,
+              private formCopyService: FormCopyService) {
   }
 
   public ngOnInit(): void {
+    let fieldsToCopy = new Map<string, string>();
     this.originalFeature = this.data.originalFeature;
-    this.parentFeature = this.data.originalFeature;
-    this.formConfig = this.configService.getFormConfig(this.originalFeature.clazz);
-    const fieldsToCopy = new Map<string, string>();
-    for (const field of this.formConfig.fields) {
-      fieldsToCopy.set(field.key, field.label);
+    if (this.formCopyService.parentFeature != null) {
+      if (this.formCopyService.parentFeature.objecttype === this.data.originalFeature.objecttype) {
+        fieldsToCopy = this.formCopyService.featuresToCopy.get(this.formCopyService.parentFeature['fid']);
+      }
     }
-    this.featuresToCopy.set(this.originalFeature['objectGuid'], fieldsToCopy);
+    this.formCopyService.parentFeature = this.data.originalFeature;
+    this.formConfig = this.configService.getFormConfig(this.originalFeature.clazz);
+    this.formCopyService.featuresToCopy.set(this.originalFeature['fid'], fieldsToCopy);
     if (this.originalFeature.children) {
       for (const child of this.originalFeature.children) {
         const config = this.configService.getFormConfig(child.clazz);
         if (config) {
           // tslint:disable-next-line:no-shadowed-variable
-          const fieldsToCopy = new Map<string, string>();
-          for (const field of config.fields) {
-            fieldsToCopy.set(field.key, field.label);
-          }
+          let fieldsToCopy = new Map<string, string>();
+          this.formCopyService.featuresToCopy.forEach((oldfieldsToCopy, key) => {
+            if (oldfieldsToCopy.get('objecttype') === child.objecttype) {
+                fieldsToCopy = oldfieldsToCopy;
+            }
+          });
           fieldsToCopy.set('objecttype', child.objecttype);
-          this.featuresToCopy.set(child.objectGuid, fieldsToCopy);
+          this.formCopyService.featuresToCopy.set(child.fid, fieldsToCopy);
         }
       }
     }
@@ -133,34 +136,54 @@ export class FormCopyComponent implements OnInit {
   }
 
   public isFieldChecked(event: any) {
-    const fieldsToCopy = this.featuresToCopy.get(this.originalFeature['objectGuid']);
+    const fieldsToCopy = this.formCopyService.featuresToCopy.get(this.originalFeature['fid']);
     return fieldsToCopy.has(event);
   }
 
-  public toggle(event: any) {
+  public isEverythingChecked(tab: string): boolean {
+    const fieldsToCopy = this.formCopyService.featuresToCopy.get(this.originalFeature['fid']);
+    for (let i  = 0; i <= this.formConfig.fields.length - 1; i++) {
+      const config = this.formConfig.fields[i];
+      if (config.tab.toString() === tab) {
+        if (!fieldsToCopy.has(config.key)) {
+            return false;
+        }
+      }
+    }
+    return true
+  }
+
+  public toggle(event: any, tab: string) {
     if (!event.checked) {
-      const fieldsToCopy = this.featuresToCopy.get(this.originalFeature['objectGuid']);
-      fieldsToCopy.clear();
-    } else {
-      const fieldsToCopy = this.featuresToCopy.get(this.originalFeature['objectGuid']);
+      const fieldsToCopy = this.formCopyService.featuresToCopy.get(this.originalFeature['fid']);
       for (let i  = 0; i <= this.formConfig.fields.length - 1; i++) {
         const config = this.formConfig.fields[i];
-        fieldsToCopy.set(config.key, config.label);
+        if (config.tab.toString() === tab) {
+          fieldsToCopy.delete(config.key);
+        }
+      }
+    } else {
+      const fieldsToCopy = this.formCopyService.featuresToCopy.get(this.originalFeature['fid']);
+      for (let i  = 0; i <= this.formConfig.fields.length - 1; i++) {
+        const config = this.formConfig.fields[i];
+        if (config.tab.toString() === tab) {
+          fieldsToCopy.set(config.key, config.label);
+        }
       }
     }
   }
 
   public updateFieldToCopy(event: any) {
     if (!event.checked) {
-      if (this.featuresToCopy.has(this.originalFeature['objectGuid'])) {
-        const fieldsToCopy = this.featuresToCopy.get(this.originalFeature['objectGuid']);
+      if (this.formCopyService.featuresToCopy.has(this.originalFeature['fid'])) {
+        const fieldsToCopy = this.formCopyService.featuresToCopy.get(this.originalFeature['fid']);
         if (fieldsToCopy.has(event.source.id)) {
           fieldsToCopy.delete(event.source.id);
         }
       }
     } else {
-      if (this.featuresToCopy.has(this.originalFeature['objectGuid'])) {
-        const fieldsToCopy = this.featuresToCopy.get(this.originalFeature['objectGuid']);
+      if (this.formCopyService.featuresToCopy.has(this.originalFeature['fid'])) {
+        const fieldsToCopy = this.formCopyService.featuresToCopy.get(this.originalFeature['fid']);
         fieldsToCopy.set(event.source.id, event.source.name);
       }
     }
@@ -168,7 +191,7 @@ export class FormCopyComponent implements OnInit {
 
   private getPropertiesToMerge(): any {
     const valuesToCopy = {};
-    const fieldsToCopy = this.featuresToCopy.get(this.parentFeature['objectGuid']);
+    const fieldsToCopy = this.formCopyService.featuresToCopy.get(this.formCopyService.parentFeature['fid']);
     fieldsToCopy.forEach((value, key) => {
       valuesToCopy[key] = this.originalFeature[key];
     })
@@ -177,20 +200,27 @@ export class FormCopyComponent implements OnInit {
 
   private getNewChildFeatures(): Feature[] {
     const newChilds = [];
-    this.featuresToCopy.forEach((fieldsToCopy, key) => {
+    const relatedFeatures = this.relatedFeatures;
+    const parentFeature = this.formCopyService.parentFeature;
+    this.formCopyService.featuresToCopy.forEach((fieldsToCopy, key) => {
       let newChild = {};
-      if (key !== this.parentFeature['objectGuid']) {
+      if (key !== this.formCopyService.parentFeature['fid']) {
         const valuesToCopy = {};
-        for (let i = 0; i <= this.parentFeature.children.length - 1; i++) {
-          const child = this.parentFeature.children[i];
-          if (child.objectGuid === key) {
+        for (let i = 0; i <= parentFeature.children.length - 1; i++) {
+          const child = parentFeature.children[i];
+          if (child.fid === key) {
             fieldsToCopy.forEach((value, key1) => {
               valuesToCopy[key1] = child[key1];
             })
           }
         }
         newChild = this.featureInitializer.create(fieldsToCopy.get('objecttype'), valuesToCopy);
-        newChilds.push(newChild);
+        // tslint:disable-next-line:prefer-for-of
+        for (let i = 0; i < relatedFeatures.length; i++) {
+          if (relatedFeatures[i] === key) {
+            newChilds.push(newChild);
+          }
+        }
       }
     });
     return newChilds;
@@ -199,12 +229,30 @@ export class FormCopyComponent implements OnInit {
   public openForm(feature) {
     if (feature) {
         this.originalFeature = feature;
-        this.formConfig = this.formConfigRepo.getFormConfig(this.originalFeature.clazz);
+        this.formConfig = this.configService.getFormConfig(this.originalFeature.clazz);
     }
   }
 
   public setDeleteRelated(event: any) {
     this.deleteRelated = !this.deleteRelated;
+  }
+
+  public setCopyAllRelatedFeatures(event: any) {
+    if (this.formCopyService.parentFeature.children) {
+       this.relatedFeatures = [];
+      // tslint:disable-next-line:prefer-for-of
+       for (let i = 0; i < this.formCopyService.parentFeature.children.length; i++) {
+         this.relatedFeatures.push(this.formCopyService.parentFeature.children[i].fid);
+       }
+    }
+  }
+
+  public isAllRelatedFeaturesSet(): boolean {
+    if (this.formCopyService.parentFeature.children) {
+      return this.formCopyService.parentFeature.children.length === this.relatedFeatures.length;
+    } else {
+      return false;
+    }
   }
 
   public settings() {

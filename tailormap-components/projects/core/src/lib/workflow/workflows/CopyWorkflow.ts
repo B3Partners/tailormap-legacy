@@ -36,10 +36,16 @@ export class CopyWorkflow extends Workflow {
       (features: Feature[]) => {
         if (features && features.length > 0) {
           const feat = features[0];
-          if (!this.hasDestinationFeature(feat)) {
-            this.destinationFeatures.push(feat);
+          if ( this.feature.clazz === feat.clazz) {
+            if (!this.hasDestinationFeature(feat)) {
+              this.destinationFeatures.push(feat);
+            }
+            this.highlightDestinationFeatures();
+          } else {
+            this.snackBar.open('Geselecteerde feature is niet van hetzelfde type', '', {
+              duration: 5000,
+            });
           }
-          this.highlightDestinationFeatures();
         }
       },
       error => {

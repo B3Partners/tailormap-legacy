@@ -4,9 +4,9 @@ import {
   GeoService,
   layerVisibilityEvent,
   MapComponent,
+  VectorLayer,
 } from './Mapcomponents';
 import { LayerVisibilityEvent } from '../../core/src/lib/shared/models/event-models';
-
 
 declare interface LayerSelectedEvent{
   appLayer: AppLayer;
@@ -27,6 +27,7 @@ declare interface ViewerController {
   getService: (serviceId: number) => GeoService;
   getAppLayerById: (appLayerId: number) => AppLayer;
   getAppLayer: (serviceId: number, layerName: string) => AppLayer;
+  setFilterString: (filter: string, appLayer : AppLayer, name: string) => void;
 
   addListener: (eventName: string, handler: layerEventHandler) => void;
   getComponentsByClassNames: (classNames : string[]) => TailormapComponent[];
@@ -35,8 +36,10 @@ declare interface ViewerController {
   // tslint:disable-next-line:unified-signatures
   getVisibleLayers(castToStrings: false): number[];
   getVisibleLayers(castToStrings: true): string[];
-}
 
+  registerSnappingLayer: (vectorLayer: VectorLayer) => void;
+  addListener: (eventName: string, handler: layerEventHandler) => void;
+}
 declare interface TailormapComponent{
   getContentContainer: () => string;
 }
