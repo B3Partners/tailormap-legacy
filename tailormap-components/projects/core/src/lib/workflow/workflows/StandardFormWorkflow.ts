@@ -97,7 +97,22 @@ export class StandardFormWorkflow extends Workflow {
     } else {
       allowedFeaturesTypes = this.formConfigRepo.getFeatureTypes();
     }
-    return allowedFeaturesTypes;
+    const visibleLayers = this.calculateVisibleLayers();
+    const newAr = allowedFeaturesTypes.filter(value => visibleLayers.includes(value))
+    return newAr;
+  }
+
+  private calculateVisibleLayers(): string[] {
+    const visibleLayers = [];
+
+    const appLayers = this.tailorMap.getViewerController().getVisibleLayers();
+    appLayers.forEach(appLayerId => {
+      const appLayer = this.tailorMap.getViewerController().getAppLayerById(appLayerId);
+      let layerName: string = appLayer.layerName;
+      layerName = LayerUtils.sanitzeLayername(layerName);
+      visibleLayers.push(layerName);
+    });
+    return visibleLayers;
   }
 
   public afterEditting(): void {
