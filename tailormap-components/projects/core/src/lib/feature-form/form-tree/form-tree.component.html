@@ -5,7 +5,10 @@
           <mat-icon class="mat-icon-rtl-mirror">
           </mat-icon>
         </button>
-        <span class="{{node.selected ? 'selected' : ''}} {{node?.feature.id ? '' : 'newNode'}}">{{node.name}}</span>
+        <mat-checkbox *ngIf="isCopy" name="{{node?.feature.id}}" id="{{node?.feature.id}}" (change)="addFeatureForCopy($event, node?.feature.id)" [checked]="isFeatureForCopyChecked(node?.feature.id) " ></mat-checkbox>
+        <span class="{{node.selected ? 'selected' : ''}} {{node?.feature.id ? '' : 'newNode'}}">
+
+          {{node.name}}</span>
       </div>
     </mat-tree-node>
 
