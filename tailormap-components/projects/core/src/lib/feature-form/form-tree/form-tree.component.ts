@@ -41,7 +41,13 @@ export class FormTreeComponent implements OnInit, OnChanges {
   public features: Feature[];
 
   @Input()
+  public isCopy =false;
+
+  @Input()
   public feature: Feature;
+
+  @Input()
+  public featuresToCopy = [];
 
   public treeControl = new FlatTreeControl<FlatNode>(node => node.level, node => node.expandable);
 
@@ -99,6 +105,30 @@ export class FormTreeComponent implements OnInit, OnChanges {
       });
     });
     return nodes;
+  }
+
+  public isFeatureForCopyChecked(featureId: number): boolean{
+    let isIn = false;
+    for (let i = 0; i < this.featuresToCopy.length; i++){
+      if (featureId === this.featuresToCopy[i]){
+        return true;
+      }
+    }
+    return isIn;
+  }
+
+  public addFeatureForCopy(event: any, featureId: number){
+    if (event.checked) {
+      this.featuresToCopy.push(featureId);
+    }
+     else {
+      for (let i = 0; i < this.featuresToCopy.length; i++) {
+        if (featureId === this.featuresToCopy[i]) {
+          this.featuresToCopy.splice(i, 1);
+        }
+      }
+    }
+
   }
 
   public getNodeClassName(node: FlatNode) {
