@@ -52,7 +52,7 @@ export class SewageWorkflow extends Workflow {
 
   public addFeature(featureType: string) {
     if (this.currentStep === Step.START) {
-      this.makeChoices();
+      this.makeChoices(featureType);
     }
     if (this.currentStep === Step.WELL1 || this.currentStep === Step.WELL2) {
       if (this.currentStep === Step.WELL1) {
@@ -116,7 +116,7 @@ export class SewageWorkflow extends Workflow {
   private getExtraParams() {
 
     if (this.currentStep === Step.DUCT) {
-      switch (this.choice.duct){
+      switch (this.choice.duct) {
         case 'mechleiding':
           return {
             pompput_id: this.well1Feature.objectGuid,
@@ -128,23 +128,26 @@ export class SewageWorkflow extends Workflow {
             eindput_id: this.well2Feature.objectGuid,
           };
       }
-    }else {
+    } else {
       return {};
     }
   }
 
-  private createFeature(geoJson: wellknown.GeoJSONGeometry, params : any): Feature {
+  private createFeature(geoJson: wellknown.GeoJSONGeometry, params: any): Feature {
     const objecttype = this.featureType.charAt(0).toUpperCase() + this.featureType.slice(1);
     const feat = this.featureInitializerService.create(objecttype,
       {...params, geometrie: geoJson, clazz: this.featureType, children: []});
     return feat;
   }
 
-  private makeChoices() {
+  private makeChoices(featureType: string) {
     const dialogRef = this.dialog.open(ChooseTypesComponent, {
       width: '240px',
       height: '370px',
       disableClose: true,
+      data: {
+        featureType,
+      },
     });
     // tslint:disable-next-line: rxjs-no-ignored-subscription
     dialogRef.afterClosed().subscribe(result => {
@@ -160,21 +163,21 @@ export class SewageWorkflow extends Workflow {
   }
 
   public openDialog(feature ?: Feature): void {
-     const dialogData: DialogData = {
-       formFeatures: [feature],
-       isBulk: false,
-       closeAfterSave: true,
-     };
-     const dialogRef = this.dialog.open(FormComponent, {
-       width: '1050px',
-       height: '800px',
-       disableClose: true,
-       data: dialogData,
-     });
-     // tslint:disable-next-line: rxjs-no-ignored-subscription
-     dialogRef.afterClosed().subscribe(result => {
-       this.afterEditting(result);
-     });
+    const dialogData: DialogData = {
+      formFeatures: [feature],
+      isBulk: false,
+      closeAfterSave: true,
+    };
+    const dialogRef = this.dialog.open(FormComponent, {
+      width: '1050px',
+      height: '800px',
+      disableClose: true,
+      data: dialogData,
+    });
+    // tslint:disable-next-line: rxjs-no-ignored-subscription
+    dialogRef.afterClosed().subscribe(result => {
+      this.afterEditting(result);
+    });
   }
 
   public mapClick(data: MapClickedEvent): void {
