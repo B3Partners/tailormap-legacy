@@ -17,7 +17,6 @@ import {
   Choice,
   ChooseDialogData,
 } from '../../../workflow/workflows/WorkflowModels';
-import { DialogData } from '../../../feature-form/form/form-models';
 
 @Component({
   selector: 'tailormap-choose-types',
