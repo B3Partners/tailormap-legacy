@@ -30,6 +30,7 @@ import { DatasourceParams } from './datasource-params';
 import { Feature } from '../../../shared/generated';
 import { FormconfigRepositoryService } from '../../../shared/formconfig-repository/formconfig-repository.service';
 import { LayerService } from '../layer.service';
+import { LayerUtils } from '../../../shared/layer-utils/layer-utils.service';
 
 export class AttributeDataSource extends DataSource<any> {
 
@@ -132,10 +133,11 @@ export class AttributeDataSource extends DataSource<any> {
         if (row.geometrie) {
           rest.geometrie =  wellknown.parse(row.geometrie);
         }
+        const className = LayerUtils.sanitzeLayername(this.getLayerName().toLowerCase());
         feature.children = [];
-        feature.clazz = this.getLayerName().toLowerCase();
+        feature.clazz = className;
         feature.objectGuid = row.object_guid;
-        feature.objecttype = this.getLayerName()[0].toUpperCase() + this.getLayerName().substr(1);
+        feature.objecttype = className[0].toUpperCase() + className.substr(1);
         featuresChecked.push({ ...feature, ...rest });
       }
     });
