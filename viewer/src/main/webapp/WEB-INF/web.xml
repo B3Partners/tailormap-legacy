@@ -82,6 +82,16 @@
         <param-name>flamingo.solr.url</param-name>
         <param-value>http://SERVER/solr/</param-value>
     </context-param>
+    <context-param>
+        <description>You must create this by hand in your geoserver to use the UserLayerActionBean</description>
+        <param-name>userlayer.geoserver.workspace</param-name>
+        <param-value>GBIuserlayers</param-value>
+    </context-param>
+    <context-param>
+        <description>You must create this by hand in your geoserver to use the UserLayerActionBean</description>
+        <param-name>userlayer.geoserver.store</param-name>
+        <param-value>GBIstore</param-value>
+    </context-param>
     <filter>
         <description>Filter from Tomcat 6 distribution, see http://wiki.apache.org/tomcat/FAQ/CharacterEncoding</description>
         <filter-name>SetCharacterEncodingFilter</filter-name>

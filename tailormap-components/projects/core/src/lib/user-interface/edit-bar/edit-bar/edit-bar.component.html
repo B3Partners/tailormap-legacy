@@ -1,0 +1,15 @@
+<div class="edit-bar">
+
+  <button mat-raised-button color="primary" [disabled]="this.dialog.openDialogs.length >0"
+          (click)="onEdit()">
+    edit
+  </button>
+  <button mat-raised-button color="primary" [disabled]="!this.hasSplit()"
+          (click)="onSplit()">
+    split
+  </button>
+  <button mat-raised-button color="primary" [disabled]="!this.hasMerge()"
+          (click)="onMerge()">
+    merge
+  </button>
+</div>

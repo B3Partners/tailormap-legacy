@@ -34,7 +34,6 @@ export interface Boom extends Feature {
   domein?: string;
   eigenaar?: string;
   eind_tijd?: string;
-  fid?: number;
   gak?: string;
   gas?: string;
   gaw?: string;

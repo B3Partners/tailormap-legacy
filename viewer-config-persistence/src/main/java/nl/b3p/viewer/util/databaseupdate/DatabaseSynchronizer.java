@@ -183,6 +183,9 @@ public class DatabaseSynchronizer implements Servlet {
 	    // 5.7.7
         updates.put("42", new UpdateElement(Collections.singletonList("add_form.sql"), String.class, false));
 
+        // 5.7.9
+        updates.put("43", new UpdateElement(Collections.singletonList("add_userlayer.sql"), String.class, false));
+
         // 
         // NB when adding an update also update the metadata version in the testdata.sql file around line 348
         // that is: /src/test/resources/nl/b3p/viewer/util/testdata.sql

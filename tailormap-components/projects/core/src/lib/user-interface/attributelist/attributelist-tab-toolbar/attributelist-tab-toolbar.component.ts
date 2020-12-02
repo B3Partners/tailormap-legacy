@@ -1,16 +1,15 @@
-
 import {
   Component,
+  Input,
   OnInit,
 } from '@angular/core';
-
-import { AttributelistColumnsService } from '../attributelist-common/attributelist-columns.service';
 import { AttributelistColumn } from '../attributelist-common/attributelist-column-models';
 import { ExportService } from '../../../shared/export-service/export.service';
 import { ExportFeaturesParameters } from '../../../shared/export-service/export-models';
 import { Layer } from '../layer.model';
 import { LayerService } from '../layer.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { AttributelistTabComponent } from '../attributelist-tab/attributelist-tab.component';
 
 @Component({
   selector: 'tailormap-attributelist-tab-toolbar',
@@ -18,6 +17,9 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   styleUrls: ['./attributelist-tab-toolbar.component.css'],
 })
 export class AttributelistTabToolbarComponent implements OnInit {
+
+  @Input()
+  public tab: AttributelistTabComponent;
 
   private layer: Layer;
 
@@ -33,13 +35,11 @@ export class AttributelistTabToolbarComponent implements OnInit {
   constructor(
       private exportService: ExportService,
       private layerService: LayerService,
-      private columnData: AttributelistColumnsService,
       private _snackBar: MatSnackBar) {
   }
 
   public ngOnInit(): void {
     this.exportParams.application = this.layerService.getAppId();
-    this.columnData.column$.subscribe(message => this.columns = message)
   }
 
   /**
@@ -49,6 +49,7 @@ export class AttributelistTabToolbarComponent implements OnInit {
     this.exportParams.appLayer =  this.layer.id;
     this.exportParams.type = format;
     this.exportParams.columns = [];
+    this.columns = this.tab.table.getActiveColumns(false);
     this.columns.forEach(c => {
       if (c.visible) {
         this.exportParams.columns.push(c.name);

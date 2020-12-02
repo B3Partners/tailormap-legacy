@@ -8,7 +8,6 @@ export interface Weginspectie extends Feature {
   a7_randschade?: number;
   data_guid?: string;
   e1_dwarsonvlakheid?: number;
-  fid?: number;
   id?: number;
   inspecteur?: string;
   inspectiedatum?: string;

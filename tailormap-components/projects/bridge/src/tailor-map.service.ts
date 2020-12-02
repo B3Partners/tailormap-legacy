@@ -13,6 +13,7 @@ import {
   AppLayer,
   AppLoader,
   MapComponent,
+  SplitComponent,
   ViewerController,
 } from '../typings';
 import { take } from 'rxjs/operators';
@@ -68,10 +69,24 @@ export class TailorMapService {
     map.addListener('ON_LAYER_VISIBILITY_CHANGED', (object, event) => {
       this.ngZone.run(() => this.layerVisibilityChangedSubject$.next(event));
     });
-    vc.addListener('ON_LAYER_SELECTED', ( event) => {
+    vc.addListener('ON_LAYER_SELECTED', (event) => {
       this.selectedLayer = event.appLayer;
     });
-    this.viewerControllerSubject$.next(vc);
   }
 
+  public openSplitComponent() {
+    const vc = this.getViewerController();
+    const comps = vc.getComponentsByClassNames(['viewer.components.Split']);
+    if (comps && comps.length > 0) {
+      (comps[0] as SplitComponent).showWindow();
+    }
+  }
+
+  public openMergeComponent() {
+    const vc = this.getViewerController();
+    const comps = vc.getComponentsByClassNames(['viewer.components.Merge']);
+    if (comps && comps.length > 0) {
+      (comps[0] as SplitComponent).showWindow();
+    }
+  }
 }

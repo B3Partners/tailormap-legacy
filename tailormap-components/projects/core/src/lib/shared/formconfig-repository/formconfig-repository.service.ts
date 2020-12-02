@@ -7,7 +7,10 @@ import {
 import { DomainRepositoryService } from '../../feature-form/linked-fields/domain-repository/domain-repository.service';
 import { TailorMapService } from '../../../../../bridge/src/tailor-map.service';
 import { LayerUtils } from '../layer-utils/layer-utils.service';
-import { Feature } from '../generated';
+import {
+  Feature,
+  FeatureControllerService,
+} from '../generated';
 import { ReplaySubject } from 'rxjs';
 
 @Injectable({
@@ -21,6 +24,7 @@ export class FormconfigRepositoryService {
 
   constructor(
     private http: HttpClient,
+    private featureController: FeatureControllerService,
     private domainRepo: DomainRepositoryService,
     private tailorMap: TailorMapService,
   ) {
@@ -29,15 +33,26 @@ export class FormconfigRepositoryService {
         this.formConfigs = {
           config: new Map<string, FormConfiguration>(),
         };
+        const featureTypes = [];
         for (const key in data.config) {
           if (data.config.hasOwnProperty(key)) {
             const sanitized = LayerUtils.sanitzeLayername(key);
             this.formConfigs.config[sanitized] = data.config[key];
+            featureTypes.push(sanitized);
           }
         }
-        this.formConfigs$.next(data);
 
-        this.domainRepo.initFormConfig(this.formConfigs);
+        this.featureController.featuretypeInformation({featureTypes}).subscribe(info => {
+          info.forEach(featuretypeMetadata => {
+            if (this.formConfigs.config[featuretypeMetadata.featuretypeName]) {
+              this.formConfigs.config[featuretypeMetadata.featuretypeName].featuretypeMetadata = featuretypeMetadata;
+            }
+          });
+
+          this.formConfigs$.next(data);
+          this.domainRepo.initFormConfig(this.formConfigs);
+        });
+
       });
   }
 

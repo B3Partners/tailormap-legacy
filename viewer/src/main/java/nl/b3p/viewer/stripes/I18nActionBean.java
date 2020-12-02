@@ -21,7 +21,7 @@ public class I18nActionBean implements ActionBean {
 
     /**
      * Returns the i18next JS translation file based on ViewerResources bundle
-     * @return
+     * @return Return resolution with resources
      */
     public Resolution i18nextJs() {
         Locale locale = LocaleUtils.toLocale(language);

@@ -144,7 +144,10 @@
           "builder": "@angular-devkit/build-ng-packagr:build",
           "options": {
             "tsConfig": "projects/core/tsconfig.lib.json",
-            "project": "projects/core/ng-package.json"
+            "project": "projects/core/ng-package.json",
+            "assets": [
+              "projects/core/src/assets"
+            ]
           }
         ,          "configurations": {
             "production": {

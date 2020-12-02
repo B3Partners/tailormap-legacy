@@ -38,7 +38,6 @@ export interface Wegvakonderdeel extends Feature {
   e2_oneffenheden?: number;
   e3_voegwijdte?: number;
   eind_tijd?: string;
-  fid?: number;
   formaat_verharding?: string;
   functie_weg?: string;
   functie_weg_plus?: string;
@@ -49,6 +48,7 @@ export interface Wegvakonderdeel extends Feature {
   fysiekvoorkomenwegplus?: string;
   gemeente?: string;
   geometrie?: Geometry;
+  historie_guid?: string;
   hoofdcategorie?: string;
   id?: number;
   imgeo_id?: string;
@@ -65,9 +65,12 @@ export interface Wegvakonderdeel extends Feature {
   ke1_dwarsonvlakheid?: string;
   ke2_oneffenheden?: string;
   ke3_voegwijdte?: string;
-  kl_standaard_opmerking_wegen?: string;
-  kl_weginspecteur?: string;
-  kl_weginspectie_mogelijk?: string;
+  kl_gewenst_kwaliteitsniveau?: string;
+  kl_huidig_kwaliteitsniveau?: string;
+  kl_maatregeltoets?: string;
+  kl_omtrek?: string;
+  kl_onderhoudscyclus?: string;
+  kl_reinigingsgebied?: string;
   lengte?: number;
   lus_vri?: string;
   m1_stroefheid?: string;
@@ -82,9 +85,12 @@ export interface Wegvakonderdeel extends Feature {
   object_guid?: string;
   ondergrond?: string;
   onderhoudjaar?: number;
+  onkruidbeheersing?: string;
+  onkruidbeheersing1?: string;
   openbare_ruimte?: string;
   oppervlakte?: number;
   optalud?: string;
+  orig_id?: number;
   planningen?: Array<Wegvakonderdeelplanning>;
   profielnr?: string;
   rayon?: string;
@@ -110,7 +116,6 @@ export interface Wegvakonderdeel extends Feature {
   subcategorie?: string;
   tekening?: string;
   toelichting?: string;
-  toelichting1?: string;
   type_sportbedrijf?: string;
   veiligheid?: string;
   vereiste_verlichting?: string;

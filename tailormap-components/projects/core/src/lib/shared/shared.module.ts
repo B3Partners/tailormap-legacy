@@ -13,7 +13,10 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatGridListModule } from '@angular/material/grid-list';
-import { MatIconModule } from '@angular/material/icon';
+import {
+  MatIconModule,
+  MatIconRegistry,
+} from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
 import { MatMenuModule } from '@angular/material/menu';
@@ -32,6 +35,7 @@ import { TreeComponent } from './tree/tree.component';
 import { OverlayComponent } from './overlay-service/overlay/overlay.component';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @NgModule({
   declarations: [
@@ -104,4 +108,13 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
   ],
 })
 export class SharedModule {
+  constructor(
+    private matIconRegistry: MatIconRegistry,
+    private domSanitizer: DomSanitizer,
+  ) {
+    this.matIconRegistry.addSvgIcon(
+      'pietje',
+      this.domSanitizer.bypassSecurityTrustResourceUrl('http://localhost:3200/assets/imgs/pietje.svg'),
+    );
+  }
 }

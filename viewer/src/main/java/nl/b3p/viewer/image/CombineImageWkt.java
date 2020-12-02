@@ -114,6 +114,7 @@ public class CombineImageWkt {
     }
 
     /**
+     * @param hexrgb Color in hex
      * @deprecated set color on the {@link #getStyle() featurestyle} instead
      */
     @Deprecated

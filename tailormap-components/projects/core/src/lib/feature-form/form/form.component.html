@@ -1,4 +1,4 @@
-<div class="container">
+<div *ngIf="formConfig" class="container">
 
   <h1>Formulier - {{formConfig.name}} {{formDirty ? '*' : ''}}
     <button mat-button  mat-mini-fab color="" (click)="closeDialog();" class="close-button" >
