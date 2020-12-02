@@ -286,6 +286,8 @@ public class ApplicationLayer {
 
         if(ft != null) {
             json.put("geometryAttribute", ft.getGeometryAttribute());
+            json.put("featureType", ft.getId());
+            json.put("featureTypeName", ft.getTypeName());
             if(includeRelations) {
 
                 json.put("relations", getRelationsJSON(layer));
