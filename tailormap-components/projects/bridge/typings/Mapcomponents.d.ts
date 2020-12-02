@@ -32,6 +32,7 @@ declare interface Level {
 declare interface AppLayer {
   id: string;
   layerName: string;
+  alias: string;
 
   attribute: boolean;   // has attribute table???
   featureType: number;

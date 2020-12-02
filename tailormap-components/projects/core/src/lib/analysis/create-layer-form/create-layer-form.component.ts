@@ -24,14 +24,11 @@ import {
   tap,
 } from 'rxjs/operators';
 import { CreateLayerLayerSelectionComponent } from '../create-layer-layer-selection/create-layer-layer-selection.component';
-import { selectCreateLayerData } from '../state/analysis.selectors';
-import {
-  of,
-  Subject,
-} from 'rxjs';
-import { CreateLayerDataModel } from '../models/create-layer-data.model';
-import { TreeModel } from '../../shared/tree/models/tree.model';
+import { Subject } from 'rxjs';
 import { MetadataService } from '../../application/services/metadata.service';
+import { AttributeMetadataResponse } from '../../shared/attribute-service/attribute-models';
+import { AppLayer } from '../../../../../bridge/typings';
+import { selectSelectedDataSource } from '../state/analysis.selectors';
 
 @Component({
   selector: 'tailormap-create-layer-form',
@@ -44,22 +41,30 @@ export class CreateLayerFormComponent implements OnInit, OnDestroy {
   public next = new EventEmitter();
 
   private destroyed = new Subject();
-  public layerName = new FormControl('');
-  public createLayerData: CreateLayerDataModel;
   public selectingDataSource: boolean;
+  public loadingData: boolean;
+  private layerMetaData: AttributeMetadataResponse;
+
+  public layerName = new FormControl('');
+  public selectedDataSource: AppLayer;
 
   constructor(
     private store$: Store<AnalysisState>,
     private overlay: OverlayService,
     private metadataService: MetadataService,
-  ) {}
+  ) {
+  }
 
   public ngOnInit() {
-    this.store$.select(selectCreateLayerData)
+    this.store$.select(selectSelectedDataSource)
       .pipe(takeUntil(this.destroyed))
-      .subscribe(createLayerData => {
-        this.createLayerData = createLayerData;
+      .subscribe(selectedDataSource => {
+        if (this.selectedDataSource !== selectedDataSource) {
+          this.fetchMetadata(selectedDataSource)
+        }
+        this.selectedDataSource = selectedDataSource
       });
+
   }
 
   public ngOnDestroy() {
@@ -80,7 +85,7 @@ export class CreateLayerFormComponent implements OnInit, OnDestroy {
           return CreateLayerLayerSelectionComponent.open(this.overlay, {
             tree,
             title: 'Selectiebron',
-            selectedLayer: this.createLayerData.selectedDataSource,
+            selectedLayer: this.selectedDataSource,
           }).afterClosed$;
         }),
         tap(() => this.selectingDataSource = false),

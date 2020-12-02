@@ -39,16 +39,16 @@ export class MetadataService implements OnDestroy {
       });
   }
 
-  public getAttributesForLayer$(layerId: string): Observable<AttributeMetadataResponse> {
-    if (this.attributeCache.has(layerId)) {
-      return of(this.attributeCache.get(layerId));
+  public getFeatureTypeMetadata$(layerId: string | number): Observable<AttributeMetadataResponse> {
+    if (this.attributeCache.has(`${layerId}`)) {
+      return of(this.attributeCache.get(`${layerId}`));
     }
     return this.attributeService.featureTypeMetadata$({
       application: this.applicationId,
       appLayer: +(layerId),
     }).pipe(tap(result => {
       if (result.success) {
-        this.attributeCache.set(layerId, result);
+        this.attributeCache.set(`${layerId}`, result);
       }
     }));
   }

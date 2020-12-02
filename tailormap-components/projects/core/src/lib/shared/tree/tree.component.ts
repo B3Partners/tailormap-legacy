@@ -23,6 +23,9 @@ export class TreeComponent implements OnDestroy {
   @Input()
   public useRadioInputs?: boolean;
 
+  @Input()
+  public expandOnGroupClick?: boolean;
+
   @ViewChild('treeElement', { static: false, read: ElementRef })
   private treeElement: ElementRef<HTMLDivElement>;
 
@@ -93,6 +96,9 @@ export class TreeComponent implements OnDestroy {
   }
 
   public setNodeSelected(node: FlatTreeModel) {
+    if (this.expandOnGroupClick && FlatTreeHelper.isExpandable(node)) {
+      this.toggleNodeExpansion(node);
+    }
     this.treeService.selectionStateChanged(node.id);
   }
 

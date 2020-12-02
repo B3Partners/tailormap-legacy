@@ -12,6 +12,4 @@ const selectAnalysisState = createFeatureSelector<AnalysisState>(analysisStateKe
 
 export const selectCreateLayerMode = createSelector(selectAnalysisState, state => state.createLayerMode);
 
-export const selectCreateLayerData = createSelector(selectAnalysisState, (state): CreateLayerDataModel => ({
-  selectedDataSource: state.selectedDataSource,
-}))
+export const selectSelectedDataSource = createSelector(selectAnalysisState, state => state.selectedDataSource);

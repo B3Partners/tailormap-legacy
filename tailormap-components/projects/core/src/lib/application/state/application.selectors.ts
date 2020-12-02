@@ -34,7 +34,7 @@ export const childToTreeModel = (
     }
     return {
       id: `appLayer-${layer.id}`,
-      label: layer.layerName,
+      label: layer.alias || layer.layerName,
       type: 'layer',
       metadata: layer,
     };

@@ -31,6 +31,7 @@ import { DialogCloseButtonComponent } from './dialog-close-button/dialog-close-b
 import { TreeComponent } from './tree/tree.component';
 import { OverlayComponent } from './overlay-service/overlay/overlay.component';
 import { MatRadioModule } from '@angular/material/radio';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 
 @NgModule({
   declarations: [
@@ -67,6 +68,7 @@ import { MatRadioModule } from '@angular/material/radio';
     MatMenuModule,
     MatDialogModule,
     MatRadioModule,
+    MatProgressBarModule,
   ],
   exports: [
     ReactiveFormsModule,
@@ -94,6 +96,7 @@ import { MatRadioModule } from '@angular/material/radio';
     DialogCloseButtonComponent,
     TreeComponent,
     MatRadioModule,
+    MatProgressBarModule,
   ],
   entryComponents: [],
   providers: [

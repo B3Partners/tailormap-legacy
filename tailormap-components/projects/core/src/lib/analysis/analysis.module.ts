@@ -14,6 +14,7 @@ import { CreateLayerFormComponent } from './create-layer-form/create-layer-form.
 import { CreateLayerStylingComponent } from './create-layer-styling/create-layer-styling.component';
 import { CreateLayerLayerSelectionComponent } from './create-layer-layer-selection/create-layer-layer-selection.component';
 import { ApplicationModule } from '../application/application.module';
+import { CriteriaComponent } from './criteria/criteria/criteria.component';
 
 
 @NgModule({
@@ -23,6 +24,7 @@ import { ApplicationModule } from '../application/application.module';
     CreateLayerFormComponent,
     CreateLayerStylingComponent,
     CreateLayerLayerSelectionComponent,
+    CriteriaComponent,
   ],
   imports: [
     CommonModule,
