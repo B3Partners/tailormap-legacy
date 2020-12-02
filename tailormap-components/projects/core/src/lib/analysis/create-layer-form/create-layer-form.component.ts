@@ -25,8 +25,6 @@ import {
 } from 'rxjs/operators';
 import { CreateLayerLayerSelectionComponent } from '../create-layer-layer-selection/create-layer-layer-selection.component';
 import { Subject } from 'rxjs';
-import { MetadataService } from '../../application/services/metadata.service';
-import { AttributeMetadataResponse } from '../../shared/attribute-service/attribute-models';
 import { AppLayer } from '../../../../../bridge/typings';
 import { selectSelectedDataSource } from '../state/analysis.selectors';
 
@@ -42,8 +40,6 @@ export class CreateLayerFormComponent implements OnInit, OnDestroy {
 
   private destroyed = new Subject();
   public selectingDataSource: boolean;
-  public loadingData: boolean;
-  private layerMetaData: AttributeMetadataResponse;
 
   public layerName = new FormControl('');
   public selectedDataSource: AppLayer;
@@ -51,7 +47,6 @@ export class CreateLayerFormComponent implements OnInit, OnDestroy {
   constructor(
     private store$: Store<AnalysisState>,
     private overlay: OverlayService,
-    private metadataService: MetadataService,
   ) {
   }
 
@@ -59,9 +54,6 @@ export class CreateLayerFormComponent implements OnInit, OnDestroy {
     this.store$.select(selectSelectedDataSource)
       .pipe(takeUntil(this.destroyed))
       .subscribe(selectedDataSource => {
-        if (this.selectedDataSource !== selectedDataSource) {
-          this.fetchMetadata(selectedDataSource)
-        }
         this.selectedDataSource = selectedDataSource
       });
 

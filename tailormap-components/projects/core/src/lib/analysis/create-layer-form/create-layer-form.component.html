@@ -1,5 +1,3 @@
-<mat-progress-bar mode="indeterminate" *ngIf="loadingData"></mat-progress-bar>
-
 <div class="form">
   <div class="form-field">
     <label for="layerName">Naam kaartlaag</label>
@@ -9,8 +7,8 @@
   <div class="form-field">
     <label for="layerName">Selectiebron</label>
     <button mat-button (click)="selectDataSource()" class="form-button" [class.form-button--active]="selectingDataSource">
-      <span *ngIf="!createLayerData.selectedDataSource">Geen geselecteerd</span>
-      <span *ngIf="createLayerData.selectedDataSource">{{createLayerData.selectedDataSource.layerName}}</span>
+      <span *ngIf="!selectedDataSource">Geen geselecteerd</span>
+      <span *ngIf="selectedDataSource">{{selectedDataSource.layerName}}</span>
       <mat-icon>chevron_right</mat-icon>
     </button>
   </div>
