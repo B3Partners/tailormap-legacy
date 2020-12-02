@@ -5,3 +5,7 @@ export interface Choice {
   duct?: string;
   cancelled: boolean;
 };
+
+export interface ChooseDialogData {
+  featureType: string;
+}

@@ -12,7 +12,6 @@ export interface Boominspectie extends Feature {
   bww?: string;
   data_guid?: string;
   dhk?: string;
-  fid?: number;
   gak?: string;
   gas?: string;
   gaw?: string;

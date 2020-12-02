@@ -1,7 +1,6 @@
 /* tslint:disable */
 import { Feature } from './feature';
 export interface Wegvakonderdeelplanning extends Feature {
-  fid?: number;
   hoeveelheid?: number;
   id?: number;
   jaarvanuitvoering?: number;

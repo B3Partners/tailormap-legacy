@@ -1,9 +1,11 @@
 import {
   Component,
+  Inject,
   NgZone,
   OnInit,
 } from '@angular/core';
 import {
+  MAT_DIALOG_DATA,
   MatDialogRef,
 } from '@angular/material/dialog';
 import {
@@ -11,7 +13,10 @@ import {
   FormGroup,
   Validators,
 } from '@angular/forms';
-import { Choice } from '../../../workflow/workflows/WorkflowModels';
+import {
+  Choice,
+  ChooseDialogData,
+} from '../../../workflow/workflows/WorkflowModels';
 
 @Component({
   selector: 'tailormap-choose-types',
@@ -24,6 +29,7 @@ export class ChooseTypesComponent implements OnInit {
 
   constructor(public dialogRef: MatDialogRef<ChooseTypesComponent>,
               private formBuilder: FormBuilder,
+              @Inject(MAT_DIALOG_DATA) public data: ChooseDialogData,
               private ngZone: NgZone) {
   }
 
@@ -31,7 +37,7 @@ export class ChooseTypesComponent implements OnInit {
     this.form = this.formBuilder.group({
       well1: ['rioolput', [Validators.required]],
       well2: ['rioolput', [Validators.required]],
-      duct: ['mechleiding', [Validators.required]],
+      duct: [this.data.featureType, [Validators.required]],
     })
   }
 

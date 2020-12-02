@@ -25,7 +25,7 @@ public class ParserTest {
     public void init(){
         this.parser = new Parser();
 
-        String filename = "paspoorten" + File.separator + "Element.txt";
+        String filename = "paspoorten" + File.separator + "Wegvakonderdeelplanning.txt";
         URL u = this.getClass().getResource(filename);
         assumeNotNull("Het test bestand moet er zijn.", u);
         element = new File(u.getFile());
@@ -45,7 +45,7 @@ public class ParserTest {
         File dir = new File(u.getFile());
         assert(dir.exists());
         List<Paspoort> ps = this.parser.parse(dir);
-        assertEquals(118, ps.size());
+        assertEquals(22, ps.size());
     /*    Set<String> types = new HashSet<>();
         ps.forEach(p ->{
             p.getTabs().forEach(t->{
@@ -62,8 +62,8 @@ public class ParserTest {
         assertEquals(1, ps.size());
         Paspoort p = ps.get(0);
 
-        assertEquals("Element", p.getNaam());
-        assertEquals("Element", p.getBeschrijving());
+        assertEquals("Wegvakonderdeelplanning", p.getNaam());
+        assertEquals("Planningsresultaten wegvakonderdeel", p.getBeschrijving());
         assertEquals(1, p.getTabs().size());
     }
 
@@ -74,10 +74,10 @@ public class ParserTest {
         Paspoort p = ps.get(0);
 
         PaspoortTab t = p.getTabs().get(0);
-        assertEquals("Nieuwe tab", t.getNaam());
-        assertEquals("Element", t.getCaption());
+        assertEquals("WEGVAKONDERDEEL_PLANNING", t.getNaam());
+        assertEquals("Planning", t.getCaption());
         assertEquals(0, t.getIndex());
-        assertEquals(2, t.getControls().size());
+        assertEquals(8, t.getControls().size());
     }
     @Test
     public void testParseElementControl() throws IOException {
@@ -88,14 +88,14 @@ public class ParserTest {
         PaspoortTab t = p.getTabs().get(0);
 
         PaspoortControl c = t.getControls().get(0);
-        assertEquals("Elementtype", c.getNaam());
-        assertEquals("ELEMENT_TYPE", c.getKolom());
+        assertEquals("Maatregel", c.getNaam());
+        assertEquals("MAATREGEL_WVKO", c.getKolom());
         assertEquals(0, c.getIndex());
-        assertEquals("GeoVisia.Framework.DQChoiceList", c.getType());
-        assertEquals(3, c.getTop());
-        assertEquals(22, c.getHeight());
-        assertEquals(440, c.getWidth());
+        assertEquals("GeoVisia.Framework.DQTextBox", c.getType());
+        assertEquals(24, c.getTop());
+        assertEquals(24, c.getHeight());
+        assertEquals(400, c.getWidth());
         assertEquals(false, c.getLocked());
-        assertEquals("ELEMTP", c.getDomein());
+        assertEquals("", c.getDomein());
     }
 }

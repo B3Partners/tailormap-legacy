@@ -29,7 +29,6 @@ export interface MechLeiding extends Feature {
   drukklasse?: string;
   eind_tijd?: string;
   eisvoorzorgsmaatregel?: string;
-  fid?: number;
   funderingstype?: string;
   gemeente?: string;
   geometrie?: Geometry;

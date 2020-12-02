@@ -1,6 +1,8 @@
 /* tslint:disable */
 import { Feature } from './feature';
 import { Geometry } from './geometry';
+import { RioolputInspectie } from './rioolput-inspectie';
+import { RioolputPlanning } from './rioolput-planning';
 export interface Rioolput extends Feature {
   aanlegjaar?: number;
   aansluitend_stelseltype?: string;
@@ -48,7 +50,6 @@ export interface Rioolput extends Feature {
   drempel_breedte?: number;
   drempelhoogte_nap?: number;
   eind_tijd?: string;
-  fid?: number;
   funderingstype?: string;
   geleiding?: string;
   gem_emissie_jaar?: number;
@@ -71,6 +72,7 @@ export interface Rioolput extends Feature {
   in_onderzoek?: string;
   inschakelpeil?: number;
   inspectiedatum?: string;
+  inspecties?: Array<RioolputInspectie>;
   int_putmateriaal?: string;
   invoer?: number;
   kleptype?: string;
@@ -102,6 +104,7 @@ export interface Rioolput extends Feature {
   openbare_ruimte?: string;
   ophanginrichting?: string;
   opp_water_straat?: number;
+  planningen?: Array<RioolputPlanning>;
   pompcapaciteit?: number;
   pomptype?: string;
   porositeit?: number;

@@ -1,6 +1,7 @@
 /* tslint:disable */
 import { Feature } from './feature';
 import { Geometry } from './geometry';
+import { GrasPlanning } from './gras-planning';
 export interface Gras extends Feature {
   aanlegjaar?: number;
   afbeelding?: string;
@@ -15,7 +16,6 @@ export interface Gras extends Feature {
   categorie?: string;
   domein?: string;
   eind_tijd?: string;
-  fid?: number;
   functieondsteunwegdeel?: string;
   fysiekvkbegrter?: string;
   fysiekvkbegrterplus?: string;
@@ -27,6 +27,8 @@ export interface Gras extends Feature {
   grastype?: string;
   groenobject_id?: string;
   harde_rand?: number;
+  historie_guid?: string;
+  hondenuitlaatgebied?: string;
   hoofdcategorie?: string;
   id?: number;
   imgeo_id?: string;
@@ -39,6 +41,7 @@ export interface Gras extends Feature {
   oppervlakte?: number;
   optalud?: string;
   orig_id?: number;
+  planningen?: Array<GrasPlanning>;
   ploegindeling?: string;
   rayon?: string;
   reg_begin?: string;
@@ -55,6 +58,7 @@ export interface Gras extends Feature {
   std_structuurelement?: string;
   structuurelement?: string;
   subcategorie?: string;
+  test?: string;
   toelichting?: string;
   type_ondsteunwaterdeel?: string;
   wijk?: string;

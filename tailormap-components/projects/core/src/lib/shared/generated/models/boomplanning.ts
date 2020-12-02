@@ -6,7 +6,6 @@ export interface Boomplanning extends Feature {
   calc_plan_id?: string;
   calc_plan_name?: string;
   data_guid?: string;
-  fid?: number;
   frequentie?: number;
   gepland_uitgevoerd?: string;
   hoeveelheid?: number;
