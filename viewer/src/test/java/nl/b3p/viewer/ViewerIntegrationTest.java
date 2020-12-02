@@ -62,7 +62,7 @@ public class ViewerIntegrationTest {
      */
     private HttpResponse response;
 
-    private static final Properties databaseprop = new Properties();
+    protected static final Properties databaseprop = new Properties();
 
     /**
      * initialize database props.

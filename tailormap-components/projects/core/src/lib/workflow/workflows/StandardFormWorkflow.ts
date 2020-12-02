@@ -17,9 +17,23 @@ export class StandardFormWorkflow extends Workflow {
     super();
   }
 
-  public addFeature(featureType: string) {
+  public addFeature(featureType: string, geometryType ?: string) {
     this.featureType = featureType;
-    this.vectorLayer.drawFeature('Polygon');
+    const geomtype = geometryType || this.formConfigRepo.getFormConfig(featureType).featuretypeMetadata.geometryType;
+    this.vectorLayer.drawFeature(this.convertGeomType(geomtype));
+  }
+
+  private convertGeomType(type: string): string {
+    switch (type) {
+      case 'POLYGON':
+        return 'Polygon';
+      case 'LINESTRING':
+        return 'LineString';
+      case 'POINT':
+        return 'Point';
+      default:
+        return 'Geometry';
+    }
   }
 
   public geometryDrawn(vectorLayer: VectorLayer, feature: any) {
@@ -34,19 +48,19 @@ export class StandardFormWorkflow extends Workflow {
   }
 
   public openDialog(formFeatures ?: Feature[]): void {
-     const dialogRef = this.dialog.open(FormComponent, {
-       width: '1050px',
-       height: '800px',
-       disableClose: true,
-       data: {
-         formFeatures,
-         isBulk: false,
-       },
-     });
-     // tslint:disable-next-line: rxjs-no-ignored-subscription
-     dialogRef.afterClosed().subscribe(result => {
-       this.afterEditting();
-     });
+    const dialogRef = this.dialog.open(FormComponent, {
+      width: '1050px',
+      height: '800px',
+      disableClose: true,
+      data: {
+        formFeatures,
+        isBulk: false,
+      },
+    });
+    // tslint:disable-next-line: rxjs-no-ignored-subscription
+    dialogRef.afterClosed().subscribe(result => {
+      this.afterEditting();
+    });
   }
 
   public mapClick(data: MapClickedEvent): void {
@@ -59,7 +73,10 @@ export class StandardFormWorkflow extends Workflow {
         if (features && features.length > 0) {
           const feat = features[0];
 
-          this.highlightLayer.readGeoJSON(this.featureInitializerService.retrieveGeometry(feat));
+          const geom = this.featureInitializerService.retrieveGeometry(feat);
+          if (geom) {
+            this.highlightLayer.readGeoJSON(geom);
+          }
 
           this.openDialog([feat]);
         }
@@ -80,14 +97,31 @@ export class StandardFormWorkflow extends Workflow {
     } else {
       allowedFeaturesTypes = this.formConfigRepo.getFeatureTypes();
     }
-    return allowedFeaturesTypes;
+    const visibleLayers = this.calculateVisibleLayers();
+    const newAr = allowedFeaturesTypes.filter(value => visibleLayers.includes(value))
+    return newAr;
+  }
+
+  private calculateVisibleLayers(): string[] {
+    const visibleLayers = [];
+
+    const appLayers = this.tailorMap.getViewerController().getVisibleLayers();
+    appLayers.forEach(appLayerId => {
+      const appLayer = this.tailorMap.getViewerController().getAppLayerById(appLayerId);
+      let layerName: string = appLayer.layerName;
+      layerName = LayerUtils.sanitzeLayername(layerName);
+      visibleLayers.push(layerName);
+    });
+    return visibleLayers;
   }
 
   public afterEditting(): void {
-    this.vectorLayer.removeAllFeatures();
-    this.highlightLayer.removeAllFeatures();
+    this.ngZone.runOutsideAngular(() => {
+      this.vectorLayer.removeAllFeatures();
+      this.highlightLayer.removeAllFeatures();
 
-    this.tailorMap.getViewerController().mapComponent.getMap().update();
+      this.tailorMap.getViewerController().mapComponent.getMap().update();
+    });
   }
 
   public setFeature(feature: Feature): void {

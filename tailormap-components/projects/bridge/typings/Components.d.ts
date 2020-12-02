@@ -30,11 +30,23 @@ declare interface ViewerController {
   setFilterString: (filter: string, appLayer : AppLayer, name: string) => void;
 
   addListener: (eventName: string, handler: layerEventHandler) => void;
+  getComponentsByClassNames: (classNames : string[]) => TailormapComponent[];
+
+  registerSnappingLayer: (vectorLayer: VectorLayer) => void;
 
   getVisibleLayers(): number[];
   // tslint:disable-next-line:unified-signatures
   getVisibleLayers(castToStrings: false): number[];
   getVisibleLayers(castToStrings: true): string[];
+}
+declare interface TailormapComponent{
+  getContentContainer: () => string;
+}
 
-  registerSnappingLayer: (vectorLayer: VectorLayer) => void;
+declare interface SplitComponent extends TailormapComponent{
+  showWindow: () => void;
+}
+
+declare interface MergeComponent extends TailormapComponent{
+  showWindow: () => void;
 }

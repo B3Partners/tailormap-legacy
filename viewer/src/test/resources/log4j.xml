@@ -2,7 +2,7 @@
 <!DOCTYPE log4j:configuration PUBLIC "-//APACHE//DTD LOG4J 1.2//EN" "log4j.dtd">
 <log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
     <appender name="consoleAppender" class="org.apache.log4j.ConsoleAppender">
-        <param name="Threshold" value="debug" />
+        <param name="Threshold" value="all" />
         <layout class="org.apache.log4j.PatternLayout">
             <param name="ConversionPattern" value="%d{HH:mm:ss} Flamingo-viewer-test: %5p (%C#%M:%L) - %m%n" />
         </layout>
@@ -36,6 +36,9 @@
     </logger>
     <logger name="nl.b3p.viewer.util.databaseupdate.ScriptRunner">
         <level value="error" />
+    </logger>
+    <logger name="nl.b3p.viewer.userlayer">
+        <level value="trace" />
     </logger>
     <root>
         <level value="debug" />

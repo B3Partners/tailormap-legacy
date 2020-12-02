@@ -21,4 +21,3 @@ export interface RowClickData {
   feature: RowData;
   layerId: number;
 }
-

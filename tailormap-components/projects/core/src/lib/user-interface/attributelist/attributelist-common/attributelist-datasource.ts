@@ -12,7 +12,10 @@ import { Observable, of } from 'rxjs';
 import { MatSort } from '@angular/material/sort';
 import { MatPaginator } from '@angular/material/paginator';
 
-import { AttributelistTable, RowData } from './attributelist-models';
+import {
+  AttributelistTable,
+  RowData,
+} from './attributelist-models';
 import { AttributelistColumnController } from './attributelist-column-controller';
 import { AttributeService } from '../../../shared/attribute-service/attribute.service';
 import {
@@ -206,6 +209,7 @@ export class AttributeDataSource extends DataSource<any> {
       attrParams.filter = this.params.valueFilter;
     }
 
+
     // Set details params.
     if (this.params.hasDetail()) {
       attrParams.featureType = this.params.featureTypeId;
@@ -216,10 +220,11 @@ export class AttributeDataSource extends DataSource<any> {
     if (this.paginator) {
       attrParams.limit = this.paginator.pageSize;
       attrParams.page = 1;
+      // attrParams.page: this.paginator.pageIndex,   // TODO: Waar is page voor?
       attrParams.start = this.paginator.pageIndex * this.paginator.pageSize;
     } else {
       attrParams.limit = 999;
-      attrParams.page = 1
+      attrParams.page = 1;
       attrParams.start = 0;
     }
 

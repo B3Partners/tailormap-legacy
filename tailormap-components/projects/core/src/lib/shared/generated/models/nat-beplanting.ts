@@ -1,6 +1,7 @@
 /* tslint:disable */
 import { Feature } from './feature';
 import { Geometry } from './geometry';
+import { NatBeplantingOnderhoud } from './nat-beplanting-onderhoud';
 export interface NatBeplanting extends Feature {
   aanlegjaar?: number;
   afbeelding?: string;
@@ -15,7 +16,6 @@ export interface NatBeplanting extends Feature {
   categorie?: string;
   domein?: string;
   eind_tijd?: string;
-  fid?: number;
   functieondsteunwegdeel?: string;
   fysiekvkbegrterplus?: string;
   fysiekvkondsteunwd?: string;
@@ -38,6 +38,7 @@ export interface NatBeplanting extends Feature {
   oppervlakte?: number;
   optalud?: string;
   orig_id?: number;
+  planningen?: Array<NatBeplantingOnderhoud>;
   ploegindeling?: string;
   rayon?: string;
   reg_begin?: string;

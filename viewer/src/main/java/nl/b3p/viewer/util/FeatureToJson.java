@@ -164,6 +164,9 @@ public class FeatureToJson {
      * @param q  The query
      * @param sort The attribute name that is used to sort
      * @param dir Sort direction (DESC or ASC)
+     * @param em entitymanager
+     * @param application the application for the feature
+     * @param request http request used for retrieving features
      * @return JSONArray with features.
      * @throws IOException if any
      * @throws JSONException if transforming to json fails
