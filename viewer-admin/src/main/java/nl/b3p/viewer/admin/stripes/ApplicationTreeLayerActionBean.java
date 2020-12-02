@@ -154,43 +154,12 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
 
     @Before
     public void synchronizeFeatureType() throws JSONException {
-        EntityManager em = Stripersist.getEntityManager();
-        Layer layer = applicationLayer.getService().getSingleLayer(applicationLayer.getLayerName(), em);
+        applicationLayer.synchronizeFeaturetype(Stripersist.getEntityManager(),context, getBundle(),attributeAliases);
+        Layer layer = applicationLayer.getService().getSingleLayer(applicationLayer.getLayerName(), Stripersist.getEntityManager());
         // Synchronize configured attributes with layer feature type
         if (layer != null) {
-            if (layer.getFeatureType() == null || layer.getFeatureType().getAttributes().isEmpty()) {
-                applicationLayer.getAttributes().clear();
-            } else {
-                List<String> attributesToRetain = new ArrayList();
+            if (layer.getFeatureType() != null && !layer.getFeatureType().getAttributes().isEmpty()) {
 
-                SimpleFeatureType sft = layer.getFeatureType();
-                // Rebuild ApplicationLayer.attributes according to Layer FeatureType
-                // New attributes are added at the end of the list; the original
-                // order is only used when the Application.attributes list is empty
-                // So a feature for reordering attributes per applicationLayer is
-                // possible.
-                // New Attributes from a join or related featureType are added at the 
-                //end of the list.                                  
-                attributesToRetain = rebuildAttributes(sft);
-
-                // Remove ConfiguredAttributes which are no longer present
-                List<ConfiguredAttribute> attributesToRemove = new ArrayList();
-                for (ConfiguredAttribute ca : applicationLayer.getAttributes()) {
-                    if (ca.getFeatureType() == null) {
-                        ca.setFeatureType(layer.getFeatureType());
-                    }
-                    if (!attributesToRetain.contains(ca.getFullName())) {
-                        // Do not modify list we are iterating over
-                        attributesToRemove.add(ca);
-                        if (!"save".equals(getContext().getEventName())) {
-                            getContext().getMessages().add(new SimpleMessage(getBundle().getString("viewer_admin.applicationtreelayeractionbean.unavailable"), ca.getAttributeName()));
-                        }
-                    }
-                }
-                for (ConfiguredAttribute ca : attributesToRemove) {
-                    applicationLayer.getAttributes().remove(ca);
-                    em.remove(ca);
-                }
                 if (attributesJSON.has(ATTRIBUTES_CONFIG_KEY)) {
                     attributesConfig = attributesJSON.getJSONArray(ATTRIBUTES_CONFIG_KEY);
                 } else {
@@ -224,60 +193,7 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
         return new ForwardResolution(JSP);
     }
     
-    private List<String> rebuildAttributes(SimpleFeatureType sft) {
-        EntityManager em = Stripersist.getEntityManager();
-        Layer layer = applicationLayer.getService().getSingleLayer(applicationLayer.getLayerName(),em);
-        List<String> attributesToRetain = new ArrayList<String>();
-        for(AttributeDescriptor ad: sft.getAttributes()) {
-            String name = ad.getName();
 
-            String fullName=sft.getId()+":"+name;
-            //if attribute already added return.
-            if (attributesToRetain.contains(fullName)){
-                return attributesToRetain;
-            }
-            attributesToRetain.add(fullName);
-
-            // Used for display in JSP
-            if(StringUtils.isNotBlank(ad.getAlias())) {
-                attributeAliases.put(fullName, ad.getAlias());
-            }
-
-            if(applicationLayer.getAttribute(sft,name) == null) {
-                ConfiguredAttribute ca = new ConfiguredAttribute();
-                // default visible if not geometry type
-                // and not a attribute of a related featuretype
-                boolean defaultVisible=true;
-                if (!layer.getFeatureType().getId().equals(sft.getId())|| AttributeDescriptor.GEOMETRY_TYPES.contains(ad.getType())){
-                    defaultVisible=false;
-                }
-                ca.setVisible(defaultVisible);
-                ca.setAttributeName(name);
-                ca.setFeatureType(sft);
-                applicationLayer.getAttributes().add(ca);                        
-                em.persist(ca);
-                
-                if(!"save".equals(getContext().getEventName())) {
-                    String message =getBundle().getString("viewer_admin.applicationtreelayeractionbean.newattr") + " ";
-                    if(!layer.getFeatureType().getId().equals(sft.getId())){
-                        message+=getBundle().getString("viewer_admin.applicationtreelayeractionbean.joined") + " ";
-                    }
-                    message+=getBundle().getString("viewer_admin.applicationtreelayeractionbean.attrsrc") + " ";
-                    if(layer.getFeatureType().getId().equals(sft.getId())){
-                        message+=": "+ getBundle().getString("viewer_admin.applicationtreelayeractionbean.visible");
-                    }
-                    getContext().getMessages().add(new SimpleMessage(message, name));
-                }
-            }                    
-        }
-        if (sft.getRelations()!=null){
-            for (FeatureTypeRelation rel : sft.getRelations()){
-                attributesToRetain.addAll(rebuildAttributes(rel.getForeignFeatureType()));
-            }
-        }
-        return attributesToRetain;
-    }
-    
     private void sortPerFeatureType(final SimpleFeatureType layerSft, List<ConfiguredAttribute> cas) {
         List<FeatureTypeRelation> relations = layerSft.getRelations();
         for (FeatureTypeRelation relation : relations) {
