@@ -34,7 +34,7 @@ public interface DataBase {
 
     /**
      * create a random, but recognizable name.
-     *
+     * @param tableName Name of original table
      * @return {@code "UL_"+ [table name] + UUID.randomUUID();} with dash replaced bij underscore
      * @see #PREFIX
      */

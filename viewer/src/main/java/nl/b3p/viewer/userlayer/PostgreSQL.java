@@ -24,7 +24,7 @@ public class PostgreSQL implements DataBase {
      * @param tableName Name of the source table
      * @param filterSQL Filter definition of view (where clause)
      * @param comments optional comments to add the the view, can be {@code null}
-     * @return
+     * @return return if call succeeded
      */
     @Override
     public boolean createView(String viewName, String tableName, String filterSQL, String comments) {

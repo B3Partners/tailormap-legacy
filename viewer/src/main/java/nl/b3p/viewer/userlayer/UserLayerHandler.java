@@ -49,6 +49,8 @@ public class UserLayerHandler {
      * @param appLayer           appLayer to remove or that is the base for the userlayer, not {@code null}
      * @param query              CQL query, can be {@code null}
      * @param userLayerTitle     user friendly layername
+     * @param geoserverWorkspace Workspacename for storing userlayers in geoserver
+     * @param geoserverStore     Name of store in geoserver for userlayers
      */
     public UserLayerHandler(AuditMessageObject auditMessageObject, EntityManager entityManager, Application application,
                             ApplicationLayer appLayer, String query, String userLayerTitle, String geoserverWorkspace,

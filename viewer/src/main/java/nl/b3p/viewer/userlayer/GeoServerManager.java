@@ -30,7 +30,6 @@ public class GeoServerManager {
     /**
      * geoserver path part of the url.
      *
-     * @value
      * @see #getBaseUrl()
      */
     public static final String GEOSERVER_PATTERN = "/geoserver/";
@@ -48,6 +47,7 @@ public class GeoServerManager {
      * @param passWord        GeoServer credential
      * @param targetWorkSpace GeoServer workspace
      * @param storeName       GeoServer datastore
+     * @param baseUrl         Geoserver baseurl: url from original layer
      */
     public GeoServerManager(String userName, String passWord, String targetWorkSpace,
                             String storeName, String baseUrl) {
