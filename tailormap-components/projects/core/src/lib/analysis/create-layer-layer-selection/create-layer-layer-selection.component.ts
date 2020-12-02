@@ -1,4 +1,5 @@
 import {
+  ChangeDetectionStrategy,
   Component,
   Inject,
   OnDestroy,
@@ -12,7 +13,6 @@ import { TreeModel } from '../../shared/tree/models/tree.model';
 import { TreeService } from '../../shared/tree/tree.service';
 import { TransientTreeHelper } from '../../shared/tree/helpers/transient-tree.helper';
 import {
-  App,
   AppLayer,
   Level,
 } from '../../../../../bridge/typings';
@@ -20,11 +20,12 @@ import { OverlayRef } from '../../shared/overlay-service/overlay-ref';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { ApplicationTreeHelper } from '../../application/helpers/application-tree.helper';
+import { CriteriaSourceModel } from '../models/criteria-source.model';
 
 export interface LayerSelectionData {
   tree: TreeModel[];
   title: string;
-  selectedLayer?: AppLayer;
+  selectedLayer?: CriteriaSourceModel;
 }
 
 export interface LayerSelectionResult {
@@ -38,6 +39,7 @@ export interface LayerSelectionResult {
   providers: [
     TreeService,
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CreateLayerLayerSelectionComponent implements OnInit, OnDestroy {
 
@@ -64,7 +66,7 @@ export class CreateLayerLayerSelectionComponent implements OnInit, OnDestroy {
       node => {
         return this.data.selectedLayer
           && ApplicationTreeHelper.isAppLayer(node.metadata)
-          && node.metadata.id === this.data.selectedLayer.id;
+          && node.metadata.id === `${this.data.selectedLayer.layerId}`;
       },
     );
     this.treeService.checkStateChangedSource$

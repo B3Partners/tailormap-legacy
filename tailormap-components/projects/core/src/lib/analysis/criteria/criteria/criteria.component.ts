@@ -5,7 +5,6 @@ import {
 } from '@angular/core';
 import {
   FormBuilder,
-  FormControl,
 } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { AnalysisState } from '../../state/analysis.state';
@@ -26,12 +25,7 @@ import {
   Attribute,
   AttributeMetadataResponse,
 } from '../../../shared/attribute-service/attribute-models';
-import { AppLayer } from '../../../../../../bridge/typings';
-
-interface AvailableSource {
-  featureType: number;
-  label: string;
-}
+import { CriteriaSourceModel } from '../../models/criteria-source.model';
 
 interface CriteriaFormData {
   source?: number;
@@ -48,11 +42,20 @@ interface CriteriaFormData {
 export class CriteriaComponent implements OnInit, OnDestroy {
 
   private destroyed = new Subject();
-  private availableSources: AvailableSource[];
+  public availableSources: CriteriaSourceModel[];
   private allAttributes: Attribute[];
-  private availableAttributes$: Observable<Attribute[]>;
+  public availableAttributes$: Observable<Attribute[]>;
 
-  private criteriaForm = this.fb.group({
+  public filterTypes = [
+    { value: '=', label: 'Is gelijk aan' },
+    { value: '>', label: 'Is groter dan' },
+    { value: '<', label: 'Is kleiner dan' },
+    { value: '>=', label: 'Is groter of gelijk aan' },
+    { value: '<=', label: 'Is kleiner of gelijk aan0' },
+    { value: 'contains', label: 'Bevat' },
+  ];
+
+  public criteriaForm = this.fb.group({
     source: [''],
     attribute: [''],
     condition: [''],
@@ -72,12 +75,13 @@ export class CriteriaComponent implements OnInit, OnDestroy {
       .pipe(
         takeUntil(this.destroyed),
         concatMap(selectedDataSource => {
-          return forkJoin([ of(selectedDataSource), this.metadataService.getFeatureTypeMetadata$(selectedDataSource.id) ])
+          return forkJoin([ of(selectedDataSource), this.metadataService.getFeatureTypeMetadata$(selectedDataSource.layerId) ])
         }),
       )
       .subscribe(([ selectedDataSource, layerMetadata ]) => {
         this.setupFormValues(selectedDataSource, layerMetadata);
       });
+
     this.criteriaForm.valueChanges.pipe(takeUntil(this.destroyed)).subscribe(formValues => {
         this.formData = {
           source: +(formValues.source),
@@ -86,12 +90,12 @@ export class CriteriaComponent implements OnInit, OnDestroy {
           value: formValues.value,
         };
       });
+
     this.availableAttributes$ = this.criteriaForm.get('source').valueChanges.pipe(
       takeUntil(this.destroyed),
       map(selectedSource => {
         return this.allAttributes.filter(attribute => attribute.featureType === +(selectedSource));
-      }),
-    );
+      }));
   }
 
   public ngOnDestroy() {
@@ -99,13 +103,13 @@ export class CriteriaComponent implements OnInit, OnDestroy {
     this.destroyed.complete();
   }
 
-  private setupFormValues(selectedDataSource: AppLayer, layerMetadata: AttributeMetadataResponse) {
-    const relationSources = layerMetadata.relations.map<AvailableSource>(relation => ({
+  private setupFormValues(selectedDataSource: CriteriaSourceModel, layerMetadata: AttributeMetadataResponse) {
+    const relationSources = layerMetadata.relations.map<CriteriaSourceModel>(relation => ({
       featureType: relation.foreignFeatureType,
-      label: `${relation.foreignFeatureType}`,
+      label: `${relation.foreignFeatureTypeName}`,
     }));
     this.availableSources = [
-      {featureType: selectedDataSource.featureType, label: selectedDataSource.alias},
+      {featureType: selectedDataSource.featureType, label: selectedDataSource.label},
       ...relationSources,
     ];
     this.allAttributes = layerMetadata.attributes;

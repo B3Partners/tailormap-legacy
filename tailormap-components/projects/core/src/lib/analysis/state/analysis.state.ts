@@ -1,13 +1,13 @@
 import { CreateLayerModeEnum } from '../models/create-layer-mode.enum';
-import { AppLayer } from '../../../../../bridge/typings';
+import { CriteriaSourceModel } from '../models/criteria-source.model';
 
 export const analysisStateKey = 'analysis';
 
 export interface AnalysisState {
   createLayerMode: CreateLayerModeEnum;
-  selectedDataSource?: AppLayer;
+  selectedDataSource?: CriteriaSourceModel;
 }
 
 export const initialAnalysisState: AnalysisState = {
-  createLayerMode: null,
+  createLayerMode: CreateLayerModeEnum.ATTRIBUTES,
 }

@@ -10,6 +10,7 @@ import {
 } from 'rxjs';
 import { LayerVisibilityEvent } from '../../core/src/lib/shared/models/event-models';
 import {
+  App,
   AppLayer,
   AppLoader,
   MapComponent,
@@ -27,8 +28,8 @@ export class TailorMapService {
     this.init();
   }
 
-  private viewerControllerSubject$: ReplaySubject<ViewerController> = new ReplaySubject<ViewerController>(1);
-  public viewerController$: Observable<ViewerController> = this.viewerControllerSubject$.asObservable();
+  private applicationConfigSubject$: ReplaySubject<App> = new ReplaySubject<App>(1);
+  public applicationConfig$: Observable<App> = this.applicationConfigSubject$.asObservable();
   private layerVisibilityChangedSubject$: Subject<LayerVisibilityEvent> = new Subject<LayerVisibilityEvent>();
   public layerVisibilityChanged$ = this.layerVisibilityChangedSubject$.asObservable();
   public selectedLayer$: Subject<AppLayer> = new Subject<AppLayer>();
@@ -71,6 +72,9 @@ export class TailorMapService {
     });
     vc.addListener('ON_LAYER_SELECTED', (event) => {
       this.selectedLayer = event.appLayer;
+    });
+    window.setTimeout(() => {
+      this.applicationConfigSubject$.next(vc.app);
     });
   }
 

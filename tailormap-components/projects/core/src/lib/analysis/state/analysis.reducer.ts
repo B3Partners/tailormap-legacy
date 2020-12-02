@@ -9,7 +9,7 @@ import {
 } from '@ngrx/store';
 import * as AnalysisActions from './analysis.actions';
 import { CreateLayerModeEnum } from '../models/create-layer-mode.enum';
-import { AppLayer } from '../../../../../bridge/typings';
+import { CriteriaSourceModel } from '../models/criteria-source.model';
 
 const onSetCreateLayerMode = (state: AnalysisState, payload: { createLayerMode: CreateLayerModeEnum }): AnalysisState => ({
   ...state,
@@ -21,9 +21,9 @@ const onClearCreateLayerMode = (state: AnalysisState): AnalysisState => ({
   createLayerMode: null,
 });
 
-const onSetSelectedDataSource = (state: AnalysisState, payload: { layer: AppLayer }): AnalysisState => ({
+const onSetSelectedDataSource = (state: AnalysisState, payload: { source: CriteriaSourceModel }): AnalysisState => ({
   ...state,
-  selectedDataSource: payload.layer,
+  selectedDataSource: payload.source,
 });
 
 const analysisReducerImpl = createReducer(

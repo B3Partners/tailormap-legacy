@@ -14,16 +14,16 @@ export class ApplicationService {
     tailormapService: TailorMapService,
     store$: Store<ApplicationState>,
   ) {
-    tailormapService.viewerController$
+    tailormapService.applicationConfig$
       .pipe(
         take(1),
       )
-      .subscribe(viewerController => {
+      .subscribe(app => {
         store$.dispatch(setApplicationContent({
-          id: viewerController.app.id,
-          root: viewerController.app.selectedContent,
-          levels: Object.values(viewerController.app.levels).map(l => ({...l, id: `${l.id}`})),
-          layers: Object.values(viewerController.app.appLayers).map(l => ({...l, id: `${l.id}`})),
+          id: app.id,
+          root: app.selectedContent,
+          levels: Object.values(app.levels).map(l => ({...l, id: `${l.id}`})),
+          layers: Object.values(app.appLayers).map(l => ({...l, id: `${l.id}`})),
         }));
       });
   }

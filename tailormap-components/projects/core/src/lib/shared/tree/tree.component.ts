@@ -1,10 +1,27 @@
-import { Component, ElementRef, Input, NgZone, OnDestroy, Optional, TemplateRef, ViewChild } from '@angular/core';
-import { CheckStateChange, TreeService } from './tree.service';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  Input,
+  NgZone,
+  OnDestroy,
+  Optional,
+  TemplateRef,
+  ViewChild,
+} from '@angular/core';
+import {
+  CheckStateChange,
+  TreeService,
+} from './tree.service';
 import { map } from 'rxjs/operators';
 import { FlatTreeHelper } from './helpers/flat-tree.helper';
 import { FlatTreeModel } from './models/flat-tree.model';
 import { Subscription } from 'rxjs';
-import { DropZoneOptions, TreeDragDropService, treeNodeBaseClass } from './tree-drag-drop.service';
+import {
+  DropZoneOptions,
+  TreeDragDropService,
+  treeNodeBaseClass,
+} from './tree-drag-drop.service';
 import { MatRadioChange } from '@angular/material/radio';
 
 @Component({

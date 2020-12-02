@@ -25,8 +25,9 @@ import {
 } from 'rxjs/operators';
 import { CreateLayerLayerSelectionComponent } from '../create-layer-layer-selection/create-layer-layer-selection.component';
 import { Subject } from 'rxjs';
-import { AppLayer } from '../../../../../bridge/typings';
 import { selectSelectedDataSource } from '../state/analysis.selectors';
+import { CriteriaSourceModel } from '../models/criteria-source.model';
+import { SimpleCriteriaComponent } from '../criteria/simple-criteria/simple-criteria.component';
 
 @Component({
   selector: 'tailormap-create-layer-form',
@@ -42,7 +43,9 @@ export class CreateLayerFormComponent implements OnInit, OnDestroy {
   public selectingDataSource: boolean;
 
   public layerName = new FormControl('');
-  public selectedDataSource: AppLayer;
+  public selectedDataSource: CriteriaSourceModel;
+
+  public creatingCriteria: boolean;
 
   constructor(
     private store$: Store<AnalysisState>,
@@ -84,7 +87,21 @@ export class CreateLayerFormComponent implements OnInit, OnDestroy {
         filter(result => !!result.data.selectedLayer),
       )
       .subscribe(result => {
-        this.store$.dispatch(setSelectedDataSource({ layer: result.data.selectedLayer }));
+        const source: CriteriaSourceModel = {
+          layerId: +(result.data.selectedLayer.id),
+          featureType: result.data.selectedLayer.featureType,
+          label: result.data.selectedLayer.alias,
+        }
+        this.store$.dispatch(setSelectedDataSource({ source }));
+      });
+  }
+
+  public setCriteria() {
+    this.creatingCriteria = true;
+    SimpleCriteriaComponent.open(this.overlay).afterClosed$
+      .pipe(takeUntil(this.destroyed))
+      .subscribe(() => {
+        this.creatingCriteria = false;
       });
   }
 

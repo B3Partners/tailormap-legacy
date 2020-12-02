@@ -15,6 +15,7 @@ import { CreateLayerStylingComponent } from './create-layer-styling/create-layer
 import { CreateLayerLayerSelectionComponent } from './create-layer-layer-selection/create-layer-layer-selection.component';
 import { ApplicationModule } from '../application/application.module';
 import { CriteriaComponent } from './criteria/criteria/criteria.component';
+import { SimpleCriteriaComponent } from './criteria/simple-criteria/simple-criteria.component';
 
 
 @NgModule({
@@ -25,6 +26,7 @@ import { CriteriaComponent } from './criteria/criteria/criteria.component';
     CreateLayerStylingComponent,
     CreateLayerLayerSelectionComponent,
     CriteriaComponent,
+    SimpleCriteriaComponent,
   ],
   imports: [
     CommonModule,

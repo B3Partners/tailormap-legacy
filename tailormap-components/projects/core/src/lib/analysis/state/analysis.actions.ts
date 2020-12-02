@@ -3,7 +3,7 @@ import {
   props,
 } from '@ngrx/store';
 import { CreateLayerModeEnum } from '../models/create-layer-mode.enum';
-import { AppLayer } from '../../../../../bridge/typings';
+import { CriteriaSourceModel } from '../models/criteria-source.model';
 
 const analysisActionsPrefix = '[Analysis]';
 
@@ -18,5 +18,5 @@ export const clearCreateLayerMode = createAction(
 
 export const setSelectedDataSource = createAction(
   `${analysisActionsPrefix} Set Selected Data Source`,
-  props<{ layer: AppLayer }>(),
+  props<{ source: CriteriaSourceModel }>(),
 )

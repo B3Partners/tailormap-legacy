@@ -8,10 +8,18 @@
     <label for="layerName">Selectiebron</label>
     <button mat-button (click)="selectDataSource()" class="form-button" [class.form-button--active]="selectingDataSource">
       <span *ngIf="!selectedDataSource">Geen geselecteerd</span>
-      <span *ngIf="selectedDataSource">{{selectedDataSource.layerName}}</span>
+      <span *ngIf="selectedDataSource">{{selectedDataSource.label}}</span>
       <mat-icon>chevron_right</mat-icon>
     </button>
   </div>
+
+  <div class="form-field" *ngIf="selectedDataSource">
+    <button mat-button (click)="setCriteria()" class="form-button" [class.form-button--active]="creatingCriteria">
+      <span>Criteria instellen</span>
+      <mat-icon>chevron_right</mat-icon>
+    </button>
+  </div>
+
 </div>
 <div class="buttons">
   <button mat-flat-button (click)="cancelCreateLayer()">Annuleren</button>
