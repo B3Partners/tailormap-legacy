@@ -952,7 +952,7 @@ Ext.define("viewer.components.Edit", {
             // Ext uses PHP conventions! see:
             // https://docs.sencha.com/extjs/6.2.1/classic/Ext.Date.html
             options.format = attribute.type === 'date' ? 'd-m-Y' : 'd-m-Y H:i:s';
-            options.altFormats = 'd-m-y|d-M-Y';
+            options.altFormats = 'd-m-y|d-M-Y|d-m-Y H:i:s';
             // ISO 8601 (local time + UTC offset)
             options.submitFormat = 'c';
             input = Ext.create("Ext.form.field.Date", options);
