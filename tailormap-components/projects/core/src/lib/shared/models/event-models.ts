@@ -1,6 +1,10 @@
+// import { Layer } from './layer.model';
+
 export interface LayerVisibilityEvent {
   visible: boolean;
-  layername: string;
+  // layername: string;
+  // TODO any nog vervangen door juiste type
+  layer: any;
 }
 
 export interface MapClickedEvent {

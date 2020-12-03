@@ -24,7 +24,13 @@ export class LayerService {
               private highlightService: HighlightService) {
     // Install the layerVisibilityChanged handler.
     this.tailorMapService.layerVisibilityChanged$.subscribe(value => {
-      this.loadLayers();
+      if (value.visible) {
+        this.addLayer(value.layer.id);
+      } else {
+        this.removeLayer(value.layer.id);
+      }
+      // this.loadLayers();
+      console.log ('LayerService visi changed value: ' + value);
     });
     this.loadLayers();
   }
@@ -73,6 +79,20 @@ export class LayerService {
   }
 
   /**
+   * Returns -1 when no valid index.
+   */
+  public getTabIndexByLayerId(layerId: number): number {
+    let tabIndex = -1;
+    let index = 0;
+    while (index < this.layers.length && tabIndex === -1) {
+      if (this.layers[index].id === layerId) {
+        tabIndex = index;
+      }
+    }
+    return tabIndex;
+  }
+
+  /**
    * Returns null when no valid index.
    */
   public getTabComponent(index: number): AttributelistTabComponent {
@@ -101,24 +121,38 @@ export class LayerService {
     // console.log(layerIds);
 
     layerIds.forEach(layerId => {
-      const appLayer = vc.getAppLayerById(layerId);
-
-      // Is there a attribute table?
-      if (appLayer.attribute) {
-        const layerName = this.sanitizeLayername(appLayer.layerName);
-        // console.log('layerName: ' + layerName);
-        // console.log(appLayer);
-        const layer: Layer = {
-          name: layerName,
-          id: layerId,
-          tabComponent: null,
-        };
-        // console.log(layer);
-        this.layers.push(layer);
-      }
+      this.addLayer(layerId);
     });
 
     this.layersSubject.next(this.layers);
+  }
+
+  private addLayer (layerId: number) {
+    const vc = this.tailorMapService.getViewerController();
+    const appLayer = vc.getAppLayerById(layerId);
+
+    // Is there a attribute table?
+    if (appLayer.attribute) {
+      const layerName = this.sanitizeLayername(appLayer.layerName);
+      // console.log('layerName: ' + layerName);
+      // console.log(appLayer);
+      const layer: Layer = {
+        name: layerName,
+        id: layerId,
+        tabComponent: null,
+      };
+      // console.log(layer);
+      this.layers.push(layer);
+    }
+
+  }
+
+  private removeLayer (layerId: number) {
+    // Clear highligthing.
+    this.highlightService.clearHighlight();
+
+    // TODO dit klopt nog niet, eerst layerId opzoeken in layers[].id
+    this.layers.splice(this.getTabIndexByLayerId(layerId), 1);
   }
 
   /**
