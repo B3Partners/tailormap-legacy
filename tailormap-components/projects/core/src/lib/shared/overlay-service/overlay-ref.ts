@@ -2,8 +2,6 @@ import { Subject } from 'rxjs';
 
 import { OverlayRef as CdkOverlayRef } from '@angular/cdk/overlay';
 
-import { TemplateRef, Type } from '@angular/core';
-
 export interface OverlayCloseEvent<R> {
   type: 'backdropClick' | 'close';
   data: R;
@@ -17,7 +15,6 @@ export class OverlayRef<R = any, T = any> {
 
   constructor(
     public overlay: CdkOverlayRef,
-    public content: string | TemplateRef<any> | Type<any>,
     public data: T,
   ) {
     overlay.backdropClick().subscribe(() => this._close('backdropClick', null));

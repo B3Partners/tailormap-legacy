@@ -8,28 +8,23 @@ import { OverlayRef } from '../overlay-ref';
 export class OverlayComponent implements OnInit {
 
   public contentType: 'template' | 'string' | 'component';
-  public content: string | TemplateRef<any> | Type<any>;
   public context;
 
-  constructor(private ref: OverlayRef) {}
+  constructor(
+    private ref: OverlayRef,
+    public content: TemplateRef<any>,
+  ) {}
 
   public close() {
     this.ref.close(null);
   }
 
   public ngOnInit() {
-    this.content = this.ref.content;
-
-    if (typeof this.content === 'string') {
-      this.contentType = 'string';
-    } else if (this.content instanceof TemplateRef) {
-      this.contentType = 'template';
-      this.context = {
-        close: this.ref.close.bind(this.ref),
-      };
-    } else {
-      this.contentType = 'component';
-    }
+    this.contentType = 'template';
+    this.context = {
+      $implicit: this.ref.data,
+      close: this.ref.close.bind(this.ref),
+    };
   }
 
 }

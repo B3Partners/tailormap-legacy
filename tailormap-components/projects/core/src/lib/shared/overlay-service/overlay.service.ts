@@ -1,6 +1,8 @@
 
-import { Overlay, OverlayConfig } from '@angular/cdk/overlay';
-import { ComponentPortal } from '@angular/cdk/portal';
+import { Overlay, OverlayConfig, OverlayRef as CdkOverlayRef } from '@angular/cdk/overlay';
+import {
+  ComponentPortal,
+} from '@angular/cdk/portal';
 import {
   Injectable,
   InjectionToken,
@@ -17,10 +19,14 @@ export const OVERLAY_DATA = new InjectionToken<any>('OverlayData');
   providedIn: 'root',
 })
 export class OverlayService {
-  constructor(private overlay: Overlay, private injector: Injector) {}
+
+  constructor(
+    private overlay: Overlay,
+    private injector: Injector,
+  ) {}
 
   public open<R = any, T = any>(
-    content: string | TemplateRef<any> | Type<any>,
+    content: TemplateRef<any> | Type<any>,
     data: T,
     config?: OverlayConfig,
   ): OverlayRef<R> {
@@ -34,9 +40,14 @@ export class OverlayService {
 
     const overlay = this.overlay.create(configs);
 
-    const overlayRef = new OverlayRef<R, T>(overlay, content, data);
+    const overlayRef = new OverlayRef<R, T>(overlay, data);
 
-    overlay.attach(new ComponentPortal(OverlayComponent, null, Injector.create({
+    if (content instanceof TemplateRef) {
+      this.createOverlayForTemplate(overlay, overlayRef, content);
+      return overlayRef;
+    }
+
+    overlay.attach(new ComponentPortal(content, null, Injector.create({
       parent: this.injector,
       providers: [
         {
@@ -51,6 +62,23 @@ export class OverlayService {
     })));
 
     return overlayRef;
+  }
+
+  private createOverlayForTemplate(overlay: CdkOverlayRef, overlayRef: OverlayRef, content: TemplateRef<any>) {
+    const containerPortal = new ComponentPortal(OverlayComponent, undefined, Injector.create({
+      parent: this.injector,
+      providers: [
+        {
+          provide: OverlayRef,
+          useValue: overlayRef,
+        },
+        {
+          provide: TemplateRef,
+          useValue: content,
+        },
+      ],
+    }));
+    overlay.attach<OverlayComponent>(containerPortal);
   }
 
 }
