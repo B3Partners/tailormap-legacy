@@ -12,7 +12,6 @@ import { takeUntil } from 'rxjs/operators';
 export class TransientTreeHelper<T> {
 
   private treeData: TreeModel[];
-  private treeDictionary: Map<string, TreeModel> = new Map();
   private nodesSubject$ = new BehaviorSubject<TreeModel[]>([]);
   private destroyed = new Subject();
 
@@ -21,6 +20,7 @@ export class TransientTreeHelper<T> {
   public constructor(
     treeService: TreeService,
     treeData: TreeModel[],
+    private defaultExpanded = false,
     private isSelected?: (treeNode: TreeModel) => boolean,
   ) {
     this.treeData = this.createLocalModels(treeData);
@@ -45,28 +45,30 @@ export class TransientTreeHelper<T> {
         id: `treenode-${this.nodeCount++}`,
         children: typeof treeModel.children !== 'undefined' ? this.createLocalModels(treeModel.children) : undefined,
         checked: this.isSelected ? this.isSelected(treeModel) : false,
+        expanded: typeof treeModel.children !== 'undefined' ? this.defaultExpanded : undefined,
       }
-      this.treeDictionary.set(model.id, model);
       return model;
     });
   }
 
   private handleCheckStateChange(checkStateChange: CheckStateChange) {
-    for (const key of checkStateChange.keys()) {
-      const node = this.treeDictionary.get(key);
-      if (node && checkStateChange.get(key) !== node.checked) {
-        node.checked = !node.checked;
-      }
-    }
+    this.treeData = [...this.treeData].map(model => {
+      return {
+        ...model,
+        checked: checkStateChange.has(model.id) ? checkStateChange.get(model.id) : model.checked,
+      };
+    });
     this.nodesSubject$.next(this.treeData);
   }
 
   private toggleNodeExpanded(nodeId: string) {
-    const node = this.treeDictionary.get(nodeId);
-    if (node) {
-      node.expanded = !node.expanded;
-      this.nodesSubject$.next(this.treeData);
-    }
+    this.treeData = [...this.treeData].map(model => {
+      return {
+        ...model,
+        expanded: nodeId === model.id ? !model.expanded : model.expanded,
+      };
+    });
+    this.nodesSubject$.next(this.treeData);
   }
 
 }

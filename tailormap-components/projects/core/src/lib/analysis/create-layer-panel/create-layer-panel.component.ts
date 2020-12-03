@@ -5,11 +5,19 @@ import {
 } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { AnalysisState } from '../state/analysis.state';
-import { selectCreateLayerMode } from '../state/analysis.selectors';
+import {
+  selectCreateCriteriaMode,
+  selectCreateLayerMode,
+  selectIsSelectingDataSource,
+} from '../state/analysis.selectors';
 import { CreateLayerModeEnum } from '../models/create-layer-mode.enum';
-import { Subject } from 'rxjs';
+import {
+  Observable,
+  Subject,
+} from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { clearCreateLayerMode } from '../state/analysis.actions';
+import { CriteriaTypeEnum } from '../models/criteria-type.enum';
 
 @Component({
   selector: 'tailormap-create-layer-panel',
@@ -21,6 +29,9 @@ export class CreateLayerPanelComponent implements OnInit, OnDestroy {
   public createLayerEnum = CreateLayerModeEnum;
   public createLayerMode: CreateLayerModeEnum;
   public selectedTabIndex = 0;
+
+  public isSelectingDataSource$: Observable<boolean>;
+  public criteriaMode: CriteriaTypeEnum;
 
   private destroyed = new Subject();
 
@@ -34,6 +45,12 @@ export class CreateLayerPanelComponent implements OnInit, OnDestroy {
       .subscribe(createLayerMode => {
         this.createLayerMode = createLayerMode;
       });
+    this.store$.select(selectCreateCriteriaMode)
+      .pipe(takeUntil(this.destroyed))
+      .subscribe(criteriaMode => {
+        this.criteriaMode = criteriaMode;
+      });
+    this.isSelectingDataSource$ = this.store$.select(selectIsSelectingDataSource);
   }
 
   public ngOnDestroy() {

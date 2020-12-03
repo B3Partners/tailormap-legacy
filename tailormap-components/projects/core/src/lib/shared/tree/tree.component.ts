@@ -113,10 +113,13 @@ export class TreeComponent implements OnDestroy {
   }
 
   public setNodeSelected(node: FlatTreeModel) {
+    this.treeService.selectionStateChanged(node.id);
+    if (this.useRadioInputs && !FlatTreeHelper.isExpandable(node)) {
+      this.toggleRadioNode(node);
+    }
     if (this.expandOnGroupClick && FlatTreeHelper.isExpandable(node)) {
       this.toggleNodeExpansion(node);
     }
-    this.treeService.selectionStateChanged(node.id);
   }
 
   public getNodeClassName(node: FlatTreeModel) {
@@ -201,14 +204,18 @@ export class TreeComponent implements OnDestroy {
     }
   }
 
-  public toggleRadioNode($event: MatRadioChange) {
+  public handleRadioChangeEvent($event: MatRadioChange) {
+    this.toggleRadioNode($event.value);
+  }
+
+  private toggleRadioNode(node: FlatTreeModel) {
     const checkChangeMap: CheckStateChange = new Map();
     if (this.checkedRadioNode) {
       checkChangeMap.set(this.checkedRadioNode.id, false);
     }
-    checkChangeMap.set($event.value.id, true);
+    checkChangeMap.set(node.id, true);
     this.treeService.checkStateChanged(checkChangeMap);
-    this.checkedRadioNode = $event.value;
+    this.checkedRadioNode = node;
   }
 
 }

@@ -73,9 +73,7 @@ export class TailorMapService {
     vc.addListener('ON_LAYER_SELECTED', (event) => {
       this.selectedLayer = event.appLayer;
     });
-    window.setTimeout(() => {
-      this.applicationConfigSubject$.next(vc.app);
-    });
+    this.applicationConfigSubject$.next(this.getAppLoader().getApplicationConfig());
   }
 
   public openSplitComponent() {

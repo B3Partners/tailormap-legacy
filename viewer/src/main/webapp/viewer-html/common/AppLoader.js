@@ -33,6 +33,8 @@ Ext.define("viewer.AppLoader", {
         actionbeanUrl:null
     },
 
+    configResponse: "",
+
     /**
      * Create an AppLoader object. Automatically loads an application
      * @param {Object} config
@@ -93,6 +95,7 @@ Ext.define("viewer.AppLoader", {
                 var response = Ext.JSON.decode(result.responseText);
 
                 if(response.success) {
+                    this.configResponse = response.config;
                     this.processAppConfig(Ext.JSON.decode(response.config));
                 } else {
                     if(failureFunction !== undefined) {
@@ -136,6 +139,13 @@ Ext.define("viewer.AppLoader", {
             return;
         }
         return this.config[varName];
+    },
+
+    getApplicationConfig: function() {
+        if (this.configResponse) {
+            return Ext.JSON.decode(this.configResponse);
+        }
+        return {};
     },
 
     /**

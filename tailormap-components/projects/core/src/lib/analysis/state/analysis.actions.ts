@@ -3,7 +3,9 @@ import {
   props,
 } from '@ngrx/store';
 import { CreateLayerModeEnum } from '../models/create-layer-mode.enum';
-import { CriteriaSourceModel } from '../models/criteria-source.model';
+import { AnalysisSourceModel } from '../models/analysis-source.model';
+import { CriteriaTypeEnum } from '../models/criteria-type.enum';
+import { CriteriaModel } from '../models/criteria.model';
 
 const analysisActionsPrefix = '[Analysis]';
 
@@ -16,7 +18,26 @@ export const clearCreateLayerMode = createAction(
   `${analysisActionsPrefix} Clear Layer Creation Mode`,
 );
 
+export const selectDataSource = createAction(
+  `${analysisActionsPrefix} Select Data Source`,
+  props<{ selectDataSource: boolean }>(),
+);
+
 export const setSelectedDataSource = createAction(
   `${analysisActionsPrefix} Set Selected Data Source`,
-  props<{ source: CriteriaSourceModel }>(),
-)
+  props<{ source: AnalysisSourceModel }>(),
+);
+
+export const showCriteriaForm = createAction(
+  `${analysisActionsPrefix} Show Criteria Form`,
+  props<{ criteriaMode?: CriteriaTypeEnum }>(),
+);
+
+export const createCriteria = createAction(
+  `${analysisActionsPrefix} Create Criteria`,
+  props<{ criteria: CriteriaModel }>(),
+);
+
+export const removeCriteria = createAction(
+  `${analysisActionsPrefix} Remove Criteria`,
+);

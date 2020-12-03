@@ -78,7 +78,8 @@
 }
 
 .form-field input,
-.form-field .form-button {
+.form-field .form-button,
+.form-field mat-select {
   height: 40px;
   line-height: 38px;
   width: 100%;

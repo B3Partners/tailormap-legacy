@@ -25,7 +25,8 @@
                           class="checklist-leaf-node"
                           [disabled]="readOnlyMode"
                           [checked]="node.checked"
-                          (change)="toggleRadioNode($event)"
+                          (change)="handleRadioChangeEvent($event)"
+                          (click)="$event.stopPropagation()"
                           [value]="node"></mat-radio-button>
         <ng-container class="tree-node-container" *ngTemplateOutlet="treeNodeTemplate ? treeNodeTemplate : defaultTreeNodeTemplate; context: {$implicit: node}"></ng-container>
       </div>

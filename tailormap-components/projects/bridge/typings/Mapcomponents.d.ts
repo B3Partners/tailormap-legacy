@@ -15,6 +15,7 @@ declare interface SelectedContentItem {
 
 declare interface AppLoader {
   get: (varName: 'viewerController' | 'appId' | 'user' | 'contextPath' | 'absoluteURIPrefix') => any;
+  getApplicationConfig(): App;
 }
 
 declare interface GeoService {

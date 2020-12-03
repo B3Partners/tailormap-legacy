@@ -1,5 +1,6 @@
 .overlay-panel {
   right: 310px;
+  z-index: 1900;
 }
 
 tailormap-tree {
