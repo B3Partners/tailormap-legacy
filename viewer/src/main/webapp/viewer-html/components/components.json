@@ -961,7 +961,7 @@
     },
     {
         "className": "viewer.components.AnalysisLayerCreator",
-        "name": "GBI - Analyze / Laag maken",
+        "name": "GBI - Analyse / Laag maken",
         "group": "Map",
         "shortName": "GBI-A",
         "sources": ["AnalysisLayerCreator.js"],
