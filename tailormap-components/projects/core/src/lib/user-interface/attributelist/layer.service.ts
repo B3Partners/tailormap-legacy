@@ -8,7 +8,6 @@ import { Layer } from './layer.model';
 import { AttributelistTabComponent } from './attributelist-tab/attributelist-tab.component';
 import { TailorMapService } from '../../../../../bridge/src/tailor-map.service';
 import { HighlightService } from '../../shared/highlight-service/highlight.service';
-// import { FormconfigRepositoryService } from '../../shared/formconfig-repository/formconfig-repository.service';
 
 @Injectable({
   providedIn: 'root',
@@ -24,15 +23,41 @@ export class LayerService {
               private highlightService: HighlightService) {
     // Install the layerVisibilityChanged handler.
     this.tailorMapService.layerVisibilityChanged$.subscribe(value => {
-      if (value.visible) {
-        this.addLayer(value.layer.id);
-      } else {
-        this.removeLayer(value.layer.id);
-      }
-      // this.loadLayers();
+      // layerVisibilityChanged visible to true occurs too often (also if layer is already visible)
       console.log ('LayerService visi changed value: ' + value);
+      if (value.visible) {
+        if (!this.isLayerIdInLayers(value.layer.id)) {
+          this.addLayer(value.layer.id);
+        }
+      } else {
+        if (this.isLayerIdInLayers(value.layer.id)) {
+          this.removeLayer(value.layer.id);
+        }
+      }
+      this.layersSubject.next(this.layers);
     });
     this.loadLayers();
+  }
+
+  /**
+   * Returns part from full layer name before ":". Converts to lowercase too.
+   */
+  private static sanitizeLayername(layerName: string): string {
+    const index = layerName.indexOf(':');
+    if (index !== -1) {
+      layerName = layerName.substring(index + 1);
+    }
+    return layerName.toLowerCase();
+  }
+
+  private isLayerIdInLayers (layerId): boolean {
+    let layerFound = false;
+    let index = 0;
+    while (index < this.layers.length && !layerFound) {
+      layerFound = (this.layers[index].id === layerId);
+      index++;
+    }
+    return layerFound;
   }
 
   public getAppId(): number {
@@ -88,6 +113,7 @@ export class LayerService {
       if (this.layers[index].id === layerId) {
         tabIndex = index;
       }
+      index++;
     }
     return tabIndex;
   }
@@ -110,7 +136,7 @@ export class LayerService {
   public loadLayers(): void {
     // console.log('#LayerService - loadLayers');
 
-    // Clear highligthing.
+    // Clear highlighting.
     this.highlightService.clearHighlight();
 
     // Clear the array, but keep the array reference for automatic update.
@@ -133,7 +159,9 @@ export class LayerService {
 
     // Is there a attribute table?
     if (appLayer.attribute) {
-      const layerName = this.sanitizeLayername(appLayer.layerName);
+      const layerName = LayerService.sanitizeLayername(appLayer.layerName);
+      console.log('layer.service addLayer: ' + layerName);
+
       // console.log('layerName: ' + layerName);
       // console.log(appLayer);
       const layer: Layer = {
@@ -148,11 +176,20 @@ export class LayerService {
   }
 
   private removeLayer (layerId: number) {
-    // Clear highligthing.
+    // Clear highlighting.
     this.highlightService.clearHighlight();
 
-    // TODO dit klopt nog niet, eerst layerId opzoeken in layers[].id
-    this.layers.splice(this.getTabIndexByLayerId(layerId), 1);
+    const layerIndex = this.getTabIndexByLayerId(layerId) as number;
+    // // adjust the tabs according to the shifted layers
+    // for (let i = layerIndex + 1; i < this.layers.length; i++) {
+    //   this.layers[i].tabComponent.tabIndex = i;
+    // }
+    this.layers.splice(layerIndex, 1);
+    // adjust the tabindex according to the shifted layers
+    for (let i = layerIndex; i < this.layers.length; i++) {
+      this.layers[i].tabComponent.tabIndex = i;
+      this.layers[i].tabComponent.setTabIndex(i);
+    }
   }
 
   /**
@@ -165,17 +202,6 @@ export class LayerService {
     }
     this.layers[index].tabComponent = tab;
     this.layersSubject.next(this.layers);
-  }
-
-  /**
-   * Returns part from full layer name before ":". Converts to lowercase too.
-   */
-  private sanitizeLayername(layername: string): string {
-    const index = layername.indexOf(':');
-    if (index !== -1) {
-      layername = layername.substring(index + 1);
-    }
-    return layername.toLowerCase();
   }
 
   public test(): void {
