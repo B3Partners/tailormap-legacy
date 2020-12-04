@@ -78,3 +78,8 @@ export const selectApplicationTreeWithoutBackgroundLayers = createSelector(
     })).filter(item => !!item);
   },
 );
+
+export const selectLevelForLayer = createSelector(
+  selectLevels,
+  (levels, appLayerId: string) => levels.find(level => (level.layers || []).indexOf(appLayerId) !== -1),
+);

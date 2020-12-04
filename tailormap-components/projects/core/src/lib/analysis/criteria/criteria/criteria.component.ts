@@ -15,11 +15,15 @@ import { selectSelectedDataSource } from '../../state/analysis.selectors';
 import {
   concatMap,
   debounceTime,
+  map,
+  startWith,
   takeUntil,
 } from 'rxjs/operators';
 import {
   BehaviorSubject,
+  combineLatest,
   forkJoin,
+  Observable,
   of,
   Subject,
 } from 'rxjs';
@@ -49,7 +53,7 @@ export class CriteriaComponent implements OnInit, OnDestroy {
   private allAttributes: Attribute[];
 
   private availableAttributesSubject$ = new BehaviorSubject<Attribute[]>([]);
-  public availableAttributes$ = this.availableAttributesSubject$.asObservable();
+  public filteredAttributes$: Observable<Attribute[]>;
 
   public filterTypes = [
     { value: '=', label: 'Is gelijk aan' },
@@ -106,6 +110,17 @@ export class CriteriaComponent implements OnInit, OnDestroy {
         this.criteriaChanged.emit(this.formData);
       });
 
+    this.filteredAttributes$ = combineLatest([
+      this.availableAttributesSubject$.asObservable(),
+      this.criteriaForm.get('attribute').valueChanges.pipe(startWith('')),
+    ]).pipe(
+      takeUntil(this.destroyed),
+      map(([ availableAttributes, value ]) => {
+        const filterValue = value.toLowerCase();
+        return availableAttributes.filter(attribute => attribute.name.toLowerCase().indexOf(filterValue) === 0);
+      }),
+    );
+
     if (this.criteria && this.criteria.source) {
       this.availableAttributesSubject$.next(this.getAttributesForFeatureType(this.criteria.source));
       this.criteriaForm.patchValue(this.criteria);
@@ -115,6 +130,13 @@ export class CriteriaComponent implements OnInit, OnDestroy {
   public ngOnDestroy() {
     this.destroyed.next();
     this.destroyed.complete();
+  }
+
+  public getAttributeName(attribute: Attribute) {
+    if (attribute) {
+      return attribute.name;
+    }
+    return '';
   }
 
   private setupFormValues(selectedDataSource: AnalysisSourceModel, layerMetadata: AttributeMetadataResponse) {

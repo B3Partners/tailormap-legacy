@@ -89,6 +89,21 @@
   padding: 0 10px;
 }
 
+.form-field input:hover,
+.form-field .form-button:hover,
+.form-field mat-select:hover,
+.form-field input:focus,
+.form-field .form-button:focus,
+.form-field mat-select:focus {
+  background-color: #f0f0f0;
+}
+
+.mat-autocomplete-panel .mat-option {
+  font-size: 14px;
+  line-height: 3em;
+  height: 3em;
+}
+
 .form-field .form-button {
   padding: 5px;
 }

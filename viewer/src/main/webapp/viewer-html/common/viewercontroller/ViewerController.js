@@ -53,7 +53,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
     anchors: [],
     projection:null,
     projectionString:null,
-    
+
     /**
      * Creates a ViewerController and initializes the map container.
      *
@@ -138,13 +138,13 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         config.projection = this.projection;
         config.projectionString = this.projectionString;
         this.initialiseProjectionSupport();
-        
+
         Ext.apply(config, mapConfig || {});
         if(viewerType === "openlayers") {
             this.mapComponent = new viewer.viewercontroller.OpenLayersMapComponent(this, mapId,config);
         }else if(viewerType === "openlayers5"){
             this.mapComponent = new viewer.viewercontroller.OlMapComponent(this, mapId, config);
-            
+
         }else{
             this.logger.error(i18next.t('viewer_viewercontroller_viewercontroller_0') + viewerType);
         }
@@ -224,9 +224,9 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             return;
         }
         Proj4js.defs[this.projection] = this.projectionString;
-        
+
     },
-    
+
     spinupDataStores: function() {
         if(this.app.details["dataStoreSpinupDisabled"]){
             return;
@@ -423,7 +423,25 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         this.app.appLayers[appLayer.id] = appLayer;
     },
 
-
+    addUserLayer: function(appLayer, levelId, serviceLayer) {
+        var selectedContent = Ext.clone(this.app.selectedContent);
+        if (this.app.services[appLayer.serviceId]) {
+            var services = Ext.clone(this.app.services);
+            var currentServiceLayers = services[appLayer.serviceId].layers || {};
+            currentServiceLayers[serviceLayer.name] = serviceLayer;
+            services[appLayer.serviceId].layers = currentServiceLayers;
+            this.app.services = services;
+        }
+        this.addAppLayer(appLayer);
+        if (!levelId || !this.app.levels[levelId]) {
+            selectedContent.push({ id: appLayer.id, type: 'appLayer' });
+        } else {
+            var levels = Ext.clone(this.app.levels);
+            levels[levelId].layers = (levels[levelId].layers || []).concat('' + appLayer.id);
+            this.app.levels = levels;
+        }
+        this.setSelectedContent(selectedContent);
+    },
 
     counter: 0,
     max: 0,
@@ -792,7 +810,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             this.mapComponent.getMap().setLayerVisible(layer, visible);
         }
     },
-    
+
     setLayerStyle: function (appLayer, style){
         var layer = this.getLayer(appLayer);
         if (layer){
@@ -945,12 +963,12 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                     var minRes = layer.minScale / correction;
                     ogcOptions.minResulution = minRes;
                 }
-                
+
                 if(Ext.isDefined(layer.maxScale)){
                     var maxRes = layer.maxScale / correction;
                     ogcOptions.maxResolution = maxRes;
                 }
-                
+
                 if (layer.queryable){
                     ogcOptions.query_layers= layer.name;
                 }
@@ -1032,7 +1050,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                 if(layer.bbox){
                     options.serviceEnvelope= layer.bbox.minx+","+layer.bbox.miny+","+layer.bbox.maxx+","+layer.bbox.maxy;
                 }
-                
+
                 options.tileHeight = layer.tileHeight;
                 options.tileWidth = layer.tileWidth;
                 options.protocol = service.tilingProtocol;
@@ -1055,7 +1073,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                     if(!found && styles.length > 0){
                         options.style = styles[0].identifier;
                     }
-                    
+
                 }
                 if(layer.matrixSets){
                     var matrixSet = layer.matrixSets[0];
@@ -1065,7 +1083,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                             break;
                         }
                     }
-                    
+
                     options.matrixSet = matrixSet;
                 }
                 layerObj = this.mapComponent.createTilingLayer(appLayer.layerName,service.url,options);
@@ -1525,7 +1543,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                 success(appLayer, {
                     parts: [ {
                         url: url,
-                        label: appLayer.alias, 
+                        label: appLayer.alias,
                         isAlternative:false,
                         serviceId: serviceLayer.serviceId
                     }],
@@ -2018,9 +2036,9 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             value: url+"?"
         };
         paramJSON.params.push(param);
-        
+
         var obj = Ext.urlDecode(window.location.search);
-        
+
         for (var option in obj){
             if(option != "layers" && option != "extent" && option != "bookmark" && option != "levelOrder"){
                 paramJSON.params.push({

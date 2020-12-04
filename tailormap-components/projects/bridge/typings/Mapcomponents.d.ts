@@ -18,8 +18,13 @@ declare interface AppLoader {
   getApplicationConfig(): App;
 }
 
+declare interface GeoServiceLayer {
+  name: string;
+}
+
 declare interface GeoService {
   id: string;
+  layers: Record<string, GeoServiceLayer>;
 }
 
 declare interface Level {
@@ -37,6 +42,7 @@ declare interface AppLayer {
 
   attribute: boolean;   // has attribute table???
   featureType: number;
+  background: boolean;
 }
 
 type layerVisibilityEvent = (object: any, event: LayerVisibilityEvent) => void;

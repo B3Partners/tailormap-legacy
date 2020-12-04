@@ -11,11 +11,19 @@
 
   <div class="form-field">
     <label for="attribute">Kenmerk</label>
+    <input type="text" id="attribute" formControlName="attribute" [matAutocomplete]="autoCompleteAttribute">
+    <mat-autocomplete #autoCompleteAttribute="matAutocomplete">
+      <mat-option *ngFor="let attribute of filteredAttributes$ | async" [value]="attribute.name">
+        {{attribute.name}}
+      </mat-option>
+    </mat-autocomplete>
+    <!--
     <mat-select id="attribute" formControlName="attribute">
-      <mat-option *ngFor="let attribute of availableAttributes$ | async" [value]="attribute.name">
+      <mat-option *ngFor="let attribute of filteredAttributes$ | async" [value]="attribute.name">
         {{attribute.name}}
       </mat-option>
     </mat-select>
+    -->
   </div>
 
   <div class="form-field">

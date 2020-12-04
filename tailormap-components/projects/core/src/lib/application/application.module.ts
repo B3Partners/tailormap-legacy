@@ -6,7 +6,8 @@ import { applicationStateKey } from './state/application.state';
 import { applicationReducer } from './state/application.reducer';
 import { ApplicationService } from './services/application.service';
 import { ApplicationTreeNodeComponent } from './application-tree-node/application-tree-node.component';
-
+import { EffectsModule } from '@ngrx/effects';
+import { ApplicationEffects } from './state/application.effects';
 
 
 @NgModule({
@@ -20,6 +21,7 @@ import { ApplicationTreeNodeComponent } from './application-tree-node/applicatio
     CommonModule,
     SharedModule,
     StoreModule.forFeature(applicationStateKey, applicationReducer),
+    EffectsModule.forFeature([ ApplicationEffects ]),
   ],
 })
 export class ApplicationModule {

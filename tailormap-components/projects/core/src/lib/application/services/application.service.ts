@@ -22,8 +22,8 @@ export class ApplicationService {
         store$.dispatch(setApplicationContent({
           id: app.id,
           root: app.selectedContent,
-          levels: Object.values(app.levels).map(l => ({...l, id: `${l.id}`})),
-          layers: Object.values(app.appLayers).map(l => ({...l, id: `${l.id}`})),
+          levels: Object.values(app.levels),
+          layers: Object.values(app.appLayers),
         }));
       });
   }

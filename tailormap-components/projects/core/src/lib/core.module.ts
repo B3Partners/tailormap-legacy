@@ -6,6 +6,7 @@ import { AnalysisModule } from './analysis/analysis.module';
 import { StoreModule } from '@ngrx/store';
 import { reducers } from './state/root.reducer';
 import { ApplicationModule } from './application/application.module';
+import { EffectsModule } from '@ngrx/effects';
 
 @NgModule({
   declarations: [],
@@ -16,6 +17,7 @@ import { ApplicationModule } from './application/application.module';
         strictActionImmutability: true,
       },
     }),
+    EffectsModule.forRoot([]),
     WorkflowModule,
     FeatureFormModule,
     UserIntefaceModule,

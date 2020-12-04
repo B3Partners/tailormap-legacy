@@ -1,3 +1,5 @@
+<mat-progress-bar mode="indeterminate" *ngIf="isCreatingLayer"></mat-progress-bar>
+
 <div class="form">
   <div class="form-field">
     <label for="layerName">Naam kaartlaag</label>
@@ -5,7 +7,7 @@
   </div>
 
   <div class="form-field">
-    <label for="layerName">Selectiebron</label>
+    <label>Selectiebron</label>
     <button mat-button (click)="selectDataSource()" class="form-button" [class.form-button--active]="selectingDataSource$ | async">
       <span *ngIf="!selectedDataSource">Geen geselecteerd</span>
       <span *ngIf="selectedDataSource">{{selectedDataSource.label}}</span>
@@ -14,12 +16,18 @@
   </div>
 
   <div class="form-field" *ngIf="selectedDataSource">
-    <label for="layerName">Criteria</label>
+    <label>Criteria</label>
     <button mat-button (click)="setCriteria()" class="form-button" [class.form-button--active]="creatingCriteria$ | async">
       <span *ngIf="!criteria">Criteria instellen</span>
       <span *ngIf="criteria">Criteria bewerken</span>
       <mat-icon>chevron_right</mat-icon>
     </button>
+  </div>
+
+  <div class="form-field" *ngIf="errorMessage">
+    <mat-error>
+      {{errorMessage}}
+    </mat-error>
   </div>
 
 </div>

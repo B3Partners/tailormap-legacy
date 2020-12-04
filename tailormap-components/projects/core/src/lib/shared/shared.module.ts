@@ -36,6 +36,7 @@ import { OverlayComponent } from './overlay-service/overlay/overlay.component';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { DomSanitizer } from '@angular/platform-browser';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 
 @NgModule({
   declarations: [
@@ -73,6 +74,7 @@ import { DomSanitizer } from '@angular/platform-browser';
     MatDialogModule,
     MatRadioModule,
     MatProgressBarModule,
+    MatAutocompleteModule,
   ],
   exports: [
     ReactiveFormsModule,
@@ -101,6 +103,7 @@ import { DomSanitizer } from '@angular/platform-browser';
     TreeComponent,
     MatRadioModule,
     MatProgressBarModule,
+    MatAutocompleteModule,
   ],
   entryComponents: [],
   providers: [
