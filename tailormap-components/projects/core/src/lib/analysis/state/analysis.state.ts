@@ -14,11 +14,6 @@ export interface AnalysisState {
 }
 
 export const initialAnalysisState: AnalysisState = {
-  createLayerMode: CreateLayerModeEnum.ATTRIBUTES,
+  createLayerMode: null,
   selectDataSource: false,
-  selectedDataSource: {
-    layerId: 9,
-    featureType: 302,
-    label: 'gb_wegvakonderdeel',
-  },
 }
