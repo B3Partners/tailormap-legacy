@@ -1,0 +1,11 @@
+<div class="criteria-group">
+  <tailormap-criteria *ngFor="let criteria of criteriaGroup.criteria; trackBy: getCriteriaId"
+                      [criteria]="criteria"
+                      [showRemoveLink]="true"
+                      (criteriaChanged)="criteriaChanged($event)"
+                      (criteriaRemoved)="criteriaRemoved($event)"
+  ></tailormap-criteria>
+  <div class="centered">
+    <button class="link-button" mat-flat-button (click)="addCriteria()">+ Criteria toevoegen aan groep</button>
+  </div>
+</div>

@@ -55,6 +55,8 @@ export class CreateLayerFormComponent implements OnInit, OnDestroy {
   public creatingCriteria$: Observable<boolean>;
   public criteria: CriteriaModel;
 
+  public criteriaMode = CriteriaTypeEnum;
+
   public isCreatingLayer: boolean;
   public errorMessage: string;
 
@@ -89,8 +91,8 @@ export class CreateLayerFormComponent implements OnInit, OnDestroy {
     this.store$.dispatch(selectDataSource({ selectDataSource: true }));
   }
 
-  public setCriteria() {
-    this.store$.dispatch(showCriteriaForm({ criteriaMode: CriteriaTypeEnum.SIMPLE }));
+  public setCriteria(mode: CriteriaTypeEnum) {
+    this.store$.dispatch(showCriteriaForm({ criteriaMode: mode }));
   }
 
   public canCreateLayer() {

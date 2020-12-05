@@ -16,6 +16,8 @@ import { CreateLayerLayerSelectionComponent } from './create-layer-layer-selecti
 import { ApplicationModule } from '../application/application.module';
 import { CriteriaComponent } from './criteria/criteria/criteria.component';
 import { SimpleCriteriaComponent } from './criteria/simple-criteria/simple-criteria.component';
+import { AdvancedCriteriaComponent } from './criteria/advanced-criteria/advanced-criteria.component';
+import { CriteriaGroupComponent } from './criteria/criteria-group/criteria-group.component';
 
 
 @NgModule({
@@ -27,6 +29,8 @@ import { SimpleCriteriaComponent } from './criteria/simple-criteria/simple-crite
     CreateLayerLayerSelectionComponent,
     CriteriaComponent,
     SimpleCriteriaComponent,
+    AdvancedCriteriaComponent,
+    CriteriaGroupComponent,
   ],
   imports: [
     CommonModule,

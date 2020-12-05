@@ -1,0 +1,28 @@
+.overlay-panel {
+  right: 310px;
+  z-index: 1900;
+}
+
+.form {
+  padding: 14px;
+  flex: 1;
+  overflow: auto;
+  background-color: #FAFAFA;
+}
+
+.buttons {
+  display: flex;
+  justify-content: flex-end;
+  padding: 14px;
+}
+
+.buttons button + button {
+  margin-left: 14px;
+}
+
+tailormap-criteria-group {
+  display: block;
+  background: #fff;
+  border-radius: 4px;
+  border: 1px solid #E1E1E1;
+}

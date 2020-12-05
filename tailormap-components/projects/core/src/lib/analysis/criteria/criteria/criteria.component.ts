@@ -43,10 +43,16 @@ import { CriteriaConditionModel } from '../../models/criteria-condition.model';
 export class CriteriaComponent implements OnInit, OnDestroy {
 
   @Input()
-  public criteria?: CriteriaConditionModel;
+  public criteria: CriteriaConditionModel;
+
+  @Input()
+  public showRemoveLink?: boolean;
 
   @Output()
   public criteriaChanged: EventEmitter<CriteriaConditionModel> = new EventEmitter<CriteriaConditionModel>();
+
+  @Output()
+  public criteriaRemoved: EventEmitter<CriteriaConditionModel> = new EventEmitter<CriteriaConditionModel>();
 
   private destroyed = new Subject();
   public availableSources: AnalysisSourceModel[];
@@ -60,8 +66,7 @@ export class CriteriaComponent implements OnInit, OnDestroy {
     { value: '>', label: 'Is groter dan' },
     { value: '<', label: 'Is kleiner dan' },
     { value: '>=', label: 'Is groter of gelijk aan' },
-    { value: '<=', label: 'Is kleiner of gelijk aan0' },
-    { value: 'contains', label: 'Bevat' },
+    { value: '<=', label: 'Is kleiner of gelijk aan' },
   ];
 
   public criteriaForm = this.fb.group({
@@ -71,7 +76,7 @@ export class CriteriaComponent implements OnInit, OnDestroy {
     value: [''],
   });
 
-  private formData: CriteriaConditionModel = {}
+  private formData: Omit<CriteriaConditionModel, 'id'> = {}
 
   constructor(
     private fb: FormBuilder,
@@ -107,7 +112,7 @@ export class CriteriaComponent implements OnInit, OnDestroy {
           condition: formValues.condition,
           value: formValues.value,
         };
-        this.criteriaChanged.emit(this.formData);
+        this.emitChanges();
       });
 
     this.filteredAttributes$ = combineLatest([
@@ -121,8 +126,10 @@ export class CriteriaComponent implements OnInit, OnDestroy {
       }),
     );
 
-    if (this.criteria && this.criteria.source) {
-      this.availableAttributesSubject$.next(this.getAttributesForFeatureType(this.criteria.source));
+    if (this.criteria) {
+      if (this.criteria.source) {
+        this.availableAttributesSubject$.next(this.getAttributesForFeatureType(this.criteria.source));
+      }
       this.criteriaForm.patchValue(this.criteria);
     }
   }
@@ -153,6 +160,18 @@ export class CriteriaComponent implements OnInit, OnDestroy {
 
   private getAttributesForFeatureType(selectedSource: string | number) {
     return this.allAttributes.filter(attribute => attribute.featureType === +(selectedSource));
+  }
+
+  private emitChanges() {
+    const criteria = {
+      id: this.criteria.id,
+      ...this.formData,
+    };
+    this.criteriaChanged.emit(criteria);
+  }
+
+  public removeCriteria() {
+    this.criteriaRemoved.emit(this.criteria);
   }
 
 }

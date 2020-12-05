@@ -38,4 +38,8 @@
     <input type="text" id="value" formControlName="value" />
   </div>
 
+  <div class="form-field centered" *ngIf="showRemoveLink">
+    <button class="link-button" mat-flat-button (click)="removeCriteria()">Verwijderen</button>
+  </div>
+
 </div>

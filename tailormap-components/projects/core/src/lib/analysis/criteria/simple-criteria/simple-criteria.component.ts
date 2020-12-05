@@ -8,15 +8,11 @@ import {
   removeCriteria,
   showCriteriaForm,
 } from '../../state/analysis.actions';
-import { CriteriaModel } from '../../models/criteria.model';
 import { CriteriaTypeEnum } from '../../models/criteria-type.enum';
-import { CriteriaOperatorEnum } from '../../models/criteria-operator.enum';
 import { selectCriteria } from '../../state/analysis.selectors';
-import {
-  filter,
-  map,
-} from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
+import { IdService } from '../../../shared/id-service/id.service';
 
 @Component({
   selector: 'tailormap-simple-criteria',
@@ -32,15 +28,18 @@ export class SimpleCriteriaComponent {
 
   constructor(
     private store$: Store<AnalysisState>,
+    private idService: IdService,
   ) {
     this.criteria$ = this.store$.select(selectCriteria)
       .pipe(
-        filter(criteria => {
-          return !!criteria && criteria.type === CriteriaTypeEnum.SIMPLE &&
+        map((criteria): CriteriaConditionModel => {
+          if (!!criteria && criteria.type === CriteriaTypeEnum.SIMPLE &&
             criteria.groups.length === 1 &&
-            criteria.groups[0].criteria.length === 1;
+            criteria.groups[0].criteria.length === 1) {
+            return criteria.groups[0].criteria[0];
+          }
+          return CriteriaHelper.createCriteriaCondition(this.idService);
         }),
-        map(criteria => criteria.groups[0].criteria[0]),
       );
   }
 
@@ -52,14 +51,10 @@ export class SimpleCriteriaComponent {
     if (!CriteriaHelper.isValidCriteriaCondition(this.criteriaFormValues)) {
       return;
     }
-    const criteria: CriteriaModel = {
-      type: CriteriaTypeEnum.SIMPLE,
-      operator: CriteriaOperatorEnum.AND,
-      groups: [{
-        criteria: [ this.criteriaFormValues ],
-        operator: CriteriaOperatorEnum.AND,
-      }],
-    }
+    const criteria = CriteriaHelper.createCriteria(
+      CriteriaTypeEnum.SIMPLE,
+      [ CriteriaHelper.createCriteriaGroup(this.idService, [ this.criteriaFormValues ]) ],
+    );
     this.store$.dispatch(createCriteria({ criteria }));
   }
 
