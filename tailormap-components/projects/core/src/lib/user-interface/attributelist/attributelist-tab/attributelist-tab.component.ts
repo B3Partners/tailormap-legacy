@@ -56,10 +56,4 @@ export class AttributelistTabComponent implements OnInit, AfterViewInit {
     this.rowClick.emit(data);
   }
 
-  public setTabIndex(tabIndex: number) {
-    this.layerService.registerTabComponent(tabIndex, this);
-    this.toolbar.setTabIndex(tabIndex);
-    this.table.setTabIndex(tabIndex);
-  }
-
 }
