@@ -1,5 +1,6 @@
 import {
   AppLayer,
+  GeoService,
   GeoServiceLayer,
 } from '../../../../../bridge/typings';
 
@@ -7,7 +8,7 @@ export interface CreateUserLayerSuccessMessageModel {
   appLayerId: number;
   layerName: string;
   appLayer: AppLayer;
-  serviceLayer: GeoServiceLayer;
+  service: GeoService;
 }
 
 export interface CreateUserLayerSuccessResponseModel {

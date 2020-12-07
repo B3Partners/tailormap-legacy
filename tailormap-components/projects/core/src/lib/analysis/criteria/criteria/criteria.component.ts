@@ -94,6 +94,7 @@ export class CriteriaComponent implements OnInit, OnDestroy {
       )
       .subscribe(([ selectedDataSource, layerMetadata ]) => {
         this.setupFormValues(selectedDataSource, layerMetadata);
+        this.setInitialValues();
       });
 
     this.criteriaForm.valueChanges
@@ -125,13 +126,6 @@ export class CriteriaComponent implements OnInit, OnDestroy {
         return availableAttributes.filter(attribute => attribute.name.toLowerCase().indexOf(filterValue) === 0);
       }),
     );
-
-    if (this.criteria) {
-      if (this.criteria.source) {
-        this.availableAttributesSubject$.next(this.getAttributesForFeatureType(this.criteria.source));
-      }
-      this.criteriaForm.patchValue(this.criteria);
-    }
   }
 
   public ngOnDestroy() {
@@ -150,12 +144,31 @@ export class CriteriaComponent implements OnInit, OnDestroy {
     const relationSources = layerMetadata.relations.map<AnalysisSourceModel>(relation => ({
       featureType: relation.foreignFeatureType,
       label: `${relation.foreignFeatureTypeName}`,
+      disabled: true,
     }));
     this.availableSources = [
       {featureType: selectedDataSource.featureType, label: selectedDataSource.label},
       ...relationSources,
     ];
     this.allAttributes = layerMetadata.attributes;
+  }
+
+  private setInitialValues() {
+    if (this.criteria) {
+      this.criteriaForm.patchValue(this.criteria);
+    }
+
+    let criteriaSource;
+    if (this.criteria.source) {
+      criteriaSource = this.criteria.source;
+    } else if (this.availableSources.length > 0 && !this.criteria.attribute) {
+      criteriaSource = this.availableSources[0].featureType;
+      this.criteriaForm.patchValue({ source: criteriaSource })
+    }
+
+    if (criteriaSource) {
+      this.availableAttributesSubject$.next(this.getAttributesForFeatureType(criteriaSource));
+    }
   }
 
   private getAttributesForFeatureType(selectedSource: string | number) {

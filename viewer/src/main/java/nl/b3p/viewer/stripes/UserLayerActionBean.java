@@ -150,7 +150,7 @@ public class UserLayerActionBean  extends LocalizableActionBean implements Actio
                 message.put("appLayerId", ulh.getAppLayerId());
                 message.put("layerName", ulh.getLayerName());
                 message.put("appLayer", ulh.getCreatedAppLayer().toJSONObject(Stripersist.getEntityManager()));
-                message.put("serviceLayer", ulh.getCreatedAppLayer().getService().getLayer(ulh.getLayerName(), Stripersist.getEntityManager()).toJSONObject());
+                message.put("service", ulh.getCreatedAppLayer().getService().toJSONObject(false, Stripersist.getEntityManager()));
                 this.auditMessageObject.addMessage(
                         "UserLayer " + ulh.getLayerName() + " aangemaakt met id " + ulh.getAppLayerId());
             }

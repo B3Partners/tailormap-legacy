@@ -15,11 +15,15 @@ import {
   showCriteriaForm,
 } from '../state/analysis.actions';
 import {
+  catchError,
+  map,
   take,
   takeUntil,
 } from 'rxjs/operators';
 import {
+  combineLatest,
   Observable,
+  of,
   Subject,
 } from 'rxjs';
 import {
@@ -35,6 +39,7 @@ import { CriteriaHelper } from '../criteria/helpers/criteria.helper';
 import { UserLayerService } from '../services/user-layer.service';
 import { addAppLayer } from '../../application/state/application.actions';
 import { selectLevelForLayer } from '../../application/state/application.selectors';
+import { CreateUserLayerFailedResponseModel } from '../services/create-user-layer-response.model';
 
 @Component({
   selector: 'tailormap-create-layer-form',
@@ -53,6 +58,8 @@ export class CreateLayerFormComponent implements OnInit, OnDestroy {
 
   public selectingDataSource$: Observable<boolean>;
   public creatingCriteria$: Observable<boolean>;
+  public hasActiveSidePanel$: Observable<boolean>;
+
   public criteria: CriteriaModel;
 
   public criteriaMode = CriteriaTypeEnum;
@@ -75,7 +82,8 @@ export class CreateLayerFormComponent implements OnInit, OnDestroy {
     });
     this.selectingDataSource$ = this.store$.select(selectIsSelectingDataSource);
     this.creatingCriteria$ = this.store$.select(selectIsCreatingCriteria);
-
+    this.hasActiveSidePanel$ = combineLatest([ this.selectingDataSource$, this.creatingCriteria$ ])
+      .pipe(map(([ selectingSource, creatingCriteria ]) => selectingSource || creatingCriteria));
   }
 
   public ngOnDestroy() {
@@ -110,6 +118,14 @@ export class CreateLayerFormComponent implements OnInit, OnDestroy {
       this.layerName.value,
       `${this.selectedDataSource.layerId}`,
       query,
+    ).pipe(
+      takeUntil(this.destroyed),
+      catchError((): Observable<CreateUserLayerFailedResponseModel> => {
+        return of({
+          success: false,
+          message: 'Er is iets mis gegaan bij het maken van een laag. Controlleer de instellingen en probeer opnieuw.',
+        });
+      }),
     ).subscribe(result => {
       this.isCreatingLayer = false;
       if (UserLayerService.isFailedResponse(result)) {
@@ -124,7 +140,7 @@ export class CreateLayerFormComponent implements OnInit, OnDestroy {
                 ...result.message.appLayer,
                 background: false,
               },
-              serviceLayer: result.message.serviceLayer,
+              service: result.message.service,
               levelId: level ? level.id : '',
             }));
           });

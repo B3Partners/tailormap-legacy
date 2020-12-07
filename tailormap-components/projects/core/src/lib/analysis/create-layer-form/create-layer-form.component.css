@@ -20,3 +20,7 @@
 .buttons button + button {
   margin-left: 14px;
 }
+
+button mat-spinner {
+  display: inline-block;
+}

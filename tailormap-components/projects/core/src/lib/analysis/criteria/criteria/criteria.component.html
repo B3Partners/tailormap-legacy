@@ -3,7 +3,7 @@
   <div class="form-field">
     <label for="source">Bronlaag</label>
     <mat-select id="source" formControlName="source">
-      <mat-option *ngFor="let source of availableSources" [value]="source.featureType">
+      <mat-option *ngFor="let source of availableSources" [value]="source.featureType" [disabled]="source.disabled">
         {{source.label}}
       </mat-option>
     </mat-select>

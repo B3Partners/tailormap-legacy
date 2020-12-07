@@ -41,7 +41,7 @@ declare interface ViewerController {
   getVisibleLayers(castToStrings: false): number[];
   getVisibleLayers(castToStrings: true): string[];
 
-  addUserLayer(appLayer: AppLayer, levelId: string, serviceLayer: GeoServiceLayer): void;
+  addUserLayer(appLayer: AppLayer, levelId: string, service: GeoService): void;
 }
 declare interface TailormapComponent{
   getContentContainer: () => string;

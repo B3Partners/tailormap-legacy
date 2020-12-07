@@ -423,16 +423,21 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         this.app.appLayers[appLayer.id] = appLayer;
     },
 
-    addUserLayer: function(appLayer, levelId, serviceLayer) {
-        var selectedContent = Ext.clone(this.app.selectedContent);
-        if (this.app.services[appLayer.serviceId]) {
-            var services = Ext.clone(this.app.services);
+    addUserLayer: function(appLayer, levelId, service) {
+        // Modify or create service
+        var services = Ext.clone(this.app.services);
+        if (!this.app.services[appLayer.serviceId]) {
+            services[appLayer.serviceId] = service;
+        } else {
             var currentServiceLayers = services[appLayer.serviceId].layers || {};
-            currentServiceLayers[serviceLayer.name] = serviceLayer;
+            currentServiceLayers[appLayer.layerName] = service.layers[appLayer.layerName];
             services[appLayer.serviceId].layers = currentServiceLayers;
-            this.app.services = services;
         }
+        this.app.services = services;
+        // Add app layer
         this.addAppLayer(appLayer);
+        // Modify selected content / level
+        var selectedContent = Ext.clone(this.app.selectedContent);
         if (!levelId || !this.app.levels[levelId]) {
             selectedContent.push({ id: appLayer.id, type: 'appLayer' });
         } else {
@@ -440,6 +445,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             levels[levelId].layers = (levels[levelId].layers || []).concat('' + appLayer.id);
             this.app.levels = levels;
         }
+        // triggers selected content changed
         this.setSelectedContent(selectedContent);
     },
 

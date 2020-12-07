@@ -15,7 +15,7 @@ export class ApplicationEffects {
     ofType(ApplicationActions.addAppLayer),
     tap(action => {
       const viewerController = this.tailormapService.getViewerController();
-      viewerController.addUserLayer(action.layer, action.levelId, action.serviceLayer);
+      viewerController.addUserLayer(action.layer, action.levelId, action.service);
     })), { dispatch: false },
   );
 

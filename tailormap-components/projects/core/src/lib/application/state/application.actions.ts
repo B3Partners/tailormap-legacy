@@ -1,6 +1,7 @@
 import { createAction, props } from '@ngrx/store';
 import {
   AppLayer,
+  GeoService,
   GeoServiceLayer,
   Level,
   SelectedContentItem,
@@ -15,5 +16,5 @@ export const setApplicationContent = createAction(
 
 export const addAppLayer = createAction(
   `${applicationActionsPrefix} Add App Layer`,
-  props<{ layer: AppLayer, serviceLayer: GeoServiceLayer, levelId: string }>(),
+  props<{ layer: AppLayer, service: GeoService, levelId: string }>(),
 )
