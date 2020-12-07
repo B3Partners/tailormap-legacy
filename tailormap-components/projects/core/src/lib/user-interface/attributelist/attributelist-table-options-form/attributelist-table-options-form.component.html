@@ -36,9 +36,14 @@ Tabel opties
 
 <mat-divider></mat-divider>
 
-<!--<mat-dialog-actions align="center"-->
-<!--                    (click)="onActionsClick()">-->
 <mat-dialog-actions align="center">
   <button mat-raised-button color="primary"
-          (click)="onButtonClick()">Laat alle attributen zien</button>
+          (click)="onButtonClick()">
+    <span *ngIf="this.isPassportActive(); else elseBlock">
+      Laat alle attributen zien
+    </span>
+    <ng-template #elseBlock>
+      Laat paspoort attributen zien
+    </ng-template>
+  </button>
 </mat-dialog-actions>
