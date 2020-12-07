@@ -24,7 +24,7 @@ export class LayerService {
     // Install the layerVisibilityChanged handler.
     this.tailorMapService.layerVisibilityChanged$.subscribe(value => {
       // layerVisibilityChanged visible to true occurs too often (also if layer is already visible)
-      console.log ('LayerService visi changed value: ' + value);
+      // console.log ('LayerService visi changed value: ' + value.visible);
       if (value.visible) {
         if (!this.isLayerIdInLayers(value.layer.id)) {
           this.addLayer(value.layer.id);
@@ -97,7 +97,7 @@ export class LayerService {
    */
   public getLayerByTabIndex(tabIndex: number): Layer {
     if ((tabIndex < 0) || (tabIndex > this.layers.length - 1)) {
-      console.log('LayerService.getLayer - No valid index.');
+      // console.log('LayerService.getLayer - No valid index.');
       return null;
     }
     return this.layers[tabIndex];
@@ -123,7 +123,7 @@ export class LayerService {
    */
   public getTabComponent(index: number): AttributelistTabComponent {
     if ((index < 0) || (index > this.layers.length - 1)) {
-      console.log('LayerService.getTabComponent - No valid index.');
+      // console.log('LayerService.getTabComponent - No valid index.');
       return null;
     }
     return this.layers[index].tabComponent;
@@ -160,7 +160,7 @@ export class LayerService {
     // Is there a attribute table?
     if (appLayer.attribute) {
       const layerName = LayerService.sanitizeLayername(appLayer.layerName);
-      console.log('layer.service addLayer: ' + layerName);
+      // console.log('layer.service addLayer: ' + layerName);
 
       // console.log('layerName: ' + layerName);
       // console.log(appLayer);
@@ -179,17 +179,21 @@ export class LayerService {
     // Clear highlighting.
     this.highlightService.clearHighlight();
 
-    const layerIndex = this.getTabIndexByLayerId(layerId) as number;
-    // // adjust the tabs according to the shifted layers
-    // for (let i = layerIndex + 1; i < this.layers.length; i++) {
-    //   this.layers[i].tabComponent.tabIndex = i;
-    // }
-    this.layers.splice(layerIndex, 1);
-    // adjust the tabindex according to the shifted layers
-    for (let i = layerIndex; i < this.layers.length; i++) {
-      this.layers[i].tabComponent.tabIndex = i;
-      this.layers[i].tabComponent.setTabIndex(i);
+    const tabIndex = this.getTabIndexByLayerId(layerId) as number;
+    const saveLayerId: number[] = [];
+    for (let i = tabIndex + 1; i < this.layers.length; i++) {
+      saveLayerId.push (this.layers[i].id)
     }
+    // remove until end otherwise removing/loading table is not correct (tab/table removes always from the back of the list)
+    this.layers.splice(tabIndex, this.layers.length - tabIndex);
+
+    // wait to let tab/table cleanup
+    setTimeout(() => {
+      // reload layers until the end of the tabs
+      saveLayerId.forEach(id => {
+        this.addLayer(id);
+      });
+    }, 0)
   }
 
   /**
@@ -197,7 +201,7 @@ export class LayerService {
    */
   public registerTabComponent(index: number, tab: AttributelistTabComponent): void {
     if ((index < 0) || (index > this.layers.length - 1)) {
-      console.log('LayerService.registerTabComponent - No valid index.');
+      // console.log('LayerService.registerTabComponent - No valid index.');
       return;
     }
     this.layers[index].tabComponent = tab;

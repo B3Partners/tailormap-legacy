@@ -194,7 +194,7 @@ export class AttributelistTableComponent implements AttributelistTable, Attribut
   }
 
   public getColumnWidth(name: string): string {
-    console.log('#Table - getColumnWidth - ' + name);
+    // console.log('#Table - getColumnWidth - ' + name);
     return '180px';
   }
 
@@ -421,10 +421,10 @@ export class AttributelistTableComponent implements AttributelistTable, Attribut
     // console.log('#Table - setTabIndex');
     // Set corresponding tab index.
     this.tabIndex = tabIndex;
-    console.log('table.comp setTabIndex: ' + this.tabIndex)
+    // console.log('table.comp setTabIndex: ' + this.tabIndex)
     // Get layer.
     const layer = this.layerService.getLayerByTabIndex(this.tabIndex);
-    console.log('table.comp layername: ' + layer.name)
+    // console.log('table.comp layername: ' + layer.name)
     // console.log(layer);
     if (layer.name === '') {
       return;
