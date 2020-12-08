@@ -38,7 +38,6 @@ import { OverlayComponent } from './overlay-service/overlay/overlay.component';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { DomSanitizer } from '@angular/platform-browser';
-import { TailorMapService } from '../../../../bridge/src/tailor-map.service';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 
 @NgModule({

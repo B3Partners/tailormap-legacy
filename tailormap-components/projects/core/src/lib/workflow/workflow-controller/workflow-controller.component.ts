@@ -8,7 +8,6 @@ import { WorkflowFactoryService } from '../workflow-factory/workflow-factory.ser
 import { VectorLayer } from '../../../../../bridge/typings';
 import { TailorMapService } from '../../../../../bridge/src/tailor-map.service';
 import { MapClickedEvent } from '../../shared/models/event-models';
-import { AddFeatureMenuComponent } from '../../user-interface/edit-bar/add-feature-menu/add-feature-menu.component';
 import { MatDialog } from '@angular/material/dialog';
 import { EditBarComponent } from '../../user-interface/edit-bar/edit-bar/edit-bar.component';
 
@@ -26,7 +25,7 @@ export class WorkflowControllerComponent implements OnInit {
     private tailorMap: TailorMapService,
     public dialog: MatDialog,
   ) {
-    const dialogRef = this.dialog.open(EditBarComponent, {
+    this.dialog.open(EditBarComponent, {
       width: '150px',
       position: {
         top: '100px',
