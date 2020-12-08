@@ -225,7 +225,9 @@ public class ApplicationLayer {
             addAttributesJSON(o, includeRelations, em);
         }
 
-        addLayerListDetails(o, l);
+        if(l != null){
+            addLayerListDetails(o, l);
+        }
 
         StartLayer sl = getStartLayers().get(app);
         o.put("checked", sl != null ? sl.isChecked() : false);
