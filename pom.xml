@@ -84,6 +84,11 @@
         <dependencies>
             <!-- viewer-->
             <dependency>
+                <groupId>nl.opengeogroep</groupId>
+                <artifactId>safetymaps-api</artifactId>
+                <version>1.0</version>
+            </dependency>
+            <dependency>
                 <groupId>commons-fileupload</groupId>
                 <artifactId>commons-fileupload</artifactId>
                 <version>1.4</version>
