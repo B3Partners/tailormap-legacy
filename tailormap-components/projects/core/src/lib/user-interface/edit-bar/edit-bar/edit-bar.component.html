@@ -1,15 +1,16 @@
-<div class="edit-bar">
+  <tailormap-menu-button
+    icon="new_object"
+    (clicked)="onEdit()"
+    [enabled]="!isEditting"
+  ></tailormap-menu-button>
 
-  <button mat-raised-button color="primary" [disabled]="this.dialog.openDialogs.length >0"
-          (click)="onEdit()">
-    edit
-  </button>
-  <button mat-raised-button color="primary" [disabled]="!this.hasSplit()"
-          (click)="onSplit()">
-    split
-  </button>
-  <button mat-raised-button color="primary" [disabled]="!this.hasMerge()"
-          (click)="onMerge()">
-    merge
-  </button>
-</div>
+  <tailormap-menu-button
+    icon="split"
+    (clicked)="onSplit()"
+    [enabled]="hasSplit()"
+  ></tailormap-menu-button>
+  <tailormap-menu-button
+    icon="merge"
+    (clicked)="onMerge()"
+    [enabled]="hasMerge()"
+  ></tailormap-menu-button>

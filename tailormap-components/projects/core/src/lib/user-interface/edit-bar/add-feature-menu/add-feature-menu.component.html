@@ -5,19 +5,26 @@
         <mat-option *ngFor="let layer of layers" [value]="layer">{{layer}}</mat-option>
       </mat-select>
     </mat-form-field>
-  <button (click)="draw('Polygon')" [disabled]="!isPolygon()">
-    <mat-icon>pietje</mat-icon>
-  </button>
-  <button (click)="draw('LineString')" [disabled]="!isLineString()">
-    <mat-icon>linear_scale</mat-icon>
-  </button>
-  <button (click)="draw('Point')" [disabled]="!isPoint()">
-    <mat-icon>data_usage</mat-icon>
-  </button>
+
+  <tailormap-menu-button
+    icon="draw_polygon"
+    (clicked)="draw('POLYGON')"
+    [enabled]="isPolygon()"
+  ></tailormap-menu-button>
+
+  <tailormap-menu-button
+    icon="draw_line"
+    (clicked)="draw('LINESTRING')"
+    [enabled]="isLineString()"
+  ></tailormap-menu-button>
+
+  <tailormap-menu-button
+    icon="draw_point"
+    (clicked)="draw('POINT')"
+    [enabled]="isPoint()"
+  ></tailormap-menu-button>
 
   <mat-divider [vertical]="true" inset="false"></mat-divider>
 
-  <button (click)="close()">
-    <mat-icon color="warn">close</mat-icon>
-  </button>
+  <mat-icon color="warn"  (click)="close()">close</mat-icon>
 </div>

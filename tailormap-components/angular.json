@@ -23,6 +23,7 @@
             "assets": [
               "projects/bridge/src/favicon.ico",
               "projects/bridge/src/assets",
+              "projects/bridge/src/assets/imgs",
               { "input": "projects/core/src/assets", "glob": "**/*", "output": "assets/core"}
             ],
             "styles": [
@@ -71,7 +72,7 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
             "browserTarget": "bridge:build",
-            "publicHost":"http://localhost:3200",
+            "publicHost": "http://localhost:3200",
             "port": 3200
           },
           "configurations": {
@@ -148,14 +149,13 @@
             "assets": [
               "projects/core/src/assets"
             ]
-          }
-        ,          "configurations": {
+          },
+          "configurations": {
             "production": {
               "tsConfig": "projects/core/tsconfig.lib.prod.json"
             }
           }
-},
-
+        },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
