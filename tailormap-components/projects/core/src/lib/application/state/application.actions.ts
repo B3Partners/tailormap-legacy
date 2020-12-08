@@ -2,7 +2,6 @@ import { createAction, props } from '@ngrx/store';
 import {
   AppLayer,
   GeoService,
-  GeoServiceLayer,
   Level,
   SelectedContentItem,
 } from '../../../../../bridge/typings';

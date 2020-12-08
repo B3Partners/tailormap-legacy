@@ -1,4 +1,4 @@
-import { Component, OnInit, TemplateRef, Type } from '@angular/core';
+import { Component, OnInit, TemplateRef } from '@angular/core';
 import { OverlayRef } from '../overlay-ref';
 
 @Component({

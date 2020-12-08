@@ -3,7 +3,6 @@ import {
   HttpClient,
   HttpHeaders,
   HttpParams,
-  HttpResponse,
 } from '@angular/common/http';
 import { TailorMapService } from '../../../../../bridge/src/tailor-map.service';
 import { Store } from '@ngrx/store';

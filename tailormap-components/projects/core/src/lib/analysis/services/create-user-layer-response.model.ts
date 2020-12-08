@@ -1,7 +1,6 @@
 import {
   AppLayer,
   GeoService,
-  GeoServiceLayer,
 } from '../../../../../bridge/typings';
 
 export interface CreateUserLayerSuccessMessageModel {
