@@ -30,14 +30,24 @@ import { MatTreeModule } from '@angular/material/tree';
 import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.component';
 import { ConfirmDialogService } from './confirm-dialog/confirm-dialog.service';
 import { ApiModule } from './generated';
+import { DialogCloseButtonComponent } from './dialog-close-button/dialog-close-button.component';
+import { TreeComponent } from './tree/tree.component';
+import { OverlayComponent } from './overlay-service/overlay/overlay.component';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { DomSanitizer } from '@angular/platform-browser';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 
 @NgModule({
   declarations: [
-    ConfirmDialogComponent],
+    ConfirmDialogComponent,
+    DialogCloseButtonComponent,
+    TreeComponent,
+    OverlayComponent,
+  ],
   imports: [
     ApiModule.forRoot({
-      rootUrl: window.location.origin + '/viewer/action/proxyrest?url=',
+        rootUrl: window.location.origin + '/viewer/action/proxyrest?url=',
     }),
     CommonModule,
     ReactiveFormsModule,
@@ -62,6 +72,9 @@ import { DomSanitizer } from '@angular/platform-browser';
     MatProgressSpinnerModule,
     MatMenuModule,
     MatDialogModule,
+    MatRadioModule,
+    MatProgressBarModule,
+    MatAutocompleteModule,
   ],
   exports: [
     ReactiveFormsModule,
@@ -86,6 +99,11 @@ import { DomSanitizer } from '@angular/platform-browser';
     MatProgressSpinnerModule,
     MatMenuModule,
     MatDialogModule,
+    DialogCloseButtonComponent,
+    TreeComponent,
+    MatRadioModule,
+    MatProgressBarModule,
+    MatAutocompleteModule,
   ],
   entryComponents: [],
   providers: [

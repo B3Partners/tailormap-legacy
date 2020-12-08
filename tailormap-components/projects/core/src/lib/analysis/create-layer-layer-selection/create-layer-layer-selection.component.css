@@ -1,0 +1,9 @@
+.overlay-panel {
+  right: 310px;
+  z-index: 1900;
+}
+
+tailormap-tree {
+  flex: 1;
+  margin: 0 14px;
+}

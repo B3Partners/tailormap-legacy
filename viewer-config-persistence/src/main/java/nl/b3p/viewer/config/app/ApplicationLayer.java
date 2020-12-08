@@ -28,7 +28,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.stripesstuff.stripersist.Stripersist;
 
 /**
  *
@@ -288,18 +287,28 @@ public class ApplicationLayer {
 
         if(ft != null) {
             json.put("geometryAttribute", ft.getGeometryAttribute());
+            json.put("featureType", ft.getId());
+            json.put("featureTypeName", ft.getTypeName());
             if(includeRelations) {
-                json.put("relations", getRelationsJSON(em));
+
+                json.put("relations", getRelationsJSON(layer));
+                json.put("invertedRelations", getInvertedRelationsJSON(layer, em));
             }
         }
         if(geometryAttributeIndex != null) {
             json.put("geometryAttributeIndex", geometryAttributeIndex);
         }        
     }
-    
-    public JSONArray getRelationsJSON(EntityManager em) throws JSONException {
+
+    /**
+     * Get relations of this applayer to other featuretypes: 1-n (1 = current applayer, n are the relations
+     * @param layer Layer for which relations must be retrievd
+     * @return JSONArray with relations
+     * @throws JSONException when an exception occurs
+     */
+    public JSONArray getRelationsJSON(Layer layer) throws JSONException {
         JSONArray j = new JSONArray();
-        Layer layer = getService().getSingleLayer(getLayerName(),em);
+
         if(layer != null && layer.getFeatureType() != null) {
             for(FeatureTypeRelation rel: layer.getFeatureType().getRelations()){
                 JSONObject jRel = rel.toJSONObject();
@@ -308,7 +317,28 @@ public class ApplicationLayer {
         }
         return j;
     }
-    
+
+    /**
+     * Get all the relations of featuretypes that have this applayer as dependend n - 1 (n are other featuretypes, 1 = current layer)
+     *
+     * @param layer Layer for which relations must be retrievd
+     * @return JSONArray with relations
+     * @throws JSONException when an exception occurs
+     */
+    public JSONArray getInvertedRelationsJSON(Layer layer, EntityManager em) throws JSONException {
+        JSONArray relations = new JSONArray();
+
+        if(layer != null && layer.getFeatureType() != null) {
+            List<FeatureTypeRelation> frs = em.createQuery("from FeatureTypeRelation where foreignFeatureType = :ft", FeatureTypeRelation.class)
+                    .setParameter("ft", layer.getFeatureType())
+                    .getResultList();
+            for (FeatureTypeRelation fr : frs) {
+                relations.put(fr.toJSONObject());
+            }
+        }
+        return relations;
+    }
+
     /**
      * Makes a list of al the attributeDescriptors of the given FeatureType and
      * all the child FeatureTypes (related by join/relate)

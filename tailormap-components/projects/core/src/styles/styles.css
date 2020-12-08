@@ -1,0 +1,145 @@
+@import "inter-font.css";
+
+.tailormap-menu-panel.mat-menu-panel {
+  min-width: 170px;
+}
+
+[ng-version],
+.overlay-panel {
+  font-family: Inter, sans-serif;
+  font-weight: 400;
+  color: rgb(0, 10, 30);
+  font-size: 14px;
+}
+
+[ng-version] h1,
+.overlay-panel h1 {
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 0;
+  line-height: 24px;
+  margin: 0;
+}
+
+.overlay-panel h1 {
+  padding: 14px 14px 2px;
+}
+
+.overlay-panel {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  bottom: 10px;
+  width: 300px;
+  background-color: #ffffff;
+  z-index: 2000;
+  padding-top: 30px;
+  display: flex;
+  flex-direction: column;
+}
+
+.tab-group .mat-tab-label {
+  min-width: 48px;
+  padding: 0;
+  height: 40px;
+  font-weight: 600;
+  color: rgba(0, 10, 30, 0.4);
+}
+
+.tab-group .mat-tab-label + .mat-tab-label {
+  margin-left: 14px;
+}
+
+.tab-group .mat-tab-label-active {
+  color: rgb(0, 10, 30);
+}
+
+.tab-group .mat-tab-header {
+  border-bottom: 1px solid #E1E1E1;
+  padding: 0 14px;
+}
+
+.tab-group .mat-tab-body-wrapper {
+  flex: 1;
+}
+
+.form-field + .form-field {
+  margin-top: 16px;
+}
+
+.form-field label {
+  font-weight: 600;
+  padding-bottom: 4px;
+  line-height: 24px;
+  display: block;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.form-field input,
+.form-field .form-button,
+.form-field mat-select {
+  height: 40px;
+  line-height: 38px;
+  width: 100%;
+  border: 1px solid #E1E1E1;
+  border-radius: 3px;
+  font-size: 14px;
+  padding: 0 10px;
+  background-color: #ffffff;
+}
+
+.form-field input:hover,
+.form-field .form-button:hover,
+.form-field mat-select:hover,
+.form-field input:focus,
+.form-field .form-button:focus,
+.form-field mat-select:focus {
+  background-color: #f0f0f0;
+}
+
+.mat-autocomplete-panel .mat-option {
+  font-size: 14px;
+  line-height: 3em;
+  height: 3em;
+}
+
+.form-field .form-button {
+  padding: 5px;
+}
+
+.form-field .form-button .mat-button-wrapper {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 0 5px;
+  line-height: 28px;
+}
+
+.form-field .form-button .mat-button-wrapper span {
+  flex: 1;
+  text-align: left;
+}
+
+.form-field mat-icon {
+  color: #6236FF;
+}
+
+.form-field .form-button--active .mat-button-wrapper {
+  color: #6236FF;
+  font-weight: 600;
+  background-color: rgba(98,54,255,0.1);
+}
+
+.link-button {
+  font-size: 12px;
+  color: #1A8FEA;
+  font-weight: 600;
+  text-align: center;
+}
+
+.centered {
+  display: flex;
+  justify-content: center;
+}

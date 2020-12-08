@@ -3,22 +3,46 @@ import { Geometry } from '../../core/src/lib/shared/generated';
 
 declare interface App {
   id: number;
+  selectedContent: SelectedContentItem[];
+  appLayers: Record<string, AppLayer>;
+  levels: Record<string, Level>;
+}
+
+declare interface SelectedContentItem {
+  type: 'level' | 'appLayer';
+  id: string;
 }
 
 declare interface AppLoader {
   get: (varName: 'viewerController' | 'appId' | 'user' | 'contextPath' | 'absoluteURIPrefix') => any;
+  getApplicationConfig(): App;
+}
+
+declare interface GeoServiceLayer {
+  name: string;
 }
 
 declare interface GeoService {
   id: string;
+  layers: Record<string, GeoServiceLayer>;
+}
+
+declare interface Level {
+  id: string;
+  name: string;
+  children: string[];
+  layers: string[];
+  background: boolean;
 }
 
 declare interface AppLayer {
   id: string;
   layerName: string;
+  alias: string;
 
   attribute: boolean;   // has attribute table???
   featureType: number;
+  background: boolean;
 }
 
 type layerVisibilityEvent = (object: any, event: LayerVisibilityEvent) => void;
