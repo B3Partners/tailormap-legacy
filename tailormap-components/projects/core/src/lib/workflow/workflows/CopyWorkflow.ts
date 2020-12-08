@@ -103,7 +103,7 @@ export class CopyWorkflow extends Workflow {
     let allowedFeaturesTypes = [];
     const sl = this.tailorMap.selectedLayer;
     if (sl) {
-      allowedFeaturesTypes.push(LayerUtils.sanitzeLayername(sl.layerName));
+      allowedFeaturesTypes.push(LayerUtils.sanitizeLayername(sl.layerName));
     } else {
       allowedFeaturesTypes = this.formConfigRepo.getFeatureTypes();
     }

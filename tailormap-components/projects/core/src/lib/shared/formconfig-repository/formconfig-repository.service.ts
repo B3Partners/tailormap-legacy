@@ -36,7 +36,7 @@ export class FormconfigRepositoryService {
         const featureTypes = [];
         for (const key in data.config) {
           if (data.config.hasOwnProperty(key)) {
-            const sanitized = LayerUtils.sanitzeLayername(key);
+            const sanitized = LayerUtils.sanitizeLayername(key);
             this.formConfigs.config[sanitized] = data.config[key];
             featureTypes.push(sanitized);
           }

@@ -3,7 +3,7 @@
   <Parameter name="componentregistry.path" override="false" value="/viewer-html/components"/>
   <Parameter name="flamingo.data.dir" override="false" value="/opt/tailormap_data"/>
   <Parameter name="flamingo.solr.url" override="false" value="https://tailormap.nl/solr/"/>
-  <Parameter name="flamingo.restproxy.port" override="false" value="8080"/>
+  <Parameter name="flamingo.restproxy.port" override="false" value="8084"/>
 
     <!-- You must create this by hand in your geoserver to use the UserLayerActionBean-->
     <Parameter name="userlayer.geoserver.workspace" override="false" value="GBIuserlayers" />

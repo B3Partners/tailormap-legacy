@@ -5,6 +5,7 @@ import {
 } from 'rxjs';
 
 import { Layer } from './layer.model';
+import { LayerUtils } from '../../shared/layer-utils/layer-utils.service';
 import { AttributelistTabComponent } from './attributelist-tab/attributelist-tab.component';
 import { TailorMapService } from '../../../../../bridge/src/tailor-map.service';
 import { HighlightService } from '../../shared/highlight-service/highlight.service';
@@ -39,25 +40,19 @@ export class LayerService {
     this.loadLayers();
   }
 
-  /**
-   * Returns part from full layer name before ":". Converts to lowercase too.
-   */
-  private static sanitizeLayername(layerName: string): string {
-    const index = layerName.indexOf(':');
-    if (index !== -1) {
-      layerName = layerName.substring(index + 1);
-    }
-    return layerName.toLowerCase();
-  }
+  // /**
+  //  * Returns part from full layer name before ":". Converts to lowercase too.
+  //  */
+  // private static sanitizeLayername(layerName: string): string {
+  //   const index = layerName.indexOf(':');
+  //   if (index !== -1) {
+  //     layerName = layerName.substring(index + 1);
+  //   }
+  //   return layerName.toLowerCase();
+  // }
 
   private isLayerIdInLayers (layerId): boolean {
-    let layerFound = false;
-    let index = 0;
-    while (index < this.layers.length && !layerFound) {
-      layerFound = (this.layers[index].id === layerId);
-      index++;
-    }
-    return layerFound;
+    return (this.layers.find( layer => layer.id === layerId ) !== undefined);
   }
 
   public getAppId(): number {
@@ -107,15 +102,7 @@ export class LayerService {
    * Returns -1 when no valid index.
    */
   public getTabIndexByLayerId(layerId: number): number {
-    let tabIndex = -1;
-    let index = 0;
-    while (index < this.layers.length && tabIndex === -1) {
-      if (this.layers[index].id === layerId) {
-        tabIndex = index;
-      }
-      index++;
-    }
-    return tabIndex;
+    return (this.layers.findIndex( obj => obj.id === layerId));
   }
 
   /**
@@ -159,7 +146,7 @@ export class LayerService {
 
     // Is there a attribute table?
     if (appLayer.attribute) {
-      const layerName = LayerService.sanitizeLayername(appLayer.layerName);
+      const layerName = LayerUtils.sanitizeLayername(appLayer.layerName);
       // console.log('layer.service addLayer: ' + layerName);
 
       // console.log('layerName: ' + layerName);
@@ -180,20 +167,23 @@ export class LayerService {
     this.highlightService.clearHighlight();
 
     const tabIndex = this.getTabIndexByLayerId(layerId) as number;
-    const saveLayerId: number[] = [];
-    for (let i = tabIndex + 1; i < this.layers.length; i++) {
-      saveLayerId.push (this.layers[i].id)
-    }
-    // remove until end otherwise removing/loading table is not correct (tab/table removes always from the back of the list)
-    this.layers.splice(tabIndex, this.layers.length - tabIndex);
+    if (tabIndex >= 0) {
+      const saveLayerId: number[] = [];
+      for (let i = tabIndex + 1; i < this.layers.length; i++) {
+        saveLayerId.push (this.layers[i].id)
+      }
+      // remove until end otherwise removing/loading table is not correct (tab/table removes always from the back of the list)
+      this.layers.splice(tabIndex, this.layers.length - tabIndex);
 
-    // wait to let tab/table cleanup
-    setTimeout(() => {
-      // reload layers until the end of the tabs
-      saveLayerId.forEach(id => {
-        this.addLayer(id);
-      });
-    }, 0)
+      // wait to let tab/table cleanup
+      setTimeout(() => {
+        // reload layers until the end of the tabs
+        saveLayerId.forEach(id => {
+          this.addLayer(id);
+        });
+      }, 0)
+    }
+
   }
 
   /**
