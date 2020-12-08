@@ -7,6 +7,7 @@
  */
 
 import { DataSource } from '@angular/cdk/table';
+import * as wellknown from 'wellknown';
 import { Observable, of } from 'rxjs';
 import { MatSort } from '@angular/material/sort';
 import { MatPaginator } from '@angular/material/paginator';
@@ -26,8 +27,10 @@ import {
 } from '../../../shared/attribute-service/attribute-models';
 import { CheckState, DetailsState } from './attributelist-enums';
 import { DatasourceParams } from './datasource-params';
+import { Feature } from '../../../shared/generated';
 import { FormconfigRepositoryService } from '../../../shared/formconfig-repository/formconfig-repository.service';
 import { LayerService } from '../layer.service';
+import { LayerUtils } from '../../../shared/layer-utils/layer-utils.service';
 
 export class AttributeDataSource extends DataSource<any> {
 
@@ -116,6 +119,29 @@ export class AttributeDataSource extends DataSource<any> {
       }
     });
     return cnt;
+  }
+
+  /**
+   * Returns the checked Rows refactored to Features
+   */
+  public getCheckedRowsAsFeatures(): Feature[] {
+    const feature = {} as Feature;
+    const featuresChecked: Feature[] = [];
+    this.rows.forEach( (row: RowData) => {
+      if (row._checked) {
+        const { object_guid, related_featuretypes, __fid, _checked, _details, _detailsRow, geometrie, ...rest } = row;
+        if (row.geometrie) {
+          rest.geometrie =  wellknown.parse(row.geometrie);
+        }
+        const className = LayerUtils.sanitzeLayername(this.getLayerName().toLowerCase());
+        feature.children = [];
+        feature.clazz = className;
+        feature.objectGuid = row.object_guid;
+        feature.objecttype = className[0].toUpperCase() + className.substr(1);
+        featuresChecked.push({ ...feature, ...rest });
+      }
+    });
+    return featuresChecked;
   }
 
   /**
