@@ -20,7 +20,7 @@ export class AttributelistColumnController {
   private activeColumnNames: string[] = [];
 
   // Passport flag.
-  private isPassportActive = false;
+  public isPassportActive = false;
 
   constructor() {
     // Fill the list with special column, add special column name '_checked'.
@@ -153,7 +153,7 @@ export class AttributelistColumnController {
    * Activates all columns, i.e. sets all columns visible.
    */
   public setActiveAll(): void {
-    // Udate the active columns.
+    // Update the active columns.
     this.isPassportActive = false;
     this.updateActiveColumns();
   }
@@ -162,7 +162,7 @@ export class AttributelistColumnController {
    * Activates only the passport columns.
    */
   public setActivePassport(): void {
-    // Udate the active columns.
+    // Update the active columns.
     this.isPassportActive = true;
     this.updateActiveColumns();
   }

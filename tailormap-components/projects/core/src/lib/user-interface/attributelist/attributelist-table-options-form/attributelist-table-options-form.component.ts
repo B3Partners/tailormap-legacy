@@ -60,12 +60,20 @@ export class AttributelistTableOptionsFormComponent implements OnInit {
   public onActionsClick(): void {
     this.dialogRef.close(this.columns);
   }
+  public isPassportActive(): boolean {
+    return this.columnController.isPassportActive;
+  }
   /**
-   * Shows all columns.
+   * Shows all or passport columns.
    */
   public onButtonClick(): void {
-    // Set to all columns.
-    this.columnController.setActiveAll();
+    if (this.columnController.isPassportActive) {
+      // Set to all columns.
+      this.columnController.setActiveAll();
+    } else {
+      // Set to passport columns.
+      this.columnController.setActivePassport();
+    }
   }
   public onDrop(event: CdkDragDrop<string[]>): void {
     moveItemInArray(this.columns, event.previousIndex, event.currentIndex);
