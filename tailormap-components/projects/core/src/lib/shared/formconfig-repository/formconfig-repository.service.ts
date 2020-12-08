@@ -11,7 +11,11 @@ import {
   Feature,
   FeatureControllerService,
 } from '../generated';
-import { ReplaySubject } from 'rxjs';
+import {
+  of,
+  ReplaySubject,
+} from 'rxjs';
+import { catchError } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
@@ -42,15 +46,20 @@ export class FormconfigRepositoryService {
           }
         }
 
-        this.featureController.featuretypeInformation({featureTypes}).subscribe(info => {
-          info.forEach(featuretypeMetadata => {
-            if (this.formConfigs.config[featuretypeMetadata.featuretypeName]) {
-              this.formConfigs.config[featuretypeMetadata.featuretypeName].featuretypeMetadata = featuretypeMetadata;
+        this.featureController.featuretypeInformation({featureTypes})
+          .pipe(catchError(e => of(null)))
+          .subscribe(info => {
+            if (!info) {
+              return;
             }
-          });
+            info.forEach(featuretypeMetadata => {
+              if (this.formConfigs.config[featuretypeMetadata.featuretypeName]) {
+                this.formConfigs.config[featuretypeMetadata.featuretypeName].featuretypeMetadata = featuretypeMetadata;
+              }
+            });
 
-          this.formConfigs$.next(data);
-          this.domainRepo.initFormConfig(this.formConfigs);
+            this.formConfigs$.next(data);
+            this.domainRepo.initFormConfig(this.formConfigs);
         });
 
       });

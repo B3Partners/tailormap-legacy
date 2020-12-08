@@ -45,9 +45,12 @@ export interface AttributeMetadataParameters {
 export interface AttributeMetadataResponse {
   attributes: Attribute[];
   success: boolean;
+  featureType: number;
+  featureTypeName: string;
   geometryAttribute: string;
   geometryAttributeIndex: number;
   relations: Relation[];
+  invertedRelations: Relation[];
 }
 
 export interface Attribute {
@@ -75,6 +78,8 @@ export interface Relation {
   featureType: number;
   foreignFeatureType: number;
   type: RelationType;
+  featureTypeName: string;
+  foreignFeatureTypeName: string;
 }
 
 export enum RelationType {
