@@ -1,0 +1,10 @@
+.button{
+  margin: 5px;
+}
+.button-enabled{
+  fill: black;
+}
+.button-disabled{
+  fill: gray;
+  opacity: 0.5;
+}

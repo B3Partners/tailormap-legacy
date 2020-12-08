@@ -1,4 +1,6 @@
-import { NgModule } from '@angular/core';
+import {
+  NgModule,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import {
@@ -31,6 +33,7 @@ import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.componen
 import { ConfirmDialogService } from './confirm-dialog/confirm-dialog.service';
 import { ApiModule } from './generated';
 import { DomSanitizer } from '@angular/platform-browser';
+import { TailorMapService } from '../../../../bridge/src/tailor-map.service';
 
 @NgModule({
   declarations: [
@@ -97,9 +100,17 @@ export class SharedModule {
     private matIconRegistry: MatIconRegistry,
     private domSanitizer: DomSanitizer,
   ) {
-    this.matIconRegistry.addSvgIcon(
-      'pietje',
-      this.domSanitizer.bypassSecurityTrustResourceUrl('http://localhost:3200/assets/imgs/pietje.svg'),
-    );
+
+    const url = '/viewer/tailormap-components/bridge/assets/imgs/';
+    const icons = ['draw_polygon', 'draw_line', 'draw_point', 'split', 'new_object', 'merge'];
+    icons.forEach(value => {
+      this.matIconRegistry.addSvgIcon(
+        value,
+        this.domSanitizer.bypassSecurityTrustResourceUrl(
+          url
+          + value + '.svg'),
+      );
+
+    });
   }
 }

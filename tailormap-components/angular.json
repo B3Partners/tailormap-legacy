@@ -22,7 +22,8 @@
             "aot": true,
             "assets": [
               "projects/bridge/src/favicon.ico",
-              "projects/bridge/src/assets"
+              "projects/bridge/src/assets",
+              "projects/bridge/src/assets/imgs",
             ],
             "styles": [
               "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
@@ -69,7 +70,7 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
             "browserTarget": "bridge:build",
-            "publicHost":"http://localhost:3200",
+            "publicHost": "http://localhost:3200",
             "port": 3200
           },
           "configurations": {
@@ -144,14 +145,13 @@
             "assets": [
               "projects/core/src/assets"
             ]
-          }
-        ,          "configurations": {
+          },
+          "configurations": {
             "production": {
               "tsConfig": "projects/core/tsconfig.lib.prod.json"
             }
           }
-},
-
+        },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
@@ -163,12 +163,11 @@
               "projects/core/src/assets"
             ],
             "styles": [
-              "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
+              "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css"
             ],
             "scripts": []
           }
         },
-
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
