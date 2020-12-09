@@ -133,7 +133,7 @@ export class AttributeDataSource extends DataSource<any> {
         if (row.geometrie) {
           rest.geometrie =  wellknown.parse(row.geometrie);
         }
-        const className = LayerUtils.sanitzeLayername(this.getLayerName().toLowerCase());
+        const className = LayerUtils.sanitizeLayername(this.getLayerName().toLowerCase());
         feature.children = [];
         feature.clazz = className;
         feature.objectGuid = row.object_guid;
