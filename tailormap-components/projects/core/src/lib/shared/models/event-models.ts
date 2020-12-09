@@ -1,6 +1,10 @@
 export interface LayerVisibilityEvent {
   visible: boolean;
-  layername: string;
+  layer: LayerVisibilityLayer;
+}
+
+export interface LayerVisibilityLayer {
+  id: number
 }
 
 export interface MapClickedEvent {

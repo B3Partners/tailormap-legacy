@@ -5,10 +5,10 @@ import {
 } from 'rxjs';
 
 import { Layer } from './layer.model';
+import { LayerUtils } from '../../shared/layer-utils/layer-utils.service';
 import { AttributelistTabComponent } from './attributelist-tab/attributelist-tab.component';
 import { TailorMapService } from '../../../../../bridge/src/tailor-map.service';
 import { HighlightService } from '../../shared/highlight-service/highlight.service';
-// import { FormconfigRepositoryService } from '../../shared/formconfig-repository/formconfig-repository.service';
 
 @Injectable({
   providedIn: 'root',
@@ -24,9 +24,35 @@ export class LayerService {
               private highlightService: HighlightService) {
     // Install the layerVisibilityChanged handler.
     this.tailorMapService.layerVisibilityChanged$.subscribe(value => {
-      this.loadLayers();
+      // layerVisibilityChanged visible to true occurs too often (also if layer is already visible)
+      // console.log ('LayerService visi changed value: ' + value.visible);
+      if (value.visible) {
+        if (!this.isLayerIdInLayers(value.layer.id)) {
+          this.addLayer(value.layer.id);
+        }
+      } else {
+        if (this.isLayerIdInLayers(value.layer.id)) {
+          this.removeLayer(value.layer.id);
+        }
+      }
+      this.layersSubject.next(this.layers);
     });
     this.loadLayers();
+  }
+
+  // /**
+  //  * Returns part from full layer name before ":". Converts to lowercase too.
+  //  */
+  // private static sanitizeLayername(layerName: string): string {
+  //   const index = layerName.indexOf(':');
+  //   if (index !== -1) {
+  //     layerName = layerName.substring(index + 1);
+  //   }
+  //   return layerName.toLowerCase();
+  // }
+
+  private isLayerIdInLayers (layerId): boolean {
+    return (this.layers.find( layer => layer.id === layerId ) !== undefined);
   }
 
   public getAppId(): number {
@@ -66,10 +92,17 @@ export class LayerService {
    */
   public getLayerByTabIndex(tabIndex: number): Layer {
     if ((tabIndex < 0) || (tabIndex > this.layers.length - 1)) {
-      console.log('LayerService.getLayer - No valid index.');
+      // console.log('LayerService.getLayer - No valid index.');
       return null;
     }
     return this.layers[tabIndex];
+  }
+
+  /**
+   * Returns -1 when no valid index.
+   */
+  public getTabIndexByLayerId(layerId: number): number {
+    return (this.layers.findIndex( obj => obj.id === layerId));
   }
 
   /**
@@ -77,7 +110,7 @@ export class LayerService {
    */
   public getTabComponent(index: number): AttributelistTabComponent {
     if ((index < 0) || (index > this.layers.length - 1)) {
-      console.log('LayerService.getTabComponent - No valid index.');
+      // console.log('LayerService.getTabComponent - No valid index.');
       return null;
     }
     return this.layers[index].tabComponent;
@@ -90,7 +123,7 @@ export class LayerService {
   public loadLayers(): void {
     // console.log('#LayerService - loadLayers');
 
-    // Clear highligthing.
+    // Clear highlighting.
     this.highlightService.clearHighlight();
 
     // Clear the array, but keep the array reference for automatic update.
@@ -101,24 +134,56 @@ export class LayerService {
     // console.log(layerIds);
 
     layerIds.forEach(layerId => {
-      const appLayer = vc.getAppLayerById(layerId);
-
-      // Is there a attribute table?
-      if (appLayer.attribute) {
-        const layerName = this.sanitizeLayername(appLayer.layerName);
-        // console.log('layerName: ' + layerName);
-        // console.log(appLayer);
-        const layer: Layer = {
-          name: layerName,
-          id: layerId,
-          tabComponent: null,
-        };
-        // console.log(layer);
-        this.layers.push(layer);
-      }
+      this.addLayer(layerId);
     });
 
     this.layersSubject.next(this.layers);
+  }
+
+  private addLayer (layerId: number) {
+    const vc = this.tailorMapService.getViewerController();
+    const appLayer = vc.getAppLayerById(layerId);
+
+    // Is there a attribute table?
+    if (appLayer.attribute) {
+      const layerName = LayerUtils.sanitizeLayername(appLayer.layerName);
+      // console.log('layer.service addLayer: ' + layerName);
+
+      // console.log('layerName: ' + layerName);
+      // console.log(appLayer);
+      const layer: Layer = {
+        name: layerName,
+        id: layerId,
+        tabComponent: null,
+      };
+      // console.log(layer);
+      this.layers.push(layer);
+    }
+
+  }
+
+  private removeLayer (layerId: number) {
+    // Clear highlighting.
+    this.highlightService.clearHighlight();
+
+    const tabIndex = this.getTabIndexByLayerId(layerId) as number;
+    if (tabIndex >= 0) {
+      const saveLayerId: number[] = [];
+      for (let i = tabIndex + 1; i < this.layers.length; i++) {
+        saveLayerId.push (this.layers[i].id)
+      }
+      // remove until end otherwise removing/loading table is not correct (tab/table removes always from the back of the list)
+      this.layers.splice(tabIndex, this.layers.length - tabIndex);
+
+      // wait to let tab/table cleanup
+      setTimeout(() => {
+        // reload layers until the end of the tabs
+        saveLayerId.forEach(id => {
+          this.addLayer(id);
+        });
+      }, 0)
+    }
+
   }
 
   /**
@@ -126,22 +191,11 @@ export class LayerService {
    */
   public registerTabComponent(index: number, tab: AttributelistTabComponent): void {
     if ((index < 0) || (index > this.layers.length - 1)) {
-      console.log('LayerService.registerTabComponent - No valid index.');
+      // console.log('LayerService.registerTabComponent - No valid index.');
       return;
     }
     this.layers[index].tabComponent = tab;
     this.layersSubject.next(this.layers);
-  }
-
-  /**
-   * Returns part from full layer name before ":". Converts to lowercase too.
-   */
-  private sanitizeLayername(layername: string): string {
-    const index = layername.indexOf(':');
-    if (index !== -1) {
-      layername = layername.substring(index + 1);
-    }
-    return layername.toLowerCase();
   }
 
   public test(): void {

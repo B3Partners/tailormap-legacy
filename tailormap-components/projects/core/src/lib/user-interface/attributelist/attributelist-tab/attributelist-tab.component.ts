@@ -36,10 +36,12 @@ export class AttributelistTabComponent implements OnInit, AfterViewInit {
   public ngOnInit(): void {
     // When a tab is initialized the tab index can be registered with
     // the layer service.
+    // console.log('tab.comp ngOnInit: ' + this.tabIndex);
     this.layerService.registerTabComponent(this.tabIndex, this);
   }
 
   public ngAfterViewInit(): void {
+    // console.log('tab.comp ngAfterViewInit: ' + this.tabIndex)
     // Set toolbar tab index.
     this.toolbar.setTabIndex(this.tabIndex);
     // Set table tab index (only here the table is defined).
@@ -53,4 +55,5 @@ export class AttributelistTabComponent implements OnInit, AfterViewInit {
   public onRowClick(data: RowClickData): void {
     this.rowClick.emit(data);
   }
+
 }

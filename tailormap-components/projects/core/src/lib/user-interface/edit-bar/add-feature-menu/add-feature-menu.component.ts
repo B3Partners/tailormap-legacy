@@ -57,7 +57,7 @@ export class AddFeatureMenuComponent implements OnInit {
     appLayers.forEach(appLayerId => {
       const appLayer = this.tailorMapService.getViewerController().getAppLayerById(appLayerId);
       let layerName: string = appLayer.layerName;
-      layerName = LayerUtils.sanitzeLayername(layerName);
+      layerName = LayerUtils.sanitizeLayername(layerName);
 
       if (allowFts.findIndex(l => l.toLowerCase() === layerName) !== -1) {
         this.layers.push(layerName);
