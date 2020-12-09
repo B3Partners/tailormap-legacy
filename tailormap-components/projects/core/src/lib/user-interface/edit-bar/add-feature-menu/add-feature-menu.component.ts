@@ -73,7 +73,7 @@ export class AddFeatureMenuComponent implements OnInit {
   }
 
   public draw(type: string): void {
-    this.workflowControllerService.addFeature(this.layer);
+    this.workflowControllerService.addFeature(this.layer, type);
     this.dialogRef.close();
   }
 

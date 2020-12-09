@@ -1,0 +1,9 @@
+tailormap-criteria {
+  display: block;
+  border-bottom: 1px solid #E1E1E1;
+  padding: 14px 14px 6px 14px;
+}
+
+tailormap-criteria + tailormap-criteria {
+  margin-top: 14px;
+}

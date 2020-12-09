@@ -1,6 +1,6 @@
 import { FormHelpers } from './form-helpers';
 
-fdescribe('FormHelpers', () => {
+describe('FormHelpers', () => {
 
   it('should capitalize', () => {
     expect(FormHelpers.capitalize("hallo")).toBe("Hallo");

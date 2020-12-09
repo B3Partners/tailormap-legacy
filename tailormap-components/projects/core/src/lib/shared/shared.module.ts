@@ -1,4 +1,6 @@
-import { NgModule } from '@angular/core';
+import {
+  NgModule,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import {
@@ -30,14 +32,24 @@ import { MatTreeModule } from '@angular/material/tree';
 import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.component';
 import { ConfirmDialogService } from './confirm-dialog/confirm-dialog.service';
 import { ApiModule } from './generated';
+import { DialogCloseButtonComponent } from './dialog-close-button/dialog-close-button.component';
+import { TreeComponent } from './tree/tree.component';
+import { OverlayComponent } from './overlay-service/overlay/overlay.component';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { DomSanitizer } from '@angular/platform-browser';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 
 @NgModule({
   declarations: [
-    ConfirmDialogComponent],
+    ConfirmDialogComponent,
+    DialogCloseButtonComponent,
+    TreeComponent,
+    OverlayComponent,
+  ],
   imports: [
     ApiModule.forRoot({
-      rootUrl: window.location.origin + '/viewer/action/proxyrest?url=',
+        rootUrl: window.location.origin + '/viewer/action/proxyrest?url=',
     }),
     CommonModule,
     ReactiveFormsModule,
@@ -62,6 +74,9 @@ import { DomSanitizer } from '@angular/platform-browser';
     MatProgressSpinnerModule,
     MatMenuModule,
     MatDialogModule,
+    MatRadioModule,
+    MatProgressBarModule,
+    MatAutocompleteModule,
   ],
   exports: [
     ReactiveFormsModule,
@@ -86,6 +101,11 @@ import { DomSanitizer } from '@angular/platform-browser';
     MatProgressSpinnerModule,
     MatMenuModule,
     MatDialogModule,
+    DialogCloseButtonComponent,
+    TreeComponent,
+    MatRadioModule,
+    MatProgressBarModule,
+    MatAutocompleteModule,
   ],
   entryComponents: [],
   providers: [
@@ -97,9 +117,17 @@ export class SharedModule {
     private matIconRegistry: MatIconRegistry,
     private domSanitizer: DomSanitizer,
   ) {
-    this.matIconRegistry.addSvgIcon(
-      'pietje',
-      this.domSanitizer.bypassSecurityTrustResourceUrl('http://localhost:3200/assets/imgs/pietje.svg'),
-    );
+
+    const url = '/viewer/tailormap-components/bridge/assets/imgs/';
+    const icons = ['draw_polygon', 'draw_line', 'draw_point', 'split', 'new_object', 'merge'];
+    icons.forEach(value => {
+      this.matIconRegistry.addSvgIcon(
+        value,
+        this.domSanitizer.bypassSecurityTrustResourceUrl(
+          url
+          + value + '.svg'),
+      );
+
+    });
   }
 }

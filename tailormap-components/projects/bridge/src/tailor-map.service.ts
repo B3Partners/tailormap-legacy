@@ -2,15 +2,22 @@ import {
   Injectable,
   NgZone,
 } from '@angular/core';
-import { Subject } from 'rxjs';
+import {
+  fromEvent,
+  Observable,
+  ReplaySubject,
+  Subject,
+} from 'rxjs';
 import { LayerVisibilityEvent } from '../../core/src/lib/shared/models/event-models';
 import {
+  App,
   AppLayer,
   AppLoader,
   MapComponent,
   SplitComponent,
   ViewerController,
 } from '../typings';
+import { take } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
@@ -21,6 +28,8 @@ export class TailorMapService {
     this.init();
   }
 
+  private applicationConfigSubject$: ReplaySubject<App> = new ReplaySubject<App>(1);
+  public applicationConfig$: Observable<App> = this.applicationConfigSubject$.asObservable();
   private layerVisibilityChangedSubject$: Subject<LayerVisibilityEvent> = new Subject<LayerVisibilityEvent>();
   public layerVisibilityChanged$ = this.layerVisibilityChangedSubject$.asObservable();
   public selectedLayer$: Subject<AppLayer> = new Subject<AppLayer>();
@@ -43,16 +52,28 @@ export class TailorMapService {
   }
 
   public init(): void {
+    if (this.getViewerController() !== null) {
+      this.initViewerController();
+      return;
+    }
+    fromEvent(window, 'viewerControllerReady')
+      .pipe(take(1))
+      .subscribe(() => {
+        this.initViewerController();
+      })
+  }
+
+  private initViewerController() {
     const vc = this.getViewerController();
     const mc = vc.mapComponent;
     const map = mc.getMap();
     map.addListener('ON_LAYER_VISIBILITY_CHANGED', (object, event) => {
       this.ngZone.run(() => this.layerVisibilityChangedSubject$.next(event));
     });
-
     vc.addListener('ON_LAYER_SELECTED', (event) => {
       this.selectedLayer = event.appLayer;
     });
+    this.applicationConfigSubject$.next(this.getAppLoader().getApplicationConfig());
   }
 
   public openSplitComponent() {
