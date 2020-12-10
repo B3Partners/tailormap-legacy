@@ -583,8 +583,8 @@ public class WMSService extends GeoService implements Updatable {
         }
         
         Set<String> visitedLayerNames = new HashSet();
-        
-        do {
+
+        while(!q.isEmpty()) {
             // Remove from head of queue
             Pair<Layer,Layer> p = q.remove();
             
@@ -621,7 +621,7 @@ public class WMSService extends GeoService implements Updatable {
                 // Add add end of queue
                 q.add(new ImmutablePair(child, thisLayer));
             }
-        } while(!q.isEmpty());
+        }
     }
     
     private void removeOrphanLayersAfterUpdate(UpdateResult result) {
