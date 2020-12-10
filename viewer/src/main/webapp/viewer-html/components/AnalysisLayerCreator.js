@@ -22,17 +22,16 @@ Ext.define ("viewer.components.AnalysisLayerCreator", {
     constructor: function (conf) {
         this.initConfig(conf);
         viewer.components.AnalysisLayerCreator.superclass.constructor.call(this, this.config);
+        this.addPanel();
         return this;
     },
-    addButton: function(buttonContainer, extContainer) {
-        if (viewer.components.AnalysisLayerCreator.buttonCreated) {
-            return;
-        }
-        var btn = document.createElement('tailormap-analysis-button');
-        buttonContainer.appendChild(btn);
+    addPanel: function() {
         var panel = document.createElement('tailormap-create-layer-panel');
         document.body.appendChild(panel);
-        viewer.components.AnalysisLayerCreator.buttonCreated = true;
+    },
+    addButton: function(buttonContainer, extContainer) {
+        var btn = document.createElement('tailormap-analysis-button');
+        buttonContainer.appendChild(btn);
         window.setTimeout(function() { extContainer.updateLayout(); }, 250);
     }
 });
