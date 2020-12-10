@@ -26,12 +26,14 @@ Ext.define('vieweradmin.components.Form', {
         gridurl: "",
         editurl: "",
         itemname: i18next.t('viewer_admin_attribute_gtitle'),
-        getfeaturetypesurl: ""
+        getfeaturetypesurl: "",
+        setDefaultFeaturesource: ""
     },
     constructor: function(config) {
         this.initConfig(config);
         vieweradmin.components.Form.superclass.constructor.call(this, this.config);
         vieweradmin.components.Menu.setActiveLink('menu_forms');
+        this.convertDefaultFSSelect();
     },
 
     simpleFeatureTypeChange: function(simpleFeatureTypeId) {
@@ -102,6 +104,83 @@ Ext.define('vieweradmin.components.Form', {
 
     getRemoveUrl: function(record) {
         return this.createUrl(this.config.deleteurl, { form: record.get('id') });
+    },
+
+    convertDefaultFSSelect: function() {
+        var values = [];
+        var a = document.getElementById("editFrame");
+
+        var defaultFSSelect = document.getElementById("defaultFSSelector");
+        defaultFSSelect.style.display = 'none';
+        for(var i = 0; i < defaultFSSelect.options.length; i++) {
+            values.push({
+                value: defaultFSSelect.options[i].value,
+                label: defaultFSSelect.options[i].innerHTML
+            });
+        }
+        var applications = Ext.create('Ext.data.Store', {
+            fields: ['value', 'label'],
+            data : values
+        });
+        Ext.create('Ext.container.Container',{
+            renderTo: defaultFSSelect.parentNode,
+            padding: '20 0 10 0',
+            style: {
+                color: '#666666'
+            },
+            html: i18next.t('viewer_admin_form_defaultfs')
+        });
+        Ext.create('Ext.form.ComboBox', {
+            fieldLabel: i18next.t('viewer_admin_form_lookupfs'),
+            store: applications,
+            queryMode: 'local',
+            displayField: 'label',
+            valueField: 'value',
+            value: defaultFSSelect.value,
+            renderTo: defaultFSSelect.parentNode,
+            labelWidth: 150,
+            width: 375,
+            listeners: {
+                change: {
+                    fn: function(combo, newvalue) {
+                        combo.setLoading(i18next.t('viewer_admin_form_saving'));
+                        this.defaultApplicationChanged(combo, applications.findRecord("value", newvalue, 0, false, false, /*exactMatch=*/true));
+                    },
+                    scope: this
+                }
+            }
+        });
+    },
+
+    defaultApplicationChanged: function (combobox, application) {
+        var defaultFs, appLabel;
+        if (application === null) {
+            defaultFs = null;
+            appLabel = i18next.t('viewer_admin_chooseapplication_15')
+        } else {
+            defaultFs = application.get('value');
+            appLabel = ': "' + application.get('label') + '"';
+        }
+        Ext.Ajax.request({
+            url: this.config.setDefaultFeaturesource,
+            params: {
+                defaultFeatureSource: defaultFs
+            },
+            scope: this,
+            success: function(result) {
+                var response = Ext.JSON.decode(result.responseText);
+                combobox.setLoading(false);
+                if(!response.success) {
+                    Ext.MessageBox.alert(i18next.t('viewer_admin_chooseapplication_16'), i18next.t('viewer_admin_chooseapplication_17'));
+                } else {
+                    Ext.MessageBox.alert(i18next.t('viewer_admin_chooseapplication_18'), i18next.t('viewer_admin_chooseapplication_19') + appLabel);
+                }
+            },
+            failure: function(result) {
+                combobox.setLoading(false);
+                Ext.MessageBox.alert(i18next.t('viewer_admin_chooseapplication_20'), i18next.t('viewer_admin_chooseapplication_21'));
+            }
+        });
     }
 
 

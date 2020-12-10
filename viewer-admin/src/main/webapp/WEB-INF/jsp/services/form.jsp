@@ -34,8 +34,18 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <div id="form-container" class="forms">
                 <div id="grid-container" class="attribute"></div>
             </div>
-            <div id="form-container" class="attributesources">
+            <div class="">
+                <stripes:form beanclass="nl.b3p.viewer.admin.stripes.FormActionBean">
+                    <stripes:select id="defaultFSSelector" name="defaultFeatureSourceId" value="${actionBean.defaultFeatureSourceId}" style="display: none;">
+                        <fmt:message key="viewer_admin.form.choosedefaultfs" var="OptLabel1" />
+                        <stripes:option label="${OptLabel1}" value="" />
+                        <stripes:options-collection collection="${actionBean.featureSources}" label="name"></stripes:options-collection>
+                    </stripes:select>
+                </stripes:form>
+            </div>
+            <div id="form-container" class="applicaties">
                 <iframe src="<stripes:url beanclass="nl.b3p.viewer.admin.stripes.FormActionBean" event="cancel"/>" id="editFrame" frameborder="0"></iframe>
+
             </div>
         </div>
         <script type="text/javascript" src="${contextPath}/resources/js/services/form.js"></script>
@@ -48,7 +58,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     forms:forms,
                     gridurl: '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.FormActionBean" event="getGridData"/>',
                     editurl: '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.FormActionBean" event="edit"/>',
-                    deleteurl: '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.FormActionBean" event="delete"/>'
+                    deleteurl: '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.FormActionBean" event="delete"/>',
+                    setDefaultFeaturesource :  '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.FormActionBean" event="saveDefaultFeatureSource"/>'
+
                 });
             });
         </script>

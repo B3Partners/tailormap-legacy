@@ -8,6 +8,7 @@ public class FormulierField {
     private int tab;
     private String label;
     private boolean mandatory;
+    private int linkedList;
 
     public String getKey() {
         return key;
@@ -55,5 +56,21 @@ public class FormulierField {
 
     public void setMandatory(Boolean mandatory) {
         this.mandatory = mandatory;
+    }
+
+    public boolean isMandatory() {
+        return mandatory;
+    }
+
+    public void setMandatory(boolean mandatory) {
+        this.mandatory = mandatory;
+    }
+
+    public int getLinkedList() {
+        return linkedList;
+    }
+
+    public void setLinkedList(int linkedList) {
+        this.linkedList = linkedList;
     }
 }
