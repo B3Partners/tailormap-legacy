@@ -195,7 +195,6 @@ Ext.define ("viewer.components.TOC",{
     },
     showAnalysisButton: function() {
         var analysisComponents = this.viewerController.getComponentsByClassName("viewer.components.AnalysisLayerCreator");
-        console.log(analysisComponents);
         if (analysisComponents.length === 0) {
             return;
         }
@@ -213,7 +212,6 @@ Ext.define ("viewer.components.TOC",{
                     html: '<div style="height: 36px;" class="button-container"></div>',
                     listeners: {
                         render: function(container) {
-                            console.log(container);
                             analysisComponents[0].addButton(container.getEl().dom.querySelector('.button-container'), container);
                         }
                     }
@@ -842,6 +840,7 @@ Ext.define ("viewer.components.TOC",{
         if(this.config.hasOwnProperty('showAfterSelectedContentChange') && this.config.showAfterSelectedContentChange && !this.config.isPopup && this.config.viewerController.layoutManager.isTabComponent(this.name)) {
             this.config.viewerController.layoutManager.showTabComponent(this.name)
         }
+        this.showAnalysisButton();
     },
     extentChanged : function (map,obj){
         var scale = map.getScale(obj.extent);
