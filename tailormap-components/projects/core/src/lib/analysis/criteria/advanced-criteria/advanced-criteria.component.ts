@@ -1,9 +1,15 @@
-import { Component } from '@angular/core';
+import {
+  Component,
+  OnDestroy,
+} from '@angular/core';
 import { Store } from '@ngrx/store';
 import { AnalysisState } from '../../state/analysis.state';
 import { IdService } from '../../../shared/id-service/id.service';
 import { selectCriteria } from '../../state/analysis.selectors';
-import { map } from 'rxjs/operators';
+import {
+  map,
+  takeUntil,
+} from 'rxjs/operators';
 import { CriteriaTypeEnum } from '../../models/criteria-type.enum';
 import { CriteriaModel } from '../../models/criteria.model';
 import { CriteriaHelper } from '../helpers/criteria.helper';
@@ -13,20 +19,25 @@ import {
   showCriteriaForm,
 } from '../../state/analysis.actions';
 import { CriteriaGroupModel } from '../../models/criteria-group.model';
+import { ConfirmDialogService } from '../../../shared/confirm-dialog/confirm-dialog.service';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'tailormap-advanced-criteria',
   templateUrl: './advanced-criteria.component.html',
   styleUrls: ['./advanced-criteria.component.css'],
 })
-export class AdvancedCriteriaComponent {
+export class AdvancedCriteriaComponent implements OnDestroy {
 
   public criteria: CriteriaModel;
   public saveButtonEnabled = false;
 
+  private destroyed = new Subject();
+
   constructor(
     private store$: Store<AnalysisState>,
     private idService: IdService,
+    private confirmService: ConfirmDialogService,
   ) {
     this.store$.select(selectCriteria)
       .pipe(
@@ -43,7 +54,13 @@ export class AdvancedCriteriaComponent {
       )
       .subscribe(criteria => {
         this.criteria = criteria;
+        this.saveButtonEnabled = CriteriaHelper.validGroups(this.criteria.groups);
       });
+  }
+
+  public ngOnDestroy() {
+    this.destroyed.next();
+    this.destroyed.complete();
   }
 
   public getGroupId(idx: number, group: CriteriaGroupModel) {
@@ -66,19 +83,44 @@ export class AdvancedCriteriaComponent {
   }
 
   public groupChanged(group: CriteriaGroupModel) {
-    const idx = this.criteria.groups.findIndex(g => g.id === group.id);
+    this.updateRemoveGroup(group.id, group);
+  }
+
+  public addGroup() {
+    this.criteria = {
+      ...this.criteria,
+      groups: [
+        CriteriaHelper.createCriteriaGroup(this.idService, [ CriteriaHelper.createCriteriaCondition(this.idService) ]),
+        ...this.criteria.groups,
+      ],
+    }
+  }
+
+  public removeGroup(group: CriteriaGroupModel) {
+    this.confirmService.confirm$(
+      'Groep verwijderen?',
+      'Wilt u deze criterium groep verwijderen? Alle criteria in deze groep zullen verwijderd worden.',
+      true,
+    )
+      .pipe(takeUntil(this.destroyed))
+      .subscribe(ok => {
+        if (ok) {
+          this.updateRemoveGroup(group.id);
+        }
+      })
+  }
+
+  private updateRemoveGroup(groupId: string, updatedGroup?: CriteriaGroupModel) {
+    const idx = this.criteria.groups.findIndex(g => g.id === groupId);
     if (idx === -1) {
       return;
     }
     this.criteria = {
       ...this.criteria,
-      groups: [
-        ...this.criteria.groups.slice(0, idx),
-        group,
-        ...this.criteria.groups.slice(idx + 1),
-      ],
+      groups: this.criteria.groups.slice(0, idx)
+        .concat(!updatedGroup ? [] : [updatedGroup])
+        .concat(this.criteria.groups.slice(idx + 1)),
     };
     this.saveButtonEnabled = CriteriaHelper.validGroups(this.criteria.groups);
   }
-
 }

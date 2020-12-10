@@ -10,6 +10,12 @@
   background-color: #FAFAFA;
 }
 
+.form::after {
+  content: " ";
+  display: block;
+  height: 14px;
+}
+
 .buttons {
   display: flex;
   justify-content: flex-end;
@@ -25,4 +31,17 @@ tailormap-criteria-group {
   background: #fff;
   border-radius: 4px;
   border: 1px solid #E1E1E1;
+}
+
+tailormap-criteria-group + tailormap-criteria-group {
+  margin-top: 14px;
+}
+
+.add-group-button {
+  background-color: #FAFAFA;
+  width: 100%;
+  margin-bottom: 6px;
+  font-size: 15px;
+  font-weight: 600;
+  text-align: left;
 }

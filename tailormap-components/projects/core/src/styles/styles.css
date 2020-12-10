@@ -5,7 +5,8 @@
 }
 
 [ng-version],
-.overlay-panel {
+.overlay-panel,
+.mat-dialog-container {
   font-family: Inter, sans-serif;
   font-weight: 400;
   color: rgb(0, 10, 30);
