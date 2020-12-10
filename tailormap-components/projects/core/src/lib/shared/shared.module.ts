@@ -39,6 +39,7 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { DomSanitizer } from '@angular/platform-browser';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { environment } from '../../../../bridge/src/environments/environment';
 
 @NgModule({
   declarations: [
@@ -118,8 +119,13 @@ export class SharedModule {
     private domSanitizer: DomSanitizer,
   ) {
 
-    const url = '/viewer/tailormap-components/bridge/assets/imgs/';
-    const icons = ['draw_polygon', 'draw_line', 'draw_point', 'split', 'new_object', 'merge'];
+    const basePath = environment.basePath;
+    const url = `${basePath}/assets/core/imgs/`;
+    const icons = [
+      'draw_polygon', 'draw_line', 'draw_point', 'split', 'new_object', 'merge',
+      'contextual_drag', 'contextual_chevron_bottom.svg', 'contextual_chevron_left.svg', 'contextual_chevron_right.svg', 'contextual_chevron_top.svg',
+      'interface_trash_filled.svg',
+    ];
     icons.forEach(value => {
       this.matIconRegistry.addSvgIcon(
         value,

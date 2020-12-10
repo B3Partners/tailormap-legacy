@@ -4,6 +4,7 @@
 
 export const environment = {
   production: false,
+  basePath: (window as any).tailorMapComponentsPath as string,
 };
 
 /*
