@@ -8,7 +8,7 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
         Parser p = new Parser();
-        Converter c = new Converter();
+        Converter c = new Converter(null);
 
         File f = new File(args[0]);
 

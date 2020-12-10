@@ -1,18 +1,23 @@
 package nl.b3p.viewer.admin.stripes;
 
 import net.sourceforge.stripes.action.*;
+import net.sourceforge.stripes.controller.LifecycleStage;
 import net.sourceforge.stripes.validation.SimpleError;
 import net.sourceforge.stripes.validation.Validate;
 import net.sourceforge.stripes.validation.ValidateNestedProperties;
-import nl.b3p.gbi.converter.Converter;
-import nl.b3p.gbi.converter.Formulier;
-import nl.b3p.gbi.converter.Parser;
-import nl.b3p.gbi.converter.Paspoort;
+import nl.b3p.gbi.converter.*;
 import nl.b3p.i18n.LocalizableActionBean;
 import nl.b3p.viewer.config.forms.Form;
+import nl.b3p.viewer.config.metadata.Metadata;
 import nl.b3p.viewer.config.security.Group;
+import nl.b3p.viewer.config.services.FeatureSource;
+import nl.b3p.viewer.config.services.JDBCFeatureSource;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.geotools.data.DataStore;
+import org.geotools.data.simple.SimpleFeatureCollection;
+import org.geotools.data.simple.SimpleFeatureIterator;
+import org.geotools.data.simple.SimpleFeatureSource;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
@@ -22,13 +27,16 @@ import org.hibernate.criterion.Restrictions;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.opengis.feature.simple.SimpleFeature;
 import org.stripesstuff.stripersist.Stripersist;
 
 import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
+import java.io.StringReader;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -47,6 +55,13 @@ public class FormActionBean extends LocalizableActionBean {
     private List<Form> formList = new ArrayList<>();
 
     private JSONArray forms;
+
+    private String defaultFeatureSourceId;
+
+    private List<FeatureSource> featureSources;
+
+    @Validate
+    private FeatureSource defaultFeatureSource;
 
     @Validate
     private JSONArray filter;
@@ -123,7 +138,9 @@ public class FormActionBean extends LocalizableActionBean {
     private Form processForm(Form f) throws IOException {
         String json = f.getJson();
         if(json.contains("GeoVisia")){
-            Converter c = new Converter();
+            List<Attribuut> attrs = getLookupDB();
+
+            Converter c = new Converter(attrs);
             Parser p = new Parser();
 
             List<Paspoort> ps = p.parse(json);
@@ -224,6 +241,88 @@ public class FormActionBean extends LocalizableActionBean {
             }
         };
     }
+    public Resolution saveDefaultFeatureSource() throws JSONException {
+        JSONObject json = new JSONObject();
+
+        json.put("success", Boolean.FALSE);
+        try {
+            EntityManager em = Stripersist.getEntityManager();
+            Metadata md = null;
+            try {
+                md = em.createQuery("from Metadata where configKey = :key", Metadata.class).setParameter("key", Metadata.DEFAULT_FORM_FEATURESOURCE).getSingleResult();
+            } catch (NoResultException e) {
+                md = new Metadata();
+                md.setConfigKey(Metadata.DEFAULT_FORM_FEATURESOURCE);
+            }
+            if (defaultFeatureSource != null) {
+                md.setConfigValue(defaultFeatureSource.getId().toString());
+            } else {
+                md.setConfigValue(null);
+            }
+            defaultFeatureSourceId = md.getConfigValue();
+            em.persist(md);
+            em.getTransaction().commit();
+            json.put("success", Boolean.TRUE);
+        } catch (Exception ex) {
+            log.error("Error during setting the default application: ", ex);
+        }
+        return new StreamingResolution("application/json", new StringReader(json.toString()));
+    }
+
+    @After(stages = {LifecycleStage.BindingAndValidation})
+    public void createLists() {
+        EntityManager em = Stripersist.getEntityManager();
+        featureSources = em.createQuery("From FeatureSource", FeatureSource.class).getResultList();
+        try {
+            Metadata md = em.createQuery("from Metadata where configKey = :key", Metadata.class).setParameter("key", Metadata.DEFAULT_FORM_FEATURESOURCE).getSingleResult();
+            defaultFeatureSourceId = md.getConfigValue();
+        } catch (NoResultException e) {
+        }
+    }
+
+    private  List<Attribuut> getLookupDB(){
+        EntityManager em = Stripersist.getEntityManager();
+        Metadata md = null;
+        List<Attribuut> attrs = new ArrayList<>();
+        try {
+            md = em.createQuery("from Metadata where configKey = :key", Metadata.class).setParameter("key", Metadata.DEFAULT_FORM_FEATURESOURCE).getSingleResult();
+            if(md.getConfigValue() == null){
+                return attrs;
+            }
+            FeatureSource fs = em.find(FeatureSource.class, Long.parseLong(md.getConfigValue()));
+            DataStore ds = null;
+            SimpleFeatureSource sfs = null;
+            if(fs != null && fs instanceof JDBCFeatureSource){
+                try {
+                    ds = ((DataStore) fs.getFeatureTypes().get(0).openGeoToolsFeatureSource().getDataStore());
+                    sfs = ds.getFeatureSource("attribuut");
+                    SimpleFeatureCollection sfc = sfs.getFeatures();
+                    for (SimpleFeatureIterator i = sfc.features(); i.hasNext(); ) {
+                        Attribuut a = new Attribuut();
+                        SimpleFeature sf = i.next();
+                        a.setId((int) sf.getAttribute("id"));
+                        a.setKolom_naam((String) sf.getAttribute("kolom_naam"));
+                        a.setTabel_naam((String) sf.getAttribute("tabel_naam"));
+                        a.setNaam((String) sf.getAttribute("naam"));
+                        a.setObject_naam((String) sf.getAttribute("object_naam"));
+                        Object mut = sf.getAttribute("muteerbaar");
+                        a.setMuteerbaar(mut != null ? (Boolean) mut : null);
+                        attrs.add(a);
+                    }
+                }catch (Exception e){
+                    log.error("Cannot retrieve lookup featuresource: ", e);
+                }finally{
+                    if(ds != null){
+                        ds.dispose();
+                    }
+                }
+            }
+        } catch (NoResultException e) {
+            return attrs;
+        }
+
+        return attrs;
+    }
 
     private JSONObject getGridRow(Form form) throws JSONException {
         JSONObject j = new JSONObject();
@@ -319,5 +418,29 @@ public class FormActionBean extends LocalizableActionBean {
 
     public void setFile(FileBean file) {
         this.file = file;
+    }
+
+    public String getDefaultFeatureSourceId() {
+        return defaultFeatureSourceId;
+    }
+
+    public void setDefaultFeatureSourceId(String defaultFeatureSourceId) {
+        this.defaultFeatureSourceId = defaultFeatureSourceId;
+    }
+
+    public FeatureSource getDefaultFeatureSource() {
+        return defaultFeatureSource;
+    }
+
+    public void setDefaultFeatureSource(FeatureSource defaultFeatureSource) {
+        this.defaultFeatureSource = defaultFeatureSource;
+    }
+
+    public List<FeatureSource> getFeatureSources() {
+        return featureSources;
+    }
+
+    public void setFeatureSources(List<FeatureSource> featureSources) {
+        this.featureSources = featureSources;
     }
 }

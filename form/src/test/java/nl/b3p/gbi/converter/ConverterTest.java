@@ -23,7 +23,7 @@ public class ConverterTest {
 
     @Before
     public void init() throws IOException {
-        instance = new Converter();
+        instance = new Converter(null);
 
         String filename = "paspoorten" + File.separator + "Wegvakonderdeelplanning.txt";
         URL u = this.getClass().getResource(filename);
