@@ -118,7 +118,7 @@ export class SharedModule {
     private domSanitizer: DomSanitizer,
   ) {
 
-    const url = '/viewer/tailormap-components/bridge/assets/imgs/';
+    const url = '/viewer/tailormap-components/bridge/assets/core/imgs/';
     const icons = ['draw_polygon', 'draw_line', 'draw_point', 'split', 'new_object', 'merge'];
     icons.forEach(value => {
       this.matIconRegistry.addSvgIcon(
