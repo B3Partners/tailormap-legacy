@@ -8,6 +8,12 @@ import {
 } from '@angular/material/dialog';
 import { AddFeatureMenuComponent } from '../add-feature-menu/add-feature-menu.component';
 import { TailorMapService } from '../../../../../../bridge/src/tailor-map.service';
+import { WorkflowActionManagerService } from '../../../workflow/workflow-controller/workflow-action-manager.service';
+import { WORKFLOW_ACTION } from '../../../workflow/workflow-controller/workflow-models';
+import {
+  MergeComponent,
+  SplitComponent,
+} from '../../../../../../bridge/typings';
 
 @Component({
   selector: 'tailormap-edit-bar',
@@ -21,6 +27,7 @@ export class EditBarComponent implements OnInit {
 
   constructor(
     private tailorMapService: TailorMapService,
+    private workflowManager: WorkflowActionManagerService,
     public dialog: MatDialog) {
   }
 
@@ -54,20 +61,22 @@ export class EditBarComponent implements OnInit {
   public hasSplit(): boolean {
     const vc = this.tailorMapService.getViewerController();
     const comps = vc.getComponentsByClassNames(['viewer.components.Split']);
-    return comps.length > 0;
+    return comps.length > 0 && !(comps[0] as SplitComponent).popup.isVisible();
   }
 
   public hasMerge(): boolean {
     const vc = this.tailorMapService.getViewerController();
     const comps = vc.getComponentsByClassNames(['viewer.components.Merge']);
-    return comps.length > 0;
+    return comps.length > 0 && !(comps[0] as MergeComponent).popup.isVisible();
   }
 
   public onSplit(): void {
+    this.workflowManager.setAction({action: WORKFLOW_ACTION.SPLIT_MERGE});
     this.tailorMapService.openSplitComponent();
   }
 
   public onMerge(): void {
+    this.workflowManager.setAction({action: WORKFLOW_ACTION.SPLIT_MERGE});
     this.tailorMapService.openMergeComponent();
   }
 }

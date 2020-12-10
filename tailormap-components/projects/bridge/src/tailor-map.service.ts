@@ -14,6 +14,7 @@ import {
   AppLayer,
   AppLoader,
   MapComponent,
+  MergeComponent,
   SplitComponent,
   ViewerController,
 } from '../typings';
@@ -88,7 +89,7 @@ export class TailorMapService {
     const vc = this.getViewerController();
     const comps = vc.getComponentsByClassNames(['viewer.components.Merge']);
     if (comps && comps.length > 0) {
-      (comps[0] as SplitComponent).showWindow();
+      (comps[0] as MergeComponent).showWindow();
     }
   }
 }

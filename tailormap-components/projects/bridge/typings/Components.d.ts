@@ -47,10 +47,18 @@ declare interface TailormapComponent{
   getContentContainer: () => string;
 }
 
+declare interface ExtPopupWindow {
+  isVisible: () => boolean;
+}
+
 declare interface SplitComponent extends TailormapComponent{
   showWindow: () => void;
+  popup: ExtPopupWindow;
 }
+
 
 declare interface MergeComponent extends TailormapComponent{
   showWindow: () => void;
+  mode : string;
+  popup: ExtPopupWindow;
 }
