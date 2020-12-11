@@ -40,6 +40,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { DomSanitizer } from '@angular/platform-browser';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { environment } from '../../../../bridge/src/environments/environment';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 
 @NgModule({
   declarations: [
@@ -78,6 +79,7 @@ import { environment } from '../../../../bridge/src/environments/environment';
     MatRadioModule,
     MatProgressBarModule,
     MatAutocompleteModule,
+    DragDropModule,
   ],
   exports: [
     ReactiveFormsModule,
@@ -107,6 +109,7 @@ import { environment } from '../../../../bridge/src/environments/environment';
     MatRadioModule,
     MatProgressBarModule,
     MatAutocompleteModule,
+    DragDropModule,
   ],
   entryComponents: [],
   providers: [

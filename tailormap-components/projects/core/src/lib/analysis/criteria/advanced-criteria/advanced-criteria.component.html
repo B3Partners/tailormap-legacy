@@ -5,11 +5,19 @@
     <button mat-flat-button class="link-button add-group-button" (click)="addGroup()">
       + nieuwe criteria groep
     </button>
-    <div class="group-list">
-      <tailormap-criteria-group *ngFor="let group of criteria.groups; trackBy: getGroupId"
-                                [criteriaGroup]="group"
-                                (criteriaGroupRemoved)="removeGroup($event)"
-                                (criteriaGroupUpdated)="groupChanged($event)"></tailormap-criteria-group>
+    <div class="group-list" cdkDropList (cdkDropListDropped)="drop($event)">
+      <div class="group_list__group"
+           *ngFor="let group of criteria.groups; trackBy: getGroupId"
+           cdkDrag
+           [cdkDragData]="group"
+           cdkDragLockAxis="y">
+        <div class="group-placeholder" *cdkDragPlaceholder></div>
+        <tailormap-criteria-group [criteriaGroup]="group"
+                                  (criteriaGroupRemoved)="removeGroup($event)"
+                                  (criteriaGroupUpdated)="groupChanged($event)">
+          <mat-icon class="drag-handle" svgIcon="contextual_drag" cdkDragHandle></mat-icon>
+        </tailormap-criteria-group>
+      </div>
     </div>
   </div>
   <div class="buttons">
