@@ -4,6 +4,7 @@ import { CriteriaGroupModel } from '../../models/criteria-group.model';
 import { CriteriaTypeEnum } from '../../models/criteria-type.enum';
 import { IdService } from '../../../shared/id-service/id.service';
 import { CriteriaOperatorEnum } from '../../models/criteria-operator.enum';
+import { CriteriaConditionTypeModel } from '../../models/criteria-condition-type.model';
 
 export class CriteriaHelper {
 
@@ -16,6 +17,16 @@ export class CriteriaHelper {
       && typeof criteria.condition !== 'undefined' && criteria.condition !== ''
       && typeof criteria.source !== 'undefined' && Number.isInteger(criteria.source)
       && typeof criteria.value !== 'undefined' && criteria.value !== '';
+  }
+
+  public static getConditionTypes(): CriteriaConditionTypeModel[] {
+    return [
+      { value: '=', label: 'Gelijk aan', translated_label: 'gelijk is aan', attributeType: 'number' },
+      { value: '>', label: 'Groter dan', translated_label: 'groter is dan', attributeType: 'number' },
+      { value: '<', label: 'Kleiner dan', translated_label: 'kleiner is dan', attributeType: 'number' },
+      { value: '>=', label: 'Groter of gelijk aan', translated_label: 'groter is of gelijk aan', attributeType: 'number' },
+      { value: '<=', label: 'Kleiner of gelijk aan', translated_label: 'kleiner is of gelijk aan', attributeType: 'number' },
+    ];
   }
 
   public static createCriteria(type: CriteriaTypeEnum, groups: CriteriaGroupModel[]): CriteriaModel {
