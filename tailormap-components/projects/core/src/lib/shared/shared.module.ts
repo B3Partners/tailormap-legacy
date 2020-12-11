@@ -41,6 +41,16 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { environment } from '../../../../bridge/src/environments/environment';
 import { DragDropModule } from '@angular/cdk/drag-drop';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import {
+  DateAdapter,
+  MAT_DATE_FORMATS,
+  MAT_DATE_LOCALE,
+} from '@angular/material/core';
+import {
+  MAT_MOMENT_DATE_FORMATS,
+  MomentDateAdapter,
+} from '@angular/material-moment-adapter';
 
 @NgModule({
   declarations: [
@@ -80,6 +90,7 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
     MatProgressBarModule,
     MatAutocompleteModule,
     DragDropModule,
+    MatDatepickerModule,
   ],
   exports: [
     ReactiveFormsModule,
@@ -110,10 +121,26 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
     MatProgressBarModule,
     MatAutocompleteModule,
     DragDropModule,
+    MatDatepickerModule,
   ],
   entryComponents: [],
   providers: [
     ConfirmDialogService,
+    {
+      provide: DateAdapter,
+      useClass: MomentDateAdapter,
+      deps: [MAT_DATE_LOCALE],
+    },
+    {
+      provide: MAT_DATE_FORMATS,
+      useValue: {
+        ...MAT_MOMENT_DATE_FORMATS,
+        display: {
+          ...MAT_MOMENT_DATE_FORMATS.parse,
+          dateInput: 'DD-MM-YYYY',
+        },
+      },
+    },
   ],
 })
 export class SharedModule {
