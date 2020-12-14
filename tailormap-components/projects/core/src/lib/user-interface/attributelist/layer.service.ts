@@ -130,11 +130,13 @@ export class LayerService {
     this.layers.splice(0, this.layers.length);
 
     const vc = this.tailorMapService.getViewerController();
-    const layerIds = vc.getVisibleLayers();
+    // NOTE castToStrings false, we want numbers, but still strings are returned (solution is parked, quickfix below).
+    const layerIds = vc.getVisibleLayers(false);
     // console.log(layerIds);
 
     layerIds.forEach(layerId => {
-      this.addLayer(layerId);
+      // NOTE quickfix for vc.getVisibleLayers returning strings instead of numbers
+      this.addLayer(Number(layerId));
     });
 
     this.layersSubject.next(this.layers);
