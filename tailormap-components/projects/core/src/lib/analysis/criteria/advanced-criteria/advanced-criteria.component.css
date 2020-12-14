@@ -28,12 +28,6 @@
   height: 14px;
 }
 
-.form::after {
-  content: " ";
-  display: block;
-  height: 14px;
-}
-
 .buttons {
   display: flex;
   justify-content: flex-end;
@@ -86,17 +80,4 @@ tailormap-criteria-group {
 
 .drag-handle {
   cursor: move;
-}
-
-tailormap-criteria-group + tailormap-criteria-group {
-  margin-top: 14px;
-}
-
-.add-group-button {
-  background-color: #FAFAFA;
-  width: 100%;
-  margin-bottom: 6px;
-  font-size: 15px;
-  font-weight: 600;
-  text-align: left;
 }

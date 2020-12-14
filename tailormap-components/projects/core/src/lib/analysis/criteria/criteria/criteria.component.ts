@@ -34,6 +34,7 @@ import {
 } from '../../../shared/attribute-service/attribute-models';
 import { AnalysisSourceModel } from '../../models/analysis-source.model';
 import { CriteriaConditionModel } from '../../models/criteria-condition.model';
+import { CriteriaHelper } from '../helpers/criteria.helper';
 
 @Component({
   selector: 'tailormap-criteria',
@@ -61,13 +62,7 @@ export class CriteriaComponent implements OnInit, OnDestroy {
   private availableAttributesSubject$ = new BehaviorSubject<Attribute[]>([]);
   public filteredAttributes$: Observable<Attribute[]>;
 
-  public filterTypes = [
-    { value: '=', label: 'Is gelijk aan' },
-    { value: '>', label: 'Is groter dan' },
-    { value: '<', label: 'Is kleiner dan' },
-    { value: '>=', label: 'Is groter of gelijk aan' },
-    { value: '<=', label: 'Is kleiner of gelijk aan' },
-  ];
+  public filterTypes = CriteriaHelper.getConditionTypes();
 
   public criteriaForm = this.fb.group({
     source: [''],

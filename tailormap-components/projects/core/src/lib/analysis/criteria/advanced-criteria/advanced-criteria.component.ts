@@ -45,6 +45,7 @@ export class AdvancedCriteriaComponent implements OnDestroy {
   ) {
     this.store$.select(selectCriteria)
       .pipe(
+        takeUntil(this.destroyed),
         map((criteria): CriteriaModel => {
           if (!!criteria && criteria.type === CriteriaTypeEnum.ADVANCED &&
             criteria.groups.length >= 1) {
