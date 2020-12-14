@@ -5,6 +5,7 @@ import {
 import {
   fromEvent,
   Observable,
+  of,
   ReplaySubject,
   Subject,
 } from 'rxjs';
@@ -89,7 +90,11 @@ export class TailorMapService {
     const vc = this.getViewerController();
     const comps = vc.getComponentsByClassNames(['viewer.components.Merge']);
     if (comps && comps.length > 0) {
-      (comps[0] as MergeComponent).showWindow();
+      const mergeComp = (comps[0] as MergeComponent);
+      mergeComp.showWindow();
+      of(mergeComp.popup.isVisible()).subscribe(value => {
+        console.log('pietejteet');
+      });
     }
   }
 }

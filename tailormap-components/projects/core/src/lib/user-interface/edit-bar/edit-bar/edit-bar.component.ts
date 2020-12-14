@@ -14,6 +14,7 @@ import {
   MergeComponent,
   SplitComponent,
 } from '../../../../../../bridge/typings';
+import { of } from 'rxjs';
 
 @Component({
   selector: 'tailormap-edit-bar',
@@ -78,5 +79,10 @@ export class EditBarComponent implements OnInit {
   public onMerge(): void {
     this.workflowManager.setAction({action: WORKFLOW_ACTION.SPLIT_MERGE});
     this.tailorMapService.openMergeComponent();
+
+  }
+
+  public afterMerge(): void {
+    console.log('aftermege');
   }
 }
