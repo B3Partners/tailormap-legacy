@@ -42,6 +42,7 @@ Ext.define("viewer.components.Merge", {
         }
     },
     constructor: function (conf) {
+        conf.isPopup = true;
         this.initConfig(conf);
 		viewer.components.Merge.superclass.constructor.call(this, this.config);
         this.config.actionbeanUrl = FlamingoAppLoader.get('contextPath') + '/action/feature/merge';

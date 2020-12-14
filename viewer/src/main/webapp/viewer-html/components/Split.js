@@ -55,6 +55,7 @@ Ext.define("viewer.components.Split", {
         }
     },
     constructor: function (conf) {
+        conf.isPopup = true;
         this.initConfig(conf);
         viewer.components.Split.superclass.constructor.call(this, this.config);
         this.config.actionbeanUrl = contextPath + '/action/feature/split';
