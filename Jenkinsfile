@@ -9,7 +9,7 @@ timestamps {
                 numToKeepStr: '5']
             ]]);
 
-        final def jdks = [/*'OpenJDK11',*/'JDK8']
+        final def jdks = ['OpenJDK11','OpenJDK8']
 
         stage("Prepare") {
              checkout scm
@@ -72,7 +72,7 @@ timestamps {
             sh "curl -s https://codecov.io/bash | bash"
         }
 
-        withEnv(["JAVA_HOME=${ tool 'JDK8' }", "PATH+MAVEN=${tool 'Maven CURRENT'}/bin:${env.JAVA_HOME}/bin"]) {
+        withEnv(["JAVA_HOME=${ tool 'OpenJDK8' }", "PATH+MAVEN=${tool 'Maven CURRENT'}/bin:${env.JAVA_HOME}/bin"]) {
             if (env.BRANCH_NAME == 'master') {
                 stage("Docker image build & push") {
                     echo "Create a docker image of the master branch"
