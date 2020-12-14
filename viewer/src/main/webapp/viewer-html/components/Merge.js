@@ -84,6 +84,9 @@ Ext.define("viewer.components.Merge", {
         });
 
         this.loadWindow();
+        this.popup.addListener('hide', function(){
+            this.fireEvent(viewer.viewercontroller.controller.Event.ON_DEACTIVATE);
+        }, this);
         return this;
     },
     /**
@@ -220,13 +223,11 @@ Ext.define("viewer.components.Merge", {
         Ext.Msg.alert(i18next.t('viewer_components_merge_6'), msg);
         Ext.get(me.getContentDiv()).unmask();
         me.cancel();
-        this.fireEvent(viewer.viewercontroller.controller.Event.ON_DEACTIVATE);
     },
     saveSucces: function (response, me) {
         me.config.viewerController.getLayer(me.layerSelector.getValue()).reload();
         Ext.MessageBox.alert(i18next.t('viewer_components_merge_7'), i18next.t('viewer_components_merge_8'));
         me.cancel();
-        this.fireEvent(viewer.viewercontroller.controller.Event.ON_DEACTIVATE);
     },
     mapClicked: function (toolMapClick, comp) {
         this.deactivateMapClick();
