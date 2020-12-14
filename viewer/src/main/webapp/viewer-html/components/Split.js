@@ -622,6 +622,7 @@ Ext.define("viewer.components.Split", {
     },
     cancel: function () {
         this.resetForm();
+        this.fireEvent(viewer.viewercontroller.controller.Event.ON_DEACTIVATE);
         this.popup.hide();
     },
     resetForm: function () {

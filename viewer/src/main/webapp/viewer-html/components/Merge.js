@@ -156,6 +156,7 @@ Ext.define("viewer.components.Merge", {
     },
     cancel: function () {
         this.resetForm();
+        this.fireEvent(viewer.viewercontroller.controller.Event.ON_DEACTIVATE);
         this.popup.hide();
     },
     hideMobilePopup: function() {

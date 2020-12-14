@@ -14,7 +14,7 @@ import {
   MergeComponent,
   SplitComponent,
 } from '../../../../../../bridge/typings';
-import { of } from 'rxjs';
+import { WorkflowControllerService } from '../../../workflow/workflow-controller/workflow-controller.service';
 
 @Component({
   selector: 'tailormap-edit-bar',
@@ -26,17 +26,36 @@ export class EditBarComponent implements OnInit {
   public isEditting = false;
   private dialogRef: MatDialogRef<AddFeatureMenuComponent>;
 
+  private mergeComponent: MergeComponent;
+  private splitComponent: SplitComponent;
+
   constructor(
     private tailorMapService: TailorMapService,
+    private workflowService: WorkflowControllerService,
     private workflowManager: WorkflowActionManagerService,
     public dialog: MatDialog) {
   }
 
   public ngOnInit(): void {
+    const vc = this.tailorMapService.getViewerController();
+    const splits = vc.getComponentsByClassNames(['viewer.components.Split']);
+    if (splits.length > 0) {
+      this.splitComponent = splits[0] as SplitComponent;
+      this.splitComponent.addListener('ON_DEACTIVATE', this.deactivateSplitMerge, this);
+    }
+
+    const merges = vc.getComponentsByClassNames(['viewer.components.Merge']);
+    if (merges.length > 0) {
+      this.mergeComponent = merges[0] as MergeComponent;
+      this.mergeComponent.addListener('ON_DEACTIVATE', this.deactivateSplitMerge, this);
+    }
+  }
+
+  public deactivateSplitMerge(): void {
+    this.workflowService.workflowFinished();
   }
 
   public onEdit(): void {
-
     this.dialogRef = this.dialog.open(AddFeatureMenuComponent, {
       width: '400px',
       position: {
@@ -52,23 +71,17 @@ export class EditBarComponent implements OnInit {
     this.isEditting = true;
     // tslint:disable-next-line: rxjs-no-ignored-subscription
     this.dialogRef.afterClosed().subscribe(result => {
-      //  this.afterEditting(result);
       this.isEditting = false;
     });
 
-    //  alert('not yet implemented');
   }
 
   public hasSplit(): boolean {
-    const vc = this.tailorMapService.getViewerController();
-    const comps = vc.getComponentsByClassNames(['viewer.components.Split']);
-    return comps.length > 0 && !(comps[0] as SplitComponent).popup.isVisible();
+    return this.splitComponent != null && !this.splitComponent.popup.isVisible();
   }
 
   public hasMerge(): boolean {
-    const vc = this.tailorMapService.getViewerController();
-    const comps = vc.getComponentsByClassNames(['viewer.components.Merge']);
-    return comps.length > 0 && !(comps[0] as MergeComponent).popup.isVisible();
+    return this.mergeComponent != null && !this.mergeComponent.popup.isVisible();
   }
 
   public onSplit(): void {
@@ -82,7 +95,4 @@ export class EditBarComponent implements OnInit {
 
   }
 
-  public afterMerge(): void {
-    console.log('aftermege');
-  }
 }
