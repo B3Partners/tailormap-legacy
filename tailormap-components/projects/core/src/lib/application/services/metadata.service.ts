@@ -7,7 +7,6 @@ import { Store } from '@ngrx/store';
 import { ApplicationState } from '../state/application.state';
 import { selectApplicationId } from '../state/application.selectors';
 import {
-  map,
   switchMap,
   takeUntil,
   takeWhile,
@@ -26,7 +25,6 @@ import { AttributeMetadataResponse } from '../../shared/attribute-service/attrib
 export class MetadataService implements OnDestroy {
 
   private destroy = new Subject();
-  private applicationId: number;
 
   private attributeCache: Map<string, AttributeMetadataResponse> = new Map();
 

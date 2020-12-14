@@ -6,9 +6,7 @@ import {
   OnInit,
   Output,
 } from '@angular/core';
-import {
-  FormBuilder,
-} from '@angular/forms';
+import { FormBuilder } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { AnalysisState } from '../../state/analysis.state';
 import { selectSelectedDataSource } from '../../state/analysis.selectors';
@@ -35,6 +33,10 @@ import {
 import { AnalysisSourceModel } from '../../models/analysis-source.model';
 import { CriteriaConditionModel } from '../../models/criteria-condition.model';
 import { CriteriaHelper } from '../helpers/criteria.helper';
+import { AttributeTypeEnum } from '../../models/attribute-type.enum';
+import { CriteriaConditionTypeModel } from '../../models/criteria-condition-type.model';
+import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import * as moment from 'moment';
 
 @Component({
   selector: 'tailormap-criteria',
@@ -62,7 +64,8 @@ export class CriteriaComponent implements OnInit, OnDestroy {
   private availableAttributesSubject$ = new BehaviorSubject<Attribute[]>([]);
   public filteredAttributes$: Observable<Attribute[]>;
 
-  public filterTypes = CriteriaHelper.getConditionTypes();
+  private filteredConditionsSubject$ = new BehaviorSubject<CriteriaConditionTypeModel[]>([]);
+  public filteredConditions$ = this.filteredConditionsSubject$.asObservable();
 
   public criteriaForm = this.fb.group({
     source: [''],
@@ -99,15 +102,23 @@ export class CriteriaComponent implements OnInit, OnDestroy {
       )
       .subscribe(formValues => {
         const source = +(formValues.source);
+        const availableAttributes = this.availableAttributesSubject$.getValue();
+        const attribute = availableAttributes.find(a => a.name === formValues.attribute);
+        const attributeType = CriteriaHelper.getAttributeType(attribute);
         if (this.formData.source !== source) {
           this.availableAttributesSubject$.next(this.getAttributesForFeatureType(source));
         }
+        if (this.formData.attributeType !== attributeType) {
+          this.filteredConditionsSubject$.next(this.getConditionsForAttributeType(attributeType));
+        }
         this.formData = {
           source,
-          attribute: formValues.attribute,
+          attribute: attribute ? attribute.name : undefined,
+          attributeType,
           condition: formValues.condition,
           value: formValues.value,
         };
+        this.setDisabledState();
         this.emitChanges();
       });
 
@@ -118,7 +129,7 @@ export class CriteriaComponent implements OnInit, OnDestroy {
       takeUntil(this.destroyed),
       map(([ availableAttributes, value ]) => {
         const filterValue = value.toLowerCase();
-        return availableAttributes.filter(attribute => attribute.name.toLowerCase().indexOf(filterValue) === 0);
+        return availableAttributes.filter(attribute => attribute.name.toLowerCase().indexOf(filterValue) !== -1);
       }),
     );
   }
@@ -150,7 +161,11 @@ export class CriteriaComponent implements OnInit, OnDestroy {
 
   private setInitialValues() {
     if (this.criteria) {
-      this.criteriaForm.patchValue(this.criteria);
+      let value: string | moment.Moment = this.criteria.value;
+      if (value && this.criteria.attributeType === AttributeTypeEnum.DATE) {
+        value = moment(value);
+      }
+      this.criteriaForm.patchValue({ ...this.criteria, value });
     }
 
     let criteriaSource;
@@ -164,22 +179,62 @@ export class CriteriaComponent implements OnInit, OnDestroy {
     if (criteriaSource) {
       this.availableAttributesSubject$.next(this.getAttributesForFeatureType(criteriaSource));
     }
+
+    if (this.criteria.attributeType) {
+      this.filteredConditionsSubject$.next(this.getConditionsForAttributeType(this.criteria.attributeType));
+    }
+
+    this.setDisabledState();
   }
 
   private getAttributesForFeatureType(selectedSource: string | number) {
-    return this.allAttributes.filter(attribute => attribute.featureType === +(selectedSource));
+    return this.allAttributes.filter(attribute => {
+      return attribute.featureType === +(selectedSource) && typeof CriteriaHelper.getAttributeType(attribute) !== 'undefined';
+    });
+  }
+
+  private getConditionsForAttributeType(attributeType: AttributeTypeEnum) {
+    return CriteriaHelper.getConditionTypes().filter(c => c.attributeType === attributeType);
   }
 
   private emitChanges() {
+    let value: string | moment.Moment = this.formData.value;
+    if (value && this.formData.attributeType === AttributeTypeEnum.DATE && moment.isMoment(value)) {
+      value = value.toISOString();
+    }
     const criteria = {
       id: this.criteria.id,
       ...this.formData,
+      value,
     };
     this.criteriaChanged.emit(criteria);
   }
 
   public removeCriteria() {
     this.criteriaRemoved.emit(this.criteria);
+  }
+
+  public setDisabledState() {
+    const hasAttribute = !!this.formData.attribute && !!this.formData.attributeType;
+    if (hasAttribute) {
+      this.criteriaForm.controls.condition.enable({ emitEvent: false });
+      this.criteriaForm.controls.value.enable({ emitEvent: false });
+    } else {
+      this.criteriaForm.controls.condition.disable({ emitEvent: false });
+      this.criteriaForm.controls.value.disable({ emitEvent: false });
+    }
+  }
+
+  public showValueInput() {
+    return this.formData.attributeType === AttributeTypeEnum.STRING || this.formData.attributeType === AttributeTypeEnum.NUMBER;
+  }
+
+  public showDateInput() {
+    return this.formData.attributeType === AttributeTypeEnum.DATE;
+  }
+
+  public setAttribute($event: MatAutocompleteSelectedEvent) {
+    console.log($event.option.value);
   }
 
 }

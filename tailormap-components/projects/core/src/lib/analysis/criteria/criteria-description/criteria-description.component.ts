@@ -15,14 +15,13 @@ import {
 import { AnalysisSourceModel } from '../../models/analysis-source.model';
 import { CriteriaOperatorEnum } from '../../models/criteria-operator.enum';
 import { CriteriaHelper } from '../helpers/criteria.helper';
-import {
-  filter,
-  map,
-} from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import {
   DomSanitizer,
   SafeHtml,
 } from '@angular/platform-browser';
+import { AttributeTypeEnum } from '../../models/attribute-type.enum';
+import * as moment from 'moment';
 
 @Component({
   selector: 'tailormap-criteria-description',
@@ -45,7 +44,7 @@ export class CriteriaDescriptionComponent {
         if (!selectedSource || !criteria || !CriteriaHelper.validGroups(criteria.groups)) {
           return null;
         }
-        return sanitizer.bypassSecurityTrustHtml(CriteriaDescriptionComponent.convertCriteriaToQuery(selectedSource, criteria));
+        return this.sanitizer.bypassSecurityTrustHtml(CriteriaDescriptionComponent.convertCriteriaToQuery(selectedSource, criteria));
       }),
     );
   }
@@ -71,7 +70,11 @@ export class CriteriaDescriptionComponent {
   }
 
   private static convertConditionToQuery(condition: CriteriaConditionModel) {
-    return `<strong>${condition.attribute}</strong> ${CriteriaDescriptionComponent.convertCondition(condition.condition)} <strong>${condition.value}</strong>`;
+    let value = condition.value;
+    if (condition.attributeType === AttributeTypeEnum.DATE) {
+      value = moment(value).format('DD-MM-YYYY HH:mm');
+    }
+    return `<strong>${condition.attribute}</strong> ${CriteriaDescriptionComponent.convertCondition(condition.condition)} <strong>${value}</strong>`;
   }
 
   private static convertOperator(operator: CriteriaOperatorEnum) {
@@ -79,7 +82,7 @@ export class CriteriaDescriptionComponent {
   }
 
   private static convertCondition(condition: string) {
-    return CriteriaHelper.getConditionTypes().find(c => c.value === condition).translated_label;
+    return CriteriaHelper.getConditionTypes().find(c => c.value === condition).readable_label;
   }
 
 }

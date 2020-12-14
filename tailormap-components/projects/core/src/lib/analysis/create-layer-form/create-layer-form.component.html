@@ -9,22 +9,28 @@
     <button mat-button (click)="selectDataSource()" class="form-button" [disabled]="hasActiveSidePanel$ | async" [class.form-button--active]="selectingDataSource$ | async">
       <span *ngIf="!selectedDataSource">Geen geselecteerd</span>
       <span *ngIf="selectedDataSource">{{selectedDataSource.label}}</span>
-      <mat-icon>chevron_right</mat-icon>
+      <mat-icon svgIcon="contextual_chevron_right"></mat-icon>
     </button>
   </div>
 
   <div class="form-field" *ngIf="selectedDataSource">
     <label>Criteria</label>
-    <button mat-button [matMenuTriggerFor]="criteriaMenu" class="form-button" [disabled]="hasActiveSidePanel$ | async" [class.form-button--active]="creatingCriteria$ | async">
-      <span *ngIf="!criteria">Criteria instellen</span>
-      <span *ngIf="criteria">Criteria bewerken</span>
-      <mat-icon>chevron_right</mat-icon>
+    <button *ngIf="!hasCriteria()" mat-button [matMenuTriggerFor]="criteriaMenu" class="form-button" [disabled]="hasActiveSidePanel$ | async" [class.form-button--active]="creatingCriteria$ | async">
+      <span>Criteria instellen</span>
+      <mat-icon svgIcon="contextual_chevron_right"></mat-icon>
     </button>
     <mat-menu #criteriaMenu="matMenu" yPosition="above" class="tailormap-menu-panel">
       <button mat-menu-item (click)="setCriteria(criteriaMode.SIMPLE)">Simpele vergelijking</button>
       <button mat-menu-item (click)="setCriteria(criteriaMode.ADVANCED)">Criteria groepen (geavanceerd)</button>
     </mat-menu>
+    <button *ngIf="hasCriteria()" mat-button class="form-button" [disabled]="hasActiveSidePanel$ | async"
+            [class.form-button--active]="creatingCriteria$ | async" (click)="editCriteria()">
+      <span>Criteria bewerken</span>
+      <mat-icon svgIcon="contextual_chevron_right"></mat-icon>
+    </button>
   </div>
+
+  <tailormap-criteria-description></tailormap-criteria-description>
 
   <div class="form-field" *ngIf="errorMessage">
     <mat-error>
