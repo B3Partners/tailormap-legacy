@@ -123,8 +123,8 @@ export class SharedModule {
     const url = `${basePath}/assets/core/imgs/`;
     const icons = [
       'draw_polygon', 'draw_line', 'draw_point', 'split', 'new_object', 'merge',
-      'contextual_drag', 'contextual_chevron_bottom.svg', 'contextual_chevron_left.svg', 'contextual_chevron_right.svg', 'contextual_chevron_top.svg',
-      'interface_trash_filled.svg',
+      'contextual_drag', 'contextual_chevron_bottom', 'contextual_chevron_left', 'contextual_chevron_right', 'contextual_chevron_top',
+      'interface_trash_filled',
     ];
     icons.forEach(value => {
       this.matIconRegistry.addSvgIcon(

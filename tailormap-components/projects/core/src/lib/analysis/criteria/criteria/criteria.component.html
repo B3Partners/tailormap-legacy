@@ -1,8 +1,8 @@
 <div class="criteria" [formGroup]="criteriaForm">
 
   <div class="form-field">
-    <label for="source">Bronlaag</label>
-    <mat-select id="source" formControlName="source">
+    <label>Bronlaag</label>
+    <mat-select formControlName="source">
       <mat-option *ngFor="let source of availableSources" [value]="source.featureType" [disabled]="source.disabled">
         {{source.label}}
       </mat-option>
@@ -10,15 +10,15 @@
   </div>
 
   <div class="form-field">
-    <label for="attribute">Kenmerk</label>
-    <input type="text" id="attribute" formControlName="attribute" [matAutocomplete]="autoCompleteAttribute">
+    <label>Kenmerk</label>
+    <input type="text" formControlName="attribute" [matAutocomplete]="autoCompleteAttribute">
     <mat-autocomplete #autoCompleteAttribute="matAutocomplete">
       <mat-option *ngFor="let attribute of filteredAttributes$ | async" [value]="attribute.name">
         {{attribute.name}}
       </mat-option>
     </mat-autocomplete>
     <!--
-    <mat-select id="attribute" formControlName="attribute">
+    <mat-selectformControlName="attribute">
       <mat-option *ngFor="let attribute of filteredAttributes$ | async" [value]="attribute.name">
         {{attribute.name}}
       </mat-option>
@@ -27,15 +27,15 @@
   </div>
 
   <div class="form-field">
-    <label for="condition">Conditie</label>
-    <mat-select id="condition" formControlName="condition">
+    <label>Conditie</label>
+    <mat-select formControlName="condition">
       <mat-option *ngFor="let attr of filterTypes" [value]="attr.value">{{attr.label}}</mat-option>
     </mat-select>
   </div>
 
   <div class="form-field">
-    <label for="value">Waarde</label>
-    <input type="text" id="value" formControlName="value" />
+    <label>Waarde</label>
+    <input type="text" formControlName="value" />
   </div>
 
   <div class="form-field centered" *ngIf="showRemoveLink">
