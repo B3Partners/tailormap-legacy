@@ -75,16 +75,17 @@ Ext.define("viewer.components.Split", {
                     return true;
                 });
 
-        this.renderButton({
-            handler: function () {
-                me.showWindow();
-            },
-            text: me.config.title,
-            icon: me.config.iconUrl,
-            tooltip: me.config.tooltip,
-            label: me.config.label
-        });
-
+        if(this.config.regionName === 'left_menu') {
+            this.renderButton({
+                handler: function () {
+                    me.showWindow();
+                },
+                text: me.config.title,
+                icon: me.config.iconUrl,
+                tooltip: me.config.tooltip,
+                label: me.config.label
+            });
+        }
         this.toolMapClick = this.config.viewerController.mapComponent.createTool({
             type: viewer.viewercontroller.controller.Tool.MAP_CLICK,
             id: this.name + "toolMapClick",
