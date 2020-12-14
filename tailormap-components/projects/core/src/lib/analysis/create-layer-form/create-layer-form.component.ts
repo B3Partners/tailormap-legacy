@@ -106,6 +106,14 @@ export class CreateLayerFormComponent implements OnInit, OnDestroy {
     return !!this.selectedDataSource && !!this.criteria && this.layerName.value && !this.isCreatingLayer;
   }
 
+  public hasCriteria() {
+    return !!this.criteria && CriteriaHelper.validGroups(this.criteria.groups);
+  }
+
+  public editCriteria() {
+    this.store$.dispatch(showCriteriaForm({ criteriaMode: this.criteria.type }));
+  }
+
   public createLayer() {
     if (!this.canCreateLayer()) {
       return;

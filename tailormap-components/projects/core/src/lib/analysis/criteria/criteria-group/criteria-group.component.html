@@ -1,11 +1,32 @@
-<div class="criteria-group">
-  <tailormap-criteria *ngFor="let criteria of criteriaGroup.criteria; trackBy: getCriteriaId"
-                      [criteria]="criteria"
-                      [showRemoveLink]="true"
-                      (criteriaChanged)="criteriaChanged($event)"
-                      (criteriaRemoved)="criteriaRemoved($event)"
-  ></tailormap-criteria>
+<div class="criteria-group-header">
+  <ng-content></ng-content>
+  <div class="form-field">
+    <mat-select [formControl]="operatorControl">
+      <mat-option *ngFor="let attr of groupOperators" [value]="attr.value">{{attr.label}}</mat-option>
+    </mat-select>
+  </div>
+  <button mat-icon-button (click)="removeGroup()"><mat-icon svgIcon="interface_trash_filled"></mat-icon></button>
+  <button mat-icon-button (click)="toggleGroup()">
+    <mat-icon [svgIcon]="hidden ? 'contextual_chevron_bottom' : 'contextual_chevron_top'"></mat-icon>
+  </button>
+</div>
+<div class="criteria-group" [style.display]="hidden ? 'none' : 'block'">
   <div class="centered">
     <button class="link-button" mat-flat-button (click)="addCriteria()">+ Criteria toevoegen aan groep</button>
+  </div>
+  <div class="criteria-list">
+    <div class="criteria-group__criteria"  *ngFor="let criteria of criteriaGroup.criteria; let i = index; trackBy: getCriteriaId">
+      <button mat-flat-button class="criteria-group__title" (click)="toggleCriteria(criteria.id)">
+        Criteria {{i+1}}
+        <mat-icon [svgIcon]="showCriteria(criteria.id) ? 'contextual_chevron_top' : 'contextual_chevron_bottom'"></mat-icon>
+      </button>
+      <tailormap-criteria
+        [style.display]="showCriteria(criteria.id) ? 'block' : 'none'"
+        [criteria]="criteria"
+        [showRemoveLink]="true"
+        (criteriaChanged)="criteriaChanged($event)"
+        (criteriaRemoved)="criteriaRemoved($event)"
+      ></tailormap-criteria>
+    </div>
   </div>
 </div>

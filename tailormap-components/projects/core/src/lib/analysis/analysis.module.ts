@@ -18,6 +18,7 @@ import { CriteriaComponent } from './criteria/criteria/criteria.component';
 import { SimpleCriteriaComponent } from './criteria/simple-criteria/simple-criteria.component';
 import { AdvancedCriteriaComponent } from './criteria/advanced-criteria/advanced-criteria.component';
 import { CriteriaGroupComponent } from './criteria/criteria-group/criteria-group.component';
+import { CriteriaDescriptionComponent } from './criteria/criteria-description/criteria-description.component';
 
 
 @NgModule({
@@ -31,6 +32,7 @@ import { CriteriaGroupComponent } from './criteria/criteria-group/criteria-group
     SimpleCriteriaComponent,
     AdvancedCriteriaComponent,
     CriteriaGroupComponent,
+    CriteriaDescriptionComponent,
   ],
   imports: [
     CommonModule,
