@@ -21,6 +21,10 @@ import {
 import { CriteriaGroupModel } from '../../models/criteria-group.model';
 import { ConfirmDialogService } from '../../../shared/confirm-dialog/confirm-dialog.service';
 import { Subject } from 'rxjs';
+import {
+  CdkDragDrop,
+  moveItemInArray,
+} from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'tailormap-advanced-criteria',
@@ -123,4 +127,14 @@ export class AdvancedCriteriaComponent implements OnDestroy {
     };
     this.saveButtonEnabled = CriteriaHelper.validGroups(this.criteria.groups);
   }
+
+  public drop($event: CdkDragDrop<CriteriaGroupModel>) {
+    const criteriaGroups = [ ...this.criteria.groups ];
+    moveItemInArray(criteriaGroups, $event.previousIndex, $event.currentIndex);
+    this.criteria = {
+      ...this.criteria,
+      groups: criteriaGroups,
+    };
+  }
+
 }
