@@ -13,7 +13,6 @@ import {FormfieldComponent} from "../form-field/formfield.component";
 import {FormComponent} from "../form/form.component";
 import {FormTreeComponent} from "../form-tree/form-tree.component";
 import {MatSnackBarModule} from "@angular/material/snack-bar";
-import {AddFeatureComponent} from "../../user-interface/add-feature/add-feature.component";
 import {FeatureInitializerService} from "../../shared/feature-initializer/feature-initializer.service";
 import { FormConfigMockModule } from '../../shared/formconfig-repository/formconfig-mock.module.spec';
 
@@ -36,7 +35,6 @@ describe('FormCreatorComponent', () => {
       ],
       declarations: [
         FormComponent,
-        AddFeatureComponent,
         FormTreeComponent,
         FormfieldComponent,
         FormCreatorComponent,]

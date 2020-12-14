@@ -5,7 +5,8 @@
 }
 
 [ng-version],
-.overlay-panel {
+.overlay-panel,
+.mat-dialog-container {
   font-family: Inter, sans-serif;
   font-weight: 400;
   color: rgb(0, 10, 30);
@@ -92,11 +93,27 @@
 
 .form-field input:hover,
 .form-field .form-button:hover,
-.form-field mat-select:hover,
+.form-field mat-select:hover {
+  border-color: #6236FF;
+}
+
 .form-field input:focus,
 .form-field .form-button:focus,
 .form-field mat-select:focus {
-  background-color: #f0f0f0;
+  border-color: #6236FF;
+  box-shadow: 0 0 6px rgba(98, 54, 255, 0.5);
+}
+
+.form-field input[disabled],
+.form-field .mat-select-disabled,
+.form-field input[disabled]:hover,
+.form-field .mat-select-disabled:hover,
+.form-field input[disabled]:focus,
+.form-field .mat-select-disabled:focus,
+.form-field .mat-select-disabled {
+  background-color: rgb(241, 241, 241);
+  border-color: rgb(225, 225, 225);
+  box-shadow: none;
 }
 
 .mat-autocomplete-panel .mat-option {
@@ -120,6 +137,20 @@
 .form-field .form-button .mat-button-wrapper span {
   flex: 1;
   text-align: left;
+}
+
+.datepicker-input {
+  position: relative;
+}
+
+.datepicker-input .mat-datepicker-toggle {
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.datepicker-input input {
+  padding-right: 44px;
 }
 
 .form-field mat-icon {

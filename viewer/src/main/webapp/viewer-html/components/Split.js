@@ -55,6 +55,7 @@ Ext.define("viewer.components.Split", {
         }
     },
     constructor: function (conf) {
+        conf.isPopup = true;
         this.initConfig(conf);
         viewer.components.Split.superclass.constructor.call(this, this.config);
         this.config.actionbeanUrl = contextPath + '/action/feature/split';
@@ -98,6 +99,9 @@ Ext.define("viewer.components.Split", {
         this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE, this.selectedContentChanged, this);
 
         this.popup.addListener('hide', this.cancel, this);
+        this.popup.addListener('hide', function(){
+            this.fireEvent(viewer.viewercontroller.controller.Event.ON_DEACTIVATE);
+        }, this);
         return this;
     },
     selectedContentChanged: function () {
