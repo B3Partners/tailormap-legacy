@@ -248,6 +248,8 @@ public class ApplicationLayer {
         if( l.getService() instanceof ArcGISService){
             json.put("filterable", l.getFeatureType() != null && !(l.getFeatureType().getFeatureSource() instanceof ArcGISFeatureSource) );
         }
+
+        json.put("userlayer", l.isUserlayer() != null ? l.isUserlayer() : false);
         json.put("bufferable", l.isBufferable());
         json.put("editable", l.getFeatureType() != null && l.getFeatureType().isWriteable());
         json.put("influence", this.getDetails().containsKey("influenceradius"));

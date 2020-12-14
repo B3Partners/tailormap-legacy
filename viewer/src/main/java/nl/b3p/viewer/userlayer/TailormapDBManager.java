@@ -118,7 +118,7 @@ public class TailormapDBManager {
 
         if (pair.right == UpdateResult.Status.NEW) {
             Layer l = pair.left;
-
+            l.setUserlayer(true);
             l.getDetails().put(Layer.DETAIL_USERLAYER_DATE_ADDED, new ClobElement(dateFormat.format(new Date())));
             l.getDetails().put(Layer.DETAIL_USERLAYER_FILTER,  new ClobElement(this.filter));
             l.getDetails().put(Layer.DETAIL_USERLAYER_ORIGINAL_LAYER_ID, new ClobElement(this.layer.getId().toString()));
