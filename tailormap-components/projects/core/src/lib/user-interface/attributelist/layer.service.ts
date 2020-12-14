@@ -130,7 +130,7 @@ export class LayerService {
     this.layers.splice(0, this.layers.length);
 
     const vc = this.tailorMapService.getViewerController();
-    const layerIds = vc.getVisibleLayers();
+    const layerIds = vc.getVisibleLayers(false) as number[];
     // console.log(layerIds);
 
     layerIds.forEach(layerId => {

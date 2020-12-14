@@ -1207,7 +1207,8 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                 if(layer.getVisible()) {
                     // When castToStrings is specified all ID's are casted to strings.
                     // This makes it easier to use indexOf (which uses strict === equality checks) on the result
-                    layerArray.push(castToStrings ? "" + i : i);
+                    // NOTE: i is (sometimes?) already a string, so explicitly cast to number if not castToStrings
+                    layerArray.push(castToStrings ? "" + i : Number(i));
                 }
             }
         }
