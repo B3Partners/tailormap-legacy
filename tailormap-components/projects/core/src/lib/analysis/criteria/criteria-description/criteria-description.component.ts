@@ -44,7 +44,7 @@ export class CriteriaDescriptionComponent {
         if (!selectedSource || !criteria || !CriteriaHelper.validGroups(criteria.groups)) {
           return null;
         }
-        return sanitizer.bypassSecurityTrustHtml(CriteriaDescriptionComponent.convertCriteriaToQuery(selectedSource, criteria));
+        return this.sanitizer.bypassSecurityTrustHtml(CriteriaDescriptionComponent.convertCriteriaToQuery(selectedSource, criteria));
       }),
     );
   }
