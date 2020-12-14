@@ -14,7 +14,6 @@ import {
   AppLayer,
   AppLoader,
   MapComponent,
-  SplitComponent,
   ViewerController,
 } from '../typings';
 import { take } from 'rxjs/operators';
@@ -74,21 +73,5 @@ export class TailorMapService {
       this.selectedLayer = event.appLayer;
     });
     this.applicationConfigSubject$.next(this.getAppLoader().getApplicationConfig());
-  }
-
-  public openSplitComponent() {
-    const vc = this.getViewerController();
-    const comps = vc.getComponentsByClassNames(['viewer.components.Split']);
-    if (comps && comps.length > 0) {
-      (comps[0] as SplitComponent).showWindow();
-    }
-  }
-
-  public openMergeComponent() {
-    const vc = this.getViewerController();
-    const comps = vc.getComponentsByClassNames(['viewer.components.Merge']);
-    if (comps && comps.length > 0) {
-      (comps[0] as SplitComponent).showWindow();
-    }
   }
 }

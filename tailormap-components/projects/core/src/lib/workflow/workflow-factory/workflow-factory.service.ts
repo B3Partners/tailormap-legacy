@@ -16,6 +16,8 @@ import { VectorLayer } from '../../../../../bridge/typings';
 import { SewageWorkflow } from '../workflows/SewageWorkflow';
 import { CopyWorkflow } from '../workflows/CopyWorkflow';
 import { ConfirmDialogService } from '../../shared/confirm-dialog/confirm-dialog.service';
+import { WORKFLOW_ACTION } from '../workflow-controller/workflow-models';
+import { NoOpWorkflow } from '../workflows/NoOpWorkflow';
 
 @Injectable({
   providedIn: 'root',
@@ -41,15 +43,15 @@ export class WorkflowFactoryService {
 
     let workflow: Workflow = null;
     switch (featureType) {
-      case 'wegvakonderdeel':
-        workflow = new StandardFormWorkflow();
-        break;
       case 'mechleiding':
       case 'vrijvleiding':
         workflow = new SewageWorkflow();
         break;
-      case 'copyMode':
+      case WORKFLOW_ACTION.COPY:
         workflow = new CopyWorkflow();
+        break;
+      case WORKFLOW_ACTION.SPLIT_MERGE:
+        workflow = new NoOpWorkflow();
         break;
       default:
         workflow = new StandardFormWorkflow();

@@ -17,6 +17,7 @@ declare interface LayerSelectedEvent{
   service: number
 }
 
+type deactivationEvent = ( ) => void;
 type layerEventHandler = ( payload: LayerSelectedEvent) => void;
 
 declare interface ViewerController {
@@ -45,12 +46,21 @@ declare interface ViewerController {
 }
 declare interface TailormapComponent{
   getContentContainer: () => string;
+  addListener: (eventName: string, handler: deactivationEvent, scope: any) => void;
+}
+
+declare interface ExtPopupWindow {
+  isVisible: () => boolean;
 }
 
 declare interface SplitComponent extends TailormapComponent{
   showWindow: () => void;
+  popup: ExtPopupWindow;
 }
+
 
 declare interface MergeComponent extends TailormapComponent{
   showWindow: () => void;
+  mode : string;
+  popup: ExtPopupWindow;
 }

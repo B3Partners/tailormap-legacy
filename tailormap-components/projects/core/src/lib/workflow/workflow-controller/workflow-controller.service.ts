@@ -8,6 +8,10 @@ import { MapClickedEvent } from '../../shared/models/event-models';
 import { Feature } from '../../shared/generated';
 import { Subscription } from 'rxjs';
 import { WorkflowActionManagerService } from './workflow-action-manager.service';
+import {
+  WORKFLOW_ACTION,
+  WorkflowActionEvent,
+} from './workflow-models';
 
 @Injectable({
   providedIn: 'root',
@@ -22,7 +26,7 @@ export class WorkflowControllerService implements OnDestroy {
     private workflowActionManagerService: WorkflowActionManagerService,
   ) {
     this.workflowActionManagerService.actionChanged$.subscribe(value => {
-      this.setCopyMode(value.feature);
+      this.workflowChanged(value);
     })
   }
 
@@ -44,8 +48,21 @@ export class WorkflowControllerService implements OnDestroy {
     this.currentWorkflow.addFeature(featureType, geometryType);
   }
 
+  public workflowChanged(event: WorkflowActionEvent): void {
+    switch (event.action) {
+      case WORKFLOW_ACTION.COPY:
+        this.setCopyMode(event.feature);
+        break;
+      case WORKFLOW_ACTION.ADD_FEATURE:
+        break;
+      case WORKFLOW_ACTION.SPLIT_MERGE:
+        this.currentWorkflow = this.getWorkflow(WORKFLOW_ACTION.SPLIT_MERGE);
+        break;
+    }
+  }
+
   public setCopyMode(feature: Feature): void {
-    this.currentWorkflow = this.getWorkflow('copyMode');
+    this.currentWorkflow = this.getWorkflow(WORKFLOW_ACTION.COPY);
 
     this.currentWorkflow.setFeature(feature);
   }
