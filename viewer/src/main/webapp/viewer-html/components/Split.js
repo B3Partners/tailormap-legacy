@@ -616,14 +616,15 @@ Ext.define("viewer.components.Split", {
         me.config.viewerController.getLayer(me.layerSelector.getValue()).reload();
         Ext.MessageBox.alert(i18next.t('viewer_components_split_19'), i18next.t('viewer_components_split_20'));
         me.cancel();
+        this.fireEvent(viewer.viewercontroller.controller.Event.ON_DEACTIVATE);
     },
     saveFailed: function (msg, me) {
         Ext.Msg.alert(i18next.t('viewer_components_split_21'), msg);
         me.cancel();
+        this.fireEvent(viewer.viewercontroller.controller.Event.ON_DEACTIVATE);
     },
     cancel: function () {
         this.resetForm();
-        this.fireEvent(viewer.viewercontroller.controller.Event.ON_DEACTIVATE);
         this.popup.hide();
     },
     resetForm: function () {
