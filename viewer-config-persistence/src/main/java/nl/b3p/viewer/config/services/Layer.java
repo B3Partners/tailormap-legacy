@@ -708,7 +708,7 @@ public class Layer implements Cloneable, Serializable {
         this.matrixSets = matrixSets;
     }
 
-    public boolean isUserlayer() {
+    public Boolean isUserlayer() {
         return userlayer;
     }
 
