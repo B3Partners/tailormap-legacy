@@ -8,7 +8,10 @@
 
 import { DataSource } from '@angular/cdk/table';
 import * as wellknown from 'wellknown';
-import { Observable, of } from 'rxjs';
+import {
+  Observable,
+  of,
+} from 'rxjs';
 import { MatSort } from '@angular/material/sort';
 import { MatPaginator } from '@angular/material/paginator';
 
@@ -20,17 +23,26 @@ import { AttributelistColumnController } from './attributelist-column-controller
 import { AttributeService } from '../../../shared/attribute-service/attribute.service';
 import {
   Attribute,
+  AttributeListFeature,
   AttributeListParameters,
   AttributeListResponse,
   AttributeMetadataParameters,
   AttributeMetadataResponse,
 } from '../../../shared/attribute-service/attribute-models';
-import { CheckState, DetailsState } from './attributelist-enums';
+import {
+  CheckState,
+  DetailsState,
+} from './attributelist-enums';
 import { DatasourceParams } from './datasource-params';
 import { Feature } from '../../../shared/generated';
 import { FormconfigRepositoryService } from '../../../shared/formconfig-repository/formconfig-repository.service';
 import { LayerService } from '../layer.service';
 import { LayerUtils } from '../../../shared/layer-utils/layer-utils.service';
+import {
+  FormConfiguration,
+  FormFieldType,
+} from '../../../feature-form/form/form-models';
+import { FormFieldHelpers } from '../../../feature-form/form-field/form-field-helpers';
 
 export class AttributeDataSource extends DataSource<any> {
 
@@ -287,6 +299,14 @@ export class AttributeDataSource extends DataSource<any> {
                 // // ### DEBUG --- SET FIRST ROW WITH NO DETAILS!!!
                 // data.features[0].related_featuretypes = [];
 
+                let passportName = '';
+                if (this.params.hasDetail()) {
+                  passportName = this.params.featureTypeName;
+                } else {
+                  passportName = this.params.layerName;
+                }
+                const formConfig = this.formconfigRepoService.getFormConfig(passportName);
+
                 data.features.forEach(d => {
                   // console.log(d);
                   // console.log(d.related_featuretypes);
@@ -306,6 +326,8 @@ export class AttributeDataSource extends DataSource<any> {
                       d._details = DetailsState.No;
                     }
                   }
+                  d = this.processRow(d, formConfig);
+
                   this.rows.push(d);
                 });
               }
@@ -318,6 +340,33 @@ export class AttributeDataSource extends DataSource<any> {
           );
         },
       );
+  }
+
+  private processRow(feat: AttributeListFeature, formConfig: FormConfiguration): AttributeListFeature {
+    if (formConfig == null) {
+      return feat;
+    }
+
+    const newFeat: AttributeListFeature = {
+      __fid: feat.__fid,
+      related_featuretypes: feat.related_featuretypes,
+      ...feat,
+    };
+    formConfig.fields.forEach(field => {
+      if (field.type === FormFieldType.DOMAIN) {
+        let value = feat[field.key] || '';
+
+        field.options.forEach(option => {
+          if ((FormFieldHelpers.isNumber(value) && option.val === parseInt( '' + value, 10))) {
+            value = option.label;
+          }
+        });
+        newFeat[field.key] = value;
+      } else {
+        newFeat[field.key] = feat[field.key];
+      }
+    });
+    return newFeat;
   }
 
   /**
