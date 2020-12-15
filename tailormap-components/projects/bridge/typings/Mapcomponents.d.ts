@@ -44,6 +44,10 @@ declare interface AppLayer {
   featureType: number;
   background: boolean;
 }
+declare interface Pixel{
+  x: number;
+  y: number;
+}
 
 type layerVisibilityEvent = (object: any, event: LayerVisibilityEvent) => void;
 type layerEvent = (object: any, event: any) => void;
@@ -55,6 +59,7 @@ declare interface Map {
   update: () => void;
   getResolution: () => number;
   zoomToExtent: (extent: Extent) => void;
+  coordinateToPixel: (x: number, y: number) => Pixel;
 }
 
 declare interface MapComponent {

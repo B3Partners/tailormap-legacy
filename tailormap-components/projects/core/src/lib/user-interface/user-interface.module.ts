@@ -11,6 +11,7 @@ import { ChooseTypesComponent } from './sewage/choose-types/choose-types.compone
 import { EditBarComponent } from './edit-bar/edit-bar/edit-bar.component';
 import { AddFeatureMenuComponent } from './edit-bar/add-feature-menu/add-feature-menu.component';
 import { MenuButtonComponent } from './edit-bar/add-feature-menu/menu-button/menu-button.component';
+import { GeometryConfirmButtonsComponent } from './edit-bar/geometry-confirm-buttons/geometry-confirm-buttons.component';
 
 @NgModule({
   declarations: [
@@ -18,6 +19,7 @@ import { MenuButtonComponent } from './edit-bar/add-feature-menu/menu-button/men
     ChooseTypesComponent,
     EditBarComponent,
     AddFeatureMenuComponent,
+    GeometryConfirmButtonsComponent,
   ],
   imports: [
     CommonModule,
@@ -25,10 +27,11 @@ import { MenuButtonComponent } from './edit-bar/add-feature-menu/menu-button/men
     MatIconModule,
     AttributelistModule,
   ],
-  exports: [
-    MatIconModule,
-    EditBarComponent,
-  ],
+    exports: [
+        MatIconModule,
+        EditBarComponent,
+        GeometryConfirmButtonsComponent,
+    ],
   entryComponents: [],
   providers: [
     {

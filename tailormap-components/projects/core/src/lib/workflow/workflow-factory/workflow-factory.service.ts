@@ -18,6 +18,7 @@ import { CopyWorkflow } from '../workflows/CopyWorkflow';
 import { ConfirmDialogService } from '../../shared/confirm-dialog/confirm-dialog.service';
 import { WORKFLOW_ACTION } from '../workflow-controller/workflow-models';
 import { NoOpWorkflow } from '../workflows/NoOpWorkflow';
+import { GeometryConfirmService } from '../../user-interface/edit-bar/geometry-confirm-buttons/geometry-confirm.service';
 
 @Injectable({
   providedIn: 'root',
@@ -35,6 +36,7 @@ export class WorkflowFactoryService {
     private snackBar: MatSnackBar,
     private service: FeatureControllerService,
     private ngZone: NgZone,
+    private geometryConfirmService: GeometryConfirmService,
     private confirmService: ConfirmDialogService,
     private featureInitializerService: FeatureInitializerService) {
   }
@@ -61,7 +63,7 @@ export class WorkflowFactoryService {
     workflow.highlightLayer = this.highlightLayer;
     workflow.id = this.numWorkflows;
     workflow.init(this.tailorMap, this.dialog, this.featureInitializerService,
-      this.formConfigRepo, this.snackBar, this.service, this.ngZone, this.confirmService);
+      this.formConfigRepo, this.snackBar, this.service, this.ngZone, this.confirmService, this.geometryConfirmService);
 
     return workflow;
   }
