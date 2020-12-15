@@ -12,8 +12,8 @@ import {
     FeatureAttribute,
     FormFieldType,
 } from '../form/form-models';
-import {LinkedAttributeRegistryService} from '../linked-fields/registry/linked-attribute-registry.service';
-import {FormFieldHelpers} from './form-field-helpers';
+import { LinkedAttributeRegistryService } from '../linked-fields/registry/linked-attribute-registry.service';
+import { FormFieldHelpers } from './form-field-helpers';
 
 @Component({
     selector: 'tailormap-formfield',
