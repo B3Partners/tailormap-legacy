@@ -6,7 +6,7 @@
           </mat-icon>
         </button>
         <mat-checkbox *ngIf="isCopy" name="{{node?.feature.id}}" id="{{node?.feature.id}}" (change)="addFeatureForCopy($event, node?.feature.id)" [checked]="isFeatureForCopyChecked(node?.feature.id) " ></mat-checkbox>
-        <span class="{{node.selected ? 'selected' : ''}} {{node?.feature.id ? '' : 'newNode'}}">
+        <span class="{{node.selected && !isBulk ? 'selected' : ''}} {{node?.feature.id ? '' : 'newNode'}}">
 
           {{node.name}}</span>
       </div>
@@ -20,8 +20,8 @@
             {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
           </mat-icon>
         </button>
-        <span *ngIf="node.isFeatureType" matTreeNodeToggle class="{{node.selected ? 'selected' : ''}} {{node.feature?.id || node.isFeatureType ? '' : 'newNode'}}">{{node.name}}</span>
-        <span *ngIf="!node.isFeatureType" class="{{node.selected ? 'selected' : ''}} {{node.feature?.id || node.isFeatureType ? '' : 'newNode'}}">{{node.name}}</span>
+        <span *ngIf="node.isFeatureType" matTreeNodeToggle class="{{node.selected && !isBulk  ? 'selected' : ''}} {{node.feature?.id || node.isFeatureType ? '' : 'newNode'}}">{{node.name}}</span>
+        <span *ngIf="!node.isFeatureType" class="{{node.selected && !isBulk ? 'selected' : ''}} {{node.feature?.id || node.isFeatureType ? '' : 'newNode'}}">{{node.name}}</span>
       </div>
     </mat-tree-node>
   </mat-tree>

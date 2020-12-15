@@ -6,6 +6,7 @@ import {
   FeatureControllerService,
 } from '../../shared/generated';
 import {
+  forkJoin,
   Observable,
   of,
 } from 'rxjs';
@@ -25,12 +26,17 @@ export class FormActionsService {
     private _snackBar: MatSnackBar) {
   }
 
-  public save$(isBulk: boolean, feature: Feature, parent: Feature): Observable<any> {
+  public save$(isBulk: boolean, features: Feature[], parent: Feature): Observable<any> {
 
     if (isBulk) {
-      console.error('to be implemented');
-
+      const reqs : Observable<any>[] = [];
+      features.forEach(feature => {
+        const objectGuid = feature.objectGuid;
+        reqs.push(this.service.update({objectGuid, body: feature}));
+      });
+      return forkJoin(reqs);
     } else {
+      const feature = features[0];
       const objectGuid = feature.objectGuid;
       if (objectGuid && objectGuid !== FeatureInitializerService.STUB_OBJECT_GUID_NEW_OBJECT) {
         return this.service.update({objectGuid, body: feature});
