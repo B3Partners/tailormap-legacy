@@ -52,6 +52,8 @@ export class AttributeDataSource extends DataSource<any> {
   // The loaded data rows (i.e. page).
   private rows: RowData[] = [];
 
+  private checkedIds: number[] = [];
+
   constructor(private layerService: LayerService,
               private attributeService: AttributeService,
               private formconfigRepoService: FormconfigRepositoryService) {
@@ -142,6 +144,17 @@ export class AttributeDataSource extends DataSource<any> {
       }
     });
     return featuresChecked;
+  }
+
+  /**
+   * Sets the checked Rows based on features
+   */
+  public setCheckedRows (checkedFeatures: Feature[]) {
+    this.rows.forEach( (row: RowData) => {
+      if (checkedFeatures.find( feature => feature.objectGuid === row.object_guid) ) {
+        this.checkedIds.push(row.object_guid);
+      }
+    })
   }
 
   /**
@@ -293,8 +306,12 @@ export class AttributeDataSource extends DataSource<any> {
 
                   // Main data?
                   if (!this.params.hasDetail()) {
-                    // Add property _checked.
-                    d._checked = false;
+                    // Add property _checked
+                    if (this.checkedIds.find ( id => id === d.object_guid)) {
+                      d._checked = true;
+                    } else {
+                      d._checked = false;
+                    }
                     // Add property related_featuretypes if not exists.
                     if (!d.hasOwnProperty('related_featuretypes')) {
                       d.related_featuretypes = [];
@@ -312,6 +329,8 @@ export class AttributeDataSource extends DataSource<any> {
             },
             () => {},
             () => {
+              // reset checkbox for reload
+              this.checkedIds = [];
               // Update the table.
               attrTable.onAfterLoadData();
             },

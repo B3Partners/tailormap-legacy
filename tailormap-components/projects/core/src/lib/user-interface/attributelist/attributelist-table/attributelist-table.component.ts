@@ -173,6 +173,8 @@ export class AttributelistTableComponent implements AttributelistTable, Attribut
 
     this.statistic.initStatistics(this.getColumnNames());
 
+    this.updateCheckedInfo();
+
     // FOR TESTING. SHOW TABLE OPTIONS FORM AT STARTUP.
     // this.onTableOptionsClick(null);
   }
@@ -245,11 +247,12 @@ export class AttributelistTableComponent implements AttributelistTable, Attribut
     });
     // tslint:disable-next-line: rxjs-no-ignored-subscription
     dialogRef.afterClosed().subscribe(result => {
-      this.afterEditting();
+      this.afterEditing(formFeatures);
     });
   }
 
-  public afterEditting(): void {
+  public afterEditing(optionFeatures: Feature[]): void {
+    this.dataSource.setCheckedRows(optionFeatures);
     this.updateTable();
   }
 
