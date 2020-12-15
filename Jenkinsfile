@@ -22,6 +22,21 @@ timestamps {
 
                 echo "Using JDK: ${jdkTestName}"
 
+                stage("${jdkTestName} specific prepare"){
+                    sh "wget http://cert.pkioverheid.nl/EVRootCA.cer"
+                    try {
+                        if (jdkTestName == 'OpenJDK11') {
+                            sh "keytool -importcert -file ./EVRootCA.cer -alias EVRootCA -keystore $JAVA_HOME/lib/security/cacerts -storepass 'changeit' -v -noprompt -trustcacerts"
+                        }
+                        if (jdkTestName == 'OpenJDK8') {
+                            sh "keytool -importcert -file ./EVRootCA.cer -alias EVRootCA -keystore $JAVA_HOME/jre/lib/security/cacerts -storepass changeit -v -noprompt -trustcacerts"
+                        }
+                    } catch (err) {
+                        /* possibly already imported cert */
+                        echo err.getMessage()
+                    }
+                }
+
                 stage("Build: ${jdkTestName}") {
                     echo "Building branch: ${env.BRANCH_NAME}"
                     sh "mvn clean install -U -DskipTests -Dtest.skip.integrationtests=true -B -V -fae -q"
