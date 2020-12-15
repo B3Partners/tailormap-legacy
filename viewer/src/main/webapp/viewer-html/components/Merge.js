@@ -317,6 +317,12 @@ Ext.define("viewer.components.Merge", {
                     xtype: "label"
                 },
                 {
+                    id: this.name + "strategyLabel",
+                    margin: 5,
+                    text: this.config.strategy === 'replace' ? i18next.t('viewer_components_merge_strategy_replace') : i18next.t('viewer_components_merge_new'),
+                    xtype: "label"
+                },
+                {
                     id: this.name + 'savePanel',
                     xtype: "container",
                     layout: {

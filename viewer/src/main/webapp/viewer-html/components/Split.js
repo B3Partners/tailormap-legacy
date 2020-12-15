@@ -245,6 +245,14 @@ Ext.define("viewer.components.Split", {
                     ]
                 },
                 {
+                    id: this.name + "strategyLabel",
+                    margin: 5,
+                    text: this.config.strategy === 'replace' ?
+                        i18next.t('viewer_components_split_strategy_replace') :
+                        i18next.t('viewer_components_split_strategy_add'),
+                    xtype: "label"
+                },
+                {
                     id: this.name + 'InputPanel',
                     border: 0,
                     xtype: "form",
