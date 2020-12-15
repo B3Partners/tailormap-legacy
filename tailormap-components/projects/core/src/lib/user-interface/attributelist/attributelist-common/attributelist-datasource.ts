@@ -342,8 +342,8 @@ export class AttributeDataSource extends DataSource<any> {
       );
   }
 
-  private processRow(feat: AttributeListFeature, formConfig: FormConfiguration): AttributeListFeature{
-    if(formConfig == null){
+  private processRow(feat: AttributeListFeature, formConfig: FormConfiguration): AttributeListFeature {
+    if (formConfig == null) {
       return feat;
     }
 
@@ -357,7 +357,7 @@ export class AttributeDataSource extends DataSource<any> {
         let value = feat[field.key] || '';
 
         field.options.forEach(option => {
-          if ((FormFieldHelpers.isNumber(value) && option.val === parseInt( '' + value, 10))){
+          if ((FormFieldHelpers.isNumber(value) && option.val === parseInt( '' + value, 10))) {
             value = option.label;
           }
         });
