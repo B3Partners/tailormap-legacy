@@ -11,7 +11,6 @@ import { AttributelistTabToolbarComponent } from './attributelist-tab-toolbar/at
 import { AttributelistTableComponent } from './attributelist-table/attributelist-table.component';
 import { AttributelistDetailsComponent } from './attributelist-details/attributelist-details.component';
 import { AttributelistTableOptionsFormComponent } from './attributelist-table-options-form/attributelist-table-options-form.component';
-import { AttributelistObjectOptionsFormComponent } from './attributelist-object-options-form/attributelist-object-options-form.component';
 
 import { PanelResizerComponent } from '../panel-resizer/panel-resizer.component';
 import { DetailsrowDirective } from './attributelist-common/detailsrow.directive';
@@ -31,7 +30,6 @@ import { AttributelistFilterValuesFormComponent } from './attributelist-filter-v
     AttributelistTableComponent,
     AttributelistDetailsComponent,
     AttributelistTableOptionsFormComponent,
-    AttributelistObjectOptionsFormComponent,
     DetailsrowDirective,
     PanelResizerComponent,
     AttributelistFilterValuesFormComponent,
