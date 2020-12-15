@@ -53,7 +53,8 @@ mat-table {
   font-size: 20px;
 }
 .material-icons-set {
-  color: rgba(0, 0, 0, 1);
+  /*indigo primary 500*/
+  color: #3F51B5;
 }
 .material-icons-unset {
   color: rgba(0, 0, 0, 0.26);
