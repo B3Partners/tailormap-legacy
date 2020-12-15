@@ -9,7 +9,7 @@ timestamps {
                 numToKeepStr: '5']
             ]]);
 
-        final def jdks = [/*'OpenJDK11',*/'JDK8']
+        final def jdks = ['OpenJDK11','OpenJDK8']
 
         stage("Prepare") {
              checkout scm
@@ -21,6 +21,21 @@ timestamps {
             withEnv(["JAVA_HOME=${ tool jdkTestName }", "PATH+MAVEN=${tool 'Maven CURRENT'}/bin:${env.JAVA_HOME}/bin"]) {
 
                 echo "Using JDK: ${jdkTestName}"
+
+                stage("${jdkTestName} specific prepare"){
+                    sh "wget http://cert.pkioverheid.nl/EVRootCA.cer"
+                    try {
+                        if (jdkTestName == 'OpenJDK11') {
+                            sh "keytool -importcert -file ./EVRootCA.cer -alias EVRootCA -keystore $JAVA_HOME/lib/security/cacerts -storepass 'changeit' -v -noprompt -trustcacerts"
+                        }
+                        if (jdkTestName == 'OpenJDK8') {
+                            sh "keytool -importcert -file ./EVRootCA.cer -alias EVRootCA -keystore $JAVA_HOME/jre/lib/security/cacerts -storepass changeit -v -noprompt -trustcacerts"
+                        }
+                    } catch (err) {
+                        /* possibly already imported cert */
+                        echo err.getMessage()
+                    }
+                }
 
                 stage("Build: ${jdkTestName}") {
                     echo "Building branch: ${env.BRANCH_NAME}"
@@ -72,7 +87,7 @@ timestamps {
             sh "curl -s https://codecov.io/bash | bash"
         }
 
-        withEnv(["JAVA_HOME=${ tool 'JDK8' }", "PATH+MAVEN=${tool 'Maven CURRENT'}/bin:${env.JAVA_HOME}/bin"]) {
+        withEnv(["JAVA_HOME=${ tool 'OpenJDK8' }", "PATH+MAVEN=${tool 'Maven CURRENT'}/bin:${env.JAVA_HOME}/bin"]) {
             stage('Check Javadocs') {
                 sh "mvn javadoc:javadoc"
             }
