@@ -49,6 +49,9 @@ export class FormTreeComponent implements OnInit, OnChanges {
   @Input()
   public featuresToCopy = [];
 
+  @Input()
+  public isBulk = false;
+
   public treeControl = new FlatTreeControl<FlatNode>(node => node.level, node => node.expandable);
 
   public treeFlattener = new MatTreeFlattener(
@@ -141,7 +144,7 @@ export class FormTreeComponent implements OnInit, OnChanges {
       `${treeNodeBaseClass}--level-${node.level}`,
     ];
 
-    if (node.selected) {
+    if (node.selected && !this.isBulk) {
       cls.push(`${treeNodeBaseClass}--selected`);
     }
 

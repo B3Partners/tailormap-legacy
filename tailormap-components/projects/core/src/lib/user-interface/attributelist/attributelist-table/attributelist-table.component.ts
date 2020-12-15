@@ -242,7 +242,7 @@ export class AttributelistTableComponent implements AttributelistTable, Attribut
       disableClose: true,
       data: {
         formFeatures,
-        isBulk: false,
+        isBulk: formFeatures.length > 1,
       },
     });
     // tslint:disable-next-line: rxjs-no-ignored-subscription
