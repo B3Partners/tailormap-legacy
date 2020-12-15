@@ -92,11 +92,11 @@ export class FormCopyComponent implements OnInit {
       for (let i  = 0; i <= destinationFeatures.length - 1; i++) {
         destinationFeatures[i] = {...destinationFeatures[i], ...valuesToCopy};
         for (let n = 0; n <= childsToCopy.length - 1; n++) {
-          this.actionService.save$(false, childsToCopy[n], destinationFeatures[i]).subscribe(childSaved => {
+          this.actionService.save$(false, [childsToCopy[n]], destinationFeatures[i]).subscribe(childSaved => {
             console.log('child saved');
           })
         }
-        this.actionService.save$(false, destinationFeatures[i], destinationFeatures[i]).subscribe(savedFeature => {
+        this.actionService.save$(false, [destinationFeatures[i]], destinationFeatures[i]).subscribe(savedFeature => {
             successCopied++;
             if (successCopied === destinationFeatures.length) {
               this._snackBar.open('Er zijn ' + successCopied + ' features gekopieerd', '', {
