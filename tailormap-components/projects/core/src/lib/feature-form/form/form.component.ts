@@ -145,11 +145,11 @@ export class FormComponent implements OnDestroy, OnChanges {
   }
 
   public editGeometry(): void {
+    this.closeDialog();
     this.workflowAction.setAction({
       feature: this.feature,
-      action: WORKFLOW_ACTION.EDIT_GEOMTRY,
+      action: WORKFLOW_ACTION.EDIT_GEOMETRY,
     });
-    this.closeDialog();
   }
 
   public closeDialog() {

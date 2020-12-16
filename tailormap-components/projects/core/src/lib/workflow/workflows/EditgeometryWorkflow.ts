@@ -11,8 +11,22 @@ export class EditgeometryWorkflow extends Workflow {
     super();
   }
 
-  public afterEditting(): void {
-    const a = 0;
+  public afterInit() {
+    super.afterInit();
+    setTimeout( this.drawGeom.bind(this),100);
+  }
+
+  public drawGeom() : void{
+
+    const feat = this.event.feature
+    const geom = this.featureInitializerService.retrieveGeometry(feat);
+    if (geom) {
+      this.vectorLayer.readGeoJSON(geom);
+    }
+  }
+
+  public afterEditting() {
+    const a=0;
   }
 
   public geometryDrawn(vectorLayer: VectorLayer, feature: any): void {

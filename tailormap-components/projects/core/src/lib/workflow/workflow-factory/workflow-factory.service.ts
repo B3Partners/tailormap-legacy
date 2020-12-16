@@ -64,7 +64,7 @@ export class WorkflowFactoryService {
       case WORKFLOW_ACTION.SPLIT_MERGE:
         workflow = new NoOpWorkflow();
         break;
-      case WORKFLOW_ACTION.EDIT_GEOMTRY:
+      case WORKFLOW_ACTION.EDIT_GEOMETRY:
         workflow = new EditgeometryWorkflow();
         break;
       case WORKFLOW_ACTION.DEFAULT:
