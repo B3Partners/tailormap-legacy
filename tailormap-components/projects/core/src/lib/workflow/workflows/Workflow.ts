@@ -12,6 +12,7 @@ import { MapClickedEvent } from '../../shared/models/event-models';
 import { NgZone } from '@angular/core';
 import { Subject } from 'rxjs';
 import { ConfirmDialogService } from '../../shared/confirm-dialog/confirm-dialog.service';
+import { WorkflowActionEvent } from '../workflow-controller/workflow-models';
 
 export abstract class Workflow {
 
@@ -28,10 +29,12 @@ export abstract class Workflow {
   protected confirmService: ConfirmDialogService;
   protected ngZone: NgZone;
   public closeAfterSave: boolean;
+  protected event: WorkflowActionEvent;
 
   public close$ = new Subject<boolean>();
 
   public init(
+    event: WorkflowActionEvent,
     tailorMap: TailorMapService,
     dialog: MatDialog,
     featureInitializerService: FeatureInitializerService,
@@ -40,7 +43,7 @@ export abstract class Workflow {
     service: FeatureControllerService,
     ngZone: NgZone,
     confirmService: ConfirmDialogService): void {
-
+    this.event = event;
     this.tailorMap = tailorMap;
     this.dialog = dialog;
     this.featureInitializerService = featureInitializerService;

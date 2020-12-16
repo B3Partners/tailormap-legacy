@@ -144,6 +144,14 @@ export class FormComponent implements OnDestroy, OnChanges {
     });
   }
 
+  public editGeometry(): void {
+    this.workflowAction.setAction({
+      feature: this.feature,
+      action: WORKFLOW_ACTION.EDIT_GEOMTRY,
+    });
+    this.closeDialog();
+  }
+
   public closeDialog() {
     this.ngZone.run(() => {
       if (this.formDirty) {

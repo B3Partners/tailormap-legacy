@@ -10,6 +10,8 @@ import { FormconfigRepositoryService } from '../../../shared/formconfig-reposito
 import { MatSelectChange } from '@angular/material/select';
 import { FormConfiguration } from '../../../feature-form/form/form-models';
 import { WorkflowControllerService } from '../../../workflow/workflow-controller/workflow-controller.service';
+import { WorkflowActionManagerService } from '../../../workflow/workflow-controller/workflow-action-manager.service';
+import { WORKFLOW_ACTION } from '../../../workflow/workflow-controller/workflow-models';
 
 @Component({
   selector: 'tailormap-add-feature-menu',
@@ -26,6 +28,7 @@ export class AddFeatureMenuComponent implements OnInit {
   constructor(
     public dialogRef: MatDialogRef<AddFeatureMenuComponent>,
     public tailorMapService: TailorMapService,
+    private workflowActionManagerService: WorkflowActionManagerService,
     private workflowControllerService: WorkflowControllerService,
     private ngZone: NgZone,
     public formConfigRepo: FormconfigRepositoryService,
@@ -73,7 +76,12 @@ export class AddFeatureMenuComponent implements OnInit {
   }
 
   public draw(type: string): void {
-    this.workflowControllerService.addFeature(this.layer, type);
+    this.workflowActionManagerService.setAction({
+      action: WORKFLOW_ACTION.ADD_FEATURE,
+      geometryType: type,
+      featureType: this.layer,
+    });
+ //  this.workflowControllerService.addFeature(this.layer, type);
     this.dialogRef.close();
   }
 

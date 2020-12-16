@@ -31,7 +31,7 @@ export class WorkflowControllerService implements OnDestroy {
   }
 
   public init(): void {
-    this.currentWorkflow = this.getWorkflow();
+    this.currentWorkflow = this.getWorkflow({action: WORKFLOW_ACTION.DEFAULT});
   }
 
   public ngOnDestroy() {
@@ -40,38 +40,35 @@ export class WorkflowControllerService implements OnDestroy {
 
   public workflowFinished(): void {
     this.init();
-  }
+  }/*
 
-  public addFeature(featureType: string, geometryType ?: string): void {
-    this.currentWorkflow = this.getWorkflow(featureType);
+  public addFeature(event: WorkflowActionEvent, featureType: string, geometryType ?: string): void {
+    this.currentWorkflow = this.getWorkflow(event, featureType);
 
     this.currentWorkflow.addFeature(featureType, geometryType);
-  }
+  }*/
 
   public workflowChanged(event: WorkflowActionEvent): void {
+    this.currentWorkflow = this.getWorkflow(event,);
     switch (event.action) {
       case WORKFLOW_ACTION.COPY:
         this.setCopyMode(event.feature);
         break;
       case WORKFLOW_ACTION.ADD_FEATURE:
-        break;
-      case WORKFLOW_ACTION.SPLIT_MERGE:
-        this.currentWorkflow = this.getWorkflow(WORKFLOW_ACTION.SPLIT_MERGE);
+        this.currentWorkflow.addFeature(event.featureType, event.geometryType);
         break;
     }
   }
 
   public setCopyMode(feature: Feature): void {
-    this.currentWorkflow = this.getWorkflow(WORKFLOW_ACTION.COPY);
-
     this.currentWorkflow.setFeature(feature);
   }
 
-  public getWorkflow(featureType ?: string): Workflow {
+  public getWorkflow(event: WorkflowActionEvent): Workflow {
     if (this.currentWorkflow) {
       this.currentWorkflow.destroy();
     }
-    const wf = this.workflowFactory.getWorkflow(featureType);
+    const wf = this.workflowFactory.getWorkflow(event);
     this.subscriptions.add(wf.close$.subscribe(value => this.init()));
     return wf;
   }
