@@ -31,12 +31,16 @@
   float: right;
   bottom: 20px;
 }
-
-.add-button{
-  float: right;
-  margin-left: 15px;
+.red-item{
+  color: red;
 }
 
-.save-button{
-  background-color: #10893E;
+.bottom-bar{
+  margin-left: auto;
+}
+
+.bottom-bar button{
+  float: right;
+
+  margin-right: 15px;
 }
