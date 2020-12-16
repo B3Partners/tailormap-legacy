@@ -247,7 +247,6 @@ export class AttributeDataSource extends DataSource<any> {
     if (this.paginator) {
       attrParams.limit = this.paginator.pageSize;
       attrParams.page = 1;
-      // attrParams.page: this.paginator.pageIndex,   // TODO: Waar is page voor?
       attrParams.start = this.paginator.pageIndex * this.paginator.pageSize;
     } else {
       attrParams.limit = 999;
@@ -290,7 +289,7 @@ export class AttributeDataSource extends DataSource<any> {
             const columnDefs: Attribute[] =
               this.metadataGetColumns(prefix, metadata);
 
-            // console.log(columnNames);
+            // console.log(columnDefs);
 
             // And set as initial column names.
             this.columnController.setDataColumnNames(columnDefs);
@@ -397,11 +396,26 @@ export class AttributeDataSource extends DataSource<any> {
     }
     const columns = [];
     prefix += '.';
+
+    let featureType = -1;
+    if (this.params.hasDetail()) {
+      // Set detail feature type.
+      featureType = this.params.featureTypeId
+    } else {
+      // Set master feature type for no related columns.
+      featureType = metadata.featureType;
+    }
+
     for (const attr of metadata.attributes) {
       // TODO longname is lang niet altijd aanwezig, dus eerst uitgezet (RH)
       // if (attr.longname.startsWith(prefix)) {
-      columns.push(attr);
+      // columns.push(attr);
       // }
+
+      // Check feature type.
+      if (attr.featureType === featureType) {
+        columns.push(attr);
+      }
     }
     return columns;
   }
