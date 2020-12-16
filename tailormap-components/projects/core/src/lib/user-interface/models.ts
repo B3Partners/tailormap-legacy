@@ -34,3 +34,8 @@ export interface LayoutComponent {
 //     windowState: WindowState;
 //     getCaptionbarHeight(): number;
 // }
+
+export interface ConfirmGeometry {
+  left: number;
+  top: number;
+}

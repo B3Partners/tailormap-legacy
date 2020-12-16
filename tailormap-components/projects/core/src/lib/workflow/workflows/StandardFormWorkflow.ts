@@ -8,6 +8,8 @@ import {
 } from '../../shared/models/event-models';
 import { VectorLayer } from '../../../../../bridge/typings';
 import { FormComponent } from '../../feature-form/form/form.component';
+import { takeUntil } from 'rxjs/operators';
+import { GeoJSONGeometry } from 'wellknown';
 
 export class StandardFormWorkflow extends Workflow {
 
@@ -42,8 +44,28 @@ export class StandardFormWorkflow extends Workflow {
   }
 
   public geometryDrawn(vectorLayer: VectorLayer, feature: any) {
+
+
     const geom = feature.config.wktgeom;
     const geoJson = wellknown.parse(geom);
+
+    const coord = this.findTopRight(geoJson);
+    const pixel = this.tailorMap.getMapComponent().getMap().coordinateToPixel(coord[0], coord[1]);
+    this.geometryConfirmService.open({
+      left: pixel.x,
+      top: pixel.y,
+    }).pipe(takeUntil(this.destroyed)).subscribe(accepted => {
+      if (accepted) {
+        console.log("accepted");
+        this.accept(geoJson);
+      } else {
+        vectorLayer.removeAllFeatures();
+      }
+      this.geometryConfirmService.hide();
+    });
+  }
+
+  private accept(geoJson: GeoJSONGeometry): void {
     const objecttype = this.featureType.charAt(0).toUpperCase() + this.featureType.slice(1);
     const feat = this.featureInitializerService.create(objecttype,
       {geometrie: geoJson, clazz: this.featureType, children: []});
@@ -136,6 +158,22 @@ export class StandardFormWorkflow extends Workflow {
 
   public getDestinationFeatures(): Feature[] {
     return [];
+  }
+
+  private findTopRight(geojson: GeoJSONGeometry): [number, number] {
+    switch (geojson.type) {
+      case 'MultiPolygon':
+      case 'Polygon':
+      case 'LineString':
+      case 'MultiLineString':
+        return geojson.coordinates[0] as [number, number];
+      case 'MultiPoint':
+      case 'Point':
+        return geojson.coordinates as [number, number];
+      default:
+        return [0, 0];
+    }
+
   }
 
 }

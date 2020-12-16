@@ -21,6 +21,7 @@ import {
   WorkflowActionEvent,
 } from '../workflow-controller/workflow-models';
 import { NoOpWorkflow } from '../workflows/NoOpWorkflow';
+import { GeometryConfirmService } from '../../user-interface/edit-bar/geometry-confirm-buttons/geometry-confirm.service';
 import { EditgeometryWorkflow } from '../workflows/EditgeometryWorkflow';
 
 @Injectable({
@@ -39,6 +40,7 @@ export class WorkflowFactoryService {
     private snackBar: MatSnackBar,
     private service: FeatureControllerService,
     private ngZone: NgZone,
+    private geometryConfirmService: GeometryConfirmService,
     private confirmService: ConfirmDialogService,
     private featureInitializerService: FeatureInitializerService) {
   }
@@ -72,7 +74,6 @@ export class WorkflowFactoryService {
         break;
       default:
         workflow = new StandardFormWorkflow();
-
     }
     this.numWorkflows++;
     workflow.vectorLayer = this.vectorLayer;
