@@ -40,28 +40,10 @@ export class WorkflowControllerService implements OnDestroy {
 
   public workflowFinished(): void {
     this.init();
-  }/*
-
-  public addFeature(event: WorkflowActionEvent, featureType: string, geometryType ?: string): void {
-    this.currentWorkflow = this.getWorkflow(event, featureType);
-
-    this.currentWorkflow.addFeature(featureType, geometryType);
-  }*/
-
-  public workflowChanged(event: WorkflowActionEvent): void {
-    this.currentWorkflow = this.getWorkflow(event,);
-    switch (event.action) {
-      case WORKFLOW_ACTION.COPY:
-        this.setCopyMode(event.feature);
-        break;
-      case WORKFLOW_ACTION.ADD_FEATURE:
-        this.currentWorkflow.addFeature(event.featureType, event.geometryType);
-        break;
-    }
   }
 
-  public setCopyMode(feature: Feature): void {
-    this.currentWorkflow.setFeature(feature);
+  public workflowChanged(event: WorkflowActionEvent): void {
+    this.currentWorkflow = this.getWorkflow(event);
   }
 
   public getWorkflow(event: WorkflowActionEvent): Workflow {

@@ -12,15 +12,20 @@ import { FormComponent } from '../../feature-form/form/form.component';
 export class StandardFormWorkflow extends Workflow {
 
   private featureType: string;
+  private isDrawing = false;
 
   constructor() {
     super();
   }
 
-  public addFeature(featureType: string, geometryType ?: string) {
-    this.featureType = featureType;
-    const geomtype = geometryType || this.formConfigRepo.getFormConfig(featureType).featuretypeMetadata.geometryType;
-    this.vectorLayer.drawFeature(this.convertGeomType(geomtype));
+  public afterInit() {
+    super.afterInit();
+    this.featureType = this.event.featureType;
+    if (this.event.geometryType || this.featureType) {
+      const geomtype = this.event.geometryType || this.formConfigRepo.getFormConfig(this.featureType).featuretypeMetadata.geometryType;
+      this.vectorLayer.drawFeature(this.convertGeomType(geomtype));
+      this.isDrawing = true;
+    }
   }
 
   private convertGeomType(type: string): string {
@@ -60,33 +65,37 @@ export class StandardFormWorkflow extends Workflow {
     // tslint:disable-next-line: rxjs-no-ignored-subscription
     dialogRef.afterClosed().subscribe(result => {
       this.afterEditting();
+      this.isDrawing = false;
     });
   }
 
   public mapClick(data: MapClickedEvent): void {
-    const x = data.x;
-    const y = data.y;
-    const scale = data.scale;
-    const featureTypes: string[] = this.getFeatureTypesAllowed();
-    this.service.featuretypeOnPoint({featureTypes, x, y, scale}).subscribe(
-      (features: Feature[]) => {
-        if (features && features.length > 0) {
-          const feat = features[0];
+    if(!this.isDrawing) {
 
-          const geom = this.featureInitializerService.retrieveGeometry(feat);
-          if (geom) {
-            this.highlightLayer.readGeoJSON(geom);
+      const x = data.x;
+      const y = data.y;
+      const scale = data.scale;
+      const featureTypes: string[] = this.getFeatureTypesAllowed();
+      this.service.featuretypeOnPoint({featureTypes, x, y, scale}).subscribe(
+        (features: Feature[]) => {
+          if (features && features.length > 0) {
+            const feat = features[0];
+
+            const geom = this.featureInitializerService.retrieveGeometry(feat);
+            if (geom) {
+              this.highlightLayer.readGeoJSON(geom);
+            }
+
+            this.openDialog([feat]);
           }
-
-          this.openDialog([feat]);
-        }
-      },
-      error => {
-        this.snackBar.open('Fout: Feature niet kunnen ophalen: ' + error, '', {
-          duration: 5000,
-        });
-      },
-    );
+        },
+        error => {
+          this.snackBar.open('Fout: Feature niet kunnen ophalen: ' + error, '', {
+            duration: 5000,
+          });
+        },
+      );
+    }
   }
 
   private getFeatureTypesAllowed(): string[] {
@@ -122,9 +131,6 @@ export class StandardFormWorkflow extends Workflow {
 
       this.tailorMap.getViewerController().mapComponent.getMap().update();
     });
-  }
-
-  public setFeature(feature: Feature): void {
   }
 
   public getDestinationFeatures(): Feature[] {

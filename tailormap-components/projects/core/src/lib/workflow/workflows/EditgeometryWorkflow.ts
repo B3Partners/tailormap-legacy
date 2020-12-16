@@ -11,10 +11,6 @@ export class EditgeometryWorkflow extends Workflow {
     super();
   }
 
-  public addFeature(featureType: string, geometryType?: string): void {
-    const a = 0;
-  }
-
   public afterEditting(): void {
     const a = 0;
   }
@@ -29,10 +25,6 @@ export class EditgeometryWorkflow extends Workflow {
   }
 
   public mapClick(data: MapClickedEvent): void {
-    const a = 0;
-  }
-
-  public setFeature(feature: Feature): void {
     const a = 0;
   }
 

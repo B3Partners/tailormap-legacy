@@ -54,6 +54,11 @@ export abstract class Workflow {
     this.destinationFeatures = [];
     this.confirmService = confirmService;
     this.vectorLayer.addListener('ON_FEATURE_ADDED', this.geometryDrawnProxy, this);
+    this.afterInit();
+  }
+
+  public afterInit(): void {
+
   }
 
   public destroy(): void {
@@ -67,10 +72,6 @@ export abstract class Workflow {
   }
 
   public abstract geometryDrawn(vectorLayer: VectorLayer, feature: any): void;
-
-  public abstract setFeature(feature: Feature): void;
-
-  public abstract addFeature(featureType: string, geometryType ?: string): void;
 
   public abstract getDestinationFeatures(): Feature [];
 
