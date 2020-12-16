@@ -74,6 +74,7 @@ declare interface Layer {
 }
 
 declare interface VectorLayer extends Layer {
+  getActiveFeature: () => Geometry;
   addFeatureFromWKT: (wkt: string) => void;
   drawFeature: (geometryType: string) => void;
   readGeoJSON: (geojson: Geometry) => void;

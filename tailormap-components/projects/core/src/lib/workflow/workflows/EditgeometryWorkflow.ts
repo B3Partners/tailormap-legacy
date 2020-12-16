@@ -1,8 +1,15 @@
 import { Workflow } from './Workflow';
 import * as wellknown from 'wellknown';
-import { Feature } from '../../shared/generated';
+import {
+  Feature,
+  Geometry,
+} from '../../shared/generated';
 import { MapClickedEvent } from '../../shared/models/event-models';
 import { VectorLayer } from '../../../../../bridge/typings';
+import { takeUntil } from 'rxjs/operators';
+import { WorkflowHelpers } from './Workflow.helpers';
+import { FormComponent } from '../../feature-form/form/form.component';
+import { DialogData } from '../../feature-form/form/form-models';
 export class EditgeometryWorkflow extends Workflow {
 
   private featureType: string;
@@ -19,12 +26,51 @@ export class EditgeometryWorkflow extends Workflow {
   }
 
   public drawGeom() : void{
-
     const feat = this.event.feature
     const geom = this.featureInitializerService.retrieveGeometry(feat);
     if (geom) {
       this.vectorLayer.readGeoJSON(geom);
+
+      const coord = WorkflowHelpers.findTopRightGeometry(geom) ;
+      const pixel = this.tailorMap.getMapComponent().getMap().coordinateToPixel(coord[0], coord[1]);
+      this.geometryConfirmService.open({
+        left: pixel.x,
+        top: pixel.y,
+      }).pipe(takeUntil(this.destroyed)).subscribe(accepted => {
+        if (accepted) {
+          this.openForm(this.vectorLayer.getActiveFeature());
+        } else {
+          this.vectorLayer.removeAllFeatures();
+          this.endWorkflow();
+        }
+        this.geometryConfirmService.hide();
+      });
     }
+  }
+
+  private openForm(geom: Geometry){
+
+    const objecttype = this.event.feature.objecttype;
+    const feat = this.featureInitializerService.create(objecttype,
+      {geometrie: geom, ...this.event.feature });
+
+    const data : DialogData = {
+      formFeatures: [feat], isBulk: false,
+
+    };
+
+    const dialogRef = this.dialog.open(FormComponent, {
+      id: this.FORMCOMPONENT_DIALOG_ID,
+      width: '1050px',
+      height: '800px',
+      disableClose: true,
+      data,
+    });
+    // tslint:disable-next-line: rxjs-no-ignored-subscription
+    dialogRef.afterClosed().subscribe(result => {
+      this.afterEditting();
+    });
+
   }
 
   public afterEditting() {
@@ -32,7 +78,6 @@ export class EditgeometryWorkflow extends Workflow {
   }
 
   public geometryDrawn(vectorLayer: VectorLayer, feature: any): void {
-    const a = 0;
   }
 
   public getDestinationFeatures(): Feature[] {

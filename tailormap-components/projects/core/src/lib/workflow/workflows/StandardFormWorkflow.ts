@@ -10,6 +10,7 @@ import { VectorLayer } from '../../../../../bridge/typings';
 import { FormComponent } from '../../feature-form/form/form.component';
 import { takeUntil } from 'rxjs/operators';
 import { GeoJSONGeometry } from 'wellknown';
+import { WorkflowHelpers } from './Workflow.helpers';
 
 export class StandardFormWorkflow extends Workflow {
 
@@ -44,12 +45,10 @@ export class StandardFormWorkflow extends Workflow {
   }
 
   public geometryDrawn(vectorLayer: VectorLayer, feature: any) {
-
-
     const geom = feature.config.wktgeom;
     const geoJson = wellknown.parse(geom);
 
-    const coord = this.findTopRight(geoJson);
+    const coord = WorkflowHelpers.findTopRight(geoJson);
     const pixel = this.tailorMap.getMapComponent().getMap().coordinateToPixel(coord[0], coord[1]);
     this.geometryConfirmService.open({
       left: pixel.x,
@@ -158,22 +157,6 @@ export class StandardFormWorkflow extends Workflow {
 
   public getDestinationFeatures(): Feature[] {
     return [];
-  }
-
-  private findTopRight(geojson: GeoJSONGeometry): [number, number] {
-    switch (geojson.type) {
-      case 'MultiPolygon':
-      case 'Polygon':
-      case 'LineString':
-      case 'MultiLineString':
-        return geojson.coordinates[0] as [number, number];
-      case 'MultiPoint':
-      case 'Point':
-        return geojson.coordinates as [number, number];
-      default:
-        return [0, 0];
-    }
-
   }
 
 }
