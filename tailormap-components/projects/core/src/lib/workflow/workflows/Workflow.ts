@@ -16,6 +16,7 @@ import { WorkflowActionEvent } from '../workflow-controller/workflow-models';
 
 export abstract class Workflow {
 
+  protected readonly FORMCOMPONENT_DIALOG_ID = 'formcomponent';
   public id = 0;
   public vectorLayer: VectorLayer;
   public highlightLayer: VectorLayer;

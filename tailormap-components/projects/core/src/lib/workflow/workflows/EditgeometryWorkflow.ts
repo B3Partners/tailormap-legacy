@@ -13,7 +13,9 @@ export class EditgeometryWorkflow extends Workflow {
 
   public afterInit() {
     super.afterInit();
-    setTimeout( this.drawGeom.bind(this),100);
+    this.dialog.getDialogById(this.FORMCOMPONENT_DIALOG_ID).afterClosed().subscribe(value => {
+      this.drawGeom();
+    });
   }
 
   public drawGeom() : void{

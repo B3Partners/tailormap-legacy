@@ -54,6 +54,7 @@ export class StandardFormWorkflow extends Workflow {
 
   public openDialog(formFeatures ?: Feature[]): void {
     const dialogRef = this.dialog.open(FormComponent, {
+      id: this.FORMCOMPONENT_DIALOG_ID,
       width: '1050px',
       height: '800px',
       disableClose: true,
