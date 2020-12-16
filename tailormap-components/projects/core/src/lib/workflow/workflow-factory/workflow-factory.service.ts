@@ -80,7 +80,7 @@ export class WorkflowFactoryService {
     workflow.highlightLayer = this.highlightLayer;
     workflow.id = this.numWorkflows;
     workflow.init(event, this.tailorMap, this.dialog, this.featureInitializerService,
-      this.formConfigRepo, this.snackBar, this.service, this.ngZone, this.confirmService);
+      this.formConfigRepo, this.snackBar, this.service, this.ngZone, this.confirmService, this.geometryConfirmService);
 
     return workflow;
   }
