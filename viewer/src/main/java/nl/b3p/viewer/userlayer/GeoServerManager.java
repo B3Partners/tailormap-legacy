@@ -56,7 +56,6 @@ public class GeoServerManager {
         this.workSpace = targetWorkSpace;
         this.storeName = storeName;
         this.baseUrl = baseUrl;
-
     }
 
     /**
@@ -75,7 +74,7 @@ public class GeoServerManager {
         content.put("name", layerName);
         // The native name of the resource.
         // This name corresponds to the physical resource that feature type is derived from
-        // -- a shapefile name, a database table, etc...
+        // a shapefile name, a database table, etc...
         content.put("nativeName", resourceName);
         // The title of the resource. This is usually something that is meant to be displayed in a user interface.
         content.put("title", layerTitle);
@@ -90,14 +89,18 @@ public class GeoServerManager {
         //        content.put("namespace", namespace);
 
         // A description of the resource. This is usually something that is meant to be displayed in a user interface.
-        content.put("abstract", "created by Tailormap GeoServerManager");
+        content.put("abstract", "UserLayer gemaakt met Tailormap GeoServerManager van tabel " + resourceName);
 
         // A collection of keywords associated with the resource
         JSONObject keywords = new JSONObject();
         JSONArray keyword = new JSONArray();
         keyword.put("userlayer");
+        keyword.put("layerName");
+        keyword.put("layerTitle");
+        keyword.put("resourceName");
         keyword.put("Tailormap");
         keyword.put("GBI");
+        keyword.put("GBIworld");
         keywords.put("string", keyword);
         content.put("keywords", keywords);
         // optional

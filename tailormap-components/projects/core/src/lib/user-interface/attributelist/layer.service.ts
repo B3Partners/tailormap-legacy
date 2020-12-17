@@ -155,6 +155,7 @@ export class LayerService {
       // console.log(appLayer);
       const layer: Layer = {
         name: layerName,
+        alias: appLayer.alias,
         id: layerId,
         tabComponent: null,
       };
