@@ -21,6 +21,9 @@ export class AttributelistFilterValuesFormComponent implements OnInit {
 
   public allOn: boolean
 
+  public filterTypeSelected: string;
+  public filterTypes: string[] = ['Contains', 'NotContains', 'UniqueValue'];
+
   constructor(private dialogRef: MatDialogRef<AttributelistFilterValuesFormComponent>,
               @Inject(MAT_DIALOG_DATA) public data: any) {
     this.colName = data.colName;
