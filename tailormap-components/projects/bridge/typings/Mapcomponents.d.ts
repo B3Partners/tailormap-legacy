@@ -43,6 +43,7 @@ declare interface AppLayer {
   attribute: boolean;   // has attribute table???
   featureType: number;
   background: boolean;
+  userlayer: boolean;
 }
 
 type layerVisibilityEvent = (object: any, event: LayerVisibilityEvent) => void;
