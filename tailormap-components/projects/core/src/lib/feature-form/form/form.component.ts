@@ -76,6 +76,9 @@ export class FormComponent implements OnDestroy, OnChanges {
     if (!this.formConfig) {
       this.dialogRef.close(this.feature);
     }
+    if (this.data.alreadyDirty) {
+      this.formDirty = true;
+    }
   }
 
   public ngOnChanges(changes: SimpleChanges): void {

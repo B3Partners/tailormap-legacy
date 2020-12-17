@@ -11,6 +11,7 @@ import { WorkflowHelpers } from './Workflow.helpers';
 import { FormComponent } from '../../feature-form/form/form.component';
 import { DialogData } from '../../feature-form/form/form-models';
 import { Coordinate } from '../../user-interface/models';
+import { GeoJSONGeometry } from 'wellknown';
 export class EditgeometryWorkflow extends Workflow {
 
   private featureType: string;
@@ -32,14 +33,12 @@ export class EditgeometryWorkflow extends Workflow {
     if (geom) {
       this.vectorLayer.readGeoJSON(geom);
 
-      const coord : Coordinate= WorkflowHelpers.findTopRight(geom) ;
-      const pixel = this.tailorMap.getMapComponent().getMap().coordinateToPixel(coord.x, coord.y);
-      this.geometryConfirmService.open({
-        left: pixel.x,
-        top: pixel.y,
-      }).pipe(takeUntil(this.destroyed)).subscribe(accepted => {
+      const coord : Coordinate = WorkflowHelpers.findTopRight(geom) ;
+      this.geometryConfirmService.open(coord).pipe(takeUntil(this.destroyed)).subscribe(accepted => {
         if (accepted) {
-          this.openForm(this.vectorLayer.getActiveFeature());
+          const wkt = this.vectorLayer.getActiveFeature().config.wktgeom;
+          const geoJson = wellknown.parse(wkt);
+          this.openForm(geoJson);
         } else {
           this.vectorLayer.removeAllFeatures();
           this.endWorkflow();
@@ -49,15 +48,16 @@ export class EditgeometryWorkflow extends Workflow {
     }
   }
 
-  private openForm(geom: Geometry){
+  private openForm(geom: GeoJSONGeometry){
 
     const objecttype = this.event.feature.objecttype;
     const feat = this.featureInitializerService.create(objecttype,
-      {geometrie: geom, ...this.event.feature });
+      {...this.event.feature, geometrie: geom  });
 
     const data : DialogData = {
-      formFeatures: [feat], isBulk: false,
-
+      formFeatures: [feat],
+      isBulk: false,
+      alreadyDirty: true,
     };
 
     const dialogRef = this.dialog.open(FormComponent, {
@@ -75,19 +75,22 @@ export class EditgeometryWorkflow extends Workflow {
   }
 
   public afterEditting() {
-    const a=0;
+    this.ngZone.runOutsideAngular(() => {
+      this.vectorLayer.removeAllFeatures();
+      this.highlightLayer.removeAllFeatures();
+      this.tailorMap.getViewerController().mapComponent.getMap().update();
+    });
+    this.endWorkflow();
   }
 
   public geometryDrawn(vectorLayer: VectorLayer, feature: any): void {
   }
 
   public getDestinationFeatures(): Feature[] {
-    const a = 0;
     return [];
   }
 
   public mapClick(data: MapClickedEvent): void {
-    const a = 0;
   }
 
 }

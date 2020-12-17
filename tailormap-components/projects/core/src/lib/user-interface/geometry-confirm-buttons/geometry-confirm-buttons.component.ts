@@ -4,9 +4,9 @@ import {
   OnInit,
 } from '@angular/core';
 import { GeometryConfirmService } from './geometry-confirm.service';
-import { ConfirmGeometry } from '../models';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
+import { ScreenCoordinate } from '../models';
 
 @Component({
   selector: 'tailormap-geometry-confirm-buttons',
@@ -16,7 +16,7 @@ import { Subject } from 'rxjs';
 export class GeometryConfirmButtonsComponent implements OnInit, OnDestroy {
 
   private destroyed = new Subject();
-  public position: ConfirmGeometry;
+  public position: ScreenCoordinate;
   public visible = false;
 
   constructor(private geometryConfirmService: GeometryConfirmService) {
@@ -26,7 +26,6 @@ export class GeometryConfirmButtonsComponent implements OnInit, OnDestroy {
     };
     this.geometryConfirmService.positionChanged$
       .pipe(takeUntil(this.destroyed)).subscribe(value => {
-      this.visible = true;
       this.position = {
         left: value.left + 5,
         top: value.top - 50,

@@ -6,7 +6,10 @@ import { LayerUtils } from '../../shared/layer-utils/layer-utils.service';
 import {
   MapClickedEvent,
 } from '../../shared/models/event-models';
-import { VectorLayer } from '../../../../../bridge/typings';
+import {
+  OLFeature,
+  VectorLayer,
+} from '../../../../../bridge/typings';
 import { FormComponent } from '../../feature-form/form/form.component';
 import { takeUntil } from 'rxjs/operators';
 import { GeoJSONGeometry } from 'wellknown';
@@ -44,20 +47,17 @@ export class StandardFormWorkflow extends Workflow {
     }
   }
 
-  public geometryDrawn(vectorLayer: VectorLayer, feature: any) {
+  public geometryDrawn(vectorLayer: VectorLayer, feature: OLFeature) {
     const geom = feature.config.wktgeom;
     const geoJson = wellknown.parse(geom);
 
     const coord = WorkflowHelpers.findTopRight(geoJson);
-    const pixel = this.tailorMap.getMapComponent().getMap().coordinateToPixel(coord.x, coord.y);
-    this.geometryConfirmService.open({
-      left: pixel.x,
-      top: pixel.y,
-    }).pipe(takeUntil(this.destroyed)).subscribe(accepted => {
+    this.geometryConfirmService.open(coord).pipe(takeUntil(this.destroyed)).subscribe(accepted => {
       if (accepted) {
         this.accept(geoJson);
       } else {
         vectorLayer.removeAllFeatures();
+        this.endWorkflow();
       }
       this.geometryConfirmService.hide();
     });

@@ -81,7 +81,6 @@ export class AddFeatureMenuComponent implements OnInit {
       geometryType: type,
       featureType: this.layer,
     });
- //  this.workflowControllerService.addFeature(this.layer, type);
     this.dialogRef.close();
   }
 

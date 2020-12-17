@@ -35,7 +35,7 @@ export interface LayoutComponent {
 //     getCaptionbarHeight(): number;
 // }
 
-export interface ConfirmGeometry {
+export interface ScreenCoordinate {
   left: number;
   top: number;
 }

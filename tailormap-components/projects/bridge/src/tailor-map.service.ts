@@ -8,7 +8,10 @@ import {
   ReplaySubject,
   Subject,
 } from 'rxjs';
-import { LayerVisibilityEvent } from '../../core/src/lib/shared/models/event-models';
+import {
+  ExtentChangedEvent,
+  LayerVisibilityEvent,
+} from '../../core/src/lib/shared/models/event-models';
 import {
   App,
   AppLayer,
@@ -29,8 +32,13 @@ export class TailorMapService {
 
   private applicationConfigSubject$: ReplaySubject<App> = new ReplaySubject<App>(1);
   public applicationConfig$: Observable<App> = this.applicationConfigSubject$.asObservable();
+
   private layerVisibilityChangedSubject$: Subject<LayerVisibilityEvent> = new Subject<LayerVisibilityEvent>();
   public layerVisibilityChanged$ = this.layerVisibilityChangedSubject$.asObservable();
+
+  private extentChangedSubject$: Subject<ExtentChangedEvent> = new Subject<ExtentChangedEvent>();
+  public extentChanged$ = this.extentChangedSubject$.asObservable();
+
   public selectedLayer$: Subject<AppLayer> = new Subject<AppLayer>();
   public selectedLayer: AppLayer;
 
@@ -67,7 +75,10 @@ export class TailorMapService {
     const mc = vc.mapComponent;
     const map = mc.getMap();
     map.addListener('ON_LAYER_VISIBILITY_CHANGED', (object, event) => {
-      this.ngZone.run(() => this.layerVisibilityChangedSubject$.next(event));
+      this.ngZone.run(() => this.layerVisibilityChangedSubject$.next(event as LayerVisibilityEvent));
+    });
+    map.addListener('ON_FINISHED_CHANGE_EXTENT', (object, event) => {
+      this.ngZone.run(() => this.extentChangedSubject$.next(event as ExtentChangedEvent));
     });
     vc.addListener('ON_LAYER_SELECTED', (event) => {
       this.selectedLayer = event.appLayer;
