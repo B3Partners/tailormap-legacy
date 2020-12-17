@@ -92,7 +92,7 @@ import {
     DragDropModule,
     MatDatepickerModule,
   ],
-    exports: [
+  exports: [
         ReactiveFormsModule,
         FormsModule,
         MatButtonModule,

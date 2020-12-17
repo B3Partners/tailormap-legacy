@@ -27,7 +27,7 @@ import { GeometryConfirmButtonsComponent } from './geometry-confirm-buttons/geom
     MatIconModule,
     AttributelistModule,
   ],
-    exports: [
+  exports: [
         MatIconModule,
         EditBarComponent,
         GeometryConfirmButtonsComponent,

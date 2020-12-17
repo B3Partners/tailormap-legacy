@@ -16,10 +16,10 @@ import { TailorMapService } from '../../../../../bridge/src/tailor-map.service';
 @Injectable({
   providedIn: 'root',
 })
-export class GeometryConfirmService implements OnDestroy{
+export class GeometryConfirmService implements OnDestroy {
   private destroyed = new Subject();
 
-  private currentCoordinate : Coordinate;
+  private currentCoordinate: Coordinate;
 
   private positionSubject$ = new Subject<ScreenCoordinate>();
   public positionChanged$ = this.positionSubject$.asObservable();
@@ -45,10 +45,11 @@ export class GeometryConfirmService implements OnDestroy{
     });
   }
 
+  // tslint:disable-next-line:rxjs-finnish
   public open(coord: Coordinate): Observable<boolean> {
     this.currentCoordinate = coord;
     const pixel = this.tailorMapService.getMapComponent().getMap().coordinateToPixel(coord.x, coord.y);
-    const pos : ScreenCoordinate = {
+    const pos: ScreenCoordinate = {
       left: pixel.x,
       top: pixel.y,
     };
@@ -57,7 +58,7 @@ export class GeometryConfirmService implements OnDestroy{
     return this.closedObservable$;
   }
 
-  public hide() {
+  public hide(): void {
     this.visibilitySubject$.next(false);
   }
 

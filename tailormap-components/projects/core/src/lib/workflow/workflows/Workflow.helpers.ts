@@ -1,6 +1,5 @@
 import { GeoJSONGeometry } from 'wellknown';
 import { Geometry } from '../../shared/generated';
-import { NoOpWorkflow } from './NoOpWorkflow';
 import { Coordinate } from '../../user-interface/models';
 
 export class WorkflowHelpers {

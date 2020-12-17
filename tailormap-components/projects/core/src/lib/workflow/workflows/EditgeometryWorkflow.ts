@@ -2,7 +2,6 @@ import { Workflow } from './Workflow';
 import * as wellknown from 'wellknown';
 import {
   Feature,
-  Geometry,
 } from '../../shared/generated';
 import { MapClickedEvent } from '../../shared/models/event-models';
 import { VectorLayer } from '../../../../../bridge/typings';
@@ -13,8 +12,6 @@ import { DialogData } from '../../feature-form/form/form-models';
 import { Coordinate } from '../../user-interface/models';
 import { GeoJSONGeometry } from 'wellknown';
 export class EditgeometryWorkflow extends Workflow {
-
-  private featureType: string;
 
   constructor() {
     super();
@@ -27,7 +24,7 @@ export class EditgeometryWorkflow extends Workflow {
     });
   }
 
-  public drawGeom() : void{
+  public drawGeom() : void {
     const feat = this.event.feature
     const geom = this.featureInitializerService.retrieveGeometry(feat);
     if (geom) {
@@ -48,7 +45,7 @@ export class EditgeometryWorkflow extends Workflow {
     }
   }
 
-  private openForm(geom: GeoJSONGeometry){
+  private openForm(geom: GeoJSONGeometry) {
 
     const objecttype = this.event.feature.objecttype;
     const feat = this.featureInitializerService.create(objecttype,

@@ -93,7 +93,7 @@ export class StandardFormWorkflow extends Workflow {
   }
 
   public mapClick(data: MapClickedEvent): void {
-    if(!this.isDrawing) {
+    if (!this.isDrawing) {
 
       const x = data.x;
       const y = data.y;

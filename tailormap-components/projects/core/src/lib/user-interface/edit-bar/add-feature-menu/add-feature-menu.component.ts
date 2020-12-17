@@ -9,7 +9,6 @@ import { TailorMapService } from '../../../../../../bridge/src/tailor-map.servic
 import { FormconfigRepositoryService } from '../../../shared/formconfig-repository/formconfig-repository.service';
 import { MatSelectChange } from '@angular/material/select';
 import { FormConfiguration } from '../../../feature-form/form/form-models';
-import { WorkflowControllerService } from '../../../workflow/workflow-controller/workflow-controller.service';
 import { WorkflowActionManagerService } from '../../../workflow/workflow-controller/workflow-action-manager.service';
 import { WORKFLOW_ACTION } from '../../../workflow/workflow-controller/workflow-models';
 
@@ -29,7 +28,6 @@ export class AddFeatureMenuComponent implements OnInit {
     public dialogRef: MatDialogRef<AddFeatureMenuComponent>,
     public tailorMapService: TailorMapService,
     private workflowActionManagerService: WorkflowActionManagerService,
-    private workflowControllerService: WorkflowControllerService,
     private ngZone: NgZone,
     public formConfigRepo: FormconfigRepositoryService,
   ) {
