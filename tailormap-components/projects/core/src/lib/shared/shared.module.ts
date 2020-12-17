@@ -51,6 +51,8 @@ import {
   MAT_MOMENT_DATE_FORMATS,
   MomentDateAdapter,
 } from '@angular/material-moment-adapter';
+import { CapitalizeFirstPipe } from './pipes/capitalizeFirst.pipe';
+import { ColorPickerComponent } from './color-picker/color-picker.component';
 
 @NgModule({
   declarations: [
@@ -58,6 +60,8 @@ import {
     DialogCloseButtonComponent,
     TreeComponent,
     OverlayComponent,
+    ColorPickerComponent,
+    CapitalizeFirstPipe,
   ],
   imports: [
     ApiModule.forRoot({
@@ -117,11 +121,13 @@ import {
     MatDialogModule,
     DialogCloseButtonComponent,
     TreeComponent,
+    ColorPickerComponent,
     MatRadioModule,
     MatProgressBarModule,
     MatAutocompleteModule,
     DragDropModule,
     MatDatepickerModule,
+    CapitalizeFirstPipe,
   ],
   entryComponents: [],
   providers: [

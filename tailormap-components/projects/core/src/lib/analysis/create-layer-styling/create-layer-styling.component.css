@@ -1,3 +1,36 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
 .form {
   padding: 14px;
+  flex: 1;
+  overflow: auto;
+}
+
+.styling-form,
+.line-settings,
+.polygon-settings {
+  padding-top: 14px;
+}
+
+.form-field label {
+  font-weight: normal;
+}
+
+.buttons {
+  display: flex;
+  justify-content: flex-end;
+  padding: 14px;
+}
+
+.buttons button + button {
+  margin-left: 14px;
+}
+
+button mat-spinner {
+  display: inline-block;
 }

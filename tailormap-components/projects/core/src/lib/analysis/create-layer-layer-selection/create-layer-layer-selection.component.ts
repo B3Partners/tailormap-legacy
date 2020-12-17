@@ -13,9 +13,15 @@ import {
 } from '../../../../../bridge/typings';
 import {
   combineLatest,
+  forkJoin,
+  of,
   Subject,
 } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import {
+  map,
+  switchMap,
+  takeUntil,
+} from 'rxjs/operators';
 import { ApplicationTreeHelper } from '../../application/helpers/application-tree.helper';
 import { AnalysisSourceModel } from '../models/analysis-source.model';
 import { Store } from '@ngrx/store';
@@ -26,6 +32,8 @@ import {
   selectDataSource,
   setSelectedDataSource,
 } from '../state/analysis.actions';
+import { MetadataService } from '../../application/services/metadata.service';
+import { AttributeTypeHelper } from '../../application/helpers/attribute-type.helper';
 
 @Component({
   selector: 'tailormap-create-layer-layer-selection',
@@ -44,6 +52,7 @@ export class CreateLayerLayerSelectionComponent implements OnInit, OnDestroy {
   constructor(
     private store$: Store<AnalysisState>,
     private treeService: TreeService,
+    private metadataService: MetadataService,
   ) {
   }
 
@@ -58,17 +67,28 @@ export class CreateLayerLayerSelectionComponent implements OnInit, OnDestroy {
       });
 
     this.treeService.checkStateChangedSource$
-      .pipe(takeUntil(this.destroyed))
-      .subscribe(changed => {
-        const checkedLayer = Array.from(changed.entries()).find(val => val[1]);
-        if (!checkedLayer) {
-          return;
+      .pipe(
+        takeUntil(this.destroyed),
+        map((changed): AppLayer => {
+          const checkedLayer = Array.from(changed.entries()).find(val => val[1]);
+          if (!checkedLayer) {
+            return;
+          }
+          return this.treeService.getNode(checkedLayer[0]).metadata;
+        }),
+        switchMap(appLayer => forkJoin([ of(appLayer), this.metadataService.getFeatureTypeMetadata$(appLayer.id) ])),
+      )
+      .subscribe(([ appLayer, attributeMetadata ]) => {
+        const geomAttribute = attributeMetadata.attributes[attributeMetadata.geometryAttributeIndex];
+        let geometryType;
+        if (geomAttribute) {
+          geometryType = AttributeTypeHelper.getGeometryAttributeType(geomAttribute);
         }
-        const appLayer = this.treeService.getNode(checkedLayer[0]).metadata;
         const source: AnalysisSourceModel = {
           layerId: +(appLayer.id),
           featureType: appLayer.featureType,
           label: appLayer.alias,
+          geometryType,
         };
         this.store$.dispatch(setSelectedDataSource({ source }));
       });

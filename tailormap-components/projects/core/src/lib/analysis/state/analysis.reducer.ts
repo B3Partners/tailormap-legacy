@@ -13,18 +13,27 @@ import { AnalysisSourceModel } from '../models/analysis-source.model';
 import { CriteriaTypeEnum } from '../models/criteria-type.enum';
 import { CriteriaModel } from '../models/criteria.model';
 
-const onSetCreateLayerMode = (state: AnalysisState, payload: { createLayerMode: CreateLayerModeEnum }): AnalysisState => ({
-  ...state,
-  createLayerMode: payload.createLayerMode,
-});
-
-const onClearCreateLayerMode = (state: AnalysisState): AnalysisState => ({
+const clearAnalysisState = (state: AnalysisState): AnalysisState => ({
   ...state,
   createLayerMode: null,
   selectDataSource: false,
   selectedDataSource: null,
   createCriteriaMode: null,
   criteria: null,
+  isCreatingLayer: false,
+  createLayerErrorMessage: '',
+});
+
+const onSetCreateLayerMode = (state: AnalysisState, payload: { createLayerMode: CreateLayerModeEnum }): AnalysisState => ({
+  ...state,
+  createLayerMode: payload.createLayerMode,
+});
+
+const onClearCreateLayerMode = (state: AnalysisState): AnalysisState => clearAnalysisState(state);
+
+const onSetLayerName = (state: AnalysisState, payload: { layerName: string }): AnalysisState => ({
+  ...state,
+  layerName: payload.layerName,
 });
 
 const onSelectDataSource = (state: AnalysisState, payload: { selectDataSource: boolean }): AnalysisState => ({
@@ -55,15 +64,32 @@ const onRemoveCriteria = (state: AnalysisState): AnalysisState => ({
   createCriteriaMode: null,
 });
 
+const onCreatingLayer = (state: AnalysisState): AnalysisState => ({
+  ...state,
+  isCreatingLayer: true,
+});
+
+const onCreatingLayerSuccess = (state: AnalysisState): AnalysisState => clearAnalysisState(state);
+
+const onCreatingLayerFailed = (state: AnalysisState, payload: { message: string }): AnalysisState => ({
+  ...state,
+  isCreatingLayer: false,
+  createLayerErrorMessage: payload.message,
+});
+
 const analysisReducerImpl = createReducer(
   initialAnalysisState,
   on(AnalysisActions.setCreateLayerMode, onSetCreateLayerMode),
   on(AnalysisActions.clearCreateLayerMode, onClearCreateLayerMode),
+  on(AnalysisActions.setLayerName, onSetLayerName),
   on(AnalysisActions.selectDataSource, onSelectDataSource),
   on(AnalysisActions.setSelectedDataSource, onSetSelectedDataSource),
   on(AnalysisActions.showCriteriaForm, onShowCriteriaForm),
   on(AnalysisActions.createCriteria, onCreateCriteria),
   on(AnalysisActions.removeCriteria, onRemoveCriteria),
+  on(AnalysisActions.setCreatingLayer, onCreatingLayer),
+  on(AnalysisActions.setCreatingLayerSuccess, onCreatingLayerSuccess),
+  on(AnalysisActions.setCreatingLayerFailed, onCreatingLayerFailed),
 );
 
 export const analysisReducer = (state: AnalysisState | undefined, action: Action) => {

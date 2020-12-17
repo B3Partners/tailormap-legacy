@@ -18,6 +18,11 @@ export const clearCreateLayerMode = createAction(
   `${analysisActionsPrefix} Clear Layer Creation Mode`,
 );
 
+export const setLayerName = createAction(
+  `${analysisActionsPrefix} Set Layer Name`,
+  props<{ layerName: string }>(),
+);
+
 export const selectDataSource = createAction(
   `${analysisActionsPrefix} Select Data Source`,
   props<{ selectDataSource: boolean }>(),
@@ -40,4 +45,13 @@ export const createCriteria = createAction(
 
 export const removeCriteria = createAction(
   `${analysisActionsPrefix} Remove Criteria`,
+);
+
+export const setCreatingLayer = createAction(`${analysisActionsPrefix} Creating Layer`);
+
+export const setCreatingLayerSuccess = createAction(`${analysisActionsPrefix} Creating Layer Success`);
+
+export const setCreatingLayerFailed = createAction(
+  `${analysisActionsPrefix} Creating Layer Failed`,
+  props<{ message: string }>(),
 );

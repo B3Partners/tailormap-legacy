@@ -1,3 +1,79 @@
-<div class="form">
-  Styling van de laag
+<div class="form" *ngIf="selectedDataSource$ | async as dataSource">
+  <h2>{{dataSource.label}}</h2>
+  <h3 class="sub-title">{{getGeometryTypeLabel(dataSource.geometryType) | capitalizeFirst}} geometrie</h3>
+  <div class="styling-form">
+
+    <div class="line-settings" *ngIf="showLineSettings(dataSource.geometryType)">
+
+      <div class="form-field form-field__columns">
+        <label>Lijn kleur</label>
+        <tailormap-color-picker [color]="style.strokeColor"
+                                (colorChange)="changeStrokeColor($event)"></tailormap-color-picker>
+      </div>
+
+      <div class="form-field form-field__columns">
+        <label>Lijn dikte</label>
+        <span>{{style.strokeWidth}}px</span>
+      </div>
+
+      <div class="form-field form-field__slider">
+        <mat-slider [max]="20"
+                    [min]="1"
+                    [step]="1"
+                    [thumbLabel]="true"
+                    [value]="style.strokeWidth"
+                    (change)="changeStrokeWidth($event)"></mat-slider>
+      </div>
+
+      <div class="form-field form-field__columns">
+        <label>Lijn transparantie</label>
+        <span>{{style.strokeOpacity}}%</span>
+      </div>
+
+      <div class="form-field form-field__slider">
+        <mat-slider [max]="100"
+                    [min]="0"
+                    [step]="1"
+                    [thumbLabel]="true"
+                    [displayWith]="formatThumb"
+                    [value]="style.strokeOpacity"
+                    (change)="changeStrokeOpacity($event)"></mat-slider>
+      </div>
+
+    </div>
+
+    <div class="line-settings" *ngIf="showPolygonSettings(dataSource.geometryType)">
+
+      <div class="form-field form-field__columns">
+        <label>Vlak kleur</label>
+        <tailormap-color-picker [color]="style.color"
+                                (colorChange)="changeColor($event)"></tailormap-color-picker>
+      </div>
+
+      <div class="form-field form-field__columns">
+        <label>Vlak transparantie</label>
+        <span>{{style.opacity}}%</span>
+      </div>
+
+      <div class="form-field form-field__slider">
+        <mat-slider [max]="100"
+                    [min]="0"
+                    [step]="1"
+                    [thumbLabel]="true"
+                    [displayWith]="formatThumb"
+                    [value]="style.opacity"
+                    (change)="changeOpacity($event)"></mat-slider>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+<div class="buttons">
+  <button mat-flat-button (click)="cancelCreateLayer()">Annuleren</button>
+  <button mat-flat-button color="primary" [disabled]="!canCreateLayer" (click)="createLayer()">
+    Laag maken
+    <mat-icon *ngIf="!isCreatingLayer">add</mat-icon>
+    <mat-spinner [diameter]="24" *ngIf="isCreatingLayer"></mat-spinner>
+  </button>
 </div>

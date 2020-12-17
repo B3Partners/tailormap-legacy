@@ -33,10 +33,12 @@ import {
 import { AnalysisSourceModel } from '../../models/analysis-source.model';
 import { CriteriaConditionModel } from '../../models/criteria-condition.model';
 import { CriteriaHelper } from '../helpers/criteria.helper';
-import { AttributeTypeEnum } from '../../models/attribute-type.enum';
+import { AttributeTypeEnum } from '../../../application/models/attribute-type.enum';
 import { CriteriaConditionTypeModel } from '../../models/criteria-condition-type.model';
-import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import * as moment from 'moment';
+import { AttributeTypeHelper } from '../../../application/helpers/attribute-type.helper';
+
+type AttributeSource = Omit<AnalysisSourceModel, 'geometryType'>;
 
 @Component({
   selector: 'tailormap-criteria',
@@ -58,7 +60,7 @@ export class CriteriaComponent implements OnInit, OnDestroy {
   public criteriaRemoved: EventEmitter<CriteriaConditionModel> = new EventEmitter<CriteriaConditionModel>();
 
   private destroyed = new Subject();
-  public availableSources: AnalysisSourceModel[];
+  public availableSources: AttributeSource[];
   private allAttributes: Attribute[];
 
   private availableAttributesSubject$ = new BehaviorSubject<Attribute[]>([]);
@@ -104,7 +106,7 @@ export class CriteriaComponent implements OnInit, OnDestroy {
         const source = +(formValues.source);
         const availableAttributes = this.availableAttributesSubject$.getValue();
         const attribute = availableAttributes.find(a => a.name === formValues.attribute);
-        const attributeType = CriteriaHelper.getAttributeType(attribute);
+        const attributeType = AttributeTypeHelper.getAdministrativeAttributeType(attribute);
         if (this.formData.source !== source) {
           this.availableAttributesSubject$.next(this.getAttributesForFeatureType(source));
         }
@@ -147,7 +149,7 @@ export class CriteriaComponent implements OnInit, OnDestroy {
   }
 
   private setupFormValues(selectedDataSource: AnalysisSourceModel, layerMetadata: AttributeMetadataResponse) {
-    const relationSources = layerMetadata.relations.map<AnalysisSourceModel>(relation => ({
+    const relationSources = layerMetadata.relations.map<AttributeSource>(relation => ({
       featureType: relation.foreignFeatureType,
       label: `${relation.foreignFeatureTypeName}`,
       disabled: true,
@@ -189,7 +191,8 @@ export class CriteriaComponent implements OnInit, OnDestroy {
 
   private getAttributesForFeatureType(selectedSource: string | number) {
     return this.allAttributes.filter(attribute => {
-      return attribute.featureType === +(selectedSource) && typeof CriteriaHelper.getAttributeType(attribute) !== 'undefined';
+      return attribute.featureType === +(selectedSource)
+        && typeof AttributeTypeHelper.getAdministrativeAttributeType(attribute) !== 'undefined';
     });
   }
 
@@ -231,10 +234,6 @@ export class CriteriaComponent implements OnInit, OnDestroy {
 
   public showDateInput() {
     return this.formData.attributeType === AttributeTypeEnum.DATE;
-  }
-
-  public setAttribute($event: MatAutocompleteSelectedEvent) {
-    console.log($event.option.value);
   }
 
 }

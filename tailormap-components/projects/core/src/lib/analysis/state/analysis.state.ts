@@ -7,13 +7,15 @@ export const analysisStateKey = 'analysis';
 
 export interface AnalysisState {
   createLayerMode: CreateLayerModeEnum;
-  selectDataSource: boolean;
+  layerName?: string;
+  selectDataSource?: boolean;
   selectedDataSource?: AnalysisSourceModel;
   createCriteriaMode?: CriteriaTypeEnum;
   criteria?: CriteriaModel;
+  isCreatingLayer?: boolean;
+  createLayerErrorMessage?: string;
 }
 
 export const initialAnalysisState: AnalysisState = {
   createLayerMode: null,
-  selectDataSource: false,
 }

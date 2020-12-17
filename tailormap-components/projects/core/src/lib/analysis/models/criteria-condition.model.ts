@@ -1,4 +1,4 @@
-import { AttributeTypeEnum } from './attribute-type.enum';
+import { AttributeTypeEnum } from '../../application/models/attribute-type.enum';
 
 export interface CriteriaConditionModel {
   id: string;
