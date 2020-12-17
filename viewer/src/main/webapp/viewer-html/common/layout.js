@@ -894,33 +894,39 @@ Ext.define('viewer.LayoutManager', {
     createCSSVariables: function() {
         if (this.cssProperties.west && !this.cssProperties.leftMenu) {
             // only left panel, no left menu
-            this.createCSSVariable('--left-panel-width', this.cssProperties.west);
+            this.createCSSVariable('--left-panel-width', this.cssProperties.west, 'vw');
         } else if (this.cssProperties.leftMenu && !this.cssProperties.west) {
-            this.createCSSVariable('--left-panel-width', this.cssProperties.leftMenu);
+            this.createCSSVariable('--left-panel-width', this.cssProperties.leftMenu, 'vw');
             // only left menu no left panel
         } else if (this.cssProperties.west && this.cssProperties.leftMenu) {
             if (this.cssProperties.west.measure === this.cssProperties.leftMenu.measure) {
                 // both left panel and left menu but same measure
                 var total = +(this.cssProperties.leftMenu.value) + +(this.cssProperties.west.value);
-                this.createCSSVariable('--left-panel-width', { value: total, measure: this.cssProperties.leftMenu.measure });
+                this.createCSSVariable('--left-panel-width', { value: total, measure: this.cssProperties.leftMenu.measure }, 'vw');
             } else {
                 // both left panel and left menu and different measure
-                document.documentElement.style.setProperty('--left-panel-width', "calc(" + this.cssProperties.west.value + this.cssProperties.west.measure + " + " + this.cssProperties.leftMenu.value + this.cssProperties.leftMenu.measure + ")");
+                var leftMenuMeasure = this.cssProperties.leftMenu.measure == '%' ? 'vw' : 'px';
+                var westMeasure = this.cssProperties.west.measure == '%' ? 'vw' : 'px';
+                document.documentElement.style.setProperty('--left-panel-width', "calc(" + this.cssProperties.west.value + westMeasure + " + " + this.cssProperties.leftMenu.value + leftMenuMeasure + ")");
             }
         }
         if (this.cssProperties.east) {
-            this.createCSSVariable('--right-panel-width', this.cssProperties.east);
+            this.createCSSVariable('--right-panel-width', this.cssProperties.east, 'vw');
         }
         if (this.cssProperties.north) {
-            this.createCSSVariable('--top-panel-height', this.cssProperties.north);
+            this.createCSSVariable('--top-panel-height', this.cssProperties.north, 'vh');
         }
         if (this.cssProperties.south) {
-            this.createCSSVariable('--bottom-panel-height', this.cssProperties.south);
+            this.createCSSVariable('--bottom-panel-height', this.cssProperties.south, 'vh');
         }
     },
 
-    createCSSVariable: function(name, config) {
-        document.documentElement.style.setProperty(name, "" + config.value + config.measure);
+    createCSSVariable: function(name, config, viewUnit) {
+        if(config.measure == '%'){
+            document.documentElement.style.setProperty(name, "" + config.value + viewUnit);
+        }else{
+            document.documentElement.style.setProperty(name, "" + config.value + config.measure);
+        }
     }
 
 });
