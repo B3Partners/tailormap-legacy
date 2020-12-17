@@ -407,11 +407,6 @@ export class AttributeDataSource extends DataSource<any> {
     }
 
     for (const attr of metadata.attributes) {
-      // TODO longname is lang niet altijd aanwezig, dus eerst uitgezet (RH)
-      // if (attr.longname.startsWith(prefix)) {
-      // columns.push(attr);
-      // }
-
       // Check feature type.
       if (attr.featureType === featureType) {
         columns.push(attr);
