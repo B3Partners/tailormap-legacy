@@ -13,7 +13,7 @@ import { NgZone } from '@angular/core';
 import { Subject } from 'rxjs';
 import { ConfirmDialogService } from '../../shared/confirm-dialog/confirm-dialog.service';
 import { WorkflowActionEvent } from '../workflow-controller/workflow-models';
-import { GeometryConfirmService } from '../../user-interface/edit-bar/geometry-confirm-buttons/geometry-confirm.service';
+import { GeometryConfirmService } from '../../user-interface/geometry-confirm-buttons/geometry-confirm.service';
 
 export abstract class Workflow {
 

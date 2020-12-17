@@ -3,7 +3,7 @@ import {
   Observable,
   Subject,
 } from 'rxjs';
-import { ConfirmGeometry } from '../../models';
+import { ConfirmGeometry } from '../models';
 
 @Injectable({
   providedIn: 'root',

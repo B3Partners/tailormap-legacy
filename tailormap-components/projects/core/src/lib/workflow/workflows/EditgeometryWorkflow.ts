@@ -10,6 +10,7 @@ import { takeUntil } from 'rxjs/operators';
 import { WorkflowHelpers } from './Workflow.helpers';
 import { FormComponent } from '../../feature-form/form/form.component';
 import { DialogData } from '../../feature-form/form/form-models';
+import { Coordinate } from '../../user-interface/models';
 export class EditgeometryWorkflow extends Workflow {
 
   private featureType: string;
@@ -31,8 +32,8 @@ export class EditgeometryWorkflow extends Workflow {
     if (geom) {
       this.vectorLayer.readGeoJSON(geom);
 
-      const coord = WorkflowHelpers.findTopRightGeometry(geom) ;
-      const pixel = this.tailorMap.getMapComponent().getMap().coordinateToPixel(coord[0], coord[1]);
+      const coord : Coordinate= WorkflowHelpers.findTopRight(geom) ;
+      const pixel = this.tailorMap.getMapComponent().getMap().coordinateToPixel(coord.x, coord.y);
       this.geometryConfirmService.open({
         left: pixel.x,
         top: pixel.y,

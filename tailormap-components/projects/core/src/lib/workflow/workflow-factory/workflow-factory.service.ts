@@ -21,7 +21,7 @@ import {
   WorkflowActionEvent,
 } from '../workflow-controller/workflow-models';
 import { NoOpWorkflow } from '../workflows/NoOpWorkflow';
-import { GeometryConfirmService } from '../../user-interface/edit-bar/geometry-confirm-buttons/geometry-confirm.service';
+import { GeometryConfirmService } from '../../user-interface/geometry-confirm-buttons/geometry-confirm.service';
 import { EditgeometryWorkflow } from '../workflows/EditgeometryWorkflow';
 
 @Injectable({

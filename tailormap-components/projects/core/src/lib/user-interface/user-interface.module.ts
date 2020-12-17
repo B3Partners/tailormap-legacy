@@ -11,7 +11,7 @@ import { ChooseTypesComponent } from './sewage/choose-types/choose-types.compone
 import { EditBarComponent } from './edit-bar/edit-bar/edit-bar.component';
 import { AddFeatureMenuComponent } from './edit-bar/add-feature-menu/add-feature-menu.component';
 import { MenuButtonComponent } from './edit-bar/add-feature-menu/menu-button/menu-button.component';
-import { GeometryConfirmButtonsComponent } from './edit-bar/geometry-confirm-buttons/geometry-confirm-buttons.component';
+import { GeometryConfirmButtonsComponent } from './geometry-confirm-buttons/geometry-confirm-buttons.component';
 
 @NgModule({
   declarations: [

@@ -39,3 +39,8 @@ export interface ConfirmGeometry {
   left: number;
   top: number;
 }
+
+export interface Coordinate{
+  x: number;
+  y: number;
+}

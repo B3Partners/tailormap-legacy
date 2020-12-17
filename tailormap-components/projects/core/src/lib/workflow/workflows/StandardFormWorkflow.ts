@@ -49,13 +49,12 @@ export class StandardFormWorkflow extends Workflow {
     const geoJson = wellknown.parse(geom);
 
     const coord = WorkflowHelpers.findTopRight(geoJson);
-    const pixel = this.tailorMap.getMapComponent().getMap().coordinateToPixel(coord[0], coord[1]);
+    const pixel = this.tailorMap.getMapComponent().getMap().coordinateToPixel(coord.x, coord.y);
     this.geometryConfirmService.open({
       left: pixel.x,
       top: pixel.y,
     }).pipe(takeUntil(this.destroyed)).subscribe(accepted => {
       if (accepted) {
-        console.log("accepted");
         this.accept(geoJson);
       } else {
         vectorLayer.removeAllFeatures();
