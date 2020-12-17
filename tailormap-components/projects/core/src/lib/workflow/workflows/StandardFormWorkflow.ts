@@ -49,11 +49,13 @@ export class StandardFormWorkflow extends Workflow {
 
   public geometryDrawn(vectorLayer: VectorLayer, feature: OLFeature) {
     const geom = feature.config.wktgeom;
-    const geoJson = wellknown.parse(geom);
+    let geoJson = wellknown.parse(geom);
 
     const coord = WorkflowHelpers.findTopRight(geoJson);
     this.geometryConfirmService.open(coord).pipe(takeUntil(this.destroyed)).subscribe(accepted => {
       if (accepted) {
+        const wkt = this.vectorLayer.getActiveFeature().config.wktgeom;
+        geoJson = wellknown.parse(wkt);
         this.accept(geoJson);
       } else {
         vectorLayer.removeAllFeatures();
