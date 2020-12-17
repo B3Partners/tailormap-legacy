@@ -59,8 +59,8 @@ export class EditBarComponent implements OnInit {
     this.dialogRef = this.dialog.open(AddFeatureMenuComponent, {
       width: '400px',
       position: {
-        top: '170px',
-        left: '580px',
+        top: '100px',
+        left: '160px',
       },
       height: '77px',
       disableClose: true,
