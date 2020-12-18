@@ -11,6 +11,7 @@ import java.sql.SQLException;
 
 import static nl.b3p.viewer.userlayer.DataBase.INVALID_MSG;
 import static org.junit.Assert.*;
+import static org.junit.Assume.assumeTrue;
 
 /**
  * run: {@code mvn verify -Pgh-action -pl :viewer -Dit.test=PostgreSQLIntegrationTest} with a PG database setup as in
@@ -28,7 +29,7 @@ public class PostgreSQLIntegrationTest extends ViewerIntegrationTest {
 
     @Before
     public void setUp() throws SQLException {
-        assertTrue("Configuratie fout voor database properties",
+        assumeTrue("Configuratie fout voor database properties",
                 "org.postgresql.Driver".equals(databaseprop.getProperty("testdb.driverClassName")));
         Connection connection = DriverManager.getConnection(databaseprop.getProperty("testdb.url"),
                 databaseprop.getProperty("testdb.username"),

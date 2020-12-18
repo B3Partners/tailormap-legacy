@@ -18,6 +18,7 @@ public class UserLayerHandlerIntegrationTest extends TestUtil {
 
     private final String serviceUrl;
     private final String expected;
+
     public UserLayerHandlerIntegrationTest(String expected, String serviceUrl) {
         this.serviceUrl = serviceUrl;
         this.expected = expected;
@@ -56,7 +57,7 @@ public class UserLayerHandlerIntegrationTest extends TestUtil {
         UserLayerHandler ulh = new UserLayerHandler(new AuditMessageObject(), entityManager, app, testAppLayer,
                 "id > 0", "testlayer", "geoserverWorkspace", "geoserverStorename");
 
-        GeoServerManager serverManager = new GeoServerManager( null, null, null, null        ,serviceUrl);
+        GeoServerManager serverManager = new GeoServerManager(null, null, null, null, serviceUrl);
         assertEquals(expected, serverManager.getBaseUrl());
     }
 
