@@ -23,7 +23,8 @@ import java.util.Locale;
 
 @UrlBinding("/action/userlayer/{$event}/{application}/{appLayer}")
 @StrictBinding
-public class UserLayerActionBean  extends LocalizableActionBean implements ActionBean, ValidationErrorHandler, Auditable {
+public class UserLayerActionBean extends LocalizableActionBean implements ActionBean, ValidationErrorHandler,
+        Auditable {
     private static final Log LOG = LogFactory.getLog(UserLayerActionBean.class);
     private ActionBeanContext context;
 
@@ -53,7 +54,7 @@ public class UserLayerActionBean  extends LocalizableActionBean implements Actio
     public void validateUser(ValidationErrors errors) {
         Principal p = context.getRequest().getUserPrincipal();
         if (p == null) {
-         //   errors.addGlobalError(new SimpleError("Geen gebruiker gevonden of niet aangemeld"));
+            //   errors.addGlobalError(new SimpleError("Geen gebruiker gevonden of niet aangemeld"));
         } else {
             this.auditMessageObject.setUsername(p.getName());
             this.auditMessageObject.setEvent(this.context.getEventName() + " userlayer");
@@ -143,14 +144,22 @@ public class UserLayerActionBean  extends LocalizableActionBean implements Actio
             final UserLayerHandler ulh = new UserLayerHandler(auditMessageObject, Stripersist.getEntityManager(),
                     application, appLayer, query, title, wellKnownUserLayerWorkspaceName, wellKnownUserLayerStoreName);
 
-            boolean success = ulh.add();
+            boolean success;
+            String isInvalidMsg = ulh.validate();
+            if (isInvalidMsg != null) {
+                success = false;
+                jsonObject.put("error", isInvalidMsg);
+            } else {
+                success = ulh.add();
+            }
             jsonObject.put("success", success);
 
-            if(success){
+            if (success) {
                 message.put("appLayerId", ulh.getAppLayerId());
                 message.put("layerName", ulh.getLayerName());
                 message.put("appLayer", ulh.getCreatedAppLayer().toJSONObject(Stripersist.getEntityManager()));
-                message.put("service", ulh.getCreatedAppLayer().getService().toJSONObject(false, Stripersist.getEntityManager()));
+                message.put("service",
+                        ulh.getCreatedAppLayer().getService().toJSONObject(false, Stripersist.getEntityManager()));
                 this.auditMessageObject.addMessage(
                         "UserLayer " + ulh.getLayerName() + " aangemaakt met id " + ulh.getAppLayerId());
             }
@@ -222,7 +231,7 @@ public class UserLayerActionBean  extends LocalizableActionBean implements Actio
 
             this.auditMessageObject.addMessage(
                     "Stijl van userLayer " + ulh.getLayerName() + " met id " + ulh.getAppLayerId() +
-                            " is " +  (ok ? "" : "niet") + " aangepast.");
+                            " is " + (ok ? "" : "niet") + " aangepast.");
             ulh.dispose();
         }
         return new StreamingResolution("application/json") {

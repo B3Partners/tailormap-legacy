@@ -10,8 +10,7 @@ import org.junit.runners.Parameterized;
 import java.util.Arrays;
 import java.util.Collection;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 @RunWith(Parameterized.class)
 public class UserLayerHandlerIntegrationTest extends TestUtil {
@@ -32,6 +31,14 @@ public class UserLayerHandlerIntegrationTest extends TestUtil {
                 {"http://localhost:8080/geoserver/", "http://localhost:8080/geoserver/wms?SERVICE=WMS"},
                 {"http://localhost:8080/geoserver/", "http://localhost:8080/geoserver/ows"},
         });
+    }
+
+    @Test
+    @Ignore("fails with NPE on getting service, needs more setup")
+    public void testValidate() {
+        UserLayerHandler ulh = new UserLayerHandler(new AuditMessageObject(), entityManager, app, testAppLayer,
+                "id > 0", "testlayer", "geoserverWorkspace", "geoserverStorename");
+        assertNull(ulh.validate());
     }
 
     @Test
