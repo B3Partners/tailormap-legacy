@@ -46,6 +46,11 @@ declare interface AppLayer {
   attribute: boolean;   // has attribute table???
   featureType: number;
   background: boolean;
+  userlayer: boolean;
+}
+declare interface Pixel{
+  x: number;
+  y: number;
 }
 declare interface Pixel{
   x: number;
