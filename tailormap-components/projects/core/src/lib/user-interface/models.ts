@@ -34,3 +34,13 @@ export interface LayoutComponent {
 //     windowState: WindowState;
 //     getCaptionbarHeight(): number;
 // }
+
+export interface ScreenCoordinate {
+  left: number;
+  top: number;
+}
+
+export interface Coordinate{
+  x: number;
+  y: number;
+}

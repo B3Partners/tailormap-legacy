@@ -6,21 +6,32 @@ import { LayerUtils } from '../../shared/layer-utils/layer-utils.service';
 import {
   MapClickedEvent,
 } from '../../shared/models/event-models';
-import { VectorLayer } from '../../../../../bridge/typings';
+import {
+  OLFeature,
+  VectorLayer,
+} from '../../../../../bridge/typings';
 import { FormComponent } from '../../feature-form/form/form.component';
+import { takeUntil } from 'rxjs/operators';
+import { GeoJSONGeometry } from 'wellknown';
+import { WorkflowHelper } from './workflow.helper';
 
 export class StandardFormWorkflow extends Workflow {
 
   private featureType: string;
+  private isDrawing = false;
 
   constructor() {
     super();
   }
 
-  public addFeature(featureType: string, geometryType ?: string) {
-    this.featureType = featureType;
-    const geomtype = geometryType || this.formConfigRepo.getFormConfig(featureType).featuretypeMetadata.geometryType;
-    this.vectorLayer.drawFeature(this.convertGeomType(geomtype));
+  public afterInit() {
+    super.afterInit();
+    this.featureType = this.event.featureType;
+    if (this.event.geometryType || this.featureType) {
+      const geomtype = this.event.geometryType || this.formConfigRepo.getFormConfig(this.featureType).featuretypeMetadata.geometryType;
+      this.vectorLayer.drawFeature(this.convertGeomType(geomtype));
+      this.isDrawing = true;
+    }
   }
 
   private convertGeomType(type: string): string {
@@ -36,9 +47,25 @@ export class StandardFormWorkflow extends Workflow {
     }
   }
 
-  public geometryDrawn(vectorLayer: VectorLayer, feature: any) {
+  public geometryDrawn(vectorLayer: VectorLayer, feature: OLFeature) {
     const geom = feature.config.wktgeom;
-    const geoJson = wellknown.parse(geom);
+    let geoJson = wellknown.parse(geom);
+
+    const coord = WorkflowHelper.findTopRight(geoJson);
+    this.geometryConfirmService.open(coord).pipe(takeUntil(this.destroyed)).subscribe(accepted => {
+      if (accepted) {
+        const wkt = this.vectorLayer.getActiveFeature().config.wktgeom;
+        geoJson = wellknown.parse(wkt);
+        this.accept(geoJson);
+      } else {
+        vectorLayer.removeAllFeatures();
+        this.endWorkflow();
+      }
+      this.geometryConfirmService.hide();
+    });
+  }
+
+  private accept(geoJson: GeoJSONGeometry): void {
     const objecttype = this.featureType.charAt(0).toUpperCase() + this.featureType.slice(1);
     const feat = this.featureInitializerService.create(objecttype,
       {geometrie: geoJson, clazz: this.featureType, children: []});
@@ -49,6 +76,7 @@ export class StandardFormWorkflow extends Workflow {
 
   public openDialog(formFeatures ?: Feature[]): void {
     const dialogRef = this.dialog.open(FormComponent, {
+      id: this.FORMCOMPONENT_DIALOG_ID,
       width: '1050px',
       height: '800px',
       disableClose: true,
@@ -60,33 +88,37 @@ export class StandardFormWorkflow extends Workflow {
     // tslint:disable-next-line: rxjs-no-ignored-subscription
     dialogRef.afterClosed().subscribe(result => {
       this.afterEditting();
+      this.isDrawing = false;
     });
   }
 
   public mapClick(data: MapClickedEvent): void {
-    const x = data.x;
-    const y = data.y;
-    const scale = data.scale;
-    const featureTypes: string[] = this.getFeatureTypesAllowed();
-    this.service.featuretypeOnPoint({featureTypes, x, y, scale}).subscribe(
-      (features: Feature[]) => {
-        if (features && features.length > 0) {
-          const feat = features[0];
+    if (!this.isDrawing) {
 
-          const geom = this.featureInitializerService.retrieveGeometry(feat);
-          if (geom) {
-            this.highlightLayer.readGeoJSON(geom);
+      const x = data.x;
+      const y = data.y;
+      const scale = data.scale;
+      const featureTypes: string[] = this.getFeatureTypesAllowed();
+      this.service.featuretypeOnPoint({featureTypes, x, y, scale}).subscribe(
+        (features: Feature[]) => {
+          if (features && features.length > 0) {
+            const feat = features[0];
+
+            const geom = this.featureInitializerService.retrieveGeometry(feat);
+            if (geom) {
+              this.highlightLayer.readGeoJSON(geom);
+            }
+
+            this.openDialog([feat]);
           }
-
-          this.openDialog([feat]);
-        }
-      },
-      error => {
-        this.snackBar.open('Fout: Feature niet kunnen ophalen: ' + error, '', {
-          duration: 5000,
-        });
-      },
-    );
+        },
+        error => {
+          this.snackBar.open('Fout: Feature niet kunnen ophalen: ' + error, '', {
+            duration: 5000,
+          });
+        },
+      );
+    }
   }
 
   private getFeatureTypesAllowed(): string[] {
@@ -122,9 +154,6 @@ export class StandardFormWorkflow extends Workflow {
 
       this.tailorMap.getViewerController().mapComponent.getMap().update();
     });
-  }
-
-  public setFeature(feature: Feature): void {
   }
 
   public getDestinationFeatures(): Feature[] {

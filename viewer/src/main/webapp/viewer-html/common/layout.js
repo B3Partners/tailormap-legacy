@@ -46,6 +46,8 @@ Ext.define('viewer.LayoutManager', {
     // components configuration
     componentsConfig: null,
 
+    cssProperties: {},
+
     constructor: function(config, componentsConfig) {
         // Ext.apply(this, config || {});
         // Apply options
@@ -71,12 +73,14 @@ Ext.define('viewer.LayoutManager', {
 
     createLayout: function() {
         var me = this;
+        this.cssProperties = {};
         // console.log('LAYOUTMANAGER: ', me);
         var regionList = me.createRegionList();
         // console.log('REGIONLIST: ', regionList);
         var viewportItems = me.buildLayoutRegions(regionList);
         // console.log('VIEWPORTITEMS: ', viewportItems);
         me.renderLayout(viewportItems);
+        this.createCSSVariables();
     },
 
     filterComponentList: function(components) {
@@ -142,7 +146,7 @@ Ext.define('viewer.LayoutManager', {
         });
         return viewportItems;
     },
-    
+
     isEmptyObject: function(obj) {
         for(var prop in obj) if(obj.hasOwnProperty(prop)) {
             return false;
@@ -243,7 +247,20 @@ Ext.define('viewer.LayoutManager', {
                     // Create and return the floating panel
                     return me.createFloatingPanel(regionlayout, centerItem.regionDefaultConfig.region, items, layout, extLayout);
                 }
-                layout = Ext.apply(layout, this.getCollapseConfig(regionlayout, centerItem.regionDefaultConfig.columnOrientation,items));
+
+                var cssRegion;
+                if (regionid !== 'center') {
+                    if (centerItem.regionDefaultConfig.region === 'west') {
+                        me.cssProperties.west = { value: regionlayout.width || centerItem.regionDefaultConfig.defaultLayout.width, measure: regionlayout.widthmeasure };
+                        cssRegion = 'west';
+                    }
+                    if (centerItem.regionDefaultConfig.region === 'east') {
+                        me.cssProperties.east = { value: regionlayout.width || centerItem.regionDefaultConfig.defaultLayout.width, measure: regionlayout.widthmeasure };
+                        cssRegion = 'east';
+                    }
+                }
+
+                layout = Ext.apply(layout, this.getCollapseConfig(regionlayout, centerItem.regionDefaultConfig.columnOrientation, items, cssRegion));
                 return Ext.apply({
                     xtype: 'container',
                     region: regionid,
@@ -290,7 +307,23 @@ Ext.define('viewer.LayoutManager', {
                     return me.createFloatingPanel(regionlayout, regionitems[0].regionDefaultConfig.region, componentItems, layout, extLayout);
                 }
 
-                layout = Ext.apply(layout, this.getCollapseConfig(regionlayout, regionitems[0].regionDefaultConfig.columnOrientation,componentItems));
+                var cssRegion;
+                if (regionitems[0].regionDefaultConfig.region === 'west') {
+                    me.cssProperties.west = { value: regionlayout.width || regionitems[0].regionDefaultConfig.defaultLayout.width, measure: regionlayout.widthmeasure };
+                    cssRegion = 'west';
+                }
+                if (regionitems[0].regionDefaultConfig.region === 'east') {
+                    me.cssProperties.east = { value: regionlayout.width || regionitems[0].regionDefaultConfig.defaultLayout.width, measure: regionlayout.widthmeasure };
+                    cssRegion = 'east';
+                }
+                if (regionitems[0].regionDefaultConfig.region === 'north') {
+                    me.cssProperties.north = { value: regionlayout.height || regionitems[0].regionDefaultConfig.defaultLayout.height, measure: regionlayout.heightmeasure };
+                }
+                if (regionitems[0].regionDefaultConfig.region === 'south') {
+                    me.cssProperties.south = { value: regionlayout.height || regionitems[0].regionDefaultConfig.defaultLayout.height, measure: regionlayout.heightmeasure };
+                }
+
+                layout = Ext.apply(layout, this.getCollapseConfig(regionlayout, regionitems[0].regionDefaultConfig.columnOrientation, componentItems, cssRegion));
                 return Ext.apply({
                     xtype: 'container',
                     region: regionid,
@@ -438,12 +471,22 @@ Ext.define('viewer.LayoutManager', {
             }
         }
     },
-    
-    getCollapseConfig: function(regionLayout, columnOrientation, items) {
+
+    getCollapseConfig: function(regionLayout, columnOrientation, items, cssRegion) {
         var me = this;
         if(columnOrientation === 'vertical' && regionLayout.hasOwnProperty('enableCollapse') && regionLayout.enableCollapse) {
             var id = Ext.id();
+            var collapsed = regionLayout.hasOwnProperty('defaultCollapsed') && regionLayout.defaultCollapsed;
             this.processCollapsibleItems(items,id);
+            var expandedLayout;
+            var collapsedLayout;
+            if (cssRegion) {
+                expandedLayout = { value: this.cssProperties[cssRegion].value, measure: this.cssProperties[cssRegion].measure };
+                collapsedLayout = { value: 45, measure: 'px' };
+            }
+            if (cssRegion && collapsed) {
+                this.cssProperties[cssRegion] = collapsedLayout;
+            }
             return {
                 xtype: 'panel',
                 border: 0,
@@ -452,14 +495,18 @@ Ext.define('viewer.LayoutManager', {
                 titleCollapse: true,
                 animCollapse: false,
                 title: regionLayout.hasOwnProperty('panelTitle') ? regionLayout.panelTitle : '',
-                collapsed: regionLayout.hasOwnProperty('defaultCollapsed') && regionLayout.defaultCollapsed,
+                collapsed: collapsed,
                 hideMode: 'offsets',
                 listeners: {
                     collapse: function() {
+                        me.cssProperties[cssRegion] = collapsedLayout;
                         me.resizeLayout();
+                        me.createCSSVariables();
                     },
                     expand: function() {
+                        me.cssProperties[cssRegion] = expandedLayout;
                         me.resizeLayout();
+                        me.createCSSVariables();
                     }
                 }
             };
@@ -498,6 +545,12 @@ Ext.define('viewer.LayoutManager', {
                         sublayout.width = parseInt(regionlayout.width);
                     } else if(regionlayout.width != '' && regionlayout.widthmeasure == '%') {
                         sublayout.flex = parseInt(regionlayout.width) / 100;
+                    }
+                    if (item.name === 'left_menu') {
+                        me.cssProperties.leftMenu = {
+                            value: regionlayout.width || item.regionDefaultConfig.defaultLayout.width,
+                            measure: regionlayout.widthmeasure
+                        };
                     }
                 } else {
                     sublayout.flex = 1;
@@ -681,7 +734,7 @@ Ext.define('viewer.LayoutManager', {
                 },
                 items: componentItems,
                 tabBar: tabBarLayout,
-               
+
                 listeners: {
                     tabchange: function(panel, newCard, oldCard) {
                         var cmp_name =newCard.config.data.cmp_name;
@@ -717,7 +770,7 @@ Ext.define('viewer.LayoutManager', {
         });
         me.afterLayout();
     },
-    
+
     afterLayout: function() {
         var me = this;
         Ext.Array.each(me.floatingPanels, function(panel) {
@@ -758,14 +811,14 @@ Ext.define('viewer.LayoutManager', {
             Ext.getCmp(me.tabComponents[componentId].tabId).tabBar.items.getAt(me.tabComponents[componentId].tabNo).setText(title);
         }
     },
-    
+
     showTabComponent: function(componentId) {
         if(!this.isTabComponent(componentId)) {
             return;
         }
         Ext.getCmp(this.tabComponents[componentId].tabId).setActiveTab(this.tabComponents[componentId].tabNo);
     },
-    
+
     expandRegion: function(componentId) {
         if(this.collapsibleComponents.hasOwnProperty(componentId)) {
             var comp = Ext.ComponentQuery.query("#" + this.collapsibleComponents[componentId]);
@@ -836,5 +889,44 @@ Ext.define('viewer.LayoutManager', {
             }
             FlamingoAppLoader.get("viewerController").resizeComponents(false);
         },200);
+    },
+
+    createCSSVariables: function() {
+        if (this.cssProperties.west && !this.cssProperties.leftMenu) {
+            // only left panel, no left menu
+            this.createCSSVariable('--left-panel-width', this.cssProperties.west, 'vw');
+        } else if (this.cssProperties.leftMenu && !this.cssProperties.west) {
+            this.createCSSVariable('--left-panel-width', this.cssProperties.leftMenu, 'vw');
+            // only left menu no left panel
+        } else if (this.cssProperties.west && this.cssProperties.leftMenu) {
+            if (this.cssProperties.west.measure === this.cssProperties.leftMenu.measure) {
+                // both left panel and left menu but same measure
+                var total = +(this.cssProperties.leftMenu.value) + +(this.cssProperties.west.value);
+                this.createCSSVariable('--left-panel-width', { value: total, measure: this.cssProperties.leftMenu.measure }, 'vw');
+            } else {
+                // both left panel and left menu and different measure
+                var leftMenuMeasure = this.cssProperties.leftMenu.measure == '%' ? 'vw' : 'px';
+                var westMeasure = this.cssProperties.west.measure == '%' ? 'vw' : 'px';
+                document.documentElement.style.setProperty('--left-panel-width', "calc(" + this.cssProperties.west.value + westMeasure + " + " + this.cssProperties.leftMenu.value + leftMenuMeasure + ")");
+            }
+        }
+        if (this.cssProperties.east) {
+            this.createCSSVariable('--right-panel-width', this.cssProperties.east, 'vw');
+        }
+        if (this.cssProperties.north) {
+            this.createCSSVariable('--top-panel-height', this.cssProperties.north, 'vh');
+        }
+        if (this.cssProperties.south) {
+            this.createCSSVariable('--bottom-panel-height', this.cssProperties.south, 'vh');
+        }
+    },
+
+    createCSSVariable: function(name, config, viewUnit) {
+        if(config.measure == '%'){
+            document.documentElement.style.setProperty(name, "" + config.value + viewUnit);
+        }else{
+            document.documentElement.style.setProperty(name, "" + config.value + config.measure);
+        }
     }
+
 });

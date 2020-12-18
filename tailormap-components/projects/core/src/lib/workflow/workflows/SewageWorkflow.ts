@@ -49,10 +49,10 @@ export class SewageWorkflow extends Workflow {
     this.closeAfterSave = true;
   }
 
-
-  public addFeature(featureType: string) {
+  public afterInit() {
+    super.afterInit();
     if (this.currentStep === Step.START) {
-      this.makeChoices(featureType);
+      this.makeChoices(this.event.featureType);
     }
     if (this.currentStep === Step.WELL1 || this.currentStep === Step.WELL2) {
       if (this.currentStep === Step.WELL1) {
@@ -157,7 +157,7 @@ export class SewageWorkflow extends Workflow {
       } else {
         this.choice = choice;
         this.currentStep = Step.WELL1;
-        this.addFeature(null);
+        this.afterInit();
       }
     });
   }
@@ -202,12 +202,12 @@ export class SewageWorkflow extends Workflow {
       case Step.WELL1:
         this.well1Feature = result;
         this.currentStep = Step.WELL2;
-        this.addFeature('');
+        this.afterInit()
         break;
       case Step.WELL2:
         this.well2Feature = result;
         this.currentStep = Step.DUCT;
-        this.addFeature('');
+        this.afterInit()
         break;
       case Step.DUCT:
         this.vectorLayer.removeAllFeatures();
@@ -219,9 +219,6 @@ export class SewageWorkflow extends Workflow {
   }
 
   public setCopyMode(feature: Feature): void {
-  }
-
-  public setFeature(feature: Feature): void {
   }
 
   public getDestinationFeatures(): Feature[] {

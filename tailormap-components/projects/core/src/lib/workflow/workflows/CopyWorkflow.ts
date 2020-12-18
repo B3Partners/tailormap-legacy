@@ -13,12 +13,10 @@ export class CopyWorkflow extends Workflow {
     super();
   }
 
-  public setFeature(feature: Feature): void {
-    this.feature = feature;
+  public afterInit() {
+    super.afterInit();
+    this.feature = this.event.feature;
     this.openDialog();
-  }
-
-  public addFeature(featureType: string): void {
   }
 
   public afterEditting(): void {

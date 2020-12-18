@@ -12,9 +12,13 @@ import { MapClickedEvent } from '../../shared/models/event-models';
 import { NgZone } from '@angular/core';
 import { Subject } from 'rxjs';
 import { ConfirmDialogService } from '../../shared/confirm-dialog/confirm-dialog.service';
+import { WorkflowActionEvent } from '../workflow-controller/workflow-models';
+import { GeometryConfirmService } from '../../user-interface/geometry-confirm-buttons/geometry-confirm.service';
 
 export abstract class Workflow {
 
+  protected destroyed;
+  protected readonly FORMCOMPONENT_DIALOG_ID = 'formcomponent';
   public id = 0;
   public vectorLayer: VectorLayer;
   public highlightLayer: VectorLayer;
@@ -28,10 +32,13 @@ export abstract class Workflow {
   protected confirmService: ConfirmDialogService;
   protected ngZone: NgZone;
   public closeAfterSave: boolean;
+  protected geometryConfirmService: GeometryConfirmService;
+  protected event: WorkflowActionEvent;
 
   public close$ = new Subject<boolean>();
 
   public init(
+    event: WorkflowActionEvent,
     tailorMap: TailorMapService,
     dialog: MatDialog,
     featureInitializerService: FeatureInitializerService,
@@ -39,7 +46,9 @@ export abstract class Workflow {
     snackBar: MatSnackBar,
     service: FeatureControllerService,
     ngZone: NgZone,
-    confirmService: ConfirmDialogService): void {
+    confirmService: ConfirmDialogService,
+    geometryConfirmService: GeometryConfirmService): void {
+    this.event = event;
 
     this.tailorMap = tailorMap;
     this.dialog = dialog;
@@ -50,24 +59,21 @@ export abstract class Workflow {
     this.ngZone = ngZone;
     this.destinationFeatures = [];
     this.confirmService = confirmService;
-    this.vectorLayer.addListener('ON_FEATURE_ADDED', this.geometryDrawnProxy, this);
+    this.geometryConfirmService = geometryConfirmService;
+    this.destroyed = new Subject();
+    this.afterInit();
+  }
+
+  public afterInit(): void {
+
   }
 
   public destroy(): void {
-    this.vectorLayer.removeListener('ON_FEATURE_ADDED', this.geometryDrawnProxy, this);
-  }
-
-  public geometryDrawnProxy(vectorLayer: VectorLayer, feature: any): void {
-    this.ngZone.run(() => {
-      this.geometryDrawn(vectorLayer, feature);
-    });
+    this.destroyed.next();
+    this.destroyed.complete();
   }
 
   public abstract geometryDrawn(vectorLayer: VectorLayer, feature: any): void;
-
-  public abstract setFeature(feature: Feature): void;
-
-  public abstract addFeature(featureType: string, geometryType ?: string): void;
 
   public abstract getDestinationFeatures(): Feature [];
 
