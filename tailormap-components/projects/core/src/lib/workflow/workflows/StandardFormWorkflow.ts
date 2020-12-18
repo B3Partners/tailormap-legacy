@@ -13,7 +13,7 @@ import {
 import { FormComponent } from '../../feature-form/form/form.component';
 import { takeUntil } from 'rxjs/operators';
 import { GeoJSONGeometry } from 'wellknown';
-import { WorkflowHelpers } from './Workflow.helpers';
+import { WorkflowHelper } from './workflow.helper';
 
 export class StandardFormWorkflow extends Workflow {
 
@@ -51,7 +51,7 @@ export class StandardFormWorkflow extends Workflow {
     const geom = feature.config.wktgeom;
     let geoJson = wellknown.parse(geom);
 
-    const coord = WorkflowHelpers.findTopRight(geoJson);
+    const coord = WorkflowHelper.findTopRight(geoJson);
     this.geometryConfirmService.open(coord).pipe(takeUntil(this.destroyed)).subscribe(accepted => {
       if (accepted) {
         const wkt = this.vectorLayer.getActiveFeature().config.wktgeom;

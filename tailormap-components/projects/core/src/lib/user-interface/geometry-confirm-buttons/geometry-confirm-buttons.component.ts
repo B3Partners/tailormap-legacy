@@ -4,8 +4,14 @@ import {
   OnInit,
 } from '@angular/core';
 import { GeometryConfirmService } from './geometry-confirm.service';
-import { takeUntil } from 'rxjs/operators';
-import { Subject } from 'rxjs';
+import {
+  map,
+} from 'rxjs/operators';
+import {
+  combineLatest,
+  Observable,
+  Subject,
+} from 'rxjs';
 import { ScreenCoordinate } from '../models';
 
 @Component({
@@ -15,25 +21,19 @@ import { ScreenCoordinate } from '../models';
 })
 export class GeometryConfirmButtonsComponent implements OnInit, OnDestroy {
 
+  public readonly MARGIN = 5;
+  public readonly BUTTON_HEIGHT = 50;
   private destroyed = new Subject();
-  public position: ScreenCoordinate;
+  public position$: Observable<ScreenCoordinate>;
   public visible = false;
 
   constructor(private geometryConfirmService: GeometryConfirmService) {
-    this.position = {
-      left: 0,
-      top: 0,
-    };
-    this.geometryConfirmService.positionChanged$
-      .pipe(takeUntil(this.destroyed)).subscribe(value => {
-      this.position = {
-        left: value.left + 5,
-        top: value.top - 50,
-      };
-    });
 
-    this.geometryConfirmService.visibilityChanged$.pipe(takeUntil(this.destroyed)).subscribe(value => this.visible = value);
-
+    this.position$ = combineLatest(
+      [this.geometryConfirmService.positionChanged$, this.geometryConfirmService.visibilityChanged$])
+      .pipe(map(([position, visible]) => {
+        return visible ? {left: position.left + this.MARGIN, top: position.top - this.BUTTON_HEIGHT} : null;
+      }));
   }
 
   public accept(): void {

@@ -6,7 +6,7 @@ import {
 import { MapClickedEvent } from '../../shared/models/event-models';
 import { VectorLayer } from '../../../../../bridge/typings';
 import { takeUntil } from 'rxjs/operators';
-import { WorkflowHelpers } from './Workflow.helpers';
+import { WorkflowHelper } from './workflow.helper';
 import { FormComponent } from '../../feature-form/form/form.component';
 import { DialogData } from '../../feature-form/form/form-models';
 import { Coordinate } from '../../user-interface/models';
@@ -30,7 +30,7 @@ export class EditgeometryWorkflow extends Workflow {
     if (geom) {
       this.vectorLayer.readGeoJSON(geom);
 
-      const coord : Coordinate = WorkflowHelpers.findTopRight(geom) ;
+      const coord : Coordinate = WorkflowHelper.findTopRight(geom) ;
       this.geometryConfirmService.open(coord).pipe(takeUntil(this.destroyed)).subscribe(accepted => {
         if (accepted) {
           const wkt = this.vectorLayer.getActiveFeature().config.wktgeom;
@@ -64,8 +64,7 @@ export class EditgeometryWorkflow extends Workflow {
       disableClose: true,
       data,
     });
-    // tslint:disable-next-line: rxjs-no-ignored-subscription
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().pipe(takeUntil(this.destroyed)).subscribe(result => {
       this.afterEditting();
     });
 

@@ -2,7 +2,7 @@ import { GeoJSONGeometry } from 'wellknown';
 import { Geometry } from '../../shared/generated';
 import { Coordinate } from '../../user-interface/models';
 
-export class WorkflowHelpers {
+export class WorkflowHelper {
 
   public static findTopRight(geojson: GeoJSONGeometry | Geometry): Coordinate {
     if (this.isGeneratedGeometry(geojson)) {

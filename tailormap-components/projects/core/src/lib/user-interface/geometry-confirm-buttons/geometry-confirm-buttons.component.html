@@ -1,6 +1,8 @@
-<div class="geometry-confirm" *ngIf="visible"
+<div class="geometry-confirm"
+     *ngIf="position$ | async as position"
      [style.left.px]="position.left"
-     [style.top.px]="position.top">
+     [style.top.px]="position.top"
+>
   <button mat-mini-fab color="white" aria-label="Example icon button with a menu icon" (click)="accept()" >
     <mat-icon color="primary">check</mat-icon>
   </button>
