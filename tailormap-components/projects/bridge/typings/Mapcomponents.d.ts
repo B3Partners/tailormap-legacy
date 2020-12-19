@@ -1,4 +1,7 @@
-import { LayerVisibilityEvent } from '../../core/src/lib/shared/models/event-models';
+import {
+  ExtentChangedEvent,
+  LayerVisibilityEvent,
+} from '../../core/src/lib/shared/models/event-models';
 import { Geometry } from '../../core/src/lib/shared/generated';
 
 declare interface App {
@@ -45,22 +48,28 @@ declare interface AppLayer {
   background: boolean;
   userlayer: boolean;
 }
+declare interface Pixel{
+  x: number;
+  y: number;
+}
 
-type layerVisibilityEvent = (object: any, event: LayerVisibilityEvent) => void;
+type MapEvent = (object: any, event: LayerVisibilityEvent | ExtentChangedEvent) => void;
 type layerEvent = (object: any, event: any) => void;
 
 declare interface Map {
-  addListener: (eventName: string, handler: layerVisibilityEvent) => void;
+  addListener: (eventName: string, handler: MapEvent) => void;
   addLayer: (layer: Layer) => void;
   getLayer: (id: string) => Layer;
   update: () => void;
   getResolution: () => number;
   zoomToExtent: (extent: Extent) => void;
+  coordinateToPixel: (x: number, y: number) => Pixel;
 }
 
 declare interface MapComponent {
   getMap: () => Map;
   createVectorLayer: (config: any) => VectorLayer;
+  addListener: (eventName: string, handler: MapEvent) => void;
 }
 
 declare interface Layer {
@@ -69,7 +78,19 @@ declare interface Layer {
   removeListener: (eventName: string, handler: layerEvent, scope: any) => void;
 }
 
+declare interface OLFeatureConfig{
+  wktgeom: string;
+  id: string;
+  attributes: any;
+}
+
+declare interface OLFeature{
+  config: OLFeatureConfig;
+  color: string;
+}
+
 declare interface VectorLayer extends Layer {
+  getActiveFeature: () => OLFeature;
   addFeatureFromWKT: (wkt: string) => void;
   drawFeature: (geometryType: string) => void;
   readGeoJSON: (geojson: Geometry) => void;

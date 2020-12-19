@@ -3,7 +3,7 @@ import {
   AppLayer,
   GeoService,
   GeoServiceLayer,
-  layerVisibilityEvent,
+  MapEvent,
   MapComponent,
   SelectedContentItem,
   VectorLayer,

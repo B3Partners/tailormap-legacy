@@ -16,8 +16,13 @@ import { VectorLayer } from '../../../../../bridge/typings';
 import { SewageWorkflow } from '../workflows/SewageWorkflow';
 import { CopyWorkflow } from '../workflows/CopyWorkflow';
 import { ConfirmDialogService } from '../../shared/confirm-dialog/confirm-dialog.service';
-import { WORKFLOW_ACTION } from '../workflow-controller/workflow-models';
+import {
+  WORKFLOW_ACTION,
+  WorkflowActionEvent,
+} from '../workflow-controller/workflow-models';
 import { NoOpWorkflow } from '../workflows/NoOpWorkflow';
+import { GeometryConfirmService } from '../../user-interface/geometry-confirm-buttons/geometry-confirm.service';
+import { EditgeometryWorkflow } from '../workflows/EditgeometryWorkflow';
 
 @Injectable({
   providedIn: 'root',
@@ -35,23 +40,37 @@ export class WorkflowFactoryService {
     private snackBar: MatSnackBar,
     private service: FeatureControllerService,
     private ngZone: NgZone,
+    private geometryConfirmService: GeometryConfirmService,
     private confirmService: ConfirmDialogService,
     private featureInitializerService: FeatureInitializerService) {
   }
 
-  public getWorkflow(featureType?: string): Workflow {
+  public getWorkflow(event: WorkflowActionEvent): Workflow {
 
     let workflow: Workflow = null;
-    switch (featureType) {
-      case 'mechleiding':
-      case 'vrijvleiding':
-        workflow = new SewageWorkflow();
+    switch (event.action) {
+
+      case WORKFLOW_ACTION.ADD_FEATURE:
+        switch (event.featureType) {
+          case 'mechleiding':
+          case 'vrijvleiding':
+            workflow = new SewageWorkflow();
+            break;
+          default:
+            workflow = new StandardFormWorkflow();
+        }
         break;
       case WORKFLOW_ACTION.COPY:
         workflow = new CopyWorkflow();
         break;
       case WORKFLOW_ACTION.SPLIT_MERGE:
         workflow = new NoOpWorkflow();
+        break;
+      case WORKFLOW_ACTION.EDIT_GEOMETRY:
+        workflow = new EditgeometryWorkflow();
+        break;
+      case WORKFLOW_ACTION.DEFAULT:
+        workflow = new StandardFormWorkflow();
         break;
       default:
         workflow = new StandardFormWorkflow();
@@ -60,8 +79,8 @@ export class WorkflowFactoryService {
     workflow.vectorLayer = this.vectorLayer;
     workflow.highlightLayer = this.highlightLayer;
     workflow.id = this.numWorkflows;
-    workflow.init(this.tailorMap, this.dialog, this.featureInitializerService,
-      this.formConfigRepo, this.snackBar, this.service, this.ngZone, this.confirmService);
+    workflow.init(event, this.tailorMap, this.dialog, this.featureInitializerService,
+      this.formConfigRepo, this.snackBar, this.service, this.ngZone, this.confirmService, this.geometryConfirmService);
 
     return workflow;
   }

@@ -53,6 +53,8 @@ export class WorkflowControllerComponent implements OnInit {
     const vectorlayer = map.getLayer(this.vectorlayerId) as VectorLayer;
     this.factory.vectorLayer = vectorlayer;
     this.factory.highlightLayer = highlightlayer;
+
+    vectorlayer.addListener('ON_FEATURE_ADDED', this.controller.geometryDrawn, this.controller);
     this.controller.init();
   }
 

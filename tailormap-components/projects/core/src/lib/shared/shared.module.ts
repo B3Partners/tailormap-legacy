@@ -67,7 +67,7 @@ import { IconPickerComponent } from './icon-picker/icon-picker.component';
   ],
   imports: [
     ApiModule.forRoot({
-        rootUrl: window.location.origin + '/viewer/action/proxyrest?url=',
+      rootUrl: window.location.origin + '/viewer/action/proxyrest?url=',
     }),
     CommonModule,
     ReactiveFormsModule,
@@ -131,6 +131,7 @@ import { IconPickerComponent } from './icon-picker/icon-picker.component';
     DragDropModule,
     MatDatepickerModule,
     CapitalizeFirstPipe,
+    ConfirmDialogComponent,
   ],
   entryComponents: [],
   providers: [

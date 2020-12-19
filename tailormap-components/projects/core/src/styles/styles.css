@@ -1,5 +1,12 @@
 @import "inter-font.css";
 
+:root{
+  --left-panel-width: 0;
+  --right-panel-width: 0;
+  --top-panel-height: 0;
+  --bottom-panel-height: 0;
+}
+
 .tailormap-menu-panel.mat-menu-panel {
   min-width: 170px;
 }
