@@ -28,6 +28,8 @@ export const selectIsCreatingLayer = createSelector(selectAnalysisState, state =
 
 export const selectCreateLayerErrorMessage = createSelector(selectAnalysisState, state => state.createLayerErrorMessage);
 
+export const selectStyle = createSelector(selectAnalysisState, state => state.style);
+
 export const selectCanCreateLayer = createSelector(
   selectSelectedDataSource,
   selectCriteria,
@@ -46,12 +48,14 @@ export const selectCreateLayerData = createSelector(
   selectSelectedDataSource,
   selectCriteria,
   selectLayerName,
+  selectStyle,
   selectCanCreateLayer,
-  (selectedDataSource, criteria, layerName, canCreateLayer) => {
+  (selectedDataSource, criteria, layerName, style, canCreateLayer) => {
     return {
       selectedDataSource,
       criteria,
       layerName,
+      style,
       canCreateLayer,
     };
   },

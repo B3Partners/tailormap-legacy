@@ -12,6 +12,7 @@ import { CreateLayerModeEnum } from '../models/create-layer-mode.enum';
 import { AnalysisSourceModel } from '../models/analysis-source.model';
 import { CriteriaTypeEnum } from '../models/criteria-type.enum';
 import { CriteriaModel } from '../models/criteria.model';
+import { UserLayerStyleModel } from '../models/user-layer-style.model';
 
 const clearAnalysisState = (state: AnalysisState): AnalysisState => ({
   ...state,
@@ -64,6 +65,11 @@ const onRemoveCriteria = (state: AnalysisState): AnalysisState => ({
   createCriteriaMode: null,
 });
 
+const onSetStyle = (state: AnalysisState, payload: { style: UserLayerStyleModel }): AnalysisState => ({
+  ...state,
+  style: payload.style,
+});
+
 const onCreatingLayer = (state: AnalysisState): AnalysisState => ({
   ...state,
   isCreatingLayer: true,
@@ -87,6 +93,7 @@ const analysisReducerImpl = createReducer(
   on(AnalysisActions.showCriteriaForm, onShowCriteriaForm),
   on(AnalysisActions.createCriteria, onCreateCriteria),
   on(AnalysisActions.removeCriteria, onRemoveCriteria),
+  on(AnalysisActions.setStyle, onSetStyle),
   on(AnalysisActions.setCreatingLayer, onCreatingLayer),
   on(AnalysisActions.setCreatingLayerSuccess, onCreatingLayerSuccess),
   on(AnalysisActions.setCreatingLayerFailed, onCreatingLayerFailed),

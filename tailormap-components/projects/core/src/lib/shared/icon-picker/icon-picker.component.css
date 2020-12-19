@@ -1,0 +1,66 @@
+:host {
+  max-width: 100%;
+}
+
+.icon-picker {
+  position: relative;
+}
+
+.icon-picker__button mat-icon,
+.icon-picker mat-icon {
+  width: 30px;
+  height: 30px;
+  line-height: 30px;
+}
+
+.icon-picker__button {
+  padding: 0;
+  min-width: auto;
+}
+
+.icon-picker__button ::ng-deep .mat-button-wrapper {
+  display: flex;
+  align-items: center;
+}
+
+.icon-picker__button .icon-picker__chevron {
+  width: 18px;
+  height: 18px;
+  line-height: 18px;
+  margin-left: 3px;
+}
+
+.icon-picker__toggle {
+  display: block;
+  width: 30px;
+  height: 30px;
+}
+
+.icon-picker__picker {
+  overflow: auto;
+  padding: 10px;
+  background-color: #fff;
+}
+
+.icon-picker__icons {
+  display: flex;
+  width: 100%;
+  flex-wrap: wrap;
+  justify-items: center;
+}
+
+.icon-picker__icon {
+  margin-top: 10px;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.icon-picker__icon:first-of-type {
+  margin-top: 0;
+}
+
+.icon-picker__icon:hover {
+  box-shadow: 0px 2px 4px -1px rgba(0, 0, 0, 0.2),
+    0px 4px 5px 0px rgba(0, 0, 0, 0.14),
+    0px 1px 10px 0px rgba(0, 0, 0, 0.12);
+}

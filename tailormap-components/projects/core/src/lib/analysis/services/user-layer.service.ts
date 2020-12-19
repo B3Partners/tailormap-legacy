@@ -13,6 +13,7 @@ import {
 } from '../../application/state/application.selectors';
 import {
   catchError,
+  concatMap,
   filter,
   switchMap,
   take,
@@ -40,6 +41,9 @@ import {
   selectCreateLayerData,
   selectSelectedDataSource,
 } from '../state/analysis.selectors';
+import { UserLayerStyleModel } from '../models/user-layer-style.model';
+import { rgbToHex } from '../../shared/util/color';
+import { StyleHelper } from '../helpers/style.helper';
 
 type ResponseType = CreateUserLayerSuccessResponseModel | CreateUserLayerFailedResponseModel;
 
@@ -74,6 +78,7 @@ export class UserLayerService {
             data.layerName,
             `${data.selectedDataSource.layerId}`,
             query,
+            StyleHelper.createStyle(data.style, data.selectedDataSource),
           );
         }),
         catchError((): Observable<CreateUserLayerFailedResponseModel> => {
@@ -87,7 +92,7 @@ export class UserLayerService {
       })
   }
 
-  private saveUserLayer$(name: string, layerId: string, criteria: string) {
+  private saveUserLayer$(name: string, layerId: string, criteria: string, style: string) {
     return this.store$.select(selectApplicationId)
       .pipe(
         take(1),
@@ -96,6 +101,7 @@ export class UserLayerService {
             .set('application', `${appId}`)
             .set('appLayer', layerId)
             .set('title', name)
+            .set('style', style)
             .set('query', criteria);
           return this.httpClient.post<ResponseType>(this.tailormapService.getContextPath() + '/action/userlayer/add',
             params.toString(),
@@ -117,7 +123,9 @@ export class UserLayerService {
       this.store$.select(selectSelectedDataSource)
         .pipe(
           take(1),
-          switchMap(selectedDataSource => this.store$.select(selectLevelForLayer, `${selectedDataSource.layerId}`)),
+          switchMap(selectedDataSource => {
+            return this.store$.select(selectLevelForLayer, `${selectedDataSource.layerId}`).pipe(take(1));
+          }),
         )
         .subscribe(level => {
           this.store$.dispatch(addAppLayer({

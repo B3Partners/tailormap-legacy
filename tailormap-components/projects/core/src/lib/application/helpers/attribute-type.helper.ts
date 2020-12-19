@@ -11,6 +11,7 @@ export class AttributeTypeHelper {
   ];
 
   private static geometryTypes: AttributeTypeEnum[] = [
+    AttributeTypeEnum.GEOMETRY,
     AttributeTypeEnum.GEOMETRY_POINT,
     AttributeTypeEnum.GEOMETRY_LINESTRING,
     AttributeTypeEnum.GEOMETRY_POLYGON,
@@ -26,6 +27,8 @@ export class AttributeTypeHelper {
         return 'datum';
       case AttributeTypeEnum.BOOLEAN:
         return 'boolean';
+      case AttributeTypeEnum.GEOMETRY:
+        return 'punt/lijn/vlak'
       case AttributeTypeEnum.GEOMETRY_POINT:
         return 'punt';
       case AttributeTypeEnum.GEOMETRY_LINESTRING:
@@ -60,6 +63,9 @@ export class AttributeTypeHelper {
     }
     if (attribute.type === 'polygon' || attribute.type === 'multipolygon') {
       return AttributeTypeEnum.GEOMETRY_POLYGON;
+    }
+    if (attribute.type === 'geometry') {
+      return AttributeTypeEnum.GEOMETRY;
     }
     return undefined;
   }

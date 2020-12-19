@@ -51,3 +51,21 @@ export const colorValidator = (allowEmpty?: boolean) => (control: AbstractContro
     ? { invalidColor: { message: 'Dit is een ongeldige kleur. Alleen hexadecimale kleuren of rgb codes zijn toegestaan' } }
     : null;
 };
+
+const componentToHex = (c: number) => {
+  const hex = c.toString(16);
+  return hex.length === 1 ? '0' + hex : hex;
+}
+
+export const rgbToHex = (color: string) => {
+  const rgbResult = rgbRegex.exec(color);
+  if (rgbResult !== null) {
+    return [
+      '#',
+      componentToHex(parseInt(rgbResult[1], 10)),
+      componentToHex(parseInt(rgbResult[2], 10)),
+      componentToHex(parseInt(rgbResult[3], 10)),
+    ].join('');
+  }
+  return '';
+}

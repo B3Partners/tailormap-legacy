@@ -3,13 +3,17 @@ import {
   OnDestroy,
   OnInit,
 } from '@angular/core';
-import { clearCreateLayerMode } from '../state/analysis.actions';
+import {
+  clearCreateLayerMode,
+  setStyle,
+} from '../state/analysis.actions';
 import { Store } from '@ngrx/store';
 import { AnalysisState } from '../state/analysis.state';
 import {
   selectCanCreateLayer,
   selectIsCreatingLayer,
   selectSelectedDataSource,
+  selectStyle,
 } from '../state/analysis.selectors';
 import { takeUntil } from 'rxjs/operators';
 import {
@@ -19,16 +23,9 @@ import {
 import { UserLayerService } from '../services/user-layer.service';
 import { AnalysisSourceModel } from '../models/analysis-source.model';
 import { AttributeTypeHelper } from '../../application/helpers/attribute-type.helper';
-import { AttributeTypeEnum } from '../../application/models/attribute-type.enum';
 import { MatSliderChange } from '@angular/material/slider';
-
-interface Style {
-  opacity: number;
-  color: string;
-  strokeColor: string;
-  strokeOpacity: number;
-  strokeWidth: number;
-}
+import { UserLayerStyleModel } from '../models/user-layer-style.model';
+import { StyleHelper } from '../helpers/style.helper';
 
 @Component({
   selector: 'tailormap-create-layer-styling',
@@ -39,18 +36,34 @@ export class CreateLayerStylingComponent implements OnInit, OnDestroy {
 
   public canCreateLayer: boolean;
   public isCreatingLayer: boolean;
-  public selectedDataSource$: Observable<AnalysisSourceModel>;
+  public selectedDataSource: AnalysisSourceModel;
   public visible$: Observable<boolean>;
 
-  public style: Style = {
-    opacity: 100,
-    color: '',
-    strokeColor: '',
+  public style: UserLayerStyleModel;
+  private defaultStyle: UserLayerStyleModel = {
+    fillOpacity: 100,
+    fillColor: 'rgb(255, 105, 105)',
+    strokeColor: 'rgb(255, 105, 105)',
     strokeOpacity: 100,
     strokeWidth: 2,
+    marker: 'circle',
+    markerSize: 8,
+    markerFillColor: 'rgb(255, 105, 105)',
+    markerStrokeColor: 'rgb(30, 30, 30)',
   };
 
+  public availableMarkers = [
+    { value: 'circle', icon: 'markers_circle' },
+    { value: 'square', icon: 'markers_square' },
+    { value: 'triangle', icon: 'markers_triangle' },
+    { value: 'arrow', icon: 'markers_arrow' },
+    { value: 'cross', icon: 'markers_cross' },
+    { value: 'star', icon: 'markers_star' },
+  ];
+
   private destroyed = new Subject();
+  private debounce: number;
+  private updatedProps: Map<keyof UserLayerStyleModel, string | number> = new Map();
 
   constructor(
     private store$: Store<AnalysisState>,
@@ -64,7 +77,12 @@ export class CreateLayerStylingComponent implements OnInit, OnDestroy {
     this.store$.select(selectIsCreatingLayer).pipe(takeUntil(this.destroyed)).subscribe(isCreatingLayer => {
       this.isCreatingLayer = isCreatingLayer;
     });
-    this.selectedDataSource$ = this.store$.select(selectSelectedDataSource);
+    this.store$.select(selectStyle).pipe(takeUntil(this.destroyed)).subscribe(style => {
+      this.style = style || this.defaultStyle;
+    });
+    this.store$.select(selectSelectedDataSource).pipe(takeUntil(this.destroyed)).subscribe(selectedDataSource => {
+      this.selectedDataSource = selectedDataSource;
+    });
   }
 
   public ngOnDestroy() {
@@ -83,17 +101,20 @@ export class CreateLayerStylingComponent implements OnInit, OnDestroy {
     this.userLayerService.createUserLayer();
   }
 
-  public getGeometryTypeLabel(geometryType: AttributeTypeEnum) {
-    console.log(geometryType, AttributeTypeHelper.getLabelForAttributeType(geometryType));
-    return AttributeTypeHelper.getLabelForAttributeType(geometryType);
+  public getGeometryTypeLabel() {
+    return AttributeTypeHelper.getLabelForAttributeType(this.selectedDataSource.geometryType);
   }
 
-  public showLineSettings(geometryType: AttributeTypeEnum) {
-    return geometryType === AttributeTypeEnum.GEOMETRY_LINESTRING || geometryType === AttributeTypeEnum.GEOMETRY_POLYGON;
+  public showLineSettings() {
+    return StyleHelper.showLineSettings(this.selectedDataSource);
   }
 
-  public showPolygonSettings(geometryType: AttributeTypeEnum) {
-    return geometryType === AttributeTypeEnum.GEOMETRY_POLYGON;
+  public showPolygonSettings() {
+    return StyleHelper.showPolygonSettings(this.selectedDataSource);
+  }
+
+  public showPointSettings() {
+    return StyleHelper.showPointSettings(this.selectedDataSource);
   }
 
   public formatThumb(value: number) {
@@ -105,23 +126,74 @@ export class CreateLayerStylingComponent implements OnInit, OnDestroy {
   }
 
   public changeStrokeColor($event: string) {
-    this.style.strokeColor = $event;
+    this.change('strokeColor', $event);
+    if (!this.showPolygonSettings()) {
+      this.change('fillColor', $event);
+    }
+  }
+
+  public changeMarkerFill($event: string) {
+    this.change('markerFillColor', $event);
+  }
+
+  public changeMarkerStroke($event: string) {
+    this.change('markerStrokeColor', $event);
+  }
+
+  public changeMarkerSize($event: MatSliderChange) {
+    this.change('markerSize', $event.value);
   }
 
   public changeStrokeOpacity($event: MatSliderChange) {
-    this.style.strokeOpacity = $event.value;
+    this.change('strokeOpacity', $event.value);
   }
 
   public changeStrokeWidth($event: MatSliderChange) {
-    this.style.strokeWidth = $event.value;
+    this.change('strokeWidth', $event.value);
   }
 
-  public changeColor($event: string) {
-    this.style.color = $event;
+  public changeFillColor($event: string) {
+    this.change('fillColor', $event);
   }
 
-  public changeOpacity($event: MatSliderChange) {
-    this.style.opacity = $event.value;
+  public changeFillOpacity($event: MatSliderChange) {
+    this.change('fillOpacity', $event.value);
+  }
+
+  public getMarkers() {
+    return this.availableMarkers.map(m => m.icon);
+  }
+
+  public getSelectedMarker() {
+    const marker = this.availableMarkers.find(m => m.value === this.style.marker);
+    if (marker) {
+      return marker.icon;
+    }
+    return '';
+  }
+
+  public changeMarker($event: string) {
+    const marker = this.availableMarkers.find(m => m.icon === $event);
+    if (marker) {
+      this.change('marker', marker.value);
+    }
+  }
+
+  private change(key: keyof UserLayerStyleModel, value: string | number) {
+    this.updatedProps.set(key, value);
+    if (this.debounce) {
+      window.clearTimeout(this.debounce);
+    }
+    this.debounce = window.setTimeout(() => this.saveStyle(), 25);
+  }
+
+  private saveStyle() {
+    let style = { ...this.style };
+    this.updatedProps.forEach((value, key) => {
+      style = { ...style, [key]: value };
+    })
+    this.store$.dispatch(setStyle({ style }));
+    this.updatedProps.clear();
   }
 
 }
