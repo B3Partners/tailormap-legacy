@@ -10,14 +10,19 @@
 
   <mat-tab-group animationDuration="0ms"
                  class="tab-group"
+                 (selectedIndexChange)="selectedTabIndexChanged($event)"
                  [selectedIndex]="selectedTabIndex">
 
     <mat-tab label="Inhoud">
-      <tailormap-create-layer-form (next)="moveToStyling()"></tailormap-create-layer-form>
+      <ng-template matTabContent>
+        <tailormap-create-layer-form (next)="moveToStyling()"></tailormap-create-layer-form>
+      </ng-template>
     </mat-tab>
 
     <mat-tab label="Styling">
-      <tailormap-create-layer-styling></tailormap-create-layer-styling>
+      <ng-template matTabContent>
+        <tailormap-create-layer-styling></tailormap-create-layer-styling>
+      </ng-template>
     </mat-tab>
 
   </mat-tab-group>

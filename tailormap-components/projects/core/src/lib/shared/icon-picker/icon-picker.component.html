@@ -1,0 +1,20 @@
+<div [class]="getClass()">
+  <button mat-flat-button (click)="openPicker()" #iconPickerButton class="icon-picker__button">
+    <span class="icon-picker__toggle icon-picker__toggle--as-polygon">
+      <mat-icon *ngIf="selectedIcon" [svgIcon]="selectedIcon"></mat-icon>
+    </span>
+    <mat-icon svgIcon="contextual_chevron_bottom" class="icon-picker__chevron"></mat-icon>
+  </button>
+</div>
+
+<ng-template #iconPickerContent>
+  <div class="icon-picker__picker mat-elevation-z4">
+    <div class="icon-picker__icons">
+      <mat-icon *ngFor="let icon of icons"
+           [svgIcon]="icon"
+           class="icon-picker__icon"
+           (click)="selectIcon(icon)"
+           [class.mat-elevation-z4]="selectedIcon === icon"></mat-icon>
+    </div>
+  </div>
+</ng-template>

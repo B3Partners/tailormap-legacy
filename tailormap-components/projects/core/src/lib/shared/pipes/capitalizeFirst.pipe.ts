@@ -1,0 +1,15 @@
+import { Pipe, PipeTransform } from '@angular/core';
+
+@Pipe({
+  name: 'capitalizeFirst',
+})
+export class CapitalizeFirstPipe implements PipeTransform {
+
+  public transform(value: string): string {
+    if (typeof value !== 'string') {
+      return value;
+    }
+    return value.charAt(0).toUpperCase() + value.slice(1);
+  }
+
+}

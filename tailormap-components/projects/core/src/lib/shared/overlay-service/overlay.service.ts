@@ -12,6 +12,7 @@ import {
 } from '@angular/core';
 import { OverlayRef } from './overlay-ref';
 import { OverlayComponent } from './overlay/overlay.component';
+import { OverlayContent } from './overlay-content';
 
 export const OVERLAY_DATA = new InjectionToken<any>('OverlayData');
 
@@ -26,9 +27,10 @@ export class OverlayService {
   ) {}
 
   public open<R = any, T = any>(
-    content: TemplateRef<any> | Type<any>,
+    content: TemplateRef<any> | Type<any> | string,
     data: T,
     config?: OverlayConfig,
+    createRef?: (overlay: CdkOverlayRef, data: T) => OverlayRef,
   ): OverlayRef<R> {
 
     const configs = new OverlayConfig({
@@ -40,9 +42,9 @@ export class OverlayService {
 
     const overlay = this.overlay.create(configs);
 
-    const overlayRef = new OverlayRef<R, T>(overlay, data);
+    const overlayRef = createRef ? createRef(overlay, data) : new OverlayRef<R, T>(overlay, data);
 
-    if (content instanceof TemplateRef) {
+    if (content instanceof TemplateRef || typeof content === 'string') {
       this.createOverlayForTemplate(overlay, overlayRef, content);
       return overlayRef;
     }
@@ -64,7 +66,7 @@ export class OverlayService {
     return overlayRef;
   }
 
-  private createOverlayForTemplate(overlay: CdkOverlayRef, overlayRef: OverlayRef, content: TemplateRef<any>) {
+  private createOverlayForTemplate(overlay: CdkOverlayRef, overlayRef: OverlayRef, content: TemplateRef<any> | string) {
     const containerPortal = new ComponentPortal(OverlayComponent, undefined, Injector.create({
       parent: this.injector,
       providers: [
@@ -73,8 +75,8 @@ export class OverlayService {
           useValue: overlayRef,
         },
         {
-          provide: TemplateRef,
-          useValue: content,
+          provide: OverlayContent,
+          useValue: new OverlayContent(content),
         },
       ],
     }));

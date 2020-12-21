@@ -1,3 +1,88 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
 .form {
   padding: 14px;
+  flex: 1;
+  overflow: auto;
+}
+
+.test {
+  color: rgb(136, 14, 79);
+  color: rgb(165, 39, 20);
+  color: rgb(170, 0, 0);
+  color: rgb(230, 81, 0);
+  color: rgb(249, 168, 37);
+  color: rgb(255, 214, 0);
+  color: rgb(129, 119, 23);
+  color: rgb(85, 139, 47);
+  color: rgb(9, 113, 56);
+  color: rgb(0, 96, 100);
+  color: rgb(1, 87, 155);
+  color: rgb(26, 35, 126);
+  color: rgb(103, 58, 183);
+  color: rgb(78, 52, 46);
+  color: rgb(194, 24, 91);
+  color: rgb(255, 82, 82);
+  color: rgb(204, 0, 0);
+  color: rgb(245, 124, 0);
+  color: rgb(251, 192, 45);
+  color: rgb(255, 234, 0);
+  color: rgb(175, 180, 43);
+  color: rgb(124, 179, 66);
+  color: rgb(15, 157, 88);
+  color: rgb(0, 151, 167);
+  color: rgb(2, 136, 209);
+  color: rgb(57, 73, 171);
+  color: rgb(156, 39, 176);
+  color: rgb(121, 85, 72);
+  color: rgb(244, 143, 177);
+  color: rgb(237, 162, 155);
+  color: rgb(234, 153, 153);
+  color: rgb(255, 204, 128);
+  color: rgb(250, 218, 128);
+  color: rgb(255, 255, 141);
+  color: rgb(230, 238, 156);
+  color: rgb(197, 225, 165);
+  color: rgb(135, 206, 172);
+  color: rgb(178, 235, 242);
+  color: rgb(161, 194, 250);
+  color: rgb(159, 168, 218);
+  color: rgb(206, 147, 216);
+  color: rgb(188, 170, 164);
+  color: rgb(255, 255, 255);
+  color: rgb(189, 189, 189);
+  color: rgb(117, 117, 117);
+  color: rgb(66, 66, 66);
+  color: rgb(0, 0, 0);
+}
+
+.styling-form,
+.line-settings,
+.polygon-settings,
+.point-settings,
+.form-errors {
+  padding-top: 14px;
+}
+
+.form-field label {
+  font-weight: normal;
+}
+
+.buttons {
+  display: flex;
+  justify-content: flex-end;
+  padding: 14px;
+}
+
+.buttons button + button {
+  margin-left: 14px;
+}
+
+button mat-spinner {
+  display: inline-block;
 }

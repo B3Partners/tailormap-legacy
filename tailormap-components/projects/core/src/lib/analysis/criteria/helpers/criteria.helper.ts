@@ -6,7 +6,8 @@ import { IdService } from '../../../shared/id-service/id.service';
 import { CriteriaOperatorEnum } from '../../models/criteria-operator.enum';
 import { CriteriaConditionTypeModel } from '../../models/criteria-condition-type.model';
 import { Attribute } from '../../../shared/attribute-service/attribute-models';
-import { AttributeTypeEnum } from '../../models/attribute-type.enum';
+import { AttributeTypeEnum } from '../../../application/models/attribute-type.enum';
+import { AttributeTypeHelper } from '../../../application/helpers/attribute-type.helper';
 
 export class CriteriaHelper {
 
@@ -40,25 +41,6 @@ export class CriteriaHelper {
       { value: 'TRUE', label: 'Is waar', readable_label: 'waar is', attributeType: AttributeTypeEnum.BOOLEAN },
       { value: 'FALSE', label: 'Is niet waar', readable_label: 'niet waar is', attributeType: AttributeTypeEnum.BOOLEAN },
     ];
-  }
-
-  public static getAttributeType(attribute?: Attribute): AttributeTypeEnum {
-    if (!attribute) {
-      return undefined;
-    }
-    if (attribute.type === 'string') {
-      return AttributeTypeEnum.STRING;
-    }
-    if (attribute.type === 'double' || attribute.type === 'integer') {
-      return AttributeTypeEnum.NUMBER;
-    }
-    if (attribute.type === 'boolean') {
-      return AttributeTypeEnum.BOOLEAN;
-    }
-    if (attribute.type === 'date' || attribute.type === 'timestamp') {
-      return AttributeTypeEnum.DATE;
-    }
-    return undefined;
   }
 
   public static createCriteria(type: CriteriaTypeEnum, groups: CriteriaGroupModel[]): CriteriaModel {
@@ -121,13 +103,13 @@ export class CriteriaHelper {
       query.push(`'${condition.value}'`);
     }
     if (condition.condition === 'LIKE' || condition.condition === 'NOT_LIKE') {
-      query.push(`'*${condition.value}*'`);
+      query.push(`'%${condition.value}%'`);
     }
     if (condition.condition === 'STARTS_WITH') {
-      query.push(`'${condition.value}*'`);
+      query.push(`'${condition.value}%'`);
     }
     if (condition.condition === 'ENDS_WITH') {
-      query.push(`'*${condition.value}'`);
+      query.push(`'%${condition.value}'`);
     }
     return `(${query.join(' ')})`;
   }

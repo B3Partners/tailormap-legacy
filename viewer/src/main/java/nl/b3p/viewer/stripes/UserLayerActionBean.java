@@ -243,7 +243,7 @@ public class UserLayerActionBean extends LocalizableActionBean implements Action
                 jsonObject.put("success", ok);
 
                 this.auditMessageObject.addMessage(
-                        "Stijl van userLayer " + ulh.getLayerName() + " met id " + ulh.getAppLayerId() +
+                        "Stijl van userLayer " + ulh.getLayerName() + " met id " + appLayer.getId() +
                                 " is " + (ok ? "" : "niet") + " aangepast.");
                 ulh.dispose();
             } catch (Exception unforeseen) {

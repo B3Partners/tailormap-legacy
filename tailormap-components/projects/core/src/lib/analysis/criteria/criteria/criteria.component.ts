@@ -1,42 +1,21 @@
-import {
-  Component,
-  EventEmitter,
-  Input,
-  OnDestroy,
-  OnInit,
-  Output,
-} from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { AnalysisState } from '../../state/analysis.state';
 import { selectSelectedDataSource } from '../../state/analysis.selectors';
-import {
-  concatMap,
-  debounceTime,
-  map,
-  startWith,
-  takeUntil,
-} from 'rxjs/operators';
-import {
-  BehaviorSubject,
-  combineLatest,
-  forkJoin,
-  Observable,
-  of,
-  Subject,
-} from 'rxjs';
+import { concatMap, debounceTime, map, startWith, takeUntil } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, forkJoin, Observable, of, Subject } from 'rxjs';
 import { MetadataService } from '../../../application/services/metadata.service';
-import {
-  Attribute,
-  AttributeMetadataResponse,
-} from '../../../shared/attribute-service/attribute-models';
+import { Attribute, AttributeMetadataResponse } from '../../../shared/attribute-service/attribute-models';
 import { AnalysisSourceModel } from '../../models/analysis-source.model';
 import { CriteriaConditionModel } from '../../models/criteria-condition.model';
 import { CriteriaHelper } from '../helpers/criteria.helper';
-import { AttributeTypeEnum } from '../../models/attribute-type.enum';
+import { AttributeTypeEnum } from '../../../application/models/attribute-type.enum';
 import { CriteriaConditionTypeModel } from '../../models/criteria-condition-type.model';
-import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import * as moment from 'moment';
+import { AttributeTypeHelper } from '../../../application/helpers/attribute-type.helper';
+
+type AttributeSource = Omit<AnalysisSourceModel, 'geometryType'>;
 
 @Component({
   selector: 'tailormap-criteria',
@@ -58,7 +37,7 @@ export class CriteriaComponent implements OnInit, OnDestroy {
   public criteriaRemoved: EventEmitter<CriteriaConditionModel> = new EventEmitter<CriteriaConditionModel>();
 
   private destroyed = new Subject();
-  public availableSources: AnalysisSourceModel[];
+  public availableSources: AttributeSource[];
   private allAttributes: Attribute[];
 
   private availableAttributesSubject$ = new BehaviorSubject<Attribute[]>([]);
@@ -83,18 +62,6 @@ export class CriteriaComponent implements OnInit, OnDestroy {
   ) { }
 
   public ngOnInit(): void {
-    this.store$.select(selectSelectedDataSource)
-      .pipe(
-        takeUntil(this.destroyed),
-        concatMap(selectedDataSource => {
-          return forkJoin([ of(selectedDataSource), this.metadataService.getFeatureTypeMetadata$(selectedDataSource.layerId) ])
-        }),
-      )
-      .subscribe(([ selectedDataSource, layerMetadata ]) => {
-        this.setupFormValues(selectedDataSource, layerMetadata);
-        this.setInitialValues();
-      });
-
     this.criteriaForm.valueChanges
       .pipe(
         takeUntil(this.destroyed),
@@ -104,7 +71,7 @@ export class CriteriaComponent implements OnInit, OnDestroy {
         const source = +(formValues.source);
         const availableAttributes = this.availableAttributesSubject$.getValue();
         const attribute = availableAttributes.find(a => a.name === formValues.attribute);
-        const attributeType = CriteriaHelper.getAttributeType(attribute);
+        const attributeType = AttributeTypeHelper.getAdministrativeAttributeType(attribute);
         if (this.formData.source !== source) {
           this.availableAttributesSubject$.next(this.getAttributesForFeatureType(source));
         }
@@ -120,6 +87,18 @@ export class CriteriaComponent implements OnInit, OnDestroy {
         };
         this.setDisabledState();
         this.emitChanges();
+      });
+
+    this.store$.select(selectSelectedDataSource)
+      .pipe(
+        takeUntil(this.destroyed),
+        concatMap(selectedDataSource => {
+          return forkJoin([ of(selectedDataSource), this.metadataService.getFeatureTypeMetadata$(selectedDataSource.layerId) ])
+        }),
+      )
+      .subscribe(([ selectedDataSource, layerMetadata ]) => {
+        this.setupFormValues(selectedDataSource, layerMetadata);
+        this.setInitialValues();
       });
 
     this.filteredAttributes$ = combineLatest([
@@ -147,7 +126,7 @@ export class CriteriaComponent implements OnInit, OnDestroy {
   }
 
   private setupFormValues(selectedDataSource: AnalysisSourceModel, layerMetadata: AttributeMetadataResponse) {
-    const relationSources = layerMetadata.relations.map<AnalysisSourceModel>(relation => ({
+    const relationSources = layerMetadata.relations.map<AttributeSource>(relation => ({
       featureType: relation.foreignFeatureType,
       label: `${relation.foreignFeatureTypeName}`,
       disabled: true,
@@ -160,36 +139,35 @@ export class CriteriaComponent implements OnInit, OnDestroy {
   }
 
   private setInitialValues() {
-    if (this.criteria) {
-      let value: string | moment.Moment = this.criteria.value;
-      if (value && this.criteria.attributeType === AttributeTypeEnum.DATE) {
-        value = moment(value);
-      }
-      this.criteriaForm.patchValue({ ...this.criteria, value });
-    }
+    const initialCriteria = { ...this.criteria };
 
-    let criteriaSource;
-    if (this.criteria.source) {
-      criteriaSource = this.criteria.source;
-    } else if (this.availableSources.length > 0 && !this.criteria.attribute) {
-      criteriaSource = this.availableSources[0].featureType;
-      this.criteriaForm.patchValue({ source: criteriaSource })
-    }
-
-    if (criteriaSource) {
-      this.availableAttributesSubject$.next(this.getAttributesForFeatureType(criteriaSource));
+    if (!initialCriteria.source && this.availableSources.length > 0 && !this.criteria.attribute) {
+      initialCriteria.source = this.availableSources[0].featureType;
     }
 
     if (this.criteria.attributeType) {
       this.filteredConditionsSubject$.next(this.getConditionsForAttributeType(this.criteria.attributeType));
     }
 
-    this.setDisabledState();
+    if (initialCriteria.source) {
+      this.availableAttributesSubject$.next(this.getAttributesForFeatureType(initialCriteria.source));
+    }
+
+    let value: string | moment.Moment = this.criteria.value;
+    if (value && this.criteria.attributeType === AttributeTypeEnum.DATE) {
+      value = moment(value);
+    }
+
+    this.criteriaForm.patchValue({
+      ...initialCriteria,
+      value,
+    });
   }
 
   private getAttributesForFeatureType(selectedSource: string | number) {
     return this.allAttributes.filter(attribute => {
-      return attribute.featureType === +(selectedSource) && typeof CriteriaHelper.getAttributeType(attribute) !== 'undefined';
+      return attribute.featureType === +(selectedSource)
+        && typeof AttributeTypeHelper.getAdministrativeAttributeType(attribute) !== 'undefined';
     });
   }
 
@@ -231,10 +209,6 @@ export class CriteriaComponent implements OnInit, OnDestroy {
 
   public showDateInput() {
     return this.formData.attributeType === AttributeTypeEnum.DATE;
-  }
-
-  public setAttribute($event: MatAutocompleteSelectedEvent) {
-    console.log($event.option.value);
   }
 
 }
