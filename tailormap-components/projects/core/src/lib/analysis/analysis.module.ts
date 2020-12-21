@@ -19,6 +19,9 @@ import { SimpleCriteriaComponent } from './criteria/simple-criteria/simple-crite
 import { AdvancedCriteriaComponent } from './criteria/advanced-criteria/advanced-criteria.component';
 import { CriteriaGroupComponent } from './criteria/criteria-group/criteria-group.component';
 import { CriteriaDescriptionComponent } from './criteria/criteria-description/criteria-description.component';
+import { CreateLayerModeAttributesComponent } from './create-layer-mode-attributes/create-layer-mode-attributes.component';
+import { CreateLayerModeThematicComponent } from './create-layer-mode-thematic/create-layer-mode-thematic.component';
+import { AttributeSelectorComponent } from './attribute-selector/attribute-selector.component';
 
 
 @NgModule({
@@ -33,6 +36,9 @@ import { CriteriaDescriptionComponent } from './criteria/criteria-description/cr
     AdvancedCriteriaComponent,
     CriteriaGroupComponent,
     CriteriaDescriptionComponent,
+    CreateLayerModeAttributesComponent,
+    CreateLayerModeThematicComponent,
+    AttributeSelectorComponent,
   ],
   imports: [
     CommonModule,

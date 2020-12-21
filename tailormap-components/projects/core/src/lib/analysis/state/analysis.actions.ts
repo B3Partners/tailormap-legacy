@@ -7,6 +7,7 @@ import { AnalysisSourceModel } from '../models/analysis-source.model';
 import { CriteriaTypeEnum } from '../models/criteria-type.enum';
 import { CriteriaModel } from '../models/criteria.model';
 import { UserLayerStyleModel } from '../models/user-layer-style.model';
+import { Attribute } from '../../shared/attribute-service/attribute-models';
 
 const analysisActionsPrefix = '[Analysis]';
 
@@ -46,6 +47,11 @@ export const createCriteria = createAction(
 
 export const removeCriteria = createAction(
   `${analysisActionsPrefix} Remove Criteria`,
+);
+
+export const setSelectedAttribute = createAction(
+  `${analysisActionsPrefix} Set Selected Attribute`,
+  props<{ attribute: Attribute }>(),
 );
 
 export const setStyle = createAction(

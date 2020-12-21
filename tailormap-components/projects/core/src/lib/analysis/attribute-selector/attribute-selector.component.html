@@ -1,0 +1,6 @@
+<input type="text" [formControl]="attributeControl" [matAutocomplete]="autoCompleteAttribute">
+<mat-autocomplete #autoCompleteAttribute="matAutocomplete">
+  <mat-option *ngFor="let attribute of filteredAttributes$ | async" [value]="attribute.name">
+    {{attribute.name}}
+  </mat-option>
+</mat-autocomplete>

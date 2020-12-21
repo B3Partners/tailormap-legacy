@@ -13,6 +13,7 @@ import { AnalysisSourceModel } from '../models/analysis-source.model';
 import { CriteriaTypeEnum } from '../models/criteria-type.enum';
 import { CriteriaModel } from '../models/criteria.model';
 import { UserLayerStyleModel } from '../models/user-layer-style.model';
+import { Attribute } from '../../shared/attribute-service/attribute-models';
 
 const clearAnalysisState = (state: AnalysisState): AnalysisState => ({
   ...state,
@@ -68,6 +69,11 @@ const onRemoveCriteria = (state: AnalysisState): AnalysisState => ({
   createCriteriaMode: null,
 });
 
+const onSetSelectedAttribute = (state: AnalysisState, payload: { attribute: Attribute }): AnalysisState => ({
+  ...state,
+  selectedAttribute: payload.attribute,
+});
+
 const onSetStyle = (state: AnalysisState, payload: { style: UserLayerStyleModel }): AnalysisState => ({
   ...state,
   style: payload.style,
@@ -99,6 +105,7 @@ const analysisReducerImpl = createReducer(
   on(AnalysisActions.showCriteriaForm, onShowCriteriaForm),
   on(AnalysisActions.createCriteria, onCreateCriteria),
   on(AnalysisActions.removeCriteria, onRemoveCriteria),
+  on(AnalysisActions.setSelectedAttribute, onSetSelectedAttribute),
   on(AnalysisActions.setStyle, onSetStyle),
   on(AnalysisActions.setCreatingLayer, onCreatingLayer),
   on(AnalysisActions.setCreatingLayerSuccess, onCreatingLayerSuccess),
