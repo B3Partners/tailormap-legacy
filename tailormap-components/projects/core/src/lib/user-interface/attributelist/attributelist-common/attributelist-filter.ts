@@ -100,7 +100,7 @@ export class AttributelistFilter {
         uniqueValues = [];
         const colObject = this.layerFilterValues.columns.find(c => c.name === columnName);
         const colIndex = this.layerFilterValues.columns.findIndex(obj => obj.name === columnName);
-        const filterType = (colObject.filterType?colObject.filterType:'');
+        const filterType = (colObject.filterType ? colObject.filterType : '');
         if (colObject.uniqueValues.length === 0) {
 
           data.uniqueValues[columnName].forEach(val => {
@@ -115,7 +115,6 @@ export class AttributelistFilter {
         const config = new MatDialogConfig();
         config.data = {
           colName: columnName,
-          filterType: filterType,
           values: uniqueValues,
         };
         const dialogRef = this.dialog.open(AttributelistFilterValuesFormComponent, config);
@@ -124,7 +123,7 @@ export class AttributelistFilter {
           if (filterDialogSettings.filterSetting !== 'CANCEL') {
             this.layerFilterValues.columns[colIndex].filterType = filterDialogSettings.filterType;
             if (this.layerFilterValues.columns[colIndex].filterType !== 'UniqueValues') {
-              this.dataSource.params.valueFilter = " " + CriteriaHelper.convertConditionToQuery(filterDialogSettings.criteria);
+              this.dataSource.params.valueFilter = CriteriaHelper.convertConditionToQuery(filterDialogSettings.criteria);
             } else {
               if (filterDialogSettings.filterSetting === 'ON') {
                 this.layerFilterValues.columns[colIndex].uniqueValues = config.data.values;

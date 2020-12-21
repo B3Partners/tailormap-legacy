@@ -7,12 +7,12 @@ import {
   MAT_DIALOG_DATA,
   MatDialogRef,
 } from '@angular/material/dialog';
-import { AttributeTypeEnum } from '../../../analysis/models/attribute-type.enum';
-import { CriteriaHelper } from '../../../analysis/criteria/helpers/criteria.helper'
-import { CriteriaModel } from '../../../analysis/models/criteria.model';
+import { AttributeTypeEnum } from '../../../application/models/attribute-type.enum';
+// import { CriteriaHelper } from '../../../analysis/criteria/helpers/criteria.helper'
+// import { CriteriaModel } from '../../../analysis/models/criteria.model';
 import {
   FilterValueSettings,
-  FilterDialogSettings
+  FilterDialogSettings,
 } from '../attributelist-common/attributelist-filter-models';
 import { CriteriaConditionModel } from '../../../analysis/models/criteria-condition.model';
 import { FormControl } from '@angular/forms';
@@ -32,14 +32,14 @@ export class AttributelistFilterValuesFormComponent implements OnInit {
 
   public criteria: CriteriaConditionModel;
   public filterDialogSettings: FilterDialogSettings;
-  public filterTypeSelected: string = '';
+  public filterTypeSelected: string;
   public filterTypes: string[] = ['Contains', 'NotContains', 'UniqueValues'];
 
   constructor(private dialogRef: MatDialogRef<AttributelistFilterValuesFormComponent>,
               @Inject(MAT_DIALOG_DATA) public data: any) {
     this.colName = data.colName;
     this.values = data.values;
-    this.filterTypeSelected = data.filterType;
+    // this.filterTypeSelected = data.filterType;
     this.allOn = true;
     this.criteria = new class implements CriteriaConditionModel {
       attribute: string;
@@ -96,7 +96,7 @@ export class AttributelistFilterValuesFormComponent implements OnInit {
     } else if (this.filterTypeSelected !== '') {
       this.criteria.id  = this.colName;
       this.criteria.attribute = this.colName;
-      this.criteria.attributeType = AttributeTypeEnum.STRING; //CriteriaHelper.getAttributeType
+      this.criteria.attributeType = AttributeTypeEnum.STRING; // CriteriaHelper.getAttributeType
       this.criteria.condition = this.filterTypeSelected;
       this.criteria.value = this.criteriaValue.value;
       // ter test even kijken of dit kan gaan werken:
