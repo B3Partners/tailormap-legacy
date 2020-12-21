@@ -15,6 +15,12 @@ public class Oracle implements DataBase {
     }
 
     @Override
+    public String preValidateView(String tableName, String filterSQL) {
+        // TODO implement
+        return null;
+    }
+
+    @Override
     public boolean createView(String viewName, String tableName, String filterSQL, String comments) {
         // TODO implement
         return false;

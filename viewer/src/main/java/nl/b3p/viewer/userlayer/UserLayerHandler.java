@@ -20,9 +20,9 @@ import java.util.*;
 
 public class UserLayerHandler {
     private static final Log LOG = LogFactory.getLog(UserLayerHandler.class);
+    private static final String USERLAYER_NAME = "B3P - Gebruikerslagen (niet aanpassen)";
     private final AuditMessageObject auditMessageObject;
     private final ApplicationLayer appLayer;
-    private ApplicationLayer createdAppLayer;
     private final String query;
     private final String layerTitle;
     private final EntityManager entityManager;
@@ -31,6 +31,7 @@ public class UserLayerHandler {
     private final String geoserverStore;
     private final String geoserverWorkspace;
     private final String baseUrl;
+    private ApplicationLayer createdAppLayer;
     private Layer layer;
     private String tableName;
     private GeoService service;
@@ -96,6 +97,25 @@ public class UserLayerHandler {
                 this.auditMessageObject);
     }
 
+    /**
+     * validate query. Parses CQL to SQL for this {@code dataBase} and tries the produced SQl on the database
+     *
+     * @return {@code null} when OK or an error message when validation fails
+     */
+    public String validate() {
+        String message;
+        try {
+            message = this.dataBase.preValidateView(tableName, this.getSQLQuery());
+            if (message != null) {
+                message = "Selectielaag kan niet gemaakt worden. " + message;
+            }
+        } catch (CQLException e) {
+            message = "Selectielaag kan niet gemaakt worden. Syntax fout in CQL expressie: " + e.getLocalizedMessage();
+        } catch (FilterToSQLException e) {
+            message = "Selectielaag kan niet gemaakt worden. Syntax fout in SQL expressie: " + e.getLocalizedMessage();
+        }
+        return message;
+    }
 
     public boolean add() {
         String viewName = this.dataBase.createViewName(tableName);
@@ -125,7 +145,7 @@ public class UserLayerHandler {
         if (success) {
             success = dropview(this.layer.getName());
 
-            if(!success){
+            if (!success) {
                 createWMSLayer(this.layer.getName());
                 createUserLayer(this.layer.getName(), this.layer.getTitle());
             }
@@ -136,7 +156,7 @@ public class UserLayerHandler {
         return success;
     }
 
-    public boolean updateStyle(String cssStyle){
+    public boolean updateStyle(String cssStyle) {
         return this.manager.addStyleToLayer(
                 this.layer.getName(),
                 cssStyle
@@ -164,16 +184,19 @@ public class UserLayerHandler {
         super.finalize();
     }
 
+    private String getSQLQuery() throws CQLException, FilterToSQLException {
+        FilterToSQL f = ((BasicSQLDialect) this.dataStore.getSQLDialect()).createFilterToSQL();
+        return f.encodeToString(CQL.toFilter(this.query));
+    }
+
     private boolean createView(String viewName) {
         boolean ok = false;
         try {
-            FilterToSQL f = ((BasicSQLDialect) this.dataStore.getSQLDialect()).createFilterToSQL();
-            String where = f.encodeToString(CQL.toFilter(this.query));
-
+            String where = this.getSQLQuery();
             ok = this.dataBase.createView(viewName, this.tableName, where,
                     String.format(Locale.forLanguageTag("nl"),
-                            /* Note that is you change this string you need to make sure that it does not contain
-                            user input, or that it is properly SQL sanititzed */
+                            /* Note that if you change this string you need to make sure that it does not contain
+                            user input, or that it is properly SQL sanitized */
                             "GBI userlayer gemaakt van %s met query %s op %tc door gebruiker %s",
                             this.tableName, where, new Date(), this.auditMessageObject.getUsername())
             );
@@ -211,7 +234,7 @@ public class UserLayerHandler {
      */
     private boolean createUserLayer(String viewName, String title) {
         boolean success = tmManager.addLayer(viewName, title);
-        this.auditMessageObject.addMessage("Aanmaken van laag in Tailormap database " + title + " - " +viewName
+        this.auditMessageObject.addMessage("Aanmaken van laag in Tailormap database " + title + " - " + viewName
                 + " is " + (success ? "gelukt" : "mislukt"));
 
         this.createdAppLayer = tmManager.getCreatedAppLayer();
@@ -221,7 +244,9 @@ public class UserLayerHandler {
 
     private boolean removeApplayerFromApplication(ApplicationLayer applicationLayer) {
         boolean success = tmManager.removeLayer(applicationLayer);
-        this.auditMessageObject.addMessage("Verwijderen van laag uit Tailormap database " + applicationLayer.getLayerName() + " is " + (success ? "gelukt" : "mislukt"));
+        this.auditMessageObject.addMessage(
+                "Verwijderen van laag uit Tailormap database " + applicationLayer.getLayerName() + " is " + (success
+                        ? "gelukt" : "mislukt"));
         this.createdAppLayer = appLayer;
         // delete appLayer, update application
         return true;
@@ -239,9 +264,7 @@ public class UserLayerHandler {
         return this.layer.getName();
     }
 
-    private static final String USERLAYER_NAME = "B3P - Gebruikerslagen (niet aanpassen)";
-
-    private GeoService retrieveUserLayerService(){
+    private GeoService retrieveUserLayerService() {
 
         List<GeoService> services = entityManager.createQuery("select distinct gs from GeoService gs "
                 + "where gs.url like :q ")
@@ -252,7 +275,7 @@ public class UserLayerHandler {
         return services.isEmpty() ? null : services.get(0);
     }
 
-    private GeoService createUserLayerService(){
+    private GeoService createUserLayerService() {
         GeoService userlayerService = null;
         try {
             Map params = new HashMap();
@@ -280,13 +303,13 @@ public class UserLayerHandler {
             entityManager.getTransaction().commit();
 
         } catch (Exception e) {
-            LOG.error("Error creating GeoService: ",e);
+            LOG.error("Error creating GeoService: ", e);
         }
 
         return userlayerService;
     }
 
-    public ApplicationLayer getCreatedAppLayer(){
+    public ApplicationLayer getCreatedAppLayer() {
         return createdAppLayer;
     }
 }
