@@ -38,7 +38,6 @@ export class CreateLayerStylingComponent implements OnInit, OnDestroy {
   public canCreateLayer: boolean;
   public isCreatingLayer: boolean;
   public selectedDataSource: AnalysisSourceModel;
-  public visible$: Observable<boolean>;
 
   public errorMessage$: Observable<string>;
   public style: UserLayerStyleModel;

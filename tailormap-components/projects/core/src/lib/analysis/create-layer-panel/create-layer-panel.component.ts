@@ -66,4 +66,8 @@ export class CreateLayerPanelComponent implements OnInit, OnDestroy {
     this.selectedTabIndex = 1;
   }
 
+  public selectedTabIndexChanged($event: number) {
+    this.selectedTabIndex = $event;
+  }
+
 }
