@@ -15,7 +15,8 @@
 
   <div class="form-field" *ngIf="selectedDataSource">
     <label>Criteria</label>
-    <button *ngIf="!hasCriteria()" mat-button [matMenuTriggerFor]="criteriaMenu" class="form-button" [disabled]="hasActiveSidePanel$ | async" [class.form-button--active]="creatingCriteria$ | async">
+    <button *ngIf="!hasCriteria()" mat-button [matMenuTriggerFor]="criteriaMenu" class="form-button"
+            [disabled]="hasActiveSidePanel$ | async" [class.form-button--active]="creatingCriteria$ | async">
       <span>Criteria instellen</span>
       <mat-icon svgIcon="contextual_chevron_right"></mat-icon>
     </button>

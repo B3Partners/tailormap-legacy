@@ -8,6 +8,10 @@
   --overlay-panel-z-index: 25000;
 }
 
+.cdk-overlay-container {
+  z-index: calc(var(--overlay-panel-z-index) + 100) !important;
+}
+
 .tailormap-menu-panel.mat-menu-panel {
   min-width: 170px;
 }
