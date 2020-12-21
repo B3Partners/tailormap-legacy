@@ -43,6 +43,7 @@ export class CreateLayerPanelComponent implements OnInit, OnDestroy {
     this.store$.select(selectCreateLayerMode)
       .pipe(takeUntil(this.destroyed))
       .subscribe(createLayerMode => {
+        this.selectedTabIndex = 0;
         this.createLayerMode = createLayerMode;
       });
     this.store$.select(selectCreateCriteriaMode)

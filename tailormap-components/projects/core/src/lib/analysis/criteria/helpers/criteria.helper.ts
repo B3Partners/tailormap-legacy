@@ -103,13 +103,13 @@ export class CriteriaHelper {
       query.push(`'${condition.value}'`);
     }
     if (condition.condition === 'LIKE' || condition.condition === 'NOT_LIKE') {
-      query.push(`'*${condition.value}*'`);
+      query.push(`'%${condition.value}%'`);
     }
     if (condition.condition === 'STARTS_WITH') {
-      query.push(`'${condition.value}*'`);
+      query.push(`'${condition.value}%'`);
     }
     if (condition.condition === 'ENDS_WITH') {
-      query.push(`'*${condition.value}'`);
+      query.push(`'%${condition.value}'`);
     }
     return `(${query.join(' ')})`;
   }
