@@ -1,9 +1,14 @@
 .overlay-panel {
   right: 310px;
-  z-index: 1900;
+  z-index: calc(var(--overlay-panel-z-index) - 1);
 }
 
 tailormap-tree {
+  display: block;
   flex: 1;
-  margin: 0 14px;
+  overflow: hidden;
+}
+
+tailormap-tree ::ng-deep .tree-wrapper {
+  padding: 0 14px;
 }

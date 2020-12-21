@@ -1,5 +1,6 @@
 import { Component, OnInit, TemplateRef } from '@angular/core';
 import { OverlayRef } from '../overlay-ref';
+import { OverlayContent } from '../overlay-content';
 
 @Component({
   selector: 'tailormap-overlay',
@@ -7,12 +8,12 @@ import { OverlayRef } from '../overlay-ref';
 })
 export class OverlayComponent implements OnInit {
 
-  public contentType: 'template' | 'string' | 'component';
+  public contentType: 'template' | 'string';
   public context;
 
   constructor(
     private ref: OverlayRef,
-    public content: TemplateRef<any>,
+    public content: OverlayContent,
   ) {}
 
   public close() {
@@ -20,11 +21,16 @@ export class OverlayComponent implements OnInit {
   }
 
   public ngOnInit() {
-    this.contentType = 'template';
-    this.context = {
-      $implicit: this.ref.data,
-      close: this.ref.close.bind(this.ref),
-    };
+    if (this.content.content instanceof TemplateRef) {
+      this.contentType = 'template';
+      this.context = {
+        $implicit: this.ref.data,
+        close: this.ref.close.bind(this.ref),
+      };
+    }
+    if (typeof this.content.content === 'string') {
+      this.contentType = 'string';
+    }
   }
 
 }

@@ -32,7 +32,7 @@
 
   <tailormap-criteria-description></tailormap-criteria-description>
 
-  <div class="form-field" *ngIf="errorMessage">
+  <div class="form-field form-errors" *ngIf="errorMessage$ | async as errorMessage">
     <mat-error>
       {{errorMessage}}
     </mat-error>
@@ -41,9 +41,8 @@
 </div>
 <div class="buttons">
   <button mat-flat-button (click)="cancelCreateLayer()">Annuleren</button>
-  <button mat-flat-button color="primary" [disabled]="!canCreateLayer()" (click)="createLayer()">
-    Laag maken
-    <mat-icon *ngIf="!isCreatingLayer">add</mat-icon>
-    <mat-spinner [diameter]="24" *ngIf="isCreatingLayer"></mat-spinner>
+  <button mat-flat-button color="primary" [disabled]="!canCreateLayer()" (click)="showStylingTab()">
+    Volgende
+    <mat-icon svgIcon="contextual_chevron_right"></mat-icon>
   </button>
 </div>

@@ -5,12 +5,12 @@ import nl.b3p.viewer.audit.AuditMessageObject;
 import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.ApplicationLayer;
 import nl.b3p.viewer.config.services.*;
+import nl.b3p.viewer.util.FlamingoCQL;
 import nl.b3p.web.WaitPageStatus;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.geotools.data.jdbc.FilterToSQL;
 import org.geotools.data.jdbc.FilterToSQLException;
-import org.geotools.filter.text.cql2.CQL;
 import org.geotools.filter.text.cql2.CQLException;
 import org.geotools.jdbc.BasicSQLDialect;
 import org.geotools.jdbc.JDBCDataStore;
@@ -186,7 +186,7 @@ public class UserLayerHandler {
 
     private String getSQLQuery() throws CQLException, FilterToSQLException {
         FilterToSQL f = ((BasicSQLDialect) this.dataStore.getSQLDialect()).createFilterToSQL();
-        return f.encodeToString(CQL.toFilter(this.query));
+        return f.encodeToString(FlamingoCQL.toFilter(this.query, this.entityManager));
     }
 
     private boolean createView(String viewName) {

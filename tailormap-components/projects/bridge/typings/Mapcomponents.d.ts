@@ -52,6 +52,10 @@ declare interface Pixel{
   x: number;
   y: number;
 }
+declare interface Pixel{
+  x: number;
+  y: number;
+}
 
 type MapEvent = (object: any, event: LayerVisibilityEvent | ExtentChangedEvent) => void;
 type layerEvent = (object: any, event: any) => void;

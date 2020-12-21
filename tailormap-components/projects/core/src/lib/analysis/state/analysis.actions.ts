@@ -6,6 +6,7 @@ import { CreateLayerModeEnum } from '../models/create-layer-mode.enum';
 import { AnalysisSourceModel } from '../models/analysis-source.model';
 import { CriteriaTypeEnum } from '../models/criteria-type.enum';
 import { CriteriaModel } from '../models/criteria.model';
+import { UserLayerStyleModel } from '../models/user-layer-style.model';
 
 const analysisActionsPrefix = '[Analysis]';
 
@@ -16,6 +17,11 @@ export const setCreateLayerMode = createAction(
 
 export const clearCreateLayerMode = createAction(
   `${analysisActionsPrefix} Clear Layer Creation Mode`,
+);
+
+export const setLayerName = createAction(
+  `${analysisActionsPrefix} Set Layer Name`,
+  props<{ layerName: string }>(),
 );
 
 export const selectDataSource = createAction(
@@ -40,4 +46,21 @@ export const createCriteria = createAction(
 
 export const removeCriteria = createAction(
   `${analysisActionsPrefix} Remove Criteria`,
+);
+
+export const setStyle = createAction(
+  `${analysisActionsPrefix} Set Style`,
+  props<{ style: UserLayerStyleModel }>(),
+);
+
+export const setCreatingLayer = createAction(`${analysisActionsPrefix} Creating Layer`);
+
+export const setCreatingLayerSuccess = createAction(
+  `${analysisActionsPrefix} Creating Layer Success`,
+  props<{ createdAppLayer: string }>(),
+);
+
+export const setCreatingLayerFailed = createAction(
+  `${analysisActionsPrefix} Creating Layer Failed`,
+  props<{ message: string }>(),
 );

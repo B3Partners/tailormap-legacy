@@ -51,6 +51,9 @@ import {
   MAT_MOMENT_DATE_FORMATS,
   MomentDateAdapter,
 } from '@angular/material-moment-adapter';
+import { CapitalizeFirstPipe } from './pipes/capitalizeFirst.pipe';
+import { ColorPickerComponent } from './color-picker/color-picker.component';
+import { IconPickerComponent } from './icon-picker/icon-picker.component';
 
 @NgModule({
   declarations: [
@@ -58,10 +61,13 @@ import {
     DialogCloseButtonComponent,
     TreeComponent,
     OverlayComponent,
+    ColorPickerComponent,
+    IconPickerComponent,
+    CapitalizeFirstPipe,
   ],
   imports: [
     ApiModule.forRoot({
-        rootUrl: window.location.origin + '/viewer/action/proxyrest?url=',
+      rootUrl: window.location.origin + '/viewer/action/proxyrest?url=',
     }),
     CommonModule,
     ReactiveFormsModule,
@@ -117,11 +123,14 @@ import {
     MatDialogModule,
     DialogCloseButtonComponent,
     TreeComponent,
+    ColorPickerComponent,
+    IconPickerComponent,
     MatRadioModule,
     MatProgressBarModule,
     MatAutocompleteModule,
     DragDropModule,
     MatDatepickerModule,
+    CapitalizeFirstPipe,
     ConfirmDialogComponent,
   ],
   entryComponents: [],
@@ -152,19 +161,27 @@ export class SharedModule {
 
     const basePath = environment.basePath;
     const url = `${basePath}/assets/core/imgs/`;
-    const icons = [
+    const icons: Array<string | { folder: string, icons: string[] }> = [
       'draw_polygon', 'draw_line', 'draw_point', 'split', 'new_object', 'merge',
       'contextual_drag', 'contextual_chevron_bottom', 'contextual_chevron_left', 'contextual_chevron_right', 'contextual_chevron_top',
-      'interface_trash_filled',
+      'interface_trash_filled', { folder: 'markers', icons: [ 'arrow', 'circle', 'cross', 'square', 'star', 'triangle', 'x' ] },
     ];
-    icons.forEach(value => {
+    const addIcon = (iconName, path) => {
       this.matIconRegistry.addSvgIcon(
-        value,
+        iconName,
         this.domSanitizer.bypassSecurityTrustResourceUrl(
           url
-          + value + '.svg'),
+          + path + '.svg'),
       );
-
+    }
+    icons.forEach(value => {
+      if (typeof value === 'string') {
+        addIcon(value, value);
+        return;
+      }
+      value.icons.forEach(folderIcon => {
+        addIcon(`${value.folder}_${folderIcon}`, `${value.folder}/${folderIcon}`);
+      });
     });
   }
 }

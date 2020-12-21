@@ -1,0 +1,3 @@
+::ng-deep .panelClass{
+  transform: translate(var(--left-panel-width), var(--top-panel-height)) !important;
+}

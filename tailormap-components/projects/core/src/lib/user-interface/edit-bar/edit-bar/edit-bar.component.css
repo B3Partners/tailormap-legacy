@@ -1,7 +1,5 @@
 .edit-bar{
   position: absolute;
-  top: 150px;
-  left: 500px;
   z-index: 10000;
   background: white;
   width: 200px;

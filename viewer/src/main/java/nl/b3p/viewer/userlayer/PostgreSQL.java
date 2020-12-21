@@ -56,7 +56,7 @@ public class PostgreSQL implements DataBase {
                  * already be executed anyway during prepare
                  */
              PreparedStatement psComment = connection.prepareStatement(
-                     String.format(COMMENTS_SQL, viewName, comments))
+                     String.format(COMMENTS_SQL, viewName, comments.replaceAll("'", "''")))
         ) {
             // we will ignore any results of setting the comment, only the view creating is important
             result = (0 == ps.executeUpdate());

@@ -28,8 +28,8 @@ export class WorkflowControllerComponent implements OnInit {
     this.dialog.open(EditBarComponent, {
       width: '150px',
       position: {
-        top: '100px',
-        left: '580px',
+        top: '12px',
+        left: '160px',
       },
       height: '60px',
       disableClose: true,

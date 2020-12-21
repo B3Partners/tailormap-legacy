@@ -1,0 +1,45 @@
+<div [class]="getClass()">
+  <button mat-flat-button (click)="openPicker()" #colorPickerButton class="color-picker__button">
+    <span class="color-picker__toggle"
+            [class.color-picker__toggle--as-line]="toggleFormat === 'line'"
+            [class.color-picker__toggle--as-text]="toggleFormat === 'text'"
+            [class.color-picker__toggle--as-polygon]="toggleFormat === 'polygon'"
+            [class.color-picker__color-transparent]="!color"
+            [style.backgroundColor]="color"
+            mat-icon-button>
+      <mat-icon *ngIf="toggleFormat === 'text'" [style.color]="color">format_size</mat-icon>
+      <span *ngIf="toggleFormat === 'line'" [style.backgroundColor]="color"></span>
+    </span>
+    <mat-icon svgIcon="contextual_chevron_bottom" class="color-picker__chevron"></mat-icon>
+  </button>
+</div>
+
+<ng-template #colorPickerContent>
+  <div class="color-picker__picker mat-elevation-z4">
+
+    <div class="color-picker__colors">
+
+      <div *ngFor="let defaultColor of getPickerColors()"
+           class="color-picker__color"
+           (click)="selectColor(defaultColor)"
+           [style.backgroundColor]="defaultColor"
+           [class.color-picker__color-transparent]="!defaultColor"
+           [class.mat-elevation-z4]="defaultColor === color"></div>
+    </div>
+
+    <div class="form-field-wrap">
+
+      <mat-form-field class="color-picker__form-field">
+        <input matInput class="form-field" placeholder="Kleurcode" [formControl]="formControl">
+        <mat-error *ngIf="hasError() && formControl.errors.required">
+          Kleur is verplicht
+        </mat-error>
+        <mat-error *ngIf="hasError() && !formControl.errors.required && formControl.errors.invalidColor">
+          {{ formControl.errors.invalidColor.message }}
+        </mat-error>
+      </mat-form-field>
+
+    </div>
+
+  </div>
+</ng-template>
