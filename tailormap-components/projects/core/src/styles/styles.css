@@ -5,6 +5,7 @@
   --right-panel-width: 0;
   --top-panel-height: 0;
   --bottom-panel-height: 0;
+  --overlay-panel-z-index: 25000;
 }
 
 .tailormap-menu-panel.mat-menu-panel {
@@ -51,7 +52,7 @@
   bottom: 10px;
   width: 300px;
   background-color: #ffffff;
-  z-index: 2000;
+  z-index: var(--overlay-panel-z-index);
   padding-top: 30px;
   display: flex;
   flex-direction: column;

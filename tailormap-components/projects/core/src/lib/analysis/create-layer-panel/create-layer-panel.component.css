@@ -1,5 +1,6 @@
 mat-tab-group {
   flex: 1;
+  overflow: hidden;
 }
 
 .create-layer-panel-backdrop {
