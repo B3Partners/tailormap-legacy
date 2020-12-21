@@ -26,23 +26,27 @@
   </div>
   <div class="bottom-bar">
 
-    <button color="primary" mat-raised-button mat-fab aria-label="Voeg toe" class="add-button" [matMenuTriggerFor]="menu">
-      <mat-icon>add</mat-icon>
-    </button>
-    <button color="warn" mat-raised-button mat-fab aria-label="Verwijder" class="add-button" (click)="this.remove();">
-      <mat-icon>delete</mat-icon>
-    </button>
-    <button color="accent" mat-raised-button mat-fab aria-label="kopieren" class="add-button" (click)="this.copy();">
-      <mat-icon>content_copy</mat-icon>
-    </button>
-    <button [disabled]="!formDirty && !data.closeAfterSave" mat-raised-button mat-fab aria-label="Sla op" class="add-button save-button" (click)="formCreator.save();">
-      <mat-icon *ngIf="!data.closeAfterSave" >save</mat-icon>
-      <mat-icon *ngIf="data.closeAfterSave" >navigate_next</mat-icon>
+
+    <button [disabled]="!formDirty && !data.closeAfterSave"
+            mat-flat-button color="primary"  (click)="formCreator.save();">
+
+      <span *ngIf="!data.closeAfterSave" >Opslaan</span>
+      <span *ngIf="data.closeAfterSave" >Volgende</span>
     </button>
     <mat-menu #menu="matMenu">
       <button *ngFor="let co of formsForNew" [id]="co.featureType" mat-menu-item (click)="this.newItem($event);">
        {{co.name}}
       </button>
+    </mat-menu>
+
+    <button mat-flat-button color="primary" [matMenuTriggerFor]="optiesMenu">
+      Opties
+    </button>
+    <mat-menu #optiesMenu="matMenu" yPosition="above" class="tailormap-menu-panel">
+      <button mat-menu-item [matMenuTriggerFor]="menu">Object toevoegen</button>
+      <button mat-menu-item  (click)="this.copy();">Paspoort gegevens kopiëren</button>
+      <button mat-menu-item  (click)="this.editGeometry();">Bewerk geometrie</button>
+      <button mat-menu-item class="red-item"  (click)="this.remove();"><mat-icon color="warn">delete_forever</mat-icon>Verwijderen</button>
     </mat-menu>
   </div>
 </div>

@@ -23,7 +23,8 @@ import java.util.Locale;
 
 @UrlBinding("/action/userlayer/{$event}/{application}/{appLayer}")
 @StrictBinding
-public class UserLayerActionBean  extends LocalizableActionBean implements ActionBean, ValidationErrorHandler, Auditable {
+public class UserLayerActionBean extends LocalizableActionBean implements ActionBean, ValidationErrorHandler,
+        Auditable {
     private static final Log LOG = LogFactory.getLog(UserLayerActionBean.class);
     private ActionBeanContext context;
 
@@ -53,7 +54,7 @@ public class UserLayerActionBean  extends LocalizableActionBean implements Actio
     public void validateUser(ValidationErrors errors) {
         Principal p = context.getRequest().getUserPrincipal();
         if (p == null) {
-         //   errors.addGlobalError(new SimpleError("Geen gebruiker gevonden of niet aangemeld"));
+            errors.addGlobalError(new SimpleError("Geen gebruiker gevonden of niet aangemeld"));
         } else {
             this.auditMessageObject.setUsername(p.getName());
             this.auditMessageObject.setEvent(this.context.getEventName() + " userlayer");
@@ -134,29 +135,42 @@ public class UserLayerActionBean  extends LocalizableActionBean implements Actio
     }
 
     public Resolution add() {
-        final JSONObject jsonObject = new JSONObject();
+        final JSONObject jsonObject = (new JSONObject()).put("success", Boolean.FALSE);
         if (unauthorized) {
-            jsonObject.put("success", false);
             jsonObject.put("error", "not authorized to add");
         } else {
-            final JSONObject message = new JSONObject();
-            final UserLayerHandler ulh = new UserLayerHandler(auditMessageObject, Stripersist.getEntityManager(),
-                    application, appLayer, query, title, wellKnownUserLayerWorkspaceName, wellKnownUserLayerStoreName);
+            try {
+                final JSONObject message = new JSONObject();
+                final UserLayerHandler ulh = new UserLayerHandler(auditMessageObject, Stripersist.getEntityManager(),
+                        application, appLayer, query, title, wellKnownUserLayerWorkspaceName,
+                        wellKnownUserLayerStoreName);
 
-            boolean success = ulh.add();
-            jsonObject.put("success", success);
+                boolean success;
+                String isInvalidMsg = ulh.validate();
+                if (isInvalidMsg != null) {
+                    success = false;
+                    jsonObject.put("error", isInvalidMsg);
+                } else {
+                    success = ulh.add();
+                }
+                jsonObject.put("success", success);
 
-            if(success){
-                message.put("appLayerId", ulh.getAppLayerId());
-                message.put("layerName", ulh.getLayerName());
-                message.put("appLayer", ulh.getCreatedAppLayer().toJSONObject(Stripersist.getEntityManager()));
-                message.put("service", ulh.getCreatedAppLayer().getService().toJSONObject(false, Stripersist.getEntityManager()));
-                this.auditMessageObject.addMessage(
-                        "UserLayer " + ulh.getLayerName() + " aangemaakt met id " + ulh.getAppLayerId());
+                if (success) {
+                    message.put("appLayerId", ulh.getAppLayerId());
+                    message.put("layerName", ulh.getLayerName());
+                    message.put("appLayer", ulh.getCreatedAppLayer().toJSONObject(Stripersist.getEntityManager()));
+                    message.put("service",
+                            ulh.getCreatedAppLayer().getService().toJSONObject(false, Stripersist.getEntityManager()));
+                    this.auditMessageObject.addMessage(
+                            "UserLayer " + ulh.getLayerName() + " aangemaakt met id " + ulh.getAppLayerId());
+                }
+                jsonObject.put("message", message);
+
+                ulh.dispose();
+            } catch (Exception unforeseen) {
+                LOG.error(unforeseen);
+                jsonObject.put("error", "Fatale fout: " + unforeseen.getLocalizedMessage());
             }
-            jsonObject.put("message", message);
-
-            ulh.dispose();
         }
         return new StreamingResolution("application/json") {
             @Override
@@ -175,21 +189,28 @@ public class UserLayerActionBean  extends LocalizableActionBean implements Actio
     }
 
     public Resolution delete() {
-        final JSONObject jsonObject = new JSONObject();
+        final JSONObject jsonObject = (new JSONObject()).put("success", Boolean.FALSE);
         if (unauthorized) {
-            jsonObject.put("success", false);
             jsonObject.put("error", "not authorized to delete");
         } else {
-            final UserLayerHandler ulh = new UserLayerHandler(auditMessageObject, Stripersist.getEntityManager(),
-                    application, appLayer, query, title, wellKnownUserLayerWorkspaceName, wellKnownUserLayerStoreName);
+            try {
+                final UserLayerHandler ulh = new UserLayerHandler(auditMessageObject, Stripersist.getEntityManager(),
+                        application, appLayer, query, title, wellKnownUserLayerWorkspaceName,
+                        wellKnownUserLayerStoreName);
 
-            boolean ok = ulh.delete();
-            jsonObject.put("success", ok);
+                boolean ok = ulh.delete();
+                jsonObject.put("success", ok);
 
-            this.auditMessageObject.addMessage(
-                    "UserLayer " + ulh.getLayerName() + " met id " + ulh.getAppLayerId() + (ok ? "" : " niet") + " " +
-                            "verwijderd.");
-            ulh.dispose();
+                this.auditMessageObject.addMessage(
+                        "UserLayer " + ulh.getLayerName() + " met id " + ulh.getAppLayerId() + (ok ? "" : " niet") +
+                                " " +
+                                "verwijderd.");
+                ulh.dispose();
+
+            } catch (Exception unforeseen) {
+                LOG.error(unforeseen);
+                jsonObject.put("error", "Fatale fout: " + unforeseen.getLocalizedMessage());
+            }
         }
         return new StreamingResolution("application/json") {
             @Override
@@ -209,21 +230,26 @@ public class UserLayerActionBean  extends LocalizableActionBean implements Actio
     }
 
     public Resolution put() {
-        final JSONObject jsonObject = new JSONObject();
+        final JSONObject jsonObject = (new JSONObject()).put("success", Boolean.FALSE);
         if (unauthorized) {
-            jsonObject.put("success", false);
             jsonObject.put("error", "not authorized to change style");
         } else {
-            final UserLayerHandler ulh = new UserLayerHandler(auditMessageObject, Stripersist.getEntityManager(),
-                    application, appLayer, query, title, wellKnownUserLayerWorkspaceName, wellKnownUserLayerStoreName);
+            try {
+                final UserLayerHandler ulh = new UserLayerHandler(auditMessageObject, Stripersist.getEntityManager(),
+                        application, appLayer, query, title, wellKnownUserLayerWorkspaceName,
+                        wellKnownUserLayerStoreName);
 
-            boolean ok = ulh.updateStyle(this.style);
-            jsonObject.put("success", ok);
+                boolean ok = ulh.updateStyle(this.style);
+                jsonObject.put("success", ok);
 
-            this.auditMessageObject.addMessage(
-                    "Stijl van userLayer " + ulh.getLayerName() + " met id " + ulh.getAppLayerId() +
-                            " is " +  (ok ? "" : "niet") + " aangepast.");
-            ulh.dispose();
+                this.auditMessageObject.addMessage(
+                        "Stijl van userLayer " + ulh.getLayerName() + " met id " + ulh.getAppLayerId() +
+                                " is " + (ok ? "" : "niet") + " aangepast.");
+                ulh.dispose();
+            } catch (Exception unforeseen) {
+                LOG.error(unforeseen);
+                jsonObject.put("error", "Fatale fout: " + unforeseen.getLocalizedMessage());
+            }
         }
         return new StreamingResolution("application/json") {
             @Override

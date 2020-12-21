@@ -10,8 +10,7 @@ import org.junit.runners.Parameterized;
 import java.util.Arrays;
 import java.util.Collection;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 @RunWith(Parameterized.class)
 public class UserLayerHandlerIntegrationTest extends TestUtil {
@@ -19,6 +18,7 @@ public class UserLayerHandlerIntegrationTest extends TestUtil {
 
     private final String serviceUrl;
     private final String expected;
+
     public UserLayerHandlerIntegrationTest(String expected, String serviceUrl) {
         this.serviceUrl = serviceUrl;
         this.expected = expected;
@@ -36,6 +36,14 @@ public class UserLayerHandlerIntegrationTest extends TestUtil {
 
     @Test
     @Ignore("fails with NPE on getting service, needs more setup")
+    public void testValidate() {
+        UserLayerHandler ulh = new UserLayerHandler(new AuditMessageObject(), entityManager, app, testAppLayer,
+                "id > 0", "testlayer", "geoserverWorkspace", "geoserverStorename");
+        assertNull(ulh.validate());
+    }
+
+    @Test
+    @Ignore("fails with NPE on getting service, needs more setup")
     public void testAdd() {
         UserLayerHandler ulh = new UserLayerHandler(new AuditMessageObject(), entityManager, app, testAppLayer,
                 "id > 0", "testlayer", "geoserverWorkspace", "geoserverStorename");
@@ -49,7 +57,7 @@ public class UserLayerHandlerIntegrationTest extends TestUtil {
         UserLayerHandler ulh = new UserLayerHandler(new AuditMessageObject(), entityManager, app, testAppLayer,
                 "id > 0", "testlayer", "geoserverWorkspace", "geoserverStorename");
 
-        GeoServerManager serverManager = new GeoServerManager( null, null, null, null        ,serviceUrl);
+        GeoServerManager serverManager = new GeoServerManager(null, null, null, null, serviceUrl);
         assertEquals(expected, serverManager.getBaseUrl());
     }
 

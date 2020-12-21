@@ -1,5 +1,6 @@
 import {
   Injectable,
+  NgZone,
   OnDestroy,
 } from '@angular/core';
 import { Workflow } from '../workflows/Workflow';
@@ -12,6 +13,7 @@ import {
   WORKFLOW_ACTION,
   WorkflowActionEvent,
 } from './workflow-models';
+import { VectorLayer } from '../../../../../bridge/typings';
 
 @Injectable({
   providedIn: 'root',
@@ -23,6 +25,7 @@ export class WorkflowControllerService implements OnDestroy {
 
   constructor(
     private workflowFactory: WorkflowFactoryService,
+    private ngZone: NgZone,
     private workflowActionManagerService: WorkflowActionManagerService,
   ) {
     this.workflowActionManagerService.actionChanged$.subscribe(value => {
@@ -31,7 +34,7 @@ export class WorkflowControllerService implements OnDestroy {
   }
 
   public init(): void {
-    this.currentWorkflow = this.getWorkflow();
+    this.currentWorkflow = this.getWorkflow({action: WORKFLOW_ACTION.DEFAULT});
   }
 
   public ngOnDestroy() {
@@ -42,36 +45,15 @@ export class WorkflowControllerService implements OnDestroy {
     this.init();
   }
 
-  public addFeature(featureType: string, geometryType ?: string): void {
-    this.currentWorkflow = this.getWorkflow(featureType);
-
-    this.currentWorkflow.addFeature(featureType, geometryType);
-  }
-
   public workflowChanged(event: WorkflowActionEvent): void {
-    switch (event.action) {
-      case WORKFLOW_ACTION.COPY:
-        this.setCopyMode(event.feature);
-        break;
-      case WORKFLOW_ACTION.ADD_FEATURE:
-        break;
-      case WORKFLOW_ACTION.SPLIT_MERGE:
-        this.currentWorkflow = this.getWorkflow(WORKFLOW_ACTION.SPLIT_MERGE);
-        break;
-    }
+    this.currentWorkflow = this.getWorkflow(event);
   }
 
-  public setCopyMode(feature: Feature): void {
-    this.currentWorkflow = this.getWorkflow(WORKFLOW_ACTION.COPY);
-
-    this.currentWorkflow.setFeature(feature);
-  }
-
-  public getWorkflow(featureType ?: string): Workflow {
+  public getWorkflow(event: WorkflowActionEvent): Workflow {
     if (this.currentWorkflow) {
       this.currentWorkflow.destroy();
     }
-    const wf = this.workflowFactory.getWorkflow(featureType);
+    const wf = this.workflowFactory.getWorkflow(event);
     this.subscriptions.add(wf.close$.subscribe(value => this.init()));
     return wf;
   }
@@ -82,5 +64,11 @@ export class WorkflowControllerService implements OnDestroy {
 
   public mapClicked(data: MapClickedEvent): void {
     this.currentWorkflow.mapClick(data);
+  }
+
+  public geometryDrawn(vectorLayer: VectorLayer, feature: any) {
+    this.ngZone.run(() => {
+      this.currentWorkflow.geometryDrawn(vectorLayer, feature);
+    });
   }
 }

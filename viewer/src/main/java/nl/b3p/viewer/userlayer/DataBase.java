@@ -5,16 +5,30 @@ import java.util.UUID;
 public interface DataBase {
     /**
      * Prefix for userlayer view names, {@value #PREFIX}.
+     *
      * @see #createViewName(String)
      */
     String PREFIX = "ul_";
+    /**
+     * Validatie foutmelding {@value #INVALID_MSG}.
+     */
+    String INVALID_MSG = "Validatiefout voor selectiefilter (%s)";
+    /**
+     * Validate query to create a view in the database.
+     *
+     * @param tableName Name of the source table
+     * @param filterSQL Filter definition of view (where clause)
+     * @return message describing any problem or {@code null} when there are no problems
+     */
+    String preValidateView(String tableName, String filterSQL);
+
     /**
      * Create a view in the database.
      *
      * @param viewName  Name of the view
      * @param tableName Name of the source table
      * @param filterSQL Filter definition of view (where clause)
-     * @param comments optional comments to add the the view, can be {@code null}
+     * @param comments  optional comments to add the the view, can be {@code null}
      * @return {@code true} after successful execution
      */
     boolean createView(String viewName, String tableName, String filterSQL, String comments);
@@ -34,6 +48,7 @@ public interface DataBase {
 
     /**
      * create a random, but recognizable name.
+     *
      * @param tableName Name of original table
      * @return {@code "UL_"+ [table name] + UUID.randomUUID();} with dash replaced bij underscore
      * @see #PREFIX

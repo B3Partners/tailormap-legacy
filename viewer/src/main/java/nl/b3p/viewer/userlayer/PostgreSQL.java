@@ -9,7 +9,8 @@ import java.sql.SQLException;
 
 public class PostgreSQL implements DataBase {
     private static final Log LOG = LogFactory.getLog(PostgreSQL.class);
-    private static final String CREATE_SQL = "CREATE OR REPLACE VIEW %s AS SELECT * FROM %s %s";
+    private static final String SELECT_SQL = " SELECT * FROM %s %s ";
+    private static final String CREATE_SQL = "CREATE OR REPLACE VIEW %s AS " + SELECT_SQL;
     private static final String DROP_SQL = "DROP VIEW IF EXISTS %s";
     private static final String COMMENTS_SQL = "COMMENT ON VIEW %s IS '%s'";
     private final Connection connection;
@@ -18,13 +19,31 @@ public class PostgreSQL implements DataBase {
         this.connection = connection;
     }
 
+    @Override
+    public String preValidateView(String tableName, String filterSQL) {
+        String result = null;
+        try (PreparedStatement ps = connection.prepareStatement(
+                String.format(SELECT_SQL, tableName, filterSQL))
+        ) {
+            ps.setFetchSize(1);
+            ps.setMaxRows(1);
+            ps.execute();
+        } catch (SQLException throwables) {
+            LOG.error(throwables.getLocalizedMessage());
+            result = String.format(INVALID_MSG, throwables.getLocalizedMessage()).replaceAll("\n", " ");
+        }
+        return result;
+    }
+
     /**
-     * <strong>comments are not sanitized</strong> see inline comments.
+     *
+     * Note: <strong>comments are not sanitized!</strong> see inline comments.
+     *
      * @param viewName  Name of the view
      * @param tableName Name of the source table
      * @param filterSQL Filter definition of view (where clause)
-     * @param comments optional comments to add the the view, can be {@code null}
-     * @return return if call succeeded
+     * @param comments  optional comments to add the the view, can be {@code null}
+     * @return {@code true} if call succeeded
      */
     @Override
     public boolean createView(String viewName, String tableName, String filterSQL, String comments) {

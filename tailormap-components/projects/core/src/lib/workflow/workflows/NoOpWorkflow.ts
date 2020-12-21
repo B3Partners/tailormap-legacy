@@ -4,8 +4,6 @@ import { MapClickedEvent } from '../../shared/models/event-models';
 import { Feature } from '../../shared/generated';
 
 export class NoOpWorkflow extends Workflow {
-  public addFeature(featureType: string, geometryType?: string): void {
-  }
 
   public afterEditting(): void {
   }
@@ -18,9 +16,6 @@ export class NoOpWorkflow extends Workflow {
   }
 
   public mapClick(data: MapClickedEvent): void {
-  }
-
-  public setFeature(feature: Feature): void {
   }
 
 }

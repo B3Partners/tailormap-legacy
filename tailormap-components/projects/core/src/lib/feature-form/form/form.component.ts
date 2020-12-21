@@ -76,6 +76,9 @@ export class FormComponent implements OnDestroy, OnChanges {
     if (!this.formConfig) {
       this.dialogRef.close(this.feature);
     }
+    if (this.data.alreadyDirty) {
+      this.formDirty = true;
+    }
   }
 
   public ngOnChanges(changes: SimpleChanges): void {
@@ -141,6 +144,14 @@ export class FormComponent implements OnDestroy, OnChanges {
     this.workflowAction.setAction({
       feature: this.features[0],
       action: WORKFLOW_ACTION.COPY,
+    });
+  }
+
+  public editGeometry(): void {
+    this.closeDialog();
+    this.workflowAction.setAction({
+      feature: this.feature,
+      action: WORKFLOW_ACTION.EDIT_GEOMETRY,
     });
   }
 

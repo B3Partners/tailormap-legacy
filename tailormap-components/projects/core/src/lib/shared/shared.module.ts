@@ -122,6 +122,7 @@ import {
     MatAutocompleteModule,
     DragDropModule,
     MatDatepickerModule,
+    ConfirmDialogComponent,
   ],
   entryComponents: [],
   providers: [
