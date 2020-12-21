@@ -15,6 +15,7 @@ import { AttributeDataSource } from './attributelist-datasource';
 import { AttributelistFilterValuesFormComponent } from '../attributelist-filter-values-form/attributelist-filter-values-form.component';
 import { ValueService } from '../../../shared/value-service/value.service';
 import { AttributelistRefresh } from './attributelist-models';
+import { CriteriaHelper } from '../../../analysis/criteria/helpers/criteria.helper';
 
 export class AttributelistFilter {
 
@@ -43,7 +44,7 @@ export class AttributelistFilter {
     // const colNames = this.getColumnNames();
     for (const colName of colNames) {
       let filterColumn: FilterColumns;
-      filterColumn = {name: colName, status: false, nullValue: false, uniqueValues: []};
+      filterColumn = {name: colName, status: false, nullValue: false, filterType: null, uniqueValues: []};
       this.layerFilterValues.columns.push(filterColumn);
     }
   }
@@ -99,6 +100,7 @@ export class AttributelistFilter {
         uniqueValues = [];
         const colObject = this.layerFilterValues.columns.find(c => c.name === columnName);
         const colIndex = this.layerFilterValues.columns.findIndex(obj => obj.name === columnName);
+        const filterType = (colObject.filterType?colObject.filterType:'');
         if (colObject.uniqueValues.length === 0) {
 
           data.uniqueValues[columnName].forEach(val => {
@@ -113,26 +115,32 @@ export class AttributelistFilter {
         const config = new MatDialogConfig();
         config.data = {
           colName: columnName,
+          filterType: filterType,
           values: uniqueValues,
         };
         const dialogRef = this.dialog.open(AttributelistFilterValuesFormComponent, config);
-        dialogRef.afterClosed().subscribe(filterSetting => {
+        dialogRef.afterClosed().subscribe(filterDialogSettings => {
           // Do the filtering
-          if (filterSetting !== 'CANCEL') {
-            if (filterSetting === 'ON') {
-              this.layerFilterValues.columns[colIndex].uniqueValues = config.data.values;
-              this.layerFilterValues.columns[colIndex].nullValue = false;
-              this.layerFilterValues.columns[colIndex].status = true;
-            } else if (filterSetting === 'NONE') {
-              this.layerFilterValues.columns[colIndex].uniqueValues = config.data.values;
-              this.layerFilterValues.columns[colIndex].nullValue = true;
-              this.layerFilterValues.columns[colIndex].status = true;
-            } else if (filterSetting === 'OFF') {
-              this.layerFilterValues.columns[colIndex].uniqueValues = [];
-              this.layerFilterValues.columns[colIndex].nullValue = false;
-              this.layerFilterValues.columns[colIndex].status = false;
+          if (filterDialogSettings.filterSetting !== 'CANCEL') {
+            this.layerFilterValues.columns[colIndex].filterType = filterDialogSettings.filterType;
+            if (this.layerFilterValues.columns[colIndex].filterType !== 'UniqueValues') {
+              this.dataSource.params.valueFilter = " " + CriteriaHelper.convertConditionToQuery(filterDialogSettings.criteria);
+            } else {
+              if (filterDialogSettings.filterSetting === 'ON') {
+                this.layerFilterValues.columns[colIndex].uniqueValues = config.data.values;
+                this.layerFilterValues.columns[colIndex].nullValue = false;
+                this.layerFilterValues.columns[colIndex].status = true;
+              } else if (filterDialogSettings.filterSetting === 'NONE') {
+                this.layerFilterValues.columns[colIndex].uniqueValues = config.data.values;
+                this.layerFilterValues.columns[colIndex].nullValue = true;
+                this.layerFilterValues.columns[colIndex].status = true;
+              } else if (filterDialogSettings.filterSetting === 'OFF') {
+                this.layerFilterValues.columns[colIndex].uniqueValues = [];
+                this.layerFilterValues.columns[colIndex].nullValue = false;
+                this.layerFilterValues.columns[colIndex].status = false;
+              }
+              this.dataSource.params.valueFilter = this.createFilter();
             }
-            this.dataSource.params.valueFilter = this.createFilter();
             attributelistRefresh.refreshTable();
           }
         });

@@ -291,8 +291,10 @@ export class AttributeDataSource extends DataSource<any> {
 
             // console.log(columnDefs);
 
-            // And set as initial column names.
+            // And set as initial column names and attributes
+            // TODO: combine these methods?
             this.columnController.setDataColumnNames(columnDefs);
+            this.columnController.setAttributes(columnDefs);
           }
 
           // Get the features.
