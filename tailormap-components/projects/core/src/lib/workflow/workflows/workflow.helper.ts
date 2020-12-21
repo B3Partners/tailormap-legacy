@@ -5,16 +5,16 @@ import { Coordinate } from '../../user-interface/models';
 export class WorkflowHelper {
 
   public static findTopRight(geojson: GeoJSONGeometry | Geometry): Coordinate {
-    if (this.isGeneratedGeometry(geojson)) {
-      return this.findUpperRightCoordinate(geojson.coordinates[0] as number[][]);
+    if (WorkflowHelper.isGeneratedGeometry(geojson)) {
+      return WorkflowHelper.findUpperRightCoordinate(geojson.coordinates[0] as number[][]);
     } else {
       switch (geojson.type) {
         case 'MultiPolygon':
         case 'Polygon':
-          return this.findUpperRightCoordinate(geojson.coordinates[0] as number[][])
+          return WorkflowHelper.findUpperRightCoordinate(geojson.coordinates[0] as number[][])
         case 'LineString':
         case 'MultiLineString':
-          return this.findUpperRightCoordinate(geojson.coordinates as number[][])
+          return WorkflowHelper.findUpperRightCoordinate(geojson.coordinates as number[][])
         case 'MultiPoint':
         case 'Point':
           return {

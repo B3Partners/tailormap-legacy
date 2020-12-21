@@ -9,10 +9,16 @@ import java.sql.SQLException;
 public class SQLServer implements DataBase {
     private static final Log LOG = LogFactory.getLog(SQLServer.class);
     private final Connection connection;
+
     public SQLServer(Connection connection) {
         this.connection = connection;
     }
 
+    @Override
+    public String preValidateView(String tableName, String filterSQL) {
+        // TODO implement
+        return null;
+    }
 
     @Override
     public boolean createView(String viewName, String tableName, String filterSQL, String comments) {
