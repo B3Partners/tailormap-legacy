@@ -1,10 +1,4 @@
 import { Injectable } from '@angular/core';
-import {
-  HttpClient,
-  HttpHeaders,
-  HttpParams,
-} from '@angular/common/http';
-import { TailorMapService } from '../../../../../bridge/src/tailor-map.service';
 import { Store } from '@ngrx/store';
 import { AnalysisState } from '../state/analysis.state';
 import {
@@ -12,24 +6,18 @@ import {
   selectLevelForLayer,
 } from '../../application/state/application.selectors';
 import {
-  catchError,
   concatMap,
   filter,
   switchMap,
   take,
-  takeUntil,
   tap,
 } from 'rxjs/operators';
 import {
-  combineLatest,
-  Observable,
+  forkJoin,
   of,
 } from 'rxjs';
 import {
-  CreateUserLayerFailedResponseModel,
-  CreateUserLayerSuccessResponseModel,
-} from '../models/create-user-layer-response.model';
-import {
+  clearCreateLayerMode,
   setCreatingLayer,
   setCreatingLayerFailed,
   setCreatingLayerSuccess,
@@ -37,15 +25,14 @@ import {
 import { CriteriaHelper } from '../criteria/helpers/criteria.helper';
 import { addAppLayer } from '../../application/state/application.actions';
 import {
-  selectCanCreateLayer,
   selectCreateLayerData,
   selectSelectedDataSource,
 } from '../state/analysis.selectors';
-import { UserLayerStyleModel } from '../models/user-layer-style.model';
-import { rgbToHex } from '../../shared/util/color';
 import { StyleHelper } from '../helpers/style.helper';
-
-type ResponseType = CreateUserLayerSuccessResponseModel | CreateUserLayerFailedResponseModel;
+import {
+  UserLayerApiService,
+  UserLayerResponseType,
+} from './user-layer-api.service';
 
 @Injectable({
   providedIn: 'root',
@@ -53,18 +40,9 @@ type ResponseType = CreateUserLayerSuccessResponseModel | CreateUserLayerFailedR
 export class UserLayerService {
 
   constructor(
-    private httpClient: HttpClient,
-    private tailormapService: TailorMapService,
+    private userLayerApiService: UserLayerApiService,
     private store$: Store<AnalysisState>,
   ) {}
-
-  public static isSuccessResponse(response: ResponseType): response is CreateUserLayerSuccessResponseModel {
-    return response.success;
-  }
-
-  public static isFailedResponse(response: ResponseType): response is CreateUserLayerFailedResponseModel {
-    return !response.success;
-  }
 
   public createUserLayer() {
     this.store$.select(selectCreateLayerData)
@@ -75,51 +53,56 @@ export class UserLayerService {
         switchMap(data => {
           const query = CriteriaHelper.convertCriteriaToQuery(data.criteria);
           return this.saveUserLayer$(
-            data.layerName,
             `${data.selectedDataSource.layerId}`,
+            data.layerName,
             query,
             StyleHelper.createStyle(data.style, data.selectedDataSource),
+            data.createdAppLayer,
           );
         }),
-        catchError((): Observable<CreateUserLayerFailedResponseModel> => {
-          return of({
-            success: false,
-            message: 'Er is iets mis gegaan bij het maken van een laag. Controlleer de instellingen en probeer opnieuw.',
-          });
-        }),
-      ).subscribe(result => {
-        this.handleResult(result);
-      })
+      ).subscribe(([createLayerResult, saveStyleResult]) => {
+      this.handleResult(createLayerResult, saveStyleResult);
+    })
   }
 
-  private saveUserLayer$(name: string, layerId: string, criteria: string, style: string) {
+  private saveUserLayer$(appLayerId: string, title: string, query: string, style: string, createdAppLayer?: string) {
     return this.store$.select(selectApplicationId)
       .pipe(
         take(1),
         switchMap(appId => {
-          const params = new HttpParams()
-            .set('application', `${appId}`)
-            .set('appLayer', layerId)
-            .set('title', name)
-            .set('style', style)
-            .set('query', criteria);
-          return this.httpClient.post<ResponseType>(this.tailormapService.getContextPath() + '/action/userlayer/add',
-            params.toString(),
-            {
-              headers: new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8'),
-              observe: 'body',
-              withCredentials: true,
-            });
+          return forkJoin([
+            !!createdAppLayer ? of(null) : this.userLayerApiService.createUserLayer({appId, appLayerId, title, query }),
+            of(appId),
+          ]);
+        }),
+        concatMap(([response, appId]) => {
+          if (response !== null && UserLayerApiService.isFailedResponse(response)) {
+            return forkJoin([of(response), of(null)]);
+          }
+          if ((response === null || !UserLayerApiService.isSuccessResponse(response)) && !createdAppLayer) {
+            throw new Error('Tried to save style for a non-created layer');
+          }
+          const appLayer = response !== null && UserLayerApiService.isSuccessResponse(response)
+            ? response.message.appLayer.id
+            : createdAppLayer;
+          return forkJoin([
+            of(response),
+            !style ? of(null) : this.userLayerApiService.saveUserLayerStyle({ appId, userAppLayerId: appLayer, style }),
+          ]);
         }),
       )
   }
 
-  private handleResult(result: ResponseType) {
-    if (UserLayerService.isFailedResponse(result)) {
-      const message = [ result.error || '', result.message || '' ].filter(m => m !== '').join(' - ');
-      this.store$.dispatch(setCreatingLayerFailed({ message }));
+  private handleResult(createLayerResult: UserLayerResponseType, saveStyleResult: UserLayerResponseType | null) {
+    if (createLayerResult !== null && UserLayerApiService.isFailedResponse(createLayerResult)) {
+      const message = [createLayerResult.error || '', createLayerResult.message || ''].filter(m => m !== '').join(' - ');
+      this.store$.dispatch(setCreatingLayerFailed({message}));
     }
-    if (UserLayerService.isSuccessResponse(result)) {
+    if (saveStyleResult !== null && UserLayerApiService.isFailedResponse(saveStyleResult)) {
+      const message = [saveStyleResult.error || '', saveStyleResult.message || ''].filter(m => m !== '').join(' - ');
+      this.store$.dispatch(setCreatingLayerFailed({message}));
+    }
+    if (createLayerResult !== null && UserLayerApiService.isSuccessResponse(createLayerResult)) {
       this.store$.select(selectSelectedDataSource)
         .pipe(
           take(1),
@@ -130,14 +113,20 @@ export class UserLayerService {
         .subscribe(level => {
           this.store$.dispatch(addAppLayer({
             layer: {
-              ...result.message.appLayer,
+              ...createLayerResult.message.appLayer,
               background: false,
             },
-            service: result.message.service,
+            service: createLayerResult.message.service,
             levelId: level ? level.id : '',
           }));
-          this.store$.dispatch(setCreatingLayerSuccess());
-      });
+        });
+      this.store$.dispatch(setCreatingLayerSuccess({ createdAppLayer: createLayerResult.message.appLayer.id }));
+    }
+    if (
+      (createLayerResult === null || UserLayerApiService.isSuccessResponse(createLayerResult))
+      && (saveStyleResult === null || UserLayerApiService.isSuccessResponse(saveStyleResult))
+    ) {
+      this.store$.dispatch(clearCreateLayerMode());
     }
   }
 

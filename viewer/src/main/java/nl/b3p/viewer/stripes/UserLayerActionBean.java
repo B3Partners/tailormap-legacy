@@ -145,11 +145,6 @@ public class UserLayerActionBean  extends LocalizableActionBean implements Actio
                     application, appLayer, query, title, wellKnownUserLayerWorkspaceName, wellKnownUserLayerStoreName);
 
             boolean success = ulh.add();
-
-            if (success && style != null && !StringUtils.isEmpty(style)) {
-                ulh.updateStyle(style);
-            }
-
             jsonObject.put("success", success);
 
             if(success){
@@ -227,7 +222,7 @@ public class UserLayerActionBean  extends LocalizableActionBean implements Actio
             jsonObject.put("success", ok);
 
             this.auditMessageObject.addMessage(
-                    "Stijl van userLayer " + ulh.getLayerName() + " met id " + ulh.getAppLayerId() +
+                    "Stijl van userLayer " + ulh.getLayerName() + " met id " + appLayer.getId() +
                             " is " +  (ok ? "" : "niet") + " aangepast.");
             ulh.dispose();
         }

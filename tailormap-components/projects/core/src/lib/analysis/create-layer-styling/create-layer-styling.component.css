@@ -64,7 +64,8 @@
 .styling-form,
 .line-settings,
 .polygon-settings,
-.point-settings {
+.point-settings,
+.form-errors {
   padding-top: 14px;
 }
 

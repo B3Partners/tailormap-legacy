@@ -105,6 +105,13 @@
     </div>
 
   </div>
+
+  <div class="form-field form-errors" *ngIf="errorMessage$ | async as errorMessage">
+    <mat-error>
+      {{errorMessage}}
+    </mat-error>
+  </div>
+
 </div>
 <div class="buttons">
   <button mat-flat-button (click)="cancelCreateLayer()">Annuleren</button>

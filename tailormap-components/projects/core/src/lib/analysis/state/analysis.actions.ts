@@ -55,7 +55,10 @@ export const setStyle = createAction(
 
 export const setCreatingLayer = createAction(`${analysisActionsPrefix} Creating Layer`);
 
-export const setCreatingLayerSuccess = createAction(`${analysisActionsPrefix} Creating Layer Success`);
+export const setCreatingLayerSuccess = createAction(
+  `${analysisActionsPrefix} Creating Layer Success`,
+  props<{ createdAppLayer: string }>(),
+);
 
 export const setCreatingLayerFailed = createAction(
   `${analysisActionsPrefix} Creating Layer Failed`,

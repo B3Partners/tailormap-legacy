@@ -75,7 +75,10 @@ const onCreatingLayer = (state: AnalysisState): AnalysisState => ({
   isCreatingLayer: true,
 });
 
-const onCreatingLayerSuccess = (state: AnalysisState): AnalysisState => clearAnalysisState(state);
+const onCreatingLayerSuccess = (state: AnalysisState, payload: { createdAppLayer: string }): AnalysisState => ({
+  ...state,
+  createdAppLayer: payload.createdAppLayer,
+});
 
 const onCreatingLayerFailed = (state: AnalysisState, payload: { message: string }): AnalysisState => ({
   ...state,

@@ -26,6 +26,7 @@ import {
 } from 'rxjs';
 import {
   selectCanCreateLayer,
+  selectCreateLayerErrorMessage,
   selectCriteria,
   selectIsCreatingCriteria,
   selectIsSelectingDataSource,
@@ -60,7 +61,7 @@ export class CreateLayerFormComponent implements OnInit, OnDestroy {
 
   public criteriaMode = CriteriaTypeEnum;
 
-  public errorMessage: string;
+  public errorMessage$: Observable<string>;
   private allowCreateLayer: boolean;
 
   constructor(
@@ -81,6 +82,7 @@ export class CreateLayerFormComponent implements OnInit, OnDestroy {
     this.store$.select(selectCanCreateLayer).pipe(takeUntil(this.destroyed)).subscribe(canCreateLayer => {
       this.allowCreateLayer = canCreateLayer;
     });
+    this.errorMessage$ = this.store$.select(selectCreateLayerErrorMessage);
     this.selectingDataSource$ = this.store$.select(selectIsSelectingDataSource);
     this.creatingCriteria$ = this.store$.select(selectIsCreatingCriteria);
     this.hasActiveSidePanel$ = combineLatest([ this.selectingDataSource$, this.creatingCriteria$ ])

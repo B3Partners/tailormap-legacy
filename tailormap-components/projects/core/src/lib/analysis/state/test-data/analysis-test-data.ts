@@ -36,3 +36,50 @@ export const analysisStateTestData: AnalysisState = {
   },
   layerName: 'test laag 2000',
 };
+
+export const analysisStateTestDataWithCreatedLayer: AnalysisState = {
+  createLayerMode: CreateLayerModeEnum.ATTRIBUTES,
+  selectDataSource: false,
+  selectedDataSource: {
+    layerId: 57,
+    featureType: 55,
+    label: 'gb_boom',
+    geometryType: AttributeTypeEnum.GEOMETRY,
+  },
+  layerName: 'Bomen uit 2010',
+  createCriteriaMode: null,
+  criteria: {
+    type: CriteriaTypeEnum.SIMPLE,
+    operator: CriteriaOperatorEnum.AND,
+    groups: [
+      {
+        id: 'criteria-group-1',
+        operator: CriteriaOperatorEnum.AND,
+        criteria: [
+          {
+            id: 'criteria-1',
+            source: 55,
+            attribute: 'aanlegjaar',
+            attributeType: AttributeTypeEnum.NUMBER,
+            condition: '=',
+            value: '2010',
+          },
+        ],
+      },
+    ],
+  },
+  style: {
+    fillOpacity: 62,
+    fillColor: 'rgb(255, 105, 105)',
+    strokeColor: 'rgb(255, 105, 105)',
+    strokeOpacity: 100,
+    strokeWidth: 2,
+    marker: 'star',
+    markerSize: 8,
+    markerFillColor: 'rgb(57, 73, 171)',
+    markerStrokeColor: 'rgb(30, 30, 30)',
+  },
+  isCreatingLayer: false,
+  createLayerErrorMessage: 'Er is iets mis gegaan bij opslaan van de stijl. Controlleer de instellingen en probeer opnieuw.',
+  createdAppLayer: '65',
+}

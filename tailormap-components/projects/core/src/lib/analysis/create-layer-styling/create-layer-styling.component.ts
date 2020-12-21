@@ -11,6 +11,7 @@ import { Store } from '@ngrx/store';
 import { AnalysisState } from '../state/analysis.state';
 import {
   selectCanCreateLayer,
+  selectCreateLayerErrorMessage,
   selectIsCreatingLayer,
   selectSelectedDataSource,
   selectStyle,
@@ -39,6 +40,7 @@ export class CreateLayerStylingComponent implements OnInit, OnDestroy {
   public selectedDataSource: AnalysisSourceModel;
   public visible$: Observable<boolean>;
 
+  public errorMessage$: Observable<string>;
   public style: UserLayerStyleModel;
   private defaultStyle: UserLayerStyleModel = {
     fillOpacity: 100,
@@ -83,6 +85,7 @@ export class CreateLayerStylingComponent implements OnInit, OnDestroy {
     this.store$.select(selectSelectedDataSource).pipe(takeUntil(this.destroyed)).subscribe(selectedDataSource => {
       this.selectedDataSource = selectedDataSource;
     });
+    this.errorMessage$ = this.store$.select(selectCreateLayerErrorMessage);
   }
 
   public ngOnDestroy() {
