@@ -17,12 +17,15 @@ import { UserLayerStyleModel } from '../models/user-layer-style.model';
 const clearAnalysisState = (state: AnalysisState): AnalysisState => ({
   ...state,
   createLayerMode: null,
+  layerName: '',
   selectDataSource: false,
   selectedDataSource: null,
   createCriteriaMode: null,
   criteria: null,
+  style: null,
   isCreatingLayer: false,
   createLayerErrorMessage: '',
+  createdAppLayer: '',
 });
 
 const onSetCreateLayerMode = (state: AnalysisState, payload: { createLayerMode: CreateLayerModeEnum }): AnalysisState => ({

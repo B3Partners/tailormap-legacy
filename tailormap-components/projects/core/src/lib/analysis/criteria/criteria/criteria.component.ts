@@ -1,35 +1,12 @@
-import {
-  Component,
-  EventEmitter,
-  Input,
-  OnDestroy,
-  OnInit,
-  Output,
-} from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { AnalysisState } from '../../state/analysis.state';
 import { selectSelectedDataSource } from '../../state/analysis.selectors';
-import {
-  concatMap,
-  debounceTime,
-  map,
-  startWith,
-  takeUntil,
-} from 'rxjs/operators';
-import {
-  BehaviorSubject,
-  combineLatest,
-  forkJoin,
-  Observable,
-  of,
-  Subject,
-} from 'rxjs';
+import { concatMap, debounceTime, map, startWith, takeUntil } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, forkJoin, Observable, of, Subject } from 'rxjs';
 import { MetadataService } from '../../../application/services/metadata.service';
-import {
-  Attribute,
-  AttributeMetadataResponse,
-} from '../../../shared/attribute-service/attribute-models';
+import { Attribute, AttributeMetadataResponse } from '../../../shared/attribute-service/attribute-models';
 import { AnalysisSourceModel } from '../../models/analysis-source.model';
 import { CriteriaConditionModel } from '../../models/criteria-condition.model';
 import { CriteriaHelper } from '../helpers/criteria.helper';
@@ -85,18 +62,6 @@ export class CriteriaComponent implements OnInit, OnDestroy {
   ) { }
 
   public ngOnInit(): void {
-    this.store$.select(selectSelectedDataSource)
-      .pipe(
-        takeUntil(this.destroyed),
-        concatMap(selectedDataSource => {
-          return forkJoin([ of(selectedDataSource), this.metadataService.getFeatureTypeMetadata$(selectedDataSource.layerId) ])
-        }),
-      )
-      .subscribe(([ selectedDataSource, layerMetadata ]) => {
-        this.setupFormValues(selectedDataSource, layerMetadata);
-        this.setInitialValues();
-      });
-
     this.criteriaForm.valueChanges
       .pipe(
         takeUntil(this.destroyed),
@@ -122,6 +87,18 @@ export class CriteriaComponent implements OnInit, OnDestroy {
         };
         this.setDisabledState();
         this.emitChanges();
+      });
+
+    this.store$.select(selectSelectedDataSource)
+      .pipe(
+        takeUntil(this.destroyed),
+        concatMap(selectedDataSource => {
+          return forkJoin([ of(selectedDataSource), this.metadataService.getFeatureTypeMetadata$(selectedDataSource.layerId) ])
+        }),
+      )
+      .subscribe(([ selectedDataSource, layerMetadata ]) => {
+        this.setupFormValues(selectedDataSource, layerMetadata);
+        this.setInitialValues();
       });
 
     this.filteredAttributes$ = combineLatest([
@@ -162,31 +139,29 @@ export class CriteriaComponent implements OnInit, OnDestroy {
   }
 
   private setInitialValues() {
-    if (this.criteria) {
-      let value: string | moment.Moment = this.criteria.value;
-      if (value && this.criteria.attributeType === AttributeTypeEnum.DATE) {
-        value = moment(value);
-      }
-      this.criteriaForm.patchValue({ ...this.criteria, value });
-    }
+    const initialCriteria = { ...this.criteria };
 
-    let criteriaSource;
-    if (this.criteria.source) {
-      criteriaSource = this.criteria.source;
-    } else if (this.availableSources.length > 0 && !this.criteria.attribute) {
-      criteriaSource = this.availableSources[0].featureType;
-      this.criteriaForm.patchValue({ source: criteriaSource })
-    }
-
-    if (criteriaSource) {
-      this.availableAttributesSubject$.next(this.getAttributesForFeatureType(criteriaSource));
+    if (!initialCriteria.source && this.availableSources.length > 0 && !this.criteria.attribute) {
+      initialCriteria.source = this.availableSources[0].featureType;
     }
 
     if (this.criteria.attributeType) {
       this.filteredConditionsSubject$.next(this.getConditionsForAttributeType(this.criteria.attributeType));
     }
 
-    this.setDisabledState();
+    if (initialCriteria.source) {
+      this.availableAttributesSubject$.next(this.getAttributesForFeatureType(initialCriteria.source));
+    }
+
+    let value: string | moment.Moment = this.criteria.value;
+    if (value && this.criteria.attributeType === AttributeTypeEnum.DATE) {
+      value = moment(value);
+    }
+
+    this.criteriaForm.patchValue({
+      ...initialCriteria,
+      value,
+    });
   }
 
   private getAttributesForFeatureType(selectedSource: string | number) {
