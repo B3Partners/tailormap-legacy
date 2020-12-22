@@ -5,9 +5,7 @@ import { CriteriaTypeEnum } from '../../models/criteria-type.enum';
 import { IdService } from '../../../shared/id-service/id.service';
 import { CriteriaOperatorEnum } from '../../models/criteria-operator.enum';
 import { CriteriaConditionTypeModel } from '../../models/criteria-condition-type.model';
-import { Attribute } from '../../../shared/attribute-service/attribute-models';
 import { AttributeTypeEnum } from '../../../application/models/attribute-type.enum';
-import { AttributeTypeHelper } from '../../../application/helpers/attribute-type.helper';
 
 export class CriteriaHelper {
 
