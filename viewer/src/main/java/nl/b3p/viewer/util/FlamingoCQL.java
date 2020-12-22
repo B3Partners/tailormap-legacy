@@ -50,16 +50,21 @@ public class FlamingoCQL {
 
     private static final Log LOG = LogFactory.getLog(FlamingoCQL.class);
 
-    private final static String BEGIN_PART = "APPLAYER(";
+    private final static String BEGIN_APPLAYER_PART = "APPLAYER(";
+    private final static String BEGIN_RELATED_PART = "RELATED(";
 
     public static Filter toFilter(String filter, EntityManager em) throws CQLException {
         filter = processFilter(filter, em);
 
-        return ECQL.toFilter(filter);
+        if(filter.contains(BEGIN_RELATED_PART)){
+            return new Subselect();
+        }else{
+            return ECQL.toFilter(filter);
+        }
     }
 
     public static String processFilter(String filter, EntityManager em) throws CQLException {
-        if (filter.contains(BEGIN_PART)) {
+        if (filter.contains(BEGIN_APPLAYER_PART)) {
             filter = replaceApplayerFilter(filter, em);
         }
         return filter;
@@ -71,8 +76,8 @@ public class FlamingoCQL {
         // ga naar rechts in de string tot einde string of foundOpenBrackets == foundClosingBrackets
         // tel alle openhaakjes op
         // zoek alle sluithaakjes
-        int begin = filter.indexOf(BEGIN_PART);
-        int startIndex = begin + BEGIN_PART.length();
+        int begin = filter.indexOf(BEGIN_APPLAYER_PART);
+        int startIndex = begin + BEGIN_APPLAYER_PART.length();
         int closingBrackets = 0;
         int openBrackets = 1;
         int endIndex = 0;
