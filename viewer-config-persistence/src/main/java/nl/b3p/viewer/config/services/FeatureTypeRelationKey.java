@@ -16,6 +16,8 @@
  */
 package nl.b3p.viewer.config.services;
 
+import org.json.JSONObject;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
@@ -46,7 +48,20 @@ public class FeatureTypeRelationKey {
         this.leftSide = leftSide;
         this.rightSide = rightSide;
     }
-    
+
+    public JSONObject toJSONObject(){
+        JSONObject json = new JSONObject();
+        if(leftSide != null) {
+            json.put("leftSideName", leftSide.getName());
+            json.put("leftSideType", leftSide.getType());
+        }
+        if(rightSide != null) {
+            json.put("rightSideName", rightSide.getName());
+            json.put("rightSideType", rightSide.getType());
+        }
+        return json;
+    }
+
     //<editor-fold defaultstate="collapsed" desc="Getters/Setters">
     public Long getId() {
         return id;
