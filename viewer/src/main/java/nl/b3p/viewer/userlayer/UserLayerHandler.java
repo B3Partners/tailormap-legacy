@@ -186,11 +186,9 @@ public class UserLayerHandler {
     }
 
     public String getSQLQuery() throws CQLException, FilterToSQLException {
-        //FilterToSQL f = ((BasicSQLDialect) this.dataStore.getSQLDialect()).createFilterToSQL();
-
         TMFilterToSQL f = new TMFilterToSQL();
         f.createFilterCapabilities();
-        return f.encodeToString(FlamingoCQL.toFilter(this.query, this.entityManager));
+        return f.encodeToString(FlamingoCQL.toFilter(this.query, this.entityManager, false));
     }
 
     private boolean createView(String viewName) {
