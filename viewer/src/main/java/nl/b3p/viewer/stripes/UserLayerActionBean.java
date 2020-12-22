@@ -12,6 +12,8 @@ import nl.b3p.viewer.userlayer.UserLayerHandler;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.geotools.data.jdbc.FilterToSQLException;
+import org.geotools.filter.text.cql2.CQLException;
 import org.json.JSONObject;
 import org.stripesstuff.stripersist.Stripersist;
 
@@ -134,7 +136,7 @@ public class UserLayerActionBean extends LocalizableActionBean implements Action
         };
     }
 
-    public Resolution validate(){
+    public Resolution validate() throws FilterToSQLException, CQLException {
 
         final UserLayerHandler ulh = new UserLayerHandler(auditMessageObject, Stripersist.getEntityManager(),
                 application, appLayer, query, title, wellKnownUserLayerWorkspaceName,
@@ -144,6 +146,7 @@ public class UserLayerActionBean extends LocalizableActionBean implements Action
         String isInvalidMsg = ulh.validate();
         final JSONObject jsonObject = (new JSONObject()).put("success", Boolean.TRUE);
         jsonObject.put("valid", isInvalidMsg);
+        jsonObject.put("sql", ulh.getSQLQuery());
 
         return new StreamingResolution("application/json") {
             @Override

@@ -16,14 +16,14 @@
  */
 package nl.b3p.viewer.util;
 
+import nl.b3p.viewer.config.services.*;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryCollection;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.PrecisionModel;
 import javax.persistence.EntityManager;
 import nl.b3p.viewer.config.app.ApplicationLayer;
-import nl.b3p.viewer.config.services.GeoService;
-import nl.b3p.viewer.config.services.Layer;
+
 import static nl.b3p.viewer.util.FeatureToJson.MAX_FEATURES;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -34,6 +34,9 @@ import org.geotools.filter.text.cql2.CQLException;
 import org.geotools.filter.text.ecql.ECQL;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.filter.Filter;
+
+import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Parser for creating valid cql filters, even when passing the invented APPLAYER filter.
@@ -51,16 +54,12 @@ public class FlamingoCQL {
     private static final Log LOG = LogFactory.getLog(FlamingoCQL.class);
 
     private final static String BEGIN_APPLAYER_PART = "APPLAYER(";
-    private final static String BEGIN_RELATED_PART = "RELATED(";
+    private final static String BEGIN_RELATED_PART = "RELATED_LAYER(";
 
     public static Filter toFilter(String filter, EntityManager em) throws CQLException {
         filter = processFilter(filter, em);
 
-        if(filter.contains(BEGIN_RELATED_PART)){
-            return new Subselect();
-        }else{
-            return ECQL.toFilter(filter);
-        }
+        return getFilter(filter, em);
     }
 
     public static String processFilter(String filter, EntityManager em) throws CQLException {
@@ -68,6 +67,80 @@ public class FlamingoCQL {
             filter = replaceApplayerFilter(filter, em);
         }
         return filter;
+    }
+
+    public static Filter getFilter(String filter, EntityManager em) throws CQLException {
+        Filter f = null;
+        if(filter.contains(BEGIN_RELATED_PART)){
+            f = createSubselect(filter, em);
+        }else {
+            f =  ECQL.toFilter(filter);
+        }
+
+        return f;
+    }
+
+    public static Subselect createSubselect(String filter, EntityManager em) throws CQLException {
+          /*
+          RELATED_LAYER(<LAYERID_MAIN>, <SIMPLEFEATURETYPEID_SUB>, <FILTER>)
+                LAYERID_MAIN number  id of application layer (!) main layer in tailormap db: on this layer the filter will be set
+                SIMPLEFEATURETYPEID_SUB number  id of related simplefeaturetype in tailormap db
+                FILTER: string  FlamingoCQL filter
+
+			haal featuretype op
+                haal relations op
+                 check of in relations of LAYERID_MAIN er is (zo nee, crash)
+
+                haal met behulp van de relatie de kolom uit main op waar de relatie op ligt: kolom_main
+                haal met behulp van de relatie de kolom uit sub op waar de relatie op ligt: kolom_sub
+                maak filter op LAYER_SUB, en haal alle values voor kolom_sub op: values
+         */
+        int beginPartLength = BEGIN_RELATED_PART.length();
+        int endMainLayer = filter.indexOf( ",",beginPartLength +1);
+        int endSubLayer = filter.indexOf( ",",endMainLayer +1);
+        int endSubFilter = filter.indexOf( ")",endSubLayer +1);
+        if(endMainLayer == - 1 || endSubLayer == -1 || endSubFilter == -1){
+            throw new CQLException("Related layer filter incorrectly formed. Must be of form: RELATED_LAYER(<LAYERID_MAIN>, <SIMPLEFEATURETYPEID_SUB>, <FILTER>)");
+        }
+        String appLayerIdMain = filter.substring(beginPartLength, endMainLayer);
+        String layerIdSub = filter.substring(endMainLayer+1, endSubLayer);
+        String relatedFilterString = filter.substring(endSubLayer+1, endSubFilter);
+
+        if(appLayerIdMain.isEmpty() || layerIdSub.isEmpty() || relatedFilterString.isEmpty() ){
+            throw new CQLException("Related layer filter incorrectly formed. Must be of form: RELATED_LAYER(<LAYERID_MAIN>, <SIMPLEFEATURETYPEID_SUB>, <FILTER>)");
+        }
+        appLayerIdMain = appLayerIdMain.trim();
+        layerIdSub = layerIdSub.trim();
+        relatedFilterString = relatedFilterString.trim();
+        try {
+
+            ApplicationLayer appLayer = em.find(ApplicationLayer.class, Long.parseLong(appLayerIdMain));
+            SimpleFeatureType sub = em.find(SimpleFeatureType.class, Long.parseLong(layerIdSub));
+            Layer main = appLayer.getService() == null ? null : appLayer.getService().getLayer(appLayer.getLayerName(), em);
+            List<FeatureTypeRelation> rels = main.getFeatureType().getRelations();
+            AtomicReference<FeatureTypeRelation> atomRel = new AtomicReference<>();
+            rels.forEach(rel -> {
+                if (rel.getForeignFeatureType().getId().equals(sub.getId())) {
+                    atomRel.set(rel);
+                }
+            });
+
+            if(atomRel.get() == null){
+                throw new CQLException("Applicationlayer does not have a relation");
+            }
+            FeatureTypeRelation relation = atomRel.get();
+            SimpleFeatureType subSft = relation.getForeignFeatureType();
+            FeatureTypeRelationKey key = relation.getRelationKeys().get(0);
+            String relatedColumn = key.getRightSide().getName();
+            String mainColumn = key.getLeftSide().getName();
+            String relatedTable = subSft.getTypeName();
+
+            Filter relatedFilter = FlamingoCQL.toFilter(relatedFilterString, em);
+            Subselect s = new Subselect(relatedFilter, relatedColumn, mainColumn, relatedTable);
+            return s;
+        }catch (NumberFormatException nfe){
+            throw new CQLException("Related layer filter incorrectly formed. Ids are not parsable to Longs. Must be of form: RELATED_LAYER(<LAYERID_MAIN>, <SIMPLEFEATURETYPEID_SUB>, <FILTER>)");
+        }
     }
 
     private static String replaceApplayerFilter(String filter, EntityManager em) throws CQLException {
