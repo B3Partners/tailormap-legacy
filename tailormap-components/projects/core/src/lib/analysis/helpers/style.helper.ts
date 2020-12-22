@@ -81,7 +81,11 @@ export class StyleHelper {
         lineStyles.push(`stroke-width: ${style.strokeWidth}px;`);
       }
       if (lineStyles.length > 0) {
-        styleRules.push(`${selector}[dimension(${selectedDataSource.geometryAttribute})=1] { ${lineStyles.join(' ')} }`);
+        styleRules.push([
+          `${selector}[dimension(${selectedDataSource.geometryAttribute})=1], `,
+          `${selector}[dimension(${selectedDataSource.geometryAttribute})=2] `,
+          `{ ${lineStyles.join(' ')} }`,
+        ].join(''));
       }
     }
     if (StyleHelper.showPointSettings(selectedDataSource.geometryType)) {
