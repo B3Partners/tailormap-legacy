@@ -162,7 +162,7 @@ public class TailormapDBManager {
             application.getStartLayers().add(sl);
 
             Level currentLevel = application.getRoot().getParentInSubtree(this.appLayer);
-            currentLevel.getLayers().add(newAppLayer);
+            currentLevel.getLayers().add(0,newAppLayer);
 
             entityManager.persist(application);
             entityManager.getTransaction().commit();
