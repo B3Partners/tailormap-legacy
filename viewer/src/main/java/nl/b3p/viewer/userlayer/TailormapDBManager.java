@@ -124,6 +124,7 @@ public class TailormapDBManager {
             l.getDetails().put(Layer.DETAIL_USERLAYER_ORIGINAL_LAYER_ID, new ClobElement(this.layer.getId().toString()));
             l.getDetails().put(Layer.DETAIL_USERLAYER_ORIGINAL_LAYERNAME, new ClobElement(this.layer.getName()));
             l.getDetails().put(Layer.DETAIL_USERLAYER_USER, new ClobElement(this.auditMessageObject.getUsername()));
+            l.getReaders().addAll(layer.getReaders());
             processFeatureType(l, viewName);
             return l;
         }
@@ -153,6 +154,8 @@ public class TailormapDBManager {
             ApplicationLayer newAppLayer = new ApplicationLayer();
             newAppLayer.setService(gs);
             newAppLayer.setLayerName(viewName);
+
+            newAppLayer.getReaders().addAll(this.appLayer.getReaders());
 
             StartLayer sl = new StartLayer();
             sl.setApplication(application);
