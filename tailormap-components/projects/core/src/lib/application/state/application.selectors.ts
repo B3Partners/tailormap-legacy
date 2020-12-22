@@ -74,6 +74,9 @@ export const selectApplicationTreeWithoutBackgroundLayers = createSelector(
       if (ApplicationTreeHelper.isLevel(item)) {
         return !item.background;
       }
+      if (ApplicationTreeHelper.isAppLayer(item)) {
+        return !item.userlayer && !item.background;
+      }
       return true;
     })).filter(item => !!item);
   },
