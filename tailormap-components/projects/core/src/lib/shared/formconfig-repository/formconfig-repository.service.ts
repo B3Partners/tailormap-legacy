@@ -1,5 +1,8 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import {
+  HttpClient,
+  HttpParams,
+} from '@angular/common/http';
 import {
   FormConfiguration,
   FormConfigurations,
@@ -32,7 +35,9 @@ export class FormconfigRepositoryService {
     private domainRepo: DomainRepositoryService,
     private tailorMap: TailorMapService,
   ) {
-    this.http.get<FormConfigurations>(this.tailorMap.getContextPath() + '/action/form')
+    this.http.get<FormConfigurations>(this.tailorMap.getContextPath() + '/action/form', {
+      params: new HttpParams().set('application', '' + this.tailorMap.getViewerController().app.id),
+    })
       .subscribe((data: FormConfigurations) => {
         this.formConfigs = {
           config: new Map<string, FormConfiguration>(),

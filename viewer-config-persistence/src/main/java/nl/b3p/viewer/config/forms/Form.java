@@ -3,6 +3,8 @@ package nl.b3p.viewer.config.forms;
 import nl.b3p.viewer.config.services.SimpleFeatureType;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 public class Form {
@@ -15,6 +17,10 @@ public class Form {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private SimpleFeatureType sft;
+
+    @ElementCollection
+    @Column(name="role_name")
+    private Set<String> readers = new HashSet<>();
 
     @Lob
     @org.hibernate.annotations.Type(type="org.hibernate.type.StringClobType")
@@ -58,5 +64,13 @@ public class Form {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Set<String> getReaders() {
+        return readers;
+    }
+
+    public void setReaders(Set<String> readers) {
+        this.readers = readers;
     }
 }
