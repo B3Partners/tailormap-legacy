@@ -22,6 +22,7 @@ import { CriteriaDescriptionComponent } from './criteria/criteria-description/cr
 import { CreateLayerModeAttributesComponent } from './create-layer-mode-attributes/create-layer-mode-attributes.component';
 import { CreateLayerModeThematicComponent } from './create-layer-mode-thematic/create-layer-mode-thematic.component';
 import { AttributeSelectorComponent } from './attribute-selector/attribute-selector.component';
+import { StyleFormComponent } from './style-form/style-form.component';
 
 
 @NgModule({
@@ -39,6 +40,7 @@ import { AttributeSelectorComponent } from './attribute-selector/attribute-selec
     CreateLayerModeAttributesComponent,
     CreateLayerModeThematicComponent,
     AttributeSelectorComponent,
+    StyleFormComponent,
   ],
   imports: [
     CommonModule,

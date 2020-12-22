@@ -6,6 +6,7 @@ import {
 import { Store } from '@ngrx/store';
 import { AnalysisState } from '../state/analysis.state';
 import {
+  selectCanCreateLayer,
   selectCreateCriteriaMode,
   selectCreateLayerMode,
   selectIsSelectingDataSource,
@@ -15,7 +16,7 @@ import {
   Observable,
   Subject,
 } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { map, takeUntil } from 'rxjs/operators';
 import { clearCreateLayerMode } from '../state/analysis.actions';
 import { CriteriaTypeEnum } from '../models/criteria-type.enum';
 
@@ -34,6 +35,7 @@ export class CreateLayerPanelComponent implements OnInit, OnDestroy {
   public criteriaMode: CriteriaTypeEnum;
 
   private destroyed = new Subject();
+  public cannotCreateLayer$: Observable<boolean>;
 
   constructor(
     private store$: Store<AnalysisState>,
@@ -51,6 +53,7 @@ export class CreateLayerPanelComponent implements OnInit, OnDestroy {
       .subscribe(criteriaMode => {
         this.criteriaMode = criteriaMode;
       });
+    this.cannotCreateLayer$ = this.store$.select(selectCanCreateLayer).pipe(map(canCreate => !canCreate));
     this.isSelectingDataSource$ = this.store$.select(selectIsSelectingDataSource);
   }
 

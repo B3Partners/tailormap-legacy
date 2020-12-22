@@ -23,7 +23,7 @@ const clearAnalysisState = (state: AnalysisState): AnalysisState => ({
   selectedDataSource: null,
   createCriteriaMode: null,
   criteria: null,
-  style: null,
+  styles: null,
   isCreatingLayer: false,
   createLayerErrorMessage: '',
   createdAppLayer: '',
@@ -74,9 +74,9 @@ const onSetSelectedAttribute = (state: AnalysisState, payload: { attribute: Attr
   selectedAttribute: payload.attribute,
 });
 
-const onSetStyle = (state: AnalysisState, payload: { style: UserLayerStyleModel }): AnalysisState => ({
+const onSetStyles = (state: AnalysisState, payload: { styles: UserLayerStyleModel[] }): AnalysisState => ({
   ...state,
-  style: payload.style,
+  styles: payload.styles,
 });
 
 const onCreatingLayer = (state: AnalysisState): AnalysisState => ({
@@ -106,7 +106,7 @@ const analysisReducerImpl = createReducer(
   on(AnalysisActions.createCriteria, onCreateCriteria),
   on(AnalysisActions.removeCriteria, onRemoveCriteria),
   on(AnalysisActions.setSelectedAttribute, onSetSelectedAttribute),
-  on(AnalysisActions.setStyle, onSetStyle),
+  on(AnalysisActions.setStyles, onSetStyles),
   on(AnalysisActions.setCreatingLayer, onCreatingLayer),
   on(AnalysisActions.setCreatingLayerSuccess, onCreatingLayerSuccess),
   on(AnalysisActions.setCreatingLayerFailed, onCreatingLayerFailed),

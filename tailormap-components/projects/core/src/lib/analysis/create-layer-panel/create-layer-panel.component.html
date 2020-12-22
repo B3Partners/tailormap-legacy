@@ -19,7 +19,7 @@
       </ng-template>
     </mat-tab>
 
-    <mat-tab label="Styling">
+    <mat-tab label="Styling" [disabled]="cannotCreateLayer$ | async">
       <ng-template matTabContent>
         <tailormap-create-layer-styling></tailormap-create-layer-styling>
       </ng-template>

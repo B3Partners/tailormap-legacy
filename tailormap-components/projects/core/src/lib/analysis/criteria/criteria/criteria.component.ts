@@ -14,7 +14,7 @@ import { AttributeTypeEnum } from '../../../application/models/attribute-type.en
 import { CriteriaConditionTypeModel } from '../../models/criteria-condition-type.model';
 import * as moment from 'moment';
 
-type AttributeSource = Omit<AnalysisSourceModel, 'geometryType'>;
+type AttributeSource = Omit<AnalysisSourceModel, 'geometryType' | 'geometryAttribute'>;
 
 @Component({
   selector: 'tailormap-criteria',

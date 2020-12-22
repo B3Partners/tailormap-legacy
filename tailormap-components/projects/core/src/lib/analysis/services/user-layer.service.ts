@@ -56,7 +56,7 @@ export class UserLayerService {
             `${data.selectedDataSource.layerId}`,
             data.layerName,
             query,
-            StyleHelper.createStyle(data.style, data.selectedDataSource),
+            StyleHelper.convertStyles(data.styles, data.selectedDataSource),
             data.createdAppLayer,
           );
         }),
@@ -66,6 +66,7 @@ export class UserLayerService {
   }
 
   private saveUserLayer$(appLayerId: string, title: string, query: string, style: string, createdAppLayer?: string) {
+    console.log(style);
     return this.store$.select(selectApplicationId)
       .pipe(
         take(1),

@@ -11,6 +11,7 @@ export const analysisStateTestData: AnalysisState = {
     layerId: 9,
     featureType: 302,
     label: 'gb_wegvakonderdeel',
+    geometryAttribute: 'geometrie',
     geometryType: AttributeTypeEnum.GEOMETRY_LINESTRING,
   },
   createCriteriaMode: null,
@@ -44,6 +45,7 @@ export const analysisStateTestDataWithCreatedLayer: AnalysisState = {
     layerId: 57,
     featureType: 55,
     label: 'gb_boom',
+    geometryAttribute: 'geometrie',
     geometryType: AttributeTypeEnum.GEOMETRY,
   },
   layerName: 'Bomen uit 2010',
@@ -68,7 +70,8 @@ export const analysisStateTestDataWithCreatedLayer: AnalysisState = {
       },
     ],
   },
-  style: {
+  styles: [{
+    active: true,
     fillOpacity: 62,
     fillColor: 'rgb(255, 105, 105)',
     strokeColor: 'rgb(255, 105, 105)',
@@ -78,8 +81,8 @@ export const analysisStateTestDataWithCreatedLayer: AnalysisState = {
     markerSize: 8,
     markerFillColor: 'rgb(57, 73, 171)',
     markerStrokeColor: 'rgb(30, 30, 30)',
-  },
+  }],
   isCreatingLayer: false,
-  createLayerErrorMessage: 'Er is iets mis gegaan bij opslaan van de stijl. Controlleer de instellingen en probeer opnieuw.',
-  createdAppLayer: '65',
+  createLayerErrorMessage: '',
+  createdAppLayer: '69',
 }

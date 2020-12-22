@@ -2,15 +2,17 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { AnalysisState } from '../state/analysis.state';
 import {
-  selectCriteria, selectIsCreatingCriteria, selectIsSelectingDataSource, selectSelectedDataSource,
+  selectCanCreateLayer,
+  selectCriteria, selectIsCreatingCriteria, selectIsSelectingDataSource, selectSelectedDataSource, selectStyles,
 } from '../state/analysis.selectors';
-import { map, takeUntil } from 'rxjs/operators';
+import { filter, map, takeUntil } from 'rxjs/operators';
 import { combineLatest, Observable, Subject } from 'rxjs';
 import { AnalysisSourceModel } from '../models/analysis-source.model';
 import { CriteriaModel } from '../models/criteria.model';
 import { CriteriaHelper } from '../criteria/helpers/criteria.helper';
-import { showCriteriaForm } from '../state/analysis.actions';
+import { setStyles, showCriteriaForm } from '../state/analysis.actions';
 import { CriteriaTypeEnum } from '../models/criteria-type.enum';
+import { StyleHelper } from '../helpers/style.helper';
 
 @Component({
   selector: 'tailormap-create-layer-mode-attributes',
@@ -38,6 +40,12 @@ export class CreateLayerModeAttributesComponent implements OnInit, OnDestroy {
     this.store$.select(selectCriteria).pipe(takeUntil(this.destroyed)).subscribe(criteria => {
       this.criteria = criteria
     });
+    combineLatest([ this.store$.select(selectCanCreateLayer), this.store$.select(selectStyles) ]).pipe(takeUntil(this.destroyed))
+      .subscribe(([canCreate, styles]) => {
+        if (canCreate && (!styles || styles.length !== 1)) {
+          this.store$.dispatch(setStyles({ styles: [ StyleHelper.getDefaultStyle() ]}));
+        }
+      });
     this.creatingCriteria$ = this.store$.select(selectIsCreatingCriteria);
     this.hasActiveSidePanel$ = combineLatest([ this.store$.select(selectIsSelectingDataSource), this.creatingCriteria$ ])
       .pipe(map(([ selectingSource, creatingCriteria ]) => selectingSource || creatingCriteria));

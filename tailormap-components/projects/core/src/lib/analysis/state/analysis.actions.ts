@@ -54,9 +54,9 @@ export const setSelectedAttribute = createAction(
   props<{ attribute: Attribute }>(),
 );
 
-export const setStyle = createAction(
-  `${analysisActionsPrefix} Set Style`,
-  props<{ style: UserLayerStyleModel }>(),
+export const setStyles = createAction(
+  `${analysisActionsPrefix} Set Styles`,
+  props<{ styles: UserLayerStyleModel[] }>(),
 );
 
 export const setCreatingLayer = createAction(`${analysisActionsPrefix} Creating Layer`);

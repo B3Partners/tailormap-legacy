@@ -89,6 +89,7 @@ export class CreateLayerLayerSelectionComponent implements OnInit, OnDestroy {
           featureType: appLayer.featureType,
           label: appLayer.alias,
           geometryType,
+          geometryAttribute: geomAttribute.name,
         };
         this.store$.dispatch(setSelectedDataSource({ source }));
       });

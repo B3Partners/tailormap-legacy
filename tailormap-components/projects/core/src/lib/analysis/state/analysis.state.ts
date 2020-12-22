@@ -12,7 +12,7 @@ export interface AnalysisState {
   layerName?: string;
   selectDataSource?: boolean;
   selectedDataSource?: AnalysisSourceModel;
-  style?: UserLayerStyleModel;
+  styles?: UserLayerStyleModel[];
   isCreatingLayer?: boolean;
   createLayerErrorMessage?: string;
   createdAppLayer?: string;

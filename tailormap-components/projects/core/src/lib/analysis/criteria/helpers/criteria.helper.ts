@@ -77,7 +77,7 @@ export class CriteriaHelper {
     return `(${groupCriteria})`;
   }
 
-  private static convertConditionToQuery(condition: CriteriaConditionModel) {
+  public static convertConditionToQuery(condition: CriteriaConditionModel) {
     if (condition.attributeType === AttributeTypeEnum.NUMBER) {
       return `(${condition.attribute} ${condition.condition} ${condition.value})`;
     }

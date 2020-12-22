@@ -1,110 +1,11 @@
 <div class="form" *ngIf="selectedDataSource">
   <h2>{{selectedDataSource.label}}</h2>
   <h3 class="sub-title">{{getGeometryTypeLabel() | capitalizeFirst}} geometrie</h3>
-  <div class="styling-form">
 
-    <div class="point-settings" *ngIf="showPointSettings()">
-
-      <div class="form-field form-field__columns">
-        <label>Symbool</label>
-        <tailormap-icon-picker [icons]="getMarkers()"
-                               [selectedIcon]="getSelectedMarker()"
-                               (iconChange)="changeMarker($event)"></tailormap-icon-picker>
-      </div>
-
-      <div class="form-field form-field__columns">
-        <label>Symbool vulling kleur</label>
-        <tailormap-color-picker [color]="style.markerFillColor"
-                                (colorChange)="changeMarkerFill($event)"></tailormap-color-picker>
-      </div>
-
-      <div class="form-field form-field__columns">
-        <label>Symbool lijn kleur</label>
-        <tailormap-color-picker [color]="style.markerStrokeColor"
-                                (colorChange)="changeMarkerStroke($event)"></tailormap-color-picker>
-      </div>
-
-      <div class="form-field form-field__columns">
-        <label>Symbool grootte</label>
-        <span>{{style.markerSize}}px</span>
-      </div>
-
-      <div class="form-field form-field__slider">
-        <mat-slider [max]="20"
-                    [min]="1"
-                    [step]="1"
-                    [thumbLabel]="true"
-                    [value]="style.markerSize"
-                    (change)="changeMarkerSize($event)"></mat-slider>
-      </div>
-
-    </div>
-
-    <div class="line-settings" *ngIf="showLineSettings()">
-
-      <div class="form-field form-field__columns">
-        <label>Lijn kleur</label>
-        <tailormap-color-picker [color]="style.strokeColor"
-                                (colorChange)="changeStrokeColor($event)"></tailormap-color-picker>
-      </div>
-
-      <div class="form-field form-field__columns">
-        <label>Lijn dikte</label>
-        <span>{{style.strokeWidth}}px</span>
-      </div>
-
-      <div class="form-field form-field__slider">
-        <mat-slider [max]="20"
-                    [min]="1"
-                    [step]="1"
-                    [thumbLabel]="true"
-                    [value]="style.strokeWidth"
-                    (change)="changeStrokeWidth($event)"></mat-slider>
-      </div>
-
-      <div class="form-field form-field__columns">
-        <label>Lijn transparantie</label>
-        <span>{{style.strokeOpacity}}%</span>
-      </div>
-
-      <div class="form-field form-field__slider">
-        <mat-slider [max]="100"
-                    [min]="0"
-                    [step]="1"
-                    [thumbLabel]="true"
-                    [displayWith]="formatThumb"
-                    [value]="style.strokeOpacity"
-                    (change)="changeStrokeOpacity($event)"></mat-slider>
-      </div>
-
-    </div>
-
-    <div class="polygon-settings" *ngIf="showPolygonSettings()">
-
-      <div class="form-field form-field__columns">
-        <label>Vlak kleur</label>
-        <tailormap-color-picker [color]="style.fillColor"
-                                (colorChange)="changeFillColor($event)"></tailormap-color-picker>
-      </div>
-
-      <div class="form-field form-field__columns">
-        <label>Vlak transparantie</label>
-        <span>{{style.fillOpacity}}%</span>
-      </div>
-
-      <div class="form-field form-field__slider">
-        <mat-slider [max]="100"
-                    [min]="0"
-                    [step]="1"
-                    [thumbLabel]="true"
-                    [displayWith]="formatThumb"
-                    [value]="style.fillOpacity"
-                    (change)="changeFillOpacity($event)"></mat-slider>
-      </div>
-
-    </div>
-
-  </div>
+  <tailormap-style-form *ngIf="hasSingleStyle()"
+                        [style]="styles[0]"
+                        [geometryType]="selectedDataSource.geometryType"
+                        (styleUpdated)="singleStyleUpdated($event)"></tailormap-style-form>
 
   <div class="form-field form-errors" *ngIf="errorMessage$ | async as errorMessage">
     <mat-error>
