@@ -35,11 +35,8 @@ export class FormconfigRepositoryService {
     private domainRepo: DomainRepositoryService,
     private tailorMap: TailorMapService,
   ) {
-    let httpParams: HttpParams = new HttpParams();
-
-    httpParams = httpParams.set('application', '' + this.tailorMap.getViewerController().app.id);
     this.http.get<FormConfigurations>(this.tailorMap.getContextPath() + '/action/form', {
-      params: httpParams,
+      params: new HttpParams().set('application', '' + this.tailorMap.getViewerController().app.id),
     })
       .subscribe((data: FormConfigurations) => {
         this.formConfigs = {
