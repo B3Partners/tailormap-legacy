@@ -1,6 +1,7 @@
 import {
   Component,
   Inject,
+  Input,
   OnInit,
 } from '@angular/core';
 import {
@@ -8,8 +9,6 @@ import {
   MatDialogRef,
 } from '@angular/material/dialog';
 import { AttributeTypeEnum } from '../../../application/models/attribute-type.enum';
-// import { CriteriaHelper } from '../../../analysis/criteria/helpers/criteria.helper'
-// import { CriteriaModel } from '../../../analysis/models/criteria.model';
 import {
   FilterValueSettings,
   FilterDialogSettings,
@@ -22,12 +21,16 @@ import { FormControl } from '@angular/forms';
   templateUrl: './attributelist-filter-values-form.component.html',
   styleUrls: ['./attributelist-filter-values-form.component.css'],
 })
+
 export class AttributelistFilterValuesFormComponent implements OnInit {
+
+  @Input()
+  public formControl: FormControl;
 
   public values: FilterValueSettings[];
   public criteriaValue = new FormControl();
   public colName: string;
-
+  public attributeType: AttributeTypeEnum;
   public allOn: boolean
 
   public criteria: CriteriaConditionModel;
@@ -38,21 +41,26 @@ export class AttributelistFilterValuesFormComponent implements OnInit {
   constructor(private dialogRef: MatDialogRef<AttributelistFilterValuesFormComponent>,
               @Inject(MAT_DIALOG_DATA) public data: any) {
     this.colName = data.colName;
+    this.attributeType = data.attributeType;
     this.values = data.values;
-    // this.filterTypeSelected = data.filterType;
     this.allOn = true;
+    if (data.criteria !== null) {
+      this.criteria = data.criteria;
+      this.criteriaValue.setValue(this.criteria.value);
+    }
+    this.filterTypeSelected = data.filterType;
     this.criteria = new class implements CriteriaConditionModel {
-      attribute: string;
-      attributeType: AttributeTypeEnum;
-      condition: string;
-      id: string;
-      source: number;
-      value: string;
+      public attribute: string;
+      public attributeType: AttributeTypeEnum;
+      public condition: string;
+      public id: string;
+      public source: number;
+      public value: string;
     };
-    this.filterDialogSettings = new class FilterDialogSettings {
-      filterType: string;
-      filterSetting: string;
-      criteria: CriteriaConditionModel;
+    this.filterDialogSettings = new class implements FilterDialogSettings {
+      public filterType: string;
+      public filterSetting: string;
+      public criteria: CriteriaConditionModel;
     };
 
     this.updateSelected();
@@ -96,11 +104,9 @@ export class AttributelistFilterValuesFormComponent implements OnInit {
     } else if (this.filterTypeSelected !== '') {
       this.criteria.id  = this.colName;
       this.criteria.attribute = this.colName;
-      this.criteria.attributeType = AttributeTypeEnum.STRING; // CriteriaHelper.getAttributeType
+      this.criteria.attributeType = this.attributeType;
       this.criteria.condition = this.filterTypeSelected;
       this.criteria.value = this.criteriaValue.value;
-      // ter test even kijken of dit kan gaan werken:
-      // console.log("condition: " + CriteriaHelper.convertConditionToQuery(this.criteria));
       this.filterDialogSettings.filterSetting = 'ON';
       this.filterDialogSettings.criteria = this.criteria;
     }
@@ -110,6 +116,11 @@ export class AttributelistFilterValuesFormComponent implements OnInit {
 
   public onCancel() {
     this.filterDialogSettings.filterSetting = 'CANCEL';
+    this.dialogRef.close( this.filterDialogSettings);
+  }
+
+  public onClear() {
+    this.filterDialogSettings.filterSetting = 'OFF'
     this.dialogRef.close( this.filterDialogSettings);
   }
 

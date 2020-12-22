@@ -17,8 +17,11 @@ h3 {
   text-align: center;
   vertical-align: center;
 }
-
 .mat-radio-button {
   padding-bottom: 4px;
+}
+.mat-form-field {
+  font-size: 14px;
+  line-height: 2;
 }
 

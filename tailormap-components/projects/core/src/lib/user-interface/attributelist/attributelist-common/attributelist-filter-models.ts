@@ -10,7 +10,8 @@ export interface FilterColumns {
   status: boolean;
   nullValue: boolean;
   filterType: string;
-  uniqueValues: FilterValueSettings[]
+  uniqueValues: FilterValueSettings[];
+  criteria: CriteriaConditionModel;
 }
 
 export interface FilterValueSettings {
@@ -18,7 +19,6 @@ export interface FilterValueSettings {
   value: string;
   // value in filter selected
   select: boolean;
-  // [value:string]:boolean
 }
 
 export interface FilterDialogSettings {
