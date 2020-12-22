@@ -870,3 +870,8 @@ body.x-body {
 .helpBlock h1 {
  background-color: #ef5765;
 }
+
+.form-container{
+    display: flex;
+    flex-direction: row;
+}
