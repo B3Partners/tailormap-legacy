@@ -35,6 +35,7 @@ import org.geotools.filter.text.ecql.ECQL;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.filter.Filter;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -57,19 +58,27 @@ public class FlamingoCQL {
     private final static String BEGIN_RELATED_PART = "RELATED_LAYER(";
 
     public static Filter toFilter(String filter, EntityManager em) throws CQLException {
-        filter = processFilter(filter, em);
+        return toFilter(filter, em, true);
+    }
+
+    public static Filter toFilter(String filter, EntityManager em, boolean simplify) throws CQLException {
+        filter = processFilter(filter, em, simplify);
 
         return getFilter(filter, em);
     }
 
-    public static String processFilter(String filter, EntityManager em) throws CQLException {
+    private static String processFilter(String filter, EntityManager em, boolean simplify) throws CQLException {
         if (filter.contains(BEGIN_APPLAYER_PART)) {
             filter = replaceApplayerFilter(filter, em);
+        }
+
+        if(simplify && filter.contains(BEGIN_RELATED_PART)){
+            filter = replaceRelatedFilter(filter, em);
         }
         return filter;
     }
 
-    public static Filter getFilter(String filter, EntityManager em) throws CQLException {
+    private static Filter getFilter(String filter, EntityManager em) throws CQLException {
         Filter f = null;
         if(filter.contains(BEGIN_RELATED_PART)){
             f = createSubselect(filter, em);
@@ -80,8 +89,28 @@ public class FlamingoCQL {
         return f;
     }
 
-    public static Subselect createSubselect(String filter, EntityManager em) throws CQLException {
-          /*
+    private static Subselect createSubselect(String filter, EntityManager em) throws CQLException {
+        FeatureTypeRelation relation = FlamingoCQL.parseSubselectFilter(filter, em);
+        SimpleFeatureType subSft = relation.getForeignFeatureType();
+        FeatureTypeRelationKey key = relation.getRelationKeys().get(0);
+        String relatedColumn = key.getRightSide().getName();
+        String mainColumn = key.getLeftSide().getName();
+        String relatedTable = subSft.getTypeName();
+
+        Filter relatedFilter = FlamingoCQL.toFilter(retrieveRelatedFilter(filter), em, false);
+        Subselect s = new Subselect(relatedFilter, relatedColumn, mainColumn, relatedTable);
+        return s;
+
+    }
+
+    private static String retrieveRelatedFilter (String filter){
+        int endSubFilter = filter.lastIndexOf(",");
+        String relatedFilterString = filter.substring(endSubFilter + 1, filter.indexOf(")"));
+        return relatedFilterString;
+    }
+
+    private static FeatureTypeRelation parseSubselectFilter(String filter, EntityManager em) throws CQLException {
+             /*
           RELATED_LAYER(<LAYERID_MAIN>, <SIMPLEFEATURETYPEID_SUB>, <FILTER>)
                 LAYERID_MAIN number  id of application layer (!) main layer in tailormap db: on this layer the filter will be set
                 SIMPLEFEATURETYPEID_SUB number  id of related simplefeaturetype in tailormap db
@@ -98,20 +127,17 @@ public class FlamingoCQL {
         int beginPartLength = BEGIN_RELATED_PART.length();
         int endMainLayer = filter.indexOf( ",",beginPartLength +1);
         int endSubLayer = filter.indexOf( ",",endMainLayer +1);
-        int endSubFilter = filter.indexOf( ")",endSubLayer +1);
-        if(endMainLayer == - 1 || endSubLayer == -1 || endSubFilter == -1){
+       if(endMainLayer == - 1 || endSubLayer == -1 ){
             throw new CQLException("Related layer filter incorrectly formed. Must be of form: RELATED_LAYER(<LAYERID_MAIN>, <SIMPLEFEATURETYPEID_SUB>, <FILTER>)");
         }
         String appLayerIdMain = filter.substring(beginPartLength, endMainLayer);
         String layerIdSub = filter.substring(endMainLayer+1, endSubLayer);
-        String relatedFilterString = filter.substring(endSubLayer+1, endSubFilter);
 
-        if(appLayerIdMain.isEmpty() || layerIdSub.isEmpty() || relatedFilterString.isEmpty() ){
+        if(appLayerIdMain.isEmpty() || layerIdSub.isEmpty() ){
             throw new CQLException("Related layer filter incorrectly formed. Must be of form: RELATED_LAYER(<LAYERID_MAIN>, <SIMPLEFEATURETYPEID_SUB>, <FILTER>)");
         }
         appLayerIdMain = appLayerIdMain.trim();
         layerIdSub = layerIdSub.trim();
-        relatedFilterString = relatedFilterString.trim();
         try {
 
             ApplicationLayer appLayer = em.find(ApplicationLayer.class, Long.parseLong(appLayerIdMain));
@@ -128,19 +154,71 @@ public class FlamingoCQL {
             if(atomRel.get() == null){
                 throw new CQLException("Applicationlayer does not have a relation");
             }
-            FeatureTypeRelation relation = atomRel.get();
-            SimpleFeatureType subSft = relation.getForeignFeatureType();
-            FeatureTypeRelationKey key = relation.getRelationKeys().get(0);
-            String relatedColumn = key.getRightSide().getName();
-            String mainColumn = key.getLeftSide().getName();
-            String relatedTable = subSft.getTypeName();
-
-            Filter relatedFilter = FlamingoCQL.toFilter(relatedFilterString, em);
-            Subselect s = new Subselect(relatedFilter, relatedColumn, mainColumn, relatedTable);
-            return s;
+            return atomRel.get();
         }catch (NumberFormatException nfe){
             throw new CQLException("Related layer filter incorrectly formed. Ids are not parsable to Longs. Must be of form: RELATED_LAYER(<LAYERID_MAIN>, <SIMPLEFEATURETYPEID_SUB>, <FILTER>)");
         }
+    }
+
+    private static String replaceRelatedFilter(String filter, EntityManager em) throws CQLException {
+        FeatureTypeRelation relation = FlamingoCQL.parseSubselectFilter(filter, em);
+        FeatureTypeRelationKey key = relation.getRelationKeys().get(0);
+        String relatedFilter= retrieveRelatedFilter(filter);
+
+        List<Object> ids = FlamingoCQL.getFIDSFromRelatedFeatures(relation.getForeignFeatureType(), relatedFilter, key.getRightSide().getName());
+        String cql;
+        if(ids.isEmpty()){
+            cql = "1 = 0";
+            return cql;
+        }
+        cql = key.getLeftSide().getName();
+        cql += " IN (";
+        CharSequence cs = ",";
+        String escapChar = key.getLeftSide().getType().equals("string") ? "'" : "";
+        for (Object id: ids) {
+
+            cql += escapChar + id + escapChar + ",";
+        }
+        cql = cql.substring(0, cql.length() - 1);
+        cql += ")";
+        return cql;
+    }
+
+    private static List<Object> getFIDSFromRelatedFeatures(SimpleFeatureType sft, String filter, String column){
+        List<Object> fids = new ArrayList<>();
+        try {
+            FeatureSource fs = sft.openGeoToolsFeatureSource();
+
+            Query q = new Query(fs.getName().toString());
+            if (filter != null && !filter.isEmpty()) {
+                Filter attributeFilter = ECQL.toFilter(filter);
+                attributeFilter = (Filter) attributeFilter.accept(new ChangeMatchCase(false), null);
+
+                q.setFilter(attributeFilter);
+            }
+
+            q.setMaxFeatures(MAX_FEATURES);
+
+            FeatureIterator<SimpleFeature> it = fs.getFeatures(q).features();
+
+            try {
+                while (it.hasNext()) {
+                    SimpleFeature f = it.next();
+                    fids.add(f.getAttribute(column));
+
+                }
+
+                return fids;
+
+            } finally {
+                it.close();
+                fs.getDataStore().dispose();
+            }
+        } catch (Exception ex) {
+            LOG.error("retrieving fids for RELATED_LAYER filter in flamingoCQL failed: " + ex);
+        }
+
+        return fids;
     }
 
     private static String replaceApplayerFilter(String filter, EntityManager em) throws CQLException {
@@ -172,7 +250,7 @@ public class FlamingoCQL {
         String appLayerPart = filter.substring(startIndex, endIndex);
 
         // call recursively to parse out all the nested applayer filters
-        appLayerPart = processFilter(appLayerPart, em);
+        appLayerPart = processFilter(appLayerPart, em, true);
 
         // Rewrite APPLAYER filter to GEOMETRY filter, so it can be used for filtering other features
         String geometryFilter = rewriteAppLayerFilter(appLayerPart, em);
