@@ -4,6 +4,7 @@ labelPRBasedOnFilePath:
     - .github/**/*
   viewer:
     - viewer/**/*
+    - tailormap-components/**/*
   viewer-admin:
     - viewer-admin/**/*
   viewer-config-persistence:
