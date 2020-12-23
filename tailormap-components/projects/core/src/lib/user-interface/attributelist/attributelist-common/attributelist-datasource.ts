@@ -122,6 +122,9 @@ export class AttributeDataSource extends DataSource<any> {
     return this.params.layerName;
   }
 
+  public getAttributeForColumnName(columnName: string): Attribute {
+    return this.columnController.getAttributeForColumnName(columnName);
+  }
   /**
    * Returns the number of checked rows.
    */
@@ -236,7 +239,6 @@ export class AttributeDataSource extends DataSource<any> {
       attrParams.filter = this.params.valueFilter;
     }
 
-
     // Set details params.
     if (this.params.hasDetail()) {
       attrParams.featureType = this.params.featureTypeId;
@@ -291,8 +293,10 @@ export class AttributeDataSource extends DataSource<any> {
 
             // console.log(columnDefs);
 
-            // And set as initial column names.
+            // And set as initial column names and attributes
+            // TODO: combine these methods?
             this.columnController.setDataColumnNames(columnDefs);
+            this.columnController.setAttributes(columnDefs);
           }
 
           // Get the features.

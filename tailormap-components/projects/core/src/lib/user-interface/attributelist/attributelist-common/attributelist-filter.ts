@@ -15,6 +15,9 @@ import { AttributeDataSource } from './attributelist-datasource';
 import { AttributelistFilterValuesFormComponent } from '../attributelist-filter-values-form/attributelist-filter-values-form.component';
 import { ValueService } from '../../../shared/value-service/value.service';
 import { AttributelistRefresh } from './attributelist-models';
+import { CriteriaHelper } from '../../../analysis/criteria/helpers/criteria.helper';
+import { AttributeTypeEnum } from '../../../application/models/attribute-type.enum';
+import { AttributeTypeHelper } from '../../../application/helpers/attribute-type.helper';
 
 export class AttributelistFilter {
 
@@ -40,10 +43,9 @@ export class AttributelistFilter {
   public initFiltering(colNames: string[]): void {
     // Init the filter structure
     this.layerFilterValues.layerId = this.dataSource.params.layerId;
-    // const colNames = this.getColumnNames();
     for (const colName of colNames) {
       let filterColumn: FilterColumns;
-      filterColumn = {name: colName, status: false, nullValue: false, uniqueValues: []};
+      filterColumn = {name: colName, status: false, nullValue: false, filterType: null, uniqueValues: [], criteria: null};
       this.layerFilterValues.columns.push(filterColumn);
     }
   }
@@ -62,27 +64,32 @@ export class AttributelistFilter {
         } else {
           this.valueFilter += ' AND';
         }
-        if (c.nullValue) {
-          this.valueFilter += ' ' + c.name + ' IS NULL';
-        } else {
-          this.valueFilter += ' ' + c.name + ' IN (';
-          let filteredValues = 0;
-          let quote = '';
-          c.uniqueValues.forEach((v) => {
-            if (v.select) {
-              filteredValues++;
-              if (filteredValues === 1) {
-                if (typeof(v.value) === 'string') {
-                  quote = '\'';
+        if (c.filterType === 'UniqueValues') {
+          if (c.nullValue) {
+            this.valueFilter += ' ' + c.name + ' IS NULL';
+          } else {
+            this.valueFilter += ' ' + c.name + ' IN (';
+            let filteredValues = 0;
+            let quote = '';
+            c.uniqueValues.forEach((v) => {
+              if (v.select) {
+                filteredValues++;
+                if (filteredValues === 1) {
+                  if (typeof(v.value) === 'string') {
+                    quote = '\'';
+                  }
+                } else {
+                  this.valueFilter += ',';
                 }
-              } else {
-                this.valueFilter += ',';
+                this.valueFilter += quote + v.value + quote;
               }
-              this.valueFilter += quote + v.value + quote;
-            }
-          })
-          this.valueFilter += ')';
+            })
+            this.valueFilter += ')';
+          }
+        } else {
+          this.valueFilter += CriteriaHelper.convertConditionToQuery(c.criteria);
         }
+
       }
     })
     return this.valueFilter;
@@ -99,8 +106,9 @@ export class AttributelistFilter {
         uniqueValues = [];
         const colObject = this.layerFilterValues.columns.find(c => c.name === columnName);
         const colIndex = this.layerFilterValues.columns.findIndex(obj => obj.name === columnName);
-        if (colObject.uniqueValues.length === 0) {
+        const filterType = (colObject.filterType ? colObject.filterType : '');
 
+        if (colObject.uniqueValues.length === 0) {
           data.uniqueValues[columnName].forEach(val => {
             let filterValueSettings: FilterValueSettings;
             filterValueSettings = {value: val, select: true};
@@ -114,23 +122,37 @@ export class AttributelistFilter {
         config.data = {
           colName: columnName,
           values: uniqueValues,
+          criteria: colObject.criteria,
+          attributeType: this.getAttributeType(columnName),
+          filterType: filterType,
         };
         const dialogRef = this.dialog.open(AttributelistFilterValuesFormComponent, config);
-        dialogRef.afterClosed().subscribe(filterSetting => {
+        dialogRef.afterClosed().subscribe(filterDialogSettings => {
           // Do the filtering
-          if (filterSetting !== 'CANCEL') {
-            if (filterSetting === 'ON') {
-              this.layerFilterValues.columns[colIndex].uniqueValues = config.data.values;
-              this.layerFilterValues.columns[colIndex].nullValue = false;
-              this.layerFilterValues.columns[colIndex].status = true;
-            } else if (filterSetting === 'NONE') {
-              this.layerFilterValues.columns[colIndex].uniqueValues = config.data.values;
-              this.layerFilterValues.columns[colIndex].nullValue = true;
-              this.layerFilterValues.columns[colIndex].status = true;
-            } else if (filterSetting === 'OFF') {
+          if (filterDialogSettings.filterSetting !== 'CANCEL') {
+            if (filterDialogSettings.filterSetting === 'OFF') {
               this.layerFilterValues.columns[colIndex].uniqueValues = [];
               this.layerFilterValues.columns[colIndex].nullValue = false;
               this.layerFilterValues.columns[colIndex].status = false;
+            } else {
+              this.layerFilterValues.columns[colIndex].filterType = filterDialogSettings.filterType;
+              if (this.layerFilterValues.columns[colIndex].filterType !== 'UniqueValues') {
+                this.layerFilterValues.columns[colIndex].criteria = filterDialogSettings.criteria;
+                this.layerFilterValues.columns[colIndex].uniqueValues = [];
+                this.layerFilterValues.columns[colIndex].nullValue = false;
+                this.layerFilterValues.columns[colIndex].status = true;
+              } else {
+                this.layerFilterValues.columns[colIndex].criteria = null;
+                if (filterDialogSettings.filterSetting === 'ON') {
+                  this.layerFilterValues.columns[colIndex].uniqueValues = config.data.values;
+                  this.layerFilterValues.columns[colIndex].nullValue = false;
+                  this.layerFilterValues.columns[colIndex].status = true;
+                } else if (filterDialogSettings.filterSetting === 'NONE') {
+                  this.layerFilterValues.columns[colIndex].uniqueValues = config.data.values;
+                  this.layerFilterValues.columns[colIndex].nullValue = true;
+                  this.layerFilterValues.columns[colIndex].status = true;
+                }
+              }
             }
             this.dataSource.params.valueFilter = this.createFilter();
             attributelistRefresh.refreshTable();
@@ -139,4 +161,9 @@ export class AttributelistFilter {
       }
     });
   }
+
+  public getAttributeType (columnName: string): AttributeTypeEnum {
+    return AttributeTypeHelper.getAttributeType(this.dataSource.getAttributeForColumnName(columnName))
+  }
+
 }

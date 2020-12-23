@@ -327,6 +327,7 @@ export class AttributelistTableComponent implements AttributelistTable, Attribut
    * Fired when a column filter is clicked.
    */
   public onFilterClick(columnName: string): void {
+    // this.dataSource.columnController.columnNamesToColumns()
     this.filter.setFilter(this, columnName);
   }
 

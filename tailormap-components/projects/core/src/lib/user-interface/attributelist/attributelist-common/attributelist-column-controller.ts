@@ -4,6 +4,9 @@ import { AttributelistColumn } from './attributelist-column-models'
 
 export class AttributelistColumnController {
 
+  // List of attributes as return from metadataGetColumns
+  private attributes: Attribute[] = [];
+
   // List with special columns, needed for within this app.
   private specialColumns: AttributelistColumn[] = [];
 
@@ -76,6 +79,19 @@ export class AttributelistColumnController {
       columns.push(column);
     }
     return columns;
+  }
+
+  public setAttributes (columnDefs: Attribute[]) {
+    for (const columnDef of columnDefs) {
+      this.attributes.push(columnDef);
+    }
+  }
+
+  /**
+   * Returns attribute object based on column name
+   */
+  public getAttributeForColumnName(columnName: string): Attribute {
+    return this.attributes.find(c => c.name === columnName)
   }
 
   public columnDefsToColumns(columnDefs: Attribute[]): AttributelistColumn[] {
