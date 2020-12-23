@@ -13,6 +13,7 @@ import { CriteriaHelper } from '../criteria/helpers/criteria.helper';
 import { setStyles, showCriteriaForm } from '../state/analysis.actions';
 import { CriteriaTypeEnum } from '../models/criteria-type.enum';
 import { StyleHelper } from '../helpers/style.helper';
+import { IdService } from '../../shared/id-service/id.service';
 
 @Component({
   selector: 'tailormap-create-layer-mode-attributes',
@@ -31,6 +32,7 @@ export class CreateLayerModeAttributesComponent implements OnInit, OnDestroy {
 
   constructor(
     private store$: Store<AnalysisState>,
+    private idService: IdService,
   ) { }
 
   public ngOnInit(): void {
@@ -43,7 +45,7 @@ export class CreateLayerModeAttributesComponent implements OnInit, OnDestroy {
     combineLatest([ this.store$.select(selectCanCreateLayer), this.store$.select(selectStyles) ]).pipe(takeUntil(this.destroyed))
       .subscribe(([canCreate, styles]) => {
         if (canCreate && (!styles || styles.length !== 1)) {
-          this.store$.dispatch(setStyles({ styles: [ StyleHelper.getDefaultStyle() ]}));
+          this.store$.dispatch(setStyles({ styles: [ StyleHelper.getDefaultStyle(this.idService) ]}));
         }
       });
     this.creatingCriteria$ = this.store$.select(selectIsCreatingCriteria);

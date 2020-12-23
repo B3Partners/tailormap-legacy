@@ -75,6 +75,16 @@ export const setStyles = createAction(
   props<{ styles: UserLayerStyleModel[] }>(),
 );
 
+export const setSelectedStyle = createAction(
+  `${analysisActionsPrefix} Set Selected Style`,
+  props<{ styleId: string }>(),
+);
+
+export const updateStyle = createAction(
+  `${analysisActionsPrefix} Update Style`,
+  props<{ style: UserLayerStyleModel }>(),
+);
+
 export const setCreatingLayer = createAction(`${analysisActionsPrefix} Creating Layer`);
 
 export const setCreatingLayerSuccess = createAction(

@@ -13,6 +13,7 @@ export interface AnalysisState {
   selectDataSource?: boolean;
   selectedDataSource?: AnalysisSourceModel;
   styles?: UserLayerStyleModel[];
+  selectedStyle?: string;
   isCreatingLayer?: boolean;
   createLayerErrorMessage?: string;
   createdAppLayer?: string;

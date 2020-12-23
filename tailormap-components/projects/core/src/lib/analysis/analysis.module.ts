@@ -25,6 +25,7 @@ import { AttributeSelectorComponent } from './attribute-selector/attribute-selec
 import { StyleFormComponent } from './style-form/style-form.component';
 import { EffectsModule } from '@ngrx/effects';
 import { AnalysisEffects } from './state/analysis.effects';
+import { StyleFormPanelComponent } from './style-form-panel/style-form-panel.component';
 
 
 @NgModule({
@@ -43,6 +44,7 @@ import { AnalysisEffects } from './state/analysis.effects';
     CreateLayerModeThematicComponent,
     AttributeSelectorComponent,
     StyleFormComponent,
+    StyleFormPanelComponent,
   ],
   imports: [
     CommonModule,

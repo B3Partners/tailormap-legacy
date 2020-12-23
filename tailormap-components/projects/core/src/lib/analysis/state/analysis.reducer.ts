@@ -100,6 +100,26 @@ const onSetStyles = (state: AnalysisState, payload: { styles: UserLayerStyleMode
   styles: payload.styles,
 });
 
+const onSetSelectedStyle = (state: AnalysisState, payload: { styleId: string }): AnalysisState => ({
+  ...state,
+  selectedStyle: payload.styleId,
+});
+
+const onUpdateStyle = (state: AnalysisState, payload: { style: UserLayerStyleModel }): AnalysisState => {
+  const idx = state.styles.findIndex(s => s.id === payload.style.id);
+  if (idx === -1) {
+    return state;
+  }
+  return {
+    ...state,
+    styles: [
+      ...state.styles.slice(0, idx),
+      payload.style,
+      ...state.styles.slice(idx + 1),
+    ],
+  };
+};
+
 const onCreatingLayer = (state: AnalysisState): AnalysisState => ({
   ...state,
   isCreatingLayer: true,
@@ -131,6 +151,8 @@ const analysisReducerImpl = createReducer(
   on(AnalysisActions.loadThematicStylesSuccess, onLoadThematicStylesSuccess),
   on(AnalysisActions.loadThematicStylesFailed, onLoadThematicStylesFailed),
   on(AnalysisActions.setStyles, onSetStyles),
+  on(AnalysisActions.setSelectedStyle, onSetSelectedStyle),
+  on(AnalysisActions.updateStyle, onUpdateStyle),
   on(AnalysisActions.setCreatingLayer, onCreatingLayer),
   on(AnalysisActions.setCreatingLayerSuccess, onCreatingLayerSuccess),
   on(AnalysisActions.setCreatingLayerFailed, onCreatingLayerFailed),

@@ -71,6 +71,7 @@ export const analysisStateTestDataWithCreatedLayer: AnalysisState = {
     ],
   },
   styles: [{
+    id: 'style-test-1',
     active: true,
     fillOpacity: 62,
     fillColor: 'rgb(255, 105, 105)',

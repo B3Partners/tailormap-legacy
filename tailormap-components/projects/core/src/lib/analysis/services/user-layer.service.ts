@@ -33,6 +33,7 @@ import {
   UserLayerApiService,
   UserLayerResponseType,
 } from './user-layer-api.service';
+import { CreateLayerModeEnum } from '../models/create-layer-mode.enum';
 
 @Injectable({
   providedIn: 'root',
@@ -51,7 +52,9 @@ export class UserLayerService {
         filter(data => data.canCreateLayer),
         tap(() => this.store$.dispatch(setCreatingLayer())),
         switchMap(data => {
-          const query = CriteriaHelper.convertCriteriaToQuery(data.criteria);
+          const query = data.createLayerMode === CreateLayerModeEnum.THEMATIC
+            ? CriteriaHelper.convertStyleToQuery(data.styles)
+            : CriteriaHelper.convertCriteriaToQuery(data.criteria);
           return this.saveUserLayer$(
             `${data.selectedDataSource.layerId}`,
             data.layerName,

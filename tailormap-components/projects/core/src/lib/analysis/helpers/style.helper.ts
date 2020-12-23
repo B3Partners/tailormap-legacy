@@ -3,11 +3,14 @@ import { AnalysisSourceModel } from '../models/analysis-source.model';
 import { UserLayerStyleModel } from '../models/user-layer-style.model';
 import { rgbToHex } from '../../shared/util/color';
 import { ScopedUserLayerStyleModel } from '../models/scoped-user-layer-style.model';
+import { IdService } from '../../shared/id-service/id.service';
+import { CriteriaHelper } from '../criteria/helpers/criteria.helper';
 
 export class StyleHelper {
 
-  public static getDefaultStyle(): UserLayerStyleModel {
+  public static getDefaultStyle(idService: IdService): UserLayerStyleModel {
     return {
+      id: idService.getUniqueId('style'),
       active: true,
       fillOpacity: 100,
       fillColor: 'rgb(255, 105, 105)',
@@ -41,11 +44,23 @@ export class StyleHelper {
     return !!(style as ScopedUserLayerStyleModel).attribute;
   }
 
+  public static getStyleLabel(style: UserLayerStyleModel) {
+    if (!style) {
+      return '';
+    }
+    if (StyleHelper.isScopedStyle(style)) {
+      return style.value;
+    }
+    return style.id;
+  }
+
   public static convertStyles(styles: UserLayerStyleModel[], selectedDataSource: AnalysisSourceModel) {
     if (!styles || styles.length === 0) {
       return '';
     }
-    return styles.map(style => StyleHelper.createStyle(style, selectedDataSource)).join(' ');
+    return styles
+      .filter(style => style.active)
+      .map(style => StyleHelper.createStyle(style, selectedDataSource)).join(' ');
   }
 
   private static createStyle(style: UserLayerStyleModel, selectedDataSource: AnalysisSourceModel) {
@@ -53,9 +68,7 @@ export class StyleHelper {
     const markerStyles = [];
     let selector = '';
     if (StyleHelper.isScopedStyle(style)) {
-      selector = style.attributeType === AttributeTypeEnum.STRING || style.attributeType === AttributeTypeEnum.DATE
-        ? `[${style.attribute}='${style.value}'] `
-        : `[${style.attribute}=${style.value}] `;
+      selector = `[${style.attribute}=${CriteriaHelper.getExpression(style.value, style.attributeType)}] `;
     }
     if (StyleHelper.showPolygonSettings(selectedDataSource.geometryType)) {
       const polygonStyles = [];

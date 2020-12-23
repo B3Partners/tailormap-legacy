@@ -1,4 +1,5 @@
 export interface UserLayerStyleModel {
+  id: string;
   active: boolean;
   fillOpacity: number;
   fillColor: string;

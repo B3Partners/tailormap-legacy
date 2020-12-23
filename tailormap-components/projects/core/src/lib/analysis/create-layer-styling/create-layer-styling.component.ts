@@ -4,7 +4,7 @@ import {
   OnInit,
 } from '@angular/core';
 import {
-  clearCreateLayerMode, setStyles,
+  clearCreateLayerMode, setSelectedStyle, setStyles, updateStyle,
 } from '../state/analysis.actions';
 import { Store } from '@ngrx/store';
 import { AnalysisState } from '../state/analysis.state';
@@ -24,6 +24,7 @@ import { UserLayerService } from '../services/user-layer.service';
 import { AnalysisSourceModel } from '../models/analysis-source.model';
 import { AttributeTypeHelper } from '../../application/helpers/attribute-type.helper';
 import { UserLayerStyleModel } from '../models/user-layer-style.model';
+import { StyleHelper } from '../helpers/style.helper';
 
 @Component({
   selector: 'tailormap-create-layer-styling',
@@ -86,6 +87,10 @@ export class CreateLayerStylingComponent implements OnInit, OnDestroy {
     return !!this.styles && this.styles.length === 1;
   }
 
+  public hasMultipleStyles() {
+    return !!this.styles && this.styles.length > 1;
+  }
+
   public singleStyleUpdated($event: UserLayerStyleModel) {
     if (!this.hasSingleStyle()) {
       return;
@@ -94,7 +99,23 @@ export class CreateLayerStylingComponent implements OnInit, OnDestroy {
       ...this.styles[0],
       ...$event,
     };
-    this.store$.dispatch(setStyles({ styles: [ style ] }));
+    this.store$.dispatch(updateStyle({ style }));
+  }
+
+  public toggleActive(style: UserLayerStyleModel) {
+    const updatedStyle: UserLayerStyleModel = {
+      ...style,
+      active: !style.active,
+    };
+    this.store$.dispatch(updateStyle({ style: updatedStyle }));
+  }
+
+  public getStyleLabel(style: UserLayerStyleModel) {
+    return StyleHelper.getStyleLabel(style);
+  }
+
+  public setSelectedStyle(style: UserLayerStyleModel) {
+    this.store$.dispatch(setSelectedStyle({ styleId: style.id }));
   }
 
 }

@@ -9,7 +9,7 @@ import {
   selectCanCreateLayer,
   selectCreateCriteriaMode,
   selectCreateLayerMode,
-  selectIsSelectingDataSource,
+  selectIsSelectingDataSource, selectSelectedStyle,
 } from '../state/analysis.selectors';
 import { CreateLayerModeEnum } from '../models/create-layer-mode.enum';
 import {
@@ -36,6 +36,7 @@ export class CreateLayerPanelComponent implements OnInit, OnDestroy {
 
   private destroyed = new Subject();
   public cannotCreateLayer$: Observable<boolean>;
+  public hasSelectedStyle$: Observable<boolean>;
 
   constructor(
     private store$: Store<AnalysisState>,
@@ -55,6 +56,7 @@ export class CreateLayerPanelComponent implements OnInit, OnDestroy {
       });
     this.cannotCreateLayer$ = this.store$.select(selectCanCreateLayer).pipe(map(canCreate => !canCreate));
     this.isSelectingDataSource$ = this.store$.select(selectIsSelectingDataSource);
+    this.hasSelectedStyle$ = this.store$.select(selectSelectedStyle).pipe(map(style => !!style));
   }
 
   public ngOnDestroy() {

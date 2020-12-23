@@ -1,12 +1,7 @@
-import {
-  createFeatureSelector,
-  createSelector,
-} from '@ngrx/store';
-import {
-  AnalysisState,
-  analysisStateKey,
-} from './analysis.state';
+import { createFeatureSelector, createSelector } from '@ngrx/store';
+import { AnalysisState, analysisStateKey } from './analysis.state';
 import { CriteriaHelper } from '../criteria/helpers/criteria.helper';
+import { CreateLayerModeEnum } from '../models/create-layer-mode.enum';
 
 const selectAnalysisState = createFeatureSelector<AnalysisState>(analysisStateKey);
 
@@ -34,29 +29,67 @@ export const selectCreatedAppLayer = createSelector(selectAnalysisState, state =
 
 export const selectStyles = createSelector(selectAnalysisState, state => state.styles);
 
+export const selectSelectedStyle = createSelector(selectAnalysisState, state => state.selectedStyle);
+
+export const selectSelectedStyleModel = createSelector(
+  selectStyles,
+  selectSelectedStyle,
+  (styles, selectedStyle) => {
+    if (!selectedStyle || !styles || styles.length === 0) {
+      return null;
+    }
+    return styles.find(s => s.id === selectedStyle);
+  },
+);
+
+export const selectCanCreateAttributesLayer = createSelector(
+  selectCriteria,
+  selectCreateLayerMode,
+  (criteria, createLayerMode) => {
+    if (createLayerMode !== CreateLayerModeEnum.ATTRIBUTES) {
+      return true;
+    }
+    return !!criteria && CriteriaHelper.validGroups(criteria.groups);
+  },
+);
+
+export const selectCanCreateThematicLayer = createSelector(
+  selectSelectedThematicAttribute,
+  selectCreateLayerMode,
+  (attribute, createLayerMode) => {
+    if (createLayerMode !== CreateLayerModeEnum.THEMATIC) {
+      return true;
+    }
+    return !!attribute;
+  },
+);
+
 export const selectCanCreateLayer = createSelector(
   selectSelectedDataSource,
-  selectCriteria,
   selectLayerName,
   selectIsCreatingLayer,
-  (selectedDataSource, criteria, layerName, isCreatingLayer) => {
+  selectCanCreateAttributesLayer,
+  selectCanCreateThematicLayer,
+  (selectedDataSource, layerName, isCreatingLayer, canCreateAttributesLayer, canCreateThematicLayer) => {
     return !isCreatingLayer
       && !!selectedDataSource
-      && !!criteria
       && !!layerName
-      && CriteriaHelper.validGroups(criteria.groups);
+      && canCreateAttributesLayer
+      && canCreateThematicLayer;
   },
 );
 
 export const selectCreateLayerData = createSelector(
+  selectCreateLayerMode,
   selectSelectedDataSource,
   selectCriteria,
   selectLayerName,
   selectStyles,
   selectCanCreateLayer,
   selectCreatedAppLayer,
-  (selectedDataSource, criteria, layerName, styles, canCreateLayer, createdAppLayer) => {
+  (createLayerMode, selectedDataSource, criteria, layerName, styles, canCreateLayer, createdAppLayer) => {
     return {
+      createLayerMode,
       selectedDataSource,
       criteria,
       layerName,

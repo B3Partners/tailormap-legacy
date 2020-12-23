@@ -32,3 +32,4 @@
 <tailormap-create-layer-layer-selection *ngIf="isSelectingDataSource$ | async"></tailormap-create-layer-layer-selection>
 <tailormap-simple-criteria *ngIf="criteriaMode === 'SIMPLE'"></tailormap-simple-criteria>
 <tailormap-advanced-criteria *ngIf="criteriaMode === 'ADVANCED'"></tailormap-advanced-criteria>
+<tailormap-style-form-panel *ngIf="hasSelectedStyle$ | async"></tailormap-style-form-panel>

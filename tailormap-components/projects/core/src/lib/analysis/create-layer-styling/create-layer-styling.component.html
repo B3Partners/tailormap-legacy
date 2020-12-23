@@ -1,11 +1,32 @@
 <div class="form" *ngIf="selectedDataSource">
-  <h2>{{selectedDataSource.label}}</h2>
-  <h3 class="sub-title">{{getGeometryTypeLabel() | capitalizeFirst}} geometrie</h3>
 
-  <tailormap-style-form *ngIf="hasSingleStyle()"
-                        [style]="styles[0]"
-                        [geometryType]="selectedDataSource.geometryType"
-                        (styleUpdated)="singleStyleUpdated($event)"></tailormap-style-form>
+  <ng-container *ngIf="hasSingleStyle()">
+    <h2>{{selectedDataSource.label}}</h2>
+    <h3 class="sub-title">{{getGeometryTypeLabel() | capitalizeFirst}} geometrie</h3>
+
+    <div class="styling-form">
+      <mat-checkbox (change)="toggleActive(styles[0])"
+                    [checked]="styles[0].active">Aangepaste stijl gebruiken</mat-checkbox>
+
+      <tailormap-style-form *ngIf="styles[0].active"
+                            [style]="styles[0]"
+                            [geometryType]="selectedDataSource.geometryType"
+                            (styleUpdated)="singleStyleUpdated($event)"></tailormap-style-form>
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="hasMultipleStyles()">
+    <h2>Objecten</h2>
+    <div class="styling-form form-field">
+      <div class="style-link" *ngFor="let style of styles">
+        <mat-checkbox (change)="toggleActive(style)" [checked]="style.active"></mat-checkbox>
+        <button mat-button class="form-button" (click)="setSelectedStyle(style)">
+          <span>{{getStyleLabel(style)}}</span>
+          <mat-icon svgIcon="contextual_chevron_right"></mat-icon>
+        </button>
+      </div>
+    </div>
+  </ng-container>
 
   <div class="form-field form-errors" *ngIf="errorMessage$ | async as errorMessage">
     <mat-error>
