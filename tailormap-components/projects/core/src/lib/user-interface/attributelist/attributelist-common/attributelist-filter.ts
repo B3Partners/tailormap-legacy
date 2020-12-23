@@ -41,12 +41,14 @@ export class AttributelistFilter {
   private valueFilter: string;
 
   public initFiltering(colNames: string[]): void {
-    // Init the filter structure
-    this.layerFilterValues.layerId = this.dataSource.params.layerId;
-    for (const colName of colNames) {
-      let filterColumn: FilterColumns;
-      filterColumn = {name: colName, status: false, nullValue: false, filterType: null, uniqueValues: [], criteria: null};
-      this.layerFilterValues.columns.push(filterColumn);
+    if (this.layerFilterValues.columns.length === 0) {
+      // Init the filter structure
+      this.layerFilterValues.layerId = this.dataSource.params.layerId;
+      for (const colName of colNames) {
+        let filterColumn: FilterColumns;
+        filterColumn = {name: colName, status: false, nullValue: false, filterType: null, uniqueValues: [], criteria: null};
+        this.layerFilterValues.columns.push(filterColumn);
+      }
     }
   }
 
