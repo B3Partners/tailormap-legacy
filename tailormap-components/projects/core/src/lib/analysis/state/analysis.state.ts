@@ -22,7 +22,9 @@ export interface AnalysisState {
   criteria?: CriteriaModel;
 
   // Thematic Mode
-  selectedAttribute?: Attribute;
+  selectedThematicAttribute?: Attribute;
+  loadingThematicStyles?: boolean;
+  loadThematicStylesErrorMessage?: string;
 }
 
 export const initialAnalysisState: AnalysisState = {

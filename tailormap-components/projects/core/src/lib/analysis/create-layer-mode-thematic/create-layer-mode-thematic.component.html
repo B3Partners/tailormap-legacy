@@ -3,6 +3,6 @@
   <tailormap-attribute-selector *ngIf="selectedDataSource$ | async as selectedDataSource"
                                 [appLayerId]="selectedDataSource.layerId"
                                 [featureType]="selectedDataSource.featureType"
-                                [selectedAttribute]="selectedAttribute$ | async"
+                                [selectedAttribute]="selectedAttribute"
                                 (attributeSelected)="attributeSelected($event)"></tailormap-attribute-selector>
 </div>

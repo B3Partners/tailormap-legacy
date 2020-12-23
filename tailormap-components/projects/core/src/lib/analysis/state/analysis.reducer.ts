@@ -14,6 +14,7 @@ import { CriteriaTypeEnum } from '../models/criteria-type.enum';
 import { CriteriaModel } from '../models/criteria.model';
 import { UserLayerStyleModel } from '../models/user-layer-style.model';
 import { Attribute } from '../../shared/attribute-service/attribute-models';
+import { ScopedUserLayerStyleModel } from '../models/scoped-user-layer-style.model';
 
 const clearAnalysisState = (state: AnalysisState): AnalysisState => ({
   ...state,
@@ -69,10 +70,30 @@ const onRemoveCriteria = (state: AnalysisState): AnalysisState => ({
   createCriteriaMode: null,
 });
 
-const onSetSelectedAttribute = (state: AnalysisState, payload: { attribute: Attribute }): AnalysisState => ({
+const onSetSelectedThematicAttribute = (state: AnalysisState, payload: { attribute: Attribute }): AnalysisState => ({
   ...state,
-  selectedAttribute: payload.attribute,
+  selectedThematicAttribute: payload.attribute,
 });
+
+const onLoadThematicStyles = (state: AnalysisState): AnalysisState => ({
+  ...state,
+  loadingThematicStyles: true,
+  loadThematicStylesErrorMessage: '',
+});
+
+const onLoadThematicStylesSuccess = (state: AnalysisState, payload: { styles: ScopedUserLayerStyleModel[] }): AnalysisState => ({
+  ...state,
+  loadingThematicStyles: false,
+  loadThematicStylesErrorMessage: '',
+  styles: payload.styles,
+});
+
+const onLoadThematicStylesFailed = (state: AnalysisState, payload: { error: string }): AnalysisState => ({
+  ...state,
+  loadingThematicStyles: false,
+  loadThematicStylesErrorMessage: payload.error,
+});
+
 
 const onSetStyles = (state: AnalysisState, payload: { styles: UserLayerStyleModel[] }): AnalysisState => ({
   ...state,
@@ -105,7 +126,10 @@ const analysisReducerImpl = createReducer(
   on(AnalysisActions.showCriteriaForm, onShowCriteriaForm),
   on(AnalysisActions.createCriteria, onCreateCriteria),
   on(AnalysisActions.removeCriteria, onRemoveCriteria),
-  on(AnalysisActions.setSelectedAttribute, onSetSelectedAttribute),
+  on(AnalysisActions.setSelectedThematicAttribute, onSetSelectedThematicAttribute),
+  on(AnalysisActions.loadThematicStyles, onLoadThematicStyles),
+  on(AnalysisActions.loadThematicStylesSuccess, onLoadThematicStylesSuccess),
+  on(AnalysisActions.loadThematicStylesFailed, onLoadThematicStylesFailed),
   on(AnalysisActions.setStyles, onSetStyles),
   on(AnalysisActions.setCreatingLayer, onCreatingLayer),
   on(AnalysisActions.setCreatingLayerSuccess, onCreatingLayerSuccess),

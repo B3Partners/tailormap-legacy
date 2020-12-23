@@ -23,6 +23,8 @@ import { CreateLayerModeAttributesComponent } from './create-layer-mode-attribut
 import { CreateLayerModeThematicComponent } from './create-layer-mode-thematic/create-layer-mode-thematic.component';
 import { AttributeSelectorComponent } from './attribute-selector/attribute-selector.component';
 import { StyleFormComponent } from './style-form/style-form.component';
+import { EffectsModule } from '@ngrx/effects';
+import { AnalysisEffects } from './state/analysis.effects';
 
 
 @NgModule({
@@ -47,6 +49,7 @@ import { StyleFormComponent } from './style-form/style-form.component';
     SharedModule,
     ApplicationModule,
     StoreModule.forFeature(analysisStateKey, analysisReducer),
+    EffectsModule.forFeature([ AnalysisEffects ]),
   ],
 })
 export class AnalysisModule {

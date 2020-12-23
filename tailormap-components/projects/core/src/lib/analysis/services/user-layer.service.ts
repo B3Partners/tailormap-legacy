@@ -66,6 +66,7 @@ export class UserLayerService {
   }
 
   private saveUserLayer$(appLayerId: string, title: string, query: string, style: string, createdAppLayer?: string) {
+
     return this.store$.select(selectApplicationId)
       .pipe(
         take(1),

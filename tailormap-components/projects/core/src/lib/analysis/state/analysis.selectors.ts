@@ -24,7 +24,7 @@ export const selectCreateCriteriaMode = createSelector(selectAnalysisState, stat
 
 export const selectCriteria = createSelector(selectAnalysisState, state => state.criteria);
 
-export const selectSelectedAttribute = createSelector(selectAnalysisState, state => state.selectedAttribute);
+export const selectSelectedThematicAttribute = createSelector(selectAnalysisState, state => state.selectedThematicAttribute);
 
 export const selectIsCreatingLayer = createSelector(selectAnalysisState, state => state.isCreatingLayer);
 
