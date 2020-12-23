@@ -47,6 +47,7 @@ declare interface AppLayer {
   featureType: number;
   background: boolean;
   userlayer: boolean;
+  userlayer_original_layername ?: string;
 }
 declare interface Pixel{
   x: number;

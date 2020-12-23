@@ -249,7 +249,12 @@ public class ApplicationLayer {
             json.put("filterable", l.getFeatureType() != null && !(l.getFeatureType().getFeatureSource() instanceof ArcGISFeatureSource) );
         }
 
-        json.put("userlayer", l.isUserlayer() != null ? l.isUserlayer() : false);
+        boolean userLayer = l.isUserlayer() != null ? l.isUserlayer() : false;
+
+        json.put("userlayer", userLayer);
+        if(userLayer){
+            json.put(Layer.DETAIL_USERLAYER_ORIGINAL_LAYERNAME, l.getDetails().get(Layer.DETAIL_USERLAYER_ORIGINAL_LAYERNAME) );
+        }
         json.put("bufferable", l.isBufferable());
         json.put("editable", l.getFeatureType() != null && l.getFeatureType().isWriteable());
         json.put("influence", this.getDetails().containsKey("influenceradius"));
