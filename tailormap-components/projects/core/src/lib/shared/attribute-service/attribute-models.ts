@@ -80,6 +80,14 @@ export interface Relation {
   type: RelationType;
   featureTypeName: string;
   foreignFeatureTypeName: string;
+  relationKeys: RelationKey[];
+}
+
+export interface RelationKey{
+  leftSideName?: string;
+  leftSideType?: string;
+  rightSideName?: string;
+  rightSideType?: string;
 }
 
 export enum RelationType {

@@ -105,7 +105,8 @@ public class UserLayerHandler {
     public String validate() {
         String message;
         try {
-            message = this.dataBase.preValidateView(tableName, this.getSQLQuery());
+            String sql = this.getSQLQuery();
+            message = this.dataBase.preValidateView(tableName, sql);
             if (message != null) {
                 message = "Selectielaag kan niet gemaakt worden. " + message;
             }
@@ -184,9 +185,10 @@ public class UserLayerHandler {
         super.finalize();
     }
 
-    private String getSQLQuery() throws CQLException, FilterToSQLException {
-        FilterToSQL f = ((BasicSQLDialect) this.dataStore.getSQLDialect()).createFilterToSQL();
-        return f.encodeToString(FlamingoCQL.toFilter(this.query, this.entityManager));
+    public String getSQLQuery() throws CQLException, FilterToSQLException {
+        TMFilterToSQL f = new TMFilterToSQL();
+        f.createFilterCapabilities();
+        return f.encodeToString(FlamingoCQL.toFilter(this.query, this.entityManager, false));
     }
 
     private boolean createView(String viewName) {
