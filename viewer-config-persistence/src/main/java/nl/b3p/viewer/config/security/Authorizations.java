@@ -28,6 +28,7 @@ import net.sourceforge.stripes.action.ActionBeanContext;
 import net.sourceforge.stripes.action.ForwardResolution;
 import net.sourceforge.stripes.validation.SimpleError;
 import nl.b3p.i18n.ResourceBundleProvider;
+import nl.b3p.viewer.config.forms.Form;
 import nl.b3p.viewer.config.services.*;
 import nl.b3p.viewer.config.app.*;
 import nl.b3p.viewer.util.DB;
@@ -331,6 +332,12 @@ public class Authorizations {
             }
         }
         return true;
+    }
+
+    public static boolean isFormAuthorized(Form f, HttpServletRequest request, EntityManager em) {
+        Set<String> userRoles = getRoles(request, em);
+        Set<String> formRoles = f.getReaders();
+        return !Collections.disjoint(userRoles, formRoles) || formRoles.isEmpty();
     }
 
     private static final String REQUEST_APP_CACHE = Authorizations.class.getName() + ".REQUEST_APP_CACHE";
