@@ -14,12 +14,15 @@ import {
 import { AttributeDataSource } from './attributelist-datasource';
 import { AttributelistFilterValuesFormComponent } from '../attributelist-filter-values-form/attributelist-filter-values-form.component';
 import { ValueService } from '../../../shared/value-service/value.service';
-import { AttributelistRefresh } from './attributelist-models';
+import { AttributelistForFilter } from './attributelist-models';
 import { CriteriaHelper } from '../../../analysis/criteria/helpers/criteria.helper';
 import { AttributeTypeEnum } from '../../../application/models/attribute-type.enum';
 import { AttributeTypeHelper } from '../../../application/helpers/attribute-type.helper';
+import { AttributelistColumnController } from './attributelist-column-controller';
 
 export class AttributelistFilter {
+
+  private columnController: AttributelistColumnController;
 
   constructor(
     private dataSource: AttributeDataSource,
@@ -97,8 +100,9 @@ export class AttributelistFilter {
     return this.valueFilter;
   }
 
-  public setFilter(attributelistRefresh: AttributelistRefresh, columnName: string): void {
+  public setFilter(attributelistForFilter: AttributelistForFilter, columnName: string): void {
     // Get the unique values for this column
+    this.columnController = attributelistForFilter.columnController;
     this.valueParams.applicationLayer = this.dataSource.params.layerId;
     this.valueParams.attributes = [];
     this.valueParams.attributes.push(columnName);
@@ -157,7 +161,7 @@ export class AttributelistFilter {
               }
             }
             this.dataSource.params.valueFilter = this.createFilter();
-            attributelistRefresh.refreshTable();
+            attributelistForFilter.refreshTable();
           }
         });
       }
@@ -165,7 +169,7 @@ export class AttributelistFilter {
   }
 
   public getAttributeType (columnName: string): AttributeTypeEnum {
-    return AttributeTypeHelper.getAttributeType(this.dataSource.getAttributeForColumnName(columnName))
+    return AttributeTypeHelper.getAttributeType(this.columnController.getAttributeForColumnName(columnName))
   }
 
 }

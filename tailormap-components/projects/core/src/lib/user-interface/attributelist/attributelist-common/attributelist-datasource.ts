@@ -122,9 +122,9 @@ export class AttributeDataSource extends DataSource<any> {
     return this.params.layerName;
   }
 
-  public getAttributeForColumnName(columnName: string): Attribute {
-    return this.columnController.getAttributeForColumnName(columnName);
-  }
+  // public getAttributeForColumnName(columnName: string): Attribute {
+  //   return this.columnController.getAttributeForColumnName(columnName);
+  // }
   /**
    * Returns the number of checked rows.
    */

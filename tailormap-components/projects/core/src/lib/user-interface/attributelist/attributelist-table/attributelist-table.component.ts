@@ -28,7 +28,7 @@ import {
 } from '@angular/animations';
 import {
   AttributelistTable,
-  AttributelistRefresh,
+  AttributelistForFilter,
   RowClickData,
   RowData,
 } from '../attributelist-common/attributelist-models';
@@ -51,6 +51,7 @@ import { TailorMapService } from '../../../../../../bridge/src/tailor-map.servic
 import { HighlightService } from '../../../shared/highlight-service/highlight.service';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { AttributelistColumn } from '../attributelist-common/attributelist-column-models';
+import { AttributelistColumnController } from '../attributelist-common/attributelist-column-controller';
 // import { LiteralMapKey } from '@angular/compiler';
 
 @Component({
@@ -65,7 +66,7 @@ import { AttributelistColumn } from '../attributelist-common/attributelist-colum
     ]),
   ],
 })
-export class AttributelistTableComponent implements AttributelistTable, AttributelistRefresh, OnInit, AfterViewInit {
+export class AttributelistTableComponent implements AttributelistTable, AttributelistForFilter, OnInit, AfterViewInit {
 
   @ViewChild(MatPaginator) private paginator: MatPaginator;
   @ViewChild(MatSort) private sort: MatSort;
@@ -84,6 +85,8 @@ export class AttributelistTableComponent implements AttributelistTable, Attribut
 
   @Output()
   public tabChange = new EventEmitter();
+
+  public columnController: AttributelistColumnController;
 
   public dataSource = new AttributeDataSource(this.layerService,
                                               this.attributeService,
@@ -327,7 +330,6 @@ export class AttributelistTableComponent implements AttributelistTable, Attribut
    * Fired when a column filter is clicked.
    */
   public onFilterClick(columnName: string): void {
-    // this.dataSource.columnController.columnNamesToColumns()
     this.filter.setFilter(this, columnName);
   }
 
@@ -476,6 +478,7 @@ export class AttributelistTableComponent implements AttributelistTable, Attribut
   private updateTable(): void {
     // (Re)load data. Fires the onAfterLoadData method.
     this.dataSource.loadData(this);
+    this.columnController = this.dataSource.columnController;
     // Update check info (number checked/check state).
     this.updateCheckedInfo();
   }
