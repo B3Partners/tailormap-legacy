@@ -13,25 +13,8 @@
     </button>
   </div>
 
-  <div class="form-field" *ngIf="selectedDataSource">
-    <label>Criteria</label>
-    <button *ngIf="!hasCriteria()" mat-button [matMenuTriggerFor]="criteriaMenu" class="form-button"
-            [disabled]="hasActiveSidePanel$ | async" [class.form-button--active]="creatingCriteria$ | async">
-      <span>Criteria instellen</span>
-      <mat-icon svgIcon="contextual_chevron_right"></mat-icon>
-    </button>
-    <mat-menu #criteriaMenu="matMenu" yPosition="above" class="tailormap-menu-panel">
-      <button mat-menu-item (click)="setCriteria(criteriaMode.SIMPLE)">Simpele vergelijking</button>
-      <button mat-menu-item (click)="setCriteria(criteriaMode.ADVANCED)">Criteria groepen (geavanceerd)</button>
-    </mat-menu>
-    <button *ngIf="hasCriteria()" mat-button class="form-button" [disabled]="hasActiveSidePanel$ | async"
-            [class.form-button--active]="creatingCriteria$ | async" (click)="editCriteria()">
-      <span>Criteria bewerken</span>
-      <mat-icon svgIcon="contextual_chevron_right"></mat-icon>
-    </button>
-  </div>
-
-  <tailormap-criteria-description></tailormap-criteria-description>
+  <tailormap-create-layer-mode-attributes *ngIf="isCreatingAttributesLayer()" class="create-layer-mode"></tailormap-create-layer-mode-attributes>
+  <tailormap-create-layer-mode-thematic *ngIf="isCreatingThematicLayer()" class="create-layer-mode"></tailormap-create-layer-mode-thematic>
 
   <div class="form-field form-errors" *ngIf="errorMessage$ | async as errorMessage">
     <mat-error>

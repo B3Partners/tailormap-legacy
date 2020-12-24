@@ -4,8 +4,7 @@ import {
   OnInit,
 } from '@angular/core';
 import {
-  clearCreateLayerMode,
-  setStyle,
+  clearCreateLayerMode, setSelectedStyle, setStyles, updateStyle,
 } from '../state/analysis.actions';
 import { Store } from '@ngrx/store';
 import { AnalysisState } from '../state/analysis.state';
@@ -14,7 +13,7 @@ import {
   selectCreateLayerErrorMessage,
   selectIsCreatingLayer,
   selectSelectedDataSource,
-  selectStyle,
+  selectStyles,
 } from '../state/analysis.selectors';
 import { takeUntil } from 'rxjs/operators';
 import {
@@ -24,7 +23,6 @@ import {
 import { UserLayerService } from '../services/user-layer.service';
 import { AnalysisSourceModel } from '../models/analysis-source.model';
 import { AttributeTypeHelper } from '../../application/helpers/attribute-type.helper';
-import { MatSliderChange } from '@angular/material/slider';
 import { UserLayerStyleModel } from '../models/user-layer-style.model';
 import { StyleHelper } from '../helpers/style.helper';
 
@@ -40,31 +38,9 @@ export class CreateLayerStylingComponent implements OnInit, OnDestroy {
   public selectedDataSource: AnalysisSourceModel;
 
   public errorMessage$: Observable<string>;
-  public style: UserLayerStyleModel;
-  private defaultStyle: UserLayerStyleModel = {
-    fillOpacity: 100,
-    fillColor: 'rgb(255, 105, 105)',
-    strokeColor: 'rgb(255, 105, 105)',
-    strokeOpacity: 100,
-    strokeWidth: 2,
-    marker: 'circle',
-    markerSize: 8,
-    markerFillColor: 'rgb(255, 105, 105)',
-    markerStrokeColor: 'rgb(30, 30, 30)',
-  };
-
-  public availableMarkers = [
-    { value: 'circle', icon: 'markers_circle' },
-    { value: 'square', icon: 'markers_square' },
-    { value: 'triangle', icon: 'markers_triangle' },
-    { value: 'arrow', icon: 'markers_arrow' },
-    { value: 'cross', icon: 'markers_cross' },
-    { value: 'star', icon: 'markers_star' },
-  ];
 
   private destroyed = new Subject();
-  private debounce: number;
-  private updatedProps: Map<keyof UserLayerStyleModel, string | number> = new Map();
+  public styles: UserLayerStyleModel[];
 
   constructor(
     private store$: Store<AnalysisState>,
@@ -78,8 +54,8 @@ export class CreateLayerStylingComponent implements OnInit, OnDestroy {
     this.store$.select(selectIsCreatingLayer).pipe(takeUntil(this.destroyed)).subscribe(isCreatingLayer => {
       this.isCreatingLayer = isCreatingLayer;
     });
-    this.store$.select(selectStyle).pipe(takeUntil(this.destroyed)).subscribe(style => {
-      this.style = style || this.defaultStyle;
+    this.store$.select(selectStyles).pipe(takeUntil(this.destroyed)).subscribe(styles => {
+      this.styles = styles;
     });
     this.store$.select(selectSelectedDataSource).pipe(takeUntil(this.destroyed)).subscribe(selectedDataSource => {
       this.selectedDataSource = selectedDataSource;
@@ -107,95 +83,39 @@ export class CreateLayerStylingComponent implements OnInit, OnDestroy {
     return AttributeTypeHelper.getLabelForAttributeType(this.selectedDataSource.geometryType);
   }
 
-  public showLineSettings() {
-    return StyleHelper.showLineSettings(this.selectedDataSource);
+  public hasSingleStyle() {
+    return !!this.styles && this.styles.length === 1;
   }
 
-  public showPolygonSettings() {
-    return StyleHelper.showPolygonSettings(this.selectedDataSource);
+  public hasMultipleStyles() {
+    return !!this.styles && this.styles.length > 1;
   }
 
-  public showPointSettings() {
-    return StyleHelper.showPointSettings(this.selectedDataSource);
-  }
-
-  public formatThumb(value: number) {
-    return `${Math.round(value)}%`;
-  }
-
-  public getStrokeOpacity() {
-    return this.style.strokeOpacity;
-  }
-
-  public changeStrokeColor($event: string) {
-    this.change('strokeColor', $event);
-    if (!this.showPolygonSettings()) {
-      this.change('fillColor', $event);
+  public singleStyleUpdated($event: UserLayerStyleModel) {
+    if (!this.hasSingleStyle()) {
+      return;
     }
+    const style: UserLayerStyleModel = {
+      ...this.styles[0],
+      ...$event,
+    };
+    this.store$.dispatch(updateStyle({ style }));
   }
 
-  public changeMarkerFill($event: string) {
-    this.change('markerFillColor', $event);
+  public toggleActive(style: UserLayerStyleModel) {
+    const updatedStyle: UserLayerStyleModel = {
+      ...style,
+      active: !style.active,
+    };
+    this.store$.dispatch(updateStyle({ style: updatedStyle }));
   }
 
-  public changeMarkerStroke($event: string) {
-    this.change('markerStrokeColor', $event);
+  public getStyleLabel(style: UserLayerStyleModel) {
+    return StyleHelper.getStyleLabel(style);
   }
 
-  public changeMarkerSize($event: MatSliderChange) {
-    this.change('markerSize', $event.value);
-  }
-
-  public changeStrokeOpacity($event: MatSliderChange) {
-    this.change('strokeOpacity', $event.value);
-  }
-
-  public changeStrokeWidth($event: MatSliderChange) {
-    this.change('strokeWidth', $event.value);
-  }
-
-  public changeFillColor($event: string) {
-    this.change('fillColor', $event);
-  }
-
-  public changeFillOpacity($event: MatSliderChange) {
-    this.change('fillOpacity', $event.value);
-  }
-
-  public getMarkers() {
-    return this.availableMarkers.map(m => m.icon);
-  }
-
-  public getSelectedMarker() {
-    const marker = this.availableMarkers.find(m => m.value === this.style.marker);
-    if (marker) {
-      return marker.icon;
-    }
-    return '';
-  }
-
-  public changeMarker($event: string) {
-    const marker = this.availableMarkers.find(m => m.icon === $event);
-    if (marker) {
-      this.change('marker', marker.value);
-    }
-  }
-
-  private change(key: keyof UserLayerStyleModel, value: string | number) {
-    this.updatedProps.set(key, value);
-    if (this.debounce) {
-      window.clearTimeout(this.debounce);
-    }
-    this.debounce = window.setTimeout(() => this.saveStyle(), 25);
-  }
-
-  private saveStyle() {
-    let style = { ...this.style };
-    this.updatedProps.forEach((value, key) => {
-      style = { ...style, [key]: value };
-    })
-    this.store$.dispatch(setStyle({ style }));
-    this.updatedProps.clear();
+  public setSelectedStyle(style: UserLayerStyleModel) {
+    this.store$.dispatch(setSelectedStyle({ styleId: style.id }));
   }
 
 }

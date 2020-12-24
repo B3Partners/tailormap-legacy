@@ -90,6 +90,7 @@ export class AttributelistTableComponent implements AttributelistTable, Attribut
 
   public dataSource = new AttributeDataSource(this.layerService,
                                               this.attributeService,
+                                              this.tailorMapService,
                                               this.formconfigRepoService);
 
   public filter = new AttributelistFilter(
