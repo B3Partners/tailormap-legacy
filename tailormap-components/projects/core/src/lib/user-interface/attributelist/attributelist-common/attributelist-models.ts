@@ -1,9 +1,11 @@
+import { AttributelistColumnController } from './attributelist-column-controller';
 
 export interface AttributelistTable {
   onAfterLoadData: () => void;
 }
 
-export interface AttributelistRefresh {
+export interface AttributelistForFilter {
+  columnController: AttributelistColumnController;
   refreshTable: () => void;
 }
 

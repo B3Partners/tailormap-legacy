@@ -5,7 +5,7 @@ h3 {
 }
 .mat-checkbox {
   margin-right: 4px;
-  font-size: 16px;
+  font-size: 14px;
 }
 .mat-dialog-actions {
   display: flex;
@@ -16,5 +16,12 @@ h3 {
   width: 100%;
   text-align: center;
   vertical-align: center;
+}
+.mat-radio-button {
+  padding-bottom: 4px;
+}
+.mat-form-field {
+  font-size: 14px;
+  line-height: 2;
 }
 
