@@ -9,9 +9,8 @@ import { AttributelistTabComponent } from '../attributelist-tab/attributelist-ta
 import { TailorMapService } from '../../../../../../bridge/src/tailor-map.service';
 import { Store } from '@ngrx/store';
 import { AnalysisState } from '../../../analysis/state/analysis.state';
-import { setCreateLayerMode, setLayerName, setSelectedDataSource } from '../../../analysis/state/analysis.actions';
+import { setSelectedDataSource } from '../../../analysis/state/analysis.actions';
 import { UserLayerService } from '../../../analysis/services/user-layer.service';
-import { CreateLayerModeEnum } from '../../../analysis/models/create-layer-mode.enum';
 import { AnalysisSourceModel } from '../../../analysis/models/analysis-source.model';
 import { AttributeTypeHelper } from '../../../application/helpers/attribute-type.helper';
 import { MetadataService } from '../../../application/services/metadata.service';
