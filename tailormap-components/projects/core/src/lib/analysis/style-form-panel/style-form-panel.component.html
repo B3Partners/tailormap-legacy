@@ -1,0 +1,12 @@
+<div class="overlay-panel mat-elevation-z4" *ngIf="selectedDataSource && selectedStyleModel">
+  <tailormap-dialog-close-button (closeDialog)="closePanel()" icon="chevron_left"></tailormap-dialog-close-button>
+  <h1>{{getStyleLabel(selectedStyleModel)}}</h1>
+  <h3 class="sub-title">{{getGeometryTypeLabel() | capitalizeFirst}} geometrie</h3>
+
+  <div class="styling-form">
+    <tailormap-style-form [style]="selectedStyleModel"
+                          [geometryType]="selectedDataSource.geometryType"
+                          (styleUpdated)="styleUpdated($event)"></tailormap-style-form>
+  </div>
+
+</div>

@@ -5,9 +5,10 @@ import { CriteriaTypeEnum } from '../../models/criteria-type.enum';
 import { IdService } from '../../../shared/id-service/id.service';
 import { CriteriaOperatorEnum } from '../../models/criteria-operator.enum';
 import { CriteriaConditionTypeModel } from '../../models/criteria-condition-type.model';
-import { Attribute } from '../../../shared/attribute-service/attribute-models';
 import { AttributeTypeEnum } from '../../../application/models/attribute-type.enum';
-import { AttributeTypeHelper } from '../../../application/helpers/attribute-type.helper';
+import { UserLayerStyleModel } from '../../models/user-layer-style.model';
+import { StyleHelper } from '../../helpers/style.helper';
+import { ScopedUserLayerStyleModel } from '../../models/scoped-user-layer-style.model';
 
 export class CriteriaHelper {
 
@@ -63,7 +64,33 @@ export class CriteriaHelper {
     return { id: idService.getUniqueId('criteria') };
   }
 
+  public static getExpression(value: string | number | boolean, attributeType: AttributeTypeEnum): string {
+    if (attributeType === AttributeTypeEnum.STRING || attributeType === AttributeTypeEnum.DATE) {
+      return `'${value}'`;
+    }
+    return `${value}`;
+  }
+
+  public static convertStyleToQuery(styles: UserLayerStyleModel[]) {
+    const attributes = new Map<string, string[]>();
+    const isActiveScopedStyle = (style: UserLayerStyleModel): style is ScopedUserLayerStyleModel => {
+      return StyleHelper.isScopedStyle(style) && style.active;
+    };
+    styles.filter(isActiveScopedStyle).forEach(style => {
+      const cur = attributes.get(style.attribute) || [];
+      attributes.set(style.attribute, cur.concat([ CriteriaHelper.getExpression(style.value, style.attributeType) ]));
+    });
+    const query: string[] = [];
+    attributes.forEach((values, attribute) => {
+      query.push(`${attribute} IN (${values.join(',')})`);
+    });
+    return query.join(' AND ');
+  }
+
   public static convertCriteriaToQuery(criteria: CriteriaModel) {
+    if (!criteria || !criteria.groups) {
+      return '';
+    }
     const query = criteria.groups
       .map(CriteriaHelper.convertGroupToQuery)
       .join(` ${criteria.operator} `);
@@ -77,7 +104,7 @@ export class CriteriaHelper {
     return `(${groupCriteria})`;
   }
 
-  private static convertConditionToQuery(condition: CriteriaConditionModel) {
+  public static convertConditionToQuery(condition: CriteriaConditionModel) {
     if (condition.attributeType === AttributeTypeEnum.NUMBER) {
       return `(${condition.attribute} ${condition.condition} ${condition.value})`;
     }
@@ -113,4 +140,5 @@ export class CriteriaHelper {
     }
     return `(${query.join(' ')})`;
   }
+
 }

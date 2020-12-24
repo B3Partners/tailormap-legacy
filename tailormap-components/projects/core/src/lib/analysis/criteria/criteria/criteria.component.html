@@ -11,12 +11,10 @@
 
   <div class="form-field">
     <label>Kenmerk</label>
-    <input type="text" formControlName="attribute" [matAutocomplete]="autoCompleteAttribute">
-    <mat-autocomplete #autoCompleteAttribute="matAutocomplete">
-      <mat-option *ngFor="let attribute of filteredAttributes$ | async" [value]="attribute.name">
-        {{attribute.name}}
-      </mat-option>
-    </mat-autocomplete>
+    <tailormap-attribute-selector [appLayerId]="selectedDataSource.layerId"
+                                  [featureType]="formData.source"
+                                  [selectedAttribute]="formData.attribute"
+                                  (attributeSelected)="attributeSelected($event)"></tailormap-attribute-selector>
   </div>
 
   <div class="form-field">

@@ -19,6 +19,13 @@ import { SimpleCriteriaComponent } from './criteria/simple-criteria/simple-crite
 import { AdvancedCriteriaComponent } from './criteria/advanced-criteria/advanced-criteria.component';
 import { CriteriaGroupComponent } from './criteria/criteria-group/criteria-group.component';
 import { CriteriaDescriptionComponent } from './criteria/criteria-description/criteria-description.component';
+import { CreateLayerModeAttributesComponent } from './create-layer-mode-attributes/create-layer-mode-attributes.component';
+import { CreateLayerModeThematicComponent } from './create-layer-mode-thematic/create-layer-mode-thematic.component';
+import { AttributeSelectorComponent } from './attribute-selector/attribute-selector.component';
+import { StyleFormComponent } from './style-form/style-form.component';
+import { EffectsModule } from '@ngrx/effects';
+import { AnalysisEffects } from './state/analysis.effects';
+import { StyleFormPanelComponent } from './style-form-panel/style-form-panel.component';
 
 
 @NgModule({
@@ -33,12 +40,18 @@ import { CriteriaDescriptionComponent } from './criteria/criteria-description/cr
     AdvancedCriteriaComponent,
     CriteriaGroupComponent,
     CriteriaDescriptionComponent,
+    CreateLayerModeAttributesComponent,
+    CreateLayerModeThematicComponent,
+    AttributeSelectorComponent,
+    StyleFormComponent,
+    StyleFormPanelComponent,
   ],
   imports: [
     CommonModule,
     SharedModule,
     ApplicationModule,
     StoreModule.forFeature(analysisStateKey, analysisReducer),
+    EffectsModule.forFeature([ AnalysisEffects ]),
   ],
 })
 export class AnalysisModule {
