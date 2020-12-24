@@ -176,7 +176,7 @@ public class TailormapDBManager {
             SelectedContentCache.setApplicationCacheDirty(application, Boolean.TRUE, true, entityManager);
             entityManager.getTransaction().commit();
             entityManager.getTransaction().begin();
-            newAppLayer.synchronizeFeaturetype(entityManager, null, null, null);
+            newAppLayer.synchronizeFeaturetype(entityManager, null, null, null, true);
             entityManager.persist(newAppLayer);
             entityManager.getTransaction().commit();
             return newAppLayer;
