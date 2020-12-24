@@ -9,6 +9,7 @@ import { AttributeTypeEnum } from '../../../application/models/attribute-type.en
 import { UserLayerStyleModel } from '../../models/user-layer-style.model';
 import { StyleHelper } from '../../helpers/style.helper';
 import { ScopedUserLayerStyleModel } from '../../models/scoped-user-layer-style.model';
+import { AttributeTypeHelper } from '../../../application/helpers/attribute-type.helper';
 
 export class CriteriaHelper {
 
@@ -64,13 +65,6 @@ export class CriteriaHelper {
     return { id: idService.getUniqueId('criteria') };
   }
 
-  public static getExpression(value: string | number | boolean, attributeType: AttributeTypeEnum): string {
-    if (attributeType === AttributeTypeEnum.STRING || attributeType === AttributeTypeEnum.DATE) {
-      return `'${value}'`;
-    }
-    return `${value}`;
-  }
-
   public static convertStyleToQuery(styles: UserLayerStyleModel[]) {
     const attributes = new Map<string, string[]>();
     const isActiveScopedStyle = (style: UserLayerStyleModel): style is ScopedUserLayerStyleModel => {
@@ -78,7 +72,7 @@ export class CriteriaHelper {
     };
     styles.filter(isActiveScopedStyle).forEach(style => {
       const cur = attributes.get(style.attribute) || [];
-      attributes.set(style.attribute, cur.concat([ CriteriaHelper.getExpression(style.value, style.attributeType) ]));
+      attributes.set(style.attribute, cur.concat([ AttributeTypeHelper.getExpression(style.value, style.attributeType) ]));
     });
     const query: string[] = [];
     attributes.forEach((values, attribute) => {
