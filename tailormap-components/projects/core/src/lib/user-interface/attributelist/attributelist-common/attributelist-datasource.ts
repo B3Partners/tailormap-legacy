@@ -123,7 +123,7 @@ export class AttributeDataSource extends DataSource<any> {
   public getLayerName(): string {
     return this.params.layerName;
   }
-  
+
   /**
    * Returns the number of checked rows.
    */
