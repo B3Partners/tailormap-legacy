@@ -8,7 +8,7 @@ export interface LayerNameChoserData {
 @Component({
   selector: 'tailormap-attributelist-layername-chooser',
   templateUrl: './attributelist-layername-chooser.component.html',
-  styleUrls: ['./attributelist-layername-chooser.component.css']
+  styleUrls: ['./attributelist-layername-chooser.component.css'],
 })
 export class AttributelistLayernameChooserComponent implements OnInit {
 

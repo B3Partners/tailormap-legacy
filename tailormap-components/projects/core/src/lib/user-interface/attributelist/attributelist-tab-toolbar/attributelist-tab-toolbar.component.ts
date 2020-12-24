@@ -19,9 +19,6 @@ import { takeUntil } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
 import { AttributelistLayernameChooserComponent } from '../attributelist-layername-chooser/attributelist-layername-chooser.component';
 
-class UserLayerervice {
-}
-
 @Component({
   selector: 'tailormap-attributelist-tab-toolbar',
   templateUrl: './attributelist-tab-toolbar.component.html',
@@ -87,7 +84,7 @@ export class AttributelistTabToolbarComponent implements OnInit, OnDestroy {
   public createUserlayer(): void {
       const dialogRef = this.dialog.open(AttributelistLayernameChooserComponent, {
         width: '250px',
-        data:{}
+        data: {},
       });
 
       dialogRef.afterClosed().subscribe(result => {
