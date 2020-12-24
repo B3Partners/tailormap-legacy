@@ -5,7 +5,7 @@ import {
   selectCanCreateLayer,
   selectCriteria, selectIsCreatingCriteria, selectIsSelectingDataSource, selectSelectedDataSource, selectStyles,
 } from '../state/analysis.selectors';
-import { filter, map, takeUntil } from 'rxjs/operators';
+import { map, takeUntil } from 'rxjs/operators';
 import { combineLatest, Observable, Subject } from 'rxjs';
 import { AnalysisSourceModel } from '../models/analysis-source.model';
 import { CriteriaModel } from '../models/criteria.model';

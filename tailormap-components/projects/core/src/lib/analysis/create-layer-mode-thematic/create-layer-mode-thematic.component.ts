@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { selectSelectedThematicAttribute, selectSelectedDataSource } from '../state/analysis.selectors';
 import { Store } from '@ngrx/store';
 import { AnalysisState } from '../state/analysis.state';
-import { Observable, Subject } from 'rxjs';
+import { Subject } from 'rxjs';
 import { AnalysisSourceModel } from '../models/analysis-source.model';
 import { AttributeTypeEnum } from '../../application/models/attribute-type.enum';
 import { Attribute } from '../../shared/attribute-service/attribute-models';

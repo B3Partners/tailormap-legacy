@@ -130,7 +130,7 @@ export class AttributelistFilter {
           values: uniqueValues,
           criteria: colObject.criteria,
           attributeType: this.getAttributeType(columnName),
-          filterType: filterType,
+          filterType,
         };
         const dialogRef = this.dialog.open(AttributelistFilterValuesFormComponent, config);
         dialogRef.afterClosed().subscribe(filterDialogSettings => {
