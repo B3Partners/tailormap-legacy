@@ -135,7 +135,7 @@ export class AttributelistFilter {
         const dialogRef = this.dialog.open(AttributelistFilterValuesFormComponent, config);
         dialogRef.afterClosed().subscribe(filterDialogSettings => {
           // Do the filtering
-          if (filterDialogSettings.filterSetting !== 'CANCEL') {
+          if (filterDialogSettings !== undefined && filterDialogSettings.filterSetting !== 'CANCEL') {
             if (filterDialogSettings.filterSetting === 'OFF') {
               this.layerFilterValues.columns[colIndex].uniqueValues = [];
               this.layerFilterValues.columns[colIndex].nullValue = false;
