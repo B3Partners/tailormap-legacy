@@ -168,6 +168,17 @@ export class AttributelistFilter {
     });
   }
 
+  public clearFilter(attributelistForFilter: AttributelistForFilter): void {
+    this.layerFilterValues.columns.forEach((c) => {
+      c.status = false;
+      c.criteria = null;
+      c.uniqueValues = [];
+      c.filterType = '';
+    });
+
+    this.dataSource.params.valueFilter = this.createFilter();
+    attributelistForFilter.refreshTable();
+  }
   public getAttributeType (columnName: string): AttributeTypeEnum {
     return AttributeTypeHelper.getAttributeType(this.columnController.getAttributeForColumnName(columnName))
   }

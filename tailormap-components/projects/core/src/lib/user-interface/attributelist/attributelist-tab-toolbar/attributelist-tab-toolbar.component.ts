@@ -122,8 +122,8 @@ export class AttributelistTabToolbarComponent implements OnInit, OnDestroy {
 
   }
 
-  public onFilterClick(): void {
-    alert('Not yet implemented.');
+  public onClearFilterClick(): void {
+    this.tab.table.onClearFilter();
   }
 
   public onSearchClick(): void {

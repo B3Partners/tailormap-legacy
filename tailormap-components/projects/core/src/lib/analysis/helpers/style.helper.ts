@@ -4,7 +4,7 @@ import { UserLayerStyleModel } from '../models/user-layer-style.model';
 import { rgbToHex } from '../../shared/util/color';
 import { ScopedUserLayerStyleModel } from '../models/scoped-user-layer-style.model';
 import { IdService } from '../../shared/id-service/id.service';
-import { CriteriaHelper } from '../criteria/helpers/criteria.helper';
+import { AttributeTypeHelper } from '../../application/helpers/attribute-type.helper';
 
 export class StyleHelper {
 
@@ -68,7 +68,7 @@ export class StyleHelper {
     const markerStyles = [];
     let selector = '';
     if (StyleHelper.isScopedStyle(style)) {
-      selector = `[${style.attribute}=${CriteriaHelper.getExpression(style.value, style.attributeType)}] `;
+      selector = `[${style.attribute}=${AttributeTypeHelper.getExpression(style.value, style.attributeType)}] `;
     }
     if (StyleHelper.showPolygonSettings(selectedDataSource.geometryType)) {
       const polygonStyles = [];

@@ -334,6 +334,10 @@ export class AttributelistTableComponent implements AttributelistTable, Attribut
     this.filter.setFilter(this, columnName);
   }
 
+  public onClearFilter() {
+    this.filter.clearFilter(this);
+  }
+
   /**
    * After setting filter(s) refresh the table
    */
