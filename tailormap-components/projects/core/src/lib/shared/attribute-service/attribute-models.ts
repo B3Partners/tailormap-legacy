@@ -40,6 +40,7 @@ export interface RelatedFeatureType {
 export interface AttributeMetadataParameters {
   application: number;
   appLayer: number;
+  featureType?: number;
 }
 
 export interface AttributeMetadataResponse {

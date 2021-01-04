@@ -105,7 +105,7 @@ public class FlamingoCQL {
 
     private static String retrieveRelatedFilter (String filter){
         int endSubFilter = filter.lastIndexOf(",");
-        String relatedFilterString = filter.substring(endSubFilter + 1, filter.indexOf(")"));
+        String relatedFilterString = filter.substring(endSubFilter + 1, filter.indexOf(";"));
         return relatedFilterString;
     }
 

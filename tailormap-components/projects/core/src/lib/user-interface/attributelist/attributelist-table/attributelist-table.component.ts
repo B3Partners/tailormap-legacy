@@ -2,7 +2,7 @@ import {
   AfterViewInit,
   Component,
   ElementRef,
-  EventEmitter,
+  EventEmitter, OnDestroy,
   OnInit,
   Output,
   ViewChild,
@@ -51,6 +51,11 @@ import { TailorMapService } from '../../../../../../bridge/src/tailor-map.servic
 import { HighlightService } from '../../../shared/highlight-service/highlight.service';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { AttributelistColumn } from '../attributelist-common/attributelist-column-models';
+import { Subject } from 'rxjs';
+import { concatMap, takeUntil } from 'rxjs/operators';
+import { fromArray } from 'rxjs/internal/observable/fromArray';
+import { AttributelistTreeComponent } from '../attributelist-tree/attributelist-tree.component';
+import { AttributelistNode, SelectedTreeData, TreeDialogData } from '../attributelist-tree/attributelist-tree-models';
 // import { LiteralMapKey } from '@angular/compiler';
 
 @Component({
@@ -65,7 +70,7 @@ import { AttributelistColumn } from '../attributelist-common/attributelist-colum
     ]),
   ],
 })
-export class AttributelistTableComponent implements AttributelistTable, AttributelistRefresh, OnInit, AfterViewInit {
+export class AttributelistTableComponent implements AttributelistTable, AttributelistRefresh, OnInit, AfterViewInit, OnDestroy {
 
   @ViewChild(MatPaginator) private paginator: MatPaginator;
   @ViewChild(MatSort) private sort: MatSort;
@@ -88,12 +93,14 @@ export class AttributelistTableComponent implements AttributelistTable, Attribut
   public dataSource = new AttributeDataSource(this.layerService,
                                               this.attributeService,
                                               this.formconfigRepoService);
+  public checkedRows = [];
+  public treeData = new Array<AttributelistNode>();
 
-  public filter = new AttributelistFilter(
-    this.dataSource,
-    this.valueService,
-    this.dialog,
-  );
+  private selectedTreeData: SelectedTreeData;
+
+  private filterMap = new Map<number, AttributelistFilter>();
+
+  private isRelatedRefresh = false;
 
   public statistic = new AttributelistStatistic(
     this.statisticsService,
@@ -120,6 +127,8 @@ export class AttributelistTableComponent implements AttributelistTable, Attribut
 
   public contextMenuPosition = { x: '0px', y: '0px' };
 
+  private destroyed = new Subject();
+
   // private standardFormWorkflow = new StandardFormWorkflow();
 
   constructor(private attributeService: AttributeService,
@@ -137,6 +146,26 @@ export class AttributelistTableComponent implements AttributelistTable, Attribut
   }
 
   public ngOnInit(): void {
+    this.attributelistService.selectedTreeData$.pipe(takeUntil(this.destroyed)).subscribe(selectedTreeData => {
+      if (!selectedTreeData.isChild) {
+        this.dataSource.params.featureTypeId = -1;
+        this.dataSource.params.featureTypeName = '';
+        this.dataSource.params.featureFilter = '';
+        this.dataSource.params.valueFilter = '';
+      } else {
+        this.dataSource.params.featureTypeId = selectedTreeData.params.featureType;
+        this.dataSource.params.featureFilter = selectedTreeData.params.filter;
+        this.dataSource.params.featureTypeName = selectedTreeData.name;
+      }
+      this.selectedTreeData = selectedTreeData;
+      this.isRelatedRefresh = false;
+      this.dataSource.loadTableData(this, selectedTreeData);
+    });
+  }
+
+  public ngOnDestroy(): void {
+    this.destroyed.next();
+    this.destroyed.complete();
   }
 
   public ngAfterViewInit(): void {
@@ -169,10 +198,13 @@ export class AttributelistTableComponent implements AttributelistTable, Attribut
     // Update the table rows.
     this.table.renderRows();
 
-    this.filter.initFiltering(this.getColumnNames());
+    this.filterMap.get(this.dataSource.params.featureTypeId).initFiltering(this.getColumnNames());
 
     this.statistic.initStatistics(this.getColumnNames());
-
+    if (this.isRelatedRefresh) {
+      this.dataSource.setAllRowsChecked();
+      this.onObjectOptionsClick();
+    }
     this.updateCheckedInfo();
 
     // FOR TESTING. SHOW TABLE OPTIONS FORM AT STARTUP.
@@ -230,24 +262,113 @@ export class AttributelistTableComponent implements AttributelistTable, Attribut
   }
 
   public onObjectOptionsClick(): void {
-    let optionFeatures: Feature[];
-    optionFeatures = this.dataSource.getCheckedRowsAsFeatures();
-    this.openDialog(optionFeatures);
+    this.treeData = [];
+    this.dataSource.getCheckedRowsAsFeatures();
+    const filterForFeatureTypes = new Map<number, string>();
+    let filter = '';
+    const relatedFeatures = [];
+    const checkedFeatures = this.dataSource.getCheckedRowsAsAttributeListFeature();
+    checkedFeatures.forEach((row) => {
+      const related = row.related_featuretypes;
+      related.forEach((r) => {
+        if (filterForFeatureTypes.has(r.id)) {
+          filter = filterForFeatureTypes.get(r.id);
+          filterForFeatureTypes.set(r.id, filter += ' OR ' + r.filter );
+        } else {
+          filterForFeatureTypes.set(r.id, r.filter);
+          relatedFeatures.push(r);
+        }
+      });
+    });
+
+    const layer = this.layerService.getLayerByTabIndex(this.tabIndex);
+    if (layer.name === '') {
+      return;
+    }
+    // Set params layer name and id.
+    this.dataSource.params.layerName = layer.name;
+    this.dataSource.params.layerId = layer.id;
+    this.treeData.push({
+      name: layer.name,
+      numberOfFeatures: this.dataSource.getNrChecked(),
+      features: checkedFeatures,
+      formFeatures: this.dataSource.getCheckedRowsAsFeatures(),
+      params: {
+        application: this.layerService.getAppId(),
+        appLayer: layer.id},
+      isChild: false,
+      columnNames: this.dataSource.columnController.getTest(),
+      children: [],
+    });
+    fromArray(relatedFeatures).pipe(concatMap(feature => {
+      this.dataSource.params.valueFilter = this.filterMap.get(feature.id).getValueFilter();
+      this.dataSource.params.featureTypeId = feature.id;
+      this.dataSource.params.featureTypeName = feature.foreignFeatureTypeName;
+      this.dataSource.params.featureFilter = filterForFeatureTypes.get(feature.id);
+      return this.dataSource.loadDataForAttributeTree();
+    })).subscribe({
+      next: (result) => {
+        this.setTreeData(result);
+      },
+      complete: () => {
+        this.dataSource.params.featureTypeId = -1;
+        this.dataSource.params.featureTypeName = '';
+        this.dataSource.params.featureFilter = '';
+        if (this.isRelatedRefresh) {
+          this.isRelatedRefresh = false;
+          this.attributelistService.updateTreeData(this.treeData);
+          if (this.selectedTreeData.isChild) {
+            this.treeData[0].children.forEach((data) => {
+              if (data.params.featureType === this.selectedTreeData.params.featureType) {
+                this.selectedTreeData = {
+                  features: data.features,
+                  params: data.params,
+                  isChild: data.isChild,
+                  name: data.name,
+                  columnNames: data.columnNames,
+                }
+              }
+            });
+          } else {
+            this.selectedTreeData = {
+              features: this.treeData[0].features,
+              params: this.treeData[0].params,
+              isChild: this.treeData[0].isChild,
+              name: this.treeData[0].name,
+              columnNames: this.treeData[0].columnNames,
+            }
+          }
+          this.dataSource.loadTableData(this, this.selectedTreeData);
+        } else {
+          this.openDialog();
+        }
+      },
+    })
   }
 
-  public openDialog(formFeatures ?: Feature[]): void {
-    const dialogRef = this.dialog.open(FormComponent, {
-      width: '1050px',
-      height: '800px',
-      disableClose: true,
-      data: {
-        formFeatures,
-        isBulk: formFeatures.length > 1,
+  public setTreeData(values: AttributelistNode) {
+    this.treeData[0].children.push(values);
+  }
+
+  public openDialog() {
+    const dialogData : TreeDialogData = {
+      rowsChecked: this.nrChecked,
+      tree: this.treeData,
+    };
+    const dialogRef = this.dialog.open(AttributelistTreeComponent, {
+      width: '400px',
+      data: dialogData,
+      position: {
+        right: '50px',
       },
+      hasBackdrop: false,
     });
-    // tslint:disable-next-line: rxjs-no-ignored-subscription
+
     dialogRef.afterClosed().subscribe(result => {
-      this.afterEditing(formFeatures);
+      // this.isAttributeTreeOpen = false;
+    });
+    dialogRef.afterOpened().subscribe( result => {
+      // this.isAttributeTreeOpen = true;
     });
   }
 
@@ -328,13 +449,35 @@ export class AttributelistTableComponent implements AttributelistTable, Attribut
    */
   public onFilterClick(columnName: string): void {
     // this.dataSource.columnController.columnNamesToColumns()
-    this.filter.setFilter(this, columnName);
+    this.filterMap.get(this.dataSource.params.featureTypeId).setFilter(this, columnName);
   }
 
   /**
    * After setting filter(s) refresh the table
    */
   public refreshTable(): void {
+    if (this.dataSource.params.hasDetail()) {
+      if (this.dataSource.params.valueFilter) {
+        this.filterMap.get(-1).setRelatedFilter('RELATED_LAYER(' +
+          this.dataSource.params.layerId + ',' +
+          this.dataSource.params.featureTypeId + ',' +
+          this.dataSource.params.valueFilter + ' AND (' +
+          this.dataSource.params.featureFilter + ');)');
+      }
+      this.dataSource.params.featureTypeId = -1;
+      this.dataSource.params.featureTypeName = '';
+      this.dataSource.params.featureFilter = '';
+      if (this.filterMap.get(-1).getRelatedFilter()) {
+        this.dataSource.params.valueFilter = this.filterMap.get(-1).getRelatedFilter();
+        if (this.filterMap.get(-1).getValueFilter()) {
+          this.dataSource.params.valueFilter += 'AND ' + this.filterMap.get(-1).getValueFilter();
+        }
+      }
+      this.dataSource.columnController.setPassportColumnNames(this.treeData[0].columnNames);
+      this.isRelatedRefresh = true;
+    } else {
+      this.isRelatedRefresh = false;
+    }
     this.paginator.pageIndex = 0;
     this.updateTable();
     this.setFilterInAppLayer();
@@ -343,8 +486,8 @@ export class AttributelistTableComponent implements AttributelistTable, Attribut
 
   private setFilterInAppLayer() {
     const viewerController = this.tailorMapService.getViewerController();
-    const appLayer = viewerController.getAppLayerById(this.filter.layerFilterValues.layerId);
-    const cql = this.filter.createFilter();
+    const appLayer = viewerController.getAppLayerById(this.filterMap.get(this.dataSource.params.featureTypeId).layerFilterValues.layerId);
+    const cql = this.dataSource.params.valueFilter;
     viewerController.setFilterString(cql, appLayer, 'ngattributelist');
   }
 
@@ -352,7 +495,10 @@ export class AttributelistTableComponent implements AttributelistTable, Attribut
    * Check if a filter is active on a column
    */
   public getIsFilterActive(columnName): boolean {
-    const colObject = this.filter.layerFilterValues.columns.find(c => c.name === columnName);
+    if (this.filterMap.size <= 0) {
+      return false;
+    }
+    const colObject = this.filterMap.get(this.dataSource.params.featureTypeId).layerFilterValues.columns.find(c => c.name === columnName);
     let result: boolean;
     if (colObject) {
       result = colObject.status;
@@ -463,6 +609,12 @@ export class AttributelistTableComponent implements AttributelistTable, Attribut
     this.dataSource.params.layerName = layer.name;
     this.dataSource.params.layerId = layer.id;
     // Update table.
+    this.dataSource.getMetaData().subscribe((response) => {
+      this.setFilterMap(-1);
+      response.relations.forEach((rel) => {
+        this.setFilterMap(rel.foreignFeatureType);
+      });
+    });
     this.updateTable();
   }
 
@@ -480,4 +632,16 @@ export class AttributelistTableComponent implements AttributelistTable, Attribut
     this.updateCheckedInfo();
   }
 
+  public resetTable(): void {
+    this.dataSource.params.valueFilter = '';
+    this.setTabIndex(this.tabIndex);
+  }
+
+  public setFilterMap(featureTypeId: number) {
+    this.filterMap.set(featureTypeId, new AttributelistFilter(
+      this.dataSource,
+      this.valueService,
+      this.dialog,
+    ));
+  }
 }
