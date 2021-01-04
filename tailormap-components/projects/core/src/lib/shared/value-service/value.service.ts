@@ -22,7 +22,7 @@ export class ValueService {
   ) {
   }
 
-  public uniqueValues (params: ValueParameters): Observable<UniqueValuesResponse> {
+  public uniqueValues$ (params: ValueParameters): Observable<UniqueValuesResponse> {
     let httpParams: HttpParams = new HttpParams();
     Object.entries(params).forEach(([key, value ]) => {
       httpParams = httpParams.set(key, String(value));

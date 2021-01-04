@@ -22,7 +22,7 @@ export class AnalysisEffects {
     filter(action => !!action.appLayer),
     switchMap(action => {
       const attribute = action.attribute.name;
-      return this.valueService.uniqueValues({
+      return this.valueService.uniqueValues$({
         applicationLayer: action.appLayer,
         attributes: [ action.attribute.name ],
       }).pipe(
