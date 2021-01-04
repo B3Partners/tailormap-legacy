@@ -106,7 +106,7 @@ export class AttributelistFilter {
     this.valueParams.applicationLayer = this.dataSource.params.layerId;
     this.valueParams.attributes = [];
     this.valueParams.attributes.push(columnName);
-    this.valueService.uniqueValues(this.valueParams).subscribe((data: UniqueValuesResponse) => {
+    this.valueService.uniqueValues$(this.valueParams).subscribe((data: UniqueValuesResponse) => {
       if (data.success) {
         let uniqueValues: FilterValueSettings[];
         uniqueValues = [];
@@ -130,7 +130,7 @@ export class AttributelistFilter {
           values: uniqueValues,
           criteria: colObject.criteria,
           attributeType: this.getAttributeType(columnName),
-          filterType: filterType,
+          filterType,
         };
         const dialogRef = this.dialog.open(AttributelistFilterValuesFormComponent, config);
         dialogRef.afterClosed().subscribe(filterDialogSettings => {

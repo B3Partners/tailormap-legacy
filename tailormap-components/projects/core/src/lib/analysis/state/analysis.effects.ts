@@ -5,7 +5,7 @@ import {
   ofType,
 } from '@ngrx/effects';
 import * as AnalysisActions from './analysis.actions';
-import { catchError, filter, map, switchMap, tap } from 'rxjs/operators';
+import { catchError, filter, map, switchMap } from 'rxjs/operators';
 import { ValueService } from '../../shared/value-service/value.service';
 import { of } from 'rxjs';
 import { UniqueValuesResponse } from '../../shared/value-service/value-models';
@@ -22,7 +22,7 @@ export class AnalysisEffects {
     filter(action => !!action.appLayer),
     switchMap(action => {
       const attribute = action.attribute.name;
-      return this.valueService.uniqueValues({
+      return this.valueService.uniqueValues$({
         applicationLayer: action.appLayer,
         attributes: [ action.attribute.name ],
       }).pipe(

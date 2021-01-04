@@ -4,7 +4,7 @@ import {
   OnInit,
 } from '@angular/core';
 import {
-  clearCreateLayerMode, setSelectedStyle, setStyles, updateStyle,
+  clearCreateLayerMode, setSelectedStyle, updateStyle,
 } from '../state/analysis.actions';
 import { Store } from '@ngrx/store';
 import { AnalysisState } from '../state/analysis.state';

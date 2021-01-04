@@ -1,17 +1,16 @@
 <mat-toolbar>
 
-  <input matInput placeholder="Zoeken..." value="">
-  <button mat-icon-button
-          (click)="onSearchClick();">
-    <mat-icon>search</mat-icon>
-  </button>
+  <div class="buttons">
+    <button mat-flat-button color="primary"
+            (click)="createUserlayer();">
+      <span>Laag maken</span>
+    </button>
 
-  <button mat-flat-button color="primary"
-          (click)="onClearFilterClick();">
-    <mat-icon>filter_list</mat-icon>
-    <span>Wis</span>
-  </button>
-
+    <button mat-flat-button color="primary"
+            (click)="onClearFilterClick();">
+      <span>Wis</span>
+    </button>
+  </div>
   <span class="spacer"></span>
 
   <button mat-button [matMenuTriggerFor]="menu">

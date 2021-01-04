@@ -45,6 +45,13 @@ export class UserLayerService {
     private store$: Store<AnalysisState>,
   ) {}
 
+  public createUserLayerFromParams(appLayerId: string, title: string, query: string, style: string, createdAppLayer?: string) {
+    this.saveUserLayer$(appLayerId, title, query, style, createdAppLayer)
+      .subscribe(([createLayerResult, saveStyleResult]) => {
+        this.handleResult(createLayerResult, saveStyleResult);
+      });
+  }
+
   public createUserLayer() {
     this.store$.select(selectCreateLayerData)
       .pipe(
