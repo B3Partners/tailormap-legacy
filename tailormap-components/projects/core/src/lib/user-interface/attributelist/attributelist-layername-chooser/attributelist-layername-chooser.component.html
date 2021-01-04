@@ -1,0 +1,12 @@
+<h1 mat-dialog-title>Laagnaam</h1>
+<div mat-dialog-content>
+  <p>Wat moet de nieuwe laagnaam worden</p>
+  <mat-form-field>
+    <mat-label>Naam</mat-label>
+    <input matInput [(ngModel)]="data.name">
+  </mat-form-field>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">Annuleren</button>
+  <button mat-button [mat-dialog-close]="data.name" cdkFocusInitial>Opslaan</button>
+</div>

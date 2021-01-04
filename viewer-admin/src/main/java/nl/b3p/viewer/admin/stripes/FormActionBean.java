@@ -60,6 +60,10 @@ public class FormActionBean extends LocalizableActionBean {
 
     private List<FeatureSource> featureSources;
 
+    private List<Group> allGroups = new ArrayList<>();
+    @Validate
+    private List<String> groupsRead = new ArrayList<>();
+
     @Validate
     private FeatureSource defaultFeatureSource;
 
@@ -105,6 +109,15 @@ public class FormActionBean extends LocalizableActionBean {
             featureTypes.add(form.getFeatureTypeName());
         });
         forms = new JSONArray(formList);
+
+        allGroups = em.createQuery("FROM Group ", Group.class).getResultList();
+    }
+    @After
+    public void makeLists(){
+        EntityManager em = Stripersist.getEntityManager();
+        if (form != null && em.contains(form)) {
+            groupsRead = new ArrayList(form.getReaders());
+        }
     }
 
     @DefaultHandler
@@ -126,6 +139,9 @@ public class FormActionBean extends LocalizableActionBean {
         EntityManager em = Stripersist.getEntityManager();
         try {
             form = processForm(form);
+
+            form.getReaders().clear();
+            form.getReaders().addAll(groupsRead);
             em.persist(form);
             em.getTransaction().commit();
         } catch (IOException e) {
@@ -442,5 +458,21 @@ public class FormActionBean extends LocalizableActionBean {
 
     public void setFeatureSources(List<FeatureSource> featureSources) {
         this.featureSources = featureSources;
+    }
+
+    public List<Group> getAllGroups() {
+        return allGroups;
+    }
+
+    public void setAllGroups(List<Group> allGroups) {
+        this.allGroups = allGroups;
+    }
+
+    public List<String> getGroupsRead() {
+        return groupsRead;
+    }
+
+    public void setGroupsRead(List<String> groupsRead) {
+        this.groupsRead = groupsRead;
     }
 }
