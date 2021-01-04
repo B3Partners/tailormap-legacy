@@ -17,17 +17,14 @@
 package nl.b3p.viewer.util;
 
 import nl.b3p.viewer.config.services.*;
+import org.geotools.factory.CommonFactoryFinder;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryCollection;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.PrecisionModel;
-
 import javax.persistence.EntityManager;
-
 import nl.b3p.viewer.config.app.ApplicationLayer;
-
 import static nl.b3p.viewer.util.FeatureToJson.MAX_FEATURES;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.geotools.data.FeatureSource;
@@ -36,7 +33,9 @@ import org.geotools.feature.FeatureIterator;
 import org.geotools.filter.text.cql2.CQLException;
 import org.geotools.filter.text.ecql.ECQL;
 import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.filter.BinaryLogicOperator;
 import org.opengis.filter.Filter;
+import org.opengis.filter.FilterFactory2;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,6 +58,8 @@ public class FlamingoCQL {
 
     private final static String BEGIN_APPLAYER_PART = "APPLAYER(";
     private final static String BEGIN_RELATED_PART = "RELATED_LAYER(";
+
+    private static FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2(null);
 
     public static Filter toFilter(String filter, EntityManager em) throws CQLException {
         return toFilter(filter, em, true);
@@ -83,8 +84,9 @@ public class FlamingoCQL {
 
     private static Filter getFilter(String filter, EntityManager em) throws CQLException {
         Filter f = null;
+
         if (filter.contains(BEGIN_RELATED_PART)) {
-            f = createSubselect(filter, em);
+            f = replaceSubselectsFromFilter(filter, em);
         } else {
             f = ECQL.toFilter(filter);
         }
@@ -92,8 +94,80 @@ public class FlamingoCQL {
         return f;
     }
 
+    private static Filter replaceSubselectsFromFilter(String filter, EntityManager em) throws CQLException {
+
+        String remainingFilter = filter;
+        Filter f = null;
+        Filter current = null;
+
+        if (startsWithRelatedLayer(remainingFilter)) {
+            int startIndex = remainingFilter.indexOf(BEGIN_RELATED_PART) + BEGIN_RELATED_PART.length();
+            int endIndex = findIndexOfClosingBracket(startIndex - 1, remainingFilter);
+            String filterPart = BEGIN_RELATED_PART + remainingFilter.substring(startIndex, endIndex + 1);
+            current = createSubselect(filterPart, em);
+            remainingFilter = remainingFilter.substring(0, remainingFilter.indexOf(BEGIN_RELATED_PART)) + remainingFilter.substring(endIndex + 1);
+        } else {
+            int endAnd = Math.max(0, remainingFilter.toLowerCase().indexOf(" and "));
+            int endOR = Math.max(0, remainingFilter.toLowerCase().indexOf(" or "));
+            int end = Math.max(endAnd, endOR);
+            String filterPart = remainingFilter.substring(0, end);
+            current = ECQL.toFilter(filterPart);
+            remainingFilter = remainingFilter.substring(end);
+        }
+        remainingFilter = remainingFilter.trim();
+
+        remainingFilter = removeAdjoiningParens(remainingFilter);
+
+        if (!remainingFilter.isEmpty()) {
+            remainingFilter = remainingFilter.trim();
+            String nextFilter = remainingFilter.substring(remainingFilter.indexOf(" "));
+            f = getBinaryLogicOperator(remainingFilter, current, getFilter(nextFilter, em));
+        } else {
+            f = current;
+        }
+
+        return f;
+    }
+
+    public static String removeAdjoiningParens(String filter) {
+        if (filter.isEmpty()) {
+            return filter;
+        }
+        String cur = "";
+
+        for (int i = 0; i < filter.length() ; i++) {
+            char c = filter.charAt(i);
+            if (i + 1 < filter.length()) {
+                char next = filter.charAt(i + 1);
+                if (c == '(' && next == ')') {
+                    i++;
+                } else {
+                    cur += c;
+                }
+            } else {
+                cur += c;
+            }
+        }
+
+        if (filter.length() > cur.length() && cur.length() >= 2) {
+            cur = removeAdjoiningParens(cur);
+        }
+        return cur;
+    }
+
+    private static boolean startsWithRelatedLayer(String filter) {
+        int threshold = 6;
+        return filter.substring(0, BEGIN_RELATED_PART.length() + threshold).contains(BEGIN_RELATED_PART);
+    }
+
+    private static BinaryLogicOperator getBinaryLogicOperator(String filter, Filter prev, Filter current) {
+        int endIndex = filter.indexOf(" ");
+        String logicPart = filter.substring(0, endIndex);
+        return logicPart.contains("AND") ? ff.and(prev, current) : ff.or(prev, current);
+    }
+
     private static Subselect createSubselect(String filter, EntityManager em) throws CQLException {
-        FeatureTypeRelation relation = FlamingoCQL.parseSubselectFilter(filter, em);
+        FeatureTypeRelation relation = FlamingoCQL.retrieveFeatureTypeRelation(filter, em);
         SimpleFeatureType subSft = relation.getForeignFeatureType();
         FeatureTypeRelationKey key = relation.getRelationKeys().get(0);
         String relatedColumn = key.getRightSide().getName();
@@ -103,14 +177,12 @@ public class FlamingoCQL {
         Filter relatedFilter = FlamingoCQL.toFilter(retrieveRelatedFilter(filter), em, false);
         Subselect s = new Subselect(relatedFilter, relatedColumn, mainColumn, relatedTable);
         return s;
-
     }
 
-    private static String retrieveRelatedFilter(String filter) {
-        int endSubFilter = filter.lastIndexOf(",")+1;
-        int openBrackets = 0, closingBrackets = 0, endIndex= 0;
+    private static int findIndexOfClosingBracket(int startIndex, String filter) {
 
-        for (int i = endSubFilter; i < filter.length(); i++) {
+        int openBrackets = 0, closingBrackets = 0, endIndex = 0;
+        for (int i = startIndex; i < filter.length(); i++) {
             char c = filter.charAt(i);
             if (c == '(') {
                 openBrackets++;
@@ -123,14 +195,21 @@ public class FlamingoCQL {
                 break;
             }
         }
-        if(endIndex == endSubFilter){
-            endIndex = filter.indexOf(")", endSubFilter)-1;
+        return endIndex;
+    }
+
+    private static String retrieveRelatedFilter(String filter) {
+        int endSubFilter = filter.lastIndexOf(",") + 1;
+
+        int endIndex = findIndexOfClosingBracket(endSubFilter, filter);
+        if (endIndex == endSubFilter) {
+            endIndex = filter.indexOf(")", endSubFilter) - 1;
         }
-        String relatedFilterString = filter.substring(endSubFilter, endIndex+1);
+        String relatedFilterString = filter.substring(endSubFilter, endIndex + 1);
         return relatedFilterString;
     }
 
-    private static FeatureTypeRelation parseSubselectFilter(String filter, EntityManager em) throws CQLException {
+    private static FeatureTypeRelation retrieveFeatureTypeRelation(String filter, EntityManager em) throws CQLException {
              /*
           RELATED_LAYER(<LAYERID_MAIN>, <SIMPLEFEATURETYPEID_SUB>, <FILTER>)
                 LAYERID_MAIN number  id of application layer (!) main layer in tailormap db: on this layer the filter will be set
@@ -145,7 +224,7 @@ public class FlamingoCQL {
                 haal met behulp van de relatie de kolom uit sub op waar de relatie op ligt: kolom_sub
                 maak filter op LAYER_SUB, en haal alle values voor kolom_sub op: values
          */
-        int beginPartLength = filter.indexOf(BEGIN_RELATED_PART)+ BEGIN_RELATED_PART.length();
+        int beginPartLength = filter.indexOf(BEGIN_RELATED_PART) + BEGIN_RELATED_PART.length();
         int endMainLayer = filter.indexOf(",", beginPartLength + 1);
         int endSimpleFeatureIdSub = filter.indexOf(",", endMainLayer + 1);
         if (endMainLayer == -1 || endSimpleFeatureIdSub == -1) {
@@ -182,7 +261,7 @@ public class FlamingoCQL {
     }
 
     private static String replaceRelatedFilter(String filter, EntityManager em) throws CQLException {
-        FeatureTypeRelation relation = FlamingoCQL.parseSubselectFilter(filter, em);
+        FeatureTypeRelation relation = FlamingoCQL.retrieveFeatureTypeRelation(filter, em);
         FeatureTypeRelationKey key = relation.getRelationKeys().get(0);
         String relatedFilter = retrieveRelatedFilter(filter);
 
