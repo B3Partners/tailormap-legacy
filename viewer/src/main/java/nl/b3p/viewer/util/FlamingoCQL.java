@@ -123,6 +123,9 @@ public class FlamingoCQL {
                 break;
             }
         }
+        if(endIndex == endSubFilter){
+            endIndex = filter.indexOf(")", endSubFilter)-1;
+        }
         String relatedFilterString = filter.substring(endSubFilter, endIndex+1);
         return relatedFilterString;
     }

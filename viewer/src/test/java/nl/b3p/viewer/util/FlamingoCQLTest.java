@@ -83,7 +83,12 @@ public class FlamingoCQLTest extends TestUtil{
     public void testtoFilterRelatedLayerExtraParensAroundSubquery() throws CQLException {
         Filter output = cql.toFilter("RELATED_LAYER(3,2,(fysiek_voork = 'aap'))", entityManager, false);
         assertEquals(Subselect.class, output.getClass());
+    }
 
+    @Test
+    public void testtoFilterRelatedLayerTwoRelatedLayer() throws CQLException {
+        Filter output = cql.toFilter("RELATED_LAYER(3,2,(fysiek_voork = 'aap')) AND RELATED_LAYER(3,2,(fysiek_voork = 'aap'))", entityManager, false);
+        assertEquals(And.class, output.getClass());
     }
 
     @Test
