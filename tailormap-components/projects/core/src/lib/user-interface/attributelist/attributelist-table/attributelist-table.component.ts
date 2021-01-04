@@ -46,7 +46,6 @@ import { StatisticTypeInMenu } from '../attributelist-common/attributelist-stati
 import { StatisticService } from '../../../shared/statistic-service/statistic.service';
 import { StatisticType } from '../../../shared/statistic-service/statistic-models';
 import { ValueService } from '../../../shared/value-service/value.service';
-import { FormComponent } from '../../../feature-form/form/form.component';
 import { TailorMapService } from '../../../../../../bridge/src/tailor-map.service';
 import { HighlightService } from '../../../shared/highlight-service/highlight.service';
 import { MatMenuTrigger } from '@angular/material/menu';
@@ -305,7 +304,7 @@ export class AttributelistTableComponent implements AttributelistTable, Attribut
       this.dataSource.params.featureTypeId = feature.id;
       this.dataSource.params.featureTypeName = feature.foreignFeatureTypeName;
       this.dataSource.params.featureFilter = filterForFeatureTypes.get(feature.id);
-      return this.dataSource.loadDataForAttributeTree();
+      return this.dataSource.loadDataForAttributeTree$();
     })).subscribe({
       next: (result) => {
         this.setTreeData(result);
@@ -609,7 +608,7 @@ export class AttributelistTableComponent implements AttributelistTable, Attribut
     this.dataSource.params.layerName = layer.name;
     this.dataSource.params.layerId = layer.id;
     // Update table.
-    this.dataSource.getMetaData().subscribe((response) => {
+    this.dataSource.getMetaData$().subscribe((response) => {
       this.setFilterMap(-1);
       response.relations.forEach((rel) => {
         this.setFilterMap(rel.foreignFeatureType);

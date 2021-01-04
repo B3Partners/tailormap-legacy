@@ -4,10 +4,7 @@
 
 import { Injectable } from '@angular/core';
 import { AttributelistConfig } from './attributelist-common/attributelist-models';
-import {
-  BehaviorSubject,
-  Subject,
-} from 'rxjs';
+import { Subject } from 'rxjs';
 import {
   AttributelistNode,
   SelectedTreeData,

@@ -196,7 +196,7 @@ export class AttributeDataSource extends DataSource<any> {
     })
   }
 
-  public loadDataForAttributeTree(): Observable<AttributelistNode> {
+  public loadDataForAttributeTree$(): Observable<AttributelistNode> {
     // get columns
     const passportName = this.params.featureTypeName;
     let columnNames: string[] = [];
@@ -268,7 +268,7 @@ export class AttributeDataSource extends DataSource<any> {
     return attrMetaParams;
   }
 
-  public getMetaData(): Observable<AttributeMetadataResponse> {
+  public getMetaData$(): Observable<AttributeMetadataResponse> {
    return this.attributeService.featureTypeMetadata$(this.getMetadataParams());
   }
 
