@@ -7,8 +7,6 @@ import { LayerService } from '../layer.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AttributelistTabComponent } from '../attributelist-tab/attributelist-tab.component';
 import { TailorMapService } from '../../../../../../bridge/src/tailor-map.service';
-import { Store } from '@ngrx/store';
-import { AnalysisState } from '../../../analysis/state/analysis.state';
 import { UserLayerService } from '../../../analysis/services/user-layer.service';
 import { MetadataService } from '../../../application/services/metadata.service';
 import { forkJoin, of, Subject } from 'rxjs';
@@ -45,7 +43,6 @@ export class AttributelistTabToolbarComponent implements OnInit, OnDestroy {
     private layerService: LayerService,
     private tailorMapService: TailorMapService,
     public dialog: MatDialog,
-    private store$: Store<AnalysisState>,
     private metadataService: MetadataService,
     private _snackBar: MatSnackBar) {
   }
