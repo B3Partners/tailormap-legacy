@@ -1,39 +1,19 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  OnDestroy,
-  OnInit,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { TreeModel } from '../../shared/tree/models/tree.model';
 import { TreeService } from '../../shared/tree/tree.service';
 import { TransientTreeHelper } from '../../shared/tree/helpers/transient-tree.helper';
-import {
-  AppLayer,
-  Level,
-} from '../../../../../bridge/typings';
-import {
-  combineLatest,
-  forkJoin,
-  of,
-  Subject,
-} from 'rxjs';
-import {
-  map,
-  switchMap,
-  takeUntil,
-} from 'rxjs/operators';
+import { AppLayer, Level } from '../../../../../bridge/typings';
+import { combineLatest, forkJoin, of, Subject } from 'rxjs';
+import { map, switchMap, takeUntil } from 'rxjs/operators';
 import { ApplicationTreeHelper } from '../../application/helpers/application-tree.helper';
 import { AnalysisSourceModel } from '../models/analysis-source.model';
 import { Store } from '@ngrx/store';
 import { AnalysisState } from '../state/analysis.state';
 import { selectApplicationTreeWithoutBackgroundLayers } from '../../application/state/application.selectors';
 import { selectSelectedDataSource } from '../state/analysis.selectors';
-import {
-  selectDataSource,
-  setSelectedDataSource,
-} from '../state/analysis.actions';
+import { selectDataSource, setSelectedDataSource } from '../state/analysis.actions';
 import { MetadataService } from '../../application/services/metadata.service';
-import { AttributeTypeHelper } from '../../application/helpers/attribute-type.helper';
+import { UserLayerHelper } from '../helpers/user-layer.helper';
 
 @Component({
   selector: 'tailormap-create-layer-layer-selection',
@@ -79,18 +59,7 @@ export class CreateLayerLayerSelectionComponent implements OnInit, OnDestroy {
         switchMap(appLayer => forkJoin([ of(appLayer), this.metadataService.getFeatureTypeMetadata$(appLayer.id) ])),
       )
       .subscribe(([ appLayer, attributeMetadata ]) => {
-        const geomAttribute = attributeMetadata.attributes[attributeMetadata.geometryAttributeIndex];
-        let geometryType;
-        if (geomAttribute) {
-          geometryType = AttributeTypeHelper.getGeometryAttributeType(geomAttribute);
-        }
-        const source: AnalysisSourceModel = {
-          layerId: +(appLayer.id),
-          featureType: appLayer.featureType,
-          label: appLayer.alias,
-          geometryType,
-          geometryAttribute: geomAttribute.name,
-        };
+        const source = UserLayerHelper.createUserLayerSourceFromMetadata(attributeMetadata, appLayer);
         this.store$.dispatch(setSelectedDataSource({ source }));
       });
   }
