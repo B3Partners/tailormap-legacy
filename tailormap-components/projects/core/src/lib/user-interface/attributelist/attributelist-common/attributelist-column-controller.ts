@@ -81,6 +81,14 @@ export class AttributelistColumnController {
     return columns;
   }
 
+  public getPassPortColumnsAsColumns(): string[] {
+    const columns = [];
+    this.passportColumns.forEach((passportcolumn) => {
+      columns.push(passportcolumn.name);
+    });
+    return columns;
+  }
+
   public setAttributes (columnDefs: Attribute[]) {
     for (const columnDef of columnDefs) {
       this.attributes.push(columnDef);

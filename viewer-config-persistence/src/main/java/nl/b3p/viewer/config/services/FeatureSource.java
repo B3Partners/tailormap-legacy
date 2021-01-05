@@ -137,7 +137,9 @@ public abstract class FeatureSource {
                 f = ff.and(notNull, filter);
             }
             org.geotools.data.Query q = new org.geotools.data.Query(sft.getTypeName(), f);
-            q.setMaxFeatures(maxFeatures);
+            if(maxFeatures != -1) {
+                q.setMaxFeatures(maxFeatures);
+            }
         
             fs = sft.openGeoToolsFeatureSource();
             FeatureCollection fc = fs.getFeatures(q);
