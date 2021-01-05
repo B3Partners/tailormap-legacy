@@ -186,7 +186,7 @@ public class UserLayerHandler {
     }
 
     public String getSQLQuery() throws CQLException, FilterToSQLException {
-        TMFilterToSQL f = new TMFilterToSQL();
+        TMFilterToSQL f = new TMFilterToSQL(this.dataStore);
         f.createFilterCapabilities();
         return f.encodeToString(FlamingoCQL.toFilter(this.query, this.entityManager, false));
     }

@@ -64,12 +64,20 @@ export class CriteriaComponent implements OnInit, OnDestroy {
         debounceTime(250),
       )
       .subscribe(formValues => {
-        const source = +(formValues.source);
+        const source = this.availableSources.find(src => src.featureType === +(formValues.source));
+        if (!source) {
+          return;
+        }
+        let relatedTo: number;
+        if (source.featureType !== this.selectedDataSource.featureType) {
+          relatedTo = this.selectedDataSource.layerId;
+        }
         this.formData = {
           ...this.formData,
-          source,
+          source: source.featureType,
           condition: formValues.condition,
           value: formValues.value,
+          relatedTo,
         };
         this.setDisabledState();
         this.emitChanges();
@@ -98,7 +106,6 @@ export class CriteriaComponent implements OnInit, OnDestroy {
     const relationSources = layerMetadata.relations.map<AttributeSource>(relation => ({
       featureType: relation.foreignFeatureType,
       label: `${relation.foreignFeatureTypeName}`,
-      disabled: true,
     }));
     this.availableSources = [
       {featureType: selectedDataSource.featureType, label: selectedDataSource.label},

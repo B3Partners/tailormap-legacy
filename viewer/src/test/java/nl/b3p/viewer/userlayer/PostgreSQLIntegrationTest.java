@@ -73,7 +73,7 @@ public class PostgreSQLIntegrationTest extends ViewerIntegrationTest {
 
     @Test
     public void createViewFail() {
-        assertFalse(db.createView(viewName, invalidTableName, filterSQL, null));
+        assertFalse(db.createView(viewName, invalidTableName, filterSQL, ""));
     }
 
     @Test

@@ -17,13 +17,13 @@
 package nl.b3p.viewer.util;
 
 import nl.b3p.viewer.config.services.*;
+import org.geotools.factory.CommonFactoryFinder;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryCollection;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.PrecisionModel;
 import javax.persistence.EntityManager;
 import nl.b3p.viewer.config.app.ApplicationLayer;
-
 import static nl.b3p.viewer.util.FeatureToJson.MAX_FEATURES;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -33,7 +33,9 @@ import org.geotools.feature.FeatureIterator;
 import org.geotools.filter.text.cql2.CQLException;
 import org.geotools.filter.text.ecql.ECQL;
 import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.filter.BinaryLogicOperator;
 import org.opengis.filter.Filter;
+import org.opengis.filter.FilterFactory2;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +49,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * geom: the geometry on which the geometries from applayerid and filter should work
  * applayerid: the applayerid with a featuresource from which all geometries should be retrieved (and unioned) to create an intersects filter to be applied on the geom column from another layer
  * filter: a cql filter to be applied when retrieving features from applayerid
- * 
+ *
  * @author Meine Toonen
  */
 public class FlamingoCQL {
@@ -56,6 +58,8 @@ public class FlamingoCQL {
 
     private final static String BEGIN_APPLAYER_PART = "APPLAYER(";
     private final static String BEGIN_RELATED_PART = "RELATED_LAYER(";
+
+    private static FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2(null);
 
     public static Filter toFilter(String filter, EntityManager em) throws CQLException {
         return toFilter(filter, em, true);
@@ -72,7 +76,7 @@ public class FlamingoCQL {
             filter = replaceApplayerFilter(filter, em);
         }
 
-        if(simplify && filter.contains(BEGIN_RELATED_PART)){
+        if (simplify && filter.contains(BEGIN_RELATED_PART)) {
             filter = replaceRelatedFilter(filter, em);
         }
         return filter;
@@ -80,17 +84,105 @@ public class FlamingoCQL {
 
     private static Filter getFilter(String filter, EntityManager em) throws CQLException {
         Filter f = null;
-        if(filter.contains(BEGIN_RELATED_PART)){
-            f = createSubselect(filter, em);
-        }else {
-            f =  ECQL.toFilter(filter);
+
+        if (filter.contains(BEGIN_RELATED_PART)) {
+            f = replaceSubselectsFromFilter(filter, em);
+        } else {
+            f = ECQL.toFilter(filter);
         }
 
         return f;
     }
 
+    private static Filter replaceSubselectsFromFilter(String filter, EntityManager em) throws CQLException {
+
+        String remainingFilter = filter;
+        Filter f = null;
+        Filter current = null;
+
+        if (startsWithRelatedLayer(remainingFilter)) {
+            int startIndex = remainingFilter.indexOf(BEGIN_RELATED_PART) + BEGIN_RELATED_PART.length();
+            int endIndex = findIndexOfClosingBracket(startIndex - 1, remainingFilter);
+            String filterPart = BEGIN_RELATED_PART + remainingFilter.substring(startIndex, endIndex + 1);
+            current = createSubselect(filterPart, em);
+            remainingFilter = remainingFilter.substring(0, remainingFilter.indexOf(BEGIN_RELATED_PART)) + remainingFilter.substring(endIndex + 1);
+        } else {
+            int endAnd = Math.max(0, remainingFilter.toLowerCase().indexOf(" and "));
+            int endOR = Math.max(0, remainingFilter.toLowerCase().indexOf(" or "));
+            int end = Math.max(endAnd, endOR);
+            String filterPart = remainingFilter.substring(0, end);
+            current = ECQL.toFilter(filterPart);
+            remainingFilter = remainingFilter.substring(end);
+        }
+        remainingFilter = remainingFilter.trim();
+
+        remainingFilter = removeUnnecessaryParens(remainingFilter);
+
+        if (!remainingFilter.isEmpty()) {
+            remainingFilter = remainingFilter.trim();
+            String nextFilter = remainingFilter.substring(remainingFilter.indexOf(" "));
+            f = getBinaryLogicOperator(remainingFilter, current, getFilter(nextFilter, em));
+        } else {
+            f = current;
+        }
+
+        return f;
+    }
+
+    public static String removeUnnecessaryParens(String filter){
+        String newFilter = removeAdjoiningParens(filter);
+        newFilter = removeEnclosingParens(newFilter);
+        return newFilter;
+    }
+
+    public static String removeAdjoiningParens(String filter) {
+        if (filter.isEmpty()) {
+            return filter;
+        }
+        String cur = "";
+
+        for (int i = 0; i < filter.length() ; i++) {
+            char c = filter.charAt(i);
+            if (i + 1 < filter.length()) {
+                char next = filter.charAt(i + 1);
+                if (c == '(' && next == ')') {
+                    i++;
+                } else {
+                    cur += c;
+                }
+            } else {
+                cur += c;
+            }
+        }
+
+        if (filter.length() > cur.length() && cur.length() >= 2) {
+            cur = removeAdjoiningParens(cur);
+        }
+        return cur;
+    }
+
+    public static String removeEnclosingParens(String filter){
+        String cur = filter;
+        while(cur.startsWith("(") && cur.endsWith(")")){
+            cur = cur.substring(1, cur.length() - 1);
+
+        }
+        return cur;
+    }
+
+    private static boolean startsWithRelatedLayer(String filter) {
+        int threshold = 6;
+        return filter.substring(0, BEGIN_RELATED_PART.length() + threshold).contains(BEGIN_RELATED_PART);
+    }
+
+    private static BinaryLogicOperator getBinaryLogicOperator(String filter, Filter prev, Filter current) {
+        int endIndex = filter.indexOf(" ");
+        String logicPart = filter.substring(0, endIndex);
+        return logicPart.contains("AND") ? ff.and(prev, current) : ff.or(prev, current);
+    }
+
     private static Subselect createSubselect(String filter, EntityManager em) throws CQLException {
-        FeatureTypeRelation relation = FlamingoCQL.parseSubselectFilter(filter, em);
+        FeatureTypeRelation relation = FlamingoCQL.retrieveFeatureTypeRelation(filter, em);
         SimpleFeatureType subSft = relation.getForeignFeatureType();
         FeatureTypeRelationKey key = relation.getRelationKeys().get(0);
         String relatedColumn = key.getRightSide().getName();
@@ -100,16 +192,39 @@ public class FlamingoCQL {
         Filter relatedFilter = FlamingoCQL.toFilter(retrieveRelatedFilter(filter), em, false);
         Subselect s = new Subselect(relatedFilter, relatedColumn, mainColumn, relatedTable);
         return s;
-
     }
 
-    private static String retrieveRelatedFilter (String filter){
-        int endSubFilter = filter.lastIndexOf(",");
-        String relatedFilterString = filter.substring(endSubFilter + 1, filter.indexOf(";"));
+    private static int findIndexOfClosingBracket(int startIndex, String filter) {
+
+        int openBrackets = 0, closingBrackets = 0, endIndex = 0;
+        for (int i = startIndex; i < filter.length(); i++) {
+            char c = filter.charAt(i);
+            if (c == '(') {
+                openBrackets++;
+            }
+            if (c == ')') {
+                closingBrackets++;
+            }
+            if (openBrackets == closingBrackets) {
+                endIndex = i;
+                break;
+            }
+        }
+        return endIndex;
+    }
+
+    private static String retrieveRelatedFilter(String filter) {
+        int endSubFilter = filter.lastIndexOf(",") + 1;
+
+        int endIndex = findIndexOfClosingBracket(endSubFilter, filter);
+        if (endIndex == endSubFilter) {
+            endIndex = filter.indexOf(")", endSubFilter) - 1;
+        }
+        String relatedFilterString = filter.substring(endSubFilter, endIndex + 1);
         return relatedFilterString;
     }
 
-    private static FeatureTypeRelation parseSubselectFilter(String filter, EntityManager em) throws CQLException {
+    private static FeatureTypeRelation retrieveFeatureTypeRelation(String filter, EntityManager em) throws CQLException {
              /*
           RELATED_LAYER(<LAYERID_MAIN>, <SIMPLEFEATURETYPEID_SUB>, <FILTER>)
                 LAYERID_MAIN number  id of application layer (!) main layer in tailormap db: on this layer the filter will be set
@@ -124,24 +239,24 @@ public class FlamingoCQL {
                 haal met behulp van de relatie de kolom uit sub op waar de relatie op ligt: kolom_sub
                 maak filter op LAYER_SUB, en haal alle values voor kolom_sub op: values
          */
-        int beginPartLength = BEGIN_RELATED_PART.length();
-        int endMainLayer = filter.indexOf( ",",beginPartLength +1);
-        int endSubLayer = filter.indexOf( ",",endMainLayer +1);
-       if(endMainLayer == - 1 || endSubLayer == -1 ){
+        int beginPartLength = filter.indexOf(BEGIN_RELATED_PART) + BEGIN_RELATED_PART.length();
+        int endMainLayer = filter.indexOf(",", beginPartLength + 1);
+        int endSimpleFeatureIdSub = filter.indexOf(",", endMainLayer + 1);
+        if (endMainLayer == -1 || endSimpleFeatureIdSub == -1) {
             throw new CQLException("Related layer filter incorrectly formed. Must be of form: RELATED_LAYER(<LAYERID_MAIN>, <SIMPLEFEATURETYPEID_SUB>, <FILTER>)");
         }
         String appLayerIdMain = filter.substring(beginPartLength, endMainLayer);
-        String layerIdSub = filter.substring(endMainLayer+1, endSubLayer);
+        String simpleFeatureIdSub = filter.substring(endMainLayer + 1, endSimpleFeatureIdSub);
 
-        if(appLayerIdMain.isEmpty() || layerIdSub.isEmpty() ){
+        if (appLayerIdMain.isEmpty() || simpleFeatureIdSub.isEmpty()) {
             throw new CQLException("Related layer filter incorrectly formed. Must be of form: RELATED_LAYER(<LAYERID_MAIN>, <SIMPLEFEATURETYPEID_SUB>, <FILTER>)");
         }
         appLayerIdMain = appLayerIdMain.trim();
-        layerIdSub = layerIdSub.trim();
+        simpleFeatureIdSub = simpleFeatureIdSub.trim();
         try {
 
             ApplicationLayer appLayer = em.find(ApplicationLayer.class, Long.parseLong(appLayerIdMain));
-            SimpleFeatureType sub = em.find(SimpleFeatureType.class, Long.parseLong(layerIdSub));
+            SimpleFeatureType sub = em.find(SimpleFeatureType.class, Long.parseLong(simpleFeatureIdSub));
             Layer main = appLayer.getService() == null ? null : appLayer.getService().getLayer(appLayer.getLayerName(), em);
             List<FeatureTypeRelation> rels = main.getFeatureType().getRelations();
             AtomicReference<FeatureTypeRelation> atomRel = new AtomicReference<>();
@@ -151,23 +266,23 @@ public class FlamingoCQL {
                 }
             });
 
-            if(atomRel.get() == null){
+            if (atomRel.get() == null) {
                 throw new CQLException("Applicationlayer does not have a relation");
             }
             return atomRel.get();
-        }catch (NumberFormatException nfe){
+        } catch (NumberFormatException nfe) {
             throw new CQLException("Related layer filter incorrectly formed. Ids are not parsable to Longs. Must be of form: RELATED_LAYER(<LAYERID_MAIN>, <SIMPLEFEATURETYPEID_SUB>, <FILTER>)");
         }
     }
 
     private static String replaceRelatedFilter(String filter, EntityManager em) throws CQLException {
-        FeatureTypeRelation relation = FlamingoCQL.parseSubselectFilter(filter, em);
+        FeatureTypeRelation relation = FlamingoCQL.retrieveFeatureTypeRelation(filter, em);
         FeatureTypeRelationKey key = relation.getRelationKeys().get(0);
-        String relatedFilter= retrieveRelatedFilter(filter);
+        String relatedFilter = retrieveRelatedFilter(filter);
 
         List<Object> ids = FlamingoCQL.getFIDSFromRelatedFeatures(relation.getForeignFeatureType(), relatedFilter, key.getRightSide().getName());
         String cql;
-        if(ids.isEmpty()){
+        if (ids.isEmpty()) {
             cql = "1 = 0";
             return cql;
         }
@@ -175,7 +290,7 @@ public class FlamingoCQL {
         cql += " IN (";
         CharSequence cs = ",";
         String escapChar = key.getLeftSide().getType().equals("string") ? "'" : "";
-        for (Object id: ids) {
+        for (Object id : ids) {
 
             cql += escapChar + id + escapChar + ",";
         }
@@ -184,7 +299,7 @@ public class FlamingoCQL {
         return cql;
     }
 
-    private static List<Object> getFIDSFromRelatedFeatures(SimpleFeatureType sft, String filter, String column){
+    private static List<Object> getFIDSFromRelatedFeatures(SimpleFeatureType sft, String filter, String column) {
         List<Object> fids = new ArrayList<>();
         try {
             FeatureSource fs = sft.openGeoToolsFeatureSource();
@@ -268,11 +383,11 @@ public class FlamingoCQL {
         String attribute = applayerfilter.substring(0, firstIndex);
         String appLayerId = applayerfilter.substring(firstIndex + 1, secondIndex);
         String filter = applayerfilter.substring(secondIndex + 1);
-        
+
         filter = filter.trim();
         appLayerId = appLayerId.trim();
         Long id = Long.parseLong(appLayerId);
-        
+
         String geom = getUnionedFeatures(filter, id, em);
         String nieuwFilter = "intersects (" + attribute + ", " + geom + ")";
         return nieuwFilter;

@@ -99,19 +99,24 @@ export class CriteriaHelper {
   }
 
   public static convertConditionToQuery(condition: CriteriaConditionModel) {
+    let cql: string;
     if (condition.attributeType === AttributeTypeEnum.NUMBER) {
-      return `(${condition.attribute} ${condition.condition} ${condition.value})`;
+      cql = `${condition.attribute} ${condition.condition} ${condition.value}`;
     }
     if (condition.attributeType === AttributeTypeEnum.STRING) {
-      return CriteriaHelper.getQueryForString(condition);
+      cql = CriteriaHelper.getQueryForString(condition);
     }
     if (condition.attributeType === AttributeTypeEnum.DATE) {
       const cond = condition.condition === 'ON' ? '=' : condition.condition === 'AFTER' ? '>' : '<';
-      return `(${condition.attribute} ${cond} "${condition.value}")`
+      cql = `${condition.attribute} ${cond} "${condition.value}"`;
     }
     if (condition.attributeType === AttributeTypeEnum.BOOLEAN) {
-      return `(${condition.attribute} = ${condition.condition === 'TRUE' ? 'true' : 'false'})`
+      cql = `${condition.attribute} = ${condition.condition === 'TRUE' ? 'true' : 'false'}`;
     }
+    if (condition.relatedTo) {
+      return `RELATED_LAYER(${condition.relatedTo},${condition.source},${cql})`
+    }
+    return `(${cql})`;
   }
 
   private static getQueryForString(condition: CriteriaConditionModel) {
@@ -132,7 +137,7 @@ export class CriteriaHelper {
     if (condition.condition === 'ENDS_WITH') {
       query.push(`'%${condition.value}'`);
     }
-    return `(${query.join(' ')})`;
+    return `${query.join(' ')}`;
   }
 
 }

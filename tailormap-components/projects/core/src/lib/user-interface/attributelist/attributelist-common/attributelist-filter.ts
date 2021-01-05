@@ -14,11 +14,11 @@ import {
 import { AttributeDataSource } from './attributelist-datasource';
 import { AttributelistFilterValuesFormComponent } from '../attributelist-filter-values-form/attributelist-filter-values-form.component';
 import { ValueService } from '../../../shared/value-service/value.service';
+import { AttributelistForFilter } from './attributelist-models';
+import { CriteriaHelper } from '../../../analysis/criteria/helpers/criteria.helper';
 import { AttributeTypeEnum } from '../../../application/models/attribute-type.enum';
 import { AttributeTypeHelper } from '../../../application/helpers/attribute-type.helper';
-import { AttributelistForFilter } from './attributelist-models';
 import { AttributelistColumnController } from './attributelist-column-controller';
-import { CriteriaHelper } from '../../../analysis/criteria/helpers/criteria.helper';
 
 export class AttributelistFilter {
 
