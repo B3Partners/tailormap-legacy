@@ -83,7 +83,7 @@ export class AttributelistFilter {
           this.valueFilter = ' ';
         } else {
           this.valueFilter += ' AND';
-        } 
+        }
         if (c.filterType === 'UniqueValues') {
           if (c.nullValue) {
             this.valueFilter += ' ' + c.name + ' IS NULL';
