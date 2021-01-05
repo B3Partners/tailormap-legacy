@@ -34,6 +34,7 @@ export class AttributelistFilter {
   private valueParams: ValueParameters = {
     applicationLayer: 0,
     attributes: [],
+    maxFeatures: -1,
   }
 
   public layerFilterValues: LayerFilterValues = {
@@ -43,6 +44,8 @@ export class AttributelistFilter {
 
   private valueFilter: string;
 
+  private relatedFilter: string;
+
   public initFiltering(colNames: string[]): void {
     if (this.layerFilterValues.columns.length === 0) {
       // Init the filter structure
@@ -51,8 +54,20 @@ export class AttributelistFilter {
         let filterColumn: FilterColumns;
         filterColumn = {name: colName, status: false, nullValue: false, filterType: null, uniqueValues: [], criteria: null};
         this.layerFilterValues.columns.push(filterColumn);
-      }
+      };
     }
+  }
+
+  public setRelatedFilter(filter: string): void {
+    this.relatedFilter = filter;
+  }
+
+  public getRelatedFilter(): string {
+    return this.relatedFilter;
+  }
+
+  public getValueFilter(): string {
+    return this.valueFilter;
   }
 
   /**
@@ -68,7 +83,7 @@ export class AttributelistFilter {
           this.valueFilter = ' ';
         } else {
           this.valueFilter += ' AND';
-        }
+        } 
         if (c.filterType === 'UniqueValues') {
           if (c.nullValue) {
             this.valueFilter += ' ' + c.name + ' IS NULL';
@@ -88,7 +103,7 @@ export class AttributelistFilter {
                 }
                 this.valueFilter += quote + v.value + quote;
               }
-            })
+            });
             this.valueFilter += ')';
           }
         } else {
@@ -96,7 +111,7 @@ export class AttributelistFilter {
         }
 
       }
-    })
+    });
     return this.valueFilter;
   }
 
@@ -104,6 +119,13 @@ export class AttributelistFilter {
     // Get the unique values for this column
     this.columnController = attributelistForFilter.columnController;
     this.valueParams.applicationLayer = this.dataSource.params.layerId;
+    if (this.dataSource.params.hasDetail()) {
+      this.valueParams.featureType = this.dataSource.params.featureTypeId;
+      // this.valueParams.filter = this.dataSource.params.featureFilter;
+    } else {
+      delete this.valueParams.featureType;
+      this.valueParams.filter = '';
+    }
     this.valueParams.attributes = [];
     this.valueParams.attributes.push(columnName);
     this.valueService.uniqueValues$(this.valueParams).subscribe((data: UniqueValuesResponse) => {

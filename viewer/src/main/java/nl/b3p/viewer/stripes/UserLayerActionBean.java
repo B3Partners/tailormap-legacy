@@ -136,6 +136,34 @@ public class UserLayerActionBean extends LocalizableActionBean implements Action
         };
     }
 
+    public Resolution validate() throws FilterToSQLException, CQLException {
+
+        final UserLayerHandler ulh = new UserLayerHandler(auditMessageObject, Stripersist.getEntityManager(),
+                application, appLayer, query, title, wellKnownUserLayerWorkspaceName,
+                wellKnownUserLayerStoreName);
+
+        boolean success = true;
+        String isInvalidMsg = ulh.validate();
+        final JSONObject jsonObject = (new JSONObject()).put("success", Boolean.TRUE);
+        jsonObject.put("valid", isInvalidMsg);
+        jsonObject.put("sql", ulh.getSQLQuery());
+
+        return new StreamingResolution("application/json") {
+            @Override
+            public void stream(HttpServletResponse response) throws Exception {
+                if (unauthorized) {
+                    response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                } else if (jsonObject.getBoolean("success")) {
+                    response.setStatus(HttpServletResponse.SC_CREATED);
+                } else {
+                    response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                }
+                IOUtils.copy(new StringReader(jsonObject.toString()), response.getOutputStream(),
+                        StandardCharsets.UTF_8);
+            }
+        };
+    }
+
     public Resolution add() {
         final JSONObject jsonObject = (new JSONObject()).put("success", Boolean.FALSE);
         if (unauthorized) {

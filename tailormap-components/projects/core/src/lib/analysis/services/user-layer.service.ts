@@ -1,40 +1,29 @@
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { AnalysisState } from '../state/analysis.state';
-import {
-  selectApplicationId,
-  selectLevelForLayer,
-} from '../../application/state/application.selectors';
-import {
-  concatMap,
-  filter,
-  switchMap,
-  take,
-  tap,
-} from 'rxjs/operators';
-import {
-  forkJoin,
-  of,
-} from 'rxjs';
-import {
-  clearCreateLayerMode,
-  setCreatingLayer,
-  setCreatingLayerFailed,
-  setCreatingLayerSuccess,
-} from '../state/analysis.actions';
+import { selectApplicationId, selectLevelForLayer } from '../../application/state/application.selectors';
+import { concatMap, filter, switchMap, take, tap } from 'rxjs/operators';
+import { forkJoin, of } from 'rxjs';
+import { clearCreateLayerMode, setCreatingLayer, setCreatingLayerFailed, setCreatingLayerSuccess } from '../state/analysis.actions';
 import { CriteriaHelper } from '../criteria/helpers/criteria.helper';
 import { addAppLayer } from '../../application/state/application.actions';
-import {
-  selectCreateLayerData,
-  selectSelectedDataSource,
-} from '../state/analysis.selectors';
+import { selectCreateLayerData, selectSelectedDataSource } from '../state/analysis.selectors';
 import { StyleHelper } from '../helpers/style.helper';
 import {
   UserLayerApiService,
   UserLayerResponseType,
 } from './user-layer-api.service';
 import { CreateLayerModeEnum } from '../models/create-layer-mode.enum';
+import { AnalysisSourceModel } from '../models/analysis-source.model';
 
+interface CreateUserLayerParams {
+  appLayerId: string;
+  title: string;
+  query: string;
+  style?: string;
+  createdAppLayer?: string;
+  source?: AnalysisSourceModel;
+}
 @Injectable({
   providedIn: 'root',
 })
@@ -45,10 +34,10 @@ export class UserLayerService {
     private store$: Store<AnalysisState>,
   ) {}
 
-  public createUserLayerFromParams(appLayerId: string, title: string, query: string, style: string, createdAppLayer?: string) {
-    this.saveUserLayer$(appLayerId, title, query, style, createdAppLayer)
+  public createUserLayerFromParams(params: CreateUserLayerParams) {
+    this.saveUserLayer$(params.appLayerId, params.title, params.query, params.style, params.createdAppLayer)
       .subscribe(([createLayerResult, saveStyleResult]) => {
-        this.handleResult(createLayerResult, saveStyleResult);
+        this.handleResult(createLayerResult, saveStyleResult, params.source);
       });
   }
 
@@ -75,7 +64,7 @@ export class UserLayerService {
     })
   }
 
-  private saveUserLayer$(appLayerId: string, title: string, query: string, style: string, createdAppLayer?: string) {
+  private saveUserLayer$(appLayerId: string, title: string, query: string, style?: string, createdAppLayer?: string) {
 
     return this.store$.select(selectApplicationId)
       .pipe(
@@ -103,8 +92,11 @@ export class UserLayerService {
         }),
       )
   }
-
-  private handleResult(createLayerResult: UserLayerResponseType, saveStyleResult: UserLayerResponseType | null) {
+  private handleResult(
+    createLayerResult: UserLayerResponseType,
+    saveStyleResult: UserLayerResponseType | null,
+    source?: AnalysisSourceModel,
+  ) {
     if (createLayerResult !== null && UserLayerApiService.isFailedResponse(createLayerResult)) {
       const message = [createLayerResult.error || '', createLayerResult.message || ''].filter(m => m !== '').join(' - ');
       this.store$.dispatch(setCreatingLayerFailed({message}));
@@ -114,7 +106,8 @@ export class UserLayerService {
       this.store$.dispatch(setCreatingLayerFailed({message}));
     }
     if (createLayerResult !== null && UserLayerApiService.isSuccessResponse(createLayerResult)) {
-      this.store$.select(selectSelectedDataSource)
+      const source$ = !!source ? of(source) : this.store$.select(selectSelectedDataSource);
+      source$
         .pipe(
           take(1),
           switchMap(selectedDataSource => {
