@@ -28,7 +28,6 @@ import {
 } from '@angular/animations';
 import {
   AttributelistTable,
-  AttributelistForFilter,
   RowClickData,
   RowData,
 } from '../attributelist-common/attributelist-models';
@@ -300,7 +299,7 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
         application: this.layerService.getAppId(),
         appLayer: layer.id},
       isChild: false,
-      columnNames: this.dataSource.columnController.getTest(),
+      columnNames: this.dataSource.columnController.getPassPortColumnsAsColumns(),
       children: [],
     });
     fromArray(relatedFeatures).pipe(concatMap(feature => {

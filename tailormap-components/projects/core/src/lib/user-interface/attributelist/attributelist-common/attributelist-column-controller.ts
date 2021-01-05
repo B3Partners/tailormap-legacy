@@ -16,8 +16,6 @@ export class AttributelistColumnController {
   // List with passport columns, i.e. selection of all columns.
   private passportColumns: AttributelistColumn[] = [];
 
-  private test: string [] = [];
-
   // List of active (i.e. visible) columns.
   private activeColumns: AttributelistColumn[] = [];
 
@@ -80,6 +78,14 @@ export class AttributelistColumnController {
       };
       columns.push(column);
     }
+    return columns;
+  }
+
+  public getPassPortColumnsAsColumns(): string[] {
+    const columns = [];
+    this.passportColumns.forEach((passportcolumn) => {
+      columns.push(passportcolumn.name);
+    });
     return columns;
   }
 
@@ -185,10 +191,6 @@ export class AttributelistColumnController {
     this.updateActiveColumns();
   }
 
-  public getTest(): string[] {
-    return this.test;
-  }
-
   /**
    * Sets the data column names. The list could contain a special column
    * '_checked'. If so, this column is promoted to the first column of the list.
@@ -212,7 +214,6 @@ export class AttributelistColumnController {
       this.passportColumns.splice(0, this.passportColumns.length);
     } else {
       // Set passport columns.
-      this.test = columnNames;
       this.passportColumns = this.columnNamesToColumns(columnNames);
     }
     // Activate passport columns.
