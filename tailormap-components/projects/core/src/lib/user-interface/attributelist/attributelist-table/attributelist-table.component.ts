@@ -28,7 +28,7 @@ import {
 } from '@angular/animations';
 import {
   AttributelistTable,
-  AttributelistRefresh,
+  AttributelistForFilter,
   RowClickData,
   RowData,
 } from '../attributelist-common/attributelist-models';
@@ -55,6 +55,7 @@ import { concatMap, takeUntil } from 'rxjs/operators';
 import { fromArray } from 'rxjs/internal/observable/fromArray';
 import { AttributelistTreeComponent } from '../attributelist-tree/attributelist-tree.component';
 import { AttributelistNode, SelectedTreeData, TreeDialogData } from '../attributelist-tree/attributelist-tree-models';
+import { AttributelistColumnController } from '../attributelist-common/attributelist-column-controller';
 // import { LiteralMapKey } from '@angular/compiler';
 
 @Component({
@@ -69,7 +70,7 @@ import { AttributelistNode, SelectedTreeData, TreeDialogData } from '../attribut
     ]),
   ],
 })
-export class AttributelistTableComponent implements AttributelistTable, AttributelistRefresh, OnInit, AfterViewInit, OnDestroy {
+export class AttributelistTableComponent implements AttributelistTable, OnInit, AfterViewInit, OnDestroy {
 
   @ViewChild(MatPaginator) private paginator: MatPaginator;
   @ViewChild(MatSort) private sort: MatSort;
@@ -89,8 +90,11 @@ export class AttributelistTableComponent implements AttributelistTable, Attribut
   @Output()
   public tabChange = new EventEmitter();
 
+  public columnController: AttributelistColumnController;
+
   public dataSource = new AttributeDataSource(this.layerService,
                                               this.attributeService,
+                                              this.tailorMapService,
                                               this.formconfigRepoService);
   public checkedRows = [];
   public treeData = new Array<AttributelistNode>();
@@ -144,6 +148,11 @@ export class AttributelistTableComponent implements AttributelistTable, Attribut
     // console.log('#Table - constructor');
   }
 
+  public ngOnDestroy(): void {
+    this.destroyed.next();
+    this.destroyed.complete();
+  }
+
   public ngOnInit(): void {
     this.attributelistService.selectedTreeData$.pipe(takeUntil(this.destroyed)).subscribe(selectedTreeData => {
       if (!selectedTreeData.isChild) {
@@ -160,11 +169,6 @@ export class AttributelistTableComponent implements AttributelistTable, Attribut
       this.isRelatedRefresh = false;
       this.dataSource.loadTableData(this, selectedTreeData);
     });
-  }
-
-  public ngOnDestroy(): void {
-    this.destroyed.next();
-    this.destroyed.complete();
   }
 
   public ngAfterViewInit(): void {
@@ -451,6 +455,10 @@ export class AttributelistTableComponent implements AttributelistTable, Attribut
     this.filterMap.get(this.dataSource.params.featureTypeId).setFilter(this, columnName);
   }
 
+  public onClearFilter() {
+    this.filterMap.get(this.dataSource.params.featureTypeId).clearFilter(this);
+  }
+
   /**
    * After setting filter(s) refresh the table
    */
@@ -627,6 +635,7 @@ export class AttributelistTableComponent implements AttributelistTable, Attribut
   private updateTable(): void {
     // (Re)load data. Fires the onAfterLoadData method.
     this.dataSource.loadData(this);
+    this.columnController = this.dataSource.columnController;
     // Update check info (number checked/check state).
     this.updateCheckedInfo();
   }

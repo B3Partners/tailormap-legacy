@@ -11,7 +11,7 @@ export interface ValueParameters {
 }
 
 export interface UniqueValuesResponse {
-  uniqueValues: AttributeUniqueValues[];
+  uniqueValues: Record<string, string[]>;
   success: boolean;
 }
 

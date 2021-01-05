@@ -46,6 +46,7 @@ import {
 import { FormFieldHelpers } from '../../../feature-form/form-field/form-field-helpers';
 import { map, take } from 'rxjs/operators';
 import { AttributelistNode, SelectedTreeData } from '../attributelist-tree/attributelist-tree-models';
+import { TailorMapService } from '../../../../../../bridge/src/tailor-map.service';
 
 export class AttributeDataSource extends DataSource<any> {
 
@@ -71,6 +72,7 @@ export class AttributeDataSource extends DataSource<any> {
 
   constructor(private layerService: LayerService,
               private attributeService: AttributeService,
+              private tailorMapService: TailorMapService,
               private formconfigRepoService: FormconfigRepositoryService) {
     super();
   }
@@ -167,7 +169,8 @@ export class AttributeDataSource extends DataSource<any> {
         if (row.geometrie) {
           rest.geometrie =  wellknown.parse(row.geometrie);
         }
-        const className = LayerUtils.sanitizeLayername(this.getLayerName().toLowerCase());
+        const appLayer = this.tailorMapService.getApplayerById(this.params.layerId);
+        const className = LayerUtils.sanitizeLayername(appLayer);
         feature.children = [];
         feature.clazz = className;
         feature.objectGuid = row.object_guid;

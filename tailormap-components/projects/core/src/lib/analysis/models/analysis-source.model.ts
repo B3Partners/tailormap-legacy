@@ -5,5 +5,6 @@ export interface AnalysisSourceModel {
   featureType: number;
   label: string;
   disabled?: boolean;
+  geometryAttribute: string;
   geometryType: AttributeTypeEnum;
 }

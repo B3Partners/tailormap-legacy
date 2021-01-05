@@ -38,19 +38,31 @@ declare interface Level {
   background: boolean;
 }
 
+declare interface CQLFilter{
+  filters ?: CQLFilter[];
+  cql: string;
+  id: string;
+  operator: string;
+  type: 'ATTRIBUTE' | 'GEOMETRY' | 'APPLAYER';
+  getCQL : () => string;
+  getCQLWithoutType : () => string;
+  addFilter : (filter: CQLFilter) => void;
+  removeFilter : (filter: CQLFilter) => void;
+  removeFilterById : (id : string) => void;
+  addOrReplace : (filter: CQLFilter) => void;
+}
+
 declare interface AppLayer {
   id: string;
   layerName: string;
   alias: string;
+  filter ?: CQLFilter;
 
   attribute: boolean;   // has attribute table???
   featureType: number;
   background: boolean;
   userlayer: boolean;
-}
-declare interface Pixel{
-  x: number;
-  y: number;
+  userlayer_original_layername ?: string;
 }
 declare interface Pixel{
   x: number;

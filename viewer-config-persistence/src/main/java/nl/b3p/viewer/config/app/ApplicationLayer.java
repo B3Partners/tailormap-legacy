@@ -249,7 +249,12 @@ public class ApplicationLayer {
             json.put("filterable", l.getFeatureType() != null && !(l.getFeatureType().getFeatureSource() instanceof ArcGISFeatureSource) );
         }
 
-        json.put("userlayer", l.isUserlayer() != null ? l.isUserlayer() : false);
+        boolean userLayer = l.isUserlayer() != null ? l.isUserlayer() : false;
+
+        json.put("userlayer", userLayer);
+        if(userLayer){
+            json.put(Layer.DETAIL_USERLAYER_ORIGINAL_LAYERNAME, l.getDetails().get(Layer.DETAIL_USERLAYER_ORIGINAL_LAYERNAME) );
+        }
         json.put("bufferable", l.isBufferable());
         json.put("editable", l.getFeatureType() != null && l.getFeatureType().isWriteable());
         json.put("influence", this.getDetails().containsKey("influenceradius"));
@@ -399,7 +404,7 @@ public class ApplicationLayer {
         return copy;
     }
 
-    public void synchronizeFeaturetype(EntityManager em, ActionBeanContext context, ResourceBundle bundle, Map<String, String> attributeAliases){
+    public void synchronizeFeaturetype(EntityManager em, ActionBeanContext context, ResourceBundle bundle, Map<String, String> attributeAliases, boolean geomVisible){
         Layer layer = this.getService().getSingleLayer(this.getLayerName(), em);
         // Synchronize configured attributes with layer feature type
         if (layer != null) {
@@ -416,7 +421,7 @@ public class ApplicationLayer {
                 // possible.
                 // New Attributes from a join or related featureType are added at the
                 //end of the list.
-                attributesToRetain = rebuildAttributes(sft, em, context, bundle, attributeAliases);
+                attributesToRetain = rebuildAttributes(sft, em, context, bundle, attributeAliases, geomVisible);
 
                 // Remove ConfiguredAttributes which are no longer present
                 List<ConfiguredAttribute> attributesToRemove = new ArrayList();
@@ -441,7 +446,8 @@ public class ApplicationLayer {
         }
     }
 
-    private List<String> rebuildAttributes(SimpleFeatureType sft, EntityManager em, ActionBeanContext context, ResourceBundle bundle, Map<String, String> attributeAliases) {
+    private List<String> rebuildAttributes(SimpleFeatureType sft, EntityManager em, ActionBeanContext context,
+                                           ResourceBundle bundle, Map<String, String> attributeAliases, boolean geomVisible) {
         Layer layer = this.getService().getSingleLayer(this.getLayerName(),em);
         List<String> attributesToRetain = new ArrayList<String>();
         for(AttributeDescriptor ad: sft.getAttributes()) {
@@ -464,7 +470,7 @@ public class ApplicationLayer {
                 // default visible if not geometry type
                 // and not a attribute of a related featuretype
                 boolean defaultVisible=true;
-                if (!layer.getFeatureType().getId().equals(sft.getId())|| AttributeDescriptor.GEOMETRY_TYPES.contains(ad.getType())){
+                if (!layer.getFeatureType().getId().equals(sft.getId())|| (!geomVisible && AttributeDescriptor.GEOMETRY_TYPES.contains(ad.getType()))){
                     defaultVisible=false;
                 }
                 ca.setVisible(defaultVisible);
@@ -488,7 +494,7 @@ public class ApplicationLayer {
         }
         if (sft.getRelations()!=null){
             for (FeatureTypeRelation rel : sft.getRelations()){
-                attributesToRetain.addAll(rebuildAttributes(rel.getForeignFeatureType(), em, context,bundle, attributeAliases));
+                attributesToRetain.addAll(rebuildAttributes(rel.getForeignFeatureType(), em, context,bundle, attributeAliases, geomVisible));
             }
         }
         return attributesToRetain;

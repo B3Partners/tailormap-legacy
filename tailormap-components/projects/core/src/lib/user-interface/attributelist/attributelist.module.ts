@@ -20,6 +20,7 @@ import { MatTableModule } from '@angular/material/table';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { AttributelistFilterValuesFormComponent } from './attributelist-filter-values-form/attributelist-filter-values-form.component';
 import { AttributelistTreeComponent } from './attributelist-tree/attributelist-tree.component';
+import { AttributelistLayernameChooserComponent } from './attributelist-layername-chooser/attributelist-layername-chooser.component';
 
 @NgModule({
   // The components, directives, and pipes that belong to this NgModule.
@@ -35,6 +36,7 @@ import { AttributelistTreeComponent } from './attributelist-tree/attributelist-t
     PanelResizerComponent,
     AttributelistFilterValuesFormComponent,
     AttributelistTreeComponent,
+    AttributelistLayernameChooserComponent,
   ],
   imports: [
     CommonModule,

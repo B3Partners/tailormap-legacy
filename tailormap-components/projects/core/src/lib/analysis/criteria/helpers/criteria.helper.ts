@@ -6,6 +6,10 @@ import { IdService } from '../../../shared/id-service/id.service';
 import { CriteriaOperatorEnum } from '../../models/criteria-operator.enum';
 import { CriteriaConditionTypeModel } from '../../models/criteria-condition-type.model';
 import { AttributeTypeEnum } from '../../../application/models/attribute-type.enum';
+import { UserLayerStyleModel } from '../../models/user-layer-style.model';
+import { StyleHelper } from '../../helpers/style.helper';
+import { ScopedUserLayerStyleModel } from '../../models/scoped-user-layer-style.model';
+import { AttributeTypeHelper } from '../../../application/helpers/attribute-type.helper';
 
 export class CriteriaHelper {
 
@@ -61,7 +65,26 @@ export class CriteriaHelper {
     return { id: idService.getUniqueId('criteria') };
   }
 
+  public static convertStyleToQuery(styles: UserLayerStyleModel[]) {
+    const attributes = new Map<string, string[]>();
+    const isActiveScopedStyle = (style: UserLayerStyleModel): style is ScopedUserLayerStyleModel => {
+      return StyleHelper.isScopedStyle(style) && style.active;
+    };
+    styles.filter(isActiveScopedStyle).forEach(style => {
+      const cur = attributes.get(style.attribute) || [];
+      attributes.set(style.attribute, cur.concat([ AttributeTypeHelper.getExpression(style.value, style.attributeType) ]));
+    });
+    const query: string[] = [];
+    attributes.forEach((values, attribute) => {
+      query.push(`${attribute} IN (${values.join(',')})`);
+    });
+    return query.join(' AND ');
+  }
+
   public static convertCriteriaToQuery(criteria: CriteriaModel) {
+    if (!criteria || !criteria.groups) {
+      return '';
+    }
     const query = criteria.groups
       .map(CriteriaHelper.convertGroupToQuery)
       .join(` ${criteria.operator} `);
@@ -111,4 +134,5 @@ export class CriteriaHelper {
     }
     return `(${query.join(' ')})`;
   }
+
 }

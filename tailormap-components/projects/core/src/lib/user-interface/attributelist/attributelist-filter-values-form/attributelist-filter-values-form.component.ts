@@ -49,18 +49,9 @@ export class AttributelistFilterValuesFormComponent implements OnInit {
       this.criteriaValue.setValue(this.criteria.value);
     }
     this.filterTypeSelected = data.filterType;
-    this.criteria = new class implements CriteriaConditionModel {
-      public attribute: string;
-      public attributeType: AttributeTypeEnum;
-      public condition: string;
-      public id: string;
-      public source: number;
-      public value: string;
-    };
-    this.filterDialogSettings = new class implements FilterDialogSettings {
-      public filterType: string;
-      public filterSetting: string;
-      public criteria: CriteriaConditionModel;
+    this.criteria = {id: ''};
+    this.filterDialogSettings = {
+      criteria: this.criteria, filterSetting: '', filterType: '',
     };
 
     this.updateSelected();

@@ -154,7 +154,7 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
 
     @Before
     public void synchronizeFeatureType() throws JSONException {
-        applicationLayer.synchronizeFeaturetype(Stripersist.getEntityManager(),context, getBundle(),attributeAliases);
+        applicationLayer.synchronizeFeaturetype(Stripersist.getEntityManager(),context, getBundle(),attributeAliases, false);
         Layer layer = applicationLayer.getService().getSingleLayer(applicationLayer.getLayerName(), Stripersist.getEntityManager());
         // Synchronize configured attributes with layer feature type
         if (layer != null) {

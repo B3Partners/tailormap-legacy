@@ -39,6 +39,16 @@ export class AttributeTypeHelper {
     return '';
   }
 
+  /**
+   * Returns the value, quoted if the attribute is a string or date
+   */
+  public static getExpression(value: string | number | boolean, attributeType: AttributeTypeEnum): string {
+    if (attributeType === AttributeTypeEnum.STRING || attributeType === AttributeTypeEnum.DATE) {
+      return `'${value}'`;
+    }
+    return `${value}`;
+  }
+
   public static getAttributeType(attribute?: Attribute): AttributeTypeEnum {
     if (!attribute) {
       return undefined;

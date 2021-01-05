@@ -125,7 +125,7 @@ export class StandardFormWorkflow extends Workflow {
     let allowedFeaturesTypes = [];
     const sl = this.tailorMap.selectedLayer;
     if (sl) {
-      allowedFeaturesTypes.push(LayerUtils.sanitizeLayername(sl.layerName));
+      allowedFeaturesTypes.push(LayerUtils.sanitizeLayername(sl));
     } else {
       allowedFeaturesTypes = this.formConfigRepo.getFeatureTypes();
     }
@@ -140,8 +140,7 @@ export class StandardFormWorkflow extends Workflow {
     const appLayers = this.tailorMap.getViewerController().getVisibleLayers();
     appLayers.forEach(appLayerId => {
       const appLayer = this.tailorMap.getViewerController().getAppLayerById(appLayerId);
-      let layerName: string = appLayer.layerName;
-      layerName = LayerUtils.sanitizeLayername(layerName);
+      const layerName = LayerUtils.sanitizeLayername(appLayer);
       visibleLayers.push(layerName);
     });
     return visibleLayers;

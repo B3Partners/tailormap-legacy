@@ -14,12 +14,15 @@ import {
 import { AttributeDataSource } from './attributelist-datasource';
 import { AttributelistFilterValuesFormComponent } from '../attributelist-filter-values-form/attributelist-filter-values-form.component';
 import { ValueService } from '../../../shared/value-service/value.service';
-import { AttributelistRefresh } from './attributelist-models';
-import { CriteriaHelper } from '../../../analysis/criteria/helpers/criteria.helper';
 import { AttributeTypeEnum } from '../../../application/models/attribute-type.enum';
 import { AttributeTypeHelper } from '../../../application/helpers/attribute-type.helper';
+import { AttributelistForFilter } from './attributelist-models';
+import { AttributelistColumnController } from './attributelist-column-controller';
+import { CriteriaHelper } from '../../../analysis/criteria/helpers/criteria.helper';
 
 export class AttributelistFilter {
+
+  private columnController: AttributelistColumnController;
 
   constructor(
     private dataSource: AttributeDataSource,
@@ -44,12 +47,14 @@ export class AttributelistFilter {
   private relatedFilter: string;
 
   public initFiltering(colNames: string[]): void {
-    // Init the filter structure
-    this.layerFilterValues.layerId = this.dataSource.params.layerId;
-    for (const colName of colNames) {
-      let filterColumn: FilterColumns;
-      filterColumn = {name: colName, status: false, nullValue: false, filterType: null, uniqueValues: [], criteria: null};
-      this.layerFilterValues.columns.push(filterColumn);
+    if (this.layerFilterValues.columns.length === 0) {
+      // Init the filter structure
+      this.layerFilterValues.layerId = this.dataSource.params.layerId;
+      for (const colName of colNames) {
+        let filterColumn: FilterColumns;
+        filterColumn = {name: colName, status: false, nullValue: false, filterType: null, uniqueValues: [], criteria: null};
+        this.layerFilterValues.columns.push(filterColumn);
+      };
     }
   }
 
@@ -110,8 +115,9 @@ export class AttributelistFilter {
     return this.valueFilter;
   }
 
-  public setFilter(attributelistRefresh: AttributelistRefresh, columnName: string): void {
+  public setFilter(attributelistForFilter: AttributelistForFilter, columnName: string): void {
     // Get the unique values for this column
+    this.columnController = attributelistForFilter.columnController;
     this.valueParams.applicationLayer = this.dataSource.params.layerId;
     if (this.dataSource.params.hasDetail()) {
       this.valueParams.featureType = this.dataSource.params.featureTypeId;
@@ -122,7 +128,7 @@ export class AttributelistFilter {
     }
     this.valueParams.attributes = [];
     this.valueParams.attributes.push(columnName);
-    this.valueService.uniqueValues(this.valueParams).subscribe((data: UniqueValuesResponse) => {
+    this.valueService.uniqueValues$(this.valueParams).subscribe((data: UniqueValuesResponse) => {
       if (data.success) {
         let uniqueValues: FilterValueSettings[];
         uniqueValues = [];
@@ -151,7 +157,7 @@ export class AttributelistFilter {
         const dialogRef = this.dialog.open(AttributelistFilterValuesFormComponent, config);
         dialogRef.afterClosed().subscribe(filterDialogSettings => {
           // Do the filtering
-          if (filterDialogSettings.filterSetting !== 'CANCEL') {
+          if (filterDialogSettings !== undefined && filterDialogSettings.filterSetting !== 'CANCEL') {
             if (filterDialogSettings.filterSetting === 'OFF') {
               this.layerFilterValues.columns[colIndex].uniqueValues = [];
               this.layerFilterValues.columns[colIndex].nullValue = false;
@@ -177,15 +183,26 @@ export class AttributelistFilter {
               }
             }
             this.dataSource.params.valueFilter = this.createFilter();
-            attributelistRefresh.refreshTable();
+            attributelistForFilter.refreshTable();
           }
         });
       }
     });
   }
 
+  public clearFilter(attributelistForFilter: AttributelistForFilter): void {
+    this.layerFilterValues.columns.forEach((c) => {
+      c.status = false;
+      c.criteria = null;
+      c.uniqueValues = [];
+      c.filterType = '';
+    });
+
+    this.dataSource.params.valueFilter = this.createFilter();
+    attributelistForFilter.refreshTable();
+  }
   public getAttributeType (columnName: string): AttributeTypeEnum {
-    return AttributeTypeHelper.getAttributeType(this.dataSource.getAttributeForColumnName(columnName))
+    return AttributeTypeHelper.getAttributeType(this.columnController.getAttributeForColumnName(columnName))
   }
 
 }
