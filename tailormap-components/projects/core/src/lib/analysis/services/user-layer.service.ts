@@ -9,10 +9,7 @@ import { CriteriaHelper } from '../criteria/helpers/criteria.helper';
 import { addAppLayer } from '../../application/state/application.actions';
 import { selectCreateLayerData, selectSelectedDataSource } from '../state/analysis.selectors';
 import { StyleHelper } from '../helpers/style.helper';
-import {
-  UserLayerApiService,
-  UserLayerResponseType,
-} from './user-layer-api.service';
+import { UserLayerApiService, UserLayerResponseType } from './user-layer-api.service';
 import { CreateLayerModeEnum } from '../models/create-layer-mode.enum';
 import { AnalysisSourceModel } from '../models/analysis-source.model';
 
