@@ -368,7 +368,12 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      // this.isAttributeTreeOpen = false;
+      this.dataSource.params.featureTypeId = -1;
+      this.dataSource.params.featureTypeName = '';
+      this.dataSource.params.featureFilter = '';
+      this.dataSource.params.valueFilter = '';
+      this.dataSource.columnController = new AttributelistColumnController();
+      this.refreshTable();
     });
     dialogRef.afterOpened().subscribe( result => {
       // this.isAttributeTreeOpen = true;
@@ -638,11 +643,6 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
     this.columnController = this.dataSource.columnController;
     // Update check info (number checked/check state).
     this.updateCheckedInfo();
-  }
-
-  public resetTable(): void {
-    this.dataSource.params.valueFilter = '';
-    this.setTabIndex(this.tabIndex);
   }
 
   public setFilterMap(featureTypeId: number) {
