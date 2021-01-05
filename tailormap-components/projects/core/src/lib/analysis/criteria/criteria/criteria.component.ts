@@ -3,8 +3,8 @@ import { FormBuilder } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { AnalysisState } from '../../state/analysis.state';
 import { selectSelectedDataSource } from '../../state/analysis.selectors';
-import { concatMap, debounceTime, map, startWith, takeUntil } from 'rxjs/operators';
-import { BehaviorSubject, combineLatest, forkJoin, Observable, of, Subject } from 'rxjs';
+import { concatMap, debounceTime, takeUntil } from 'rxjs/operators';
+import { BehaviorSubject, forkJoin, of, Subject } from 'rxjs';
 import { MetadataService } from '../../../application/services/metadata.service';
 import { Attribute, AttributeMetadataResponse } from '../../../shared/attribute-service/attribute-models';
 import { AnalysisSourceModel } from '../../models/analysis-source.model';
@@ -13,9 +13,8 @@ import { CriteriaHelper } from '../helpers/criteria.helper';
 import { AttributeTypeEnum } from '../../../application/models/attribute-type.enum';
 import { CriteriaConditionTypeModel } from '../../models/criteria-condition-type.model';
 import * as moment from 'moment';
-import { AttributeTypeHelper } from '../../../application/helpers/attribute-type.helper';
 
-type AttributeSource = Omit<AnalysisSourceModel, 'geometryType'>;
+type AttributeSource = Omit<AnalysisSourceModel, 'geometryType' | 'geometryAttribute'>;
 
 @Component({
   selector: 'tailormap-criteria',
@@ -38,10 +37,6 @@ export class CriteriaComponent implements OnInit, OnDestroy {
 
   private destroyed = new Subject();
   public availableSources: AttributeSource[];
-  private allAttributes: Attribute[];
-
-  private availableAttributesSubject$ = new BehaviorSubject<Attribute[]>([]);
-  public filteredAttributes$: Observable<Attribute[]>;
 
   private filteredConditionsSubject$ = new BehaviorSubject<CriteriaConditionTypeModel[]>([]);
   public filteredConditions$ = this.filteredConditionsSubject$.asObservable();
@@ -53,7 +48,8 @@ export class CriteriaComponent implements OnInit, OnDestroy {
     value: [''],
   });
 
-  private formData: Omit<CriteriaConditionModel, 'id'> = {}
+  public formData: Omit<CriteriaConditionModel, 'id'> = {}
+  public selectedDataSource: AnalysisSourceModel;
 
   constructor(
     private fb: FormBuilder,
@@ -68,22 +64,20 @@ export class CriteriaComponent implements OnInit, OnDestroy {
         debounceTime(250),
       )
       .subscribe(formValues => {
-        const source = +(formValues.source);
-        const availableAttributes = this.availableAttributesSubject$.getValue();
-        const attribute = availableAttributes.find(a => a.name === formValues.attribute);
-        const attributeType = AttributeTypeHelper.getAdministrativeAttributeType(attribute);
-        if (this.formData.source !== source) {
-          this.availableAttributesSubject$.next(this.getAttributesForFeatureType(source));
+        const source = this.availableSources.find(src => src.featureType === +(formValues.source));
+        if (!source) {
+          return;
         }
-        if (this.formData.attributeType !== attributeType) {
-          this.filteredConditionsSubject$.next(this.getConditionsForAttributeType(attributeType));
+        let relatedTo: number;
+        if (source.featureType !== this.selectedDataSource.featureType) {
+          relatedTo = this.selectedDataSource.layerId;
         }
         this.formData = {
-          source,
-          attribute: attribute ? attribute.name : undefined,
-          attributeType,
+          ...this.formData,
+          source: source.featureType,
           condition: formValues.condition,
           value: formValues.value,
+          relatedTo,
         };
         this.setDisabledState();
         this.emitChanges();
@@ -97,20 +91,10 @@ export class CriteriaComponent implements OnInit, OnDestroy {
         }),
       )
       .subscribe(([ selectedDataSource, layerMetadata ]) => {
+        this.selectedDataSource = selectedDataSource;
         this.setupFormValues(selectedDataSource, layerMetadata);
         this.setInitialValues();
       });
-
-    this.filteredAttributes$ = combineLatest([
-      this.availableAttributesSubject$.asObservable(),
-      this.criteriaForm.get('attribute').valueChanges.pipe(startWith('')),
-    ]).pipe(
-      takeUntil(this.destroyed),
-      map(([ availableAttributes, value ]) => {
-        const filterValue = value.toLowerCase();
-        return availableAttributes.filter(attribute => attribute.name.toLowerCase().indexOf(filterValue) !== -1);
-      }),
-    );
   }
 
   public ngOnDestroy() {
@@ -118,24 +102,15 @@ export class CriteriaComponent implements OnInit, OnDestroy {
     this.destroyed.complete();
   }
 
-  public getAttributeName(attribute: Attribute) {
-    if (attribute) {
-      return attribute.name;
-    }
-    return '';
-  }
-
   private setupFormValues(selectedDataSource: AnalysisSourceModel, layerMetadata: AttributeMetadataResponse) {
     const relationSources = layerMetadata.relations.map<AttributeSource>(relation => ({
       featureType: relation.foreignFeatureType,
       label: `${relation.foreignFeatureTypeName}`,
-      disabled: true,
     }));
     this.availableSources = [
       {featureType: selectedDataSource.featureType, label: selectedDataSource.label},
       ...relationSources,
     ];
-    this.allAttributes = layerMetadata.attributes;
   }
 
   private setInitialValues() {
@@ -145,29 +120,24 @@ export class CriteriaComponent implements OnInit, OnDestroy {
       initialCriteria.source = this.availableSources[0].featureType;
     }
 
-    if (this.criteria.attributeType) {
-      this.filteredConditionsSubject$.next(this.getConditionsForAttributeType(this.criteria.attributeType));
+    if (this.criteria.attribute) {
+      this.formData = {
+        ...this.formData,
+        attribute: initialCriteria.attribute,
+      };
+    }
+    if (initialCriteria.attributeType) {
+      this.filteredConditionsSubject$.next(this.getConditionsForAttributeType(initialCriteria.attributeType));
     }
 
-    if (initialCriteria.source) {
-      this.availableAttributesSubject$.next(this.getAttributesForFeatureType(initialCriteria.source));
-    }
-
-    let value: string | moment.Moment = this.criteria.value;
-    if (value && this.criteria.attributeType === AttributeTypeEnum.DATE) {
+    let value: string | moment.Moment = initialCriteria.value;
+    if (value && initialCriteria.attributeType === AttributeTypeEnum.DATE) {
       value = moment(value);
     }
 
     this.criteriaForm.patchValue({
       ...initialCriteria,
       value,
-    });
-  }
-
-  private getAttributesForFeatureType(selectedSource: string | number) {
-    return this.allAttributes.filter(attribute => {
-      return attribute.featureType === +(selectedSource)
-        && typeof AttributeTypeHelper.getAdministrativeAttributeType(attribute) !== 'undefined';
     });
   }
 
@@ -209,6 +179,19 @@ export class CriteriaComponent implements OnInit, OnDestroy {
 
   public showDateInput() {
     return this.formData.attributeType === AttributeTypeEnum.DATE;
+  }
+
+  public attributeSelected($event: { attribute: Attribute; attributeType: AttributeTypeEnum }) {
+    if (this.formData.attributeType !== $event.attributeType) {
+      this.filteredConditionsSubject$.next(this.getConditionsForAttributeType($event.attributeType));
+    }
+    this.formData = {
+      ...this.formData,
+      attribute: $event.attribute.name,
+      attributeType: $event.attributeType,
+    };
+    this.setDisabledState();
+    this.emitChanges();
   }
 
 }

@@ -85,4 +85,8 @@ export class TailorMapService {
     });
     this.applicationConfigSubject$.next(this.getAppLoader().getApplicationConfig());
   }
+
+  public getApplayerById(id: number): AppLayer {
+    return this.getViewerController().getAppLayerById(id);
+  }
 }

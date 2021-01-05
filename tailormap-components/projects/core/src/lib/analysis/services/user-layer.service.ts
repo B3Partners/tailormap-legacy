@@ -33,6 +33,7 @@ import {
   UserLayerApiService,
   UserLayerResponseType,
 } from './user-layer-api.service';
+import { CreateLayerModeEnum } from '../models/create-layer-mode.enum';
 
 @Injectable({
   providedIn: 'root',
@@ -44,6 +45,13 @@ export class UserLayerService {
     private store$: Store<AnalysisState>,
   ) {}
 
+  public createUserLayerFromParams(appLayerId: string, title: string, query: string, style: string, createdAppLayer?: string) {
+    this.saveUserLayer$(appLayerId, title, query, style, createdAppLayer)
+      .subscribe(([createLayerResult, saveStyleResult]) => {
+        this.handleResult(createLayerResult, saveStyleResult);
+      });
+  }
+
   public createUserLayer() {
     this.store$.select(selectCreateLayerData)
       .pipe(
@@ -51,12 +59,14 @@ export class UserLayerService {
         filter(data => data.canCreateLayer),
         tap(() => this.store$.dispatch(setCreatingLayer())),
         switchMap(data => {
-          const query = CriteriaHelper.convertCriteriaToQuery(data.criteria);
+          const query = data.createLayerMode === CreateLayerModeEnum.THEMATIC
+            ? CriteriaHelper.convertStyleToQuery(data.styles)
+            : CriteriaHelper.convertCriteriaToQuery(data.criteria);
           return this.saveUserLayer$(
             `${data.selectedDataSource.layerId}`,
             data.layerName,
             query,
-            StyleHelper.createStyle(data.style, data.selectedDataSource),
+            StyleHelper.convertStyles(data.styles, data.selectedDataSource),
             data.createdAppLayer,
           );
         }),
@@ -66,6 +76,7 @@ export class UserLayerService {
   }
 
   private saveUserLayer$(appLayerId: string, title: string, query: string, style: string, createdAppLayer?: string) {
+
     return this.store$.select(selectApplicationId)
       .pipe(
         take(1),

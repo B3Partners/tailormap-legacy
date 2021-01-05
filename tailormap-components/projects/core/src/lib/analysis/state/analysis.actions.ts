@@ -7,6 +7,8 @@ import { AnalysisSourceModel } from '../models/analysis-source.model';
 import { CriteriaTypeEnum } from '../models/criteria-type.enum';
 import { CriteriaModel } from '../models/criteria.model';
 import { UserLayerStyleModel } from '../models/user-layer-style.model';
+import { Attribute } from '../../shared/attribute-service/attribute-models';
+import { ScopedUserLayerStyleModel } from '../models/scoped-user-layer-style.model';
 
 const analysisActionsPrefix = '[Analysis]';
 
@@ -48,8 +50,38 @@ export const removeCriteria = createAction(
   `${analysisActionsPrefix} Remove Criteria`,
 );
 
-export const setStyle = createAction(
-  `${analysisActionsPrefix} Set Style`,
+export const setSelectedThematicAttribute = createAction(
+  `${analysisActionsPrefix} Set Selected Attribute`,
+  props<{ attribute: Attribute }>(),
+);
+
+export const loadThematicStyles = createAction(
+  `${analysisActionsPrefix} Load Thematic Styles`,
+  props<{ attribute: Attribute, appLayer: number }>(),
+);
+
+export const loadThematicStylesSuccess = createAction(
+  `${analysisActionsPrefix} Thematic Styles Loaded`,
+  props<{ styles: ScopedUserLayerStyleModel[] }>(),
+);
+
+export const loadThematicStylesFailed = createAction(
+  `${analysisActionsPrefix} Load Thematic Styles`,
+  props<{ error: string }>(),
+);
+
+export const setStyles = createAction(
+  `${analysisActionsPrefix} Set Styles`,
+  props<{ styles: UserLayerStyleModel[] }>(),
+);
+
+export const setSelectedStyle = createAction(
+  `${analysisActionsPrefix} Set Selected Style`,
+  props<{ styleId: string }>(),
+);
+
+export const updateStyle = createAction(
+  `${analysisActionsPrefix} Update Style`,
   props<{ style: UserLayerStyleModel }>(),
 );
 

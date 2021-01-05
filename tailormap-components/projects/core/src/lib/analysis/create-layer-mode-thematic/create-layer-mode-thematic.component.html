@@ -1,0 +1,7 @@
+<div class="form-field" *ngIf="selectedDataSource">
+  <label>Paspoortveld</label>
+  <tailormap-attribute-selector [appLayerId]="selectedDataSource.layerId"
+                                [featureType]="selectedDataSource.featureType"
+                                [selectedAttribute]="selectedAttribute"
+                                (attributeSelected)="attributeSelected($event)"></tailormap-attribute-selector>
+</div>

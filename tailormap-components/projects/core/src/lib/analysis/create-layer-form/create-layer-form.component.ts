@@ -1,42 +1,16 @@
-import {
-  Component,
-  EventEmitter,
-  OnDestroy,
-  OnInit,
-  Output,
-} from '@angular/core';
+import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { AnalysisState } from '../state/analysis.state';
+import { clearCreateLayerMode, selectDataSource, setLayerName } from '../state/analysis.actions';
+import { debounceTime, map, takeUntil } from 'rxjs/operators';
+import { combineLatest, Observable, Subject } from 'rxjs';
 import {
-  clearCreateLayerMode,
-  selectDataSource,
-  setLayerName,
-  showCriteriaForm,
-} from '../state/analysis.actions';
-import {
-  debounceTime,
-  map,
-  takeUntil,
-} from 'rxjs/operators';
-import {
-  combineLatest,
-  Observable,
-  Subject,
-} from 'rxjs';
-import {
-  selectCanCreateLayer,
-  selectCreateLayerErrorMessage,
-  selectCriteria,
-  selectIsCreatingCriteria,
-  selectIsSelectingDataSource,
-  selectLayerName,
-  selectSelectedDataSource,
+  selectCanCreateLayer, selectCreateLayerErrorMessage, selectCreateLayerMode, selectIsCreatingCriteria, selectIsSelectingDataSource,
+  selectLayerName, selectSelectedDataSource,
 } from '../state/analysis.selectors';
 import { AnalysisSourceModel } from '../models/analysis-source.model';
-import { CriteriaTypeEnum } from '../models/criteria-type.enum';
-import { CriteriaModel } from '../models/criteria.model';
-import { CriteriaHelper } from '../criteria/helpers/criteria.helper';
+import { CreateLayerModeEnum } from '../models/create-layer-mode.enum';
 
 @Component({
   selector: 'tailormap-create-layer-form',
@@ -54,15 +28,11 @@ export class CreateLayerFormComponent implements OnInit, OnDestroy {
   public selectedDataSource: AnalysisSourceModel;
 
   public selectingDataSource$: Observable<boolean>;
-  public creatingCriteria$: Observable<boolean>;
   public hasActiveSidePanel$: Observable<boolean>;
-
-  public criteria: CriteriaModel;
-
-  public criteriaMode = CriteriaTypeEnum;
 
   public errorMessage$: Observable<string>;
   private allowCreateLayer: boolean;
+  public createLayerMode: CreateLayerModeEnum;
 
   constructor(
     private store$: Store<AnalysisState>,
@@ -73,19 +43,18 @@ export class CreateLayerFormComponent implements OnInit, OnDestroy {
     this.store$.select(selectSelectedDataSource).pipe(takeUntil(this.destroyed)).subscribe(selectedDataSource => {
       this.selectedDataSource = selectedDataSource
     });
-    this.store$.select(selectCriteria).pipe(takeUntil(this.destroyed)).subscribe(criteria => {
-      this.criteria = criteria
-    });
     this.store$.select(selectLayerName).pipe(takeUntil(this.destroyed)).subscribe(layerName => {
       this.layerName.patchValue(layerName, { emitEvent: false });
     });
     this.store$.select(selectCanCreateLayer).pipe(takeUntil(this.destroyed)).subscribe(canCreateLayer => {
       this.allowCreateLayer = canCreateLayer;
     });
+    this.store$.select(selectCreateLayerMode).pipe(takeUntil(this.destroyed)).subscribe(createLayerMode => {
+      this.createLayerMode = createLayerMode;
+    });
     this.errorMessage$ = this.store$.select(selectCreateLayerErrorMessage);
     this.selectingDataSource$ = this.store$.select(selectIsSelectingDataSource);
-    this.creatingCriteria$ = this.store$.select(selectIsCreatingCriteria);
-    this.hasActiveSidePanel$ = combineLatest([ this.selectingDataSource$, this.creatingCriteria$ ])
+    this.hasActiveSidePanel$ = combineLatest([ this.selectingDataSource$, this.store$.select(selectIsCreatingCriteria) ])
       .pipe(map(([ selectingSource, creatingCriteria ]) => selectingSource || creatingCriteria));
     this.layerName.valueChanges.pipe(debounceTime(500), takeUntil(this.destroyed)).subscribe(name => {
       this.store$.dispatch(setLayerName({ layerName: name }));
@@ -105,20 +74,8 @@ export class CreateLayerFormComponent implements OnInit, OnDestroy {
     this.store$.dispatch(selectDataSource({ selectDataSource: true }));
   }
 
-  public setCriteria(mode: CriteriaTypeEnum) {
-    this.store$.dispatch(showCriteriaForm({ criteriaMode: mode }));
-  }
-
   public canCreateLayer() {
     return this.allowCreateLayer;
-  }
-
-  public hasCriteria() {
-    return !!this.criteria && CriteriaHelper.validGroups(this.criteria.groups);
-  }
-
-  public editCriteria() {
-    this.store$.dispatch(showCriteriaForm({ criteriaMode: this.criteria.type }));
   }
 
   public showStylingTab() {
@@ -126,6 +83,14 @@ export class CreateLayerFormComponent implements OnInit, OnDestroy {
       return;
     }
     this.next.emit();
+  }
+
+  public isCreatingAttributesLayer() {
+    return this.createLayerMode === CreateLayerModeEnum.ATTRIBUTES;
+  }
+
+  public isCreatingThematicLayer() {
+    return this.createLayerMode === CreateLayerModeEnum.THEMATIC;
   }
 
 }

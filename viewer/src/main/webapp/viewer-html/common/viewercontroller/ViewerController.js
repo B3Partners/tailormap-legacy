@@ -439,10 +439,10 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         // Modify selected content / level
         var selectedContent = Ext.clone(this.app.selectedContent);
         if (!levelId || !this.app.levels[levelId]) {
-            selectedContent.push({ id: appLayer.id, type: 'appLayer' });
+            selectedContent = [{ id: appLayer.id, type: 'appLayer' }].concat(selectedContent || []);
         } else {
             var levels = Ext.clone(this.app.levels);
-            levels[levelId].layers = (levels[levelId].layers || []).concat('' + appLayer.id);
+            levels[levelId].layers = ['' + appLayer.id].concat(levels[levelId].layers || []);
             this.app.levels = levels;
         }
         // triggers selected content changed

@@ -28,9 +28,12 @@ Ext.define('Maps', {
         // Added convert function to icon
         {name: 'icon', type: 'string', convert: function(fieldName, record) {
             if(record.get('leaf')) {
-                if(record.get('hasMultipleStyles')){
+                var layerObj = record.get('layerObj');
+                if (record.get('hasMultipleStyles')) {
                     return FlamingoAppLoader.get('contextPath') + '/viewer-html/components/resources/images/selectionModule/maplevel.png';
-                }else{
+                } else if (layerObj && layerObj.appLayer && layerObj.appLayer.userlayer) {
+                    return FlamingoAppLoader.get('contextPath') + '/viewer-html/components/resources/images/selectionModule/selection_layer.png';
+                } else {
                     return FlamingoAppLoader.get('contextPath') + '/viewer-html/components/resources/images/selectionModule/map.png';
                 }
             }
@@ -382,6 +385,7 @@ Ext.define ("viewer.components.TOC",{
         var treeNodeLayer = {
             text: Ext.String.format('<span id=\"span_{0}\">{1}</span>', layerId, layerTitle),
             // id: layerId,
+            cls: appLayerObj.userlayer ? "layer--is-userlayer" : "",
             expanded: me.config.expandOnStartup,
             leaf: true,
             background: appLayerObj.background,

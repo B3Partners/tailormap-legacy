@@ -202,6 +202,10 @@ INSERT INTO feature_type_attributes (feature_type, attribute_descriptor, list_in
 INSERT INTO feature_type_attributes (feature_type, attribute_descriptor, list_index) VALUES (6, 46, 0);
 
 
+INSERT INTO public.feature_type_relation (id, type, feature_type, foreign_feature_type) VALUES (1, 'relate', 5, 2);
+
+INSERT INTO public.feature_type_relation_key (id, left_side, relation, right_side) VALUES (1, 43, 1, 11);
+
 INSERT INTO geo_service (protocol, id, authorizations_modified, monitoring_enabled, monitoring_statusok, name, password, url, username, tiling_protocol, exception_type, override_url, category, top_layer, geofence_header, version) VALUES ('tiled', 1, '2015-09-15 16:33:48.096', false, true, 'Openbasiskaart', NULL, 'http://www.openbasiskaart.nl/mapcache/tms/1.0.0/osm-nb@rd', NULL, 'TMS', NULL, NULL, 1, 1, NULL, '1.1.1');
 INSERT INTO geo_service (protocol, id, authorizations_modified, monitoring_enabled, monitoring_statusok, name, password, url, username, tiling_protocol, exception_type, override_url, category, top_layer, geofence_header, version) VALUES ('wms', 2, '2015-09-15 16:34:14.961', false, true, 'Groen', 'w@chtw00rd', 'http://x12.b3p.nl/cgi-bin/mapserv?map=/srv/maps/solparc/groen_productie.map&', 'B3P', NULL, 'Inimage', false, 2, 3, NULL, '1.1.1');
 INSERT INTO geo_service (protocol, id, authorizations_modified, monitoring_enabled, monitoring_statusok, name, password, url, username, tiling_protocol, exception_type, override_url, category, top_layer, geofence_header, version) VALUES ('wms', 3, '2015-09-15 16:34:29.301', false, true, 'woonplaatsen', 'w@chtw00rd', 'http://x12.b3p.nl/cgi-bin/mapserv?map=/srv/maps/solparc/woonplaats_productie.map&', 'B3P', NULL, 'Inimage', false, 2, 9, NULL, '1.1.1');
@@ -342,7 +346,7 @@ INSERT INTO START_LAYER (ID, CHECKED, SELECTED_INDEX, APPLICATION, APPLICATION_L
 INSERT INTO START_LAYER (ID, CHECKED, SELECTED_INDEX, APPLICATION, APPLICATION_LAYER, REMOVED) VALUES (27, false, null, 1, 4, false);
 INSERT INTO START_LAYER (ID, CHECKED, SELECTED_INDEX, APPLICATION, APPLICATION_LAYER, REMOVED) VALUES (28, false, null, 1, 5, false);
 
-INSERT INTO metadata (id, config_key, config_value) VALUES (1, 'database_version', '43');
+INSERT INTO metadata (id, config_key, config_value) VALUES (1, 'database_version', '44');
 
 INSERT INTO user_ (username, password) VALUES ('admin', '14c06474bec5e7def0304925d09f2b977af3146a');
 INSERT INTO user_ (username, password) VALUES ('pietje', '14c06474bec5e7def0304925d09f2b977af3146a');

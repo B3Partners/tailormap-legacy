@@ -43,6 +43,7 @@ import {
   FormFieldType,
 } from '../../../feature-form/form/form-models';
 import { FormFieldHelpers } from '../../../feature-form/form-field/form-field-helpers';
+import { TailorMapService } from '../../../../../../bridge/src/tailor-map.service';
 
 export class AttributeDataSource extends DataSource<any> {
 
@@ -68,6 +69,7 @@ export class AttributeDataSource extends DataSource<any> {
 
   constructor(private layerService: LayerService,
               private attributeService: AttributeService,
+              private tailorMapService: TailorMapService,
               private formconfigRepoService: FormconfigRepositoryService) {
     super();
   }
@@ -147,7 +149,8 @@ export class AttributeDataSource extends DataSource<any> {
         if (row.geometrie) {
           rest.geometrie =  wellknown.parse(row.geometrie);
         }
-        const className = LayerUtils.sanitizeLayername(this.getLayerName().toLowerCase());
+        const appLayer = this.tailorMapService.getApplayerById(this.params.layerId);
+        const className = LayerUtils.sanitizeLayername(appLayer);
         feature.children = [];
         feature.clazz = className;
         feature.objectGuid = row.object_guid;
@@ -236,7 +239,6 @@ export class AttributeDataSource extends DataSource<any> {
       attrParams.filter = this.params.valueFilter;
     }
 
-
     // Set details params.
     if (this.params.hasDetail()) {
       attrParams.featureType = this.params.featureTypeId;
@@ -291,8 +293,10 @@ export class AttributeDataSource extends DataSource<any> {
 
             // console.log(columnDefs);
 
-            // And set as initial column names.
+            // And set as initial column names and attributes
+            // TODO: combine these methods?
             this.columnController.setDataColumnNames(columnDefs);
+            this.columnController.setAttributes(columnDefs);
           }
 
           // Get the features.

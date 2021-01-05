@@ -178,6 +178,9 @@ input.error[type="radio"], input.error[type="checkbox"], select.error {
 .toc-inscale {
     color: black;
 }
+.layer--is-userlayer {
+    font-style: italic;
+}
 .no_treenode_icon{
     background-image: none;
     width: 1px;
@@ -657,8 +660,3 @@ TODO: check if we always need to do this, not only mobile, only on mobile are we
 .screen-popup { overflow: visible; }
 .x-resizable-handle-east { right: -10px; }
 .x-resizable-handle-south { bottom: -10px; }
-
-
-.cdk-overlay-container {
-  z-index: 16000 !important;
-}
