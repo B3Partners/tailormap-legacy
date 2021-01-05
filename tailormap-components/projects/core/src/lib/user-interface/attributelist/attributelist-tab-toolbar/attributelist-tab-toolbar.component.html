@@ -2,13 +2,14 @@
 
   <div class="buttons">
     <button mat-flat-button color="primary"
-            (click)="createUserlayer();">
-      <span>Laag maken</span>
+            (click)="onClearFilterClick();">
+      <span>Reset filter</span>
     </button>
 
     <button mat-flat-button color="primary"
-            (click)="onClearFilterClick();">
-      <span>Wis</span>
+            (click)="createUserlayer();"
+            [style.display]="isUserLayer() ? 'none' : 'block'">
+      <span>Laag maken</span>
     </button>
   </div>
   <span class="spacer"></span>
