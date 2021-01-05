@@ -105,4 +105,14 @@ export class AttributelistTreeComponent implements OnDestroy, OnInit {
   }
 
   public hasChild = (_: number, node: FlatNode) => node.expandable;
+
+  public getButtonText(): string {
+    let s = '';
+    if (this.data.tree[0].numberOfFeatures > 1) {
+      s = 'Bewerk geselecteerde objecten';
+    } else {
+      s = 'Bewerk geselecteerd object';
+    }
+    return s;
+  }
 }

@@ -19,4 +19,5 @@
     {{node.name + ' (' + node.numberOfFeatures + ')'}}
   </mat-tree-node>
 </mat-tree>
-<button mat-flat-button color="primary" (click)="openPasportForm()">Open paspoort</button>
+<mat-divider></mat-divider>
+<button mat-flat-button color="primary" (click)="openPasportForm()"><mat-icon>border_color</mat-icon>{{getButtonText()}}</button>
