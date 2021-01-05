@@ -372,6 +372,7 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
       this.dataSource.params.featureFilter = '';
       this.dataSource.params.valueFilter = '';
       this.dataSource.columnController = new AttributelistColumnController();
+      this.initFilterMap();
       this.refreshTable();
     });
     dialogRef.afterOpened().subscribe( result => {
@@ -620,12 +621,7 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
     this.dataSource.params.layerName = layer.name;
     this.dataSource.params.layerId = layer.id;
     // Update table.
-    this.dataSource.getMetaData$().subscribe((response) => {
-      this.setFilterMap(-1);
-      response.relations.forEach((rel) => {
-        this.setFilterMap(rel.foreignFeatureType);
-      });
-    });
+    this.initFilterMap();
     this.updateTable();
   }
 
@@ -642,6 +638,15 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
     this.columnController = this.dataSource.columnController;
     // Update check info (number checked/check state).
     this.updateCheckedInfo();
+  }
+
+  public initFilterMap(): void {
+    this.dataSource.getMetaData$().subscribe((response) => {
+      this.setFilterMap(-1);
+      response.relations.forEach((rel) => {
+        this.setFilterMap(rel.foreignFeatureType);
+      });
+    });
   }
 
   public setFilterMap(featureTypeId: number) {
