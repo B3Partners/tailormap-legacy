@@ -291,7 +291,7 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
     this.dataSource.params.layerName = layer.name;
     this.dataSource.params.layerId = layer.id;
     this.treeData.push({
-      name: layer.name,
+      name: layer.alias ? layer.alias : layer.name,
       numberOfFeatures: this.dataSource.getNrChecked(),
       features: checkedFeatures,
       formFeatures: this.dataSource.getCheckedRowsAsFeatures(),
