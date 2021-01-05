@@ -201,7 +201,7 @@ export class AttributeDataSource extends DataSource<any> {
 
   public loadDataForAttributeTree$(): Observable<AttributelistNode> {
     // get columns
-    const passportName = this.params.featureTypeName;
+    const passportName = LayerUtils.sanitizeLayername(this.params.featureTypeName);
     let columnNames: string[] = [];
     // let response: AttributelistNode;
     this.formconfigRepoService.formConfigs$.subscribe(formConfigs => {
@@ -421,7 +421,7 @@ export class AttributeDataSource extends DataSource<any> {
 
                 let passportName = '';
                 if (this.params.hasDetail()) {
-                  passportName = this.params.featureTypeName;
+                  passportName = LayerUtils.sanitizeLayername(this.params.featureTypeName);
                 } else {
                   passportName = this.params.layerName;
                 }
