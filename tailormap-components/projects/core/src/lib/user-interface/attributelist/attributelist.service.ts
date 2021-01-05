@@ -21,7 +21,7 @@ export class AttributelistService {
 
   private selectedTreeDataSubject$ = new Subject<SelectedTreeData>(); // source voor Observable
 
-  public updateTreeData$ = this. updateTreeDataSubject$.asObservable();
+  public updateTreeData$ = this.updateTreeDataSubject$.asObservable();
 
   public selectedTreeData$ = this.selectedTreeDataSubject$.asObservable(); // ingang naar Observable
 

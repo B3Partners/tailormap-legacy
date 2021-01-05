@@ -515,10 +515,7 @@ export class AttributeDataSource extends DataSource<any> {
     }
 
     for (const attr of metadata.attributes) {
-      // Check feature type.
-      // if (attr.featureType === featureType) {
         columns.push(attr);
-      // }
     }
     return columns;
   }
