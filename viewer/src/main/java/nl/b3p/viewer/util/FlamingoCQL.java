@@ -116,7 +116,7 @@ public class FlamingoCQL {
         }
         remainingFilter = remainingFilter.trim();
 
-        remainingFilter = removeAdjoiningParens(remainingFilter);
+        remainingFilter = removeUnnecessaryParens(remainingFilter);
 
         if (!remainingFilter.isEmpty()) {
             remainingFilter = remainingFilter.trim();
@@ -127,6 +127,12 @@ public class FlamingoCQL {
         }
 
         return f;
+    }
+
+    public static String removeUnnecessaryParens(String filter){
+        String newFilter = removeAdjoiningParens(filter);
+        newFilter = removeEnclosingParens(newFilter);
+        return newFilter;
     }
 
     public static String removeAdjoiningParens(String filter) {
@@ -151,6 +157,15 @@ public class FlamingoCQL {
 
         if (filter.length() > cur.length() && cur.length() >= 2) {
             cur = removeAdjoiningParens(cur);
+        }
+        return cur;
+    }
+
+    public static String removeEnclosingParens(String filter){
+        String cur = filter;
+        while(cur.startsWith("(") && cur.endsWith(")")){
+            cur = cur.substring(1, cur.length() - 1);
+
         }
         return cur;
     }

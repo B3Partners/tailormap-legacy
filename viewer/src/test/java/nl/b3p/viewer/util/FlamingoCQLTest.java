@@ -82,11 +82,19 @@ public class FlamingoCQLTest extends TestUtil{
     }
 
     @Test
-    public void removeExtraParens(){
+    public void removeExtraParensAdjoining(){
         assertEquals("", cql.removeAdjoiningParens("()"));
         assertEquals(")", cql.removeAdjoiningParens("())"));
         assertEquals("(", cql.removeAdjoiningParens("(()"));
         assertEquals("", cql.removeAdjoiningParens("(())"));
+    }
+
+    @Test
+    public void removeExtraParensEnclosing(){
+        assertEquals("", cql.removeEnclosingParens("()"));
+        assertEquals(")", cql.removeEnclosingParens("())"));
+        assertEquals("(", cql.removeEnclosingParens("(()"));
+        assertEquals("", cql.removeEnclosingParens("(())"));
     }
 
     @Test
@@ -110,6 +118,12 @@ public class FlamingoCQLTest extends TestUtil{
     @Test
     public void testtoFilterRelatedLayerExtraFilterAtStart() throws CQLException {
         Filter output = cql.toFilter("jaar = 2020 AND RELATED_LAYER(3,2,fysiek_voork = 'aap')", entityManager, false);
+        assertEquals(true, And.class.isAssignableFrom(output.getClass()));
+    }
+
+    @Test
+    public void testtoFilterRelatedLayerExtraFilterAtEndWithParens() throws CQLException {
+        Filter output = cql.toFilter("((RELATED_LAYER(3,2,fysiek_voork = 'aap') AND (std_verhardingssoort ILIKE '%formaat%')))", entityManager, false);
         assertEquals(true, And.class.isAssignableFrom(output.getClass()));
     }
 
