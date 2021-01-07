@@ -1,25 +1,34 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { AdvancedCriteriaComponent } from './advanced-criteria.component';
+import { createComponentFactory, Spectator } from '@ngneat/spectator';
+import { analysisStateKey, initialAnalysisState } from '../../state/analysis.state';
+import { MockStore, provideMockStore } from '@ngrx/store/testing';
+import { IdService } from '../../../shared/id-service/id.service';
+import { ConfirmDialogService } from '../../../shared/confirm-dialog/confirm-dialog.service';
+import { SharedModule } from '../../../shared/shared.module';
 
 describe('AdvancedCriteriaComponent', () => {
-  let component: AdvancedCriteriaComponent;
-  let fixture: ComponentFixture<AdvancedCriteriaComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ AdvancedCriteriaComponent ]
-    })
-    .compileComponents();
-  }));
+  let spectator: Spectator<AdvancedCriteriaComponent>;
+  const initialState = { [analysisStateKey]: initialAnalysisState };
+  let store: MockStore;
+
+  const createComponent = createComponentFactory({
+    component: AdvancedCriteriaComponent,
+    imports: [ SharedModule ],
+    providers: [
+      provideMockStore({ initialState }),
+      IdService,
+      ConfirmDialogService,
+    ]
+  });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(AdvancedCriteriaComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
+    spectator = createComponent();
+    store = spectator.inject(MockStore);
   });
 
   it('should create', () => {
-    expect(component).toBeTruthy();
+    expect(spectator).toBeTruthy();
   });
+
 });

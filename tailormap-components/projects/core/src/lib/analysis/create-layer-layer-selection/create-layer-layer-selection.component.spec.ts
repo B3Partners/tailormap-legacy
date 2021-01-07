@@ -1,25 +1,31 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { CreateLayerLayerSelectionComponent } from './create-layer-layer-selection.component';
+import { createComponentFactory, Spectator } from '@ngneat/spectator';
+import { analysisStateKey, initialAnalysisState } from '../state/analysis.state';
+import { MockStore, provideMockStore } from '@ngrx/store/testing';
+import { SharedModule } from '../../shared/shared.module';
+import { getMetadataServiceMockProvider } from '../../application/services/mocks/metadata.service.mock';
+import { defaultRootState } from '../../state/root-state.model';
 
 describe('CreateLayerLayerSelectionComponent', () => {
-  let component: CreateLayerLayerSelectionComponent;
-  let fixture: ComponentFixture<CreateLayerLayerSelectionComponent>;
+  let spectator: Spectator<CreateLayerLayerSelectionComponent>;
+  const initialState = { ...defaultRootState };
+  let store: MockStore;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ CreateLayerLayerSelectionComponent ]
-    })
-    .compileComponents();
-  }));
+  const createComponent = createComponentFactory({
+    component: CreateLayerLayerSelectionComponent,
+    imports: [ SharedModule ],
+    providers: [
+      provideMockStore({ initialState }),
+      getMetadataServiceMockProvider(),
+    ]
+  });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(CreateLayerLayerSelectionComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
+    spectator = createComponent();
+    store = spectator.inject(MockStore);
   });
 
   it('should create', () => {
-    expect(component).toBeTruthy();
+    expect(spectator).toBeTruthy();
   });
 });

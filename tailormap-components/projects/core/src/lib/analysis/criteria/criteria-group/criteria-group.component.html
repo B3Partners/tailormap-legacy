@@ -10,7 +10,7 @@
     <mat-icon [svgIcon]="hidden ? 'contextual_chevron_bottom' : 'contextual_chevron_top'"></mat-icon>
   </button>
 </div>
-<div class="criteria-group" [style.display]="hidden ? 'none' : 'block'">
+<div class="criteria-group" [style.display]="hidden ? 'none' : 'block'" *ngIf="criteriaGroup">
   <div class="centered">
     <button class="link-button" mat-flat-button (click)="addCriteria()">+ Criteria toevoegen aan groep</button>
   </div>

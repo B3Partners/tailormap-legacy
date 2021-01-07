@@ -1,16 +1,21 @@
-import { TestBed } from '@angular/core/testing';
-
 import { StatisticService } from './statistic.service';
+import { createHttpFactory, SpectatorService } from '@ngneat/spectator';
+import { getTailorMapServiceMockProvider } from '../../../../../bridge/src/tailor-map.service.mock';
 
 describe('StatisticService', () => {
-  let service: StatisticService;
+  let spectator: SpectatorService<StatisticService>;
+  const createService = createHttpFactory({
+    service: StatisticService,
+    providers: [
+      getTailorMapServiceMockProvider(),
+    ],
+  })
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
-    service = TestBed.inject(StatisticService);
+    spectator = createService();
   });
 
   it('should be created', () => {
-    expect(service).toBeTruthy();
+    expect(spectator).toBeTruthy();
   });
 });

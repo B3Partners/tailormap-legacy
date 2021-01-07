@@ -1,19 +1,21 @@
-import { TestBed } from '@angular/core/testing';
-
 import { AttributeService } from './attribute.service';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { createHttpFactory, SpectatorService } from '@ngneat/spectator';
+import { getTailorMapServiceMockProvider } from '../../../../../bridge/src/tailor-map.service.mock';
 
-describe('AttributeListServiceService', () => {
+describe('AttributeService', () => {
+  let spectator: SpectatorService<AttributeService>;
+  const createService = createHttpFactory({
+    service: AttributeService,
+    providers: [
+      getTailorMapServiceMockProvider(),
+    ],
+  });
+
   beforeEach(() => {
-    TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule,
-      ],
-    });
+    spectator = createService();
   });
 
   it('should be created', () => {
-    const service: AttributeService = TestBed.get(AttributeService);
-    expect(service).toBeTruthy();
+    expect(spectator).toBeTruthy();
   });
 });

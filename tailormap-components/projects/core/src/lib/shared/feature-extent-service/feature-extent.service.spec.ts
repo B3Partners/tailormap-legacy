@@ -1,16 +1,21 @@
-import { TestBed } from '@angular/core/testing';
-
 import { FeatureExtentService } from './feature-extent.service';
+import { createHttpFactory, SpectatorService } from '@ngneat/spectator';
+import { getTailorMapServiceMockProvider } from '../../../../../bridge/src/tailor-map.service.mock';
 
 describe('FeatureExtentService', () => {
-  let service: FeatureExtentService;
+  let spectator: SpectatorService<FeatureExtentService>;
+  const createService = createHttpFactory({
+    service: FeatureExtentService,
+    providers: [
+      getTailorMapServiceMockProvider(),
+    ],
+  })
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
-    service = TestBed.inject(FeatureExtentService);
+    spectator = createService();
   });
 
   it('should be created', () => {
-    expect(service).toBeTruthy();
+    expect(spectator).toBeTruthy();
   });
 });

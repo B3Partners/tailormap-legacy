@@ -29,6 +29,9 @@ import { MatStepperModule } from '@angular/material/stepper';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatTreeModule } from '@angular/material/tree';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.component';
 import { ConfirmDialogService } from './confirm-dialog/confirm-dialog.service';
 import { ApiModule } from './generated';
@@ -97,6 +100,9 @@ import { IconPickerComponent } from './icon-picker/icon-picker.component';
     MatAutocompleteModule,
     DragDropModule,
     MatDatepickerModule,
+    MatExpansionModule,
+    MatSidenavModule,
+    MatSnackBarModule,
   ],
   exports: [
     ReactiveFormsModule,
@@ -128,6 +134,9 @@ import { IconPickerComponent } from './icon-picker/icon-picker.component';
     MatRadioModule,
     MatProgressBarModule,
     MatAutocompleteModule,
+    MatExpansionModule,
+    MatSidenavModule,
+    MatSnackBarModule,
     DragDropModule,
     MatDatepickerModule,
     CapitalizeFirstPipe,

@@ -54,6 +54,9 @@ export class AttributeSelectorComponent implements OnInit, OnDestroy {
   public ngOnInit(): void {
     this.metadataService.getFeatureTypeMetadata$(this.appLayerId).pipe(takeUntil(this.destroyed))
       .subscribe(metadata => {
+        if (!metadata) {
+          return;
+        }
         this.allAttributes = metadata.attributes;
         if (this._featureType) {
           this.filterAttributesForFeatureType(this._featureType);

@@ -1,25 +1,24 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { CriteriaGroupComponent } from './criteria-group.component';
+import { createComponentFactory, Spectator } from '@ngneat/spectator';
+import { SharedModule } from '../../../shared/shared.module';
+import { IdService } from '../../../shared/id-service/id.service';
 
 describe('CriteriaGroupComponent', () => {
-  let component: CriteriaGroupComponent;
-  let fixture: ComponentFixture<CriteriaGroupComponent>;
+  let spectator: Spectator<CriteriaGroupComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ CriteriaGroupComponent ]
-    })
-    .compileComponents();
-  }));
+  const createComponent = createComponentFactory({
+    component: CriteriaGroupComponent,
+    imports: [ SharedModule ],
+    providers: [
+      IdService,
+    ]
+  });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(CriteriaGroupComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
+    spectator = createComponent();
   });
 
   it('should create', () => {
-    expect(component).toBeTruthy();
+    expect(spectator).toBeTruthy();
   });
 });

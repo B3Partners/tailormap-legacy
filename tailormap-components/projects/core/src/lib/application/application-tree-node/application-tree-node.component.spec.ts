@@ -1,25 +1,25 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { ApplicationTreeNodeComponent } from './application-tree-node.component';
+import { createComponentFactory, Spectator } from '@ngneat/spectator';
+import { SharedModule } from '../../shared/shared.module';
 
 describe('ApplicationTreeNodeComponent', () => {
-  let component: ApplicationTreeNodeComponent;
-  let fixture: ComponentFixture<ApplicationTreeNodeComponent>;
+  let spectator: Spectator<ApplicationTreeNodeComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ ApplicationTreeNodeComponent ]
-    })
-    .compileComponents();
-  }));
+  const createComponent = createComponentFactory({
+    component: ApplicationTreeNodeComponent,
+    imports: [ SharedModule ],
+  });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ApplicationTreeNodeComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
+    spectator = createComponent();
+    spectator.setInput("node", {
+      id: 'node-1',
+      label: 'Node',
+      metadata: {} as any,
+    });
   });
 
   it('should create', () => {
-    expect(component).toBeTruthy();
+    expect(spectator).toBeTruthy();
   });
 });

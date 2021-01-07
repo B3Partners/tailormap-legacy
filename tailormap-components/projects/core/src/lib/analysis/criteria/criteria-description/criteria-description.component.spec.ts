@@ -1,25 +1,28 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { CriteriaDescriptionComponent } from './criteria-description.component';
+import { createComponentFactory, Spectator } from '@ngneat/spectator';
+import { analysisStateKey, initialAnalysisState } from '../../state/analysis.state';
+import { MockStore, provideMockStore } from '@ngrx/store/testing';
+import { SharedModule } from '../../../shared/shared.module';
 
 describe('CriteriaDescriptionComponent', () => {
-  let component: CriteriaDescriptionComponent;
-  let fixture: ComponentFixture<CriteriaDescriptionComponent>;
+  let spectator: Spectator<CriteriaDescriptionComponent>;
+  const initialState = { [analysisStateKey]: initialAnalysisState };
+  let store: MockStore;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ CriteriaDescriptionComponent ]
-    })
-    .compileComponents();
-  }));
+  const createComponent = createComponentFactory({
+    component: CriteriaDescriptionComponent,
+    imports: [ SharedModule ],
+    providers: [
+      provideMockStore({ initialState }),
+    ]
+  });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(CriteriaDescriptionComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
+    spectator = createComponent();
+    store = spectator.inject(MockStore);
   });
 
   it('should create', () => {
-    expect(component).toBeTruthy();
+    expect(spectator).toBeTruthy();
   });
 });
