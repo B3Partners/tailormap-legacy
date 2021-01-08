@@ -24,7 +24,11 @@
               "projects/bridge/src/favicon.ico",
               "projects/bridge/src/assets",
               "projects/bridge/src/assets/imgs",
-              { "input": "projects/core/src/assets", "glob": "**/*", "output": "assets/core"}
+              {
+                "input": "projects/core/src/assets",
+                "glob": "**/*",
+                "output": "assets/core"
+              }
             ],
             "styles": [
               "projects/core/src/styles/custom-theme.scss",
@@ -98,7 +102,11 @@
             "assets": [
               "projects/bridge/src/favicon.ico",
               "projects/bridge/src/assets",
-              { "input": "projects/core/src/assets", "glob": "**/*", "output": "assets/core"}
+              {
+                "input": "projects/core/src/assets",
+                "glob": "**/*",
+                "output": "assets/core"
+              }
             ],
             "styles": [
               "projects/core/src/styles/custom-theme.scss",
@@ -165,7 +173,11 @@
             "assets": [
               "projects/core/src/favicon.ico",
               "projects/core/src/assets",
-              { "input": "projects/core/src/assets", "glob": "**/*", "output": "assets/core"}
+              {
+                "input": "projects/core/src/assets",
+                "glob": "**/*",
+                "output": "assets/core"
+              }
             ],
             "styles": [
               "projects/core/src/styles/custom-theme.scss"
@@ -173,7 +185,6 @@
             "scripts": []
           }
         },
-
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
@@ -189,5 +200,8 @@
       }
     }
   },
-  "defaultProject": "bridge"
+  "defaultProject": "bridge",
+  "cli": {
+    "defaultCollection": "@ngneat/spectator"
+  }
 }
