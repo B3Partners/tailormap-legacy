@@ -1,4 +1,4 @@
-import { Feature, Geometry } from '../generated';
+import { Feature, Geometry, Wegvakonderdeel, Wegvakonderdeelplanning } from '../generated';
 import { App, AppLayer, Map, MapComponent, VectorLayer, ViewerController } from '../../../../../bridge/typings';
 
 export const mockFeature = (overrides?: Partial<Feature>): Feature => ({
@@ -6,6 +6,17 @@ export const mockFeature = (overrides?: Partial<Feature>): Feature => ({
   clazz: 'test',
   children: [],
   objectGuid: '123-123',
+  relatedFeatureTypes: [],
+  ...overrides,
+});
+
+export const mockWegvakonderdeel = (overrides?: Partial<Wegvakonderdeel>): Wegvakonderdeel => ({
+  ...mockFeature(),
+  ...overrides,
+});
+
+export const mockWegvakonderdeelplanning = (overrides?: Partial<Wegvakonderdeelplanning>): Wegvakonderdeelplanning => ({
+  ...mockFeature(),
   ...overrides,
 });
 

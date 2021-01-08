@@ -15,6 +15,7 @@ import {FormTreeComponent} from "../form-tree/form-tree.component";
 import {MatSnackBarModule} from "@angular/material/snack-bar";
 import {FeatureInitializerService} from "../../shared/feature-initializer/feature-initializer.service";
 import { FormConfigMockModule } from '../../shared/formconfig-repository/formconfig-mock.module.spec';
+import { mockFeature, mockWegvakonderdeel, mockWegvakonderdeelplanning } from '../../shared/tests/test-data';
 
 describe('FormCreatorComponent', () => {
   let component: FormCreatorComponent;
@@ -64,28 +65,28 @@ describe('FormCreatorComponent', () => {
   });
 
   it('should update a childfeature in the features array', ()=>{
-    let featureToBeChanged : Wegvakonderdeelplanning ={
+    let featureToBeChanged : Wegvakonderdeelplanning = mockWegvakonderdeelplanning({
       objecttype: "wegvakonderdeelplanning",
       objectGuid: "twee",
       maatregel_wvko: "bar"
-    };
+    });
 
-    let featureIsChanged : Wegvakonderdeelplanning ={
+    let featureIsChanged : Wegvakonderdeelplanning = mockWegvakonderdeelplanning({
       objecttype: "wegvakonderdeelplanning",
       objectGuid: "twee",
       maatregel_wvko: "foo"
-    };
+    });
 
 
     let featuresArray: Feature[];
     featuresArray = [
-      {
+      mockFeature({
         objectGuid: "een",
         objecttype: "wegvakonderdeel",
         children: [
          featureToBeChanged
         ]
-      }
+      })
     ];
     let newArray = component.updateFeatureInArray(featureIsChanged, featuresArray);
     expect(newArray.length === 1).toBeTruthy();
@@ -95,7 +96,7 @@ describe('FormCreatorComponent', () => {
   });
 
   it('should update the parent feature in the features array', ()=>{
-    let featureToBeChanged : Wegvakonderdeel ={
+    let featureToBeChanged : Wegvakonderdeel = mockWegvakonderdeel({
       objecttype: "wegvakonderdeel",
       objectGuid: "een",
       aanlegjaar: 15,
@@ -105,9 +106,9 @@ describe('FormCreatorComponent', () => {
           objectGuid: "twee",
           maatregel_wvko: "foo"
         } as Wegvakonderdeelplanning]
-    };
+    });
 
-    let featureIsChanged : Wegvakonderdeel ={
+    let featureIsChanged : Wegvakonderdeel = mockWegvakonderdeel({
       objecttype: "wegvakonderdeel",
       objectGuid: "een",
       aanlegjaar: 16,
@@ -117,7 +118,7 @@ describe('FormCreatorComponent', () => {
           objectGuid: "twee",
           maatregel_wvko: "foo"
         } as Wegvakonderdeelplanning]
-    };
+    });
 
     let featuresArray = [featureToBeChanged ];
     let newArray = component.updateFeatureInArray(featureIsChanged, featuresArray);
@@ -129,16 +130,16 @@ describe('FormCreatorComponent', () => {
 
   it('should update the objecttguid of a new feature in  features array', ()=>{
 
-    let featureIsChanged : Wegvakonderdeel ={
+    let featureIsChanged : Wegvakonderdeel = mockWegvakonderdeel({
       objecttype: "wegvakonderdeel",
       objectGuid: "een",
       aanlegjaar: 16,
       children:[]
-    };
-    let baseFeature: Wegvakonderdeel  = {
+    });
+    let baseFeature: Wegvakonderdeel = mockWegvakonderdeel({
       objecttype: "wegvakonderdeel",
       objectGuid: FeatureInitializerService.STUB_OBJECT_GUID_NEW_OBJECT
-    };
+    });
     let featuresArray = [baseFeature];
     let newArray = component.updateFeatureInArray(featureIsChanged, featuresArray);
     expect(newArray.length === 1).toBeTruthy();
