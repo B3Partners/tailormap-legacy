@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import {
-  HttpClient,
+  HttpClient, HttpHeaders,
   HttpParams,
 } from '@angular/common/http';
 import {
@@ -46,6 +46,8 @@ export class AttributeService {
       httpParams = httpParams.set(key, value);
     });
     httpParams = httpParams.set('store', '1');
-    return this.http.get<AttributeListResponse>(this.tailorMap.getContextPath() + '/action/attributes', {params: httpParams});
+    return this.http.post<AttributeListResponse>(this.tailorMap.getContextPath() + '/action/attributes', httpParams.toString(), {
+      headers: new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8'),
+    });
   }
 }

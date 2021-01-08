@@ -23,6 +23,7 @@ import org.geotools.filter.text.cql2.CQLException;
 import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
+import org.opengis.filter.And;
 import org.opengis.filter.Filter;
 
 /**
@@ -46,7 +47,7 @@ public class FlamingoCQLTest extends TestUtil{
         FeatureSource fs;
     }
 
-    //@Test
+    @Test
     public void testToFilterSingleGeom() throws CQLException {
         String input = "INTERSECTS(the_geom, POLYGON(( 1 1, 2 1, 2 2, 1 2, 1 1)))";
         Filter output = cql.toFilter(input, entityManager);
@@ -54,16 +55,79 @@ public class FlamingoCQLTest extends TestUtil{
         assertEquals("[ the_geom intersects POLYGON ((1 1, 2 1, 2 2, 1 2, 1 1)) ]", output.toString());
     }
 
-    //@Test
+    @Test
     public void testToFilterSingleAttribute() throws CQLException {
         String input = "pietje = 2";
         Filter output = cql.toFilter(input, entityManager);
         
         assertEquals("[ pietje = 2 ]", output.toString());
     }
-    
 
-    //@Test
+    @Test
+    public void testtoFilterRelatedLayer() throws CQLException {
+        int a = 0;
+        String input = "RELATED_LAYER(3,2,fysiek_voork = 'aap')";
+        Filter output = cql.toFilter(input, entityManager, false);
+        assertEquals(Subselect.class, output.getClass());
+    }
+
+    @Test
+    public void testtoFilterRelatedLayerExtraParens() throws CQLException {
+        assertEquals(Subselect.class,  cql.toFilter("(RELATED_LAYER(3,2,fysiek_voork = 'aap'))", entityManager, false).getClass());
+    }
+
+    @Test
+    public void testtoFilterRelatedLayerDoubleExtraParens() throws CQLException {
+        assertEquals(Subselect.class,  cql.toFilter("((RELATED_LAYER(3,2,fysiek_voork = 'aap')))", entityManager, false).getClass());
+    }
+
+    @Test
+    public void removeExtraParensAdjoining(){
+        assertEquals("", cql.removeAdjoiningParens("()"));
+        assertEquals(")", cql.removeAdjoiningParens("())"));
+        assertEquals("(", cql.removeAdjoiningParens("(()"));
+        assertEquals("", cql.removeAdjoiningParens("(())"));
+    }
+
+    @Test
+    public void removeExtraParensEnclosing(){
+        assertEquals("", cql.removeEnclosingParens("()"));
+        assertEquals(")", cql.removeEnclosingParens("())"));
+        assertEquals("(", cql.removeEnclosingParens("(()"));
+        assertEquals("", cql.removeEnclosingParens("(())"));
+    }
+
+    @Test
+    public void testtoFilterRelatedLayerExtraParensAroundSubquery() throws CQLException {
+        Filter output = cql.toFilter("RELATED_LAYER(3,2,(fysiek_voork = 'aap'))", entityManager, false);
+        assertEquals(Subselect.class, output.getClass());
+    }
+
+    @Test
+    public void testtoFilterRelatedLayerTwoRelatedLayer() throws CQLException {
+        Filter output = cql.toFilter("RELATED_LAYER(3,2,(fysiek_voork = 'aap')) AND RELATED_LAYER(3,2,(fysiek_voork = 'aap'))", entityManager, false);
+        assertEquals(true,And.class.isAssignableFrom( output.getClass()));
+    }
+
+    @Test
+    public void testtoFilterRelatedLayerExtraFilterAtEnd() throws CQLException {
+        Filter output = cql.toFilter("RELATED_LAYER(3,2,fysiek_voork = 'aap') AND jaar = 2020", entityManager, false);
+        assertEquals(true, And.class.isAssignableFrom(output.getClass()));
+    }
+
+    @Test
+    public void testtoFilterRelatedLayerExtraFilterAtStart() throws CQLException {
+        Filter output = cql.toFilter("jaar = 2020 AND RELATED_LAYER(3,2,fysiek_voork = 'aap')", entityManager, false);
+        assertEquals(true, And.class.isAssignableFrom(output.getClass()));
+    }
+
+    @Test
+    public void testtoFilterRelatedLayerExtraFilterAtEndWithParens() throws CQLException {
+        Filter output = cql.toFilter("((RELATED_LAYER(3,2,fysiek_voork = 'aap') AND (std_verhardingssoort ILIKE '%formaat%')))", entityManager, false);
+        assertEquals(true, And.class.isAssignableFrom(output.getClass()));
+    }
+
+    @Test
     public void testToFilterMultipleAttributes() throws CQLException {
         String input = "pietje = 2 and aap = 'noot'";
         Filter output = cql.toFilter(input, entityManager);
@@ -72,7 +136,7 @@ public class FlamingoCQLTest extends TestUtil{
     }
     
     
-    //@Test
+    @Test
     public void testToFilterSingleApplayerWithoutFilter() throws CQLException {
         initData(true);
         String input = "APPLAYER(the_geom, " + testAppLayer.getId() + ",)";
@@ -83,7 +147,7 @@ public class FlamingoCQLTest extends TestUtil{
     }
     
     
-    //@Test
+    @Test
     public void testToFilterSingleApplayerWithFilter() throws CQLException {
         initData(true);
         String input = "APPLAYER(the_geom, " + testAppLayer.getId() + ", gid = 1)";
@@ -93,7 +157,7 @@ public class FlamingoCQLTest extends TestUtil{
     }
     
           
-    //@Test
+    @Test
     public void testToFilterNestedApplayer() throws CQLException {
         initData(true);
         String input = "APPLAYER(geom, " + testAppLayer.getId() + ",  APPLAYER(geom, " + testAppLayer.getId() + ", gid = 1))";
@@ -102,7 +166,7 @@ public class FlamingoCQLTest extends TestUtil{
         assertEquals("[ geom intersects POLYGON ((156487.5708 452161.984, 156912.5911 442917.7939, 191870.5054 441111.4579, 191870.5054 454712.1054, 191870.5054 454712.1054, 156487.5708 452161.984)) ]", output.toString());
     }
     
-    //@Test
+    @Test
     public void testToFilterAttributeAndApplayer() throws CQLException {
         initData(true);
         String input = "pietje = 2 AND APPLAYER(the_geom, " + testAppLayer.getId() + ",  gid = 1)";
@@ -111,7 +175,7 @@ public class FlamingoCQLTest extends TestUtil{
         assertEquals("[[ pietje = 2 ] AND [ the_geom intersects POLYGON ((156487.5708 452161.984, 156912.5911 442917.7939, 191870.5054 441111.4579, 191870.5054 454712.1054, 191870.5054 454712.1054, 156487.5708 452161.984)) ]]", result);
     }
     
-    //@Test
+    @Test
     public void testToFilterApplayerAndAttribute() throws CQLException {
         initData(true);
         String input = "APPLAYER(the_geom, " + testAppLayer.getId() + ",  gid = 1) AND pietje = 2 ";
@@ -120,7 +184,7 @@ public class FlamingoCQLTest extends TestUtil{
         assertEquals("[[ the_geom intersects POLYGON ((156487.5708 452161.984, 156912.5911 442917.7939, 191870.5054 441111.4579, 191870.5054 454712.1054, 191870.5054 454712.1054, 156487.5708 452161.984)) ] AND [ pietje = 2 ]]", result);
     }
     
-    //@Test
+    @Test
     public void testToFilterApplayerAndGeom() throws CQLException {
         initData(true);
         String input = "INTERSECTS(the_geom, POLYGON(( 1 1, 2 1, 2 2, 1 2, 1 1))) AND APPLAYER(the_geom, " + testAppLayer.getId() + ",  gid = 1)";

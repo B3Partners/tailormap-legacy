@@ -21,9 +21,11 @@ import { VrijvLeidingPlanning } from './vrijv-leiding-planning';
 import { Weginspectie } from './weginspectie';
 import { Wegvakonderdeel } from './wegvakonderdeel';
 import { Wegvakonderdeelplanning } from './wegvakonderdeelplanning';
+import { RelatedFeatureType } from '../../attribute-service/attribute-models';
 export interface Feature {
   children?: Array<Boom | Boominspectie | Boomonderhoud | Boomplanning | CultBeplanting | CultBeplantingPlanning | Gras | GrasPlanning | Haag | HaagPlanning | MechLeiding | MechLeidingPlanning | NatBeplanting | NatBeplantingOnderhoud | Rioolput | RioolputInspectie | RioolputPlanning | VrijvLeiding | VrijvLeidingPlanning | Weginspectie | Wegvakonderdeel | Wegvakonderdeelplanning>;
   clazz?: string;
   objectGuid?: string;
   objecttype: string;
+  relatedFeatureTypes: RelatedFeatureType[];
 }

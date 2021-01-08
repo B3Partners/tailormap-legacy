@@ -21,7 +21,6 @@ interface CreateUserLayerParams {
   createdAppLayer?: string;
   source?: AnalysisSourceModel;
 }
-
 @Injectable({
   providedIn: 'root',
 })
@@ -90,7 +89,6 @@ export class UserLayerService {
         }),
       )
   }
-
   private handleResult(
     createLayerResult: UserLayerResponseType,
     saveStyleResult: UserLayerResponseType | null,

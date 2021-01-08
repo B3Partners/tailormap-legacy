@@ -12,6 +12,8 @@ import nl.b3p.viewer.userlayer.UserLayerHandler;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.geotools.data.jdbc.FilterToSQLException;
+import org.geotools.filter.text.cql2.CQLException;
 import org.json.JSONObject;
 import org.stripesstuff.stripersist.Stripersist;
 
@@ -54,7 +56,7 @@ public class UserLayerActionBean extends LocalizableActionBean implements Action
     public void validateUser(ValidationErrors errors) {
         Principal p = context.getRequest().getUserPrincipal();
         if (p == null) {
-            errors.addGlobalError(new SimpleError("Geen gebruiker gevonden of niet aangemeld"));
+      //      errors.addGlobalError(new SimpleError("Geen gebruiker gevonden of niet aangemeld"));
         } else {
             this.auditMessageObject.setUsername(p.getName());
             this.auditMessageObject.setEvent(this.context.getEventName() + " userlayer");
@@ -130,6 +132,34 @@ public class UserLayerActionBean extends LocalizableActionBean implements Action
             public void stream(HttpServletResponse response) throws Exception {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 IOUtils.copy(new StringReader(json.toString()), response.getOutputStream(), StandardCharsets.UTF_8);
+            }
+        };
+    }
+
+    public Resolution validate() throws FilterToSQLException, CQLException {
+
+        final UserLayerHandler ulh = new UserLayerHandler(auditMessageObject, Stripersist.getEntityManager(),
+                application, appLayer, query, title, wellKnownUserLayerWorkspaceName,
+                wellKnownUserLayerStoreName);
+
+        boolean success = true;
+        String isInvalidMsg = ulh.validate();
+        final JSONObject jsonObject = (new JSONObject()).put("success", Boolean.TRUE);
+        jsonObject.put("valid", isInvalidMsg);
+        jsonObject.put("sql", ulh.getSQLQuery());
+
+        return new StreamingResolution("application/json") {
+            @Override
+            public void stream(HttpServletResponse response) throws Exception {
+                if (unauthorized) {
+                    response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                } else if (jsonObject.getBoolean("success")) {
+                    response.setStatus(HttpServletResponse.SC_CREATED);
+                } else {
+                    response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                }
+                IOUtils.copy(new StringReader(jsonObject.toString()), response.getOutputStream(),
+                        StandardCharsets.UTF_8);
             }
         };
     }
