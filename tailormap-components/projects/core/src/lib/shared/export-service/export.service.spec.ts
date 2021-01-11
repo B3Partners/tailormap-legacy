@@ -1,16 +1,20 @@
-import { TestBed } from '@angular/core/testing';
-
 import { ExportService } from './export.service';
+import { createHttpFactory, SpectatorService } from '@ngneat/spectator';
+import { getTailorMapServiceMockProvider } from '../../../../../bridge/src/tailor-map.service.mock';
 
 describe('ExportService', () => {
-  let service: ExportService;
-
+  let spectator: SpectatorService<ExportService>;
+  const createService = createHttpFactory({
+    service: ExportService,
+    providers: [
+      getTailorMapServiceMockProvider(),
+    ]
+  });
   beforeEach(() => {
-    TestBed.configureTestingModule({});
-    service = TestBed.inject(ExportService);
+    spectator = createService();
   });
 
   it('should be created', () => {
-    expect(service).toBeTruthy();
+    expect(spectator).toBeTruthy();
   });
 });

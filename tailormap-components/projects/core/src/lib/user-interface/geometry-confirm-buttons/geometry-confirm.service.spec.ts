@@ -1,16 +1,21 @@
-import { TestBed } from '@angular/core/testing';
-
 import { GeometryConfirmService } from './geometry-confirm.service';
+import { createServiceFactory, SpectatorService } from '@ngneat/spectator';
+import { getTailorMapServiceMockProvider } from '../../../../../bridge/src/tailor-map.service.mock';
 
 describe('GeometryConfirmService', () => {
-  let service: GeometryConfirmService;
+  let spectator: SpectatorService<GeometryConfirmService>;
+  const createService = createServiceFactory({
+    service: GeometryConfirmService,
+    providers: [
+      getTailorMapServiceMockProvider(),
+    ]
+  });
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
-    service = TestBed.inject(GeometryConfirmService);
+    spectator = createService();
   });
 
   it('should be created', () => {
-    expect(service).toBeTruthy();
+    expect(spectator).toBeTruthy();
   });
 });

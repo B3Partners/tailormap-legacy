@@ -1,25 +1,26 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { AttributeSelectorComponent } from './attribute-selector.component';
+import { SharedModule } from '../../shared/shared.module';
+import { createComponentFactory, Spectator } from '@ngneat/spectator';
+import { getMetadataServiceMockProvider } from '../../application/services/mocks/metadata.service.mock';
 
 describe('AttributeSelectorComponent', () => {
-  let component: AttributeSelectorComponent;
-  let fixture: ComponentFixture<AttributeSelectorComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ AttributeSelectorComponent ]
-    })
-    .compileComponents();
-  }));
+    let spectator: Spectator<AttributeSelectorComponent>;
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(AttributeSelectorComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    const createComponent = createComponentFactory({
+      component: AttributeSelectorComponent,
+      imports: [ SharedModule ],
+      providers: [
+        getMetadataServiceMockProvider(),
+      ]
+    });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    beforeEach(() => {
+      spectator = createComponent();
+    });
+
+    it('should create', () => {
+      expect(spectator).toBeTruthy();
+    });
+
 });

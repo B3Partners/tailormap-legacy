@@ -1,25 +1,30 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { SimpleCriteriaComponent } from './simple-criteria.component';
+import { createComponentFactory, Spectator } from '@ngneat/spectator';
+import { analysisStateKey, initialAnalysisState } from '../../state/analysis.state';
+import { MockStore, provideMockStore } from '@ngrx/store/testing';
+import { SharedModule } from '../../../shared/shared.module';
+import { IdService } from '../../../shared/id-service/id.service';
 
 describe('SimpleCriteriaComponent', () => {
-  let component: SimpleCriteriaComponent;
-  let fixture: ComponentFixture<SimpleCriteriaComponent>;
+  let spectator: Spectator<SimpleCriteriaComponent>;
+  const initialState = { [analysisStateKey]: initialAnalysisState };
+  let store: MockStore;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ SimpleCriteriaComponent ]
-    })
-    .compileComponents();
-  }));
+  const createComponent = createComponentFactory({
+    component: SimpleCriteriaComponent,
+    imports: [ SharedModule ],
+    providers: [
+      provideMockStore({ initialState }),
+      IdService,
+    ]
+  });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(SimpleCriteriaComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
+    spectator = createComponent();
+    store = spectator.inject(MockStore);
   });
 
   it('should create', () => {
-    expect(component).toBeTruthy();
+    expect(spectator).toBeTruthy();
   });
 });

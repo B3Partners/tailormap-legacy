@@ -1,25 +1,28 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { CreateLayerPanelComponent } from './create-layer-panel.component';
+import { createComponentFactory, Spectator } from '@ngneat/spectator';
+import { analysisStateKey, initialAnalysisState } from '../state/analysis.state';
+import { MockStore, provideMockStore } from '@ngrx/store/testing';
+import { SharedModule } from '../../shared/shared.module';
 
 describe('CreateLayerPanelComponent', () => {
-  let component: CreateLayerPanelComponent;
-  let fixture: ComponentFixture<CreateLayerPanelComponent>;
+  let spectator: Spectator<CreateLayerPanelComponent>;
+  const initialState = { [analysisStateKey]: initialAnalysisState };
+  let store: MockStore;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ CreateLayerPanelComponent ]
-    })
-    .compileComponents();
-  }));
+  const createComponent = createComponentFactory({
+    component: CreateLayerPanelComponent,
+    imports: [ SharedModule ],
+    providers: [
+      provideMockStore({ initialState }),
+    ]
+  });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(CreateLayerPanelComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
+    spectator = createComponent();
+    store = spectator.inject(MockStore);
   });
 
   it('should create', () => {
-    expect(component).toBeTruthy();
+    expect(spectator).toBeTruthy();
   });
 });

@@ -1,4 +1,4 @@
-{
+  {
   "name": "tailormap-components",
   "version": "0.0.0",
   "scripts": {
@@ -13,7 +13,10 @@
     "e2e": "ng e2e",
     "ng-openapi-gen": "ng-openapi-gen",
     "generate": "ng-openapi-gen -c generateConfig.json",
-    "test-circular": "dpdm -T ./projects/bridge/src/main.ts && dpdm -T ./projects/core/src/index.ts"
+    "test-circular": "dpdm -T ./projects/bridge/src/main.ts && dpdm -T ./projects/core/src/index.ts",
+    "generate-component": "ng g cs --project=core --lintFix=true",
+    "generate-service": "ng g ss --project=core --lintFix=true",
+    "generate-http-service": "ng g ss --project=core --lintFix=true --isDataService=true"
   },
   "private": true,
   "dependencies": {
@@ -49,6 +52,7 @@
     "@angular/cli": "~10.0.7",
     "@angular/compiler-cli": "~10.0.11",
     "@angular/language-service": "~10.0.11",
+    "@ngneat/spectator": "^6.1.2",
     "@types/jasmine": "~3.3.8",
     "@types/jasminewd2": "~2.0.3",
     "@types/node": "^12.11.1",

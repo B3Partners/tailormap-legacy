@@ -48,7 +48,7 @@ export class CriteriaGroupComponent implements OnInit, OnDestroy {
   ) {}
 
   public ngOnInit() {
-    if (this.criteriaGroup.operator) {
+    if (this.criteriaGroup && this.criteriaGroup.operator) {
       this.operatorControl.patchValue(this.criteriaGroup.operator);
     }
     this.operatorControl.valueChanges

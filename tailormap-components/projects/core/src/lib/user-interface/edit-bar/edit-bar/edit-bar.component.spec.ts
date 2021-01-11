@@ -1,25 +1,27 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { EditBarComponent } from './edit-bar.component';
+import { createComponentFactory, createSpyObject, Spectator } from '@ngneat/spectator';
+import { SharedModule } from '../../../shared/shared.module';
+import { getTailorMapServiceMockProvider } from '../../../../../../bridge/src/tailor-map.service.mock';
+import { WorkflowControllerService } from '../../../workflow/workflow-controller/workflow-controller.service';
+import { WorkflowActionManagerService } from '../../../workflow/workflow-controller/workflow-action-manager.service';
 
 describe('EditBarComponent', () => {
-  let component: EditBarComponent;
-  let fixture: ComponentFixture<EditBarComponent>;
-
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ EditBarComponent ]
-    })
-    .compileComponents();
-  }));
+  let spectator: Spectator<EditBarComponent>;
+  const createComponent = createComponentFactory({
+    component: EditBarComponent,
+    imports: [ SharedModule ],
+    providers: [
+      getTailorMapServiceMockProvider(),
+      { provide: WorkflowControllerService, useValue: createSpyObject(WorkflowControllerService) },
+      { provide: WorkflowActionManagerService, useValue: createSpyObject(WorkflowActionManagerService) },
+    ]
+  });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(EditBarComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
+    spectator = createComponent();
   });
 
   it('should create', () => {
-    expect(component).toBeTruthy();
+    expect(spectator).toBeTruthy();
   });
 });

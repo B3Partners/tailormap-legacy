@@ -1,25 +1,30 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { CreateLayerStylingComponent } from './create-layer-styling.component';
+import { createComponentFactory, Spectator } from '@ngneat/spectator';
+import { analysisStateKey, initialAnalysisState } from '../state/analysis.state';
+import { MockStore, provideMockStore } from '@ngrx/store/testing';
+import { SharedModule } from '../../shared/shared.module';
+import { getUserLayerServiceMockProvider } from '../services/mocks/user-layer.service.mock';
 
 describe('CreateLayerStylingComponent', () => {
-  let component: CreateLayerStylingComponent;
-  let fixture: ComponentFixture<CreateLayerStylingComponent>;
+  let spectator: Spectator<CreateLayerStylingComponent>;
+  const initialState = { [analysisStateKey]: initialAnalysisState };
+  let store: MockStore;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ CreateLayerStylingComponent ]
-    })
-    .compileComponents();
-  }));
+  const createComponent = createComponentFactory({
+    component: CreateLayerStylingComponent,
+    imports: [ SharedModule ],
+    providers: [
+      provideMockStore({ initialState }),
+      getUserLayerServiceMockProvider(),
+    ]
+  });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(CreateLayerStylingComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
+    spectator = createComponent();
+    store = spectator.inject(MockStore);
   });
 
   it('should create', () => {
-    expect(component).toBeTruthy();
+    expect(spectator).toBeTruthy();
   });
 });

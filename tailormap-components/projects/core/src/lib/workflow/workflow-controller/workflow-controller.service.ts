@@ -29,6 +29,9 @@ export class WorkflowControllerService implements OnDestroy {
     private workflowActionManagerService: WorkflowActionManagerService,
   ) {
     this.workflowActionManagerService.actionChanged$.subscribe(value => {
+      if (!value) {
+        return;
+      }
       this.workflowChanged(value);
     })
   }
