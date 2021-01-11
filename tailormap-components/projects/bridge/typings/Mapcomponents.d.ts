@@ -79,6 +79,7 @@ declare interface Map {
   update: () => void;
   getResolution: () => number;
   zoomToExtent: (extent: Extent) => void;
+  zoomToResolution: (resolution: number) => void;
   coordinateToPixel: (x: number, y: number) => Pixel;
 }
 
