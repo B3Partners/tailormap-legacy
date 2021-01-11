@@ -4,7 +4,7 @@ import {
   OnInit,
 } from '@angular/core';
 import {
-  clearCreateLayerMode, setSelectedStyle, updateStyle,
+  clearCreateLayerMode, setSelectedStyle, updateAllStyles, updateStyle,
 } from '../state/analysis.actions';
 import { Store } from '@ngrx/store';
 import { AnalysisState } from '../state/analysis.state';
@@ -41,6 +41,7 @@ export class CreateLayerStylingComponent implements OnInit, OnDestroy {
 
   private destroyed = new Subject();
   public styles: UserLayerStyleModel[];
+  public selectedGlobalScale: number;
 
   constructor(
     private store$: Store<AnalysisState>,
@@ -116,6 +117,11 @@ export class CreateLayerStylingComponent implements OnInit, OnDestroy {
 
   public setSelectedStyle(style: UserLayerStyleModel) {
     this.store$.dispatch(setSelectedStyle({ styleId: style.id }));
+  }
+
+  public scaleChanged($event: number) {
+    this.selectedGlobalScale = $event;
+    this.store$.dispatch(updateAllStyles({ styleProp: 'scale', value: $event }));
   }
 
 }

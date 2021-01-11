@@ -110,6 +110,10 @@ export class StyleFormComponent implements OnInit {
     }
   }
 
+  public scaleChanged($event: number) {
+    this.change('scale', $event);
+  }
+
   private change(key: keyof UserLayerStyleModel, value: string | number) {
     this.updatedProps.set(key, value);
     if (this.debounce) {

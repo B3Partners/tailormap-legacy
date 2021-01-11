@@ -70,6 +70,9 @@ export class StyleHelper {
     if (StyleHelper.isScopedStyle(style)) {
       selector = `[${style.attribute}=${AttributeTypeHelper.getExpression(style.value, style.attributeType)}] `;
     }
+    if (style.scale && style.scale > 0) {
+      selector = `${selector}[@sd <= ${style.scale}]`
+    }
     if (StyleHelper.showPolygonSettings(selectedDataSource.geometryType)) {
       const polygonStyles = [];
       if (style.fillColor) {

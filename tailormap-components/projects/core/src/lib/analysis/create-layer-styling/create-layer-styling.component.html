@@ -17,6 +17,11 @@
 
   <ng-container *ngIf="hasMultipleStyles()">
     <h2>Objecten</h2>
+    <div class="form-field">
+      <label>Alle objecten tonen vanaf schaalniveau</label>
+      <tailormap-resolution-selector (scaleChanged)="scaleChanged($event)"
+                                     [selectedScale]="selectedGlobalScale"></tailormap-resolution-selector>
+    </div>
     <div class="styling-form form-field">
       <div class="style-link" *ngFor="let style of styles">
         <mat-checkbox (change)="toggleActive(style)" [checked]="style.active"></mat-checkbox>
