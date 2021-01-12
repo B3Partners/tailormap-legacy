@@ -76,6 +76,7 @@ export const appLayerMock = (overrides?: Partial<AppLayer>): AppLayer => ({
   attribute: false,
   featureType: 1,
   layerName: 'layer1',
+  layerId: 1,
   ...overrides,
 });
 
@@ -93,4 +94,12 @@ export const viewerControllerMock = (overrides?: Partial<ViewerController>): Vie
   registerSnappingLayer: () => {},
   setFilterString: () => {},
   ...overrides,
-});
+})
+
+export const getVisibleLayerMocks = (visibleLayers: number[]) => {
+  return ((castToStrings?: boolean): number[] | string[] =>
+    typeof castToStrings === 'undefined' ? visibleLayers : visibleLayers.map(l => `${l}`)) as {
+    (castToStrings?: false): number[];
+    (castToStrings: true): string[];
+  }
+}

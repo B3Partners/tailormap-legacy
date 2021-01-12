@@ -14,6 +14,7 @@ import { Subject } from 'rxjs';
 import { ConfirmDialogService } from '../../shared/confirm-dialog/confirm-dialog.service';
 import { WorkflowActionEvent } from '../workflow-controller/workflow-models';
 import { GeometryConfirmService } from '../../user-interface/geometry-confirm-buttons/geometry-confirm.service';
+import { LayerUtils } from '../../shared/layer-utils/layer-utils.service';
 
 export abstract class Workflow {
 
@@ -34,6 +35,7 @@ export abstract class Workflow {
   public closeAfterSave: boolean;
   protected geometryConfirmService: GeometryConfirmService;
   protected event: WorkflowActionEvent;
+  protected layerUtils: LayerUtils;
 
   public close$ = new Subject<boolean>();
 
@@ -47,7 +49,8 @@ export abstract class Workflow {
     service: FeatureControllerService,
     ngZone: NgZone,
     confirmService: ConfirmDialogService,
-    geometryConfirmService: GeometryConfirmService): void {
+    geometryConfirmService: GeometryConfirmService,
+    layerUtils: LayerUtils): void {
     this.event = event;
 
     this.tailorMap = tailorMap;
@@ -60,6 +63,7 @@ export abstract class Workflow {
     this.destinationFeatures = [];
     this.confirmService = confirmService;
     this.geometryConfirmService = geometryConfirmService;
+    this.layerUtils = layerUtils;
     this.destroyed = new Subject();
     this.afterInit();
   }
