@@ -7,6 +7,7 @@ import { getTailorMapServiceMockProvider } from '../../../../../../bridge/src/ta
 import { WorkflowControllerService } from '../../../workflow/workflow-controller/workflow-controller.service';
 import { FormConfigMockModule } from '../../../shared/formconfig-repository/formconfig-mock.module.spec';
 import { SharedModule } from '../../../shared/shared.module';
+import { MenuButtonComponent } from './menu-button/menu-button.component';
 
 describe('AddFeatureMenuComponent', () => {
   let spectator: Spectator<AddFeatureMenuComponent>;
@@ -15,6 +16,9 @@ describe('AddFeatureMenuComponent', () => {
     imports: [
       SharedModule,
       FormConfigMockModule,
+    ],
+    declarations: [
+      MenuButtonComponent,
     ],
     providers: [
       getDialogRefMockProvider(),

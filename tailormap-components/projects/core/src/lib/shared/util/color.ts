@@ -67,5 +67,5 @@ export const rgbToHex = (color: string) => {
       componentToHex(parseInt(rgbResult[3], 10)),
     ].join('');
   }
-  return '';
+  return color;
 }

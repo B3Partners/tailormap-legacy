@@ -4,11 +4,15 @@ import { SharedModule } from '../../../shared/shared.module';
 import { getTailorMapServiceMockProvider } from '../../../../../../bridge/src/tailor-map.service.mock';
 import { WorkflowControllerService } from '../../../workflow/workflow-controller/workflow-controller.service';
 import { WorkflowActionManagerService } from '../../../workflow/workflow-controller/workflow-action-manager.service';
+import { MenuButtonComponent } from '../add-feature-menu/menu-button/menu-button.component';
 
 describe('EditBarComponent', () => {
   let spectator: Spectator<EditBarComponent>;
   const createComponent = createComponentFactory({
     component: EditBarComponent,
+    declarations: [
+      MenuButtonComponent,
+    ],
     imports: [ SharedModule ],
     providers: [
       getTailorMapServiceMockProvider(),

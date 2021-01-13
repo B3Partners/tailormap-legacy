@@ -1,0 +1,6 @@
+<div class="form-field">
+  <mat-select [formControl]="resolutionControl">
+    <mat-option *ngFor="let res of availableResolutions"
+                [value]="res">{{res.label}}</mat-option>
+  </mat-select>
+</div>

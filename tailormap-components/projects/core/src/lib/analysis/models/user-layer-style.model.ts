@@ -10,4 +10,6 @@ export interface UserLayerStyleModel {
   markerSize: number;
   markerFillColor: string;
   markerStrokeColor: string;
+  minScale?: number;
+  maxScale?: number;
 }

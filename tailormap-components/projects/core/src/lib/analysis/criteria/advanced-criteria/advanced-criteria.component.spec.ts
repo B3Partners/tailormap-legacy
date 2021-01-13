@@ -5,6 +5,7 @@ import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { IdService } from '../../../shared/id-service/id.service';
 import { ConfirmDialogService } from '../../../shared/confirm-dialog/confirm-dialog.service';
 import { SharedModule } from '../../../shared/shared.module';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 describe('AdvancedCriteriaComponent', () => {
 
@@ -19,7 +20,8 @@ describe('AdvancedCriteriaComponent', () => {
       provideMockStore({ initialState }),
       IdService,
       ConfirmDialogService,
-    ]
+    ],
+    schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
   });
 
   beforeEach(() => {
