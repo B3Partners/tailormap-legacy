@@ -24,7 +24,7 @@ export const createMockDialogProvider = createSpyObject(MatDialog, {
   getDialogById(params: number): MatDialogRef<any> {
     return createMockDialogRef;
   },
-  open (params: any) : MatDialogRef<any>{
+  open (params: any) : MatDialogRef<any> {
     return createMockDialogRef;
   },
 });
