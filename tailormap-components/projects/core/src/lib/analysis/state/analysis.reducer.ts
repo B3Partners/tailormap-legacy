@@ -15,6 +15,7 @@ import { CriteriaModel } from '../models/criteria.model';
 import { UserLayerStyleModel } from '../models/user-layer-style.model';
 import { Attribute } from '../../shared/attribute-service/attribute-models';
 import { ScopedUserLayerStyleModel } from '../models/scoped-user-layer-style.model';
+import { PassportAttributeModel } from '../../application/models/passport-attribute.model';
 
 const clearAnalysisState = (state: AnalysisState): AnalysisState => ({
   ...state,
@@ -70,7 +71,7 @@ const onRemoveCriteria = (state: AnalysisState): AnalysisState => ({
   createCriteriaMode: null,
 });
 
-const onSetSelectedThematicAttribute = (state: AnalysisState, payload: { attribute: Attribute }): AnalysisState => ({
+const onSetSelectedThematicAttribute = (state: AnalysisState, payload: { attribute: PassportAttributeModel }): AnalysisState => ({
   ...state,
   selectedThematicAttribute: payload.attribute,
 });

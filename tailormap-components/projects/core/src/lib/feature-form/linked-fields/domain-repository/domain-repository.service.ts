@@ -17,7 +17,7 @@ import { LayerUtils } from '../../../shared/layer-utils/layer-utils.service';
   providedIn: 'root',
 })
 export class DomainRepositoryService {
-  private formConfigs: FormConfigurations;
+  private formConfigs: Map<string, FormConfiguration>;
   private linkedAttributes: Array<Attribuut>;
   // tslint:disable-next-line:no-unused-variable
   private domainToAttribute: { [key: string]: Attribute; }
@@ -27,20 +27,16 @@ export class DomainRepositoryService {
     private registry: LinkedAttributeRegistryService) {
   }
 
-  public initFormConfig(formConfigs: FormConfigurations) {
+  public initFormConfig(formConfigs: Map<string, FormConfiguration>) {
     this.formConfigs = formConfigs;
     const domainAttrs: Array<number> = [];
-    for (const key in formConfigs.config) {
-      if (formConfigs.config.hasOwnProperty(key)) {
-        const config = formConfigs.config[key];
-        config.fields.forEach(attribute => {
-          if (attribute.type === FormFieldType.DOMAIN) {
-            domainAttrs.push(attribute.linkedList);
-          }
-        });
-      }
-    }
-
+    formConfigs.forEach((config, key) => {
+      config.fields.forEach(attribute => {
+        if (attribute.type === FormFieldType.DOMAIN) {
+          domainAttrs.push(attribute.linkedList);
+        }
+      });
+    });
     if (domainAttrs.length > 0) {
       this.repo.attributes({ids: domainAttrs}).subscribe(result => {
 
@@ -48,7 +44,10 @@ export class DomainRepositoryService {
         this.registry.setLinkedAttributes(this.linkedAttributes);
         for (const attribute of this.linkedAttributes) {
           const featureType = LayerUtils.sanitizeLayername(attribute.tabel_naam.toLowerCase());
-          const fc: FormConfiguration = this.formConfigs.config[featureType];
+          const fc: FormConfiguration = this.formConfigs.get(featureType);
+          if (!fc) {
+            continue;
+          }
           fc.fields.forEach(field => {
             if (field.linkedList && field.linkedList === attribute.id) {
               const options: SelectOption[] = [];

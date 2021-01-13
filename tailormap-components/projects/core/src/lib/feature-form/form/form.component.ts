@@ -55,14 +55,10 @@ export class FormComponent implements OnDestroy, OnChanges {
     this.features = data.formFeatures;
     this.feature = this.features[0];
     this.isBulk = !!data.isBulk;
-    const configs = this.formConfigRepo.getAllFormConfigs().config;
-    for (const key in configs) {
-      if (configs.hasOwnProperty(key)) {
-        const cf: FormConfiguration = configs [key];
-        this.formsForNew.push(cf);
-      }
-    }
-
+    const configs = this.formConfigRepo.getAllFormConfigs();
+    configs.forEach((config, key) => {
+      this.formsForNew.push(config);
+    });
     this.initForm();
   }
 

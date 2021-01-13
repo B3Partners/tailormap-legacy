@@ -1,11 +1,11 @@
 import { Component, Input, OnDestroy, EventEmitter, OnInit, Output } from '@angular/core';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { map, startWith, takeUntil } from 'rxjs/operators';
-import { Attribute } from '../../shared/attribute-service/attribute-models';
 import { MetadataService } from '../../application/services/metadata.service';
 import { FormControl } from '@angular/forms';
 import { AttributeTypeHelper } from '../../application/helpers/attribute-type.helper';
 import { AttributeTypeEnum } from '../../application/models/attribute-type.enum';
+import { PassportAttributeModel } from '../../application/models/passport-attribute.model';
 
 @Component({
   selector: 'tailormap-attribute-selector',
@@ -34,30 +34,43 @@ export class AttributeSelectorComponent implements OnInit, OnDestroy {
   }
 
   @Output()
-  public attributeSelected = new EventEmitter<{ attribute: Attribute, attributeType: AttributeTypeEnum }>();
+  public attributeSelected = new EventEmitter<{ attribute: PassportAttributeModel, attributeType: AttributeTypeEnum }>();
 
-  public filteredAttributes$: Observable<Attribute[]>;
+  public filteredAttributes$: Observable<PassportAttributeModel[]>;
 
   private _featureType: number;
   private _selectedAttribute: string;
 
-  private allAttributes: Attribute[] = [];
-  private availableAttributesSubject$ = new BehaviorSubject<Attribute[]>([]);
+  private allAttributes: PassportAttributeModel[] = [];
+  private allAttributesLookup: Map<string, PassportAttributeModel>;
+  private availableAttributesSubject$ = new BehaviorSubject<PassportAttributeModel[]>([]);
   private destroyed = new Subject();
 
   public attributeControl = new FormControl('');
+
+  public getPassportAlias = (attribute: string) => {
+    if (!this.allAttributesLookup) {
+      return '';
+    }
+    const att = this.allAttributesLookup.get(attribute);
+    if (!att) {
+      return attribute;
+    }
+    return att.passportAlias;
+  };
 
   constructor(
     private metadataService: MetadataService,
   ) { }
 
   public ngOnInit(): void {
-    this.metadataService.getFeatureTypeMetadata$(this.appLayerId).pipe(takeUntil(this.destroyed))
-      .subscribe(metadata => {
-        if (!metadata) {
+    this.metadataService.getPassportFieldsForLayer$(this.appLayerId).pipe(takeUntil(this.destroyed))
+      .subscribe(attributes => {
+        if (!attributes) {
           return;
         }
-        this.allAttributes = metadata.attributes;
+        this.allAttributes = attributes;
+        this.allAttributesLookup = new Map<string, PassportAttributeModel>(attributes.map(a => [ a.name, a ]));
         if (this._featureType) {
           this.filterAttributesForFeatureType(this._featureType);
         }

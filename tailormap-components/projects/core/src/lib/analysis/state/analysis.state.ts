@@ -4,6 +4,7 @@ import { CriteriaTypeEnum } from '../models/criteria-type.enum';
 import { CriteriaModel } from '../models/criteria.model';
 import { UserLayerStyleModel } from '../models/user-layer-style.model';
 import { Attribute } from '../../shared/attribute-service/attribute-models';
+import { PassportAttributeModel } from '../../application/models/passport-attribute.model';
 
 export const analysisStateKey = 'analysis';
 
@@ -23,7 +24,7 @@ export interface AnalysisState {
   criteria?: CriteriaModel;
 
   // Thematic Mode
-  selectedThematicAttribute?: Attribute;
+  selectedThematicAttribute?: PassportAttributeModel;
   loadingThematicStyles?: boolean;
   loadThematicStylesErrorMessage?: string;
 }
