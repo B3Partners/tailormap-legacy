@@ -50,14 +50,15 @@ describe('EditgeometryWorkflow', () => {
 
   beforeEach(() => {
     factory = createService();
+    factory.service.vectorLayer = vectorLayer;
+    factory.service.highlightLayer = vectorLayer;
     const event :WorkflowActionEvent = {
       feature: mockBoom({objecttype: 'Boom'}),
       action: WORKFLOW_ACTION.EDIT_GEOMETRY
     };
     workflow = factory.service.getWorkflow(event) as EditgeometryWorkflow;
     expect(workflow instanceof EditgeometryWorkflow).toBe(true, 'instance of EditgeometryWorkflow');
-    workflow.vectorLayer = vectorLayer;
-    workflow.highlightLayer = vectorLayer;
+
   });
 
 
