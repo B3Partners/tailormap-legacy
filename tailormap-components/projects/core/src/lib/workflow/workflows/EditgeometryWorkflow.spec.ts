@@ -1,0 +1,72 @@
+import { WorkflowFactoryService } from '../workflow-factory/workflow-factory.service';
+import { createServiceFactory, createSpyObject, SpectatorService } from '@ngneat/spectator';
+import { EditgeometryWorkflow } from './EditgeometryWorkflow';
+import { FormconfigRepositoryService } from '../../shared/formconfig-repository/formconfig-repository.service';
+import { Boom, FeatureControllerService } from '../../shared/generated';
+import { GeometryConfirmService } from '../../user-interface/geometry-confirm-buttons/geometry-confirm.service';
+import { ConfirmDialogService } from '../../shared/confirm-dialog/confirm-dialog.service';
+import { FeatureInitializerService } from '../../shared/feature-initializer/feature-initializer.service';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { TailorMapService } from '../../../../../bridge/src/tailor-map.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { WORKFLOW_ACTION, WorkflowActionEvent } from '../workflow-controller/workflow-models';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { mockBoom, vectorLayerMock } from '../../shared/tests/test-data';
+import { OLFeature } from '../../../../../bridge/typings';
+import { Coordinate } from '../../user-interface/models';
+import { createMockDialogProvider } from './mocks/workflow.mock';
+
+describe('EditgeometryWorkflow', () => {
+  let workflow : EditgeometryWorkflow;
+  let factory: SpectatorService<WorkflowFactoryService>;
+
+  const vectorLayer = vectorLayerMock({
+   getActiveFeature (): OLFeature {return {color: '',config: {wktgeom: '',id: 'string',attributes: {},}}
+   }
+  });
+
+  const geometryConfirmService = createSpyObject(GeometryConfirmService,{
+    open(coord: Coordinate): Observable<boolean> {
+      return new BehaviorSubject<boolean>(true).asObservable();
+    }
+  });
+  const createService = createServiceFactory({
+    service: WorkflowFactoryService,
+    mocks:[
+      TailorMapService,
+      FormconfigRepositoryService,
+      MatSnackBar,
+      FeatureControllerService,
+      ConfirmDialogService,
+    ],
+    providers:[
+      {provide: GeometryConfirmService, useValue: geometryConfirmService},
+      FeatureInitializerService,
+      { provide: MatDialog, useValue: createMockDialogProvider },
+      { provide: MatDialogRef, useValue: {} },
+      { provide: MAT_DIALOG_DATA, useValue: { title: '', message: '' } },
+    ]
+  })
+
+  beforeEach(() => {
+    factory = createService();
+    const event :WorkflowActionEvent = {
+      feature: mockBoom({objecttype: 'Boom'}),
+      action: WORKFLOW_ACTION.EDIT_GEOMETRY
+    };
+    workflow = factory.service.getWorkflow(event) as EditgeometryWorkflow;
+    expect(workflow instanceof EditgeometryWorkflow).toBe(true, 'instance of EditgeometryWorkflow');
+    workflow.vectorLayer = vectorLayer;
+  });
+
+
+  it('should be created', () => {
+    expect(workflow).toBeTruthy();
+  });
+
+  it('drawGeom call should result opening a dialog', () => {
+    workflow.drawGeom();
+    expect(createMockDialogProvider.open).toHaveBeenCalled();
+  });
+
+});
