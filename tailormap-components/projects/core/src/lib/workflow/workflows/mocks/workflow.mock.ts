@@ -1,7 +1,7 @@
 import { createSpyObject } from '@ngneat/spectator';
 import { NgZone } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 export const createMockNgZoneProvider = () => {
   return createSpyObject(NgZone, {
@@ -12,13 +12,19 @@ export const getNgZoneMockProvider = () => {
   return { provide: NgZone, useValue: createMockNgZoneProvider() };
 };
 
+export const createMockDialogRef = createSpyObject(MatDialogRef, {
+  // tslint:disable-next-line:rxjs-finnish
+  afterClosed(): Observable<any> {
+    return new BehaviorSubject<boolean>(true).asObservable();
+  },
+});
+
+
 export const createMockDialogProvider = createSpyObject(MatDialog, {
   getDialogById(params: number): MatDialogRef<any> {
-    return createSpyObject(MatDialogRef, {
-      // tslint:disable-next-line:rxjs-finnish
-      afterClosed(): Observable<any> {
-        return createSpyObject(Observable);
-      },
-    });
+    return createMockDialogRef;
+  },
+  open (params: any) : MatDialogRef<any>{
+    return createMockDialogRef;
   },
 });
