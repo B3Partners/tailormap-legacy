@@ -60,6 +60,7 @@ export class AttributelistPanelComponent implements OnInit, AfterViewInit, Layou
 
   // The height of the caption bar.
   private captionbarHeight = 30;
+  public showPanel: boolean;
 
   constructor(private elementRef: ElementRef,
               private layerService: LayerService,
@@ -189,5 +190,6 @@ export class AttributelistPanelComponent implements OnInit, AfterViewInit, Layou
     } else {
       domElem.style.display = 'none';
     }
+    this.showPanel = show;
   }
 }

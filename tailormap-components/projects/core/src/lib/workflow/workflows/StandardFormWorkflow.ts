@@ -2,7 +2,6 @@ import { Workflow } from './Workflow';
 import * as wellknown from 'wellknown';
 import { Feature } from '../../shared/generated';
 // import { FormComponent } from '../../feature-form/form/form.component';
-import { LayerUtils } from '../../shared/layer-utils/layer-utils.service';
 import {
   MapClickedEvent,
 } from '../../shared/models/event-models';
@@ -98,7 +97,7 @@ export class StandardFormWorkflow extends Workflow {
       const x = data.x;
       const y = data.y;
       const scale = data.scale;
-      const featureTypes: string[] = this.getFeatureTypesAllowed();
+      const featureTypes: string[] = this.layerUtils.getFeatureTypesAllowed(this.formConfigRepo.getFeatureTypes());
       this.service.featuretypeOnPoint({featureTypes, x, y, scale}).subscribe(
         (features: Feature[]) => {
           if (features && features.length > 0) {
@@ -119,31 +118,6 @@ export class StandardFormWorkflow extends Workflow {
         },
       );
     }
-  }
-
-  private getFeatureTypesAllowed(): string[] {
-    let allowedFeaturesTypes = [];
-    const sl = this.tailorMap.selectedLayer;
-    if (sl) {
-      allowedFeaturesTypes.push(LayerUtils.sanitizeLayername(sl));
-    } else {
-      allowedFeaturesTypes = this.formConfigRepo.getFeatureTypes();
-    }
-    const visibleLayers = this.calculateVisibleLayers();
-    const newAr = allowedFeaturesTypes.filter(value => visibleLayers.includes(value))
-    return newAr;
-  }
-
-  private calculateVisibleLayers(): string[] {
-    const visibleLayers = [];
-
-    const appLayers = this.tailorMap.getViewerController().getVisibleLayers();
-    appLayers.forEach(appLayerId => {
-      const appLayer = this.tailorMap.getViewerController().getAppLayerById(appLayerId);
-      const layerName = LayerUtils.sanitizeLayername(appLayer);
-      visibleLayers.push(layerName);
-    });
-    return visibleLayers;
   }
 
   public afterEditting(): void {

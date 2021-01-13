@@ -1,25 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { MenuButtonComponent } from './menu-button.component';
+import { createComponentFactory, Spectator } from '@ngneat/spectator';
+import { SharedModule } from '../../../../shared/shared.module';
 
 describe('MenuButtonComponent', () => {
-  let component: MenuButtonComponent;
-  let fixture: ComponentFixture<MenuButtonComponent>;
-
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ MenuButtonComponent ]
-    })
-    .compileComponents();
-  }));
-
+  let spectator: Spectator<MenuButtonComponent>;
+  const createComponent = createComponentFactory({
+    component: MenuButtonComponent,
+    imports: [ SharedModule ],
+  })
   beforeEach(() => {
-    fixture = TestBed.createComponent(MenuButtonComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
+    spectator = createComponent();
   });
 
   it('should create', () => {
-    expect(component).toBeTruthy();
+    expect(spectator).toBeTruthy();
   });
 });

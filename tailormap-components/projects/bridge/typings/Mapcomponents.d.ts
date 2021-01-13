@@ -63,6 +63,7 @@ declare interface AppLayer {
   background: boolean;
   userlayer: boolean;
   userlayer_original_layername ?: string;
+  layerId: number;
 }
 declare interface Pixel{
   x: number;
@@ -79,6 +80,7 @@ declare interface Map {
   update: () => void;
   getResolution: () => number;
   zoomToExtent: (extent: Extent) => void;
+  zoomToResolution: (resolution: number) => void;
   coordinateToPixel: (x: number, y: number) => Pixel;
 }
 
