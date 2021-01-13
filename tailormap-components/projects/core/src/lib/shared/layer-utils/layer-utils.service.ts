@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { FormHelpers } from '../../feature-form/form/form-helpers';
 import { AppLayer } from '../../../../../bridge/typings';
 import { TailorMapService } from '../../../../../bridge/src/tailor-map.service';
-import { FormconfigRepositoryService } from '../formconfig-repository/formconfig-repository.service';
 
 @Injectable({
   providedIn: 'root',
@@ -50,7 +49,7 @@ export class LayerUtils {
     return newAr;
   }
 
-  public getLayerName(sl: AppLayer): string{
+  public getLayerName(sl: AppLayer): string {
     let layerName = '';
     if (sl.userlayer) {
       layerName = 'ul_' + sl.layerId;

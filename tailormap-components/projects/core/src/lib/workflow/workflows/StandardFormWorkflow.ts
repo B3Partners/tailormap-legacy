@@ -2,7 +2,6 @@ import { Workflow } from './Workflow';
 import * as wellknown from 'wellknown';
 import { Feature } from '../../shared/generated';
 // import { FormComponent } from '../../feature-form/form/form.component';
-import { LayerUtils } from '../../shared/layer-utils/layer-utils.service';
 import {
   MapClickedEvent,
 } from '../../shared/models/event-models';
