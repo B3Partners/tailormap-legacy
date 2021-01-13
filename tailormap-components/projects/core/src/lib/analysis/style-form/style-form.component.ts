@@ -110,8 +110,12 @@ export class StyleFormComponent implements OnInit {
     }
   }
 
-  public scaleChanged($event: number) {
-    this.change('scale', $event);
+  public maxScaleChanged($event: number) {
+    this.change('maxScale', $event);
+  }
+
+  public minScaleChanged($event: number) {
+    this.change('minScale', $event);
   }
 
   private change(key: keyof UserLayerStyleModel, value: string | number) {

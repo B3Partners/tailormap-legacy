@@ -19,8 +19,13 @@
     <h2>Objecten</h2>
     <div class="form-field">
       <label>Alle objecten tonen vanaf schaalniveau</label>
-      <tailormap-resolution-selector (scaleChanged)="scaleChanged($event)"
-                                     [selectedScale]="selectedGlobalScale"></tailormap-resolution-selector>
+      <tailormap-resolution-selector (scaleChanged)="maxScaleChanged($event)"
+                                     [selectedScale]="selectedMaxGlobalScale"></tailormap-resolution-selector>
+    </div>
+    <div class="form-field">
+      <label>Alle objecten tonen tot schaalniveau</label>
+      <tailormap-resolution-selector (scaleChanged)="minScaleChanged($event)"
+                                     [selectedScale]="selectedMinGlobalScale"></tailormap-resolution-selector>
     </div>
     <div class="styling-form form-field">
       <div class="style-link" *ngFor="let style of styles">

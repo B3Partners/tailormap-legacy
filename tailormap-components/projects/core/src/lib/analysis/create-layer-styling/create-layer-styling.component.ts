@@ -41,7 +41,8 @@ export class CreateLayerStylingComponent implements OnInit, OnDestroy {
 
   private destroyed = new Subject();
   public styles: UserLayerStyleModel[];
-  public selectedGlobalScale: number;
+  public selectedMinGlobalScale: number;
+  public selectedMaxGlobalScale: number;
 
   constructor(
     private store$: Store<AnalysisState>,
@@ -119,9 +120,14 @@ export class CreateLayerStylingComponent implements OnInit, OnDestroy {
     this.store$.dispatch(setSelectedStyle({ styleId: style.id }));
   }
 
-  public scaleChanged($event: number) {
-    this.selectedGlobalScale = $event;
-    this.store$.dispatch(updateAllStyles({ styleProp: 'scale', value: $event }));
+  public minScaleChanged($event: number) {
+    this.selectedMinGlobalScale = $event;
+    this.store$.dispatch(updateAllStyles({ styleProp: 'minScale', value: $event }));
+  }
+
+  public maxScaleChanged($event: number) {
+    this.selectedMaxGlobalScale = $event;
+    this.store$.dispatch(updateAllStyles({ styleProp: 'maxScale', value: $event }));
   }
 
 }
