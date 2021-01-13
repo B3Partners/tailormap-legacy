@@ -63,6 +63,7 @@ declare interface AppLayer {
   background: boolean;
   userlayer: boolean;
   userlayer_original_layername ?: string;
+  layerId: number;
 }
 declare interface Pixel{
   x: number;

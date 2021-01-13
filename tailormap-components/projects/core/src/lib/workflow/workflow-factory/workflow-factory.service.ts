@@ -23,6 +23,7 @@ import {
 import { NoOpWorkflow } from '../workflows/NoOpWorkflow';
 import { GeometryConfirmService } from '../../user-interface/geometry-confirm-buttons/geometry-confirm.service';
 import { EditgeometryWorkflow } from '../workflows/EditgeometryWorkflow';
+import { LayerUtils } from '../../shared/layer-utils/layer-utils.service';
 
 @Injectable({
   providedIn: 'root',
@@ -42,7 +43,8 @@ export class WorkflowFactoryService {
     private ngZone: NgZone,
     private geometryConfirmService: GeometryConfirmService,
     private confirmService: ConfirmDialogService,
-    private featureInitializerService: FeatureInitializerService) {
+    private featureInitializerService: FeatureInitializerService,
+    private layerUtils: LayerUtils) {
   }
 
   public getWorkflow(event: WorkflowActionEvent): Workflow {
@@ -80,7 +82,7 @@ export class WorkflowFactoryService {
     workflow.highlightLayer = this.highlightLayer;
     workflow.id = this.numWorkflows;
     workflow.init(event, this.tailorMap, this.dialog, this.featureInitializerService,
-      this.formConfigRepo, this.snackBar, this.service, this.ngZone, this.confirmService, this.geometryConfirmService);
+      this.formConfigRepo, this.snackBar, this.service, this.ngZone, this.confirmService, this.geometryConfirmService, this.layerUtils);
 
     return workflow;
   }

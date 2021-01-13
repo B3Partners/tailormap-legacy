@@ -239,6 +239,7 @@ public class ApplicationLayer {
     }
 
     public void addLayerListDetails(JSONObject json, Layer l){
+        json.put("layerId", l.getId());
         if (l.getService() instanceof WMSService) {
             json.put("filterable", l.getFeatureType() != null);
         }else{
