@@ -14,10 +14,11 @@ export const getNgZoneMockProvider = () => {
 
 export const createMockDialogProvider = createSpyObject(MatDialog, {
   getDialogById(params: number): MatDialogRef<any> {
-    return createSpyObject(MatDialogRef,{
+    return createSpyObject(MatDialogRef, {
+      // tslint:disable-next-line:rxjs-finnish
       afterClosed(): Observable<any> {
         return createSpyObject(Observable);
-      }
+      },
     });
   },
 });
