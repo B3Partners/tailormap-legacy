@@ -147,7 +147,7 @@ export class LayerService {
     const appLayer = vc.getAppLayerById(layerId);
 
     // Is there a attribute table?
-    if (appLayer.attribute) {
+    if (appLayer?.attribute) {
       const layerName = LayerUtils.sanitizeLayername(appLayer.layerName);
       // console.log('layer.service addLayer: ' + layerName);
 
