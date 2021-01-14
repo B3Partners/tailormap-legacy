@@ -55,6 +55,7 @@ import { fromArray } from 'rxjs/internal/observable/fromArray';
 import { AttributelistTreeComponent } from '../attributelist-tree/attributelist-tree.component';
 import { AttributelistNode, SelectedTreeData, TreeDialogData } from '../attributelist-tree/attributelist-tree-models';
 import { AttributelistColumnController } from '../attributelist-common/attributelist-column-controller';
+import { FormComponent } from '../../../feature-form/form/form.component';
 // import { LiteralMapKey } from '@angular/compiler';
 
 @Component({
@@ -661,5 +662,21 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
       this.valueService,
       this.dialog,
     ));
+  }
+
+  private openPassportDialog(): void {
+    const formFeatures = this.dataSource.getCheckedRowsAsFeatures();
+    const dialogRef = this.dialog.open(FormComponent, {
+      width: '1050px',
+      height: '800px',
+      disableClose: true,
+      data: {
+        formFeatures,
+        isBulk: formFeatures.length > 1,
+      },
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('pasportform closed from attributelist');
+    });
   }
 }
