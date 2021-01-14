@@ -17,8 +17,6 @@ import { FlatTreeControl } from '@angular/cdk/tree';
 import { AttributelistService } from '../attributelist.service';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
-import { Feature } from '../../../shared/generated';
-import { FormComponent } from '../../../feature-form/form/form.component';
 
 @Component({
   selector: 'tailormap-attributelist-tree',
@@ -38,8 +36,7 @@ export class AttributelistTreeComponent implements OnDestroy, OnInit {
 
   constructor(public dialogRef: MatDialogRef<AttributelistTreeComponent>,
               @Inject(MAT_DIALOG_DATA) public data: TreeDialogData,
-              private attributelistService: AttributelistService,
-              private dialog: MatDialog) {
+              private attributelistService: AttributelistService) {
     this.dataSource.data = data.tree;
     this.treeControl.expandAll();
   }

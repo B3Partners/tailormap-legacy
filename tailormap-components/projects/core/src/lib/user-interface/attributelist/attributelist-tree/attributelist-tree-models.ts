@@ -2,7 +2,6 @@ import {
   AttributeListFeature,
   AttributeListParameters,
 } from '../../../shared/attribute-service/attribute-models';
-import { Feature } from '../../../shared/generated';
 
 export interface TreeDialogData {
   rowsChecked: number;

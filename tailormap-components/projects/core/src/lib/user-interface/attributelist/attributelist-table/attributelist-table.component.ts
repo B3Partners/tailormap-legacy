@@ -693,7 +693,7 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
     ));
   }
 
-  private openPassportDialog(): void {
+  public openPassportDialog(): void {
     const formFeatures = this.dataSource.getCheckedRowsAsFeatures();
     if (formFeatures.length <= 0) {
       this.snackBar.open('Er zijn geen features geselecteerd', '', {
