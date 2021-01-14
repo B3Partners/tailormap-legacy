@@ -15,7 +15,6 @@ export interface AttributelistNode {
   params: AttributeListParameters;
   isChild: boolean;
   features: AttributeListFeature[];
-  formFeatures?: Feature[];
   children?: AttributelistNode[];
   columnNames?: string[];
 }

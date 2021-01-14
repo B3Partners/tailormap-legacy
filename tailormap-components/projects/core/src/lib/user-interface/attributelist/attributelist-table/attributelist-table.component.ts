@@ -295,7 +295,6 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
       name: layer.alias ? layer.alias : layer.name,
       numberOfFeatures: this.dataSource.getNrChecked(),
       features: checkedFeatures,
-      formFeatures: this.dataSource.getCheckedRowsAsFeatures(),
       params: {
         application: this.layerService.getAppId(),
         appLayer: layer.id},

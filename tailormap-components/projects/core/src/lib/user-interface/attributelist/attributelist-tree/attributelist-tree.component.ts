@@ -52,26 +52,9 @@ export class AttributelistTreeComponent implements OnDestroy, OnInit {
       level,
       columnNames: node.columnNames,
       features: node.features,
-      formFeatures: node.formFeatures,
       params: node.params,
       isChild: node.isChild,
     };
-  }
-
-  private openPasportDialog(formFeatures : Feature[]): void {
-    const dialogRef = this.dialog.open(FormComponent, {
-      width: '1050px',
-      height: '800px',
-      disableClose: true,
-      data: {
-        formFeatures ,
-        isBulk: formFeatures .length > 1,
-      },
-    });
-    // tslint:disable-next-line: rxjs-no-ignored-subscription
-    dialogRef.afterClosed().subscribe(result => {
-      console.log('pasportform closed');
-    });
   }
 
   public closeDialog() {
@@ -100,19 +83,5 @@ export class AttributelistTreeComponent implements OnDestroy, OnInit {
     this.destroyed.complete();
   }
 
-  public openPasportForm(): void {
-    this.openPasportDialog(this.dataSource.data[0].formFeatures);
-  }
-
   public hasChild = (_: number, node: FlatNode) => node.expandable;
-
-  public getButtonText(): string {
-    let s = '';
-    if (this.data.tree[0].numberOfFeatures > 1) {
-      s = 'Bewerk geselecteerde objecten';
-    } else {
-      s = 'Bewerk geselecteerd object';
-    }
-    return s;
-  }
 }
