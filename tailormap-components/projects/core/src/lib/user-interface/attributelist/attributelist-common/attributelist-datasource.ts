@@ -366,7 +366,7 @@ export class AttributeDataSource extends DataSource<any> {
       attrParams.page = 1;
       attrParams.start = 0;
     }
-
+    attrParams.clearTotalCountCache = true;
     // Set sorting params.
     attrParams.dir = this.sorter.direction.toUpperCase();
     if (attrParams.dir === '') {

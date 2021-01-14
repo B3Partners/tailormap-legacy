@@ -681,7 +681,7 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
       },
     });
     dialogRef.afterClosed().subscribe(result => {
-      console.log('pasportform closed from attributelist');
+      this.refreshTable();
     });
   }
 }
