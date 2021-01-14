@@ -276,12 +276,18 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
       related.forEach((r) => {
         if (filterForFeatureTypes.has(r.id)) {
           filter = filterForFeatureTypes.get(r.id);
-          filterForFeatureTypes.set(r.id, filter += ' OR ' + r.filter );
+          const value = r.filter.split('=')[1].split(' ')[1];
+          filterForFeatureTypes.set(r.id, filter += ', ' + value );
         } else {
-          filterForFeatureTypes.set(r.id, r.filter);
+          const column = r.filter.split('=')[0].split(' ')[0];
+          const value = r.filter.split('=')[1].split(' ')[1];
+          filterForFeatureTypes.set(r.id, column + ' IN (' + value);
           relatedFeatures.push(r);
         }
       });
+    });
+    filterForFeatureTypes.forEach((value, key) => {
+      filterForFeatureTypes.set(key, value + ')');
     });
 
     const layer = this.layerService.getLayerByTabIndex(this.tabIndex);
