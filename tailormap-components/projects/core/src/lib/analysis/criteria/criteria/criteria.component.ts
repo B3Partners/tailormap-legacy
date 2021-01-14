@@ -6,7 +6,7 @@ import { selectSelectedDataSource } from '../../state/analysis.selectors';
 import { concatMap, debounceTime, filter, takeUntil } from 'rxjs/operators';
 import { BehaviorSubject, forkJoin, of, Subject } from 'rxjs';
 import { MetadataService } from '../../../application/services/metadata.service';
-import { Attribute, AttributeMetadataResponse } from '../../../shared/attribute-service/attribute-models';
+import { AttributeMetadataResponse } from '../../../shared/attribute-service/attribute-models';
 import { AnalysisSourceModel } from '../../models/analysis-source.model';
 import { CriteriaConditionModel } from '../../models/criteria-condition.model';
 import { CriteriaHelper } from '../helpers/criteria.helper';

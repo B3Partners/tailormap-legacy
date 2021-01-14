@@ -21,6 +21,7 @@ export class AttributeSelectorComponent implements OnInit, OnDestroy {
   public set featureType(featureType: string | number) {
     if (this._featureType !== featureType) {
       this.filterAttributesForFeatureType(+(featureType));
+      this.attributeControl.patchValue('');
     }
     this._featureType = +(featureType);
   }
@@ -107,7 +108,6 @@ export class AttributeSelectorComponent implements OnInit, OnDestroy {
       this.attributeValueChanged(this._selectedAttribute);
     }
   }
-
 
   private attributeValueChanged(value: string) {
     const availableAttributes = this.availableAttributesSubject$.getValue();

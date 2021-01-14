@@ -1,5 +1,28 @@
 import { Feature, Geometry, Wegvakonderdeel, Wegvakonderdeelplanning } from '../generated';
 import { App, AppLayer, Map, MapComponent, VectorLayer, ViewerController } from '../../../../../bridge/typings';
+import { Attribute } from '../attribute-service/attribute-models';
+
+export const mockAttribute = (overrides?: Partial<Attribute>): Attribute => ({
+  allowValueListOnly: true,
+  automaticValue: true,
+  defaultValue: '',
+  disableUserEdit: true,
+  disallowNullValue: true,
+  editAlias: '',
+  editHeight: '',
+  editable: true,
+  featureType: 1,
+  filterable: true,
+  folder_label: '',
+  id: 1,
+  longname: '',
+  name: '',
+  selectable: true,
+  type: '',
+  valueList: '',
+  visible: true,
+  ...overrides,
+});
 
 export const mockFeature = (overrides?: Partial<Feature>): Feature => ({
   objecttype: '',
