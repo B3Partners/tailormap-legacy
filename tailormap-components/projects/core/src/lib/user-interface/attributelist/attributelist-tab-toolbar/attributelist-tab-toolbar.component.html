@@ -7,10 +7,20 @@
     </button>
 
     <button mat-flat-button color="primary"
-            (click)="createUserlayer();"
-            [style.display]="isUserLayer() ? 'none' : 'block'">
-      <span>Laag maken</span>
+            (click)="createUserlayer()"
+            [disabled]="false">
+      <span>Relaties</span>
     </button>
+
+    <button mat-flat-button color="primary" [matMenuTriggerFor]="optiesMenu">
+      <span>Opties</span>
+      <mat-icon>keyboard_arrow_down</mat-icon>
+    </button>
+    <mat-menu #optiesMenu="matMenu" yPosition="below">
+      <button mat-menu-item  (click)="createUserlayer()">Laag maken</button>
+      <button mat-menu-item  (click)="createUserlayer()">Bewerk geselecteerde objecten</button>
+    </mat-menu>
+
   </div>
   <span class="spacer"></span>
 
