@@ -326,17 +326,21 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
           this.isRelatedRefresh = false;
           this.attributelistService.updateTreeData(this.treeData);
           if (this.selectedTreeData.isChild) {
-            this.treeData[0].children.forEach((data) => {
-              if (data.params.featureType === this.selectedTreeData.params.featureType) {
-                this.selectedTreeData = {
-                  features: data.features,
-                  params: data.params,
-                  isChild: data.isChild,
-                  name: data.name,
-                  columnNames: data.columnNames,
+            if (this.treeData[0].children.length > 0) {
+              this.treeData[0].children.forEach((data) => {
+                if (data.params.featureType === this.selectedTreeData.params.featureType) {
+                  this.selectedTreeData = {
+                    features: data.features,
+                    params: data.params,
+                    isChild: data.isChild,
+                    name: data.name,
+                    columnNames: data.columnNames,
+                  }
                 }
-              }
-            });
+              });
+            } else {
+              this.selectedTreeData = null;
+            }
           } else {
             this.selectedTreeData = {
               features: this.treeData[0].features,
