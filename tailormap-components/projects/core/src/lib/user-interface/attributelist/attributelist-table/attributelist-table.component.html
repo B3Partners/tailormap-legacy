@@ -130,17 +130,6 @@
     </mat-table>
   </div>
 
-  <mat-toolbar [style.display]="getFooterBarVisible()">
-    <button mat-icon-button>
-      <mat-icon>subdirectory_arrow_right</mat-icon>
-    </button>
-    <button mat-flat-button color="primary"
-            (click)="onObjectOptionsClick();">
-      <span *ngIf="(nrChecked == 1)">opties voor 1 object</span>
-      <span *ngIf="(nrChecked > 1)">opties voor {{nrChecked}} objecten</span>
-    </button>
-  </mat-toolbar>
-
   <div style="visibility: hidden; position: fixed"
        [style.left]="contextMenuPosition.x"
        [style.top]="contextMenuPosition.y"
