@@ -68,6 +68,7 @@ export class AttributelistTreeComponent implements OnDestroy, OnInit {
       params: node.params,
       name: node.name,
       isChild: node.isChild,
+      numberOfFeatures: node.numberOfFeatures,
     });
   }
 

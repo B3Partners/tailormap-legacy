@@ -335,6 +335,7 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
                     isChild: data.isChild,
                     name: data.name,
                     columnNames: data.columnNames,
+                    numberOfFeatures: data.numberOfFeatures,
                   }
                 }
               });
@@ -348,6 +349,7 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
               isChild: this.treeData[0].isChild,
               name: this.treeData[0].name,
               columnNames: this.treeData[0].columnNames,
+              numberOfFeatures: this.treeData[0].numberOfFeatures,
             }
           }
           this.attributelistService.setSelectedTreeData(this.selectedTreeData);

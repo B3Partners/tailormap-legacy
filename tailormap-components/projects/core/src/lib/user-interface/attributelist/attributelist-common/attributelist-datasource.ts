@@ -254,6 +254,7 @@ export class AttributeDataSource extends DataSource<any> {
       return;
     }
     this.columnController.setPassportColumnNames(selectedTreeData.columnNames);
+    this.totalNrOfRows = selectedTreeData.numberOfFeatures;
     this.rows.splice(0, this.rows.length);
     selectedTreeData.features.forEach((feature) => {
       if (feature.features) {
