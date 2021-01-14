@@ -127,4 +127,8 @@ export class AttributelistTabToolbarComponent implements OnInit, OnDestroy {
   public openAttributeTree(): void {
     this.tab.table.onObjectOptionsClick();
   }
+
+  public openPassportForm(): void {
+    this.tab.table.openPassportDialog();
+  }
 }
