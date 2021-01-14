@@ -470,11 +470,17 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
   public refreshTable(): void {
     if (this.dataSource.params.hasDetail()) {
       if (this.dataSource.params.valueFilter) {
-        this.filterMap.get(-1).setRelatedFilter('RELATED_LAYER(' +
+        let filter = 'RELATED_LAYER(' +
           this.dataSource.params.layerId + ',' +
-          this.dataSource.params.featureTypeId + ',' +
-          this.dataSource.params.valueFilter + ' AND (' +
-          this.dataSource.params.featureFilter + ');)');
+          this.dataSource.params.featureTypeId + ',(' +
+          this.dataSource.params.valueFilter;
+        if (this.dataSource.params.featureFilter) {
+          filter += ' AND ' +
+            this.dataSource.params.featureFilter + '))';
+        } else {
+          filter += '))';
+        }
+        this.filterMap.get(-1).setRelatedFilter(filter);
       }
       this.dataSource.params.featureTypeId = -1;
       this.dataSource.params.featureTypeName = '';
