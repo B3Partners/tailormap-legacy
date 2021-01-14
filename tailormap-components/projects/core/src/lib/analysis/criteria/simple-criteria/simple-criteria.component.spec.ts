@@ -4,6 +4,7 @@ import { analysisStateKey, initialAnalysisState } from '../../state/analysis.sta
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { SharedModule } from '../../../shared/shared.module';
 import { IdService } from '../../../shared/id-service/id.service';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 describe('SimpleCriteriaComponent', () => {
   let spectator: Spectator<SimpleCriteriaComponent>;
@@ -16,7 +17,8 @@ describe('SimpleCriteriaComponent', () => {
     providers: [
       provideMockStore({ initialState }),
       IdService,
-    ]
+    ],
+    schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
   });
 
   beforeEach(() => {

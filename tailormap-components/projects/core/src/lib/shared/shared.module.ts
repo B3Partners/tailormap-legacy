@@ -168,7 +168,7 @@ export class SharedModule {
     private domSanitizer: DomSanitizer,
   ) {
 
-    const basePath = environment.basePath;
+    const basePath = environment.basePath || '';
     const url = `${basePath}/assets/core/imgs/`;
     const icons: Array<string | { folder: string, icons: string[] }> = [
       'draw_polygon', 'draw_line', 'draw_point', 'split', 'new_object', 'merge',

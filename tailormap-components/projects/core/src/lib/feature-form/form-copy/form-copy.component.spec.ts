@@ -9,6 +9,7 @@ import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { mockFeature } from '../../shared/tests/test-data';
 import { CopyDialogData } from './form-copy-models';
 import { getDialogRefMockProvider } from '../../shared/tests/test-mocks';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 describe('FormCopyComponent', () => {
   let spectator: Spectator<FormCopyComponent>;
@@ -29,6 +30,7 @@ describe('FormCopyComponent', () => {
       getDialogRefMockProvider(),
       { provide: MAT_DIALOG_DATA, useValue: mockDialogData },
     ],
+    schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
   });
 
   beforeEach(() => {

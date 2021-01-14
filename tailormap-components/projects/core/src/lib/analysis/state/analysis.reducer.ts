@@ -121,6 +121,17 @@ const onUpdateStyle = (state: AnalysisState, payload: { style: UserLayerStyleMod
   };
 };
 
+const onUpdateAllStyles = (
+  state: AnalysisState,
+  payload: { styleProp: keyof UserLayerStyleModel, value: string | number | boolean },
+): AnalysisState => ({
+  ...state,
+  styles: state.styles.map<UserLayerStyleModel>(s => ({
+    ...s,
+    [payload.styleProp]: payload.value,
+  })),
+})
+
 const onCreatingLayer = (state: AnalysisState): AnalysisState => ({
   ...state,
   isCreatingLayer: true,
@@ -154,6 +165,7 @@ const analysisReducerImpl = createReducer(
   on(AnalysisActions.setStyles, onSetStyles),
   on(AnalysisActions.setSelectedStyle, onSetSelectedStyle),
   on(AnalysisActions.updateStyle, onUpdateStyle),
+  on(AnalysisActions.updateAllStyles, onUpdateAllStyles),
   on(AnalysisActions.setCreatingLayer, onCreatingLayer),
   on(AnalysisActions.setCreatingLayerSuccess, onCreatingLayerSuccess),
   on(AnalysisActions.setCreatingLayerFailed, onCreatingLayerFailed),

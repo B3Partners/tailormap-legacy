@@ -46,6 +46,7 @@ export const mapMock = (overrides?: Partial<Map>): Map => ({
   getResolution: () => 1,
   update: () => {},
   zoomToExtent: () => {},
+  zoomToResolution: () => {},
   ...overrides,
 });
 

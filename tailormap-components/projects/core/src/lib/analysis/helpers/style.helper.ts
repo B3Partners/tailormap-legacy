@@ -70,6 +70,12 @@ export class StyleHelper {
     if (StyleHelper.isScopedStyle(style)) {
       selector = `[${style.attribute}=${AttributeTypeHelper.getExpression(style.value, style.attributeType)}] `;
     }
+    if (style.maxScale && style.maxScale > 0) {
+      selector = `${selector}[@sd <= ${style.maxScale}] `
+    }
+    if (style.minScale && style.minScale > 0) {
+      selector = `${selector}[@sd > ${style.minScale}] `
+    }
     if (StyleHelper.showPolygonSettings(selectedDataSource.geometryType)) {
       const polygonStyles = [];
       if (style.fillColor) {

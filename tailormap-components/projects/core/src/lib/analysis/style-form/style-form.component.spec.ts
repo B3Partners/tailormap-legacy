@@ -1,25 +1,25 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { StyleFormComponent } from './style-form.component';
+import { createComponentFactory, Spectator } from '@ngneat/spectator';
+import { SharedModule } from '../../shared/shared.module';
+import { ResolutionSelectorComponent } from '../resolution-selector/resolution-selector.component';
 
 describe('StyleFormComponent', () => {
-  let component: StyleFormComponent;
-  let fixture: ComponentFixture<StyleFormComponent>;
-
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ StyleFormComponent ]
-    })
-    .compileComponents();
-  }));
+  let spectator: Spectator<StyleFormComponent>;
+  const createComponent = createComponentFactory({
+    component: StyleFormComponent,
+    imports: [
+      SharedModule,
+    ],
+    declarations: [
+      ResolutionSelectorComponent,
+    ],
+  });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(StyleFormComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
+    spectator = createComponent();
   });
 
   it('should create', () => {
-    expect(component).toBeTruthy();
+    expect(spectator).toBeTruthy();
   });
 });
