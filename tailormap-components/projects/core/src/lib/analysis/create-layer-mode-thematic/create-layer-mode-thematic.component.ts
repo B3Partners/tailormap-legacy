@@ -5,7 +5,6 @@ import { AnalysisState } from '../state/analysis.state';
 import { Subject } from 'rxjs';
 import { AnalysisSourceModel } from '../models/analysis-source.model';
 import { AttributeTypeEnum } from '../../application/models/attribute-type.enum';
-import { Attribute } from '../../shared/attribute-service/attribute-models';
 import { map, takeUntil } from 'rxjs/operators';
 import { loadThematicStyles, setSelectedThematicAttribute } from '../state/analysis.actions';
 import { PassportAttributeModel } from '../../application/models/passport-attribute.model';

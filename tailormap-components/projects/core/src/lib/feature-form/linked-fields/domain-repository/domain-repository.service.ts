@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import {
   Attribute,
   FormConfiguration,
-  FormConfigurations,
   FormFieldType,
   SelectOption,
 } from '../../form/form-models';
