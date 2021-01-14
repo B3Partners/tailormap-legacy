@@ -123,4 +123,8 @@ export class AttributelistTabToolbarComponent implements OnInit, OnDestroy {
     // Get the corresponding layer.
     this.layer = this.layerService.getLayerByTabIndex(tabIndex);
   }
+
+  public openAttributeTree(): void {
+    this.tab.table.onObjectOptionsClick();
+  }
 }
