@@ -340,7 +340,7 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
               columnNames: this.treeData[0].columnNames,
             }
           }
-          this.dataSource.loadTableData(this, this.selectedTreeData);
+          this.attributelistService.setSelectedTreeData(this.selectedTreeData);
         } else {
           this.openDialog();
         }
