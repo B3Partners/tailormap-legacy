@@ -221,10 +221,11 @@ export class AttributeDataSource extends DataSource<any> {
       application: this.layerService.getAppId(),
       appLayer: this.params.layerId,
       filter,
-      limit: 999,
+      limit: this.paginator.pageSize,
       page: 1,
       featureType: this.params.featureTypeId,
       start: 0,
+      clearTotalCountCache: true,
     };
     return forkJoin([
       this.formconfigRepoService.formConfigs$.pipe(take(1), map(formConfigs => {
@@ -238,7 +239,7 @@ export class AttributeDataSource extends DataSource<any> {
     ]).pipe(map(([columns, response]) => {
       return {
         name: passportName,
-        numberOfFeatures: response.features.length,
+        numberOfFeatures: response.total,
         features: response.features,
         columnNames: columns,
         isChild: true,
@@ -366,7 +367,7 @@ export class AttributeDataSource extends DataSource<any> {
       attrParams.page = 1;
       attrParams.start = this.paginator.pageIndex * this.paginator.pageSize;
     } else {
-      attrParams.limit = 999;
+      attrParams.limit = -1;
       attrParams.page = 1;
       attrParams.start = 0;
     }
