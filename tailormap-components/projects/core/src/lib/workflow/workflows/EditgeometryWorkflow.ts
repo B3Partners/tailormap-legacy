@@ -46,11 +46,11 @@ export class EditgeometryWorkflow extends Workflow {
   }
 
   private openForm(geom: GeoJSONGeometry) {
-
-    const objecttype = this.event.feature.objecttype;
+    const feature = this.event.feature;
+    const objecttype = feature.objecttype;
     const feat = this.featureInitializerService.create(objecttype,
-      {...this.event.feature, geometrie: geom  });
-
+      {...feature, geometrie: geom  });
+    feat.objectGuid = feature.objectGuid;
     const data : DialogData = {
       formFeatures: [feat],
       isBulk: false,

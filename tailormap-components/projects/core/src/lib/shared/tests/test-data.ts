@@ -1,4 +1,4 @@
-import { Feature, Geometry, Wegvakonderdeel, Wegvakonderdeelplanning } from '../generated';
+import { Boom, Feature, Geometry, Wegvakonderdeel, Wegvakonderdeelplanning } from '../generated';
 import { App, AppLayer, Map, MapComponent, VectorLayer, ViewerController } from '../../../../../bridge/typings';
 
 export const mockFeature = (overrides?: Partial<Feature>): Feature => ({
@@ -20,9 +20,15 @@ export const mockWegvakonderdeelplanning = (overrides?: Partial<Wegvakonderdeelp
   ...overrides,
 });
 
+export const mockBoom = (overrides?: Partial<Boom>): Boom => ({
+  ...mockFeature(),
+  geometrie: mockGeometry(),
+  ...overrides,
+});
+
 export const mockGeometry = (overrides?: Partial<Geometry>): Geometry => ({
   bbox: [ 1, 2, 3, 4 ],
-  coordinates: [ { x: 1, y: 2 } ],
+  coordinates: [ [{ x: 1, y: 2 }] ],
   crs: {
     properties: {},
     type: 'link',
