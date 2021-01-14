@@ -6,6 +6,7 @@ import { AnalysisSourceModel } from '../models/analysis-source.model';
 
 const baseStyleModel: UserLayerStyleModel = {
   id: 'style-1',
+  label: 'Stylelabel',
   active: true,
   fillColor: 'rgb(255, 125, 0)',
   fillOpacity: 100,
@@ -20,6 +21,7 @@ const baseStyleModel: UserLayerStyleModel = {
 
 const baseScopedStyleModel: ScopedUserLayerStyleModel = {
   ...baseStyleModel,
+  label: 'test-value',
   attribute: 'test-attribute',
   attributeType: AttributeTypeEnum.GEOMETRY,
   value: 'test-value',
@@ -32,9 +34,9 @@ const selectedDataSource: AnalysisSourceModel = {
   label: 'boom'
 };
 
-const expectedPolygonResult = (extraSelector: string = '') => `${extraSelector}[dimension(geometrie)=2] { fill: #ff7d00; fill-opacity: 100%; }`;
-const expectedLineResult = (extraSelector: string = '') => `${extraSelector}[dimension(geometrie)=1], ${extraSelector}[dimension(geometrie)=2] { stroke: #ff7d00; stroke-opacity: 100%; stroke-width: 1px; }`;
-const expectedPointResult = (extraSelector: string = '') => `${extraSelector}[dimension(geometrie)=0] { mark: symbol(arrow); mark-size: 8; } ${extraSelector}[dimension(geometrie)=0] :mark { fill: #ff7d00; stroke: #ff7d00; }`;
+const expectedPolygonResult = (label: string = baseStyleModel.label, extraSelector: string = '') => `${extraSelector}[dimension(geometrie)=2] { fill: #ff7d00; fill-opacity: 100%; }`;
+const expectedLineResult = (label: string = baseStyleModel.label, extraSelector: string = '') => `/* @title ${label} */ ${extraSelector}[dimension(geometrie)=1], ${extraSelector}[dimension(geometrie)=2] { stroke: #ff7d00; stroke-opacity: 100%; stroke-width: 1px; }`;
+const expectedPointResult = (label: string = baseStyleModel.label, extraSelector: string = '') => `/* @title ${label} */ ${extraSelector}[dimension(geometrie)=0] { mark: symbol(arrow); mark-size: 8; } ${extraSelector}[dimension(geometrie)=0] :mark { fill: #ff7d00; stroke: #ff7d00; }`;
 
 describe('StyleHelper', () => {
   it('does not create style when styles is empty', () => {
@@ -68,36 +70,46 @@ describe('StyleHelper', () => {
   it('creates style for style model with min scale', () => {
     const result = StyleHelper.convertStyles([ { ...baseStyleModel, minScale: 1500 }], selectedDataSource);
     const expectedResult = [
-      `${expectedPolygonResult('[@sd > 1500] ')}`,
-      `${expectedLineResult('[@sd > 1500] ')}`,
-      `${expectedPointResult('[@sd > 1500] ')}`,
+      `${expectedPolygonResult(baseStyleModel.label, '[@sd > 1500] ')}`,
+      `${expectedLineResult(baseStyleModel.label, '[@sd > 1500] ')}`,
+      `${expectedPointResult(baseStyleModel.label, '[@sd > 1500] ')}`,
     ].join(' ');
     expect(result.toLowerCase()).toEqual(expectedResult.toLowerCase());
   });
   it('creates style for style model with max scale', () => {
     const result = StyleHelper.convertStyles([ { ...baseStyleModel, maxScale: 5000 }], selectedDataSource);
     const expectedResult = [
-      `${expectedPolygonResult('[@sd <= 5000] ')}`,
-      `${expectedLineResult('[@sd <= 5000] ')}`,
-      `${expectedPointResult('[@sd <= 5000] ')}`,
+      `${expectedPolygonResult(baseStyleModel.label, '[@sd <= 5000] ')}`,
+      `${expectedLineResult(baseStyleModel.label, '[@sd <= 5000] ')}`,
+      `${expectedPointResult(baseStyleModel.label, '[@sd <= 5000] ')}`,
     ].join(' ');
     expect(result.toLowerCase()).toEqual(expectedResult.toLowerCase());
   });
   it('creates style for style model with min and max scale', () => {
     const result = StyleHelper.convertStyles([ { ...baseStyleModel, minScale: 1500, maxScale: 5000 }], selectedDataSource);
     const expectedResult = [
-      `${expectedPolygonResult('[@sd <= 5000] [@sd > 1500] ')}`,
-      `${expectedLineResult('[@sd <= 5000] [@sd > 1500] ')}`,
-      `${expectedPointResult('[@sd <= 5000] [@sd > 1500] ')}`,
+      `${expectedPolygonResult(baseStyleModel.label, '[@sd <= 5000] [@sd > 1500] ')}`,
+      `${expectedLineResult(baseStyleModel.label, '[@sd <= 5000] [@sd > 1500] ')}`,
+      `${expectedPointResult(baseStyleModel.label, '[@sd <= 5000] [@sd > 1500] ')}`,
     ].join(' ');
     expect(result.toLowerCase()).toEqual(expectedResult.toLowerCase());
   });
   it('creates style for scoped style', () => {
     const result = StyleHelper.convertStyles([ { ...baseScopedStyleModel }], selectedDataSource);
     const expectedResult = [
-      `${expectedPolygonResult('[test-attribute=test-value] ')}`,
-      `${expectedLineResult('[test-attribute=test-value] ')}`,
-      `${expectedPointResult('[test-attribute=test-value] ')}`,
+      `${expectedPolygonResult('test-value', '[test-attribute=test-value] ')}`,
+      `${expectedLineResult('test-value', '[test-attribute=test-value] ')}`,
+      `${expectedPointResult('test-value', '[test-attribute=test-value] ')}`,
+    ].join(' ');
+    expect(result.toLowerCase()).toEqual(expectedResult.toLowerCase());
+  });
+  it('creates style with label', () => {
+    const style = { ...baseStyleModel, label: 'Layername' };
+    const result = StyleHelper.convertStyles([ style ], selectedDataSource);
+    const expectedResult = [
+      `${expectedPolygonResult('Layername')}`,
+      `${expectedLineResult('Layername')}`,
+      `${expectedPointResult('Layername')}`,
     ].join(' ');
     expect(result.toLowerCase()).toEqual(expectedResult.toLowerCase());
   });

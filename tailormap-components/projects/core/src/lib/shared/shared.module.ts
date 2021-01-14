@@ -40,9 +40,7 @@ import { TreeComponent } from './tree/tree.component';
 import { OverlayComponent } from './overlay-service/overlay/overlay.component';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { DomSanitizer } from '@angular/platform-browser';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { environment } from '../../../../bridge/src/environments/environment';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import {
@@ -57,6 +55,8 @@ import {
 import { CapitalizeFirstPipe } from './pipes/capitalizeFirst.pipe';
 import { ColorPickerComponent } from './color-picker/color-picker.component';
 import { IconPickerComponent } from './icon-picker/icon-picker.component';
+import { IconService } from './icons/icon.service';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @NgModule({
   declarations: [
@@ -166,31 +166,8 @@ export class SharedModule {
   constructor(
     private matIconRegistry: MatIconRegistry,
     private domSanitizer: DomSanitizer,
+    private iconService: IconService,
   ) {
-
-    const basePath = environment.basePath || '';
-    const url = `${basePath}/assets/core/imgs/`;
-    const icons: Array<string | { folder: string, icons: string[] }> = [
-      'draw_polygon', 'draw_line', 'draw_point', 'split', 'new_object', 'merge',
-      'contextual_drag', 'contextual_chevron_bottom', 'contextual_chevron_left', 'contextual_chevron_right', 'contextual_chevron_top',
-      'interface_trash_filled', { folder: 'markers', icons: [ 'arrow', 'circle', 'cross', 'square', 'star', 'triangle', 'x' ] },
-    ];
-    const addIcon = (iconName, path) => {
-      this.matIconRegistry.addSvgIcon(
-        iconName,
-        this.domSanitizer.bypassSecurityTrustResourceUrl(
-          url
-          + path + '.svg'),
-      );
-    }
-    icons.forEach(value => {
-      if (typeof value === 'string') {
-        addIcon(value, value);
-        return;
-      }
-      value.icons.forEach(folderIcon => {
-        addIcon(`${value.folder}_${folderIcon}`, `${value.folder}/${folderIcon}`);
-      });
-    });
+    this.iconService.loadIconsToIconRegistry(matIconRegistry, domSanitizer);
   }
 }
