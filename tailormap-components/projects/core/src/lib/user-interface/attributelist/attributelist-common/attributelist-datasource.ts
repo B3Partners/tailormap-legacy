@@ -256,8 +256,15 @@ export class AttributeDataSource extends DataSource<any> {
       } else {
         this.rows.push(feature);
       }
-    })
-    attrTable.onAfterLoadData();
+    });
+    this.getMetaData$().subscribe((result) => {
+        const columnDefs: Attribute[] = this.metadataGetColumns('', result);
+        this.columnController.setDataColumnNames(columnDefs);
+        this.columnController.setAttributes(columnDefs);
+      }, () => {},
+      () => {
+        attrTable.onAfterLoadData();
+      });
   }
 
   private getMetadataParams(): AttributeMetadataParameters {
