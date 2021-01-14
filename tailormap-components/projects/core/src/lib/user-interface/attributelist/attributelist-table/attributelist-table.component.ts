@@ -105,6 +105,8 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
 
   private isRelatedRefresh = false;
 
+  private rowsChecked = false;
+
   public statistic = new AttributelistStatistic(
     this.statisticsService,
     this.dataSource,
@@ -205,7 +207,9 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
 
     this.statistic.initStatistics(this.getColumnNames());
     if (this.isRelatedRefresh) {
-      this.dataSource.setAllRowsChecked();
+      if (this.rowsChecked) {
+        this.dataSource.setAllRowsChecked();
+      }
       this.onObjectOptionsClick();
     }
     this.updateCheckedInfo();
@@ -270,7 +274,7 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
     const filterForFeatureTypes = new Map<number, string>();
     let filter = '';
     const relatedFeatures = [];
-    const checkedFeatures = this.dataSource.getCheckedRowsAsAttributeListFeature();
+    let checkedFeatures = this.dataSource.getCheckedRowsAsAttributeListFeature();
     checkedFeatures.forEach((row) => {
       const related = row.related_featuretypes;
       related.forEach((r) => {
@@ -297,9 +301,23 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
     // Set params layer name and id.
     this.dataSource.params.layerName = layer.name;
     this.dataSource.params.layerId = layer.id;
+    let numberOfFeatures = this.dataSource.getNrChecked();
+    if (this.dataSource.getNrChecked() > 0 ) {
+      this.rowsChecked = true;
+    } else {
+      this.rowsChecked = false;
+    }
+    if (checkedFeatures.length <= 0) {
+      numberOfFeatures = this.dataSource.totalNrOfRows;
+      checkedFeatures = this.dataSource.getfirstRowAsAttributeListFeature();
+      checkedFeatures[0].related_featuretypes.forEach((rel) => {
+        relatedFeatures.push(rel);
+      })
+    }
+
     this.treeData.push({
       name: layer.alias ? layer.alias : layer.name,
-      numberOfFeatures: this.dataSource.getNrChecked(),
+      numberOfFeatures,
       features: checkedFeatures,
       params: {
         application: this.layerService.getAppId(),

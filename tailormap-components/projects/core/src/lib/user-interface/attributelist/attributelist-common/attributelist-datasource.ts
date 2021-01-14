@@ -143,6 +143,18 @@ export class AttributeDataSource extends DataSource<any> {
     return cnt;
   }
 
+  public getfirstRowAsAttributeListFeature(): AttributeListFeature[] {
+    const features: AttributeListFeature[] = [];
+    this.rows.forEach( (row: RowData) => {
+      features.push({
+        features: row,
+        related_featuretypes: row.related_featuretypes,
+        __fid: row.__fid,
+      });
+    });
+    return features;
+  }
+
   public getCheckedRowsAsAttributeListFeature(): AttributeListFeature[] {
     const featuresChecked: AttributeListFeature[] = [];
     this.rows.forEach( (row: RowData) => {
@@ -213,9 +225,13 @@ export class AttributeDataSource extends DataSource<any> {
 
     let filter = '';
     if (this.params.valueFilter) {
-      filter = this.params.valueFilter + ' AND (' + this.params.featureFilter + ')';
-    } else {
+      filter = this.params.valueFilter;
+    }
+    if (this.params.featureFilter) {
       filter = this.params.featureFilter;
+    }
+    if (this.params.featureFilter && this.params.valueFilter) {
+      filter = this.params.valueFilter + ' AND (' + this.params.featureFilter + ')';
     }
     const attrParams: AttributeListParameters = {
       application: this.layerService.getAppId(),
