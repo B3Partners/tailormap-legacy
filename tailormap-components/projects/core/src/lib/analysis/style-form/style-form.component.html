@@ -3,26 +3,26 @@
   <div class="point-settings" *ngIf="showPointSettings()">
 
     <div class="form-field form-field__columns">
-      <label>Symbool</label>
+      <label>Puntsymbool</label>
       <tailormap-icon-picker [icons]="getMarkers()"
                              [selectedIcon]="getSelectedMarker()"
                              (iconChange)="changeMarker($event)"></tailormap-icon-picker>
     </div>
 
     <div class="form-field form-field__columns">
-      <label>Symbool vulling kleur</label>
+      <label>Puntsymbool vulling kleur</label>
       <tailormap-color-picker [color]="style.markerFillColor"
                               (colorChange)="changeMarkerFill($event)"></tailormap-color-picker>
     </div>
 
     <div class="form-field form-field__columns">
-      <label>Symbool lijn kleur</label>
+      <label>Puntsymbool lijn kleur</label>
       <tailormap-color-picker [color]="style.markerStrokeColor"
                               (colorChange)="changeMarkerStroke($event)"></tailormap-color-picker>
     </div>
 
     <div class="form-field form-field__columns">
-      <label>Symbool grootte</label>
+      <label>Puntsymbool grootte</label>
       <span>{{style.markerSize}}px</span>
     </div>
 
