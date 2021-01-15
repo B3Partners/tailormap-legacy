@@ -30,6 +30,7 @@ import { FormActionsService } from '../form-actions/form-actions.service';
 import { FeatureInitializerService } from '../../shared/feature-initializer/feature-initializer.service';
 import { LinkedAttributeRegistryService } from '../linked-fields/registry/linked-attribute-registry.service';
 import { FormFieldHelpers } from '../form-field/form-field-helpers';
+import { AttributelistService } from '../../user-interface/attributelist/attributelist.service';
 
 @Component({
   selector: 'tailormap-form-creator',
@@ -41,7 +42,8 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
   constructor(
     private actions: FormActionsService,
     private registry: LinkedAttributeRegistryService,
-    private _snackBar: MatSnackBar) {
+    private _snackBar: MatSnackBar,
+    private attributeService: AttributelistService) {
   }
 
   @Input()
@@ -160,6 +162,10 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
         this._snackBar.open('Fout: Feature niet kunnen opslaan: ' + error.error.message, '', {
           duration: 5000,
         });
+      },
+      () => {
+        // Update attributelist after feature is saved
+        this.attributeService.loadTableData();
       });
   }
 
