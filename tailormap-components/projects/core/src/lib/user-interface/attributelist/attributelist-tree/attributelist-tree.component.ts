@@ -5,7 +5,7 @@ import {
   OnInit,
 } from '@angular/core';
 import {
-  MAT_DIALOG_DATA, MatDialog,
+  MAT_DIALOG_DATA,
   MatDialogRef,
 } from '@angular/material/dialog';
 import { TreeDialogData, FlatNode, AttributelistNode } from './attributelist-tree-models';
