@@ -1,8 +1,9 @@
 <div *ngIf="styles$ | async as styles">
+  <strong>Legenda voorbeeld</strong>
   <div class="style-preview" *ngFor="let style of styles; let index = index; trackBy: trackByStyleId">
-    <div *ngIf="showPolygonStyle()" class="style-item">
+    <div *ngIf="showPolygonStyle()" class="style-item polygon-item">
       <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-        <rect x="20" y="20" width="60" height="60"
+        <rect x="25" y="25" width="50" height="50"
               [attr.fill]="style.fillColor"
               [attr.fill-opacity]="getPercentage(style.fillOpacity)"
               [attr.stroke]="style.strokeColor"
@@ -11,19 +12,17 @@
       </svg>
       <span>{{style.label}}</span>
     </div>
-    <div *ngIf="showLineStyle()" class="style-item">
+    <div *ngIf="showLineStyle()" class="style-item line-item">
       <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-        <line x1="90" y1="10" x2="10" y2="90"
+        <line x1="80" y1="20" x2="20" y2="80"
               [attr.stroke]="style.strokeColor"
-              [attr.stroke-width]="style.strokeWidth"
+              [attr.stroke-width]="getStrokeWidth(style.strokeWidth)"
               [attr.stroke-opacity]="getPercentage(style.strokeOpacity)"></line>
       </svg>
       <span>{{style.label}}</span>
     </div>
-    <div *ngIf="showPointStyle()" class="style-item">
-      <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-        <image width="75" height="75" x="15" y="15" [attr.href]="getIcon(style)"></image>
-      </svg>
+    <div *ngIf="showPointStyle()" class="style-item point-item">
+      <mat-icon [svgIcon]="getIcon(style)" [style]="getIconStyle(style)"></mat-icon>
       <span>{{style.label}}</span>
     </div>
   </div>

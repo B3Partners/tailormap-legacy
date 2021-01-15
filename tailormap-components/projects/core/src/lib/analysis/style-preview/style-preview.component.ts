@@ -7,7 +7,6 @@ import { UserLayerStyleModel } from '../models/user-layer-style.model';
 import { takeUntil } from 'rxjs/operators';
 import { AnalysisSourceModel } from '../models/analysis-source.model';
 import { StyleHelper } from '../helpers/style.helper';
-import { IconService } from '../../shared/icons/icon.service';
 
 @Component({
   selector: 'tailormap-style-preview',
@@ -26,7 +25,6 @@ export class StylePreviewComponent implements OnInit, OnDestroy {
 
   constructor(
     private store$: Store<AnalysisState>,
-    private iconService: IconService,
   ) { }
 
   public ngOnInit(): void {
@@ -58,7 +56,26 @@ export class StylePreviewComponent implements OnInit, OnDestroy {
   }
 
   public getIcon(style: UserLayerStyleModel) {
-    return this.iconService.getUrlForIcon(style.marker, 'markers');
+    return this.availableMarkers.get(style.marker);
+  }
+
+  public getIconStyle(style: UserLayerStyleModel) {
+    const DEFAULT_MARKER_SIZE = 8;
+    const MAX_MARKER_SIZE = 20;
+    const ratio = 1 / (MAX_MARKER_SIZE - DEFAULT_MARKER_SIZE);
+    const scale = style.markerSize > 8
+      ? 0.3 + (style.markerSize * ratio) // 30% makes it look good
+      : style.markerSize / 8;
+    return [
+      `fill: ${style.markerFillColor};`,
+      `stroke: ${style.markerStrokeColor};`,
+      `stroke-width: 0.5px;`,
+      `transform: scale(${scale});`,
+    ].join(' ');
+  }
+
+  public getStrokeWidth(strokeWidth: number) {
+    return strokeWidth * 5; // 5x best resembles the actual legend image
   }
 
 }

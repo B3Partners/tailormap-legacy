@@ -17,7 +17,7 @@ import {
   Subject,
 } from 'rxjs';
 import { map, takeUntil } from 'rxjs/operators';
-import { clearCreateLayerMode } from '../state/analysis.actions';
+import { clearCreateLayerMode, closeSidePanels } from '../state/analysis.actions';
 import { CriteriaTypeEnum } from '../models/criteria-type.enum';
 
 @Component({
@@ -48,6 +48,7 @@ export class CreateLayerPanelComponent implements OnInit, OnDestroy {
       .subscribe(createLayerMode => {
         this.selectedTabIndex = 0;
         this.createLayerMode = createLayerMode;
+        this.closeSidePanels();
       });
     this.store$.select(selectCreateCriteriaMode)
       .pipe(takeUntil(this.destroyed))
@@ -60,6 +61,7 @@ export class CreateLayerPanelComponent implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy() {
+    this.closePanel();
     this.destroyed.next();
     this.destroyed.complete();
   }
@@ -70,10 +72,16 @@ export class CreateLayerPanelComponent implements OnInit, OnDestroy {
 
   public moveToStyling() {
     this.selectedTabIndex = 1;
+    this.closeSidePanels();
   }
 
   public selectedTabIndexChanged($event: number) {
     this.selectedTabIndex = $event;
+    this.closeSidePanels();
+  }
+
+  private closeSidePanels() {
+    this.store$.dispatch(closeSidePanels());
   }
 
 }

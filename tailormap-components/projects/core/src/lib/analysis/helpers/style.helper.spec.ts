@@ -1,42 +1,13 @@
-import { UserLayerStyleModel } from '../models/user-layer-style.model';
-import { ScopedUserLayerStyleModel } from '../models/scoped-user-layer-style.model';
 import { AttributeTypeEnum } from '../../application/models/attribute-type.enum';
 import { StyleHelper } from './style.helper';
-import { AnalysisSourceModel } from '../models/analysis-source.model';
+import { getDummyScopedStyleModel, getDummyUserLayerStyle, getDummySelectedDataSource } from './test-data/style-test-data';
 
-const baseStyleModel: UserLayerStyleModel = {
-  id: 'style-1',
-  label: 'Stylelabel',
-  active: true,
-  fillColor: 'rgb(255, 125, 0)',
-  fillOpacity: 100,
-  marker: 'arrow',
-  markerFillColor: 'rgb(255, 125, 0)',
-  markerStrokeColor: 'rgb(255, 125, 0)',
-  markerSize: 8,
-  strokeColor: 'rgb(255, 125, 0)',
-  strokeOpacity: 100,
-  strokeWidth: 1
-};
+const userLayerStyle = getDummyUserLayerStyle();
+const selectedDataSource = getDummySelectedDataSource();
 
-const baseScopedStyleModel: ScopedUserLayerStyleModel = {
-  ...baseStyleModel,
-  label: 'test-value',
-  attribute: 'test-attribute',
-  attributeType: AttributeTypeEnum.GEOMETRY,
-  value: 'test-value',
-};
-
-const selectedDataSource: AnalysisSourceModel = {
-  featureType: 1,
-  geometryAttribute: "geometrie",
-  geometryType: AttributeTypeEnum.GEOMETRY,
-  label: 'boom'
-};
-
-const expectedPolygonResult = (label: string = baseStyleModel.label, extraSelector: string = '') => `${extraSelector}[dimension(geometrie)=2] { fill: #ff7d00; fill-opacity: 100%; }`;
-const expectedLineResult = (label: string = baseStyleModel.label, extraSelector: string = '') => `/* @title ${label} */ ${extraSelector}[dimension(geometrie)=1], ${extraSelector}[dimension(geometrie)=2] { stroke: #ff7d00; stroke-opacity: 100%; stroke-width: 1px; }`;
-const expectedPointResult = (label: string = baseStyleModel.label, extraSelector: string = '') => `/* @title ${label} */ ${extraSelector}[dimension(geometrie)=0] { mark: symbol(arrow); mark-size: 8; } ${extraSelector}[dimension(geometrie)=0] :mark { fill: #ff7d00; stroke: #ff7d00; }`;
+const expectedPolygonResult = (label: string = userLayerStyle.label, extraSelector: string = '') => `${extraSelector}[dimension(geometrie)=2] { fill: #ff7d00; fill-opacity: 100%; }`;
+const expectedLineResult = (label: string = userLayerStyle.label, extraSelector: string = '') => `/* @title ${label} */ ${extraSelector}[dimension(geometrie)=1], ${extraSelector}[dimension(geometrie)=2] { stroke: #ff7d00; stroke-opacity: 100%; stroke-width: 1px; }`;
+const expectedPointResult = (label: string = userLayerStyle.label, extraSelector: string = '') => `/* @title ${label} */ ${extraSelector}[dimension(geometrie)=0] { mark: symbol(arrow); mark-size: 8; } ${extraSelector}[dimension(geometrie)=0] :mark { fill: #ff7d00; stroke: #ff7d00; }`;
 
 describe('StyleHelper', () => {
   it('does not create style when styles is empty', () => {
@@ -44,58 +15,58 @@ describe('StyleHelper', () => {
     expect(result).toEqual('');
   });
   it('does not create style when style is not active', () => {
-    const result = StyleHelper.convertStyles([ { ...baseStyleModel, active: false }], selectedDataSource);
+    const result = StyleHelper.convertStyles([ getDummyUserLayerStyle({ active: false })], selectedDataSource);
     expect(result).toEqual('');
   });
   it('creates style for style model', () => {
-    const result = StyleHelper.convertStyles([ { ...baseStyleModel }], selectedDataSource);
+    const result = StyleHelper.convertStyles([ { ...userLayerStyle }], selectedDataSource);
     const expectedResult = [ expectedPolygonResult(), expectedLineResult(), expectedPointResult() ].join(' ');
     expect(result.toLowerCase()).toEqual(expectedResult.toLowerCase());
   });
   it('creates style for style model with point selected data source', () => {
-    const result = StyleHelper.convertStyles([ { ...baseStyleModel }], { ...selectedDataSource, geometryType: AttributeTypeEnum.GEOMETRY_POINT });
+    const result = StyleHelper.convertStyles([ { ...userLayerStyle }], getDummySelectedDataSource({ geometryType: AttributeTypeEnum.GEOMETRY_POINT }));
     const expectedResult = [ expectedPointResult() ].join(' ');
     expect(result.toLowerCase()).toEqual(expectedResult.toLowerCase());
   });
   it('creates style for style model with polygon selected data source', () => {
-    const result = StyleHelper.convertStyles([ { ...baseStyleModel }], { ...selectedDataSource, geometryType: AttributeTypeEnum.GEOMETRY_POLYGON });
+    const result = StyleHelper.convertStyles([ { ...userLayerStyle }], getDummySelectedDataSource({ geometryType: AttributeTypeEnum.GEOMETRY_POLYGON }));
     const expectedResult = [ expectedPolygonResult(), expectedLineResult() ].join(' ');
     expect(result.toLowerCase()).toEqual(expectedResult.toLowerCase());
   });
   it('creates style for style model with line selected data source', () => {
-    const result = StyleHelper.convertStyles([ { ...baseStyleModel }], { ...selectedDataSource, geometryType: AttributeTypeEnum.GEOMETRY_LINESTRING });
+    const result = StyleHelper.convertStyles([ { ...userLayerStyle }], getDummySelectedDataSource({ geometryType: AttributeTypeEnum.GEOMETRY_LINESTRING }));
     const expectedResult = [ expectedLineResult() ].join(' ');
     expect(result.toLowerCase()).toEqual(expectedResult.toLowerCase());
   });
   it('creates style for style model with min scale', () => {
-    const result = StyleHelper.convertStyles([ { ...baseStyleModel, minScale: 1500 }], selectedDataSource);
+    const result = StyleHelper.convertStyles([ getDummyUserLayerStyle({ minScale: 1500 }) ], selectedDataSource);
     const expectedResult = [
-      `${expectedPolygonResult(baseStyleModel.label, '[@sd > 1500] ')}`,
-      `${expectedLineResult(baseStyleModel.label, '[@sd > 1500] ')}`,
-      `${expectedPointResult(baseStyleModel.label, '[@sd > 1500] ')}`,
+      `${expectedPolygonResult(userLayerStyle.label, '[@sd > 1500] ')}`,
+      `${expectedLineResult(userLayerStyle.label, '[@sd > 1500] ')}`,
+      `${expectedPointResult(userLayerStyle.label, '[@sd > 1500] ')}`,
     ].join(' ');
     expect(result.toLowerCase()).toEqual(expectedResult.toLowerCase());
   });
   it('creates style for style model with max scale', () => {
-    const result = StyleHelper.convertStyles([ { ...baseStyleModel, maxScale: 5000 }], selectedDataSource);
+    const result = StyleHelper.convertStyles([ getDummyUserLayerStyle({ maxScale: 5000 })], selectedDataSource);
     const expectedResult = [
-      `${expectedPolygonResult(baseStyleModel.label, '[@sd <= 5000] ')}`,
-      `${expectedLineResult(baseStyleModel.label, '[@sd <= 5000] ')}`,
-      `${expectedPointResult(baseStyleModel.label, '[@sd <= 5000] ')}`,
+      `${expectedPolygonResult(userLayerStyle.label, '[@sd <= 5000] ')}`,
+      `${expectedLineResult(userLayerStyle.label, '[@sd <= 5000] ')}`,
+      `${expectedPointResult(userLayerStyle.label, '[@sd <= 5000] ')}`,
     ].join(' ');
     expect(result.toLowerCase()).toEqual(expectedResult.toLowerCase());
   });
   it('creates style for style model with min and max scale', () => {
-    const result = StyleHelper.convertStyles([ { ...baseStyleModel, minScale: 1500, maxScale: 5000 }], selectedDataSource);
+    const result = StyleHelper.convertStyles([ getDummyUserLayerStyle({ minScale: 1500, maxScale: 5000 }) ], selectedDataSource);
     const expectedResult = [
-      `${expectedPolygonResult(baseStyleModel.label, '[@sd <= 5000] [@sd > 1500] ')}`,
-      `${expectedLineResult(baseStyleModel.label, '[@sd <= 5000] [@sd > 1500] ')}`,
-      `${expectedPointResult(baseStyleModel.label, '[@sd <= 5000] [@sd > 1500] ')}`,
+      `${expectedPolygonResult(userLayerStyle.label, '[@sd <= 5000] [@sd > 1500] ')}`,
+      `${expectedLineResult(userLayerStyle.label, '[@sd <= 5000] [@sd > 1500] ')}`,
+      `${expectedPointResult(userLayerStyle.label, '[@sd <= 5000] [@sd > 1500] ')}`,
     ].join(' ');
     expect(result.toLowerCase()).toEqual(expectedResult.toLowerCase());
   });
   it('creates style for scoped style', () => {
-    const result = StyleHelper.convertStyles([ { ...baseScopedStyleModel }], selectedDataSource);
+    const result = StyleHelper.convertStyles([ getDummyScopedStyleModel() ], selectedDataSource);
     const expectedResult = [
       `${expectedPolygonResult('test-value', '[test-attribute=test-value] ')}`,
       `${expectedLineResult('test-value', '[test-attribute=test-value] ')}`,
@@ -104,7 +75,7 @@ describe('StyleHelper', () => {
     expect(result.toLowerCase()).toEqual(expectedResult.toLowerCase());
   });
   it('creates style with label', () => {
-    const style = { ...baseStyleModel, label: 'Layername' };
+    const style = getDummyUserLayerStyle({ label: 'Layername' });
     const result = StyleHelper.convertStyles([ style ], selectedDataSource);
     const expectedResult = [
       `${expectedPolygonResult('Layername')}`,
