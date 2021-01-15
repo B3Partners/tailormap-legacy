@@ -156,6 +156,10 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
   }
 
   public ngOnInit(): void {
+    this.attributelistService.loadTableData$.pipe(takeUntil(this.destroyed)).subscribe(result => {
+      this.refreshTable();
+    });
+
     this.attributelistService.selectedTreeData$.pipe(takeUntil(this.destroyed)).subscribe(selectedTreeData => {
       if (!selectedTreeData.isChild) {
         this.dataSource.params.featureTypeId = -1;
@@ -709,9 +713,6 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
         formFeatures,
         isBulk: formFeatures.length > 1,
       },
-    });
-    dialogRef.afterClosed().subscribe(result => {
-      this.refreshTable();
     });
   }
 }
