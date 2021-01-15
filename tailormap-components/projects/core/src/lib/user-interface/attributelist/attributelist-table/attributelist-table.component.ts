@@ -705,7 +705,7 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
       });
       return;
     }
-    const dialogRef = this.dialog.open(FormComponent, {
+    this.dialog.open(FormComponent, {
       width: '1050px',
       height: '800px',
       disableClose: true,
