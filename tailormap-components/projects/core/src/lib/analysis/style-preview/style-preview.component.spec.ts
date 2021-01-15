@@ -15,7 +15,13 @@ const styles = [
 
 describe('StylePreviewComponent', () => {
   let spectator: Spectator<StylePreviewComponent>;
-  const initialState = { [analysisStateKey]: initialAnalysisState };
+  const initialState = {
+    [analysisStateKey]: {
+      ...initialAnalysisState,
+      styles,
+      selectedDataSource: getDummySelectedDataSource({ geometryType: AttributeTypeEnum.GEOMETRY }),
+    },
+  };
   let store: MockStore;
 
   const createComponent = createComponentFactory({
@@ -36,11 +42,6 @@ describe('StylePreviewComponent', () => {
   });
 
   it('renders style preview', () => {
-    store.overrideSelector(selectSelectedDataSource, getDummySelectedDataSource({
-      geometryType: AttributeTypeEnum.GEOMETRY,
-    }));
-    store.overrideSelector(selectStyles, styles);
-    spectator.detectChanges();
     expect(spectator.queryAll('.polygon-item').length).toEqual(2);
     expect(spectator.queryAll('.line-item').length).toEqual(2);
     expect(spectator.queryAll('.point-item').length).toEqual(2);
