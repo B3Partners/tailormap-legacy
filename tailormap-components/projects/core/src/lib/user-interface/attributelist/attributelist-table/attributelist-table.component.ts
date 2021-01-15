@@ -49,9 +49,8 @@ import { TailorMapService } from '../../../../../../bridge/src/tailor-map.servic
 import { HighlightService } from '../../../shared/highlight-service/highlight.service';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { AttributelistColumn } from '../attributelist-common/attributelist-column-models';
-import { Subject } from 'rxjs';
+import { from, Subject } from 'rxjs';
 import { concatMap, takeUntil } from 'rxjs/operators';
-import { fromArray } from 'rxjs/internal/observable/fromArray';
 import { AttributelistTreeComponent } from '../attributelist-tree/attributelist-tree.component';
 import { AttributelistNode, SelectedTreeData, TreeDialogData } from '../attributelist-tree/attributelist-tree-models';
 import { AttributelistColumnController } from '../attributelist-common/attributelist-column-controller';
@@ -330,7 +329,7 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
       columnNames: this.dataSource.columnController.getPassPortColumnsAsColumns(),
       children: [],
     });
-    fromArray(relatedFeatures).pipe(concatMap(feature => {
+    from(relatedFeatures).pipe(concatMap(feature => {
       this.dataSource.params.valueFilter = this.filterMap.get(feature.id).getValueFilter();
       this.dataSource.params.featureTypeId = feature.id;
       this.dataSource.params.featureTypeName = feature.foreignFeatureTypeName;
