@@ -199,7 +199,6 @@ export class AttributelistFilter {
     });
 
     this.dataSource.params.valueFilter = this.createFilter();
-    attributelistForFilter.refreshTable();
   }
   public getAttributeType (columnName: string): AttributeTypeEnum {
     return AttributeTypeHelper.getAttributeType(this.columnController.getAttributeForColumnName(columnName))
