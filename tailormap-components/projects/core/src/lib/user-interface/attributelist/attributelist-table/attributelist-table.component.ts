@@ -402,13 +402,21 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
     });
 
     dialogRef.afterClosed().subscribe(result => {
+      // if dialog is closed set params for mainTable feature
+      // and fill selectedTreeData with the mainTable features
       this.dataSource.params.featureTypeId = -1;
       this.dataSource.params.featureTypeName = '';
       this.dataSource.params.featureFilter = '';
       this.dataSource.params.valueFilter = '';
-      this.dataSource.columnController = new AttributelistColumnController();
-      this.initFilterMap();
-      this.refreshTable();
+      this.selectedTreeData = {
+        features: this.treeData[0].features,
+        params: this.treeData[0].params,
+        isChild: this.treeData[0].isChild,
+        name: this.treeData[0].name,
+        columnNames: this.treeData[0].columnNames,
+        numberOfFeatures: this.treeData[0].numberOfFeatures,
+      };
+      this.attributelistService.setSelectedTreeData(this.selectedTreeData);
     });
     dialogRef.afterOpened().subscribe( result => {
       // this.isAttributeTreeOpen = true;
