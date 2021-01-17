@@ -28,7 +28,7 @@ import {
   AttributeListParameters,
   AttributeListResponse,
   AttributeMetadataParameters,
-  AttributeMetadataResponse,
+  AttributeMetadataResponse, RelatedFeatureType,
 } from '../../../shared/attribute-service/attribute-models';
 import {
   CheckState,
@@ -56,6 +56,8 @@ export class AttributeDataSource extends DataSource<any> {
   // The REST API params (layerName,filter,...) for retrieving the data.
   public params = new DatasourceParams();
 
+  // The related feature types of the mainFeature
+  public relatedFeatures = new Map<number, RelatedFeatureType>();
   // The paginator for paging.
   public paginator?: MatPaginator;
 
@@ -475,6 +477,9 @@ export class AttributeDataSource extends DataSource<any> {
                     // Add property _details and set initial state.
                     if (d.related_featuretypes.length > 0) {
                       d._details = DetailsState.YesCollapsed;
+                      d.related_featuretypes.forEach((rel) => {
+                        this.relatedFeatures.set(rel.id, rel);
+                      });
                     } else {
                       d._details = DetailsState.No;
                     }
