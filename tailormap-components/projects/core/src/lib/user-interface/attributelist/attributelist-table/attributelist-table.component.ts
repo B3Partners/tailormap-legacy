@@ -155,10 +155,12 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
   }
 
   public ngOnInit(): void {
+    // called from passport form
     this.attributelistService.loadTableData$.pipe(takeUntil(this.destroyed)).subscribe(result => {
       this.refreshTable();
     });
 
+    // called from attribute tree
     this.attributelistService.selectedTreeData$.pipe(takeUntil(this.destroyed)).subscribe(selectedTreeData => {
       if (!selectedTreeData.isChild) {
         this.dataSource.params.featureTypeId = -1;
@@ -493,8 +495,16 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
     this.filterMap.get(this.dataSource.params.featureTypeId).setFilter(this, columnName);
   }
 
-  public onClearFilter() {
+  public onClearLayerFilter() {
     this.filterMap.get(this.dataSource.params.featureTypeId).clearFilter(this);
+    this.refreshTable();
+  }
+
+  public onClearAllFilters() {
+    this.filterMap.forEach( (filter, key) => {
+      filter.clearFilter(this);
+    });
+    this.refreshTable();
   }
 
   /**
