@@ -145,7 +145,7 @@ export class AttributeDataSource extends DataSource<any> {
     return cnt;
   }
 
-  public getfirstRowAsAttributeListFeature(): AttributeListFeature[] {
+  public getAllRowAsAttributeListFeature(): AttributeListFeature[] {
     const features: AttributeListFeature[] = [];
     this.rows.forEach( (row: RowData) => {
       features.push({
@@ -196,6 +196,23 @@ export class AttributeDataSource extends DataSource<any> {
     return featuresChecked;
   }
 
+  /**
+   * Get relatedFeatures map as array
+   */
+
+  public getRelatedFeaturesAsArray(): RelatedFeatureType[] {
+    const features = [];
+    if (this.relatedFeatures.size > 0) {
+      this.relatedFeatures.forEach((feature, key) => {
+        features.push(feature);
+      });
+    }
+    return features;
+  }
+
+  /**
+   * sets all the rows checked
+   */
   public setAllRowsChecked(): void {
     this.rows.forEach( (row: RowData) => {
         row._checked = true;
@@ -225,20 +242,10 @@ export class AttributeDataSource extends DataSource<any> {
       }
     });
 
-    let filter = '';
-    if (this.params.valueFilter) {
-      filter = this.params.valueFilter;
-    }
-    if (this.params.featureFilter) {
-      filter = this.params.featureFilter;
-    }
-    if (this.params.featureFilter && this.params.valueFilter) {
-      filter = this.params.valueFilter + ' AND (' + this.params.featureFilter + ')';
-    }
     const attrParams: AttributeListParameters = {
       application: this.layerService.getAppId(),
       appLayer: this.params.layerId,
-      filter,
+      filter: this.params.valueFilter,
       limit: this.paginator.pageSize,
       page: 1,
       featureType: this.params.featureTypeId,
@@ -378,6 +385,8 @@ export class AttributeDataSource extends DataSource<any> {
       } else {
         attrParams.filter = this.params.featureFilter;
       }
+    } else {
+
     }
 
     // Set paging params.

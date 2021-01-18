@@ -273,13 +273,11 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
     this.updateCheckedInfo();
   }
 
-  public onObjectOptionsClick(): void {
-    this.treeData = [];
-    this.dataSource.getCheckedRowsAsFeatures();
-    const filterForFeatureTypes = new Map<number, string>();
+  // Creates a filter for all the checked features in the maintable on the related tabled
+  private createFeatureFilterForCheckedFeatures(): Map<number, string> {
     let filter = '';
-    const relatedFeatures = [];
-    let checkedFeatures = this.dataSource.getCheckedRowsAsAttributeListFeature();
+    const checkedFeatures = this.dataSource.getCheckedRowsAsAttributeListFeature();
+    const filterForFeatureTypes = new Map<number, string>();
     checkedFeatures.forEach((row) => {
       const related = row.related_featuretypes;
       related.forEach((r) => {
@@ -291,14 +289,19 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
           const column = r.filter.split('=')[0].split(' ')[0];
           const value = r.filter.split('=')[1].split(' ')[1];
           filterForFeatureTypes.set(r.id, column + ' IN (' + value);
-          relatedFeatures.push(r);
         }
       });
     });
     filterForFeatureTypes.forEach((value, key) => {
-      filterForFeatureTypes.set(key, value + ')');
+      this.filterMap.get(key).setFeatureFilter(filterForFeatureTypes.get(key) + ')');
     });
+    return filterForFeatureTypes;
+  }
 
+  public onObjectOptionsClick(): void {
+    this.treeData = [];
+    this.dataSource.getCheckedRowsAsFeatures();
+    const filterForFeatureTypes = this.createFeatureFilterForCheckedFeatures();
     const layer = this.layerService.getLayerByTabIndex(this.tabIndex);
     if (layer.name === '') {
       return;
@@ -306,24 +309,23 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
     // Set params layer name and id.
     this.dataSource.params.layerName = layer.name;
     this.dataSource.params.layerId = layer.id;
-    let numberOfFeatures = this.dataSource.getNrChecked();
+    let features;
+    let numberOfFeatures;
     if (this.dataSource.getNrChecked() > 0 ) {
       this.rowsChecked = true;
+      features = this.dataSource.getCheckedRowsAsAttributeListFeature();
+      numberOfFeatures = this.dataSource.getNrChecked();
     } else {
       this.rowsChecked = false;
-    }
-    if (checkedFeatures.length <= 0) {
+      features = this.dataSource.getAllRowAsAttributeListFeature();
       numberOfFeatures = this.dataSource.totalNrOfRows;
-      checkedFeatures = this.dataSource.getfirstRowAsAttributeListFeature();
-      checkedFeatures[0].related_featuretypes.forEach((rel) => {
-        relatedFeatures.push(rel);
-      })
     }
 
+    // push the data in the attributeTree that belongs to the mainFeature
     this.treeData.push({
       name: layer.alias ? layer.alias : layer.name,
       numberOfFeatures,
-      features: checkedFeatures,
+      features,
       params: {
         application: this.layerService.getAppId(),
         appLayer: layer.id},
@@ -331,11 +333,10 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
       columnNames: this.dataSource.columnController.getPassPortColumnsAsColumns(),
       children: [],
     });
-    from(relatedFeatures).pipe(concatMap(feature => {
-      this.dataSource.params.valueFilter = this.filterMap.get(feature.id).getValueFilter();
+    from(this.dataSource.getRelatedFeaturesAsArray()).pipe(concatMap(feature => {
+      this.dataSource.params.valueFilter = this.filterMap.get(feature.id).createFilter(this.filterMap);
       this.dataSource.params.featureTypeId = feature.id;
       this.dataSource.params.featureTypeName = feature.foreignFeatureTypeName;
-      this.dataSource.params.featureFilter = filterForFeatureTypes.get(feature.id);
       return this.dataSource.loadDataForAttributeTree$();
     })).subscribe({
       next: (result) => {
@@ -500,7 +501,7 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
    */
   public onFilterClick(columnName: string): void {
     // this.dataSource.columnController.columnNamesToColumns()
-    this.filterMap.get(this.dataSource.params.featureTypeId).setFilter(this, columnName);
+    this.filterMap.get(this.dataSource.params.featureTypeId).setFilter(this, columnName, this.filterMap);
   }
 
   public onClearLayerFilter() {
@@ -520,19 +521,6 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
    */
   public refreshTable(): void {
     if (this.dataSource.params.hasDetail()) {
-      if (this.dataSource.params.valueFilter) {
-        let filter = 'RELATED_LAYER(' +
-          this.dataSource.params.layerId + ',' +
-          this.dataSource.params.featureTypeId + ',(' +
-          this.dataSource.params.valueFilter;
-        if (this.dataSource.params.featureFilter) {
-          filter += ' AND ' +
-            this.dataSource.params.featureFilter + '))';
-        } else {
-          filter += '))';
-        }
-        this.filterMap.get(-1).setRelatedFilter(filter);
-      }
       this.dataSource.params.featureTypeId = -1;
       this.dataSource.params.featureTypeName = '';
       this.dataSource.params.featureFilter = '';

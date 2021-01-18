@@ -46,6 +46,8 @@ export class AttributelistFilter {
 
   private relatedFilter: string;
 
+  private featureFilter: string;
+
   public initFiltering(colNames: string[]): void {
     if (this.layerFilterValues.columns.length === 0) {
       // Init the filter structure
@@ -58,22 +60,66 @@ export class AttributelistFilter {
     }
   }
 
-  public setRelatedFilter(filter: string): void {
-    this.relatedFilter = filter;
+  public setRelatedFilter(relatedFilter: string): void {
+    this.relatedFilter = relatedFilter;
   }
 
   public getRelatedFilter(): string {
     return this.relatedFilter;
   }
 
+  public setFeatureFilter(featureFilter: string) {
+    this.featureFilter = featureFilter;
+  }
+
+  public getFeatureFilter(): string {
+    return this.featureFilter;
+  }
+
+  public setValueFilter(filter: string): void {
+    this.valueFilter = filter;
+  }
+
   public getValueFilter(): string {
     return this.valueFilter;
+  }
+
+  public updateValueFilterWithFeatureFilter(): void {
+    let filter = '';
+    if (this.valueFilter) {
+      filter = this.valueFilter;
+    }
+    if (this.featureFilter) {
+      filter = this.featureFilter;
+    }
+    if (this.featureFilter && this.valueFilter) {
+      filter = this.valueFilter + ' AND (' + this.featureFilter + ')';
+    }
+    this.valueFilter = filter;
+  }
+
+  public updateValueFilterWithRelatedLayerFilter(filtermap: Map<number, AttributelistFilter>): void {
+    let tempFilter = '';
+    filtermap.forEach((filter, key) => {
+      if (key !== -1) {
+        if (filter.valueFilter && tempFilter) {
+          tempFilter += ' AND ';
+        }
+        if (filter.valueFilter) {
+          tempFilter += 'RELATED_LAYER(' +
+            filter.dataSource.params.layerId + ',' +
+            key + ',(' +
+            filter.valueFilter + '))';
+        }
+      }
+    });
+    filtermap.get(-1).setRelatedFilter(tempFilter);
   }
 
   /**
    * Create the CQL filter string
    */
-  public createFilter(): string {
+  public createFilter(filtermap: Map<number, AttributelistFilter>): string {
     this.valueFilter = '';
     let filteredColumns = 0;
     this.layerFilterValues.columns.forEach((c) => {
@@ -112,10 +158,22 @@ export class AttributelistFilter {
 
       }
     });
+    this.updateValueFilterWithFeatureFilter();
+    if (this.dataSource.params.hasDetail()) {
+      this.updateValueFilterWithRelatedLayerFilter(filtermap);
+    } else {
+      let filter = '';
+      if (this.relatedFilter) {
+        filter = this.relatedFilter;
+        if (this.valueFilter) {
+          this.valueFilter = filter + 'AND ' + this.valueFilter;
+        }
+      }
+    }
     return this.valueFilter;
   }
 
-  public setFilter(attributelistForFilter: AttributelistForFilter, columnName: string): void {
+  public setFilter(attributelistForFilter: AttributelistForFilter, columnName: string, filtermap: Map<number, AttributelistFilter>): void {
     // Get the unique values for this column
     this.columnController = attributelistForFilter.columnController;
     this.valueParams.applicationLayer = this.dataSource.params.layerId;
@@ -182,7 +240,7 @@ export class AttributelistFilter {
                 }
               }
             }
-            this.dataSource.params.valueFilter = this.createFilter();
+            this.dataSource.params.valueFilter = this.createFilter(filtermap);
             attributelistForFilter.refreshTable();
           }
         });
@@ -198,7 +256,9 @@ export class AttributelistFilter {
       c.filterType = '';
     });
 
-    this.dataSource.params.valueFilter = this.createFilter();
+    this.dataSource.params.featureFilter = '';
+    this.dataSource.params.featureFilter = '';
+    this.dataSource.params.valueFilter = '';
   }
   public getAttributeType (columnName: string): AttributeTypeEnum {
     return AttributeTypeHelper.getAttributeType(this.columnController.getAttributeForColumnName(columnName))
