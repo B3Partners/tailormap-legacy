@@ -93,12 +93,16 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
 
   public dataSource = new AttributeDataSource(this.layerService,
                                               this.attributeService,
+                                              this.valueService,
+                                              this.attributelistService,
                                               this.tailorMapService,
                                               this.formconfigRepoService);
   public checkedRows = [];
   public treeData: AttributelistNode[] = [];
 
   private selectedTreeData: SelectedTreeData;
+
+  private isAttributeTreeOpen = false;
 
   private filterMap = new Map<number, AttributelistFilter>();
 
@@ -160,6 +164,10 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
       this.refreshTable();
     });
 
+    this.attributelistService.afterLoadRelatedData$.pipe(takeUntil(this.destroyed)).subscribe((result) => {
+      this.afterloadRelatedData();
+    });
+
     // called from attribute tree
     this.attributelistService.selectedTreeData$.pipe(takeUntil(this.destroyed)).subscribe(selectedTreeData => {
       if (!selectedTreeData.isChild) {
@@ -199,6 +207,17 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
     }, 0)
   }
 
+  private afterloadRelatedData(): void {
+    this.paginator.length = this.dataSource.totalNrOfRows;
+
+    // Update the table rows.
+    this.table.renderRows();
+
+    this.filterMap.get(this.dataSource.params.featureTypeId).initFiltering(this.getColumnNames());
+    this.statistic.initStatistics(this.getColumnNames());
+    this.updateCheckedInfo();
+  }
+
   public onAfterLoadData(): void {
     // console.log('#Table - onAfterLoadData');
 
@@ -211,12 +230,9 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
     this.filterMap.get(this.dataSource.params.featureTypeId).initFiltering(this.getColumnNames());
 
     this.statistic.initStatistics(this.getColumnNames());
-    if (this.isRelatedRefresh) {
-      if (this.rowsChecked) {
-        this.dataSource.setAllRowsChecked();
-      }
-      this.onObjectOptionsClick();
-    }
+
+    this.onObjectOptionsClick();
+
     this.updateCheckedInfo();
 
     // FOR TESTING. SHOW TABLE OPTIONS FORM AT STARTUP.
@@ -274,7 +290,7 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
   }
 
   // Creates a filter for all the checked features in the maintable on the related tabled
-  private createFeatureFilterForCheckedFeatures(): Map<number, string> {
+  private createFeatureFilterForCheckedFeatures(): void {
     let filter = '';
     const checkedFeatures = this.dataSource.getCheckedRowsAsAttributeListFeature();
     const filterForFeatureTypes = new Map<number, string>();
@@ -295,13 +311,29 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
     filterForFeatureTypes.forEach((value, key) => {
       this.filterMap.get(key).setFeatureFilter(filterForFeatureTypes.get(key) + ')');
     });
-    return filterForFeatureTypes;
+  }
+
+  private creaFeatureFilterForAllFeatures(): void {
+    const uniqueValues = this.dataSource.uniqueMainFeatureIds;
+    const filterForFeatureTypes = new Map<number, string>();
+    uniqueValues.forEach((values, key) => {
+        const column = 'wegvakonderdeel_id';
+        let filter = column + ' IN (';
+        values.forEach((val) => {
+          filter += '\'' + val + '\',';
+        });
+        filter = filter.slice(0, -1);
+        filter += ')';
+        filterForFeatureTypes.set(key, filter);
+    });
+    filterForFeatureTypes.forEach((value, key) => {
+      this.filterMap.get(key).setFeatureFilter(filterForFeatureTypes.get(key));
+    });
   }
 
   public onObjectOptionsClick(): void {
     this.treeData = [];
     this.dataSource.getCheckedRowsAsFeatures();
-    const filterForFeatureTypes = this.createFeatureFilterForCheckedFeatures();
     const layer = this.layerService.getLayerByTabIndex(this.tabIndex);
     if (layer.name === '') {
       return;
@@ -312,10 +344,14 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
     let features;
     let numberOfFeatures;
     if (this.dataSource.getNrChecked() > 0 ) {
+      this.createFeatureFilterForCheckedFeatures();
       this.rowsChecked = true;
       features = this.dataSource.getCheckedRowsAsAttributeListFeature();
       numberOfFeatures = this.dataSource.getNrChecked();
     } else {
+      if (this.filterMap.get(-1).getValueFilter()) {
+        this.creaFeatureFilterForAllFeatures();
+      }
       this.rowsChecked = false;
       features = this.dataSource.getAllRowAsAttributeListFeature();
       numberOfFeatures = this.dataSource.totalNrOfRows;
@@ -378,7 +414,7 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
           }
           this.attributelistService.setSelectedTreeData(this.selectedTreeData);
         } else {
-          this.openDialog();
+          this.attributelistService.updateTreeData(this.treeData);
         }
       },
     })
@@ -389,6 +425,9 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
   }
 
   public openDialog() {
+    if (this.isAttributeTreeOpen) {
+      return;
+    }
     const dialogData : TreeDialogData = {
       rowsChecked: this.nrChecked,
       tree: this.treeData,
@@ -418,9 +457,10 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
         numberOfFeatures: this.treeData[0].numberOfFeatures,
       };
       this.attributelistService.setSelectedTreeData(this.selectedTreeData);
+      this.isAttributeTreeOpen = false;
     });
     dialogRef.afterOpened().subscribe( result => {
-      // this.isAttributeTreeOpen = true;
+      this.isAttributeTreeOpen = true;
     });
   }
 
@@ -505,13 +545,13 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
   }
 
   public onClearLayerFilter() {
-    this.filterMap.get(this.dataSource.params.featureTypeId).clearFilter(this);
+    this.filterMap.get(this.dataSource.params.featureTypeId).clearFilter(this, this.filterMap);
     this.refreshTable();
   }
 
   public onClearAllFilters() {
     this.filterMap.forEach( (filter, key) => {
-      filter.clearFilter(this);
+      filter.clearFilter(this, this.filterMap);
     });
     this.refreshTable();
   }
@@ -524,12 +564,7 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
       this.dataSource.params.featureTypeId = -1;
       this.dataSource.params.featureTypeName = '';
       this.dataSource.params.featureFilter = '';
-      if (this.filterMap.get(-1).getRelatedFilter()) {
-        this.dataSource.params.valueFilter = this.filterMap.get(-1).getRelatedFilter();
-        if (this.filterMap.get(-1).getValueFilter()) {
-          this.dataSource.params.valueFilter += 'AND ' + this.filterMap.get(-1).getValueFilter();
-        }
-      }
+      this.dataSource.params.valueFilter = this.filterMap.get(-1).createFilter(this.filterMap);
       this.dataSource.columnController.setPassportColumnNames(this.treeData[0].columnNames);
       this.isRelatedRefresh = true;
     } else {

@@ -47,6 +47,9 @@ import { FormFieldHelpers } from '../../../feature-form/form-field/form-field-he
 import { map, take } from 'rxjs/operators';
 import { AttributelistNode, SelectedTreeData } from '../attributelist-tree/attributelist-tree-models';
 import { TailorMapService } from '../../../../../../bridge/src/tailor-map.service';
+import { AttributelistService } from '../attributelist.service';
+import { ValueService } from '../../../shared/value-service/value.service';
+import { ValueParameters } from '../../../shared/value-service/value-models';
 
 export class AttributeDataSource extends DataSource<any> {
 
@@ -58,6 +61,11 @@ export class AttributeDataSource extends DataSource<any> {
 
   // The related feature types of the mainFeature
   public relatedFeatures = new Map<number, RelatedFeatureType>();
+
+  public relatedLeftSides = new Map<number, string>();
+
+  public uniqueMainFeatureIds = new Map<number, string[]>();
+
   // The paginator for paging.
   public paginator?: MatPaginator;
 
@@ -74,6 +82,8 @@ export class AttributeDataSource extends DataSource<any> {
 
   constructor(private layerService: LayerService,
               private attributeService: AttributeService,
+              private valueService: ValueService,
+              private attributelistService: AttributelistService,
               private tailorMapService: TailorMapService,
               private formconfigRepoService: FormconfigRepositoryService) {
     super();
@@ -294,7 +304,8 @@ export class AttributeDataSource extends DataSource<any> {
         this.columnController.setAttributes(columnDefs);
       }, () => {},
       () => {
-        attrTable.onAfterLoadData();
+        // attrTable.onAfterLoadData();
+        this.attributelistService.afterLoadRelatedData();
       });
   }
 
@@ -441,7 +452,32 @@ export class AttributeDataSource extends DataSource<any> {
             // TODO: combine these methods?
             this.columnController.setDataColumnNames(columnDefs);
             this.columnController.setAttributes(columnDefs);
+
+            metadata.relations.forEach(relation => {
+              relation.relationKeys.forEach(key => {
+                this.relatedLeftSides.set(relation.foreignFeatureType, key.leftSideName);
+              });
+            })
           }
+
+          const valueParams: ValueParameters = {
+            applicationLayer: this.params.layerId,
+            attributes: [],
+            maxFeatures: -1,
+          };
+          if (attrParams.filter) {
+            valueParams.filter = attrParams.filter;
+          }
+          if (!this.params.hasDetail()) {
+            this.relatedLeftSides.forEach((leftside, key) => {
+              valueParams.attributes = [];
+              valueParams.attributes.push(leftside);
+              this.valueService.uniqueValues$(valueParams).subscribe((data) => {
+                this.uniqueMainFeatureIds.set(key, data.uniqueValues[leftside]);
+              });
+            });
+          }
+
 
           // Get the features.
           this.attributeService.features$(attrParams).subscribe(

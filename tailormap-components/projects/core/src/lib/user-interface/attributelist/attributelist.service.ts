@@ -19,11 +19,15 @@ export class AttributelistService {
 
   private loadTableDataSubject$ = new Subject();
 
+  private afterLoadRelatedDataSubject$ = new Subject();
+
   private updateTreeDataSubject$ = new Subject<AttributelistNode[]>();
 
   private selectedTreeDataSubject$ = new Subject<SelectedTreeData>(); // source voor Observable
 
   public loadTableData$ = this.loadTableDataSubject$.asObservable();
+
+  public afterLoadRelatedData$ = this.afterLoadRelatedDataSubject$.asObservable();
 
   public updateTreeData$ = this.updateTreeDataSubject$.asObservable();
 
@@ -31,6 +35,10 @@ export class AttributelistService {
 
   public loadTableData(): void {
     this.loadTableDataSubject$.next();
+  }
+
+  public afterLoadRelatedData(): void {
+    this.afterLoadRelatedDataSubject$.next();
   }
 
   public updateTreeData(treeData: AttributelistNode[]): void {

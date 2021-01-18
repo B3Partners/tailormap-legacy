@@ -167,6 +167,8 @@ export class AttributelistFilter {
         filter = this.relatedFilter;
         if (this.valueFilter) {
           this.valueFilter = filter + 'AND ' + this.valueFilter;
+        } else {
+          this.valueFilter = filter;
         }
       }
     }
@@ -248,7 +250,7 @@ export class AttributelistFilter {
     });
   }
 
-  public clearFilter(attributelistForFilter: AttributelistForFilter): void {
+  public clearFilter(attributelistForFilter: AttributelistForFilter, filtermap: Map<number, AttributelistFilter>): void {
     this.layerFilterValues.columns.forEach((c) => {
       c.status = false;
       c.criteria = null;
@@ -256,9 +258,13 @@ export class AttributelistFilter {
       c.filterType = '';
     });
 
+    this.valueFilter = '';
+    this.relatedFilter = '';
+    this.featureFilter = '';
     this.dataSource.params.featureFilter = '';
     this.dataSource.params.featureFilter = '';
     this.dataSource.params.valueFilter = '';
+    this.createFilter(filtermap);
   }
   public getAttributeType (columnName: string): AttributeTypeEnum {
     return AttributeTypeHelper.getAttributeType(this.columnController.getAttributeForColumnName(columnName))
