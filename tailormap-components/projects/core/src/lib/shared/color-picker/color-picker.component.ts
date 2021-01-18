@@ -164,6 +164,7 @@ export class ColorPickerComponent implements OnInit, OnDestroy {
       content: this.colorPickerContent,
       height: 215,
       width: Math.min(this.preferredWindowWidth, window.innerWidth),
+      closeOnClickOutside: true,
     });
   }
 

@@ -57,3 +57,8 @@ button mat-spinner {
   flex: 1;
   font-weight: bold;
 }
+
+tailormap-style-preview {
+  display: block;
+  margin-top: 16px;
+}

@@ -37,7 +37,7 @@ export class CriteriaComponent implements OnInit, OnDestroy {
   public criteriaRemoved: EventEmitter<CriteriaConditionModel> = new EventEmitter<CriteriaConditionModel>();
 
   private destroyed = new Subject();
-  public availableSources: AttributeSource[];
+  public availableSources: AttributeSource[] = [];
 
   private filteredConditionsSubject$ = new BehaviorSubject<CriteriaConditionTypeModel[]>([]);
   public filteredConditions$ = this.filteredConditionsSubject$.asObservable();
@@ -105,6 +105,9 @@ export class CriteriaComponent implements OnInit, OnDestroy {
   }
 
   private setupFormValues(selectedDataSource: AnalysisSourceModel, layerMetadata: AttributeMetadataResponse) {
+    if (!layerMetadata) {
+      return;
+    }
     const relationSources = layerMetadata.relations.map<AttributeSource>(relation => ({
       featureType: relation.foreignFeatureType,
       label: `${relation.foreignFeatureTypeName}`,
@@ -116,6 +119,10 @@ export class CriteriaComponent implements OnInit, OnDestroy {
   }
 
   private setInitialValues() {
+    if (!this.criteria) {
+      return;
+    }
+
     const initialCriteria = { ...this.criteria };
 
     if (!initialCriteria.source && this.availableSources.length > 0 && !this.criteria.attribute) {

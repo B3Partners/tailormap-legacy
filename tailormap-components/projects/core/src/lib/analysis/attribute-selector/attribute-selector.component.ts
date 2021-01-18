@@ -1,6 +1,6 @@
 import { Component, Input, OnDestroy, EventEmitter, OnInit, Output } from '@angular/core';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
-import { map, startWith, takeUntil } from 'rxjs/operators';
+import { map, startWith, take, takeUntil } from 'rxjs/operators';
 import { MetadataService } from '../../application/services/metadata.service';
 import { FormControl } from '@angular/forms';
 import { AttributeTypeHelper } from '../../application/helpers/attribute-type.helper';
@@ -15,7 +15,12 @@ import { PassportAttributeModel } from '../../application/models/passport-attrib
 export class AttributeSelectorComponent implements OnInit, OnDestroy {
 
   @Input()
-  public appLayerId: string | number;
+  public set appLayerId(appLayerId: string | number) {
+    if (this._appLayerId !== `${appLayerId}`) {
+      this._appLayerId = `${appLayerId}`;
+      this.getAppLayerMetadata();
+    }
+  }
 
   @Input()
   public set featureType(featureType: string | number) {
@@ -28,7 +33,7 @@ export class AttributeSelectorComponent implements OnInit, OnDestroy {
 
   @Input()
   public set selectedAttribute(attribute: string) {
-    if (attribute && this.attributeControl.value !== attribute) {
+    if (this.attributeControl.value !== attribute) {
       this.attributeControl.patchValue(attribute);
       this._selectedAttribute = attribute;
     }
@@ -41,6 +46,7 @@ export class AttributeSelectorComponent implements OnInit, OnDestroy {
 
   private _featureType: number;
   private _selectedAttribute: string;
+  private _appLayerId: string;
 
   private allAttributes: PassportAttributeModel[] = [];
   private allAttributesLookup: Map<string, PassportAttributeModel>;
@@ -65,17 +71,7 @@ export class AttributeSelectorComponent implements OnInit, OnDestroy {
   ) { }
 
   public ngOnInit(): void {
-    this.metadataService.getPassportFieldsForLayer$(this.appLayerId).pipe(takeUntil(this.destroyed))
-      .subscribe(attributes => {
-        if (!attributes) {
-          return;
-        }
-        this.allAttributes = attributes;
-        this.allAttributesLookup = new Map<string, PassportAttributeModel>(attributes.map(a => [ a.name, a ]));
-        if (this._featureType) {
-          this.filterAttributesForFeatureType(this._featureType);
-        }
-      });
+    this.getAppLayerMetadata();
 
     this.filteredAttributes$ = combineLatest([
       this.availableAttributesSubject$.asObservable(),
@@ -95,6 +91,23 @@ export class AttributeSelectorComponent implements OnInit, OnDestroy {
   public ngOnDestroy() {
     this.destroyed.next();
     this.destroyed.complete();
+  }
+
+  private getAppLayerMetadata() {
+    if (!this._appLayerId) {
+      return;
+    }
+    this.metadataService.getPassportFieldsForLayer$(this._appLayerId).pipe(takeUntil(this.destroyed))
+      .subscribe(attributes => {
+        if (!attributes) {
+          return;
+        }
+        this.allAttributes = attributes;
+        this.allAttributesLookup = new Map<string, PassportAttributeModel>(attributes.map(a => [ a.name, a ]));
+        if (this._featureType) {
+          this.filterAttributesForFeatureType(this._featureType);
+        }
+      });
   }
 
   private filterAttributesForFeatureType(featureType: number) {

@@ -20,14 +20,7 @@ export class StyleFormComponent implements OnInit {
   @Output()
   public styleUpdated: EventEmitter<UserLayerStyleModel> = new EventEmitter<UserLayerStyleModel>();
 
-  public availableMarkers = [
-    { value: 'circle', icon: 'markers_circle' },
-    { value: 'square', icon: 'markers_square' },
-    { value: 'triangle', icon: 'markers_triangle' },
-    { value: 'arrow', icon: 'markers_arrow' },
-    { value: 'cross', icon: 'markers_cross' },
-    { value: 'star', icon: 'markers_star' },
-  ];
+  public availableMarkers = StyleHelper.getAvailableMarkers();
 
   private debounce: number;
   private updatedProps: Map<keyof UserLayerStyleModel, string | number> = new Map();

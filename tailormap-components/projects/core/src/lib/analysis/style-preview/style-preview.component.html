@@ -1,0 +1,29 @@
+<div *ngIf="styles$ | async as styles">
+  <strong>Legenda voorbeeld</strong>
+  <div class="style-preview" *ngFor="let style of styles; let index = index; trackBy: trackByStyleId">
+    <div *ngIf="showPolygonStyle()" class="style-item polygon-item">
+      <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <rect x="25" y="25" width="50" height="50"
+              [attr.fill]="style.fillColor"
+              [attr.fill-opacity]="getPercentage(style.fillOpacity)"
+              [attr.stroke]="style.strokeColor"
+              [attr.stroke-width]="style.strokeWidth"
+              [attr.stroke-opacity]="getPercentage(style.strokeOpacity)"></rect>
+      </svg>
+      <span>{{style.label}}</span>
+    </div>
+    <div *ngIf="showLineStyle()" class="style-item line-item">
+      <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <line x1="80" y1="20" x2="20" y2="80"
+              [attr.stroke]="style.strokeColor"
+              [attr.stroke-width]="getStrokeWidth(style.strokeWidth)"
+              [attr.stroke-opacity]="getPercentage(style.strokeOpacity)"></line>
+      </svg>
+      <span>{{style.label}}</span>
+    </div>
+    <div *ngIf="showPointStyle()" class="style-item point-item">
+      <mat-icon [svgIcon]="getIcon(style)" [style]="getIconStyle(style)"></mat-icon>
+      <span>{{style.label}}</span>
+    </div>
+  </div>
+</div>

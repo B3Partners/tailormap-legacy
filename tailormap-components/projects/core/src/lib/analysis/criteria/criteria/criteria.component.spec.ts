@@ -6,6 +6,7 @@ import { SharedModule } from '../../../shared/shared.module';
 import { getMetadataServiceMockProvider } from '../../../application/services/mocks/metadata.service.mock';
 import { selectSelectedDataSource } from '../../state/analysis.selectors';
 import { AttributeTypeEnum } from '../../../application/models/attribute-type.enum';
+import { AttributeSelectorComponent } from '../../attribute-selector/attribute-selector.component';
 
 describe('CriteriaComponent', () => {
   let spectator: Spectator<CriteriaComponent>;
@@ -14,11 +15,12 @@ describe('CriteriaComponent', () => {
 
   const createComponent = createComponentFactory({
     component: CriteriaComponent,
+    declarations: [ AttributeSelectorComponent ],
     imports: [ SharedModule ],
     providers: [
       provideMockStore({ initialState }),
       getMetadataServiceMockProvider(),
-    ]
+    ],
   });
 
   beforeEach(() => {

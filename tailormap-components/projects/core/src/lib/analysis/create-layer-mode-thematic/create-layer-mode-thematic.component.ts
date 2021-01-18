@@ -26,7 +26,12 @@ export class CreateLayerModeThematicComponent implements OnInit, OnDestroy {
 
   public ngOnInit(): void {
     this.store$.select(selectSelectedDataSource).pipe(takeUntil(this.destroyed))
-      .subscribe(selectedDataSource => this.selectedDataSource = selectedDataSource);
+      .subscribe(selectedDataSource => {
+        if (this.selectedDataSource && this.selectedDataSource.featureType !== selectedDataSource.featureType) {
+          this.store$.dispatch(setSelectedThematicAttribute({ attribute: null }));
+        }
+        this.selectedDataSource = selectedDataSource;
+      });
     this.store$.select(selectSelectedThematicAttribute)
       .pipe(
         takeUntil(this.destroyed),
