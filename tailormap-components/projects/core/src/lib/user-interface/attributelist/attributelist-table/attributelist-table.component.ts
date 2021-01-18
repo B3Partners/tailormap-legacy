@@ -317,7 +317,7 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
     const uniqueValues = this.dataSource.uniqueMainFeatureIds;
     const filterForFeatureTypes = new Map<number, string>();
     uniqueValues.forEach((values, key) => {
-        const column = 'wegvakonderdeel_id';
+        const column = this.dataSource.relatedRightSides.get(key);
         let filter = column + ' IN (';
         values.forEach((val) => {
           filter += '\'' + val + '\',';

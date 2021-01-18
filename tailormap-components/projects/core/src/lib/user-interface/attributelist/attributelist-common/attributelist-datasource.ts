@@ -64,6 +64,8 @@ export class AttributeDataSource extends DataSource<any> {
 
   public relatedLeftSides = new Map<number, string>();
 
+  public relatedRightSides = new Map<number, string>();
+
   public uniqueMainFeatureIds = new Map<number, string[]>();
 
   // The paginator for paging.
@@ -456,6 +458,7 @@ export class AttributeDataSource extends DataSource<any> {
             metadata.relations.forEach(relation => {
               relation.relationKeys.forEach(key => {
                 this.relatedLeftSides.set(relation.foreignFeatureType, key.leftSideName);
+                this.relatedRightSides.set(relation.foreignFeatureType, key.rightSideName);
               });
             })
           }
