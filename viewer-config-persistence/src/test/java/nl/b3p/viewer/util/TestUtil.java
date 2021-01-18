@@ -16,6 +16,19 @@
  */
 package nl.b3p.viewer.util;
 
+import nl.b3p.viewer.config.app.*;
+import nl.b3p.viewer.config.metadata.Metadata;
+import nl.b3p.viewer.config.services.*;
+import nl.b3p.viewer.util.databaseupdate.ScriptRunner;
+import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.hibernate.Session;
+import org.junit.After;
+import org.junit.Before;
+
+import javax.persistence.EntityManager;
+import javax.persistence.Persistence;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -26,24 +39,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.persistence.EntityManager;
-import javax.persistence.Persistence;
-
-import nl.b3p.viewer.config.app.*;
-import nl.b3p.viewer.config.metadata.Metadata;
-import nl.b3p.viewer.config.services.FeatureSource;
-import nl.b3p.viewer.config.services.GeoService;
-import nl.b3p.viewer.config.services.Layer;
-import nl.b3p.viewer.config.services.SimpleFeatureType;
-import nl.b3p.viewer.config.services.WFSFeatureSource;
-import nl.b3p.viewer.config.services.WMSService;
-import nl.b3p.viewer.util.databaseupdate.ScriptRunner;
-import org.apache.commons.lang3.RandomStringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.hibernate.Session;
-import org.junit.After;
-import org.junit.Before;
 
 /**
  * utility methoden voor unit tests.

@@ -20,11 +20,12 @@ import nl.b3p.viewer.config.app.ApplicationLayer;
 import nl.b3p.viewer.config.services.FeatureSource;
 import nl.b3p.viewer.config.services.Layer;
 import org.geotools.filter.text.cql2.CQLException;
-import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 import org.opengis.filter.And;
 import org.opengis.filter.Filter;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  *

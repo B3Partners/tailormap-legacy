@@ -67,27 +67,24 @@ public class FlamingoCQL {
     }
 
     public static Filter toFilter(String filter, EntityManager em, boolean simplify) throws CQLException {
-        filter = processFilter(filter, em, simplify);
+        filter = processFilter(filter, em);
 
-        return getFilter(filter, em);
+        return getFilter(filter, em, simplify);
     }
 
-    private static String processFilter(String filter, EntityManager em, boolean simplify) throws CQLException {
+    private static String processFilter(String filter, EntityManager em) throws CQLException {
         if (filter.contains(BEGIN_APPLAYER_PART)) {
             filter = replaceApplayerFilter(filter, em);
         }
 
-        if (simplify && filter.contains(BEGIN_RELATED_PART)) {
-            filter = replaceRelatedFilter(filter, em);
-        }
         return filter;
     }
 
-    private static Filter getFilter(String filter, EntityManager em) throws CQLException {
+    private static Filter getFilter(String filter, EntityManager em, boolean simplify) throws CQLException {
         Filter f = null;
 
         if (filter.contains(BEGIN_RELATED_PART)) {
-            f = replaceSubselectsFromFilter(filter, em);
+            f = replaceSubselectsFromFilter(filter, em, simplify);
         } else {
             f = ECQL.toFilter(filter);
         }
@@ -95,7 +92,7 @@ public class FlamingoCQL {
         return f;
     }
 
-    private static Filter replaceSubselectsFromFilter(String filter, EntityManager em) throws CQLException {
+    private static Filter replaceSubselectsFromFilter(String filter, EntityManager em, boolean simplify) throws CQLException {
 
         String remainingFilter = filter;
         Filter f = null;
@@ -105,7 +102,12 @@ public class FlamingoCQL {
             int startIndex = remainingFilter.indexOf(BEGIN_RELATED_PART) + BEGIN_RELATED_PART.length();
             int endIndex = findIndexOfClosingBracket(startIndex - 1, remainingFilter);
             String filterPart = BEGIN_RELATED_PART + remainingFilter.substring(startIndex, endIndex + 1);
-            current = createSubselect(filterPart, em);
+            if(simplify){
+                String replaced = replaceRelatedFilter(filterPart, em);
+                current = ECQL.toFilter(replaced);
+            }else {
+                current = createSubselect(filterPart, em);
+            }
             remainingFilter = remainingFilter.substring(0, remainingFilter.indexOf(BEGIN_RELATED_PART)) + remainingFilter.substring(endIndex + 1);
         } else {
             int endAnd = Math.max(0, remainingFilter.toLowerCase().indexOf(" and "));
@@ -122,7 +124,7 @@ public class FlamingoCQL {
         if (!remainingFilter.isEmpty()) {
             remainingFilter = remainingFilter.trim();
             String nextFilter = remainingFilter.substring(remainingFilter.indexOf(" "));
-            f = getBinaryLogicOperator(remainingFilter, current, getFilter(nextFilter, em));
+            f = getBinaryLogicOperator(remainingFilter, current, getFilter(nextFilter, em, simplify));
         } else {
             f = current;
         }
@@ -196,7 +198,6 @@ public class FlamingoCQL {
     }
 
     private static int findIndexOfClosingBracket(int startIndex, String filter) {
-
         int openBrackets = 0, closingBrackets = 0, endIndex = 0;
         for (int i = startIndex; i < filter.length(); i++) {
             char c = filter.charAt(i);
@@ -206,7 +207,7 @@ public class FlamingoCQL {
             if (c == ')') {
                 closingBrackets++;
             }
-            if (openBrackets == closingBrackets) {
+            if (openBrackets == closingBrackets && c != ' ') {
                 endIndex = i;
                 break;
             }
@@ -297,6 +298,7 @@ public class FlamingoCQL {
         }
         cql = cql.substring(0, cql.length() - 1);
         cql += ")";
+
         return cql;
     }
 
@@ -366,7 +368,7 @@ public class FlamingoCQL {
         String appLayerPart = filter.substring(startIndex, endIndex);
 
         // call recursively to parse out all the nested applayer filters
-        appLayerPart = processFilter(appLayerPart, em, true);
+        appLayerPart = processFilter(appLayerPart, em);
 
         // Rewrite APPLAYER filter to GEOMETRY filter, so it can be used for filtering other features
         String geometryFilter = rewriteAppLayerFilter(appLayerPart, em);
