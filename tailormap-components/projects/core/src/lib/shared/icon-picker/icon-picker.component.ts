@@ -21,6 +21,9 @@ export class IconPickerComponent {
   @Input()
   public selectedIcon: string;
 
+  @Input()
+  public iconColor: string;
+
   @Output()
   public iconChange = new EventEmitter<string>();
 
@@ -45,6 +48,7 @@ export class IconPickerComponent {
       content: this.iconPickerContent,
       height: ((ICON_SIZE + PADDING) * this.icons.length) + PADDING,
       width: TOGGLE_WIDTH,
+      closeOnClickOutside: true,
     });
   }
 
@@ -62,4 +66,7 @@ export class IconPickerComponent {
     this.popoverRef.close();
   }
 
+  public getIconColor() {
+    return this.iconColor || 'inherit';
+  }
 }

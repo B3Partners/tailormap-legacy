@@ -1,33 +1,15 @@
 import { Workflow } from './Workflow';
 import * as wellknown from 'wellknown';
-import {
-  Boom,
-  Boominspectie,
-  Boomplanning,
-  CultBeplanting,
-  Feature,
-  Gras,
-  Haag,
-  MechLeiding,
-  NatBeplanting,
-  Rioolput,
-  VrijvLeiding,
-  Weginspectie,
-  Wegvakonderdeel,
-  Wegvakonderdeelplanning,
-} from '../../shared/generated';
-// import { FormComponent } from '../../feature-form/form/form.component';
-import {
-  MapClickedEvent,
-} from '../../shared/models/event-models';
-import { VectorLayer } from '../../../../../bridge/typings';
 import { GeoJSONPoint } from 'wellknown';
-// import { DialogData } from '../../feature-form/form/form-models';
+import {
+  Boom, Boominspectie, Boomplanning, CultBeplanting, Feature, Gras, Haag, MechLeiding, NatBeplanting, Rioolput, VrijvLeiding, Weginspectie,
+  Wegvakonderdeel, Wegvakonderdeelplanning,
+} from '../../shared/generated';
+import { MapClickedEvent } from '../../shared/models/event-models';
+import { VectorLayer } from '../../../../../bridge/typings';
 import { ChooseTypesComponent } from '../../user-interface/sewage/choose-types/choose-types.component';
 import { Observable } from 'rxjs';
-import {
-  take,
-} from 'rxjs/operators';
+import { take } from 'rxjs/operators';
 import { Choice } from './WorkflowModels';
 import { FormComponent } from '../../feature-form/form/form.component';
 import { DialogData } from '../../feature-form/form/form-models';
@@ -143,7 +125,7 @@ export class SewageWorkflow extends Workflow {
   private makeChoices(featureType: string) {
     const dialogRef = this.dialog.open(ChooseTypesComponent, {
       width: '240px',
-      height: '370px',
+      height: '400px',
       disableClose: true,
       data: {
         featureType,

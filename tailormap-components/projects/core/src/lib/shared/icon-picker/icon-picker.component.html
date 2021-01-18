@@ -9,7 +9,7 @@
 
 <ng-template #iconPickerContent>
   <div class="icon-picker__picker mat-elevation-z4">
-    <div class="icon-picker__icons">
+    <div class="icon-picker__icons" [style.color]="getIconColor()">
       <mat-icon *ngFor="let icon of icons"
            [svgIcon]="icon"
            class="icon-picker__icon"

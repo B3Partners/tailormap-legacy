@@ -27,6 +27,7 @@ import { EffectsModule } from '@ngrx/effects';
 import { AnalysisEffects } from './state/analysis.effects';
 import { StyleFormPanelComponent } from './style-form-panel/style-form-panel.component';
 import { ResolutionSelectorComponent } from './resolution-selector/resolution-selector.component';
+import { StylePreviewComponent } from './style-preview/style-preview.component';
 
 
 @NgModule({
@@ -47,6 +48,7 @@ import { ResolutionSelectorComponent } from './resolution-selector/resolution-se
     StyleFormComponent,
     StyleFormPanelComponent,
     ResolutionSelectorComponent,
+    StylePreviewComponent,
   ],
   imports: [
     CommonModule,

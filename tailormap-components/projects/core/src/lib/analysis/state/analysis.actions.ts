@@ -101,3 +101,5 @@ export const setCreatingLayerFailed = createAction(
   `${analysisActionsPrefix} Creating Layer Failed`,
   props<{ message: string }>(),
 );
+
+export const closeSidePanels = createAction(`${analysisActionsPrefix} Close Side Panels`);
