@@ -14,6 +14,7 @@ on:
     - v5.6.x
     - v5.8.x
   workflow_dispatch:
+    branches: []
  
 jobs:
   build:
