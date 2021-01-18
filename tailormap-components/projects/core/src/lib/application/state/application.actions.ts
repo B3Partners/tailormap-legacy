@@ -16,4 +16,9 @@ export const setApplicationContent = createAction(
 export const addAppLayer = createAction(
   `${applicationActionsPrefix} Add App Layer`,
   props<{ layer: AppLayer, service: GeoService, levelId: string }>(),
-)
+);
+
+export const setSelectedAppLayer = createAction(
+  `${applicationActionsPrefix} Set Selected App Layer`,
+  props<{ layerId: string }>(),
+);

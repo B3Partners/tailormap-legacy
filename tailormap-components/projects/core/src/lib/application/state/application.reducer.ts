@@ -58,12 +58,18 @@ const onAddAppLayer = (state: ApplicationState, payload: { layer: AppLayer, leve
       ...state.levels.slice(levelIdx + 1),
     ],
   };
-}
+};
+
+const onSetSelectedAppLayer = (state: ApplicationState, payload: { layerId: string }): ApplicationState => ({
+  ...state,
+  selectedAppLayer: payload.layerId,
+});
 
 const applicationReducerImpl = createReducer(
   initialApplicationState,
   on(ApplicationActions.setApplicationContent, onSetApplicationContent),
   on(ApplicationActions.addAppLayer, onAddAppLayer),
+  on(ApplicationActions.setSelectedAppLayer, onSetSelectedAppLayer),
 );
 
 export const applicationReducer = (state: ApplicationState | undefined, action: Action) => {

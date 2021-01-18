@@ -11,7 +11,7 @@ export interface ApplicationState {
   root: SelectedContentItem[];
   levels: Level[];
   layers: AppLayer[];
-
+  selectedAppLayer: string;
 }
 
 export const initialApplicationState: ApplicationState = {
@@ -19,4 +19,5 @@ export const initialApplicationState: ApplicationState = {
   root: [],
   levels: [],
   layers: [],
+  selectedAppLayer: null,
 }

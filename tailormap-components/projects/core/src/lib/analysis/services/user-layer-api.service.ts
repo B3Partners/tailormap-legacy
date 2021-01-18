@@ -29,6 +29,11 @@ export interface SaveUserLayerStyleParams {
   style: string;
 }
 
+export interface RemoveUserLayerParams {
+  appId: number;
+  appLayerId: string;
+}
+
 export type UserLayerResponseType = CreateUserLayerSuccessResponseModel | CreateUserLayerFailedResponseModel;
 
 @Injectable({
@@ -92,6 +97,26 @@ export class UserLayerApiService {
         return of({
           success: false,
           message: 'Er is iets mis gegaan bij opslaan van de stijl. Controlleer de instellingen en probeer opnieuw.',
+        });
+      }),
+    );
+  }
+
+  public removeUserLayer(params: RemoveUserLayerParams) {
+    return this.httpClient.delete<UserLayerResponseType>(`${this.tailormapService.getContextPath()}/action/userlayer/delete/${params.appId}/${params.appLayerId}`, {
+      withCredentials: true,
+      observe: 'body',
+    }).pipe(
+      catchError((response: HttpErrorResponse): Observable<CreateUserLayerFailedResponseModel> => {
+        if (response.error && UserLayerApiService.isFailedResponse(response.error) && response.error.error) {
+          return of({
+            success: false,
+            message: 'Er is iets mis gegaan bij het verwijderen van de selectielaag: ' + response.error.error,
+          });
+        }
+        return of({
+          success: false,
+          message: 'Er is iets mis gegaan bij het verwijderen van de selectielaag.',
         });
       }),
     );

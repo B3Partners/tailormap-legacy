@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { AnalysisState } from '../state/analysis.state';
 import { selectApplicationId, selectLevelForLayer } from '../../application/state/application.selectors';
-import { concatMap, filter, switchMap, take, tap } from 'rxjs/operators';
-import { forkJoin, of } from 'rxjs';
+import { concatMap, filter, map, switchMap, take, tap } from 'rxjs/operators';
+import { forkJoin, Observable, of } from 'rxjs';
 import { clearCreateLayerMode, setCreatingLayer, setCreatingLayerFailed, setCreatingLayerSuccess } from '../state/analysis.actions';
 import { CriteriaHelper } from '../criteria/helpers/criteria.helper';
 import { addAppLayer } from '../../application/state/application.actions';
@@ -12,6 +12,7 @@ import { StyleHelper } from '../helpers/style.helper';
 import { UserLayerApiService, UserLayerResponseType } from './user-layer-api.service';
 import { CreateLayerModeEnum } from '../models/create-layer-mode.enum';
 import { AnalysisSourceModel } from '../models/analysis-source.model';
+import { AppLayer } from '../../../../../bridge/typings';
 
 interface CreateUserLayerParams {
   appLayerId: string;
@@ -59,6 +60,24 @@ export class UserLayerService {
       ).subscribe(([createLayerResult, saveStyleResult]) => {
       this.handleResult(createLayerResult, saveStyleResult);
     })
+  }
+
+  public removeLayer$(layer: AppLayer): Observable<{ success: boolean, message?: string }> {
+    if (!layer.userlayer) {
+      return of({ success: true });
+    }
+    return this.store$.select(selectApplicationId)
+      .pipe(
+        take(1),
+        switchMap(appId => this.userLayerApiService.removeUserLayer({appId, appLayerId: layer.id })),
+        map(response => {
+          if (response !== null && UserLayerApiService.isFailedResponse(response)) {
+            const message = [response.error || '', response.message || ''].filter(m => m !== '').join(' - ');
+            return { success: false, message };
+          }
+          return { success: true };
+        }),
+      );
   }
 
   private saveUserLayer$(appLayerId: string, title: string, query: string, style?: string, createdAppLayer?: string) {

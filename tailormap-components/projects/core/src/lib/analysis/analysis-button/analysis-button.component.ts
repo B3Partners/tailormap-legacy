@@ -3,6 +3,10 @@ import { Store } from '@ngrx/store';
 import { AnalysisState } from '../state/analysis.state';
 import { CreateLayerModeEnum } from '../models/create-layer-mode.enum';
 import { setCreateLayerMode } from '../state/analysis.actions';
+import { selectSelectedAppLayer } from '../../application/state/application.selectors';
+import { Observable } from 'rxjs';
+import { AppLayer } from '../../../../../bridge/typings';
+import { UserLayerService } from '../services/user-layer.service';
 
 @Component({
   selector: 'tailormap-analysis-button',
@@ -18,13 +22,29 @@ export class AnalysisButtonComponent {
     THEMATIC: CreateLayerModeEnum.THEMATIC,
     REGIONAL: CreateLayerModeEnum.REGIONAL,
   }
+  public selectedAppLayer$: Observable<AppLayer>;
+  public isRemoving = false;
 
   constructor(
     private store$: Store<AnalysisState>,
-  ) {}
+    private userLayerService: UserLayerService,
+  ) {
+    this.selectedAppLayer$ = this.store$.select(selectSelectedAppLayer);
+  }
 
   public setCreateLayerMode(mode: CreateLayerModeEnum) {
     this.store$.dispatch(setCreateLayerMode({ createLayerMode: mode }));
+  }
+
+  public removeLayer(selectedAppLayer: AppLayer) {
+    if (this.isRemoving) {
+      return;
+    }
+    this.isRemoving = true;
+    this.userLayerService.removeLayer$(selectedAppLayer)
+      .subscribe(result => {
+        this.isRemoving = false;
+      });
   }
 
 }
