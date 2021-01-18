@@ -14,6 +14,7 @@ import { setStyles, showCriteriaForm } from '../state/analysis.actions';
 import { CriteriaTypeEnum } from '../models/criteria-type.enum';
 import { StyleHelper } from '../helpers/style.helper';
 import { IdService } from '../../shared/id-service/id.service';
+import { UserLayerStyleModel } from '../models/user-layer-style.model';
 
 @Component({
   selector: 'tailormap-create-layer-mode-attributes',
@@ -42,10 +43,15 @@ export class CreateLayerModeAttributesComponent implements OnInit, OnDestroy {
     this.store$.select(selectCriteria).pipe(takeUntil(this.destroyed)).subscribe(criteria => {
       this.criteria = criteria
     });
-    combineLatest([ this.store$.select(selectCanCreateLayer), this.store$.select(selectStyles) ]).pipe(takeUntil(this.destroyed))
-      .subscribe(([canCreate, styles]) => {
+    combineLatest([
+      this.store$.select(selectCanCreateLayer),
+      this.store$.select(selectSelectedDataSource),
+      this.store$.select(selectStyles),
+    ]).pipe(takeUntil(this.destroyed))
+      .subscribe(([canCreate, selectedDataSource, styles]) => {
         if (canCreate && (!styles || styles.length !== 1)) {
-          this.store$.dispatch(setStyles({ styles: [ StyleHelper.getDefaultStyle(this.idService) ]}));
+          const style: UserLayerStyleModel = { ...StyleHelper.getDefaultStyle(this.idService), label: selectedDataSource.label };
+          this.store$.dispatch(setStyles({ styles: [ style ]}));
         }
       });
     this.creatingCriteria$ = this.store$.select(selectIsCreatingCriteria);

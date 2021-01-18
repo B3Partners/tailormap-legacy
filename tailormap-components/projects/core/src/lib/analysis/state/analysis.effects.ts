@@ -31,6 +31,7 @@ export class AnalysisEffects {
           if (response.uniqueValues && response.uniqueValues.hasOwnProperty(attribute) && Array.isArray(response.uniqueValues[attribute])) {
             styles = response.uniqueValues[attribute].map(value => ({
               ...StyleHelper.getDefaultStyle(this.idService),
+              label: value,
               value,
               attribute,
               attributeType: AttributeTypeHelper.getAttributeType(action.attribute),

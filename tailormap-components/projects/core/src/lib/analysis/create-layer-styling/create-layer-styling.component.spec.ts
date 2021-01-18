@@ -4,6 +4,7 @@ import { analysisStateKey, initialAnalysisState } from '../state/analysis.state'
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { SharedModule } from '../../shared/shared.module';
 import { getUserLayerServiceMockProvider } from '../services/mocks/user-layer.service.mock';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 describe('CreateLayerStylingComponent', () => {
   let spectator: Spectator<CreateLayerStylingComponent>;
@@ -16,7 +17,8 @@ describe('CreateLayerStylingComponent', () => {
     providers: [
       provideMockStore({ initialState }),
       getUserLayerServiceMockProvider(),
-    ]
+    ],
+    schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
   });
 
   beforeEach(() => {

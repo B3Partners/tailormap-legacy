@@ -1,6 +1,6 @@
 import { Component, Input, OnDestroy, EventEmitter, OnInit, Output } from '@angular/core';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
-import { map, startWith, takeUntil } from 'rxjs/operators';
+import { map, startWith, take, takeUntil } from 'rxjs/operators';
 import { Attribute } from '../../shared/attribute-service/attribute-models';
 import { MetadataService } from '../../application/services/metadata.service';
 import { FormControl } from '@angular/forms';
@@ -15,7 +15,12 @@ import { AttributeTypeEnum } from '../../application/models/attribute-type.enum'
 export class AttributeSelectorComponent implements OnInit, OnDestroy {
 
   @Input()
-  public appLayerId: string | number;
+  public set appLayerId(appLayerId: string | number) {
+    if (this._appLayerId !== `${appLayerId}`) {
+      this._appLayerId = `${appLayerId}`;
+      this.getAppLayerMetadata();
+    }
+  }
 
   @Input()
   public set featureType(featureType: string | number) {
@@ -27,7 +32,7 @@ export class AttributeSelectorComponent implements OnInit, OnDestroy {
 
   @Input()
   public set selectedAttribute(attribute: string) {
-    if (attribute && this.attributeControl.value !== attribute) {
+    if (this.attributeControl.value !== attribute) {
       this.attributeControl.patchValue(attribute);
       this._selectedAttribute = attribute;
     }
@@ -40,6 +45,7 @@ export class AttributeSelectorComponent implements OnInit, OnDestroy {
 
   private _featureType: number;
   private _selectedAttribute: string;
+  private _appLayerId: string;
 
   private allAttributes: Attribute[] = [];
   private availableAttributesSubject$ = new BehaviorSubject<Attribute[]>([]);
@@ -52,17 +58,7 @@ export class AttributeSelectorComponent implements OnInit, OnDestroy {
   ) { }
 
   public ngOnInit(): void {
-    this.metadataService.getFeatureTypeMetadata$(this.appLayerId).pipe(takeUntil(this.destroyed))
-      .subscribe(metadata => {
-        if (!metadata) {
-          return;
-        }
-        this.allAttributes = metadata.attributes;
-        if (this._featureType) {
-          this.filterAttributesForFeatureType(this._featureType);
-        }
-      });
-
+    this.getAppLayerMetadata();
     this.filteredAttributes$ = combineLatest([
       this.availableAttributesSubject$.asObservable(),
       this.attributeControl.valueChanges.pipe(startWith('')),
@@ -81,6 +77,22 @@ export class AttributeSelectorComponent implements OnInit, OnDestroy {
   public ngOnDestroy() {
     this.destroyed.next();
     this.destroyed.complete();
+  }
+
+  private getAppLayerMetadata() {
+    if (!this._appLayerId) {
+      return;
+    }
+    this.metadataService.getFeatureTypeMetadata$(this._appLayerId).pipe(take(1))
+      .subscribe(metadata => {
+        if (!metadata) {
+          return;
+        }
+        this.allAttributes = metadata.attributes;
+        if (this._featureType) {
+          this.filterAttributesForFeatureType(this._featureType);
+        }
+      });
   }
 
   private filterAttributesForFeatureType(featureType: number) {

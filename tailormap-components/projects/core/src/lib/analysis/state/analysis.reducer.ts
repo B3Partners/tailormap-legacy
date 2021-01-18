@@ -147,6 +147,13 @@ const onCreatingLayerFailed = (state: AnalysisState, payload: { message: string 
   createLayerErrorMessage: payload.message,
 });
 
+const onCloseSidePanels = (state: AnalysisState): AnalysisState => ({
+  ...state,
+  selectDataSource: false,
+  createCriteriaMode: null,
+  selectedStyle: null,
+});
+
 const analysisReducerImpl = createReducer(
   initialAnalysisState,
   on(AnalysisActions.setCreateLayerMode, onSetCreateLayerMode),
@@ -168,6 +175,7 @@ const analysisReducerImpl = createReducer(
   on(AnalysisActions.setCreatingLayer, onCreatingLayer),
   on(AnalysisActions.setCreatingLayerSuccess, onCreatingLayerSuccess),
   on(AnalysisActions.setCreatingLayerFailed, onCreatingLayerFailed),
+  on(AnalysisActions.closeSidePanels, onCloseSidePanels),
 );
 
 export const analysisReducer = (state: AnalysisState | undefined, action: Action) => {
