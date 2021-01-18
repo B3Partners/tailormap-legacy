@@ -7,11 +7,13 @@ on:
     - v5.8.x
     - v5.6.x
     - v5.4.x
- # pull_request:
- #   branches: 
- #   - master
- #   - v5.4.x
- #   - v5.6.x
+  pull_request:
+    branches: 
+    - master
+    - v5.4.x
+    - v5.6.x
+    - v5.8.x
+  workflow_dispatch:
  
 jobs:
   build:
