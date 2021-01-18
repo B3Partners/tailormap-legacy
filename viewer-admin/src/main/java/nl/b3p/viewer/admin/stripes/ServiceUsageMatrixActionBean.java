@@ -24,7 +24,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.ResourceBundle;
 import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletResponse;
@@ -32,7 +31,6 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.xpath.XPath;
@@ -41,9 +39,7 @@ import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 import javax.xml.xpath.XPathFactoryConfigurationException;
-import net.sourceforge.stripes.action.ActionBean;
 import net.sourceforge.stripes.action.ActionBeanContext;
-import net.sourceforge.stripes.action.Before;
 import net.sourceforge.stripes.action.DefaultHandler;
 import net.sourceforge.stripes.action.ForwardResolution;
 import net.sourceforge.stripes.action.Resolution;
@@ -107,8 +103,8 @@ public class ServiceUsageMatrixActionBean extends LocalizableActionBean {
         List<Application> applications = Stripersist.getEntityManager().createQuery("FROM Application order by name,version").getResultList();
         JSONArray jsonApps = new JSONArray();
         EntityManager em = Stripersist.getEntityManager();
-        for (Application app: applications){
-            JSONObject json = new JSONObject(app.toJSON(this.context.getRequest(),true,true,em));
+        for (Application app: applications) {
+            JSONObject json = new JSONObject(app.toJSON(this.context.getRequest(),true,true,em, true));
             jsonApps.put(json);
         }
         //add the featureSources to the JSON.
@@ -116,7 +112,7 @@ public class ServiceUsageMatrixActionBean extends LocalizableActionBean {
         if (this.featureSource==null){
             featureSources = em.createQuery("FROM FeatureSource").getResultList();
         }else{
-            featureSources = new ArrayList<FeatureSource>();
+            featureSources = new ArrayList<>();
             featureSources.add(this.featureSource);
         }
         JSONArray featureSourcesJson = new JSONArray();
@@ -154,7 +150,7 @@ public class ServiceUsageMatrixActionBean extends LocalizableActionBean {
     }
 
     @DefaultHandler
-    public Resolution view() throws JSONException, TransformerConfigurationException, TransformerException, Exception {
+    public Resolution view() throws Exception {
 
         //make xml
         createData();
@@ -224,7 +220,7 @@ public class ServiceUsageMatrixActionBean extends LocalizableActionBean {
         return new StreamingResolution("text/html", new StringReader(json.toString()));
     }
 
-    private String transformXml(String rawXml) throws TransformerConfigurationException, TransformerException {
+    private String transformXml(String rawXml) throws TransformerException {
         StringReader reader = new StringReader(rawXml);
         StringWriter writer = new StringWriter();
 
@@ -342,7 +338,7 @@ public class ServiceUsageMatrixActionBean extends LocalizableActionBean {
                 Cell cell = head.createCell(c);
                 cell.setCellValue(headValues[c]);
             }
-            List<String> columns=  new ArrayList<String>();
+            List<String> columns= new ArrayList<>();
             for (int i=0; i < headValues.length; i++){
                 columns.add("");
             }
@@ -352,9 +348,9 @@ public class ServiceUsageMatrixActionBean extends LocalizableActionBean {
                 Node featureSource = featureSources.item(fs);
 
                 String fsString=(String) exprName.evaluate(featureSource,XPathConstants.STRING);
-                fsString+=" ("+(String) exprProtocol.evaluate(featureSource,XPathConstants.STRING);
-                fsString+=":: "+(String) exprUrl.evaluate(featureSource,XPathConstants.STRING);
-                fsString+=" id: "+(String) exprId.evaluate(featureSource,XPathConstants.STRING);
+                fsString+=" ("+ exprProtocol.evaluate(featureSource,XPathConstants.STRING);
+                fsString+=":: "+ exprUrl.evaluate(featureSource,XPathConstants.STRING);
+                fsString+=" id: "+ exprId.evaluate(featureSource,XPathConstants.STRING);
                 fsString+=")";
                 columns.set(0,fsString);
                 NodeList featureTypes = (NodeList) exprFeatureType.evaluate(featureSource,XPathConstants.NODESET);
@@ -373,7 +369,7 @@ public class ServiceUsageMatrixActionBean extends LocalizableActionBean {
                         if (appVersion!=null){
                             appString += ", version: "+appVersion;
                         }
-                        appString+=" ("+(String) exprId.evaluate(application,XPathConstants.STRING)+")";
+                        appString+=" ("+ exprId.evaluate(application,XPathConstants.STRING) +")";
                         columns.set(2,appString);
                         NodeList layers = (NodeList) exprLayer.evaluate(application,XPathConstants.NODESET);
                         for (int lay=0; lay < layers.getLength(); lay++){
@@ -385,7 +381,7 @@ public class ServiceUsageMatrixActionBean extends LocalizableActionBean {
                             for (int al=0; al < appLayers.getLength(); al++){
                                 Node appLayer = appLayers.item(al);
                                 String alString=(String) exprAlias.evaluate(appLayer,XPathConstants.STRING);
-                                alString+=" ("+(String) exprId.evaluate(appLayer,XPathConstants.STRING)+")";
+                                alString+=" ("+ exprId.evaluate(appLayer,XPathConstants.STRING) +")";
                                 columns.set(4,alString);
                                 Row row=sheet.createRow(rowNum++);
                                 for (int c=0; c < columns.size(); c++){

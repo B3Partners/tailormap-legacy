@@ -34,7 +34,6 @@ import nl.b3p.viewer.config.services.AttributeDescriptor;
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.ClientAnchor;
 import org.apache.poi.ss.usermodel.Comment;
 import org.apache.poi.ss.usermodel.CreationHelper;
@@ -55,7 +54,7 @@ import org.geotools.data.simple.SimpleFeatureSource;
 import org.opengis.feature.simple.SimpleFeature;
 
 /**
- * An implementation to export the features as an excel file
+ * An implementation to export the features as an excel file.
  * @author Meine Toonen
  * @author mprins
  */
@@ -137,6 +136,7 @@ public class ExcelDownloader extends FeatureDownloader{
             try {
                 row.setHeight(Short.parseShort(rowHeight));
             } catch(NumberFormatException nfe) {
+                // ignore
             }
         }
         Cell cell;
@@ -145,17 +145,13 @@ public class ExcelDownloader extends FeatureDownloader{
         for (ConfiguredAttribute configuredAttribute : attributes) {
             if(configuredAttribute.isVisible() && attributeAliases.get(configuredAttribute.getAttributeName()) != null){
                 Object attribute = oldFeature.getAttribute(configuredAttribute.getAttributeName());
-                String value = null;
                 cell = row.createCell(colNum);
-                cell.setCellType(CellType.NUMERIC);
                 cell.setCellStyle(styles.get("cell_normal"));
 
                 if (attribute == null) {
-                    cell.setCellValue(value);
-                    cell.setCellType(CellType.BLANK);
+                    cell.setBlank();
                 } else if (attribute instanceof Boolean) {
                     cell.setCellValue((Boolean) attribute);
-                    cell.setCellType(CellType.BOOLEAN);
                 } else if (attribute instanceof Number) {
                     cell.setCellValue(((Number) attribute).doubleValue());
                 } else if (attribute instanceof Date) {
@@ -165,9 +161,7 @@ public class ExcelDownloader extends FeatureDownloader{
                     cell.setCellValue((Calendar) attribute);
                     cell.setCellStyle(styles.get("cell_normal_date"));
                 } else {
-                    value = attribute.toString();
-                    cell.setCellValue(value);                    
-                    cell.setCellType(CellType.STRING);
+                    cell.setCellValue(attribute.toString());
                 }
                 colNum++;
             }
@@ -182,8 +176,8 @@ public class ExcelDownloader extends FeatureDownloader{
         String autoSize = parameterMap.get("autoSize");
         String rowWidths = parameterMap.get("rowWidths");
         if(autoSize != null || rowWidths != null) {
-            Set autoSizeAttributes = autoSize == null ? Collections.emptySet() : new HashSet(Arrays.asList(autoSize.split("\\|")));
-            Map<String,Integer> attributeWidths = new HashMap();
+            Set<String> autoSizeAttributes = autoSize == null ? Collections.emptySet() : new HashSet<>(Arrays.asList(autoSize.split("\\|")));
+            Map<String,Integer> attributeWidths = new HashMap<>();
             if(rowWidths != null) {
                 for(String w: rowWidths.split("\\|")) {
                     String[] p = w.split("@", 2);
@@ -191,6 +185,7 @@ public class ExcelDownloader extends FeatureDownloader{
                         try {
                             attributeWidths.put(p[0], Integer.parseInt(p[1]));
                         } catch(NumberFormatException e) {
+                            // ignore
                         }
                     }
                 }

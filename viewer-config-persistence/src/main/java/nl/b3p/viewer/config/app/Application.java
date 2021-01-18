@@ -417,7 +417,7 @@ public class Application implements Comparable<Application>{
     }
 
     /**
-     * @deprecated gebruik
+     * @deprecated gebruik {@link #toJSON(HttpServletRequest, boolean, boolean, boolean, boolean, EntityManager, boolean)}
      * @param request
      * @param validXmlTags
      * @param onlyServicesAndLayers
