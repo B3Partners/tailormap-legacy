@@ -12,7 +12,7 @@ import {
   FormGroup,
 } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Subscription } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
 import {
   Feature,
 } from '../../shared/generated';
@@ -32,6 +32,7 @@ import { LinkedAttributeRegistryService } from '../linked-fields/registry/linked
 import { FormFieldHelpers } from '../form-field/form-field-helpers';
 import { AttributelistService } from '../../user-interface/attributelist/attributelist.service';
 import { ConfirmDialogService } from '../../shared/confirm-dialog/confirm-dialog.service';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'tailormap-form-creator',
@@ -70,6 +71,8 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
 
   private domainValues = new Map<Attribute, any>();
 
+  private destroyed = new Subject();
+
   public ngOnChanges() {
     this.tabbedConfig = this.prepareFormConfig();
     if (this.feature) {
@@ -84,6 +87,8 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
 
   public ngOnDestroy() {
     this.subscriptions.unsubscribe();
+    this.destroyed.next();
+    this.destroyed.complete();
   }
 
   private prepareFormConfig(): TabbedFields {
@@ -152,7 +157,8 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
   public beforeSave() {
     // show confirm message when multi-edit
     if (this.isBulk) {
-      this.confirmDialogService.confirm$('Opslaan', 'Weet je het zeker?', true).subscribe(
+      this.confirmDialogService.confirm$('Opslaan', 'Weet je het zeker?', true)
+        .pipe(takeUntil(this.destroyed)).subscribe(
         (result) => {
           if (result) {
             this.save();
