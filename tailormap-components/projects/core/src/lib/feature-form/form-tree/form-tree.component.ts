@@ -1,23 +1,7 @@
-import {
-  Component,
-  EventEmitter,
-  Input,
-  OnChanges,
-  OnInit,
-  Output,
-  SimpleChanges,
-} from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FlatTreeControl } from '@angular/cdk/tree';
-import {
-  MatTreeFlatDataSource,
-  MatTreeFlattener,
-} from '@angular/material/tree';
-
-
-import {
-  FeatureNode,
-  FlatNode,
-} from './form-tree-models';
+import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
+import { FeatureNode, FlatNode } from './form-tree-models';
 import { Feature } from '../../shared/generated';
 import { FormTreeHelpers } from './form-tree-helpers';
 import { FormconfigRepositoryService } from '../../shared/formconfig-repository/formconfig-repository.service';

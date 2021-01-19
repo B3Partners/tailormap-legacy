@@ -479,18 +479,7 @@ export class AttributeDataSource extends DataSource<any> {
       ...feat,
     };
     formConfig.fields.forEach(field => {
-      if (field.type === FormFieldType.DOMAIN) {
-        let value = feat[field.key] || '';
-
-        field.options.forEach(option => {
-          if ((FormFieldHelpers.isNumber(value) && option.val === parseInt( '' + value, 10))) {
-            value = option.label;
-          }
-        });
-        newFeat[field.key] = value;
-      } else {
-        newFeat[field.key] = feat[field.key];
-      }
+      newFeat[field.key] = this.formconfigRepoService.getFeatureValueForField(newFeat, field.key, formConfig);
     });
     return newFeat;
   }
