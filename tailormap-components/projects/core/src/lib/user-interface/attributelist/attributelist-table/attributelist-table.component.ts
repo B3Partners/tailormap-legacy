@@ -108,7 +108,7 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
 
   private isRelatedRefresh = false;
 
-  private rowsChecked = false;
+  private rowsChecked;
 
   public statistic = new AttributelistStatistic(
     this.statisticsService,
