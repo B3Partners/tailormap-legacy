@@ -41,9 +41,7 @@ import { LayerService } from '../layer.service';
 import { LayerUtils } from '../../../shared/layer-utils/layer-utils.service';
 import {
   FormConfiguration,
-  FormFieldType,
 } from '../../../feature-form/form/form-models';
-import { FormFieldHelpers } from '../../../feature-form/form-field/form-field-helpers';
 import { map, take } from 'rxjs/operators';
 import { AttributelistNode, SelectedTreeData } from '../attributelist-tree/attributelist-tree-models';
 import { TailorMapService } from '../../../../../../bridge/src/tailor-map.service';

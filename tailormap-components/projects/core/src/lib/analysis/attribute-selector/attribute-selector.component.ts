@@ -1,6 +1,6 @@
 import { Component, Input, OnDestroy, EventEmitter, OnInit, Output } from '@angular/core';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
-import { map, startWith, take, takeUntil } from 'rxjs/operators';
+import { map, startWith, takeUntil } from 'rxjs/operators';
 import { MetadataService } from '../../application/services/metadata.service';
 import { FormControl } from '@angular/forms';
 import { AttributeTypeHelper } from '../../application/helpers/attribute-type.helper';
