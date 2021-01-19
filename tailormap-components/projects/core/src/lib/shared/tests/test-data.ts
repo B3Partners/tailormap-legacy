@@ -115,6 +115,7 @@ export const viewerControllerMock = (overrides?: Partial<ViewerController>): Vie
   mapComponent: mapComponentMock(),
   addListener: () => {},
   addUserLayer: () => {},
+  removeUserLayer: () => {},
   getAppLayer: () => appLayerMock(),
   getAppLayerById: () => appLayerMock(),
   getComponentsByClassNames: () => [],

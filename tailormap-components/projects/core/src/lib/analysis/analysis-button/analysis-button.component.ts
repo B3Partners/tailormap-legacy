@@ -7,6 +7,7 @@ import { selectSelectedAppLayer } from '../../application/state/application.sele
 import { Observable } from 'rxjs';
 import { AppLayer } from '../../../../../bridge/typings';
 import { UserLayerService } from '../services/user-layer.service';
+import { removeAppLayer } from '../../application/state/application.actions';
 
 @Component({
   selector: 'tailormap-analysis-button',
@@ -43,7 +44,8 @@ export class AnalysisButtonComponent {
     this.isRemoving = true;
     this.userLayerService.removeLayer$(selectedAppLayer)
       .subscribe(result => {
-        this.isRemoving = false;
+        this.store$.dispatch(removeAppLayer({ layer: selectedAppLayer }));
+        setTimeout(() => this.isRemoving = false, 250);
       });
   }
 

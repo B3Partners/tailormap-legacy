@@ -60,6 +60,37 @@ const onAddAppLayer = (state: ApplicationState, payload: { layer: AppLayer, leve
   };
 };
 
+const onRemoveLayer = (state: ApplicationState, payload: { layer: AppLayer }): ApplicationState => {
+  try {
+    const layerIdx = (state.layers || []).findIndex(l => l.id === payload.layer.id);
+    const selectedContentIdx = (state.root || []).findIndex(item => item.type === 'appLayer' && item.id === payload.layer.id);
+    const levelIdx = (state.levels || []).findIndex(level => (level.layers || []).some(layerId => layerId === payload.layer.id));
+    return {
+      ...state,
+      layers: layerIdx !== -1
+        ? [ ...state.layers.slice(0, layerIdx), ...state.layers.slice(layerIdx + 1)]
+        : state.layers,
+      root: selectedContentIdx !== -1
+        ? [ ...state.root.slice(0, selectedContentIdx), ...state.root.slice(selectedContentIdx + 1)]
+        : state.root,
+      levels: levelIdx !== -1
+        ? [
+          ...state.levels.slice(0, levelIdx),
+          {
+            ...state.levels[levelIdx],
+            layers: state.levels[levelIdx].layers.filter(layerId => layerId !== payload.layer.id),
+          },
+          ...state.levels.slice(levelIdx + 1),
+        ]
+        : state.levels,
+      selectedAppLayer: state.selectedAppLayer === payload.layer.id ? '' : state.selectedAppLayer,
+    };
+  } catch (e) {
+    console.log(e);
+  }
+  return state;
+};
+
 const onSetSelectedAppLayer = (state: ApplicationState, payload: { layerId: string }): ApplicationState => ({
   ...state,
   selectedAppLayer: payload.layerId,
@@ -69,6 +100,7 @@ const applicationReducerImpl = createReducer(
   initialApplicationState,
   on(ApplicationActions.setApplicationContent, onSetApplicationContent),
   on(ApplicationActions.addAppLayer, onAddAppLayer),
+  on(ApplicationActions.removeAppLayer, onRemoveLayer),
   on(ApplicationActions.setSelectedAppLayer, onSetSelectedAppLayer),
 );
 
