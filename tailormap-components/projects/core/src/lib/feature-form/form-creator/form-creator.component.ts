@@ -31,6 +31,7 @@ import { FeatureInitializerService } from '../../shared/feature-initializer/feat
 import { LinkedAttributeRegistryService } from '../linked-fields/registry/linked-attribute-registry.service';
 import { FormFieldHelpers } from '../form-field/form-field-helpers';
 import { AttributelistService } from '../../user-interface/attributelist/attributelist.service';
+import { ConfirmDialogService } from '../../shared/confirm-dialog/confirm-dialog.service';
 
 @Component({
   selector: 'tailormap-form-creator',
@@ -43,7 +44,8 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
     private actions: FormActionsService,
     private registry: LinkedAttributeRegistryService,
     private _snackBar: MatSnackBar,
-    private attributeService: AttributelistService) {
+    private attributeService: AttributelistService,
+    private confirmDialogService: ConfirmDialogService) {
   }
 
   @Input()
@@ -145,6 +147,20 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
         this.registry.domainFieldChanged(attribute, value);
       });
     });
+  }
+
+  public beforeSave() {
+    // show confirm message when multi-edit
+    if (this.isBulk) {
+      this.confirmDialogService.confirm$('Opslaan', 'Weet je het zeker?', true).subscribe(
+        (result) => {
+          if (result) {
+            this.save();
+          }
+        })
+    } else {
+      this.save();
+    }
   }
 
   public save() {
