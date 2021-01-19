@@ -55,7 +55,7 @@
     <div class="actions">
       <button mat-button (click)="settings()">Instellingen</button>
       <button mat-button (click)="cancel()">Annuleren</button>
-      <button mat-button [disabled]="this.data.destinationFeatures.length < 1" (click)="copy()"><p matTooltip="Selecteer object(en) om te kopieren">Bevestigen</p></button>
+      <button mat-button [disabled]="this.data.destinationFeatures.length < 1" (click)="beforeCopy()"><p matTooltip="Selecteer object(en) om te kopieren">Bevestigen</p></button>
     </div>
   </mat-sidenav-content>
 </mat-sidenav-container>
