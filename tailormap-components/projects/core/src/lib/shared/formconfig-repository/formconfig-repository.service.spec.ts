@@ -55,8 +55,8 @@ describe('FormconfigRepositoryService', () => {
     const service: FormconfigRepositoryService = TestBed.inject(FormconfigRepositoryService);
     expectConfigRequest();
     expect(service.getAllFormConfigs()).toBeTruthy();
-    expect(service.getAllFormConfigs().config).toBeTruthy();
-    expect(service.getAllFormConfigs().config['test']).toBeTruthy();
+    expect(service.getAllFormConfigs()).toBeTruthy();
+    expect(service.getAllFormConfigs().get('test')).toBeTruthy();
   });
 
   it('should return all featuretypes', () => {

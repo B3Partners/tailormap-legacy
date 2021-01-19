@@ -87,6 +87,11 @@ export const selectLevelForLayer = createSelector(
   (levels, appLayerId: string) => levels.find(level => (level.layers || []).indexOf(appLayerId) !== -1),
 );
 
+export const selectAppLayerForId = createSelector(
+  selectLayers,
+  (layers, appLayerId: string) => layers.find(layer => layer.id === appLayerId),
+);
+
 export const selectSelectedAppLayerId = createSelector(selectApplicationState, state => state.selectedAppLayer);
 
 export const selectSelectedAppLayer = createSelector(

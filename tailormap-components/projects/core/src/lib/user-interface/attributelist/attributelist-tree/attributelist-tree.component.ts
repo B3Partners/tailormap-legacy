@@ -5,7 +5,7 @@ import {
   OnInit,
 } from '@angular/core';
 import {
-  MAT_DIALOG_DATA, MatDialog,
+  MAT_DIALOG_DATA,
   MatDialogRef,
 } from '@angular/material/dialog';
 import { TreeDialogData, FlatNode, AttributelistNode } from './attributelist-tree-models';
@@ -17,8 +17,6 @@ import { FlatTreeControl } from '@angular/cdk/tree';
 import { AttributelistService } from '../attributelist.service';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
-import { Feature } from '../../../shared/generated';
-import { FormComponent } from '../../../feature-form/form/form.component';
 
 @Component({
   selector: 'tailormap-attributelist-tree',
@@ -38,8 +36,7 @@ export class AttributelistTreeComponent implements OnDestroy, OnInit {
 
   constructor(public dialogRef: MatDialogRef<AttributelistTreeComponent>,
               @Inject(MAT_DIALOG_DATA) public data: TreeDialogData,
-              private attributelistService: AttributelistService,
-              private dialog: MatDialog) {
+              private attributelistService: AttributelistService) {
     this.dataSource.data = data.tree;
     this.treeControl.expandAll();
   }
@@ -52,26 +49,9 @@ export class AttributelistTreeComponent implements OnDestroy, OnInit {
       level,
       columnNames: node.columnNames,
       features: node.features,
-      formFeatures: node.formFeatures,
       params: node.params,
       isChild: node.isChild,
     };
-  }
-
-  private openPasportDialog(formFeatures : Feature[]): void {
-    const dialogRef = this.dialog.open(FormComponent, {
-      width: '1050px',
-      height: '800px',
-      disableClose: true,
-      data: {
-        formFeatures ,
-        isBulk: formFeatures .length > 1,
-      },
-    });
-    // tslint:disable-next-line: rxjs-no-ignored-subscription
-    dialogRef.afterClosed().subscribe(result => {
-      console.log('pasportform closed');
-    });
   }
 
   public closeDialog() {
@@ -85,6 +65,7 @@ export class AttributelistTreeComponent implements OnDestroy, OnInit {
       params: node.params,
       name: node.name,
       isChild: node.isChild,
+      numberOfFeatures: node.numberOfFeatures,
     });
   }
 
@@ -100,19 +81,5 @@ export class AttributelistTreeComponent implements OnDestroy, OnInit {
     this.destroyed.complete();
   }
 
-  public openPasportForm(): void {
-    this.openPasportDialog(this.dataSource.data[0].formFeatures);
-  }
-
   public hasChild = (_: number, node: FlatNode) => node.expandable;
-
-  public getButtonText(): string {
-    let s = '';
-    if (this.data.tree[0].numberOfFeatures > 1) {
-      s = 'Bewerk geselecteerde objecten';
-    } else {
-      s = 'Bewerk geselecteerd object';
-    }
-    return s;
-  }
 }

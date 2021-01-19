@@ -1,6 +1,6 @@
 <input type="text" [formControl]="attributeControl" [matAutocomplete]="autoCompleteAttribute">
-<mat-autocomplete #autoCompleteAttribute="matAutocomplete">
+<mat-autocomplete #autoCompleteAttribute="matAutocomplete" [displayWith]="getPassportAlias">
   <mat-option *ngFor="let attribute of filteredAttributes$ | async" [value]="attribute.name">
-    {{attribute.name}}
+    {{attribute.passportAlias}}
   </mat-option>
 </mat-autocomplete>

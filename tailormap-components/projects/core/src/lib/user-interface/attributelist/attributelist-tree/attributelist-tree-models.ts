@@ -2,7 +2,6 @@ import {
   AttributeListFeature,
   AttributeListParameters,
 } from '../../../shared/attribute-service/attribute-models';
-import { Feature } from '../../../shared/generated';
 
 export interface TreeDialogData {
   rowsChecked: number;
@@ -15,7 +14,6 @@ export interface AttributelistNode {
   params: AttributeListParameters;
   isChild: boolean;
   features: AttributeListFeature[];
-  formFeatures?: Feature[];
   children?: AttributelistNode[];
   columnNames?: string[];
 }
@@ -32,4 +30,5 @@ export interface SelectedTreeData {
   params: AttributeListParameters;
   isChild: boolean;
   name: string;
+  numberOfFeatures: number;
 }

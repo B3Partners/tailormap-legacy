@@ -111,8 +111,12 @@ export class AttributelistTabToolbarComponent implements OnInit, OnDestroy {
 
   }
 
-  public onClearFilterClick(): void {
-    this.tab.table.onClearFilter();
+  public onClearLayerFilterClick(): void {
+    this.tab.table.onClearLayerFilter();
+  }
+
+  public onClearAllFilterClick(): void {
+    this.tab.table.onClearAllFilters();
   }
 
   public onSearchClick(): void {
@@ -122,5 +126,13 @@ export class AttributelistTabToolbarComponent implements OnInit, OnDestroy {
   public setTabIndex(tabIndex: number): void {
     // Get the corresponding layer.
     this.layer = this.layerService.getLayerByTabIndex(tabIndex);
+  }
+
+  public openAttributeTree(): void {
+    this.tab.table.openDialog();
+  }
+
+  public openPassportForm(): void {
+    this.tab.table.openPassportDialog();
   }
 }

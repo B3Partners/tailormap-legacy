@@ -99,6 +99,8 @@ public class AttributesActionBean extends LocalizableApplicationActionBean imple
     private boolean edit=false;
     @Validate
     private String filter;
+    @Validate
+    private boolean clearTotalCountCache=false;
 
     /**
      * set to {@code false}/{@code 0} to get attributes without alias
@@ -261,6 +263,10 @@ public class AttributesActionBean extends LocalizableApplicationActionBean imple
         this.edit = edit;
     }
 
+    public boolean isClearTotalCountCache() { return clearTotalCountCache; }
+
+    public void setClearTotalCountCache(boolean clearTotalCountCache) { this.clearTotalCountCache = clearTotalCountCache; }
+
     public List<Long> getAttributesToInclude() {
         return attributesToInclude;
     }
@@ -378,6 +384,9 @@ public class AttributesActionBean extends LocalizableApplicationActionBean imple
 
         Integer total = null;
         Long age = null;
+        if (clearTotalCountCache) {
+            clearTotalCountCache(context);
+        }
         Long cacheAppLayerId = (Long)session.getAttribute(CACHE_APPLAYER);
         if(appLayer.getId().equals(cacheAppLayerId)) {
             if((filter == null && session.getAttribute(CACHE_FILTER) == null)

@@ -74,7 +74,7 @@ export class CriteriaDescriptionComponent {
     if (condition.attributeType === AttributeTypeEnum.DATE) {
       value = moment(value).format('DD-MM-YYYY HH:mm');
     }
-    return `<strong>${condition.attribute}</strong> ${CriteriaDescriptionComponent.convertCondition(condition.condition)} <strong>${value}</strong>`;
+    return `<strong>${condition.attributeAlias || condition.attribute}</strong> ${CriteriaDescriptionComponent.convertCondition(condition.condition)} <strong>${value}</strong>`;
   }
 
   private static convertOperator(operator: CriteriaOperatorEnum) {

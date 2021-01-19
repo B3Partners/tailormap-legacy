@@ -15,19 +15,20 @@ import {
   FeatureControllerService,
 } from '../generated';
 import {
+  Observable,
   of,
   ReplaySubject,
 } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
 })
 export class FormconfigRepositoryService {
 
-  private formConfigs: FormConfigurations;
+  private formConfigs: Map<string, FormConfiguration>;
 
-  public formConfigs$ = new ReplaySubject<FormConfigurations>(1);
+  public formConfigs$ = new ReplaySubject<Map<string, FormConfiguration>>(1);
 
   constructor(
     private http: HttpClient,
@@ -39,14 +40,12 @@ export class FormconfigRepositoryService {
       params: new HttpParams().set('application', '' + this.tailorMap.getViewerController().app.id),
     })
       .subscribe((data: FormConfigurations) => {
-        this.formConfigs = {
-          config: new Map<string, FormConfiguration>(),
-        };
+        this.formConfigs = new Map<string, FormConfiguration>();
         const featureTypes = [];
         for (const key in data.config) {
           if (data.config.hasOwnProperty(key)) {
             const sanitized = LayerUtils.sanitizeLayername(key);
-            this.formConfigs.config[sanitized] = data.config[key];
+            this.formConfigs.set(sanitized, data.config[key]);
             featureTypes.push(sanitized);
           }
         }
@@ -58,16 +57,21 @@ export class FormconfigRepositoryService {
               return;
             }
             info.forEach(featuretypeMetadata => {
-              if (this.formConfigs.config[featuretypeMetadata.featuretypeName]) {
-                this.formConfigs.config[featuretypeMetadata.featuretypeName].featuretypeMetadata = featuretypeMetadata;
+              if (this.formConfigs.has(featuretypeMetadata.featuretypeName)) {
+                const config = this.formConfigs.get(featuretypeMetadata.featuretypeName);
+                this.formConfigs.set(featuretypeMetadata.featuretypeName, { ...config, featuretypeMetadata });
               }
             });
 
-            this.formConfigs$.next(data);
+            this.formConfigs$.next(this.formConfigs);
             this.domainRepo.initFormConfig(this.formConfigs);
         });
 
       });
+  }
+
+  public getFormConfigForLayer$(layerName: string): Observable<FormConfiguration | undefined> {
+    return this.formConfigs$.pipe(map(formConfigs => formConfigs.get(LayerUtils.sanitizeLayername(layerName))));
   }
 
   public getFeatureLabel(feature: Feature): string {
@@ -79,7 +83,6 @@ export class FormconfigRepositoryService {
       label = (label ? label : config.name) + ' (id: ' + id + ')';
     }
     return label;
-
   }
 
   private getFeatureValue(feature: Feature, key: string): any {
@@ -87,15 +90,15 @@ export class FormconfigRepositoryService {
     return val;
   }
 
-  public getAllFormConfigs(): FormConfigurations {
+  public getAllFormConfigs(): Map<string, FormConfiguration> {
     return this.formConfigs;
   }
 
   public getFormConfig(featureType: string): FormConfiguration {
-    return this.formConfigs.config[featureType];
+    return this.formConfigs.get(featureType);
   }
 
   public getFeatureTypes(): string[] {
-    return this.formConfigs ? Object.keys(this.formConfigs.config) : [];
+    return this.formConfigs ? Array.from(this.formConfigs.keys()) : [];
   }
 }

@@ -1,7 +1,7 @@
 import { Workflow } from './Workflow';
 import * as wellknown from 'wellknown';
 import {
-  Feature,
+  Feature, Geometry,
 } from '../../shared/generated';
 import { MapClickedEvent } from '../../shared/models/event-models';
 import { VectorLayer } from '../../../../../bridge/typings';
@@ -35,9 +35,10 @@ export class EditgeometryWorkflow extends Workflow {
         if (accepted) {
           const wkt = this.vectorLayer.getActiveFeature().config.wktgeom;
           const geoJson = wellknown.parse(wkt);
-          this.openForm(geoJson);
+          this.openForm(geoJson, true);
         } else {
           this.vectorLayer.removeAllFeatures();
+          this.openForm(geom, false);
           this.endWorkflow();
         }
         this.geometryConfirmService.hide();
@@ -45,7 +46,7 @@ export class EditgeometryWorkflow extends Workflow {
     }
   }
 
-  private openForm(geom: GeoJSONGeometry) {
+  private openForm(geom: GeoJSONGeometry | Geometry, geomChanged: boolean) {
     const feature = this.event.feature;
     const objecttype = feature.objecttype;
     const feat = this.featureInitializerService.create(objecttype,
@@ -54,7 +55,7 @@ export class EditgeometryWorkflow extends Workflow {
     const data : DialogData = {
       formFeatures: [feat],
       isBulk: false,
-      alreadyDirty: true,
+      alreadyDirty: geomChanged,
     };
 
     const dialogRef = this.dialog.open(FormComponent, {

@@ -168,6 +168,6 @@ export class SharedModule {
     private domSanitizer: DomSanitizer,
     private iconService: IconService,
   ) {
-    this.iconService.loadIconsToIconRegistry(matIconRegistry, domSanitizer);
+    this.iconService.loadIconsToIconRegistry(this.matIconRegistry, this.domSanitizer);
   }
 }

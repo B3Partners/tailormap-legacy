@@ -4,7 +4,7 @@
       <mat-expansion-panel>
         <mat-expansion-panel-header>
           <mat-panel-title>
-            Onderliggende objecten
+            Gerelateerde objecten
           </mat-panel-title>
         </mat-expansion-panel-header>
         <div class="tree">
@@ -21,11 +21,11 @@
       <mat-expansion-panel>
         <mat-expansion-panel-header>
           <mat-panel-title>
-            Instellingen
+            Opties
           </mat-panel-title>
         </mat-expansion-panel-header>
-        <p><mat-checkbox name="deleteRelated" id="deleteRelated" [checked]="false" (change)="setDeleteRelated($event)">Verwijder gerelateerde objecten van alle <br> geselecteerde hoofd objecten</mat-checkbox></p>
-        <p><mat-checkbox name="copyAllRelatedFeatures" id="copyAllRelatedFeatures" [checked]="isAllRelatedFeaturesSet()" (change)="setCopyAllRelatedFeatures($event)">Kopieer alle gerelateerde features</mat-checkbox></p>
+        <p><mat-checkbox name="deleteRelated" id="deleteRelated" [checked]="false" (change)="setDeleteRelated($event)">Verwijder alle gerelateerde objecten van alle <br> geselecteerde doelobjecten</mat-checkbox></p>
+        <p><mat-checkbox name="copyAllRelatedFeatures" id="copyAllRelatedFeatures" [checked]="isAllRelatedFeaturesSet()" (change)="setCopyAllRelatedFeatures($event)">Kopieer alle gerelateerde objecten</mat-checkbox></p>
       </mat-expansion-panel>
     </mat-accordion>
   </mat-sidenav>
@@ -33,7 +33,7 @@
     <h1 mat-dialog-title cdkDrag cdkDragRootElement=".cdk-overlay-pane">Kopiëren van {{originalFeature.clazz}}</h1>
 
     <p *ngIf="this.data.destinationFeatures.length < 1">Selecteer objecten om naar te kopiëren.</p>
-    <p *ngIf="this.data.destinationFeatures.length > 0">Aantal geselecteerde features: {{this.data.destinationFeatures.length}} </p>
+    <p *ngIf="this.data.destinationFeatures.length > 0">Aantal geselecteerde doelobjecten: {{this.data.destinationFeatures.length}} </p>
     <mat-divider></mat-divider>
     <div class="container">
       <div class="form">
@@ -55,7 +55,7 @@
     <div class="actions">
       <button mat-button (click)="settings()">Instellingen</button>
       <button mat-button (click)="cancel()">Annuleren</button>
-      <button mat-button [disabled]="this.data.destinationFeatures.length < 1" (click)="copy()"><p matTooltip="Selecteer object(en) om te kopieren">Bevestigen</p></button>
+      <button mat-button [disabled]="this.data.destinationFeatures.length < 1" (click)="beforeCopy()"><p matTooltip="Selecteer object(en) om te kopieren">Bevestigen</p></button>
     </div>
   </mat-sidenav-content>
 </mat-sidenav-container>
