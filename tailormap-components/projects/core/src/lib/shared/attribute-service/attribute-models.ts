@@ -11,6 +11,7 @@ export interface AttributeListParameters {
   // true (default) to get indexed results (c0:value,c1:value,... array), false to get normal response (attr_name:attr_value,...)
   arrays?: boolean;
   edit?: boolean;  // true for editting, false for not editting
+  clearTotalCountCache?: boolean;
   filter?: string; // cql filter
   aliases?: boolean; // true (default) get attributes with their aliases instead of names
   includeRelations?: boolean; // true (default) to get filter for related features

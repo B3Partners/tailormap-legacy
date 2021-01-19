@@ -1,7 +1,7 @@
 /* tslint:disable:no-string-literal */
 import {
   Component,
-  Inject,
+  Inject, OnDestroy,
   OnInit,
 } from '@angular/core';
 import {
@@ -18,15 +18,20 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { CopyDialogData } from './form-copy-models';
 import { FeatureInitializerService } from '../../shared/feature-initializer/feature-initializer.service';
 import { FormCopyService } from './form-copy.service';
+import { ConfirmDialogService } from '../../shared/confirm-dialog/confirm-dialog.service';
+import { takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'tailormap-form-copy',
   templateUrl: './form-copy.component.html',
   styleUrls: ['./form-copy.component.css'],
 })
-export class FormCopyComponent implements OnInit {
+export class FormCopyComponent implements OnInit, OnDestroy {
 
   private width = '400px';
+
+  private destroyed = new Subject();
 
   public originalFeature: Feature;
 
@@ -44,7 +49,13 @@ export class FormCopyComponent implements OnInit {
               private actionService: FormActionsService,
               private _snackBar: MatSnackBar,
               private featureInitializer: FeatureInitializerService,
-              private formCopyService: FormCopyService) {
+              private formCopyService: FormCopyService,
+              private confirmDialogService: ConfirmDialogService) {
+  }
+
+  public ngOnDestroy() {
+    this.destroyed.next();
+    this.destroyed.complete();
   }
 
   public ngOnInit(): void {
@@ -78,6 +89,16 @@ export class FormCopyComponent implements OnInit {
 
   public cancel() {
     this.dialogRef.close();
+  }
+
+  public beforeCopy(): void {
+    this.confirmDialogService.confirm$('Opslaan', 'Weet je het zeker?', true)
+      .pipe(takeUntil(this.destroyed)).subscribe(
+      (result) => {
+        if (result) {
+          this.copy();
+        }
+      })
   }
 
   public copy() {

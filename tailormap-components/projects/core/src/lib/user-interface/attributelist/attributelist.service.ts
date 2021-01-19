@@ -17,13 +17,29 @@ export class AttributelistService {
 
   public config: AttributelistConfig;
 
+  private loadTableDataSubject$ = new Subject();
+
+  private afterLoadRelatedDataSubject$ = new Subject();
+
   private updateTreeDataSubject$ = new Subject<AttributelistNode[]>();
 
   private selectedTreeDataSubject$ = new Subject<SelectedTreeData>(); // source voor Observable
 
+  public loadTableData$ = this.loadTableDataSubject$.asObservable();
+
+  public afterLoadRelatedData$ = this.afterLoadRelatedDataSubject$.asObservable();
+
   public updateTreeData$ = this.updateTreeDataSubject$.asObservable();
 
   public selectedTreeData$ = this.selectedTreeDataSubject$.asObservable(); // ingang naar Observable
+
+  public loadTableData(): void {
+    this.loadTableDataSubject$.next();
+  }
+
+  public afterLoadRelatedData(): void {
+    this.afterLoadRelatedDataSubject$.next();
+  }
 
   public updateTreeData(treeData: AttributelistNode[]): void {
     this.updateTreeDataSubject$.next(treeData);

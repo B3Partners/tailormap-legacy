@@ -2,15 +2,30 @@
 
   <div class="buttons">
     <button mat-flat-button color="primary"
-            (click)="onClearFilterClick();">
-      <span>Reset filter</span>
+            (click)="onClearLayerFilterClick();">
+      <span>Reset filter laag</span>
     </button>
 
     <button mat-flat-button color="primary"
-            (click)="createUserlayer();"
-            [style.display]="isUserLayer() ? 'none' : 'block'">
-      <span>Laag maken</span>
+            (click)="onClearAllFilterClick();">
+      <span>Reset alle filters</span>
     </button>
+
+    <button mat-flat-button color="primary"
+            (click)="openAttributeTree()"
+            [disabled]="false">
+      <span>Relaties</span>
+    </button>
+
+    <button mat-flat-button color="primary" [matMenuTriggerFor]="optiesMenu">
+      <span>Opties</span>
+      <mat-icon>keyboard_arrow_down</mat-icon>
+    </button>
+    <mat-menu #optiesMenu="matMenu" yPosition="below">
+      <button mat-menu-item  (click)="createUserlayer()">Laag maken</button>
+      <button mat-menu-item  (click)="openPassportForm()">Bewerk geselecteerde objecten</button>
+    </mat-menu>
+
   </div>
   <span class="spacer"></span>
 

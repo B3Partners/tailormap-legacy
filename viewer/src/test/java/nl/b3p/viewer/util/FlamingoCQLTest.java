@@ -20,11 +20,12 @@ import nl.b3p.viewer.config.app.ApplicationLayer;
 import nl.b3p.viewer.config.services.FeatureSource;
 import nl.b3p.viewer.config.services.Layer;
 import org.geotools.filter.text.cql2.CQLException;
-import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 import org.opengis.filter.And;
 import org.opengis.filter.Filter;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  *
@@ -95,6 +96,12 @@ public class FlamingoCQLTest extends TestUtil{
         assertEquals(")", cql.removeEnclosingParens("())"));
         assertEquals("(", cql.removeEnclosingParens("(()"));
         assertEquals("", cql.removeEnclosingParens("(())"));
+    }
+
+    @Test
+    public void testtoFilterRelatedLayerTwoFilters() throws CQLException {
+        Filter output = cql.toFilter("RELATED_LAYER(3,2,(fysiek_voork = 'aap' AND fysiek_voork in ('aap', 'kat')))", entityManager, false);
+        assertEquals(Subselect.class, output.getClass());
     }
 
     @Test

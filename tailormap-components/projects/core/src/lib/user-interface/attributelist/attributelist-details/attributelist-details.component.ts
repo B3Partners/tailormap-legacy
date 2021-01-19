@@ -18,6 +18,8 @@ import { LayerService } from '../layer.service';
 import { FormconfigRepositoryService } from '../../../shared/formconfig-repository/formconfig-repository.service';
 import { RelatedFeatureType } from '../../../shared/attribute-service/attribute-models';
 import { TailorMapService } from '../../../../../../bridge/src/tailor-map.service';
+import { ValueService } from '../../../shared/value-service/value.service';
+import { AttributelistService } from '../attributelist.service';
 
 @Component({
   selector: 'tailormap-attributelist-details',
@@ -48,11 +50,15 @@ export class AttributelistDetailsComponent implements OnInit,
 
   public dataSource = new AttributeDataSource(this.layerService,
     this.attributeService,
+    this.valueService,
+    this.attributelistService,
     this.tailorMapService,
     this.formconfigRepoService);
 
   constructor(private attributeService: AttributeService,
               private layerService: LayerService,
+              private valueService: ValueService,
+              private attributelistService: AttributelistService,
               private tailorMapService: TailorMapService,
               private formconfigRepoService: FormconfigRepositoryService) {
     // console.log('#Details - constructor');

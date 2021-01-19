@@ -28,7 +28,7 @@
 
 
     <button [disabled]="!formDirty && !data.closeAfterSave"
-            mat-flat-button color="primary"  (click)="formCreator.save();">
+            mat-flat-button color="primary"  (click)="formCreator.beforeSave();">
 
       <span *ngIf="!data.closeAfterSave" >Opslaan</span>
       <span *ngIf="data.closeAfterSave" >Volgende</span>

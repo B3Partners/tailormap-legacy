@@ -28,7 +28,7 @@ import {
   AttributeListParameters,
   AttributeListResponse,
   AttributeMetadataParameters,
-  AttributeMetadataResponse,
+  AttributeMetadataResponse, RelatedFeatureType,
 } from '../../../shared/attribute-service/attribute-models';
 import {
   CheckState,
@@ -47,6 +47,9 @@ import { FormFieldHelpers } from '../../../feature-form/form-field/form-field-he
 import { map, take } from 'rxjs/operators';
 import { AttributelistNode, SelectedTreeData } from '../attributelist-tree/attributelist-tree-models';
 import { TailorMapService } from '../../../../../../bridge/src/tailor-map.service';
+import { AttributelistService } from '../attributelist.service';
+import { ValueService } from '../../../shared/value-service/value.service';
+import { ValueParameters } from '../../../shared/value-service/value-models';
 
 export class AttributeDataSource extends DataSource<any> {
 
@@ -55,6 +58,15 @@ export class AttributeDataSource extends DataSource<any> {
 
   // The REST API params (layerName,filter,...) for retrieving the data.
   public params = new DatasourceParams();
+
+  // The related feature types of the mainFeature
+  public relatedFeatures = new Map<number, RelatedFeatureType>();
+
+  public relatedLeftSides = new Map<number, string>();
+
+  public relatedRightSides = new Map<number, string>();
+
+  public uniqueMainFeatureIds = new Map<number, string[]>();
 
   // The paginator for paging.
   public paginator?: MatPaginator;
@@ -72,6 +84,8 @@ export class AttributeDataSource extends DataSource<any> {
 
   constructor(private layerService: LayerService,
               private attributeService: AttributeService,
+              private valueService: ValueService,
+              private attributelistService: AttributelistService,
               private tailorMapService: TailorMapService,
               private formconfigRepoService: FormconfigRepositoryService) {
     super();
@@ -143,6 +157,18 @@ export class AttributeDataSource extends DataSource<any> {
     return cnt;
   }
 
+  public getAllRowAsAttributeListFeature(): AttributeListFeature[] {
+    const features: AttributeListFeature[] = [];
+    this.rows.forEach( (row: RowData) => {
+      features.push({
+        features: row,
+        related_featuretypes: row.related_featuretypes,
+        __fid: row.__fid,
+      });
+    });
+    return features;
+  }
+
   public getCheckedRowsAsAttributeListFeature(): AttributeListFeature[] {
     const featuresChecked: AttributeListFeature[] = [];
     this.rows.forEach( (row: RowData) => {
@@ -182,6 +208,23 @@ export class AttributeDataSource extends DataSource<any> {
     return featuresChecked;
   }
 
+  /**
+   * Get relatedFeatures map as array
+   */
+
+  public getRelatedFeaturesAsArray(): RelatedFeatureType[] {
+    const features = [];
+    if (this.relatedFeatures.size > 0) {
+      this.relatedFeatures.forEach((feature, key) => {
+        features.push(feature);
+      });
+    }
+    return features;
+  }
+
+  /**
+   * sets all the rows checked
+   */
   public setAllRowsChecked(): void {
     this.rows.forEach( (row: RowData) => {
         row._checked = true;
@@ -211,20 +254,15 @@ export class AttributeDataSource extends DataSource<any> {
       }
     });
 
-    let filter = '';
-    if (this.params.valueFilter) {
-      filter = this.params.valueFilter + ' AND (' + this.params.featureFilter + ')';
-    } else {
-      filter = this.params.featureFilter;
-    }
     const attrParams: AttributeListParameters = {
       application: this.layerService.getAppId(),
       appLayer: this.params.layerId,
-      filter,
-      limit: 999,
+      filter: this.params.valueFilter,
+      limit: this.paginator.pageSize,
       page: 1,
       featureType: this.params.featureTypeId,
       start: 0,
+      clearTotalCountCache: true,
     };
     return forkJoin([
       this.formconfigRepoService.formConfigs$.pipe(take(1), map(formConfigs => {
@@ -238,7 +276,7 @@ export class AttributeDataSource extends DataSource<any> {
     ]).pipe(map(([columns, response]) => {
       return {
         name: passportName,
-        numberOfFeatures: response.features.length,
+        numberOfFeatures: response.total,
         features: response.features,
         columnNames: columns,
         isChild: true,
@@ -248,7 +286,12 @@ export class AttributeDataSource extends DataSource<any> {
   }
 
   public loadTableData(attrTable: AttributelistTable, selectedTreeData: SelectedTreeData): void {
+    if (selectedTreeData == null) {
+      attrTable.onAfterLoadData();
+      return;
+    }
     this.columnController.setPassportColumnNames(selectedTreeData.columnNames);
+    this.totalNrOfRows = selectedTreeData.numberOfFeatures;
     this.rows.splice(0, this.rows.length);
     selectedTreeData.features.forEach((feature) => {
       if (feature.features) {
@@ -256,8 +299,16 @@ export class AttributeDataSource extends DataSource<any> {
       } else {
         this.rows.push(feature);
       }
-    })
-    attrTable.onAfterLoadData();
+    });
+    this.getMetaData$().subscribe((result) => {
+        const columnDefs: Attribute[] = this.metadataGetColumns('', result);
+        this.columnController.setDataColumnNames(columnDefs);
+        this.columnController.setAttributes(columnDefs);
+      }, () => {},
+      () => {
+        // attrTable.onAfterLoadData();
+        this.attributelistService.afterLoadRelatedData();
+      });
   }
 
   private getMetadataParams(): AttributeMetadataParameters {
@@ -347,6 +398,8 @@ export class AttributeDataSource extends DataSource<any> {
       } else {
         attrParams.filter = this.params.featureFilter;
       }
+    } else {
+
     }
 
     // Set paging params.
@@ -355,11 +408,11 @@ export class AttributeDataSource extends DataSource<any> {
       attrParams.page = 1;
       attrParams.start = this.paginator.pageIndex * this.paginator.pageSize;
     } else {
-      attrParams.limit = 999;
+      attrParams.limit = -1;
       attrParams.page = 1;
       attrParams.start = 0;
     }
-
+    attrParams.clearTotalCountCache = true;
     // Set sorting params.
     attrParams.dir = this.sorter.direction.toUpperCase();
     if (attrParams.dir === '') {
@@ -401,7 +454,33 @@ export class AttributeDataSource extends DataSource<any> {
             // TODO: combine these methods?
             this.columnController.setDataColumnNames(columnDefs);
             this.columnController.setAttributes(columnDefs);
+
+            metadata.relations.forEach(relation => {
+              relation.relationKeys.forEach(key => {
+                this.relatedLeftSides.set(relation.foreignFeatureType, key.leftSideName);
+                this.relatedRightSides.set(relation.foreignFeatureType, key.rightSideName);
+              });
+            })
           }
+
+          const valueParams: ValueParameters = {
+            applicationLayer: this.params.layerId,
+            attributes: [],
+            maxFeatures: -1,
+          };
+          if (attrParams.filter) {
+            valueParams.filter = attrParams.filter;
+          }
+          if (!this.params.hasDetail()) {
+            this.relatedLeftSides.forEach((leftside, key) => {
+              valueParams.attributes = [];
+              valueParams.attributes.push(leftside);
+              this.valueService.uniqueValues$(valueParams).subscribe((data) => {
+                this.uniqueMainFeatureIds.set(key, data.uniqueValues[leftside]);
+              });
+            });
+          }
+
 
           // Get the features.
           this.attributeService.features$(attrParams).subscribe(
@@ -446,6 +525,9 @@ export class AttributeDataSource extends DataSource<any> {
                     // Add property _details and set initial state.
                     if (d.related_featuretypes.length > 0) {
                       d._details = DetailsState.YesCollapsed;
+                      d.related_featuretypes.forEach((rel) => {
+                        this.relatedFeatures.set(rel.id, rel);
+                      });
                     } else {
                       d._details = DetailsState.No;
                     }
