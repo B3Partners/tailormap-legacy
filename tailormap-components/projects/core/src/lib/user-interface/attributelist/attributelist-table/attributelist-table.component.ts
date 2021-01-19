@@ -776,6 +776,7 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
       data: {
         formFeatures,
         isBulk: formFeatures.length > 1,
+        closeAfterSave: true,
       },
     });
   }
