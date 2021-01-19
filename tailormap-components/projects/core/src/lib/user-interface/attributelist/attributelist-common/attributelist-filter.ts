@@ -300,14 +300,6 @@ export class AttributelistFilter {
       this.featureFilter = filtermap.get(-1).getFeatureFilter();
       this.createRelatedFilter();
     }
-    filtermap.forEach((attributeListFilter, key) => {
-      // clear for relatedLayer
-      if (key !== -1) {
-        console.log('clear related filter');
-      } else { // clear for mainLayer
-        console.log('clear main filter');
-      }
-    })
   }
 
   public clearFilter(attributelistForFilter: AttributelistForFilter): void {
