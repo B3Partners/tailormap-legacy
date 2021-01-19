@@ -425,6 +425,9 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
   }
 
   public openDialog() {
+    if (this.dataSource.getNrChecked() > 0) {
+      this.onObjectOptionsClick();
+    }
     if (this.isAttributeTreeOpen) {
       return;
     }
