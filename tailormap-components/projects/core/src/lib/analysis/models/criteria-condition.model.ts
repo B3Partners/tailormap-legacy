@@ -6,6 +6,7 @@ export interface CriteriaConditionModel {
   relatedTo?: number;
   attribute?: string;
   attributeType?: AttributeTypeEnum;
+  attributeAlias?: string;
   condition?: string;
   value?: string;
 }

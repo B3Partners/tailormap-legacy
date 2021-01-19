@@ -7,9 +7,9 @@ import { of } from 'rxjs';
 export const mockConfigsJson = '{"config": {"test": {"tabs": 1,"name": "testFT","featureType": "test","treeNodeColumn" : "colToShow","newPossible": true,"tabConfig": {"1": "test"},"relation":null,"fields": [{ "key": "colToShow","column" : 1,"tab": 1,"type": "textfield"}]}}}';
 
 const featureRepoSpy = createSpyObject(FormconfigRepositoryService, {
-  formConfigs$: of({ config: new Map() }),
+  formConfigs$: of(new Map()),
   getAllFormConfigs: function(){
-    return {config: {}};
+    return new Map();
   },
   getFormConfig: function(){
     return {fields: []};

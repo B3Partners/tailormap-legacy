@@ -4,7 +4,7 @@ import {
 } from '../../shared/generated';
 
 export interface FormConfigurations {
-  config: Map<string, FormConfiguration>;
+  config: Record<string, FormConfiguration>;
 }
 
 export interface FormConfiguration {

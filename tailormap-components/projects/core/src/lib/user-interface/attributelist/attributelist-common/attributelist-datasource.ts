@@ -205,7 +205,7 @@ export class AttributeDataSource extends DataSource<any> {
     let columnNames: string[] = [];
     // let response: AttributelistNode;
     this.formconfigRepoService.formConfigs$.subscribe(formConfigs => {
-      const formConfig = formConfigs.config[passportName];
+      const formConfig = formConfigs.get(passportName);
       if (formConfig && formConfig.fields) {
         columnNames = formConfig.fields.map(attr => attr.key);
       }
@@ -228,7 +228,7 @@ export class AttributeDataSource extends DataSource<any> {
     };
     return forkJoin([
       this.formconfigRepoService.formConfigs$.pipe(take(1), map(formConfigs => {
-        const formConfig = formConfigs.config[passportName];
+        const formConfig = formConfigs.get(passportName);
         if (formConfig && formConfig.fields) {
           columnNames = formConfig.fields.map(attr => attr.key);
         }
@@ -298,7 +298,7 @@ export class AttributeDataSource extends DataSource<any> {
 
       // Get passport field/column names.
       this.formconfigRepoService.formConfigs$.subscribe(formConfigs => {
-        const formConfig = formConfigs.config[passportName];
+        const formConfig = formConfigs.get(passportName);
 
         // FOR TESTING!!!
         // const formConfig = null;

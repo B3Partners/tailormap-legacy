@@ -6,13 +6,14 @@ import { selectSelectedDataSource } from '../../state/analysis.selectors';
 import { concatMap, debounceTime, filter, takeUntil } from 'rxjs/operators';
 import { BehaviorSubject, forkJoin, of, Subject } from 'rxjs';
 import { MetadataService } from '../../../application/services/metadata.service';
-import { Attribute, AttributeMetadataResponse } from '../../../shared/attribute-service/attribute-models';
+import { AttributeMetadataResponse } from '../../../shared/attribute-service/attribute-models';
 import { AnalysisSourceModel } from '../../models/analysis-source.model';
 import { CriteriaConditionModel } from '../../models/criteria-condition.model';
 import { CriteriaHelper } from '../helpers/criteria.helper';
 import { AttributeTypeEnum } from '../../../application/models/attribute-type.enum';
 import { CriteriaConditionTypeModel } from '../../models/criteria-condition-type.model';
 import * as moment from 'moment';
+import { PassportAttributeModel } from '../../../application/models/passport-attribute.model';
 
 type AttributeSource = Omit<AnalysisSourceModel, 'geometryType' | 'geometryAttribute'>;
 
@@ -189,7 +190,7 @@ export class CriteriaComponent implements OnInit, OnDestroy {
     return this.formData.attributeType === AttributeTypeEnum.DATE;
   }
 
-  public attributeSelected($event: { attribute: Attribute; attributeType: AttributeTypeEnum }) {
+  public attributeSelected($event: { attribute: PassportAttributeModel; attributeType: AttributeTypeEnum }) {
     if (this.formData.attributeType !== $event.attributeType) {
       this.filteredConditionsSubject$.next(this.getConditionsForAttributeType($event.attributeType));
     }
@@ -197,6 +198,7 @@ export class CriteriaComponent implements OnInit, OnDestroy {
       ...this.formData,
       attribute: $event.attribute.name,
       attributeType: $event.attributeType,
+      attributeAlias: $event.attribute.passportAlias,
     };
     this.setDisabledState();
     this.emitChanges();
