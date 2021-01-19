@@ -35,18 +35,18 @@ export class AttributelistFilter {
     applicationLayer: 0,
     attributes: [],
     maxFeatures: -1,
-  }
+  };
 
   public layerFilterValues: LayerFilterValues = {
     layerId: 0,
     columns: [],
   };
 
-  private valueFilter: string;
+  private valueFilter = '';
 
-  private relatedFilter: string;
+  private relatedFilter = '';
 
-  private featureFilter: string;
+  private featureFilter = '';
 
   public initFiltering(colNames: string[]): void {
     if (this.layerFilterValues.columns.length === 0) {
@@ -84,7 +84,7 @@ export class AttributelistFilter {
     return this.valueFilter;
   }
 
-  public updateValueFilterWithFeatureFilter(): void {
+  private getValueFilterCombinedWithFeatureFilter(): string {
     let filter = '';
     if (this.valueFilter) {
       filter = this.valueFilter;
@@ -95,7 +95,21 @@ export class AttributelistFilter {
     if (this.featureFilter && this.valueFilter) {
       filter = this.valueFilter + ' AND (' + this.featureFilter + ')';
     }
-    this.valueFilter = filter;
+    return filter;
+  }
+
+  private getValueFilterCombinedWithRelatedFilter(): string {
+    let filter = '';
+    if (this.valueFilter) {
+      filter = this.valueFilter;
+    }
+    if (this.relatedFilter) {
+      filter = this.relatedFilter;
+    }
+    if (this.relatedFilter && this.valueFilter) {
+      filter = this.relatedFilter + ' AND ' + this.valueFilter;
+    }
+    return filter;
   }
 
   public updateValueFilterWithRelatedLayerFilter(filtermap: Map<number, AttributelistFilter>): void {
@@ -119,7 +133,7 @@ export class AttributelistFilter {
   /**
    * Create the CQL filter string
    */
-  public createFilter(filtermap: Map<number, AttributelistFilter>): string {
+  public createFilter() {
     this.valueFilter = '';
     let filteredColumns = 0;
     this.layerFilterValues.columns.forEach((c) => {
@@ -158,24 +172,9 @@ export class AttributelistFilter {
 
       }
     });
-    this.updateValueFilterWithFeatureFilter();
-    if (this.dataSource.params.hasDetail()) {
-      this.updateValueFilterWithRelatedLayerFilter(filtermap);
-    } else {
-      let filter = '';
-      if (this.relatedFilter) {
-        filter = this.relatedFilter;
-        if (this.valueFilter) {
-          this.valueFilter = filter + 'AND ' + this.valueFilter;
-        } else {
-          this.valueFilter = filter;
-        }
-      }
-    }
-    return this.valueFilter;
   }
 
-  public setFilter(attributelistForFilter: AttributelistForFilter, columnName: string, filtermap: Map<number, AttributelistFilter>): void {
+  public setFilter(attributelistForFilter: AttributelistForFilter, columnName: string): void {
     // Get the unique values for this column
     this.columnController = attributelistForFilter.columnController;
     this.valueParams.applicationLayer = this.dataSource.params.layerId;
@@ -242,7 +241,9 @@ export class AttributelistFilter {
                 }
               }
             }
-            this.dataSource.params.valueFilter = this.createFilter(filtermap);
+            this.createFilter();
+            this.createRelatedFilter();
+            this.dataSource.params.valueFilter = this.valueFilter;
             attributelistForFilter.refreshTable();
           }
         });
@@ -250,13 +251,67 @@ export class AttributelistFilter {
     });
   }
 
-  public clearFilter(attributelistForFilter: AttributelistForFilter, filtermap: Map<number, AttributelistFilter>): void {
-    this.layerFilterValues.columns.forEach((c) => {
-      c.status = false;
-      c.criteria = null;
-      c.uniqueValues = [];
-      c.filterType = '';
-    });
+  public getFinalFilter(filtermap: Map<number, AttributelistFilter>): string {
+    let filter = '';
+    // build finalFeature for relatedTable (combine valuefilter with featurefilter)
+    if (this.dataSource.params.featureTypeId !== -1) {
+      filter = this.getValueFilterCombinedWithFeatureFilter();
+    } else { // check if there are relatedFilters on the relatedTables and combine these with its own valueFilter and set relatedFilter
+      let relFilter = '';
+      filtermap.forEach((attributeListFilter, key) => {
+        if (key !== -1) {
+          if (attributeListFilter.relatedFilter && relFilter) {
+            relFilter += ' AND ';
+          }
+          if (attributeListFilter.relatedFilter) {
+            relFilter += attributeListFilter.relatedFilter;
+          }
+        }
+      });
+      this.relatedFilter = relFilter;
+      filter = this.getValueFilterCombinedWithRelatedFilter();
+    }
+    return filter;
+  }
+
+  private createRelatedFilter(): void {
+    // -1 is the mainTable feature
+    if (this.dataSource.params.featureTypeId !== -1) {
+      let filter = '';
+      if (this.getValueFilterCombinedWithFeatureFilter()) {
+        filter += 'RELATED_LAYER(' +
+          this.dataSource.params.layerId + ',' +
+          this.dataSource.params.featureTypeId + ',(' +
+          this.getValueFilterCombinedWithFeatureFilter() + '))';
+      }
+      this.relatedFilter = filter;
+    }
+  }
+
+  public clearFilterForLayer(filtermap: Map<number, AttributelistFilter>, rowsChecked: boolean): void {
+    this.clearFilterOnColumns();
+    this.valueFilter = '';
+    if (this.dataSource.params.featureTypeId !== -1) {
+      this.featureFilter = '';
+    }
+    if (!rowsChecked) {
+      this.createRelatedFilter();
+    } else {
+      this.featureFilter = filtermap.get(-1).getFeatureFilter();
+      this.createRelatedFilter();
+    }
+    filtermap.forEach((attributeListFilter, key) => {
+      // clear for relatedLayer
+      if (key !== -1) {
+        console.log('clear related filter');
+      } else { // clear for mainLayer
+        console.log('clear main filter');
+      }
+    })
+  }
+
+  public clearFilter(attributelistForFilter: AttributelistForFilter): void {
+    this.clearFilterOnColumns();
 
     this.valueFilter = '';
     this.relatedFilter = '';
@@ -264,8 +319,18 @@ export class AttributelistFilter {
     this.dataSource.params.featureFilter = '';
     this.dataSource.params.featureFilter = '';
     this.dataSource.params.valueFilter = '';
-    this.createFilter(filtermap);
+    this.createFilter();
   }
+
+  private clearFilterOnColumns(): void {
+    this.layerFilterValues.columns.forEach((c) => {
+      c.status = false;
+      c.criteria = null;
+      c.uniqueValues = [];
+      c.filterType = '';
+    });
+  }
+
   public getAttributeType (columnName: string): AttributeTypeEnum {
     return AttributeTypeHelper.getAttributeType(this.columnController.getAttributeForColumnName(columnName))
   }
