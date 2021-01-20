@@ -780,4 +780,8 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
       },
     });
   }
+
+  public isRelatedFeatures(): boolean {
+    return this.dataSource.getRelatedFeaturesAsArray().length > 0;
+  }
 }
