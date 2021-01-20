@@ -1,11 +1,25 @@
 name: Ubuntu Maven build
 
-on: [push, pull_request]
-
+on: 
+  push:
+    branches:
+    - master
+    - v5.8.x
+    - v5.6.x
+    - v5.4.x
+  pull_request:
+    branches: 
+    - master
+    - v5.4.x
+    - v5.6.x
+    - v5.8.x
+  workflow_dispatch:
+    branches: []
+ 
 jobs:
   build:
     name: Ubuntu Java ${{ matrix.java }}
-    runs-on: [ubuntu-latest]
+    runs-on: [ubuntu-20.04]
     strategy:
       matrix:
         java: [1.8, 11]

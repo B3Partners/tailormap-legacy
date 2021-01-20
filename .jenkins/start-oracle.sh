@@ -35,4 +35,4 @@ done
 docker logs oracle-flamingo
 
 printf "\nSetup Flamingo user\n"
-sqlplus -l system/oracle@//192.168.1.26:15211/XE < .jenkins/create_oracle_user.sql
+sqlplus -l system/oracle@//127.0.0.1:15211/XE < .jenkins/create_oracle_user.sql
