@@ -172,6 +172,7 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
   public save() {
     const feature = this.formgroep.value;
     feature.__fid = this.feature.objectGuid;
+    const clazzName = this.feature.clazz;
     this.mergeFormToFeature(feature);
     this.actions.save$(this.isBulk, this.isBulk ? this.features : [this.feature], this.features[0]).subscribe(savedFeature => {
         const fs = this.updateFeatureInArray(savedFeature, this.features);
@@ -187,7 +188,7 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
       },
       () => {
         // Update attributelist after feature is saved
-        this.attributeService.loadTableData();
+        this.attributeService.loadTableData(clazzName);
       });
   }
 

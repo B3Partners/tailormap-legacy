@@ -161,7 +161,10 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
   public ngOnInit(): void {
     // called from passport form
     this.attributelistService.loadTableData$.pipe(takeUntil(this.destroyed)).subscribe(result => {
-      this.refreshTable();
+      // reload only table if the savedFeature is the same as the main feature for this table
+      if (result === this.dataSource.mainFeatureClazzName) {
+        this.refreshTable();
+      }
     });
 
     this.attributelistService.afterLoadRelatedData$.pipe(takeUntil(this.destroyed)).subscribe((result) => {
