@@ -1,25 +1,14 @@
 import { Injectable } from '@angular/core';
-import {
-  HttpClient,
-  HttpParams,
-} from '@angular/common/http';
-import {
-  FormConfiguration,
-  FormConfigurations,
-} from '../../feature-form/form/form-models';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Attribute, FormConfiguration, FormConfigurations, FormFieldType } from '../../feature-form/form/form-models';
 import { DomainRepositoryService } from '../../feature-form/linked-fields/domain-repository/domain-repository.service';
 import { TailorMapService } from '../../../../../bridge/src/tailor-map.service';
 import { LayerUtils } from '../layer-utils/layer-utils.service';
-import {
-  Feature,
-  FeatureControllerService,
-} from '../generated';
-import {
-  Observable,
-  of,
-  ReplaySubject,
-} from 'rxjs';
+import { Feature, FeatureControllerService } from '../generated';
+import { Observable, of, ReplaySubject } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
+import { FormFieldHelpers } from '../../feature-form/form-field/form-field-helpers';
+import { AttributeListFeature } from '../attribute-service/attribute-models';
 
 @Injectable({
   providedIn: 'root',
@@ -76,18 +65,25 @@ export class FormconfigRepositoryService {
 
   public getFeatureLabel(feature: Feature): string {
     const config: FormConfiguration = this.getFormConfig(feature.clazz);
-    let label = this.getFeatureValue(feature, config.treeNodeColumn);
+    let label = this.getFeatureValueForField(feature, config.treeNodeColumn, config);
     if (config.idInTreeNodeColumn) {
       const id = feature.objectGuid;
-
       label = (label ? label : config.name) + ' (id: ' + id + ')';
     }
     return label;
   }
 
-  private getFeatureValue(feature: Feature, key: string): any {
-    const val = feature[key];
-    return val;
+  public getFeatureValueForField(feat: Feature | AttributeListFeature, key: string, config : FormConfiguration): string {
+    const attr: Attribute = config.fields.find(field => field.key === key);
+    let value = feat[key];
+    if (attr.type === FormFieldType.DOMAIN) {
+      attr.options.forEach(option => {
+        if ((FormFieldHelpers.isNumber(value) && option.val === parseInt('' + value, 10))) {
+          value = option.label;
+        }
+      });
+    }
+    return value;
   }
 
   public getAllFormConfigs(): Map<string, FormConfiguration> {

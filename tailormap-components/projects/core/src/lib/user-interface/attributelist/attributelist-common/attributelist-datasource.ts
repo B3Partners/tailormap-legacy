@@ -41,9 +41,7 @@ import { LayerService } from '../layer.service';
 import { LayerUtils } from '../../../shared/layer-utils/layer-utils.service';
 import {
   FormConfiguration,
-  FormFieldType,
 } from '../../../feature-form/form/form-models';
-import { FormFieldHelpers } from '../../../feature-form/form-field/form-field-helpers';
 import { map, take } from 'rxjs/operators';
 import { AttributelistNode, SelectedTreeData } from '../attributelist-tree/attributelist-tree-models';
 import { TailorMapService } from '../../../../../../bridge/src/tailor-map.service';
@@ -561,18 +559,7 @@ export class AttributeDataSource extends DataSource<any> {
       ...feat,
     };
     formConfig.fields.forEach(field => {
-      if (field.type === FormFieldType.DOMAIN) {
-        let value = feat[field.key] || '';
-
-        field.options.forEach(option => {
-          if ((FormFieldHelpers.isNumber(value) && option.val === parseInt( '' + value, 10))) {
-            value = option.label;
-          }
-        });
-        newFeat[field.key] = value;
-      } else {
-        newFeat[field.key] = feat[field.key];
-      }
+      newFeat[field.key] = this.formconfigRepoService.getFeatureValueForField(newFeat, field.key, formConfig);
     });
     return newFeat;
   }
