@@ -205,14 +205,15 @@ Ext.define ("viewer.components.TOC",{
             xtype: 'toolbar',
             dock: 'bottom',
             height: '48px',
+            width: '100%',
             padding: '4px 0 4px 0',
-            layout: {
-                pack: 'end'
-            },
             items: [
                 {
                     xtype: 'container',
-                    html: '<div style="height: 36px;" class="button-container"></div>',
+                    width: '100%',
+                    height: 40,
+                    flex: 1,
+                    html: '<div style="height: 40px;" class="button-container"></div>',
                     listeners: {
                         render: function(container) {
                             analysisComponents[0].addButton(container.getEl().dom.querySelector('.button-container'), container);

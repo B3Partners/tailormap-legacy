@@ -19,6 +19,13 @@ export class ApplicationEffects {
     })), { dispatch: false },
   );
 
+  public removeAppLayer$ = createEffect(() => this.actions$.pipe(
+    ofType(ApplicationActions.removeAppLayer),
+    tap(action => {
+      this.tailormapService.getViewerController().removeUserLayer({ ...action.layer });
+    }),
+  ), { dispatch: false });
+
   constructor(
     private actions$: Actions,
     private tailormapService: TailorMapService,

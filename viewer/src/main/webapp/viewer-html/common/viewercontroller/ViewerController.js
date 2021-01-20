@@ -449,6 +449,26 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         this.setSelectedContent(selectedContent);
     },
 
+    removeUserLayer: function(appLayer) {
+        // Add app layer
+        if(this.app.appLayers.hasOwnProperty(appLayer.id)) {
+            delete this.app.appLayers[appLayer.id];
+        }
+        // Modify selected content / level
+        var selectedContent = Ext.Array.filter(Ext.clone(this.app.selectedContent), function(item) {
+            return (item !== 'appLayer' || item.id !== appLayer.id);
+        });
+        var levels = Ext.clone(this.app.levels);
+        for (var levelId in levels) if (levels.hasOwnProperty(levelId)) {
+            levels[levelId].layers = Ext.Array.filter(levels[levelId].layers || [], function(layer) {
+                return '' + layer.id !== '' + appLayer.id;
+            });
+        }
+        this.app.levels = levels;
+        // triggers selected content changed
+        this.setSelectedContent(selectedContent);
+    },
+
     counter: 0,
     max: 0,
     /**

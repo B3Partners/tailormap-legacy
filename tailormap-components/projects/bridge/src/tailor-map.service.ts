@@ -39,7 +39,8 @@ export class TailorMapService {
   private extentChangedSubject$: Subject<ExtentChangedEvent> = new Subject<ExtentChangedEvent>();
   public extentChanged$ = this.extentChangedSubject$.asObservable();
 
-  public selectedLayer$: Subject<AppLayer> = new Subject<AppLayer>();
+  private selectedLayerSubject$: Subject<AppLayer> = new Subject<AppLayer>();
+  public selectedLayerChanged$ = this.selectedLayerSubject$.asObservable();
   public selectedLayer: AppLayer;
 
   public getAppLoader(): AppLoader {
@@ -82,6 +83,7 @@ export class TailorMapService {
     });
     vc.addListener('ON_LAYER_SELECTED', (event) => {
       this.selectedLayer = event.appLayer;
+      this.selectedLayerSubject$.next(event.appLayer);
     });
     this.applicationConfigSubject$.next(this.getAppLoader().getApplicationConfig());
   }

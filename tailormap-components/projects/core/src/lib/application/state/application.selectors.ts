@@ -91,3 +91,11 @@ export const selectAppLayerForId = createSelector(
   selectLayers,
   (layers, appLayerId: string) => layers.find(layer => layer.id === appLayerId),
 );
+
+export const selectSelectedAppLayerId = createSelector(selectApplicationState, state => state.selectedAppLayer);
+
+export const selectSelectedAppLayer = createSelector(
+  selectLayers,
+  selectSelectedAppLayerId,
+  (appLayers, selectedLayerId) => appLayers.find(a => a.id === selectedLayerId),
+);
