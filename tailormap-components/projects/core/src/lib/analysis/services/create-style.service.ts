@@ -110,9 +110,6 @@ export class CreateStyleService {
     }
     return this.metadataService.getUniqueValuesAndTotalForAttribute$(appLayer, attribute)
       .pipe(
-        /*
-        Step 3: Map unique values and total count to styles
-        */
         map((featureInfoRequests: UniqueValueCountResponse[]) => {
           const styles = featureInfoRequests
             .sort((r1, r2) => {

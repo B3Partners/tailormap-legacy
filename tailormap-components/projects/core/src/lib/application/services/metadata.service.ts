@@ -95,14 +95,8 @@ export class MetadataService implements OnDestroy {
   ): Observable<UniqueValueCountResponse[]> {
     const attribute: PassportAttributeModel = { ...passportAttribute };
     const appLayer = appLayerId;
-    /*
-    Step 1: Get the unique values
-    */
     return this.valueService.uniqueValues$({ applicationLayer: appLayerId, attributes: [ passportAttribute.name ] })
       .pipe(
-        /*
-        Step 2: Get total count for each of the unique values
-        */
         switchMap((uniqueValuesResponse: UniqueValuesResponse) => {
           if (!uniqueValuesResponse.uniqueValues
             || !uniqueValuesResponse.uniqueValues.hasOwnProperty(attribute.name)
