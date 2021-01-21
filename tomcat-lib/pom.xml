@@ -53,23 +53,26 @@
         </dependency>
         <!-- using provided scope to note the optional extra libs for Java 11, 
              probably geotools pulls these in as well -->
-        <dependency>
+        <!--  komt ook met iets anders mee en zit dus in de WEB-INF/lib als jaxb-api-2.4.0-b180830.0359.jar
+        dependency>
             <groupId>jakarta.xml.bind</groupId>
             <artifactId>jakarta.xml.bind-api</artifactId>
             <version>${jaxb.api.version}</version>
             <scope>provided</scope>
-        </dependency>
-        <dependency>
+        </dependency -->
+        <!--  komt ook met iets anders mee en zit dus in de WEB-INF/lib als jaxb-runtime-2.4.0-b180830.0438.jar
+        dependency>
             <groupId>org.glassfish.jaxb</groupId>
             <artifactId>jaxb-runtime</artifactId>
             <version>${jaxb.impl.version}</version>
             <scope>provided</scope>
-        </dependency>
-        <dependency>
+        </dependency -->
+        <!-- is een transitieve dependency van jakarta.mail, dus deze hebben we al
+        dependency>
             <groupId>jakarta.activation</groupId>
             <artifactId>jakarta.activation-api</artifactId>
             <version>${activation.api.version}</version>
             <scope>provided</scope>
-        </dependency>
+        </dependency -->
     </dependencies>
 </project>
