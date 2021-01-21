@@ -80,6 +80,14 @@ export class AttributelistTabToolbarComponent implements OnInit, OnDestroy {
     return this.layer && this.tailorMapService.getApplayerById(this.layer.id).userlayer;
   }
 
+  public isRelations(): boolean {
+    let isRel = false;
+    if (this.tab.table) {
+      isRel = this.tab.table.isRelatedFeatures();
+    }
+    return isRel;
+  }
+
   public createUserlayer(): void {
       const dialogRef = this.dialog.open(AttributelistLayernameChooserComponent, {
         width: '250px',
