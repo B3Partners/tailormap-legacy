@@ -1,10 +1,14 @@
 import { Spectator, createComponentFactory } from '@ngneat/spectator';
 
 import { ErrorMessageComponent } from './error-message.component';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 describe('ErrorMessageComponent', () => {
   let spectator: Spectator<ErrorMessageComponent>;
-  const createComponent = createComponentFactory(ErrorMessageComponent);
+  const createComponent = createComponentFactory({
+    component: ErrorMessageComponent,
+    schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
+  });
 
   it('should create', () => {
     spectator = createComponent();
