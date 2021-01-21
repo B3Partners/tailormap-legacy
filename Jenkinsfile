@@ -47,7 +47,7 @@ timestamps {
                     sh "mvn -e clean test -B"
                 }
 
-                lock("flamingo-oracle-${NODE_NAME}") {
+                lock("flamingo-oracle") {
                     try {
                         timeout(90) {
                             stage("Prepare Oracle: ${indexOfJdk}") {
