@@ -33,8 +33,8 @@ export class AttributelistService {
 
   public selectedTreeData$ = this.selectedTreeDataSubject$.asObservable(); // ingang naar Observable
 
-  public loadTableData(): void {
-    this.loadTableDataSubject$.next();
+  public loadTableData(clazzName: string): void {
+    this.loadTableDataSubject$.next(clazzName);
   }
 
   public afterLoadRelatedData(): void {

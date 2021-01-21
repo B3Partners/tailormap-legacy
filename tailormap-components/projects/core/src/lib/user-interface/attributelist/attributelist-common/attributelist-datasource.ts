@@ -69,6 +69,9 @@ export class AttributeDataSource extends DataSource<any> {
   // The paginator for paging.
   public paginator?: MatPaginator;
 
+  // the clazz name for the mainFeature
+  public mainFeatureClazzName = '';
+
   // The sorter for sorting.
   public sorter: MatSort;
 
@@ -501,6 +504,8 @@ export class AttributeDataSource extends DataSource<any> {
                   passportName = LayerUtils.sanitizeLayername(this.params.featureTypeName);
                 } else {
                   passportName = this.params.layerName;
+                  const appLayer = this.tailorMapService.getApplayerById(this.params.layerId);
+                  this.mainFeatureClazzName = LayerUtils.sanitizeLayername(appLayer);
                 }
                 const formConfig = this.formconfigRepoService.getFormConfig(passportName);
 
