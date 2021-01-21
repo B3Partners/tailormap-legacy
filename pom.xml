@@ -137,11 +137,11 @@
             <dependency>
                 <groupId>org.apache.xmlgraphics</groupId>
                 <artifactId>fop</artifactId>
-                <version>2.5</version>
+                <version>2.6</version>
                 <exclusions>
                     <!-- fop-core comes with a load of deps we don't want -->
                     <exclusion>
-                        <!-- fop-core 2.5 drags in servlet api 2.2 -->
+                        <!-- fop-core 2.6 drags in servlet api 2.2 -->
                         <groupId>javax.servlet</groupId>
                         <artifactId>servlet-api</artifactId>
                     </exclusion>
