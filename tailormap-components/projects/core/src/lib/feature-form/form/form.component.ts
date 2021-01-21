@@ -26,6 +26,7 @@ import { FormActionsService } from '../form-actions/form-actions.service';
 import { FormconfigRepositoryService } from '../../shared/formconfig-repository/formconfig-repository.service';
 import { WorkflowActionManagerService } from '../../workflow/workflow-controller/workflow-action-manager.service';
 import { WORKFLOW_ACTION } from '../../workflow/workflow-controller/workflow-models';
+import { MetadataService } from '../../application/services/metadata.service';
 
 @Component({
   selector: 'tailormap-form',
@@ -48,6 +49,7 @@ export class FormComponent implements OnDestroy, OnChanges {
               @Inject(MAT_DIALOG_DATA) public data: DialogData,
               private _snackBar: MatSnackBar,
               private ngZone: NgZone,
+              private metadataService: MetadataService,
               private formConfigRepo: FormconfigRepositoryService,
               public actions: FormActionsService,
               public workflowAction: WorkflowActionManagerService) {
@@ -55,10 +57,6 @@ export class FormComponent implements OnDestroy, OnChanges {
     this.features = data.formFeatures;
     this.feature = this.features[0];
     this.isBulk = !!data.isBulk;
-    const configs = this.formConfigRepo.getAllFormConfigs();
-    configs.forEach((config, key) => {
-      this.formsForNew.push(config);
-    });
     this.initForm();
   }
 
@@ -75,6 +73,11 @@ export class FormComponent implements OnDestroy, OnChanges {
     if (this.data.alreadyDirty) {
       this.formDirty = true;
     }
+    this.metadataService.getFeatureTypeMetadata$(this.feature.clazz);
+    const configs = this.formConfigRepo.getAllFormConfigs();
+    configs.forEach((config, key) => {
+      this.formsForNew.push(config);
+    });
   }
 
   public ngOnChanges(changes: SimpleChanges): void {

@@ -12,6 +12,7 @@ import {
 } from 'rxjs';
 import { FeatureInitializerService } from '../../shared/feature-initializer/feature-initializer.service';
 import { FormconfigRepositoryService } from '../../shared/formconfig-repository/formconfig-repository.service';
+import { LayerUtils } from '../../shared/layer-utils/layer-utils.service';
 
 
 @Injectable({
@@ -70,7 +71,7 @@ export class FormActionsService {
   }
 
   public newItem$(evt, features): Observable<any> {
-    const type = evt.srcElement.id;
+    const type = LayerUtils.sanitizeLayername(evt.srcElement.id);
     const formConfig = this.formConfigRepo.getFormConfig(type);
     const name = 'Nieuwe ' + formConfig.name;
 

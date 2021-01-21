@@ -1,24 +1,10 @@
-import {
-  Injectable,
-  OnDestroy,
-} from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 import { AttributeService } from '../../shared/attribute-service/attribute.service';
 import { Store } from '@ngrx/store';
 import { ApplicationState } from '../state/application.state';
 import { selectApplicationId } from '../state/application.selectors';
-import {
-  map,
-  switchMap,
-  takeUntil,
-  takeWhile,
-  tap,
-} from 'rxjs/operators';
-import {
-  combineLatest,
-  Observable,
-  of,
-  Subject,
-} from 'rxjs';
+import { map, switchMap, takeUntil, takeWhile, tap } from 'rxjs/operators';
+import { combineLatest, Observable, of, Subject } from 'rxjs';
 import { AttributeMetadataResponse } from '../../shared/attribute-service/attribute-models';
 import { FormconfigRepositoryService } from '../../shared/formconfig-repository/formconfig-repository.service';
 import { Attribute as GbiAttribute } from '../../feature-form/form/form-models';
