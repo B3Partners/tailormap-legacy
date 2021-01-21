@@ -25,10 +25,6 @@ button mat-spinner {
   display: inline-block;
 }
 
-.form-errors {
-  padding-top: 14px;
-}
-
 .create-layer-mode {
   display: block;
   margin-top: 14px;

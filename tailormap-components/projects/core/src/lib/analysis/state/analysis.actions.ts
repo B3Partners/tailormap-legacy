@@ -7,7 +7,6 @@ import { AnalysisSourceModel } from '../models/analysis-source.model';
 import { CriteriaTypeEnum } from '../models/criteria-type.enum';
 import { CriteriaModel } from '../models/criteria.model';
 import { UserLayerStyleModel } from '../models/user-layer-style.model';
-import { ScopedUserLayerStyleModel } from '../models/scoped-user-layer-style.model';
 import { PassportAttributeModel } from '../../application/models/passport-attribute.model';
 
 const analysisActionsPrefix = '[Analysis]';
@@ -55,24 +54,18 @@ export const setSelectedThematicAttribute = createAction(
   props<{ attribute: PassportAttributeModel }>(),
 );
 
-export const loadThematicStyles = createAction(
-  `${analysisActionsPrefix} Load Thematic Styles`,
-  props<{ attribute: PassportAttributeModel, appLayer: number }>(),
+export const loadStyles = createAction(
+  `${analysisActionsPrefix} Load Styles`,
 );
 
-export const loadThematicStylesSuccess = createAction(
-  `${analysisActionsPrefix} Thematic Styles Loaded`,
-  props<{ styles: ScopedUserLayerStyleModel[] }>(),
-);
-
-export const loadThematicStylesFailed = createAction(
-  `${analysisActionsPrefix} Load Thematic Styles`,
-  props<{ error: string }>(),
-);
-
-export const setStyles = createAction(
-  `${analysisActionsPrefix} Set Styles`,
+export const loadStylesSuccess = createAction(
+  `${analysisActionsPrefix} Styles Loaded`,
   props<{ styles: UserLayerStyleModel[] }>(),
+);
+
+export const loadStylesFailed = createAction(
+  `${analysisActionsPrefix} Load Styles Failed`,
+  props<{ error: string }>(),
 );
 
 export const setSelectedStyle = createAction(

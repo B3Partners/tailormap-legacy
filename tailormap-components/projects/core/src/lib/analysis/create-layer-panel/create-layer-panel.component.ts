@@ -17,7 +17,7 @@ import {
   Subject,
 } from 'rxjs';
 import { map, takeUntil } from 'rxjs/operators';
-import { clearCreateLayerMode, closeSidePanels } from '../state/analysis.actions';
+import { clearCreateLayerMode, closeSidePanels, loadStyles } from '../state/analysis.actions';
 import { CriteriaTypeEnum } from '../models/criteria-type.enum';
 
 @Component({
@@ -71,17 +71,23 @@ export class CreateLayerPanelComponent implements OnInit, OnDestroy {
   }
 
   public moveToStyling() {
-    this.selectedTabIndex = 1;
-    this.closeSidePanels();
+    this.selectedTabIndexChanged(1);
   }
 
   public selectedTabIndexChanged($event: number) {
     this.selectedTabIndex = $event;
+    if (this.selectedTabIndex === 1) {
+      this.createStylesIfNeeded();
+    }
     this.closeSidePanels();
   }
 
   private closeSidePanels() {
     this.store$.dispatch(closeSidePanels());
+  }
+
+  private createStylesIfNeeded() {
+    this.store$.dispatch(loadStyles());
   }
 
 }

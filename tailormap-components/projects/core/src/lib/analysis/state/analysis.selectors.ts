@@ -2,6 +2,11 @@ import { createFeatureSelector, createSelector } from '@ngrx/store';
 import { AnalysisState, analysisStateKey } from './analysis.state';
 import { CriteriaHelper } from '../criteria/helpers/criteria.helper';
 import { CreateLayerModeEnum } from '../models/create-layer-mode.enum';
+import { PassportAttributeModel } from '../../application/models/passport-attribute.model';
+import { AnalysisSourceModel } from '../models/analysis-source.model';
+import { CriteriaModel } from '../models/criteria.model';
+import { UserLayerStyleModel } from '../models/user-layer-style.model';
+import { CreateLayerDataModel } from '../models/create-layer-data.model';
 
 const selectAnalysisState = createFeatureSelector<AnalysisState>(analysisStateKey);
 
@@ -27,9 +32,27 @@ export const selectCreateLayerErrorMessage = createSelector(selectAnalysisState,
 
 export const selectCreatedAppLayer = createSelector(selectAnalysisState, state => state.createdAppLayer);
 
+export const selectLoadingStyles = createSelector(selectAnalysisState, state => state.loadingStyles);
+
+export const selectStyleErrorMessage = createSelector(selectAnalysisState, state => state.loadStylesErrorMessage);
+
 export const selectStyles = createSelector(selectAnalysisState, state => state.styles);
 
 export const selectSelectedStyle = createSelector(selectAnalysisState, state => state.selectedStyle);
+
+export const selectStylesSortedByFeatureCount = createSelector(
+  selectStyles,
+  styles => {
+    if (!styles) {
+      return [];
+    }
+    return [...styles].sort((s1, s2) => {
+      const featureCount1 = s1.featureCount || 0;
+      const featureCount2 = s2.featureCount || 0;
+      return featureCount1 === featureCount2 ? 0 : (featureCount1 > featureCount2) ? -1 : 1;
+    });
+  },
+);
 
 export const selectSelectedStyleModel = createSelector(
   selectStyles,
@@ -83,15 +106,26 @@ export const selectCreateLayerData = createSelector(
   selectCreateLayerMode,
   selectSelectedDataSource,
   selectCriteria,
+  selectSelectedThematicAttribute,
   selectLayerName,
   selectStyles,
   selectCanCreateLayer,
   selectCreatedAppLayer,
-  (createLayerMode, selectedDataSource, criteria, layerName, styles, canCreateLayer, createdAppLayer) => {
+  (
+    createLayerMode: CreateLayerModeEnum,
+    selectedDataSource: AnalysisSourceModel,
+    criteria: CriteriaModel,
+    thematicAttribute: PassportAttributeModel,
+    layerName: string,
+    styles: UserLayerStyleModel[],
+    canCreateLayer: boolean,
+    createdAppLayer: string,
+  ): CreateLayerDataModel => {
     return {
       createLayerMode,
       selectedDataSource,
       criteria,
+      thematicAttribute,
       layerName,
       styles,
       canCreateLayer,
