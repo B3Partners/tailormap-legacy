@@ -954,7 +954,6 @@
         "group": "Map",
         "shortName": "NgAttrList",
         "sources": ["NgAttributeList.js"],
-        "type": "popup",
         "singleton": true,
         "configSource": ["ConfigObject.js","SelectionWindowConfig.js","NgAttributeList-config.js"],
         "restrictions": ["left_menu"]

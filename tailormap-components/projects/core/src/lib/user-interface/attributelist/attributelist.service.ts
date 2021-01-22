@@ -3,7 +3,7 @@
  */
 
 import { Injectable } from '@angular/core';
-import { AttributelistConfig } from './attributelist-common/attributelist-models';
+import { AttributelistConfig } from './models/attributelist.config';
 import { Subject } from 'rxjs';
 import {
   AttributelistNode,

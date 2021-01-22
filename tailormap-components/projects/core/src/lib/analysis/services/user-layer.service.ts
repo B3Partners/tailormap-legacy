@@ -135,6 +135,7 @@ export class UserLayerService {
             layer: {
               ...createLayerResult.message.appLayer,
               background: false,
+              visible: false,
             },
             service: createLayerResult.message.service,
             levelId: level ? level.id : '',

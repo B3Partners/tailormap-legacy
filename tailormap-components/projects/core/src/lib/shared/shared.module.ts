@@ -57,6 +57,9 @@ import { ColorPickerComponent } from './color-picker/color-picker.component';
 import { IconPickerComponent } from './icon-picker/icon-picker.component';
 import { IconService } from './icons/icon.service';
 import { DomSanitizer } from '@angular/platform-browser';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatTableModule } from '@angular/material/table';
 
 @NgModule({
   declarations: [
@@ -103,6 +106,9 @@ import { DomSanitizer } from '@angular/platform-browser';
     MatExpansionModule,
     MatSidenavModule,
     MatSnackBarModule,
+    MatToolbarModule,
+    MatPaginatorModule,
+    MatTableModule,
   ],
   exports: [
     ReactiveFormsModule,
@@ -139,6 +145,9 @@ import { DomSanitizer } from '@angular/platform-browser';
     MatSnackBarModule,
     DragDropModule,
     MatDatepickerModule,
+    MatToolbarModule,
+    MatPaginatorModule,
+    MatTableModule,
     CapitalizeFirstPipe,
     ConfirmDialogComponent,
   ],

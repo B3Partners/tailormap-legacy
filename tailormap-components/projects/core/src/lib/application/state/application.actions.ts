@@ -5,6 +5,7 @@ import {
   Level,
   SelectedContentItem,
 } from '../../../../../bridge/typings';
+import { TailormapAppLayer } from '../models/tailormap-app-layer.model';
 
 const applicationActionsPrefix = '[Application]';
 
@@ -15,15 +16,20 @@ export const setApplicationContent = createAction(
 
 export const addAppLayer = createAction(
   `${applicationActionsPrefix} Add App Layer`,
-  props<{ layer: AppLayer, service: GeoService, levelId: string }>(),
+  props<{ layer: TailormapAppLayer, service: GeoService, levelId: string }>(),
 );
 
 export const removeAppLayer = createAction(
   `${applicationActionsPrefix} Remove App Layer`,
-  props<{ layer: AppLayer }>(),
+  props<{ layer: TailormapAppLayer }>(),
 );
 
 export const setSelectedAppLayer = createAction(
   `${applicationActionsPrefix} Set Selected App Layer`,
   props<{ layerId: string }>(),
+);
+
+export const setLayerVisibility = createAction(
+  `${applicationActionsPrefix} Set Layer Visibility`,
+  props<{ visibility: Map<string, boolean> }>(),
 );

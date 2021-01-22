@@ -11,7 +11,9 @@ export class IconService {
   public icons: Array<string | { folder: string, icons: string[] }> = [
     'draw_polygon', 'draw_line', 'draw_point', 'split', 'new_object', 'merge',
     'contextual_drag', 'contextual_chevron_bottom', 'contextual_chevron_left', 'contextual_chevron_right', 'contextual_chevron_top',
-    'interface_trash_filled', { folder: 'markers', icons: [ 'arrow', 'circle', 'cross', 'square', 'star', 'triangle', 'x' ] },
+    'interface_trash_filled',
+    { folder: 'markers', icons: [ 'arrow', 'circle', 'cross', 'square', 'star', 'triangle', 'x' ] },
+    { folder: 'components', icons: [ 'attributelist' ] },
   ];
 
   constructor(

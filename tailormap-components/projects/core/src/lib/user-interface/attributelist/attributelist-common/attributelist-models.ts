@@ -1,4 +1,5 @@
 import { AttributelistColumnController } from './attributelist-column-controller';
+import { AttributelistConfig } from '../models/attributelist.config';
 
 export interface AttributelistTable {
   onAfterLoadData: () => void;
@@ -7,11 +8,6 @@ export interface AttributelistTable {
 export interface AttributelistForFilter {
   columnController: AttributelistColumnController;
   refreshTable: () => void;
-}
-
-export interface AttributelistConfig {
-  pageSize: number;
-  zoomToBuffer: number;
 }
 
 // Array of properties of type any.

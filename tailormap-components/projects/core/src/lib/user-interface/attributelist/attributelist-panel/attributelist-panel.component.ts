@@ -24,7 +24,13 @@ import {
   MatTabGroup,
 } from '@angular/material/tabs';
 import { HighlightService } from '../../../shared/highlight-service/highlight.service';
-// import { Test } from '../test';
+import { Store } from '@ngrx/store';
+import { AttributelistState } from '../state/attributelist.state';
+import { setAttributelistVisibility } from '../state/attributelist.actions';
+import { selectApplicationTreeWithoutBackgroundLayers, selectVisibleLayers } from '../../../application/state/application.selectors';
+import { takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
+import { LayerUtils } from '../../../shared/layer-utils/layer-utils.service';
 
 @Component({
   selector: 'tailormap-attributelist-panel',
@@ -60,16 +66,28 @@ export class AttributelistPanelComponent implements OnInit, AfterViewInit, Layou
 
   // The height of the caption bar.
   private captionbarHeight = 30;
-  public showPanel: boolean;
 
-  constructor(private elementRef: ElementRef,
-              private layerService: LayerService,
-              private highlightService: HighlightService,
-              private layoutService: LayoutService) {
+  private destroyed = new Subject();
+
+  constructor(
+    private store$: Store<AttributelistState>,
+    private elementRef: ElementRef,
+    private layerService: LayerService,
+    private highlightService: HighlightService,
+    private layoutService: LayoutService,
+  ) {
   }
 
   public ngOnInit(): void {
-    this.getLayers();
+    this.store$.select(selectVisibleLayers)
+      .pipe(takeUntil(this.destroyed))
+      .subscribe(layers => {
+        this.layers = layers.filter(layer => layer.attribute).map<Layer>(layer => ({
+          id: +(layer.id),
+          alias: layer.alias,
+          name: LayerUtils.sanitizeLayername(layer.layerName),
+        }));
+      });
   }
 
   public ngAfterViewInit(): void {
@@ -88,25 +106,8 @@ export class AttributelistPanelComponent implements OnInit, AfterViewInit, Layou
     return this.captionbarHeight;
   }
 
-  /**
-   * https://phpenthusiast.com/blog/develop-angular-php-app-getting-the-list-of-items
-   */
-  public getLayers(): void {
-    this.layerService.layers$.subscribe(
-      (data: Layer[]) => {
-        this.layers = data;
-        // console.log('#Panel - getLayers');
-        // console.log(this.layers);
-      },
-    );
-  }
-
   public onCloseClick(): void {
-    this.show(false);
-    // this.layoutService.close(this);
-
-    this.panelClose.emit();
-
+    this.store$.dispatch(setAttributelistVisibility({ visible: false }));
     // Clear highligthing.
     this.highlightService.clearHighlight();
   }
@@ -159,37 +160,4 @@ export class AttributelistPanelComponent implements OnInit, AfterViewInit, Layou
     }
   }
 
-  public onTestClick(): void {
-
-    // console.log("# Test - WegvakonderdeelPlanning");
-    // Test.getAttrWegvakonderdeelPlanning(this.attributeService);
-    // console.log(this.elementRef.nativeElement.parentElement);
-    // this.elementRef.nativeElement.parentElement.zoomToFeature({});
-    // this.onZoomToFeature.emit({
-    //   feature: 'hoi',
-    // });
-
-    // const currentIndex = this.tabgroup.selectedIndex;
-    // const tab = this.layerService.getTabComponent(currentIndex);
-    // if (tab !== null) {
-    //   tab.table.onTest();
-    // }
-  }
-
-  /**
-   * Shows of hides the panel.
-   *
-   * Remark:
-   *   Using a div with *ngIf in the template consumes space on the page
-   *   even when the panel is not visible.
-   */
-  public show(show: boolean): void {
-    const domElem = this.elementRef.nativeElement;
-    if (show) {
-      domElem.style.display = 'block';
-    } else {
-      domElem.style.display = 'none';
-    }
-    this.showPanel = show;
-  }
 }

@@ -2,7 +2,7 @@ import { Injectable, OnDestroy } from '@angular/core';
 import { TailorMapService } from '../../../../../bridge/src/tailor-map.service';
 import { Store } from '@ngrx/store';
 import { ApplicationState } from '../state/application.state';
-import { setApplicationContent, setSelectedAppLayer } from '../state/application.actions';
+import { setApplicationContent, setLayerVisibility, setSelectedAppLayer } from '../state/application.actions';
 import { take, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 
@@ -28,6 +28,20 @@ export class ApplicationService implements OnDestroy {
           levels: Object.values(app.levels),
           layers: Object.values(app.appLayers),
         }));
+      });
+
+    tailormapService.layersInitialized$
+      .pipe(takeUntil(this.destroyed))
+      .subscribe(() => {
+        const visibleLayers = tailormapService.getViewerController().getVisibleLayers();
+        const layerVisibility = new Map<string, boolean>(visibleLayers.map(layerId => [ `${layerId}`, true ]));
+        store$.dispatch(setLayerVisibility({ visibility: layerVisibility }));
+      });
+
+    tailormapService.layerVisibilityChanged$
+      .pipe(takeUntil(this.destroyed))
+      .subscribe(event => {
+        store$.dispatch(setLayerVisibility({ visibility: new Map<string, boolean>([[ `${event.layer.id}`, event.visible ]]) }));
       });
 
     tailormapService.selectedLayerChanged$

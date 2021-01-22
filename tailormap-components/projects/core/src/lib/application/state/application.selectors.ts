@@ -99,3 +99,8 @@ export const selectSelectedAppLayer = createSelector(
   selectSelectedAppLayerId,
   (appLayers, selectedLayerId) => appLayers.find(a => a.id === selectedLayerId),
 );
+
+export const selectVisibleLayers = createSelector(
+  selectLayers,
+  (appLayers) => appLayers.filter(layer => layer.visible),
+);

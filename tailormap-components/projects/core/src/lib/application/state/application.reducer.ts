@@ -10,6 +10,8 @@ import {
   Level,
   SelectedContentItem,
 } from '../../../../../bridge/typings';
+import { TailormapAppLayer } from '../models/tailormap-app-layer.model';
+import { setLayerVisibility } from './application.actions';
 
 const onSetApplicationContent = (
   state: ApplicationState,
@@ -18,11 +20,11 @@ const onSetApplicationContent = (
   ...state,
   applicationId: payload.id,
   root: payload.root,
-  layers: payload.layers.map(l => ({...l, id: `${l.id}`})),
+  layers: payload.layers.map(l => ({...l, id: `${l.id}`, visible: false})),
   levels: payload.levels.map(l => ({...l, id: `${l.id}`})),
 });
 
-const onAddAppLayer = (state: ApplicationState, payload: { layer: AppLayer, levelId?: string }): ApplicationState => {
+const onAddAppLayer = (state: ApplicationState, payload: { layer: TailormapAppLayer, levelId?: string }): ApplicationState => {
   const levelIdx = state.levels.findIndex(l => l.id === payload.levelId);
   if (levelIdx === -1) {
     return {
@@ -60,7 +62,7 @@ const onAddAppLayer = (state: ApplicationState, payload: { layer: AppLayer, leve
   };
 };
 
-const onRemoveLayer = (state: ApplicationState, payload: { layer: AppLayer }): ApplicationState => {
+const onRemoveLayer = (state: ApplicationState, payload: { layer: TailormapAppLayer }): ApplicationState => {
   try {
     const layerIdx = (state.layers || []).findIndex(l => l.id === payload.layer.id);
     const selectedContentIdx = (state.root || []).findIndex(item => item.type === 'appLayer' && item.id === payload.layer.id);
@@ -96,12 +98,21 @@ const onSetSelectedAppLayer = (state: ApplicationState, payload: { layerId: stri
   selectedAppLayer: payload.layerId,
 });
 
+const onSetLayerVisibility = (state: ApplicationState, payload: { visibility: Map<string, boolean> }): ApplicationState => ({
+  ...state,
+  layers: state.layers.map(layer => ({
+    ...layer,
+    visible: payload.visibility.has(layer.id) ? payload.visibility.get(layer.id) : layer.visible,
+  })),
+});
+
 const applicationReducerImpl = createReducer(
   initialApplicationState,
   on(ApplicationActions.setApplicationContent, onSetApplicationContent),
   on(ApplicationActions.addAppLayer, onAddAppLayer),
   on(ApplicationActions.removeAppLayer, onRemoveLayer),
   on(ApplicationActions.setSelectedAppLayer, onSetSelectedAppLayer),
+  on(ApplicationActions.setLayerVisibility, onSetLayerVisibility),
 );
 
 export const applicationReducer = (state: ApplicationState | undefined, action: Action) => {
