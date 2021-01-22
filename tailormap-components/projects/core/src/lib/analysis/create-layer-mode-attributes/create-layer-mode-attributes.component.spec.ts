@@ -3,7 +3,6 @@ import { createComponentFactory, Spectator } from '@ngneat/spectator';
 import { analysisStateKey, initialAnalysisState } from '../state/analysis.state';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { SharedModule } from '../../shared/shared.module';
-import { IdService } from '../../shared/id-service/id.service';
 import { CriteriaDescriptionComponent } from '../criteria/criteria-description/criteria-description.component';
 
 describe('CreateLayerModeAttributesComponent', () => {
@@ -16,7 +15,6 @@ describe('CreateLayerModeAttributesComponent', () => {
     imports: [ SharedModule ],
     providers: [
       provideMockStore({ initialState }),
-      IdService,
     ],
     declarations: [
       CriteriaDescriptionComponent,

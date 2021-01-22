@@ -16,11 +16,7 @@
   <tailormap-create-layer-mode-attributes *ngIf="isCreatingAttributesLayer()" class="create-layer-mode"></tailormap-create-layer-mode-attributes>
   <tailormap-create-layer-mode-thematic *ngIf="isCreatingThematicLayer()" class="create-layer-mode"></tailormap-create-layer-mode-thematic>
 
-  <div class="form-field form-errors" *ngIf="errorMessage$ | async as errorMessage">
-    <mat-error>
-      {{errorMessage}}
-    </mat-error>
-  </div>
+  <tailormap-error-message *ngIf="errorMessage$ | async as errorMessage" [errorMessage]="errorMessage"></tailormap-error-message>
 
 </div>
 <div class="buttons">

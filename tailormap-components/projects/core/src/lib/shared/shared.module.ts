@@ -60,6 +60,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatTableModule } from '@angular/material/table';
+import { ErrorMessageComponent } from './error-message/error-message.component';
 
 @NgModule({
   declarations: [
@@ -70,6 +71,7 @@ import { MatTableModule } from '@angular/material/table';
     ColorPickerComponent,
     IconPickerComponent,
     CapitalizeFirstPipe,
+    ErrorMessageComponent,
   ],
   imports: [
     ApiModule.forRoot({
@@ -150,6 +152,7 @@ import { MatTableModule } from '@angular/material/table';
     MatTableModule,
     CapitalizeFirstPipe,
     ConfirmDialogComponent,
+    ErrorMessageComponent,
   ],
   entryComponents: [],
   providers: [

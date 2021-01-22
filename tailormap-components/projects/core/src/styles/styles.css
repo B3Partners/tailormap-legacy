@@ -197,6 +197,9 @@
 .form-field .form-button .mat-button-wrapper span {
   flex: 1;
   text-align: left;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .datepicker-input {

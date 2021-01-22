@@ -56,8 +56,7 @@ export class LayerService {
   }
 
   public getAppId(): number {
-    const vc = this.tailorMapService.getViewerController();
-    return vc.app.id;
+    return this.tailorMapService.getApplicationId();
   }
 
   /**

@@ -13,6 +13,7 @@ import { FeatureControllerService } from '../../shared/generated';
 import { FormConfigMockModule } from '../../shared/formconfig-repository/formconfig-mock.module.spec';
 import { createComponentFactory, Spectator } from '@ngneat/spectator';
 import { getDialogRefMockProvider } from '../../shared/tests/test-mocks';
+import { getMetadataServiceMockProvider } from '../../application/services/mocks/metadata.service.mock';
 
 describe('FormComponent', () => {
   let spectator: Spectator<FormComponent>;
@@ -44,6 +45,7 @@ describe('FormComponent', () => {
           lookup: {}
         },
       },
+      getMetadataServiceMockProvider(),
     ]
   });
 

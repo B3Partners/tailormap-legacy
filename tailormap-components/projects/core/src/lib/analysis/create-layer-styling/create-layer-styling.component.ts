@@ -11,9 +11,9 @@ import { AnalysisState } from '../state/analysis.state';
 import {
   selectCanCreateLayer,
   selectCreateLayerErrorMessage,
-  selectIsCreatingLayer,
-  selectSelectedDataSource,
-  selectStyles,
+  selectIsCreatingLayer, selectLoadingStyles,
+  selectSelectedDataSource, selectStyleErrorMessage,
+  selectStylesSortedByFeatureCount,
 } from '../state/analysis.selectors';
 import { takeUntil } from 'rxjs/operators';
 import {
@@ -38,6 +38,8 @@ export class CreateLayerStylingComponent implements OnInit, OnDestroy {
   public selectedDataSource: AnalysisSourceModel;
 
   public errorMessage$: Observable<string>;
+  public styleErrorMessage$: Observable<string>;
+  public isLoadingStyles$: Observable<boolean>;
 
   private destroyed = new Subject();
   public styles: UserLayerStyleModel[];
@@ -56,13 +58,15 @@ export class CreateLayerStylingComponent implements OnInit, OnDestroy {
     this.store$.select(selectIsCreatingLayer).pipe(takeUntil(this.destroyed)).subscribe(isCreatingLayer => {
       this.isCreatingLayer = isCreatingLayer;
     });
-    this.store$.select(selectStyles).pipe(takeUntil(this.destroyed)).subscribe(styles => {
+    this.store$.select(selectStylesSortedByFeatureCount).pipe(takeUntil(this.destroyed)).subscribe(styles => {
       this.styles = styles;
     });
     this.store$.select(selectSelectedDataSource).pipe(takeUntil(this.destroyed)).subscribe(selectedDataSource => {
       this.selectedDataSource = selectedDataSource;
     });
+    this.isLoadingStyles$ = this.store$.select(selectLoadingStyles);
     this.errorMessage$ = this.store$.select(selectCreateLayerErrorMessage);
+    this.styleErrorMessage$ = this.store$.select(selectStyleErrorMessage);
   }
 
   public ngOnDestroy() {
@@ -113,7 +117,11 @@ export class CreateLayerStylingComponent implements OnInit, OnDestroy {
   }
 
   public getStyleLabel(style: UserLayerStyleModel) {
-    return StyleHelper.getStyleLabel(style);
+    const label = [ StyleHelper.getStyleLabel(style) ];
+    if (style.featureCount) {
+      label.push(`(${style.featureCount} objecten)`);
+    }
+    return label.join(' ');
   }
 
   public setSelectedStyle(style: UserLayerStyleModel) {

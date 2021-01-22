@@ -54,6 +54,10 @@ export class TailorMapService {
     return this.getAppLoader().get('contextPath') as string;
   }
 
+  public getApplicationId(): number {
+    return +(this.getAppLoader().get('appId'));
+  }
+
   public getViewerController(): ViewerController {
     return this.getAppLoader().get('viewerController') as ViewerController;
   }
