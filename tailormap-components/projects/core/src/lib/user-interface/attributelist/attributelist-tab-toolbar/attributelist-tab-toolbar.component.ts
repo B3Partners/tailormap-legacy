@@ -2,8 +2,6 @@ import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { AttributelistColumn } from '../attributelist-common/attributelist-column-models';
 import { ExportService } from '../../../shared/export-service/export.service';
 import { ExportFeaturesParameters } from '../../../shared/export-service/export-models';
-import { Layer } from '../layer.model';
-import { LayerService } from '../layer.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AttributelistTabComponent } from '../attributelist-tab/attributelist-tab.component';
 import { TailorMapService } from '../../../../../../bridge/src/tailor-map.service';
@@ -25,7 +23,8 @@ export class AttributelistTabToolbarComponent implements OnInit, OnDestroy {
   @Input()
   public tab: AttributelistTabComponent;
 
-  private layer: Layer;
+  @Input()
+  public layerId: number;
 
   public columns: AttributelistColumn[];
   private destroyed = new Subject();
@@ -40,7 +39,6 @@ export class AttributelistTabToolbarComponent implements OnInit, OnDestroy {
   constructor(
     private exportService: ExportService,
     private userLayer: UserLayerService,
-    private layerService: LayerService,
     private tailorMapService: TailorMapService,
     public dialog: MatDialog,
     private metadataService: MetadataService,
@@ -48,7 +46,7 @@ export class AttributelistTabToolbarComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
-    this.exportParams.application = this.layerService.getAppId();
+    this.exportParams.application = this.tailorMapService.getApplicationId();
   }
 
   public ngOnDestroy() {
@@ -60,7 +58,7 @@ export class AttributelistTabToolbarComponent implements OnInit, OnDestroy {
    * format = 'CSV', 'GEOJSON', 'XLS', 'SHP'
    */
   public onExportClick(format: string): void {
-    this.exportParams.appLayer = this.layer.id;
+    this.exportParams.appLayer = this.layerId;
     this.exportParams.type = format;
     this.exportParams.columns = [];
     this.columns = this.tab.table.getActiveColumns(false);
@@ -77,7 +75,7 @@ export class AttributelistTabToolbarComponent implements OnInit, OnDestroy {
   }
 
   public isUserLayer(): boolean {
-    return this.layer && this.tailorMapService.getApplayerById(this.layer.id).userlayer;
+    return this.layerId && this.tailorMapService.getApplayerById(this.layerId).userlayer;
   }
 
   public isRelations(): boolean {
@@ -100,13 +98,13 @@ export class AttributelistTabToolbarComponent implements OnInit, OnDestroy {
           switchMap(result => {
             return forkJoin([
               of(result),
-              this.metadataService.getFeatureTypeMetadata$(this.layer.id),
+              this.metadataService.getFeatureTypeMetadata$(this.layerId),
               this.tailorMapService.applicationConfig$.pipe(take(1)),
             ]);
           }),
         )
         .subscribe(([ result, attributeMetadata, config ]) => {
-          const appLayerId = this.layer.id;
+          const appLayerId = this.layerId;
           const appLayer = this.tailorMapService.getApplayerById(appLayerId);
           this.userLayer.createUserLayerFromParams({
             appLayerId: `${appLayerId}`,
@@ -129,11 +127,6 @@ export class AttributelistTabToolbarComponent implements OnInit, OnDestroy {
 
   public onSearchClick(): void {
     alert('Not yet implemented.');
-  }
-
-  public setTabIndex(tabIndex: number): void {
-    // Get the corresponding layer.
-    this.layer = this.layerService.getLayerByTabIndex(tabIndex);
   }
 
   public openAttributeTree(): void {

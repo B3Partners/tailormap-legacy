@@ -14,7 +14,6 @@ import {
 } from '../attributelist-common/attributelist-models';
 import { AttributeDataSource } from '../attributelist-common/attributelist-datasource';
 import { AttributeService } from '../../../shared/attribute-service/attribute.service';
-import { LayerService } from '../layer.service';
 import { FormconfigRepositoryService } from '../../../shared/formconfig-repository/formconfig-repository.service';
 import { RelatedFeatureType } from '../../../shared/attribute-service/attribute-models';
 import { TailorMapService } from '../../../../../../bridge/src/tailor-map.service';
@@ -48,15 +47,15 @@ export class AttributelistDetailsComponent implements OnInit,
   @Input()
   public featureType: RelatedFeatureType;
 
-  public dataSource = new AttributeDataSource(this.layerService,
+  public dataSource = new AttributeDataSource(
     this.attributeService,
     this.valueService,
     this.attributelistService,
     this.tailorMapService,
-    this.formconfigRepoService);
+    this.formconfigRepoService,
+  );
 
   constructor(private attributeService: AttributeService,
-              private layerService: LayerService,
               private valueService: ValueService,
               private attributelistService: AttributelistService,
               private tailorMapService: TailorMapService,

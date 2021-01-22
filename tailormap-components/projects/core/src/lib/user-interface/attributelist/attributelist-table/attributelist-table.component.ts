@@ -40,7 +40,6 @@ import { AttributeService } from '../../../shared/attribute-service/attribute.se
 import { CheckState } from '../attributelist-common/attributelist-enums';
 import { Feature } from '../../../shared/generated';
 import { FormconfigRepositoryService } from '../../../shared/formconfig-repository/formconfig-repository.service';
-import { LayerService } from '../layer.service';
 import { StatisticTypeInMenu } from '../attributelist-common/attributelist-statistic-models';
 import { StatisticService } from '../../../shared/statistic-service/statistic.service';
 import { StatisticType } from '../../../shared/statistic-service/statistic-models';
@@ -55,6 +54,8 @@ import { AttributelistTreeComponent } from '../attributelist-tree/attributelist-
 import { AttributelistNode, SelectedTreeData, TreeDialogData } from '../attributelist-tree/attributelist-tree-models';
 import { AttributelistColumnController } from '../attributelist-common/attributelist-column-controller';
 import { FormComponent } from '../../../feature-form/form/form.component';
+import { Store } from '@ngrx/store';
+import { AttributelistState } from '../state/attributelist.state';
 // import { LiteralMapKey } from '@angular/compiler';
 
 @Component({
@@ -91,8 +92,7 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
 
   public columnController: AttributelistColumnController;
 
-  public dataSource = new AttributeDataSource(this.layerService,
-                                              this.attributeService,
+  public dataSource = new AttributeDataSource(this.attributeService,
                                               this.valueService,
                                               this.attributelistService,
                                               this.tailorMapService,
@@ -139,8 +139,8 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
 
   // private standardFormWorkflow = new StandardFormWorkflow();
 
-  constructor(private attributeService: AttributeService,
-              private layerService: LayerService,
+  constructor(private store$: Store<AttributelistState>,
+              private attributeService: AttributeService,
               private statisticsService: StatisticService,
               private tailorMapService: TailorMapService,
               private valueService: ValueService,
@@ -377,7 +377,7 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
       numberOfFeatures,
       features,
       params: {
-        application: this.layerService.getAppId(),
+        application: this.tailorMapService.getApplicationId(),
         appLayer: layer.id},
       isChild: false,
       columnNames: this.dataSource.columnController.getPassPortColumnsAsColumns(),

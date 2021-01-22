@@ -12,7 +12,6 @@ import {
 import { MatToolbar } from '@angular/material/toolbar';
 
 import { Layer } from '../layer.model';
-import { LayerService } from '../layer.service';
 import { LayoutService } from '../../layout.service';
 import { LayoutConfig } from '../../layout-config';
 import { LayoutComponent } from '../../models';
@@ -72,7 +71,6 @@ export class AttributelistPanelComponent implements OnInit, AfterViewInit, Layou
   constructor(
     private store$: Store<AttributelistState>,
     private elementRef: ElementRef,
-    private layerService: LayerService,
     private highlightService: HighlightService,
     private layoutService: LayoutService,
   ) {
@@ -142,22 +140,22 @@ export class AttributelistPanelComponent implements OnInit, AfterViewInit, Layou
    * Fired when clicked on the icon in a tab.
    */
   public onTableOptionsClick(evt: MouseEvent, iconIndex: number): void {
-
-    // Get the current active tab index.
-    const currentIndex = this.tabgroup.selectedIndex;
-
-    // Are current and clicked index NOT equal?
-    if (currentIndex !== iconIndex) {
-      // Ignore.
-      return;
-    }
-
-    // Correct icon clicked. Get the corresponding tab component.
-    const tab = this.layerService.getTabComponent(currentIndex);
-    // Found?
-    if (tab !== null) {
-      tab.table.onTableOptionsClick(evt);
-    }
+    // @TODO: replace by state actions
+    // // Get the current active tab index.
+    // const currentIndex = this.tabgroup.selectedIndex;
+    //
+    // // Are current and clicked index NOT equal?
+    // if (currentIndex !== iconIndex) {
+    //   // Ignore.
+    //   return;
+    // }
+    //
+    // // Correct icon clicked. Get the corresponding tab component.
+    // const tab = this.layerService.getTabComponent(currentIndex);
+    // // Found?
+    // if (tab !== null) {
+    //   tab.table.onTableOptionsClick(evt);
+    // }
   }
 
 }

@@ -8,40 +8,23 @@
 
 import { DataSource } from '@angular/cdk/table';
 import * as wellknown from 'wellknown';
-import {
-  forkJoin,
-  Observable,
-  of,
-} from 'rxjs';
+import { forkJoin, Observable, of } from 'rxjs';
 import { MatSort } from '@angular/material/sort';
 import { MatPaginator } from '@angular/material/paginator';
 
-import {
-  AttributelistTable,
-  RowData,
-} from './attributelist-models';
+import { AttributelistTable, RowData } from './attributelist-models';
 import { AttributelistColumnController } from './attributelist-column-controller';
 import { AttributeService } from '../../../shared/attribute-service/attribute.service';
 import {
-  Attribute,
-  AttributeListFeature,
-  AttributeListParameters,
-  AttributeListResponse,
-  AttributeMetadataParameters,
-  AttributeMetadataResponse, RelatedFeatureType,
+  Attribute, AttributeListFeature, AttributeListParameters, AttributeListResponse, AttributeMetadataParameters, AttributeMetadataResponse,
+  RelatedFeatureType,
 } from '../../../shared/attribute-service/attribute-models';
-import {
-  CheckState,
-  DetailsState,
-} from './attributelist-enums';
+import { CheckState, DetailsState } from './attributelist-enums';
 import { DatasourceParams } from './datasource-params';
 import { Feature } from '../../../shared/generated';
 import { FormconfigRepositoryService } from '../../../shared/formconfig-repository/formconfig-repository.service';
-import { LayerService } from '../layer.service';
 import { LayerUtils } from '../../../shared/layer-utils/layer-utils.service';
-import {
-  FormConfiguration,
-} from '../../../feature-form/form/form-models';
+import { FormConfiguration } from '../../../feature-form/form/form-models';
 import { map, take } from 'rxjs/operators';
 import { AttributelistNode, SelectedTreeData } from '../attributelist-tree/attributelist-tree-models';
 import { TailorMapService } from '../../../../../../bridge/src/tailor-map.service';
@@ -83,8 +66,7 @@ export class AttributeDataSource extends DataSource<any> {
 
   private checkedIds: number[] = [];
 
-  constructor(private layerService: LayerService,
-              private attributeService: AttributeService,
+  constructor(private attributeService: AttributeService,
               private valueService: ValueService,
               private attributelistService: AttributelistService,
               private tailorMapService: TailorMapService,
@@ -256,7 +238,7 @@ export class AttributeDataSource extends DataSource<any> {
     });
 
     const attrParams: AttributeListParameters = {
-      application: this.layerService.getAppId(),
+      application: this.tailorMapService.getApplicationId(),
       appLayer: this.params.layerId,
       filter: this.params.valueFilter,
       limit: this.paginator.pageSize,
@@ -313,7 +295,7 @@ export class AttributeDataSource extends DataSource<any> {
   }
 
   private getMetadataParams(): AttributeMetadataParameters {
-    const appId = this.layerService.getAppId();
+    const appId = this.tailorMapService.getApplicationId();
 
     // Set params for getting the metadata (contains main and detail metadata).
     const attrMetaParams: AttributeMetadataParameters = {
@@ -373,7 +355,7 @@ export class AttributeDataSource extends DataSource<any> {
     // }
 
     // Get the app id.
-    const appId = this.layerService.getAppId();
+    const appId = this.tailorMapService.getApplicationId();
 
     // Set params for getting the metadata (contains main and detail metadata).
     const attrMetaParams = this.getMetadataParams();

@@ -3,8 +3,7 @@
  *          of the panel.
  */
 
-import { Component, OnInit, AfterViewInit, Input, Output, ViewChild, EventEmitter } from '@angular/core';
-import { LayerService } from '../layer.service';
+import { Component, OnInit, Input, Output, ViewChild, EventEmitter } from '@angular/core';
 import { RowClickData } from '../attributelist-common/attributelist-models';
 
 @Component({
@@ -12,11 +11,10 @@ import { RowClickData } from '../attributelist-common/attributelist-models';
   templateUrl: './attributelist-tab.component.html',
   styleUrls: ['./attributelist-tab.component.css'],
 })
-export class AttributelistTabComponent implements OnInit, AfterViewInit {
+export class AttributelistTabComponent {
 
-  // The index of the tab in the tabgroup/layers. The first layer gets index 0.
   @Input()
-  public tabIndex: number;
+  public layerId: number;
 
   @Output()
   public pageChange = new EventEmitter();
@@ -28,25 +26,15 @@ export class AttributelistTabComponent implements OnInit, AfterViewInit {
 
   @ViewChild('table') public table;
 
-  constructor(private layerService: LayerService) {
-    // Init tab index.
-    this.tabIndex = -1;
-  }
+  constructor() {}
 
-  public ngOnInit(): void {
-    // When a tab is initialized the tab index can be registered with
-    // the layer service.
-    // console.log('tab.comp ngOnInit: ' + this.tabIndex);
-    this.layerService.registerTabComponent(this.tabIndex, this);
-  }
-
-  public ngAfterViewInit(): void {
-    // console.log('tab.comp ngAfterViewInit: ' + this.tabIndex)
-    // Set toolbar tab index.
-    this.toolbar.setTabIndex(this.tabIndex);
-    // Set table tab index (only here the table is defined).
-    this.table.setTabIndex(this.tabIndex);
-  }
+  // public ngOnInit(): void {
+  // @TODO: replace by state actions
+  //   // When a tab is initialized the tab index can be registered with
+  //   // the layer service.
+  //   // console.log('tab.comp ngOnInit: ' + this.tabIndex);
+  //   this.layerService.registerTabComponent(this.tabIndex, this);
+  // }
 
   public onPageChange(): void {
     this.pageChange.emit();
