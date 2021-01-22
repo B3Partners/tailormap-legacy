@@ -32,5 +32,12 @@
                 <include>README.md</include>
             </includes>
         </fileSet>
+        <fileSet>
+            <directory>${project.basedir}</directory>
+            <outputDirectory>java11-extra/</outputDirectory>
+            <includes>
+                <include>java11.md</include>
+            </includes>
+        </fileSet>
     </fileSets>
 </assembly>

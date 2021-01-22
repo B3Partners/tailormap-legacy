@@ -19,7 +19,7 @@ ARG DEBIAN_FRONTEND="noninteractive"
 COPY bin_unzipped/wars/*.war /usr/local/tomcat/webapps/
 COPY bin_unzipped/solr/*.war $FLA_DATA_DIR/
 COPY bin_unzipped/lib/*.jar /usr/local/tomcat/lib/
-COPY bin_unzipped/java11-extra/*.jar /usr/local/tomcat/lib/
+COPY bin_unzipped/java11-extra/*.* /usr/local/tomcat/lib/
 
 RUN mkdir -p $FLA_DATA_DIR/.solr \
     # solr config
