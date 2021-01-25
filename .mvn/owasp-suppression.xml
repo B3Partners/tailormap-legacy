@@ -36,4 +36,11 @@
         <packageUrl regex="true">^pkg:maven/log4j/log4j@.*$</packageUrl>
         <cpe>cpe:/a:apache:log4j</cpe>
     </suppress>
+	<suppress>
+	   <notes><![CDATA[
+	   ignore false identification as flamingo_project:flamingo (which is an IM system)
+	   ]]></notes>
+	   <gav regex="true">^org\.flamingo\-mc:*:.*$</gav>
+	   <cpe>cpe:/a:flamingo_project:flamingo</cpe>
+	</suppress>
 </suppressions>
