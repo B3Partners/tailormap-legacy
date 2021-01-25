@@ -15,6 +15,8 @@ import { ConfirmDialogService } from '../../shared/confirm-dialog/confirm-dialog
 import { WorkflowActionEvent } from '../workflow-controller/workflow-models';
 import { GeometryConfirmService } from '../../user-interface/geometry-confirm-buttons/geometry-confirm.service';
 import { LayerUtils } from '../../shared/layer-utils/layer-utils.service';
+import { FormState } from '../../feature-form/state/form.state';
+import { Store } from '@ngrx/store';
 
 export abstract class Workflow {
 
@@ -36,6 +38,7 @@ export abstract class Workflow {
   protected geometryConfirmService: GeometryConfirmService;
   protected event: WorkflowActionEvent;
   protected layerUtils: LayerUtils;
+  protected store$: Store<FormState>;
 
   public close$ = new Subject<boolean>();
 
@@ -50,7 +53,8 @@ export abstract class Workflow {
     ngZone: NgZone,
     confirmService: ConfirmDialogService,
     geometryConfirmService: GeometryConfirmService,
-    layerUtils: LayerUtils): void {
+    layerUtils: LayerUtils,
+    store$: Store<FormState>): void {
     this.event = event;
 
     this.tailorMap = tailorMap;
@@ -64,6 +68,7 @@ export abstract class Workflow {
     this.confirmService = confirmService;
     this.geometryConfirmService = geometryConfirmService;
     this.layerUtils = layerUtils;
+    this.store$ = store$;
     this.destroyed = new Subject();
     this.afterInit();
   }

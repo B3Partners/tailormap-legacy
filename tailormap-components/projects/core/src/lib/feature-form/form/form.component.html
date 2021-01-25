@@ -1,4 +1,4 @@
-<div *ngIf="formConfig" class="container">
+<div *ngIf="formConfig" class="overlay-panel mat-elevation-z4">
 
   <h1>Formulier - {{formConfig.name}} {{formDirty ? '*' : ''}}
     <button mat-button  mat-mini-fab color="" (click)="closeDialog();" class="close-button" >
@@ -6,13 +6,13 @@
     </button>
   </h1>
   <div class="form-container">
-    <div class="tree">
+    <!--div class="tree">
       <tailormap-form-tree
       (nodeClicked)='openForm($event)'
       [features]=features
       [isBulk]="isBulk"
       [feature]=feature></tailormap-form-tree>
-    </div>
+    </div-->
     <div class="form">
       <tailormap-form-creator #formCreator
                              [feature]=feature
@@ -27,11 +27,11 @@
   <div class="bottom-bar">
 
 
-    <button [disabled]="!formDirty && !data.closeAfterSave"
+    <button [disabled]="!formDirty && !closeAfterSave"
             mat-flat-button color="primary"  (click)="formCreator.beforeSave();">
 
-      <span *ngIf="!data.closeAfterSave" >Opslaan</span>
-      <span *ngIf="data.closeAfterSave" >Volgende</span>
+      <span *ngIf="!closeAfterSave" >Opslaan</span>
+      <span *ngIf="closeAfterSave" >Volgende</span>
     </button>
     <mat-menu #menu="matMenu">
       <button *ngFor="let co of formsForNew" [id]="co.featureType" mat-menu-item (click)="this.newItem($event);">

@@ -1,39 +1,25 @@
-import {
-  Component,
-  Inject,
-  NgZone,
-  OnChanges,
-  OnDestroy,
-  SimpleChanges,
-} from '@angular/core';
-import {
-  MAT_DIALOG_DATA,
-  MatDialogRef,
-} from '@angular/material/dialog';
+import { Component, NgZone, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ConfirmDialogService } from '../../shared/confirm-dialog/confirm-dialog.service';
-import {
-  filter,
-  take,
-} from 'rxjs/operators';
-import { Subscription } from 'rxjs';
-import {
-  DialogData,
-  FormConfiguration,
-} from './form-models';
+import { filter, take, takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
+import { FormConfiguration } from './form-models';
 import { Feature } from '../../shared/generated';
 import { FormActionsService } from '../form-actions/form-actions.service';
 import { FormconfigRepositoryService } from '../../shared/formconfig-repository/formconfig-repository.service';
 import { WorkflowActionManagerService } from '../../workflow/workflow-controller/workflow-action-manager.service';
 import { WORKFLOW_ACTION } from '../../workflow/workflow-controller/workflow-models';
 import { MetadataService } from '../../application/services/metadata.service';
+import { FormState } from '../state/form.state';
+import { Store } from '@ngrx/store';
+import { selectOpenFeatureForm } from '../state/form.selectors';
 
 @Component({
   selector: 'tailormap-form',
   templateUrl: './form.component.html',
   styleUrls: ['./form.component.css'],
 })
-export class FormComponent implements OnDestroy, OnChanges {
+export class FormComponent implements OnDestroy, OnChanges, OnInit {
   public features: Feature[];
   public feature: Feature;
   public formConfig: FormConfiguration;
@@ -42,37 +28,46 @@ export class FormComponent implements OnDestroy, OnChanges {
   public formsForNew: FormConfiguration[] = [];
   public formDirty: boolean;
 
-  private subscriptions = new Subscription();
+  private destroyed = new Subject();
+  public closeAfterSave = false;
 
-  constructor(public dialogRef: MatDialogRef<FormComponent>,
+  constructor(
+              private store$: Store<FormState>,
               private confirmDialogService: ConfirmDialogService,
-              @Inject(MAT_DIALOG_DATA) public data: DialogData,
               private _snackBar: MatSnackBar,
               private ngZone: NgZone,
               private metadataService: MetadataService,
               private formConfigRepo: FormconfigRepositoryService,
               public actions: FormActionsService,
               public workflowAction: WorkflowActionManagerService) {
-
-    this.features = data.formFeatures;
-    this.feature = this.features[0];
-    this.isBulk = !!data.isBulk;
-    this.initForm();
   }
 
+  public ngOnInit(): void {
+    this.store$.select(selectOpenFeatureForm)
+      .pipe(takeUntil(this.destroyed)).subscribe(features => {
+        this.features = features;
+        this.isBulk = features.length > 1;
+        this.feature = this.features[0];
+        if (this.feature) {
+          this.initForm();
+        }
+      });
+    }
+
   public ngOnDestroy() {
-    this.subscriptions.unsubscribe();
+    this.destroyed.next();
+    this.destroyed.complete();
   }
 
   private initForm() {
     this.formDirty = false;
     this.formConfig = this.formConfigRepo.getFormConfig(this.feature.clazz);
     if (!this.formConfig) {
-      this.dialogRef.close(this.feature);
+  //    this.dialogRef.close(this.feature);
     }
-    if (this.data.alreadyDirty) {
+   /* if (this.data.alreadyDirty) {
       this.formDirty = true;
-    }
+    }*/
     this.metadataService.getFeatureTypeMetadata$(this.feature.clazz);
     const configs = this.formConfigRepo.getAllFormConfigs();
     configs.forEach((config, key) => {
@@ -103,20 +98,19 @@ export class FormComponent implements OnDestroy, OnChanges {
     if (!result.changed) {
       this.features = result.features;
       this.feature = result.feature;
-      if (this.data.closeAfterSave) {
-        this.dialogRef.close(this.feature);
-      }
+    /*  if (this.data.closeAfterSave) {
+      //  this.dialogRef.close(this.feature);
+      }*/
     }
   }
 
   public newItem(evt) {
-    this.subscriptions.add(
-      this.actions.newItem$(evt, this.features).subscribe(features => {
+    this.actions.newItem$(evt, this.features).pipe(takeUntil(this.destroyed)).subscribe(features => {
         this.features = features.features;
         this.feature = features.feature;
         this.initForm();
-      }),
-    );
+      });
+
   }
 
   public remove() {
@@ -155,15 +149,15 @@ export class FormComponent implements OnDestroy, OnChanges {
   }
 
   public closeDialog() {
-    this.ngZone.run(() => {
+   /* this.ngZone.run(() => {
       if (this.formDirty) {
         this.closeNotification(function () {
-          this.dialogRef.close();
+       //   this.dialogRef.close();
         });
       } else {
-        this.dialogRef.close();
+     //   this.dialogRef.close();
       }
-    });
+    });*/
   }
 
   private closeNotification(afterAction) {

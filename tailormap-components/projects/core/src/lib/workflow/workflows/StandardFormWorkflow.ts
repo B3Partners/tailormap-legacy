@@ -13,6 +13,7 @@ import { FormComponent } from '../../feature-form/form/form.component';
 import { takeUntil } from 'rxjs/operators';
 import { GeoJSONGeometry } from 'wellknown';
 import { WorkflowHelper } from './workflow.helper';
+import { setOpenFeatureForm } from '../../feature-form/state/form.actions';
 
 export class StandardFormWorkflow extends Workflow {
 
@@ -74,7 +75,9 @@ export class StandardFormWorkflow extends Workflow {
   }
 
   public openDialog(formFeatures ?: Feature[]): void {
-    const dialogRef = this.dialog.open(FormComponent, {
+    this.store$.dispatch(setOpenFeatureForm({features: formFeatures}))
+
+   /* const dialogRef = this.dialog.open(FormComponent, {
       id: this.FORMCOMPONENT_DIALOG_ID,
       width: '1050px',
       height: '800px',
@@ -88,7 +91,7 @@ export class StandardFormWorkflow extends Workflow {
     dialogRef.afterClosed().subscribe(result => {
       this.afterEditting();
       this.isDrawing = false;
-    });
+    });*/
   }
 
   public mapClick(data: MapClickedEvent): void {
