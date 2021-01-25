@@ -47,7 +47,7 @@ export class WorkflowFactoryService {
     private confirmService: ConfirmDialogService,
     private featureInitializerService: FeatureInitializerService,
     private layerUtils: LayerUtils,
-    private store$: Store<FormState>,) {
+    private store$: Store<FormState>) {
   }
 
   public getWorkflow(event: WorkflowActionEvent): Workflow {

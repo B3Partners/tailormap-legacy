@@ -5,5 +5,8 @@ const formActionsPrefix = '[Form]';
 
 export const setOpenFeatureForm = createAction(
   `${formActionsPrefix} Open feature form`,
-  props<{ features : Feature[]}>(),
+  props<{ features : Feature[], closeAfterSave ?: boolean }>(),
+);
+export const setCloseFeatureForm = createAction(
+  `${formActionsPrefix} Close feature form`,
 );

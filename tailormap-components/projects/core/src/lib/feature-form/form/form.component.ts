@@ -2,7 +2,7 @@ import { Component, NgZone, OnChanges, OnDestroy, OnInit, SimpleChanges } from '
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ConfirmDialogService } from '../../shared/confirm-dialog/confirm-dialog.service';
 import { filter, take, takeUntil } from 'rxjs/operators';
-import { Subject } from 'rxjs';
+import { combineLatest, Observable, Subject } from 'rxjs';
 import { FormConfiguration } from './form-models';
 import { Feature } from '../../shared/generated';
 import { FormActionsService } from '../form-actions/form-actions.service';
@@ -12,7 +12,8 @@ import { WORKFLOW_ACTION } from '../../workflow/workflow-controller/workflow-mod
 import { MetadataService } from '../../application/services/metadata.service';
 import { FormState } from '../state/form.state';
 import { Store } from '@ngrx/store';
-import { selectOpenFeatureForm } from '../state/form.selectors';
+import * as FormActions from '../state/form.actions';
+import { selectCloseAfterSaveFeatureForm, selectFeatureFormOpen, selectOpenFeatureForm } from '../state/form.selectors';
 
 @Component({
   selector: 'tailormap-form',
@@ -31,6 +32,8 @@ export class FormComponent implements OnDestroy, OnChanges, OnInit {
   private destroyed = new Subject();
   public closeAfterSave = false;
 
+  public isOpen$: Observable<boolean>;
+
   constructor(
               private store$: Store<FormState>,
               private confirmDialogService: ConfirmDialogService,
@@ -43,16 +46,23 @@ export class FormComponent implements OnDestroy, OnChanges, OnInit {
   }
 
   public ngOnInit(): void {
-    this.store$.select(selectOpenFeatureForm)
-      .pipe(takeUntil(this.destroyed)).subscribe(features => {
+    combineLatest([
+      this.store$.select(selectOpenFeatureForm),
+      this.store$.select(selectCloseAfterSaveFeatureForm),
+    ])
+      .pipe(takeUntil(this.destroyed))
+      .subscribe(([features, closeAfterSave]) => {
         this.features = features;
         this.isBulk = features.length > 1;
         this.feature = this.features[0];
+        this.closeAfterSave = closeAfterSave;
         if (this.feature) {
           this.initForm();
         }
       });
-    }
+
+    this.isOpen$ = this.store$.select(selectFeatureFormOpen);
+  }
 
   public ngOnDestroy() {
     this.destroyed.next();
@@ -98,9 +108,9 @@ export class FormComponent implements OnDestroy, OnChanges, OnInit {
     if (!result.changed) {
       this.features = result.features;
       this.feature = result.feature;
-    /*  if (this.data.closeAfterSave) {
-      //  this.dialogRef.close(this.feature);
-      }*/
+      if (this.closeAfterSave) {
+        this.store$.dispatch(FormActions.setCloseFeatureForm());
+      }
     }
   }
 
@@ -149,22 +159,23 @@ export class FormComponent implements OnDestroy, OnChanges, OnInit {
   }
 
   public closeDialog() {
-   /* this.ngZone.run(() => {
+    this.store$.dispatch(FormActions.setCloseFeatureForm());
+    this.ngZone.run(() => {
       if (this.formDirty) {
         this.closeNotification(function () {
-       //   this.dialogRef.close();
+          this.store$.dispatch(FormActions.setCloseFeatureForm());
         });
       } else {
-     //   this.dialogRef.close();
+        this.store$.dispatch(FormActions.setCloseFeatureForm());
       }
-    });*/
+    });
   }
 
   private closeNotification(afterAction) {
     this.confirmDialogService.confirm$('Formulier sluiten',
       'Wilt u het formulier sluiten? Niet opgeslagen wijzigingen gaan verloren.', true)
       .pipe(take(1), filter(remove => remove))
-      // tslint:disable-next-line: rxjs-no-ignored-subscription
+      .pipe(takeUntil(this.destroyed))
       .subscribe(() => {
         afterAction.call(this);
       });

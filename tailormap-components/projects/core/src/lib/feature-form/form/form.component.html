@@ -1,4 +1,4 @@
-<div *ngIf="formConfig" class="overlay-panel mat-elevation-z4">
+<div *ngIf="isOpen$ | async" class="overlay-panel mat-elevation-z4">
 
   <h1>{{formConfig.name}} {{formDirty ? '*' : ''}}
     <button mat-button  mat-mini-fab color="" (click)="closeDialog();" class="close-button" >
@@ -25,7 +25,6 @@
     </div>
   </div>
   <div class="bottom-bar">
-
 
     <button [disabled]="!formDirty && !closeAfterSave"
             mat-flat-button color="primary"  (click)="formCreator.beforeSave();">

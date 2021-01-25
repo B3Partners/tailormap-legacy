@@ -9,7 +9,6 @@ import {
   OLFeature,
   VectorLayer,
 } from '../../../../../bridge/typings';
-import { FormComponent } from '../../feature-form/form/form.component';
 import { takeUntil } from 'rxjs/operators';
 import { GeoJSONGeometry } from 'wellknown';
 import { WorkflowHelper } from './workflow.helper';
