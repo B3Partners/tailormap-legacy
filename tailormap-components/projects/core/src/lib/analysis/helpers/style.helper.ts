@@ -23,19 +23,19 @@ export class StyleHelper {
     return new Map<MakerType, string>(StyleHelper.getAvailableMarkers().map(marker => ([ marker.value, marker.icon ])));
   }
 
-  public static getDefaultStyle(idService: IdService): UserLayerStyleModel {
+  public static getDefaultStyle(idService: IdService, color?: string): UserLayerStyleModel {
     return {
       id: idService.getUniqueId('style'),
       label: '',
       active: true,
       fillOpacity: 100,
-      fillColor: 'rgb(255, 105, 105)',
-      strokeColor: 'rgb(255, 105, 105)',
+      fillColor: color || 'rgb(255, 105, 105)',
+      strokeColor: color || 'rgb(255, 105, 105)',
       strokeOpacity: 100,
       strokeWidth: 2,
       marker: 'circle',
       markerSize: 8,
-      markerFillColor: 'rgb(255, 105, 105)',
+      markerFillColor: color || 'rgb(255, 105, 105)',
       markerStrokeColor: 'rgb(30, 30, 30)',
     };
   }

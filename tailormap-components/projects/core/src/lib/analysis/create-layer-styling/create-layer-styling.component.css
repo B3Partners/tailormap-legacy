@@ -11,6 +11,13 @@
   overflow: auto;
 }
 
+.spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+}
+
 .form tailormap-style-form {
   margin-top: 14px;
   display: block;
@@ -19,8 +26,7 @@
 .styling-form,
 .line-settings,
 .polygon-settings,
-.point-settings,
-.form-errors {
+.point-settings {
   padding-top: 14px;
 }
 

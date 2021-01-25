@@ -26,7 +26,7 @@ export class FormconfigRepositoryService {
     private tailorMap: TailorMapService,
   ) {
     this.http.get<FormConfigurations>(this.tailorMap.getContextPath() + '/action/form', {
-      params: new HttpParams().set('application', '' + this.tailorMap.getViewerController().app.id),
+      params: new HttpParams().set('application', '' + this.tailorMap.getApplicationId()),
     })
       .subscribe((data: FormConfigurations) => {
         this.formConfigs = new Map<string, FormConfiguration>();

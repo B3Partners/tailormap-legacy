@@ -6,7 +6,7 @@ import { Subject } from 'rxjs';
 import { AnalysisSourceModel } from '../models/analysis-source.model';
 import { AttributeTypeEnum } from '../../application/models/attribute-type.enum';
 import { map, takeUntil } from 'rxjs/operators';
-import { loadThematicStyles, setSelectedThematicAttribute } from '../state/analysis.actions';
+import { setSelectedThematicAttribute } from '../state/analysis.actions';
 import { PassportAttributeModel } from '../../application/models/passport-attribute.model';
 
 @Component({
@@ -27,7 +27,7 @@ export class CreateLayerModeThematicComponent implements OnInit, OnDestroy {
   public ngOnInit(): void {
     this.store$.select(selectSelectedDataSource).pipe(takeUntil(this.destroyed))
       .subscribe(selectedDataSource => {
-        if (this.selectedDataSource && this.selectedDataSource.featureType !== selectedDataSource.featureType) {
+        if (selectedDataSource && this.selectedDataSource && this.selectedDataSource.featureType !== selectedDataSource.featureType) {
           this.store$.dispatch(setSelectedThematicAttribute({ attribute: null }));
         }
         this.selectedDataSource = selectedDataSource;
@@ -50,7 +50,6 @@ export class CreateLayerModeThematicComponent implements OnInit, OnDestroy {
       return;
     }
     this.store$.dispatch(setSelectedThematicAttribute({ attribute: $event.attribute }));
-    this.store$.dispatch(loadThematicStyles({ attribute: $event.attribute, appLayer: this.selectedDataSource.layerId }));
   }
 
 }

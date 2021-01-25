@@ -57,6 +57,7 @@ import { ColorPickerComponent } from './color-picker/color-picker.component';
 import { IconPickerComponent } from './icon-picker/icon-picker.component';
 import { IconService } from './icons/icon.service';
 import { DomSanitizer } from '@angular/platform-browser';
+import { ErrorMessageComponent } from './error-message/error-message.component';
 
 @NgModule({
   declarations: [
@@ -67,6 +68,7 @@ import { DomSanitizer } from '@angular/platform-browser';
     ColorPickerComponent,
     IconPickerComponent,
     CapitalizeFirstPipe,
+    ErrorMessageComponent,
   ],
   imports: [
     ApiModule.forRoot({
@@ -141,6 +143,7 @@ import { DomSanitizer } from '@angular/platform-browser';
     MatDatepickerModule,
     CapitalizeFirstPipe,
     ConfirmDialogComponent,
+    ErrorMessageComponent,
   ],
   entryComponents: [],
   providers: [

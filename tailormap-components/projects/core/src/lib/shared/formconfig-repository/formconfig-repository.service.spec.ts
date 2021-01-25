@@ -27,7 +27,7 @@ describe('FormconfigRepositoryService', () => {
         HttpClientTestingModule,
       ],
       providers: [
-        getTailorMapServiceMockProvider(),
+        getTailorMapServiceMockProvider({ getApplicationId() { return 1; }}),
         { provide: FeatureControllerService, useValue: featureControllerMockService },
       ]
     });
