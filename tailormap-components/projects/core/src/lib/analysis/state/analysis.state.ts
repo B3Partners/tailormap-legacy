@@ -12,6 +12,8 @@ export interface AnalysisState {
   layerName?: string;
   selectDataSource?: boolean;
   selectedDataSource?: AnalysisSourceModel;
+  loadingStyles?: boolean;
+  loadStylesErrorMessage?: string;
   styles?: UserLayerStyleModel[];
   selectedStyle?: string;
   isCreatingLayer?: boolean;
@@ -24,8 +26,6 @@ export interface AnalysisState {
 
   // Thematic Mode
   selectedThematicAttribute?: PassportAttributeModel;
-  loadingThematicStyles?: boolean;
-  loadThematicStylesErrorMessage?: string;
 }
 
 export const initialAnalysisState: AnalysisState = {

@@ -69,10 +69,10 @@ export class HighlightService {
     // Clear highlight.
     this.clearHighlight();
 
-    const vc = this.tailorMap.getViewerController();
+    const applicationId = this.tailorMap.getApplicationId();
 
     const hightlightParams: HighlightParams = {
-      application: vc.app.id,
+      application: applicationId,
       featureId: featureFId,
     }
     if (appLayerId) {

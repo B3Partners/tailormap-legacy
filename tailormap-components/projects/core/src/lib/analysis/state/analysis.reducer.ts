@@ -13,7 +13,6 @@ import { AnalysisSourceModel } from '../models/analysis-source.model';
 import { CriteriaTypeEnum } from '../models/criteria-type.enum';
 import { CriteriaModel } from '../models/criteria.model';
 import { UserLayerStyleModel } from '../models/user-layer-style.model';
-import { ScopedUserLayerStyleModel } from '../models/scoped-user-layer-style.model';
 import { PassportAttributeModel } from '../../application/models/passport-attribute.model';
 
 const clearAnalysisState = (state: AnalysisState): AnalysisState => ({
@@ -75,29 +74,23 @@ const onSetSelectedThematicAttribute = (state: AnalysisState, payload: { attribu
   selectedThematicAttribute: payload.attribute,
 });
 
-const onLoadThematicStyles = (state: AnalysisState): AnalysisState => ({
+const onLoadStyles = (state: AnalysisState): AnalysisState => ({
   ...state,
-  loadingThematicStyles: true,
-  loadThematicStylesErrorMessage: '',
+  loadingStyles: true,
+  loadStylesErrorMessage: '',
 });
 
-const onLoadThematicStylesSuccess = (state: AnalysisState, payload: { styles: ScopedUserLayerStyleModel[] }): AnalysisState => ({
+const onLoadStylesSuccess = (state: AnalysisState, payload: { styles: UserLayerStyleModel[] }): AnalysisState => ({
   ...state,
-  loadingThematicStyles: false,
-  loadThematicStylesErrorMessage: '',
+  loadingStyles: false,
+  loadStylesErrorMessage: '',
   styles: payload.styles,
 });
 
-const onLoadThematicStylesFailed = (state: AnalysisState, payload: { error: string }): AnalysisState => ({
+const onLoadStylesFailed = (state: AnalysisState, payload: { error: string }): AnalysisState => ({
   ...state,
-  loadingThematicStyles: false,
-  loadThematicStylesErrorMessage: payload.error,
-});
-
-
-const onSetStyles = (state: AnalysisState, payload: { styles: UserLayerStyleModel[] }): AnalysisState => ({
-  ...state,
-  styles: payload.styles,
+  loadingStyles: false,
+  loadStylesErrorMessage: payload.error,
 });
 
 const onSetSelectedStyle = (state: AnalysisState, payload: { styleId: string }): AnalysisState => ({
@@ -165,10 +158,9 @@ const analysisReducerImpl = createReducer(
   on(AnalysisActions.createCriteria, onCreateCriteria),
   on(AnalysisActions.removeCriteria, onRemoveCriteria),
   on(AnalysisActions.setSelectedThematicAttribute, onSetSelectedThematicAttribute),
-  on(AnalysisActions.loadThematicStyles, onLoadThematicStyles),
-  on(AnalysisActions.loadThematicStylesSuccess, onLoadThematicStylesSuccess),
-  on(AnalysisActions.loadThematicStylesFailed, onLoadThematicStylesFailed),
-  on(AnalysisActions.setStyles, onSetStyles),
+  on(AnalysisActions.loadStyles, onLoadStyles),
+  on(AnalysisActions.loadStylesSuccess, onLoadStylesSuccess),
+  on(AnalysisActions.loadStylesFailed, onLoadStylesFailed),
   on(AnalysisActions.setSelectedStyle, onSetSelectedStyle),
   on(AnalysisActions.updateStyle, onUpdateStyle),
   on(AnalysisActions.updateAllStyles, onUpdateAllStyles),

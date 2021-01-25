@@ -123,8 +123,8 @@ export const analysisStateTestDataWithThematicSelection: AnalysisState = {
     editAlias: '',
     id: 1151,
   },
-  loadingThematicStyles: false,
-  loadThematicStylesErrorMessage: '',
+  loadingStyles: false,
+  loadStylesErrorMessage: '',
   styles: [
     {
       id: 'style-1',
