@@ -1,0 +1,1 @@
+update application_details set value = 'true' where details_key in ('cachedExpandedSelectedContentDirty','cachedSelectedContentDirty');
