@@ -36,4 +36,18 @@
         <packageUrl regex="true">^pkg:maven/log4j/log4j@.*$</packageUrl>
         <cpe>cpe:/a:apache:log4j</cpe>
     </suppress>
+    <suppress>
+       <notes><![CDATA[
+       ignore false identification as flamingo_project:flamingo (which is an IM system)
+       ]]></notes>
+       <gav regex="true">^org\.flamingo\-mc:*:.*$</gav>
+       <cpe>cpe:/a:flamingo_project:flamingo</cpe>
+    </suppress>
+    <suppress>
+       <notes><![CDATA[
+       file name: hibernate-core-3.6.10.Final.jar - mitigated by setting hibernate.use_sql_comments=false
+       ]]></notes>
+       <packageUrl regex="true">^pkg:maven/org\.hibernate/hibernate\-core@.*$</packageUrl>
+       <vulnerabilityName>CVE-2020-25638</vulnerabilityName>
+    </suppress>
 </suppressions>
