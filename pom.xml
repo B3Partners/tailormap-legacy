@@ -75,7 +75,7 @@
     <dependencyManagement>
         <!--
             To check for dependency updates use the following command:
-            mvn -U org.codehaus.mojo:versions-maven-plugin:display-dependency-updates > dependency-updates.log
+            mvn -U org.codehaus.mojo:versions-maven-plugin:display-dependency-updates -T1 > dependency-updates.log
             and check the output for any available updates.
 
             To check for vulnarabilities in dependencies use the following command:
