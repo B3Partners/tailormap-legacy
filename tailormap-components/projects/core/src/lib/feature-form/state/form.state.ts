@@ -9,6 +9,7 @@ export interface FormState {
   closeAfterSave: boolean;
   alreadyDirty: boolean;
   formOpen: boolean;
+  treeOpen: boolean;
 }
 
 export const initialFormState: FormState = {
@@ -17,4 +18,5 @@ export const initialFormState: FormState = {
   closeAfterSave: false,
   formOpen: false,
   alreadyDirty: false,
+  treeOpen: false,
 }

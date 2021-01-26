@@ -8,6 +8,7 @@ const onCloseFeatureForm  = (state: FormState): FormState => ({
   features: [],
   feature: null,
   formOpen: false,
+  treeOpen: false,
 });
 
 const onSetFeature = (state: FormState, payload : { feature: Feature }): FormState => ({
@@ -20,12 +21,19 @@ const onSetOpenFeatureForm = (state: FormState, payload: { features?: Feature[],
   ...state,
   features: payload.features,
   formOpen: true,
+  treeOpen: true,
   closeAfterSave: payload.closeAfterSave || false,
   alreadyDirty: payload.alreadyDirty || false,
 });
 
+const onSetTreeOpen = (state: FormState, payload : { treeOpen: boolean }): FormState => ({
+  ...state,
+  treeOpen: payload.treeOpen,
+});
+
 const formReducerImpl = createReducer(
   initialFormState,
+  on(FormActions.setTreeOpen, onSetTreeOpen),
   on(FormActions.setFeature, onSetFeature),
   on(FormActions.setOpenFeatureForm, onSetOpenFeatureForm),
   on(FormActions.setCloseFeatureForm, onCloseFeatureForm),

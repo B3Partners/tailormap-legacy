@@ -3,6 +3,11 @@ import { Feature } from '../../shared/generated';
 
 const formActionsPrefix = '[Form]';
 
+export let setTreeOpen = createAction(
+  `${formActionsPrefix} Open form tree`,
+  props<{ treeOpen : boolean }>(),
+);
+
 export const setOpenFeatureForm = createAction(
   `${formActionsPrefix} Open feature form`,
   props<{ features : Feature[], closeAfterSave ?: boolean, alreadyDirty?: boolean }>(),

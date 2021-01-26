@@ -15,6 +15,7 @@ import { Store } from '@ngrx/store';
 import * as FormActions from '../state/form.actions';
 import {
   selectCloseAfterSaveFeatureForm, selectCurrentFeature, selectFeatureFormOpen, selectFormAlreadyDirty, selectOpenFeatureForm,
+  selectTreeOpen,
 } from '../state/form.selectors';
 
 @Component({
@@ -35,6 +36,7 @@ export class FormComponent implements OnDestroy, OnChanges, OnInit {
   public closeAfterSave = false;
 
   public isOpen$: Observable<boolean>;
+  public treeOpen$: Observable<boolean>;
 
   constructor(
               private store$: Store<FormState>,
@@ -66,6 +68,11 @@ export class FormComponent implements OnDestroy, OnChanges, OnInit {
       }
     });
     this.isOpen$ = this.store$.select(selectFeatureFormOpen);
+    this.treeOpen$ = this.store$.select(selectTreeOpen);
+  }
+
+  public openTree(): void {
+    this.store$.dispatch(FormActions.setTreeOpen({treeOpen: true}));
   }
 
   public ngOnDestroy() {

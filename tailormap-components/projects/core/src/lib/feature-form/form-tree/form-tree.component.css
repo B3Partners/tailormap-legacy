@@ -1,4 +1,12 @@
-.newNode {
+
+.tree{
+  right: 310px;
+  width: 350px;
+  overflow: auto;
+  margin-right: 10px;
+}
+
+.newNode{
   font-style: italic;
 }
 

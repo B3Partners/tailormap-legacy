@@ -13,10 +13,11 @@
   justify-content: stretch;
   overflow: hidden;
 }
-.tree{
-  width: 350px;
-  overflow: auto;
-  margin-right: 10px;
+.drawerbutton{
+  width: 30px;
+  height: 40px;
+  right: 300px;
+  position: absolute;
 }
 
 .form{
@@ -41,5 +42,6 @@
 
 .bottom-bar button{
   float: right;
+
   margin-right: 15px;
 }

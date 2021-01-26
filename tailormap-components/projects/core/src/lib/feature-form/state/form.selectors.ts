@@ -13,3 +13,5 @@ export const selectFormAlreadyDirty = createSelector(selectFormState, state => s
 
 export const selectCloseAfterSaveFeatureForm = createSelector(selectFormState, state => state.closeAfterSave);
 
+export const selectTreeOpen = createSelector(selectFormState, state => state.treeOpen);
+

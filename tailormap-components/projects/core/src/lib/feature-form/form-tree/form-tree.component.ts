@@ -8,7 +8,8 @@ import { FormconfigRepositoryService } from '../../shared/formconfig-repository/
 import { Store } from '@ngrx/store';
 import { FormState } from '../state/form.state';
 import * as FormActions from '../state/form.actions';
-import { FormCreatorHelpers } from '../form-creator/form-creator-helpers';
+import { selectTreeOpen } from '../state/form.selectors';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'tailormap-form-tree',
@@ -16,6 +17,7 @@ import { FormCreatorHelpers } from '../form-creator/form-creator-helpers';
   styleUrls: ['./form-tree.component.css'],
 })
 export class FormTreeComponent implements OnInit, OnChanges {
+  public isOpen$: Observable<boolean>;
 
   constructor(
     private store$: Store<FormState>,
@@ -45,6 +47,7 @@ export class FormTreeComponent implements OnInit, OnChanges {
   public dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
 
   public ngOnInit() {
+    this.isOpen$ = this.store$.select(selectTreeOpen);
   }
 
   public ngOnChanges(changes: SimpleChanges): void {
@@ -54,6 +57,10 @@ export class FormTreeComponent implements OnInit, OnChanges {
 
   public setNodeSelected(node: FlatNode) {
     this.store$.dispatch(FormActions.setFeature({feature: node.feature}));
+  }
+
+  public closePanel() {
+    this.store$.dispatch(FormActions.setTreeOpen({treeOpen: false}));
   }
 
   public isFeatureForCopyChecked(featureId: number): boolean {
