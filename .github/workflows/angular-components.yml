@@ -10,7 +10,7 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: 14
-      - uses: actions/cache@v1
+      - uses: actions/cache@v2.1.3
         with:
           path: ~/.npm
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
@@ -34,7 +34,7 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: 14
-      - uses: actions/cache@v1
+      - uses: actions/cache@v2.1.3
         with:
           path: ~/.npm
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
@@ -54,7 +54,7 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: 14
-      - uses: actions/cache@v1
+      - uses: actions/cache@v2.1.3
         with:
           path: ~/.npm
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
