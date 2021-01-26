@@ -8,11 +8,12 @@ import {
 import { MapClickedEvent } from '../../shared/models/event-models';
 import { VectorLayer } from '../../../../../bridge/typings';
 import { ChooseTypesComponent } from '../../user-interface/sewage/choose-types/choose-types.component';
-import { Observable } from 'rxjs';
-import { take } from 'rxjs/operators';
+import { combineLatest, Observable } from 'rxjs';
+import { filter, take, takeUntil } from 'rxjs/operators';
 import { Choice } from './WorkflowModels';
-import { FormComponent } from '../../feature-form/form/form.component';
 import { DialogData } from '../../feature-form/form/form-models';
+import { setOpenFeatureForm } from '../../feature-form/state/form.actions';
+import { selectFeatureFormOpen, selectSavedFeature } from '../../feature-form/state/form.selectors';
 
 export class SewageWorkflow extends Workflow {
   private currentStep: Step;
@@ -145,21 +146,20 @@ export class SewageWorkflow extends Workflow {
   }
 
   public openDialog(feature ?: Feature): void {
-    const dialogData: DialogData = {
-      formFeatures: [feature],
-      isBulk: false,
-      closeAfterSave: true,
-    };
-    const dialogRef = this.dialog.open(FormComponent, {
-      width: '1050px',
-      height: '800px',
-      disableClose: true,
-      data: dialogData,
-    });
-    // tslint:disable-next-line: rxjs-no-ignored-subscription
-    dialogRef.afterClosed().subscribe(result => {
-      this.afterEditting(result);
-    });
+    this.store$.dispatch(setOpenFeatureForm({ features: [feature], closeAfterSave: true }));
+
+    combineLatest([
+      this.store$.select(selectSavedFeature),
+      this.store$.select(selectFeatureFormOpen),
+    ])
+      .pipe(filter(([savedFeature, close]) => {
+        return !close;
+      }))
+      .pipe(takeUntil(this.destroyed))
+      .pipe(take(1))
+      .subscribe(([savedFeature, close]) => {
+        this.afterEditting(savedFeature);
+      });
   }
 
   public mapClick(data: MapClickedEvent): void {

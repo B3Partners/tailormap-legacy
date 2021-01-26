@@ -54,7 +54,9 @@ import { concatMap, takeUntil } from 'rxjs/operators';
 import { AttributelistTreeComponent } from '../attributelist-tree/attributelist-tree.component';
 import { AttributelistNode, SelectedTreeData, TreeDialogData } from '../attributelist-tree/attributelist-tree-models';
 import { AttributelistColumnController } from '../attributelist-common/attributelist-column-controller';
-import { FormComponent } from '../../../feature-form/form/form.component';
+import { setOpenFeatureForm } from '../../../feature-form/state/form.actions';
+import { Store } from '@ngrx/store';
+import { FormState } from '../../../feature-form/state/form.state';
 // import { LiteralMapKey } from '@angular/compiler';
 
 @Component({
@@ -148,6 +150,7 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
               private formconfigRepoService: FormconfigRepositoryService,
               private highlightService: HighlightService,
               private snackBar: MatSnackBar,
+              private store$: Store<FormState>,
               private dialog: MatDialog) {
     // console.log('=============================');
     // console.log('#Table - constructor');
@@ -772,16 +775,7 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
       });
       return;
     }
-    this.dialog.open(FormComponent, {
-      width: '1050px',
-      height: '800px',
-      disableClose: true,
-      data: {
-        formFeatures,
-        isBulk: formFeatures.length > 1,
-        closeAfterSave: true,
-      },
-    });
+    this.store$.dispatch(setOpenFeatureForm({ features: formFeatures, closeAfterSave: true }))
   }
 
   public isRelatedFeatures(): boolean {

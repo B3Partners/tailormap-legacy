@@ -9,16 +9,23 @@ const onCloseFeatureForm  = (state: FormState): FormState => ({
   formOpen: false,
 });
 
-const onSetOpenFeatureForm = (state: FormState, payload: { features?: Feature[], closeAfterSave?: boolean }): FormState => ({
+const onFeatureSaved = (state: FormState, payload: { feature : Feature }): FormState => ({
+  ...state,
+  savedFeature: payload.feature,
+});
+
+const onSetOpenFeatureForm = (state: FormState, payload: { features?: Feature[], closeAfterSave?: boolean,
+                                                           alreadyDirty?: boolean }): FormState => ({
   ...state,
   features: payload.features,
   formOpen: true,
   closeAfterSave: payload.closeAfterSave || false,
+  alreadyDirty: payload.alreadyDirty || false,
 });
-
 
 const formReducerImpl = createReducer(
   initialFormState,
+  on(FormActions.setSavedFeature, onFeatureSaved),
   on(FormActions.setOpenFeatureForm, onSetOpenFeatureForm),
   on(FormActions.setCloseFeatureForm, onCloseFeatureForm),
 );

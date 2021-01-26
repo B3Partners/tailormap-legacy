@@ -8,12 +8,14 @@ import { Feature } from '../../shared/generated';
 import { FormActionsService } from '../form-actions/form-actions.service';
 import { FormconfigRepositoryService } from '../../shared/formconfig-repository/formconfig-repository.service';
 import { WorkflowActionManagerService } from '../../workflow/workflow-controller/workflow-action-manager.service';
-import { WORKFLOW_ACTION } from '../../workflow/workflow-controller/workflow-models';
+import { WORKFLOW_ACTION, WorkflowActionEvent } from '../../workflow/workflow-controller/workflow-models';
 import { MetadataService } from '../../application/services/metadata.service';
 import { FormState } from '../state/form.state';
 import { Store } from '@ngrx/store';
 import * as FormActions from '../state/form.actions';
-import { selectCloseAfterSaveFeatureForm, selectFeatureFormOpen, selectOpenFeatureForm } from '../state/form.selectors';
+import {
+  selectCloseAfterSaveFeatureForm, selectFeatureFormOpen, selectFormAlreadyDirty, selectOpenFeatureForm,
+} from '../state/form.selectors';
 
 @Component({
   selector: 'tailormap-form',
@@ -54,13 +56,13 @@ export class FormComponent implements OnDestroy, OnChanges, OnInit {
       .subscribe(([features, closeAfterSave]) => {
         this.features = features;
         this.isBulk = features.length > 1;
-        this.feature = this.features[0];
+        this.feature = {...this.features[0]};
         this.closeAfterSave = closeAfterSave;
         if (this.feature) {
           this.initForm();
         }
       });
-
+    this.store$.select(selectFormAlreadyDirty).pipe(takeUntil(this.destroyed)).subscribe(value => this.formDirty = value);
     this.isOpen$ = this.store$.select(selectFeatureFormOpen);
   }
 
@@ -75,9 +77,7 @@ export class FormComponent implements OnDestroy, OnChanges, OnInit {
     if (!this.formConfig) {
   //    this.dialogRef.close(this.feature);
     }
-   /* if (this.data.alreadyDirty) {
-      this.formDirty = true;
-    }*/
+
     this.metadataService.getFeatureTypeMetadata$(this.feature.clazz);
     const configs = this.formConfigRepo.getAllFormConfigs();
     configs.forEach((config, key) => {
@@ -109,6 +109,7 @@ export class FormComponent implements OnDestroy, OnChanges, OnInit {
       this.features = result.features;
       this.feature = result.feature;
       if (this.closeAfterSave) {
+        this.store$.dispatch(FormActions.setSavedFeature({feature: this.feature}));
         this.store$.dispatch(FormActions.setCloseFeatureForm());
       }
     }
@@ -136,14 +137,14 @@ export class FormComponent implements OnDestroy, OnChanges, OnInit {
         this.features = result.features;
         this.feature = result.features[0];
         if (!this.feature) {
-          this.closeDialog();
+          this.closeForm();
         }
       });
     });
   }
 
   public copy() {
-    this.closeDialog();
+    this.closeForm();
     this.workflowAction.setAction({
       feature: this.features[0],
       action: WORKFLOW_ACTION.COPY,
@@ -151,15 +152,15 @@ export class FormComponent implements OnDestroy, OnChanges, OnInit {
   }
 
   public editGeometry(): void {
-    this.closeDialog();
-    this.workflowAction.setAction({
-      feature: this.feature,
+    const event: WorkflowActionEvent = {
+      feature: {...this.feature},
       action: WORKFLOW_ACTION.EDIT_GEOMETRY,
-    });
+    };
+    this.workflowAction.setAction(event);
+    this.closeForm();
   }
 
-  public closeDialog() {
-    this.store$.dispatch(FormActions.setCloseFeatureForm());
+  public closeForm() {
     this.ngZone.run(() => {
       if (this.formDirty) {
         this.closeNotification(function () {

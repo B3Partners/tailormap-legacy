@@ -5,12 +5,16 @@ import {
 } from '../../shared/generated';
 import { MapClickedEvent } from '../../shared/models/event-models';
 import { VectorLayer } from '../../../../../bridge/typings';
-import { takeUntil } from 'rxjs/operators';
+import { filter, take, takeUntil } from 'rxjs/operators';
 import { WorkflowHelper } from './workflow.helper';
 import { FormComponent } from '../../feature-form/form/form.component';
 import { DialogData } from '../../feature-form/form/form-models';
 import { Coordinate } from '../../user-interface/models';
 import { GeoJSONGeometry } from 'wellknown';
+import { setOpenFeatureForm } from '../../feature-form/state/form.actions';
+import { selectFeatureFormOpen, selectOpenFeatureForm, selectSavedFeature } from '../../feature-form/state/form.selectors';
+import { combineLatest } from 'rxjs';
+import { selectFormClosed } from '../../feature-form/state/form.state-helpers';
 export class EditgeometryWorkflow extends Workflow {
 
   constructor() {
@@ -19,9 +23,18 @@ export class EditgeometryWorkflow extends Workflow {
  
   public afterInit() {
     super.afterInit();
-    this.dialog.getDialogById(this.FORMCOMPONENT_DIALOG_ID).afterClosed().subscribe(value => {
-      this.drawGeom();
-    });
+    combineLatest([
+      this.store$.select(selectFeatureFormOpen),
+      this.store$.select(selectOpenFeatureForm),
+    ])
+      .pipe(filter(([close, features]) => {
+        return !close;
+      }))
+      .pipe(takeUntil(this.destroyed))
+      .pipe(take(1))
+      .subscribe(([close, savedFeature]) => {
+        this.drawGeom();
+      });
   }
 
   public drawGeom() : void {
@@ -52,23 +65,13 @@ export class EditgeometryWorkflow extends Workflow {
     const feat = this.featureInitializerService.create(objecttype,
       {...feature, geometrie: geom  });
     feat.objectGuid = feature.objectGuid;
-    const data : DialogData = {
-      formFeatures: [feat],
-      isBulk: false,
-      alreadyDirty: geomChanged,
-    };
+    this.store$.dispatch(setOpenFeatureForm({ features: [feat], closeAfterSave: false, alreadyDirty: geomChanged }))
 
-    const dialogRef = this.dialog.open(FormComponent, {
-      id: this.FORMCOMPONENT_DIALOG_ID,
-      width: '1050px',
-      height: '800px',
-      disableClose: true,
-      data,
-    });
-    dialogRef.afterClosed().pipe(takeUntil(this.destroyed)).subscribe(result => {
-      this.afterEditting();
-    });
-
+    this.store$.pipe(selectFormClosed)
+      .pipe(takeUntil(this.destroyed)).pipe(take(1))
+      .subscribe(( close) => {
+        this.afterEditting();
+      });
   }
 
   public afterEditting() {

@@ -1,6 +1,7 @@
 
 .tab{
   overflow: auto;
+  height:400px;
 }
 
 .column {

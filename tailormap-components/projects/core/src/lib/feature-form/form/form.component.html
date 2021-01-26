@@ -1,7 +1,7 @@
 <div *ngIf="isOpen$ | async" class="overlay-panel mat-elevation-z4">
 
   <h1>{{formConfig.name}} {{formDirty ? '*' : ''}}
-    <button mat-button  mat-mini-fab color="" (click)="closeDialog();" class="close-button" >
+    <button mat-button mat-mini-fab color="" (click)="closeForm();" class="close-button" >
       <mat-icon>close</mat-icon>
     </button>
   </h1>
