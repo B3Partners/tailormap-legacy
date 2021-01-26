@@ -1,11 +1,14 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { FlatTreeControl } from '@angular/cdk/tree';
 import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
-import { FeatureNode, FlatNode } from './form-tree-models';
+import { FlatNode } from './form-tree-models';
 import { Feature } from '../../shared/generated';
 import { FormTreeHelpers } from './form-tree-helpers';
 import { FormconfigRepositoryService } from '../../shared/formconfig-repository/formconfig-repository.service';
-import { FormHelpers } from '../form/form-helpers';
+import { Store } from '@ngrx/store';
+import { FormState } from '../state/form.state';
+import * as FormActions from '../state/form.actions';
+import { FormCreatorHelpers } from '../form-creator/form-creator-helpers';
 
 @Component({
   selector: 'tailormap-form-tree',
@@ -15,11 +18,9 @@ import { FormHelpers } from '../form/form-helpers';
 export class FormTreeComponent implements OnInit, OnChanges {
 
   constructor(
+    private store$: Store<FormState>,
     private formConfigRepo: FormconfigRepositoryService) {
   }
-
-  @Output()
-  public nodeClicked = new EventEmitter<Feature>();
 
   @Input()
   public features: Feature[];
@@ -47,51 +48,12 @@ export class FormTreeComponent implements OnInit, OnChanges {
   }
 
   public ngOnChanges(changes: SimpleChanges): void {
-    this.dataSource.data = this.convertFeatureToNode(this.features);
-    this.treeControl.expandAll();
+    this.dataSource.data = FormTreeHelpers.convertFeatureToNode(this.features, this.formConfigRepo, this.feature.objectGuid);
+    this.treeControl.expand(this.treeControl.dataNodes[0]);
   }
 
   public setNodeSelected(node: FlatNode) {
-    this.nodeClicked.emit(node.feature);
-  }
-
-  private convertFeatureToNode(features: Feature[]): FeatureNode[] {
-    const nodes: FeatureNode[] = [];
-    features.forEach(feature => {
-      const children: FeatureNode[] = [];
-      if (feature.children) {
-        const fts = {};
-        feature.children.forEach((child: Feature) => {
-          const featureType = child.clazz;
-          if (this.formConfigRepo.getFormConfig(featureType)) {
-            if (!fts.hasOwnProperty(featureType)) {
-              fts[featureType] = {
-                name: FormHelpers.capitalize(featureType),
-                children: [],
-                id: featureType,
-                isFeatureType: true,
-              };
-            }
-            fts[featureType].children.push(this.convertFeatureToNode([child])[0]);
-          }
-        });
-        for (const key in fts) {
-          if (fts.hasOwnProperty(key)) {
-            const child = fts[key];
-            children.push(child);
-          }
-        }
-      }
-      nodes.push({
-        name: this.formConfigRepo.getFeatureLabel(feature),
-        children,
-        objectGuid: feature.objectGuid,
-        feature,
-        selected: feature.objectGuid === this.feature.objectGuid,
-        isFeatureType: false,
-      });
-    });
-    return nodes;
+    this.store$.dispatch(FormActions.setFeature({feature: node.feature}));
   }
 
   public isFeatureForCopyChecked(featureId: number): boolean {

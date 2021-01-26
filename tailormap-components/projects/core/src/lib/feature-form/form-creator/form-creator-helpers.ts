@@ -1,9 +1,5 @@
 import { Feature } from '../../shared/generated';
-import {
-  FeatureAttribute,
-  FormConfiguration,
-  IndexedFeatureAttributes,
-} from '../form/form-models';
+import { FeatureAttribute, FormConfiguration, IndexedFeatureAttributes } from '../form/form-models';
 
 export class FormCreatorHelpers {
 

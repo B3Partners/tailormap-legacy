@@ -14,7 +14,7 @@ import { FormState } from '../state/form.state';
 import { Store } from '@ngrx/store';
 import * as FormActions from '../state/form.actions';
 import {
-  selectCloseAfterSaveFeatureForm, selectFeatureFormOpen, selectFormAlreadyDirty, selectOpenFeatureForm,
+  selectCloseAfterSaveFeatureForm, selectCurrentFeature, selectFeatureFormOpen, selectFormAlreadyDirty, selectOpenFeatureForm,
 } from '../state/form.selectors';
 
 @Component({
@@ -56,13 +56,15 @@ export class FormComponent implements OnDestroy, OnChanges, OnInit {
       .subscribe(([features, closeAfterSave]) => {
         this.features = features;
         this.isBulk = features.length > 1;
-        this.feature = {...this.features[0]};
         this.closeAfterSave = closeAfterSave;
-        if (this.feature) {
-          this.initForm();
-        }
-      });
+    });
     this.store$.select(selectFormAlreadyDirty).pipe(takeUntil(this.destroyed)).subscribe(value => this.formDirty = value);
+    this.store$.select(selectCurrentFeature).pipe(takeUntil(this.destroyed)).subscribe((feature) => {
+      this.feature = {...feature};
+      if (this.feature.clazz) {
+        this.initForm();
+      }
+    });
     this.isOpen$ = this.store$.select(selectFeatureFormOpen);
   }
 
@@ -74,10 +76,6 @@ export class FormComponent implements OnDestroy, OnChanges, OnInit {
   private initForm() {
     this.formDirty = false;
     this.formConfig = this.formConfigRepo.getFormConfig(this.feature.clazz);
-    if (!this.formConfig) {
-      this.store$.dispatch(FormActions.setCloseFeatureForm());
-    }
-
     this.metadataService.getFeatureTypeMetadata$(this.feature.clazz);
     const configs = this.formConfigRepo.getAllFormConfigs();
     configs.forEach((config, key) => {

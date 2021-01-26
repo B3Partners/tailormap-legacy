@@ -1,3 +1,10 @@
+<div class="tree overlay-panel mat-elevation-z4" *ngIf="isOpen$ | async" >
+  <tailormap-form-tree
+  [features]=features
+  [isBulk]="isBulk"
+  [feature]=feature></tailormap-form-tree>
+</div>
+
 <div *ngIf="isOpen$ | async" class="overlay-panel mat-elevation-z4">
 
   <h1>{{formConfig.name}} {{formDirty ? '*' : ''}}
@@ -6,13 +13,6 @@
     </button>
   </h1>
   <div class="form-container">
-    <!--div class="tree">
-      <tailormap-form-tree
-      (nodeClicked)='openForm($event)'
-      [features]=features
-      [isBulk]="isBulk"
-      [feature]=feature></tailormap-form-tree>
-    </div-->
     <div class="form">
       <tailormap-form-creator #formCreator
                              [feature]=feature
