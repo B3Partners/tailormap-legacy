@@ -1,9 +1,7 @@
 package nl.b3p.gbi.converter;
 
-import com.fasterxml.jackson.databind.AnnotationIntrospector;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
