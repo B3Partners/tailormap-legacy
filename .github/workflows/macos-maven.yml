@@ -5,7 +5,7 @@ on: [pull_request]
 jobs:
   build:
     name: MacOS Java ${{ matrix.java }}
-    runs-on: [macos-latest]
+    runs-on: [macos-10.15]
     strategy:
       matrix:
         java: [11]
