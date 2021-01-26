@@ -1,0 +1,68 @@
+name: Angular components CI
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 14
+      - uses: actions/cache@v1
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+      - name: Test
+        run: |
+          cd tailormap-components
+          npm install
+          npm run test:ci
+      - uses: codecov/codecov-action@v1
+        with:
+          file: ./tailormap-components/coverage/core/lcov.info
+          flags: frontend # optional
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      # Copy/paste unfortunately required, see https://github.community/t/reusing-sharing-inheriting-steps-between-jobs-declarations/16851/14
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 14
+      - uses: actions/cache@v1
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+      - name: Lint
+        run: |
+          cd tailormap-components
+          npm install
+          npm run lint
+
+  checkCircular:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      # Copy/paste unfortunately required, see https://github.community/t/reusing-sharing-inheriting-steps-between-jobs-declarations/16851/14
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 14
+      - uses: actions/cache@v1
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+      - name: Check for circular dependencies
+        run: |
+          cd tailormap-components
+          npm install
+          npm run test-circular
+          

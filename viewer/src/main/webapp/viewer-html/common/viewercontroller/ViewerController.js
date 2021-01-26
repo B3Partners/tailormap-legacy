@@ -53,7 +53,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
     anchors: [],
     projection:null,
     projectionString:null,
-    
+
     /**
      * Creates a ViewerController and initializes the map container.
      *
@@ -138,13 +138,13 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         config.projection = this.projection;
         config.projectionString = this.projectionString;
         this.initialiseProjectionSupport();
-        
+
         Ext.apply(config, mapConfig || {});
         if(viewerType === "openlayers") {
             this.mapComponent = new viewer.viewercontroller.OpenLayersMapComponent(this, mapId,config);
         }else if(viewerType === "openlayers5"){
             this.mapComponent = new viewer.viewercontroller.OlMapComponent(this, mapId, config);
-            
+
         }else{
             this.logger.error(i18next.t('viewer_viewercontroller_viewercontroller_0') + viewerType);
         }
@@ -224,9 +224,9 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             return;
         }
         Proj4js.defs[this.projection] = this.projectionString;
-        
+
     },
-    
+
     spinupDataStores: function() {
         if(this.app.details["dataStoreSpinupDisabled"]){
             return;
@@ -423,7 +423,51 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         this.app.appLayers[appLayer.id] = appLayer;
     },
 
+    addUserLayer: function(appLayer, levelId, service) {
+        // Modify or create service
+        var services = Ext.clone(this.app.services);
+        if (!this.app.services[appLayer.serviceId]) {
+            services[appLayer.serviceId] = service;
+        } else {
+            var currentServiceLayers = services[appLayer.serviceId].layers || {};
+            currentServiceLayers[appLayer.layerName] = service.layers[appLayer.layerName];
+            services[appLayer.serviceId].layers = currentServiceLayers;
+        }
+        this.app.services = services;
+        // Add app layer
+        this.addAppLayer(appLayer);
+        // Modify selected content / level
+        var selectedContent = Ext.clone(this.app.selectedContent);
+        if (!levelId || !this.app.levels[levelId]) {
+            selectedContent = [{ id: appLayer.id, type: 'appLayer' }].concat(selectedContent || []);
+        } else {
+            var levels = Ext.clone(this.app.levels);
+            levels[levelId].layers = ['' + appLayer.id].concat(levels[levelId].layers || []);
+            this.app.levels = levels;
+        }
+        // triggers selected content changed
+        this.setSelectedContent(selectedContent);
+    },
 
+    removeUserLayer: function(appLayer) {
+        // Add app layer
+        if(this.app.appLayers.hasOwnProperty(appLayer.id)) {
+            delete this.app.appLayers[appLayer.id];
+        }
+        // Modify selected content / level
+        var selectedContent = Ext.Array.filter(Ext.clone(this.app.selectedContent), function(item) {
+            return (item !== 'appLayer' || item.id !== appLayer.id);
+        });
+        var levels = Ext.clone(this.app.levels);
+        for (var levelId in levels) if (levels.hasOwnProperty(levelId)) {
+            levels[levelId].layers = Ext.Array.filter(levels[levelId].layers || [], function(layer) {
+                return '' + layer.id !== '' + appLayer.id;
+            });
+        }
+        this.app.levels = levels;
+        // triggers selected content changed
+        this.setSelectedContent(selectedContent);
+    },
 
     counter: 0,
     max: 0,
@@ -807,7 +851,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         }
         return false;
     },
-    
+
     setLayerStyle: function (appLayer, style){
         var layer = this.getLayer(appLayer);
         if (layer){
@@ -960,12 +1004,12 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                     var minRes = layer.minScale / correction;
                     ogcOptions.minResulution = minRes;
                 }
-                
+
                 if(Ext.isDefined(layer.maxScale)){
                     var maxRes = layer.maxScale / correction;
                     ogcOptions.maxResolution = maxRes;
                 }
-                
+
                 if (layer.queryable){
                     ogcOptions.query_layers= layer.name;
                 }
@@ -1047,7 +1091,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                 if(layer.bbox){
                     options.serviceEnvelope= layer.bbox.minx+","+layer.bbox.miny+","+layer.bbox.maxx+","+layer.bbox.maxy;
                 }
-                
+
                 options.tileHeight = layer.tileHeight;
                 options.tileWidth = layer.tileWidth;
                 options.protocol = service.tilingProtocol;
@@ -1070,7 +1114,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                     if(!found && styles.length > 0){
                         options.style = styles[0].identifier;
                     }
-                    
+
                 }
                 if(layer.matrixSets){
                     var matrixSet = layer.matrixSets[0];
@@ -1080,7 +1124,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                             break;
                         }
                     }
-                    
+
                     options.matrixSet = matrixSet;
                 }
                 layerObj = this.mapComponent.createTilingLayer(appLayer.layerName,service.url,options);
@@ -1540,7 +1584,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                 success(appLayer, {
                     parts: [ {
                         url: url,
-                        label: appLayer.alias, 
+                        label: appLayer.alias,
                         isAlternative:false,
                         serviceId: serviceLayer.serviceId
                     }],
@@ -1573,9 +1617,25 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         var layer = this.app.services[serviceId].layers[layerName];
         return layer.details["metadata.stylesheet"];
     },
+
     /**
      * add ore replace the filter for the given layer.
-     * @param filter the filter
+     * @param filterString the filter: string type
+     * @param appLayer the application layer
+     * @param name The name the filter should have
+     */
+    setFilterString : function(filterString, appLayer, name){
+        var filter = Ext.create("viewer.components.CQLFilterWrapper",{
+            id: "filter_"+name,
+            cql: filterString,
+            operator : "AND",
+            type: "ATTRIBUTE"
+        });
+        this.setFilter(filter, appLayer);
+    },
+    /**
+     * add ore replace the filter for the given layer.
+     * @param filter the filter: CQLFilterWrapper type
      * @param appLayer the application layer
      */
     setFilter : function (filter, appLayer){
@@ -1660,6 +1720,13 @@ Ext.define("viewer.viewercontroller.ViewerController", {
      */
     layerClicked: function(layerObj) {
         this.fireEvent(viewer.viewercontroller.controller.Event.ON_LAYER_CLICKED, layerObj);
+    },
+    /**
+     * Layer is selected
+     * @param layerObj the layer object
+     */
+    layerSelected: function(layerObj) {
+        this.fireEvent(viewer.viewercontroller.controller.Event.ON_LAYER_SELECTED, layerObj);
     },
     /**
      * Layer is clicked
@@ -2010,9 +2077,9 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             value: url+"?"
         };
         paramJSON.params.push(param);
-        
+
         var obj = Ext.urlDecode(window.location.search);
-        
+
         for (var option in obj){
             if(option != "layers" && option != "extent" && option != "bookmark" && option != "levelOrder"){
                 paramJSON.params.push({

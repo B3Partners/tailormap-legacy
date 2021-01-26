@@ -1,0 +1,2 @@
+create table form (id numeric(19,0) identity not null, feature_type_name varchar(255) null, json text null, name varchar(255) null, sft numeric(19,0) null, primary key (id));
+alter table form add constraint FK300CC46F7FEB1E foreign key (sft) references feature_type;

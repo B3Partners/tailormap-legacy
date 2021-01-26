@@ -1,0 +1,83 @@
+.overlay-panel {
+  right: 310px;
+  z-index: calc(var(--overlay-panel-z-index) - 1);
+}
+
+.form {
+  flex: 1;
+  overflow: hidden;
+  background-color: #FAFAFA;
+  display: flex;
+  flex-direction: column;
+}
+
+.form > button {
+  flex-shrink: 0;
+  margin: 14px 14px 0 14px;
+}
+
+.group-list {
+  flex: 1;
+  overflow: auto;
+  padding: 0 14px 14px 14px;
+}
+
+.group-list::after {
+  content: " ";
+  display: block;
+  height: 14px;
+}
+
+.buttons {
+  display: flex;
+  justify-content: flex-end;
+  padding: 14px;
+}
+
+.buttons button + button {
+  margin-left: 14px;
+}
+
+tailormap-criteria-group {
+  display: block;
+  background: #fff;
+  border-radius: 4px;
+  border: 1px solid #E1E1E1;
+  margin-top: 14px;
+}
+
+.add-group-button {
+  background-color: #FAFAFA;
+  width: 100%;
+  margin-bottom: 6px;
+  font-size: 15px;
+  font-weight: 600;
+  text-align: left;
+}
+.cdk-drag-animating {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.group-list.cdk-drop-list-dragging .group_list__group:not(.cdk-drag-placeholder) {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.group-placeholder {
+  background: #FAFAFA;
+  border: dotted 3px #999;
+  min-height: 60px;
+  margin-top: 14px;
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.cdk-drag-preview {
+  z-index: 2100 !important;
+}
+
+.cdk-drag-preview ::ng-deep .criteria-group {
+  display: none !important;
+}
+
+.drag-handle {
+  cursor: move;
+}

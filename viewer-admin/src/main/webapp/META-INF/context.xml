@@ -8,7 +8,7 @@ or
 crossContext="true" is required to enable the viewer-admin to load the
   components.json file and component config javascript sources from the viewer
 -->
-<Context antiResourceLocking="true" crossContext="true" path="/viewer-admin">
+<Context crossContext="true" path="/viewer-admin">
   <Parameter name="componentregistry.path" override="false" value="/viewer-html/components"/>
   <Parameter name="flamingo.data.dir" override="false" value="/opt/tailormap_data"/>
   <Parameter name="flamingo.solr.url" override="false" value="https://tailormap.nl/solr/"/>    

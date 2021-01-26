@@ -1,0 +1,15 @@
+<div class="resize-panel"
+     (mouseenter)="onPanelMouseEnter();"
+     (mouseleave)="onPanelMouseLeave();" >
+
+  <div class="resize-handle" *ngIf="visible">
+    <div class="resize-handle-inner"
+         (mousedown)="onHandleMouseDown($event);">
+    </div>
+  </div>
+<!--  <div class="resize-handle" #resizehandle>-->
+<!--    <div class="resize-handle-inner"-->
+<!--       (mousedown)="onHandleMouseDown($event);">-->
+<!--    </div>-->
+<!--  </div>-->
+</div>

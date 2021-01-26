@@ -76,6 +76,8 @@ public class StreamingShapeWriter {
      * @param workingDir The working dir where the shape writer is going to
      * write the shape files
      * @param defaultCoordRefSys output CRS
+     * @throws java.io.IOException if the working dir is not writable or does
+     * not exist
      */
     public StreamingShapeWriter(String workingDir, CoordinateReferenceSystem defaultCoordRefSys) throws IOException {
         this(workingDir);

@@ -28,6 +28,28 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
         <link rel="stylesheet" type="text/css" href="${contextPath}/extjs/resources/css/triton/theme-triton-all_1.css">
         <link rel="stylesheet" type="text/css" href="${contextPath}/extjs/resources/css/triton/theme-triton-all_2.css">
+
+        <c:set var="tailorMapComponentsPath" value="${contextPath}/tailormap-components/bridge"/>
+        <c:set var="reviewPR">${param['review-pr']}</c:set>
+        <c:choose>
+            <c:when test="${!empty reviewPR && reviewPR.matches('[0-9]+')}">
+                <c:set var="tailorMapComponentsPath" value="${contextPath}/pr/${reviewPR}/tailormap-components"/>
+            </c:when>
+            <c:when test="${param.debug == true}">
+                <c:set var="tailorMapComponentsPath" value="http://localhost:3200"/>
+            </c:when>
+        </c:choose>
+        <script type="text/javascript">
+            var tailorMapComponentsPath = <js:quote value="${tailorMapComponentsPath}"/>;
+        </script>
+        <link rel="stylesheet" type="text/css" href="${tailorMapComponentsPath}/styles.css">
+        <script src="${tailorMapComponentsPath}/runtime.js" type="module"></script>
+        <script src="${tailorMapComponentsPath}/polyfills.js" type="module"></script>
+        <script src="${tailorMapComponentsPath}/styles.js" type="module"></script>
+        <script src="${tailorMapComponentsPath}/scripts.js" defer></script>
+        <script src="${tailorMapComponentsPath}/vendor.js" type="module"></script>
+        <script src="${tailorMapComponentsPath}/main.js" type="module"></script>
+
         <script type="text/javascript" src="${contextPath}/viewer-html/common/FlamingoErrorLogger.js"></script>
         <script type="text/javascript">
             var FlamingoErrorLogger = createFlamingoErrorLogger(
@@ -103,14 +125,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <script type="text/javascript" src="${contextPath}/viewer-html/common/overrides.js"></script>
         </c:if>
         <script type="text/javascript" src="${contextPath}/resources/js/FileSaver.js"></script>
-            
+
         <c:if test="${actionBean.viewerType == 'openlayers5'}">
-               <link href="${contextPath}/viewer-html/common/ol/ol.css" rel="stylesheet">  
+               <link href="${contextPath}/viewer-html/common/ol/ol.css" rel="stylesheet">
                <link href="${contextPath}/viewer-html/common/resources/css/openlayers.css" rel="stylesheet">
                <script src="${contextPath}/viewer-html/common/ol/proj4.js" type="text/javascript"></script>
                <c:set var="olStylesheet"><stripes:url beanclass="nl.b3p.viewer.stripes.CSSActionBean" /></c:set>
                <link href="${olStylesheet}?theme=flamingo&app=${actionBean.application.id}" rel="stylesheet">
-               
+
                <c:choose>
                 <c:when test="${param.debug == true}">
                     <script type="text/javascript" src="${contextPath}/viewer-html/common/ol/debug/ol.js"></script>
@@ -140,7 +162,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <script type="text/javascript" src="${contextPath}/viewer-html/components/RequestManager.js"></script>
                 <script type="text/javascript" src="${contextPath}/viewer-html/components/DataSelectionChecker.js"></script>
 
-                
+
                 <script type="text/javascript" src="${contextPath}/viewer-html/common/ScreenPopup.js"></script>
                 <script type="text/javascript" src="${contextPath}/viewer-html/common/CQLFilterWrapper.js"></script>
                 <script type="text/javascript" src="${contextPath}/viewer-html/common/FeatureInfoWrapper.js"></script>
@@ -227,15 +249,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         <script type="text/javascript" src="${scriptDir}/OlArcServerLayer.js"></script>
                         <script type="text/javascript" src="${scriptDir}/OlSnappingController.js"></script>
                         <script type="text/javascript" src="${scriptDir}/OlImageLayer.js"></script>
-                        
-                        
+
+
                         <!-- The components -->
                         <script type="text/javascript" src="${scriptDir}/components/panZoomBar.js"></script>
                         <script type="text/javascript" src="${scriptDir}/components/LoadingPanel.js"></script>
                         <script type="text/javascript" src="${scriptDir}/components/OlLoadMonitor.js"></script>
                         <script type="text/javascript" src="${scriptDir}/components/OlMaptip.js"></script>
                         <script type="text/javascript" src="${scriptDir}/components/OlOverview.js"></script>
-                        
+
                         <!-- The tools -->
                         <script type="text/javascript" src="${scriptDir}/tools/OlIdentifyTool.js"></script>
                         <script type="text/javascript" src="${scriptDir}/tools/OlDefaultTool.js"></script>
@@ -243,7 +265,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         <script type="text/javascript" src="${scriptDir}/tools/ZoomOutButton.js"></script>
                         <script type="text/javascript" src="${scriptDir}/tools/Measure.js"></script>
                         <script type="text/javascript" src="${scriptDir}/tools/FullExtent.js"></script>
-                        <script type="text/javascript" src="${scriptDir}/tools/ToolButton.js"></script> 
+                        <script type="text/javascript" src="${scriptDir}/tools/ToolButton.js"></script>
                         <script type="text/javascript" src="${scriptDir}/tools/DragPan.js"></script>
                         <script type="text/javascript" src="${scriptDir}/tools/StreetViewButton.js"></script>
                         <script type="text/javascript" src="${scriptDir}/tools/PrevExtent.js"></script>
@@ -333,7 +355,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 actionbeanUrl: actionBeans["appConfig"]
 
                         });
-
         </script>
 
         <%@include file="/WEB-INF/jsp/app_overrides.jsp"%>

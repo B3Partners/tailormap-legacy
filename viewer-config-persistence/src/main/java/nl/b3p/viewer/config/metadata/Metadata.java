@@ -13,6 +13,7 @@ public class Metadata {
     private Long id;    
     public static final String DATABASE_VERSION_KEY = "database_version";
     public static final String DEFAULT_APPLICATION = "default_application";
+    public static final String DEFAULT_FORM_FEATURESOURCE = "default_form_featuresource";
     private String configKey;
     private String configValue;
 

@@ -42,6 +42,7 @@ Ext.define("viewer.components.Merge", {
         }
     },
     constructor: function (conf) {
+        conf.isPopup = true;
         this.initConfig(conf);
 		viewer.components.Merge.superclass.constructor.call(this, this.config);
         this.config.actionbeanUrl = FlamingoAppLoader.get('contextPath') + '/action/feature/merge';
@@ -62,16 +63,17 @@ Ext.define("viewer.components.Merge", {
                     return true;
                 });
 
-        this.renderButton({
-            handler: function () {
-                me.showWindow();
-            },
-            text: me.config.title,
-            icon: me.config.iconUrl,
-            tooltip: me.config.tooltip,
-            label: me.config.label
-        });
-
+        if(this.config.regionName === 'left_menu') {
+            this.renderButton({
+                handler: function () {
+                    me.showWindow();
+                },
+                text: me.config.title,
+                icon: me.config.iconUrl,
+                tooltip: me.config.tooltip,
+                label: me.config.label
+            });
+        }
         this.toolMapClick = this.config.viewerController.mapComponent.createTool({
             type: viewer.viewercontroller.controller.Tool.MAP_CLICK,
             id: this.name + "toolMapClick",
@@ -83,6 +85,9 @@ Ext.define("viewer.components.Merge", {
         });
 
         this.loadWindow();
+        this.popup.addListener('hide', function(){
+            this.fireEvent(viewer.viewercontroller.controller.Event.ON_DEACTIVATE);
+        }, this);
         return this;
     },
     /**
@@ -310,6 +315,12 @@ Ext.define("viewer.components.Merge", {
                     id: this.name + "geomLabel",
                     margin: 5,
                     text: '',
+                    xtype: "label"
+                },
+                {
+                    id: this.name + "strategyLabel",
+                    margin: 5,
+                    text: this.config.strategy === 'replace' ? i18next.t('viewer_components_merge_strategy_replace') : i18next.t('viewer_components_merge_new'),
                     xtype: "label"
                 },
                 {

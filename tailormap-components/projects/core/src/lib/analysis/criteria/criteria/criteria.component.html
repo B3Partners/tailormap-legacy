@@ -1,0 +1,45 @@
+<div class="criteria" [formGroup]="criteriaForm" *ngIf="selectedDataSource">
+
+  <div class="form-field">
+    <label>Bronlaag</label>
+    <mat-select formControlName="source">
+      <mat-option *ngFor="let source of availableSources" [value]="source.featureType" [disabled]="source.disabled">
+        {{source.label}}
+      </mat-option>
+    </mat-select>
+  </div>
+
+  <div class="form-field">
+    <label>Kenmerk</label>
+    <tailormap-attribute-selector [appLayerId]="selectedDataSource.layerId"
+                                  [featureType]="formData.source"
+                                  [selectedAttribute]="formData.attribute"
+                                  (attributeSelected)="attributeSelected($event)"></tailormap-attribute-selector>
+  </div>
+
+  <div class="form-field">
+    <label>Conditie</label>
+    <mat-select formControlName="condition">
+      <mat-option *ngFor="let attr of filteredConditions$ | async" [value]="attr.value">{{attr.label}}</mat-option>
+    </mat-select>
+  </div>
+
+  <div class="form-field" *ngIf="showValueInput()">
+    <label>Waarde</label>
+    <input type="text" formControlName="value" />
+  </div>
+
+  <div class="form-field" *ngIf="showDateInput()">
+    <label>Waarde</label>
+    <div class="datepicker-input">
+      <input matInput [matDatepicker]="dp" formControlName="value" />
+      <mat-datepicker-toggle matSuffix [for]="dp"></mat-datepicker-toggle>
+    </div>
+    <mat-datepicker #dp></mat-datepicker>
+  </div>
+
+  <div class="form-field centered" *ngIf="showRemoveLink">
+    <button class="link-button" mat-flat-button (click)="removeCriteria()">Verwijderen</button>
+  </div>
+
+</div>

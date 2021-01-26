@@ -1,0 +1,66 @@
+tailormap-criteria {
+  display: block;
+  padding: 14px;
+}
+
+tailormap-criteria + tailormap-criteria {
+  margin-top: 14px;
+}
+
+.criteria-group > .centered {
+  margin: 6px 0;
+}
+
+.criteria-group-header {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #E1E1E1;
+  padding: 10px 6px;
+}
+
+.criteria-group-header .form-field {
+  flex: 1;
+  display: flex;
+  align-items: flex-start;
+}
+
+.criteria-group-header mat-select {
+  width: 130px;
+}
+
+.criteria-group-header .mat-icon-button {
+  height: 32px;
+  width: 32px;
+  line-height: 32px;
+  border: 1px solid #E1E1E1;
+  border-radius: 3px;
+  background-color: #FFFFFF;
+}
+
+.criteria-group-header .mat-icon-button + .mat-icon-button {
+  margin-left: 6px;
+}
+
+.criteria-group-header mat-icon {
+  width: 22px;
+  height: 22px;
+  line-height: 22px;
+}
+
+.criteria-group__title {
+  background-color: #F9F9F9;
+  text-align: center;
+  line-height: 26px;
+  border-top: 1px solid #E1E1E1;
+  border-bottom: 1px solid #E1E1E1;
+  font-size: 14px;
+  color: rgba(12, 5, 36, 0.4);
+  font-weight: 600;
+  width: 100%;
+  border-radius: 0;
+}
+
+.criteria-group__title mat-icon {
+  position: absolute;
+  right: 6px;
+}

@@ -44,6 +44,13 @@
             </id>
         </attributes>
     </entity>
+    <entity class="nl.b3p.viewer.config.forms.Form">
+        <attributes>
+            <id name="id">
+                <generated-value strategy="IDENTITY"/>
+            </id>
+        </attributes>
+    </entity>
 
     <entity class="nl.b3p.viewer.config.services.GeoService">
         <attributes>

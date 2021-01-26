@@ -45,7 +45,7 @@ public class FeatureStyle {
 
     /**
      *
-     * @deprecated use {@link FeatureStyle(JSONObject)} instead, as this sets up
+     * @deprecated use {@link #FeatureStyle(JSONObject)} instead, as this sets up
      * the style with aberrant properties.
      */
     @Deprecated

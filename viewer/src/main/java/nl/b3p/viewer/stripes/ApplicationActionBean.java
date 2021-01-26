@@ -473,6 +473,7 @@ public class ApplicationActionBean extends LocalizableApplicationActionBean impl
         } else {
             RedirectResolution r = new RedirectResolution(LoginActionBean.class)
                     .addParameter("name", application.getName())
+                    .addParameter("debug", debug)
                     .addParameter("version", application.getVersion());
             addBookmarkParameters(r);
             return r;

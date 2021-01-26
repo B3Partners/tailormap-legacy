@@ -1,0 +1,35 @@
+<div class="overlay-panel mat-elevation-z4" *ngIf="createLayerMode !== null">
+
+  <tailormap-dialog-close-button (closeDialog)="closePanel()"></tailormap-dialog-close-button>
+
+  <h1 *ngIf="createLayerMode === createLayerEnum.BUFFER">Buffer selectie</h1>
+  <h1 *ngIf="createLayerMode === createLayerEnum.REGIONAL">Regionale selectie</h1>
+  <h1 *ngIf="createLayerMode === createLayerEnum.THEMATIC">Thematische selectie</h1>
+  <h1 *ngIf="createLayerMode === createLayerEnum.ATTRIBUTES">Selectielaag op kenmerken</h1>
+  <h1 *ngIf="createLayerMode === createLayerEnum.SPATIAL">Spatial selectie</h1>
+
+  <mat-tab-group animationDuration="0ms"
+                 class="tab-group"
+                 (selectedIndexChange)="selectedTabIndexChanged($event)"
+                 [selectedIndex]="selectedTabIndex">
+
+    <mat-tab label="Inhoud">
+      <ng-template matTabContent>
+        <tailormap-create-layer-form (next)="moveToStyling()"></tailormap-create-layer-form>
+      </ng-template>
+    </mat-tab>
+
+    <mat-tab label="Styling" [disabled]="cannotCreateLayer$ | async">
+      <ng-template matTabContent>
+        <tailormap-create-layer-styling></tailormap-create-layer-styling>
+      </ng-template>
+    </mat-tab>
+
+  </mat-tab-group>
+
+</div>
+
+<tailormap-create-layer-layer-selection *ngIf="isSelectingDataSource$ | async"></tailormap-create-layer-layer-selection>
+<tailormap-simple-criteria *ngIf="criteriaMode === 'SIMPLE'"></tailormap-simple-criteria>
+<tailormap-advanced-criteria *ngIf="criteriaMode === 'ADVANCED'"></tailormap-advanced-criteria>
+<tailormap-style-form-panel *ngIf="hasSelectedStyle$ | async"></tailormap-style-form-panel>

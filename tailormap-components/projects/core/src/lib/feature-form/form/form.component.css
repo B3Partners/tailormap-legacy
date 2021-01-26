@@ -1,0 +1,46 @@
+.container, :host{
+  height:100%;
+}
+.container{
+  display: flex;
+  flex-direction: column;
+}
+.form-container{
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  flex:1;
+  justify-content: stretch;
+  overflow: hidden;
+}
+.tree{
+  width: 350px;
+  overflow: auto;
+  margin-right: 10px;
+}
+
+.form{
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  overflow: auto;
+}
+
+.close-button{
+  float: right;
+  bottom: 20px;
+}
+.red-item{
+  color: red;
+}
+
+.bottom-bar{
+  margin-left: auto;
+}
+
+.bottom-bar button{
+  float: right;
+
+  margin-right: 15px;
+}

@@ -61,6 +61,12 @@ public class Layer implements Cloneable, Serializable {
 
     public static final String DETAIL_ALTERNATE_LEGEND_IMAGE_URL = "alternateLegendImageUrl";
 
+    public static final String DETAIL_USERLAYER_FILTER = "userlayer_filter";
+    public static final String DETAIL_USERLAYER_ORIGINAL_LAYERNAME = "userlayer_original_layername";
+    public static final String DETAIL_USERLAYER_ORIGINAL_LAYER_ID = "userlayer_original_layerid";
+    public static final String DETAIL_USERLAYER_DATE_ADDED = "userlayer_date_added";
+    public static final String DETAIL_USERLAYER_USER = "userlayer_user";
+
     private static Set<String> interestingDetails = new HashSet<>(Arrays.asList(new String[] {
         EXTRA_KEY_METADATA_URL,
         EXTRA_KEY_METADATA_STYLESHEET_URL,
@@ -126,6 +132,8 @@ public class Layer implements Cloneable, Serializable {
     private boolean virtual;
     private boolean queryable;
     private boolean filterable;
+
+    private Boolean userlayer = false;
 
     @ManyToOne(fetch=FetchType.LAZY, cascade={CascadeType.PERSIST, CascadeType.MERGE})
     private SimpleFeatureType featureType;
@@ -433,6 +441,8 @@ public class Layer implements Cloneable, Serializable {
         o.put("queryable", queryable);
         o.put("filterable", filterable);
 
+        o.put("userlayer", userlayer);
+
         if(title != null) {
             o.put("title", title);
         }
@@ -697,5 +707,14 @@ public class Layer implements Cloneable, Serializable {
     public void setMatrixSets(List<TileMatrixSet> matrixSets) {
         this.matrixSets = matrixSets;
     }
+
+    public Boolean isUserlayer() {
+        return userlayer;
+    }
+
+    public void setUserlayer(boolean userlayer) {
+        this.userlayer = userlayer;
+    }
+
     //</editor-fold>
 }

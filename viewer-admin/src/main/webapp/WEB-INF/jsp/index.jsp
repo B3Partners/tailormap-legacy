@@ -24,7 +24,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     </stripes:layout-component>
     <stripes:layout-component name="header">
         <jsp:include page="/WEB-INF/jsp/header.jsp"/>
-    </stripes:layout-component>    
+    </stripes:layout-component>
     <stripes:layout-component name="body">
            <img class="flamingoLogo" src="${contextPath}/resources/images/TailormapLogo.png"/>
 

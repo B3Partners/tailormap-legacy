@@ -36,7 +36,7 @@
             }
         }
     },
-    
+
     {
         "className": "viewer.components.Ontbrandingsaanvraag",
         "name": "Fireworks Permit",
@@ -606,7 +606,7 @@
         "group": "Component",
         "sources": ["Split.js"],
         "configSource": ["ConfigObject.js","SelectionWindowConfig.js","Split-config.js"],
-        "restrictions": ["left_menu"],
+        "restrictions": ["left_menu", "content"],
         "notInCombinationWith": [],
         "type": "popup",
         "singleton": true,
@@ -619,7 +619,7 @@
         "group": "Component",
         "sources": ["Merge.js"],
         "configSource": ["ConfigObject.js","SelectionWindowConfig.js","Merge-config.js"],
-        "restrictions": ["left_menu"],
+        "restrictions": ["left_menu", "content"],
         "notInCombinationWith": [],
         "type": "popup",
         "singleton": true,
@@ -937,5 +937,37 @@
         "singleton": false,
         "configSource": ["ConfigObject.js","SelectionWindowConfig.js", "MapboxGL-config.js"],
         "restrictions": ["left_menu"]
+    },
+    {
+        "className": "viewer.components.GBI",
+        "name": "GBI",
+        "group": "Map",
+        "shortName": "GBI",
+        "sources": ["GBI.js"],
+        "singleton": true,
+        "configSource": ["ConfigObject.js","SelectionWindowConfig.js", "GBI-config.js"],
+        "restrictions": ["content", "left_menu"]
+    },
+    {
+        "className": "viewer.components.NgAttributeList",
+        "name": "NgAttributeList",
+        "group": "Map",
+        "shortName": "NgAttrList",
+        "sources": ["NgAttributeList.js"],
+        "type": "popup",
+        "singleton": true,
+        "configSource": ["ConfigObject.js","SelectionWindowConfig.js","NgAttributeList-config.js"],
+        "restrictions": ["left_menu"]
+    },
+    {
+        "className": "viewer.components.AnalysisLayerCreator",
+        "name": "GBI - Analyse / Laag maken",
+        "group": "Map",
+        "shortName": "GBI-A",
+        "sources": ["AnalysisLayerCreator.js"],
+        "type": "popup",
+        "singleton": true,
+        "configSource": ["ConfigObject.js","SelectionWindowConfig.js","AnalysisLayerCreator-config.js"],
+        "restrictions": ["content"]
     }
 ]

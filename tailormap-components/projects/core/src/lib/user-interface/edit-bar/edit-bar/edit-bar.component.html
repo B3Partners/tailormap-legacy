@@ -1,0 +1,16 @@
+  <tailormap-menu-button
+    icon="new_object"
+    (clicked)="onEdit()"
+    [enabled]="!isEditting"
+  ></tailormap-menu-button>
+
+  <tailormap-menu-button
+    icon="split"
+    (clicked)="onSplit()"
+    [enabled]="hasSplit()"
+  ></tailormap-menu-button>
+  <tailormap-menu-button
+    icon="merge"
+    (clicked)="onMerge()"
+    [enabled]="hasMerge()"
+  ></tailormap-menu-button>

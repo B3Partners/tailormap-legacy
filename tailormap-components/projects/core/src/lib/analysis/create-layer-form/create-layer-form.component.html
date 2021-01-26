@@ -1,0 +1,28 @@
+<div class="form">
+  <div class="form-field">
+    <label for="layerName">Naam kaartlaag</label>
+    <input type="text" id="layerName" [formControl]="layerName" placeholder="Naam kaartlaag..." />
+  </div>
+
+  <div class="form-field">
+    <label>Selectiebron</label>
+    <button mat-button (click)="selectDataSource()" class="form-button" [disabled]="hasActiveSidePanel$ | async" [class.form-button--active]="selectingDataSource$ | async">
+      <span *ngIf="!selectedDataSource">Geen geselecteerd</span>
+      <span *ngIf="selectedDataSource">{{selectedDataSource.label}}</span>
+      <mat-icon svgIcon="contextual_chevron_right"></mat-icon>
+    </button>
+  </div>
+
+  <tailormap-create-layer-mode-attributes *ngIf="isCreatingAttributesLayer()" class="create-layer-mode"></tailormap-create-layer-mode-attributes>
+  <tailormap-create-layer-mode-thematic *ngIf="isCreatingThematicLayer()" class="create-layer-mode"></tailormap-create-layer-mode-thematic>
+
+  <tailormap-error-message *ngIf="errorMessage$ | async as errorMessage" [errorMessage]="errorMessage"></tailormap-error-message>
+
+</div>
+<div class="buttons">
+  <button mat-flat-button (click)="cancelCreateLayer()">Annuleren</button>
+  <button mat-flat-button color="primary" [disabled]="!canCreateLayer()" (click)="showStylingTab()">
+    Volgende
+    <mat-icon svgIcon="contextual_chevron_right"></mat-icon>
+  </button>
+</div>

@@ -1,0 +1,23 @@
+.style-item {
+  display: flex;
+  align-items: center;
+  height: 25px;
+  overflow: hidden;
+}
+
+.style-item span {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  display: block;
+  flex: 1;
+}
+
+.style-item svg {
+  width: 25px;
+  margin-right: 5px;
+}
+
+.style-item mat-icon {
+  height: 15px;
+}

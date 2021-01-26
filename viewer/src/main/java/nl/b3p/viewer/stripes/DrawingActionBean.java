@@ -204,6 +204,7 @@ public class DrawingActionBean implements ActionBean {
                     response.setContentType("text/html;charset=UTF-8");
                     PrintWriter pw = new PrintWriter(out);
                     pw.write(e.getMessage());
+                    pw.flush();
                 } finally {
                     out.close();
                 }

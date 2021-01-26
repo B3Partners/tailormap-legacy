@@ -97,9 +97,16 @@ public class FeatureTypeRelation {
         j.put("type",type); 
         if (this.featureType!=null){
             j.put("featureType", this.featureType.getId());
+            j.put("featureTypeName", this.featureType.getTypeName());
+            JSONArray keys = new JSONArray();
+            j.put("relationKeys", keys);
+            relationKeys.forEach(key -> {
+                keys.put(key.toJSONObject());
+            });
         }
         if (this.foreignFeatureType!=null){
             j.put("foreignFeatureType", this.foreignFeatureType.getId());
+            j.put("foreignFeatureTypeName", this.foreignFeatureType.getTypeName());
             JSONArray jRel = new JSONArray();
             if (!this.foreignFeatureType.getRelations().isEmpty()){
                 j.put("relations",jRel);

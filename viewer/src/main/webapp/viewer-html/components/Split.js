@@ -55,6 +55,7 @@ Ext.define("viewer.components.Split", {
         }
     },
     constructor: function (conf) {
+        conf.isPopup = true;
         this.initConfig(conf);
         viewer.components.Split.superclass.constructor.call(this, this.config);
         this.config.actionbeanUrl = contextPath + '/action/feature/split';
@@ -74,16 +75,17 @@ Ext.define("viewer.components.Split", {
                     return true;
                 });
 
-        this.renderButton({
-            handler: function () {
-                me.showWindow();
-            },
-            text: me.config.title,
-            icon: me.config.iconUrl,
-            tooltip: me.config.tooltip,
-            label: me.config.label
-        });
-
+        if(this.config.regionName === 'left_menu') {
+            this.renderButton({
+                handler: function () {
+                    me.showWindow();
+                },
+                text: me.config.title,
+                icon: me.config.iconUrl,
+                tooltip: me.config.tooltip,
+                label: me.config.label
+            });
+        }
         this.toolMapClick = this.config.viewerController.mapComponent.createTool({
             type: viewer.viewercontroller.controller.Tool.MAP_CLICK,
             id: this.name + "toolMapClick",
@@ -98,6 +100,9 @@ Ext.define("viewer.components.Split", {
         this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE, this.selectedContentChanged, this);
 
         this.popup.addListener('hide', this.cancel, this);
+        this.popup.addListener('hide', function(){
+            this.fireEvent(viewer.viewercontroller.controller.Event.ON_DEACTIVATE);
+        }, this);
         return this;
     },
     selectedContentChanged: function () {
@@ -239,6 +244,14 @@ Ext.define("viewer.components.Split", {
                             xtype: "label"
                         }
                     ]
+                },
+                {
+                    id: this.name + "strategyLabel",
+                    margin: 5,
+                    text: this.config.strategy === 'replace' ?
+                        i18next.t('viewer_components_split_strategy_replace') :
+                        i18next.t('viewer_components_split_strategy_add'),
+                    xtype: "label"
                 },
                 {
                     id: this.name + 'InputPanel',

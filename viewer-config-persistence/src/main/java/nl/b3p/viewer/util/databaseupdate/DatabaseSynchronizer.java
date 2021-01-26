@@ -179,6 +179,15 @@ public class DatabaseSynchronizer implements Servlet {
 
         updates.put("40", new UpdateElement (Collections.singletonList("selectedcontentcaches_dirty.sql"), String.class));
         updates.put("41", new UpdateElement (Collections.singletonList("add_geoservice_version.sql"), String.class));
+	
+	    // 5.7.7
+        updates.put("42", new UpdateElement(Collections.singletonList("add_form.sql"), String.class, false));
+
+        // 5.7.9
+        updates.put("43", new UpdateElement(Collections.singletonList("add_userlayer.sql"), String.class, false));
+        updates.put("44", new UpdateElement(Collections.singletonList("add_form-readers.sql"), String.class, false));
+
+
 
         // 
         // NB when adding an update also update the metadata version in the testdata.sql file around line 348

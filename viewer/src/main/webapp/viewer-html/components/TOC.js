@@ -28,9 +28,12 @@ Ext.define('Maps', {
         // Added convert function to icon
         {name: 'icon', type: 'string', convert: function(fieldName, record) {
             if(record.get('leaf')) {
-                if(record.get('hasMultipleStyles')){
+                var layerObj = record.get('layerObj');
+                if (record.get('hasMultipleStyles')) {
                     return FlamingoAppLoader.get('contextPath') + '/viewer-html/components/resources/images/selectionModule/maplevel.png';
-                }else{
+                } else if (layerObj && layerObj.appLayer && layerObj.appLayer.userlayer) {
+                    return FlamingoAppLoader.get('contextPath') + '/viewer-html/components/resources/images/selectionModule/selection_layer.png';
+                } else {
                     return FlamingoAppLoader.get('contextPath') + '/viewer-html/components/resources/images/selectionModule/map.png';
                 }
             }
@@ -93,6 +96,7 @@ Ext.define ("viewer.components.TOC",{
         this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE,this.selectedContentChanged,this);
         this.config.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_FINISHED_CHANGE_EXTENT,this.extentChanged,this);
         this.config.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_VISIBILITY_CHANGED,this.layerVisibilityChanged,this);
+        this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_COMPONENTS_FINISHED_LOADING, this.showAnalysisButton, this);
         return this;
     },
     // Build the tree
@@ -170,7 +174,20 @@ Ext.define ("viewer.components.TOC",{
                     fn: function() {
                         this.renderPromise.resolve();
                     }
-                }
+                },
+                select: {
+                    scope: this,
+                    toc: this,
+                    fn: function(thisObj, record) {
+                        var node = record.raw;
+                        if(node ===undefined){
+                            node = record.data;
+                        }
+                        this.config.viewerController.layerSelected(node.layerObj);
+                    }
+                },
+
+
             },
             store: store,
             tools: this.getHelpToolConfig(),
@@ -178,6 +195,34 @@ Ext.define ("viewer.components.TOC",{
         });
         var parent = this.getContentContainer();
         parent.add(this.panel);
+    },
+    showAnalysisButton: function() {
+        var analysisComponents = this.viewerController.getComponentsByClassName("viewer.components.AnalysisLayerCreator");
+        if (analysisComponents.length === 0) {
+            return;
+        }
+        this.panel.addDocked({
+            xtype: 'toolbar',
+            dock: 'bottom',
+            height: '48px',
+            width: '100%',
+            padding: '4px 0 4px 0',
+            items: [
+                {
+                    xtype: 'container',
+                    width: '100%',
+                    height: 40,
+                    flex: 1,
+                    html: '<div style="height: 40px;" class="button-container"></div>',
+                    listeners: {
+                        render: function(container) {
+                            analysisComponents[0].addButton(container.getEl().dom.querySelector('.button-container'), container);
+                        }
+                    }
+                }
+            ]
+        });
+        this.panel.updateLayout();
     },
     renderButton: function() {
         var me = this;
@@ -215,7 +260,7 @@ Ext.define ("viewer.components.TOC",{
         // Create background
         this.createBackgroundLevel(nodes);
         this.insertLayer(nodes);
-        
+
         // Large tree's where not rendered properly all the time. This fixes this issue
         // See https://github.com/flamingo-geocms/flamingo/issues/391
         this.panel.getView().refreshView();
@@ -341,6 +386,7 @@ Ext.define ("viewer.components.TOC",{
         var treeNodeLayer = {
             text: Ext.String.format('<span id=\"span_{0}\">{1}</span>', layerId, layerTitle),
             // id: layerId,
+            cls: appLayerObj.userlayer ? "layer--is-userlayer" : "",
             expanded: me.config.expandOnStartup,
             leaf: true,
             background: appLayerObj.background,
@@ -380,7 +426,7 @@ Ext.define ("viewer.components.TOC",{
                 this.addQtip(i18next.t('viewer_components_toc_9'), 'span_'+layerId);
                 treeNodeLayer.layerObj.download = serviceLayer.details ["download.url"];
             }
-            
+
             if (appLayerObj.details && typeof appLayerObj.details ["stylesOrder"] !== "undefined") {
                 this.createStylesChildren(serviceLayer, layerId, treeNodeLayer, appLayerObj, retChecked);
             }
@@ -704,7 +750,7 @@ Ext.define ("viewer.components.TOC",{
 
     createStylesChildren: function(serviceLayer, layerId, treeNodeLayer, appLayerObj, parentChecked) {
         var stylesOrder = Ext.JSON.decode(appLayerObj.details ["stylesOrder"]);
-     
+
         if (stylesOrder.length > 1) {
             var sNodes = [];
             for (var i = 0; i < stylesOrder.length; i++) {
@@ -796,6 +842,7 @@ Ext.define ("viewer.components.TOC",{
         if(this.config.hasOwnProperty('showAfterSelectedContentChange') && this.config.showAfterSelectedContentChange && !this.config.isPopup && this.config.viewerController.layoutManager.isTabComponent(this.name)) {
             this.config.viewerController.layoutManager.showTabComponent(this.name)
         }
+        this.showAnalysisButton();
     },
     extentChanged : function (map,obj){
         var scale = map.getScale(obj.extent);

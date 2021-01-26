@@ -178,6 +178,9 @@ input.error[type="radio"], input.error[type="checkbox"], select.error {
 .toc-inscale {
     color: black;
 }
+.layer--is-userlayer {
+    font-style: italic;
+}
 .no_treenode_icon{
     background-image: none;
     width: 1px;

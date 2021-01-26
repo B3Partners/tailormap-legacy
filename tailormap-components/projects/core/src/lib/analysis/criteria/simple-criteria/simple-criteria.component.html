@@ -1,0 +1,11 @@
+<div class="overlay-panel mat-elevation-z4">
+  <tailormap-dialog-close-button (closeDialog)="closePanel()" icon="chevron_left"></tailormap-dialog-close-button>
+  <h1>Simpele vergelijking</h1>
+  <div class="form">
+    <tailormap-criteria [criteria]="criteria$ | async" (criteriaChanged)="criteriaChanged($event)"></tailormap-criteria>
+  </div>
+  <div class="buttons">
+    <button mat-flat-button (click)="remove()">Verwijderen</button>
+    <button mat-flat-button color="primary" (click)="save()" [disabled]="!saveButtonEnabled">Opslaan</button>
+  </div>
+</div>

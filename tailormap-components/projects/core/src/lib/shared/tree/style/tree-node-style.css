@@ -1,0 +1,54 @@
+:host {
+  flex: 1;
+  overflow: hidden;
+}
+
+.mat-icon {
+  width: 18px;
+  height: 18px;
+  font-size: 18px;
+  line-height: 18px;
+}
+
+.tree-node__label {
+  padding-right: 40px;
+  display: flex;
+  align-items: center;
+}
+
+.tree-node__label.modified {
+  font-weight: bold;
+}
+
+.tree-node__label.readonly-layer {
+  font-style: italic;
+  opacity: 0.7;
+}
+
+.tree-node__label .mat-icon {
+  margin-right: 5px;
+  vertical-align: middle;
+}
+
+.icon {
+  position: relative;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.tree-node__actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 38px;
+  background-image: linear-gradient(to right, rgba(214,222,255,0) 0%, rgba(214,222,255,1) 30%, rgba(214,222,255,1) 100%);
+  position: var(--actions-pos);
+  right: 0;
+  margin-right: calc(-1 * var(--scroll-pos));
+}
+
+.tree-node__actions .mat-icon-button {
+  width: 38px;
+  height: 38px;
+  line-height: 38px;
+}

@@ -1,0 +1,173 @@
+<div class="container">
+  <mat-paginator [pageSize]="attributelistService.config.pageSize"
+                 [length]="0"
+                 (page)="onPageChange($event)">
+  </mat-paginator>
+  <mat-divider></mat-divider>
+
+  <div class="table-container">
+    <mat-table #table [dataSource]="dataSource"
+               matSort multiTemplateDataRows
+               (matSortChange) = "onSortClick($event)">
+
+      <ng-container *ngFor="let colName of getColumnNames()"
+                    [ngSwitch]="colName">
+
+        <!-- First column with checkboxes -->
+        <ng-container *ngSwitchCase="'_checked'" matColumnDef="{{colName}}">
+          <!-- Header -->
+          <mat-header-cell class="column_small" *matHeaderCellDef [ngSwitch]="checkState">
+            <ng-template [ngSwitchCase]="'All'">
+              <mat-icon class="icon material-icons" color="primary"
+                        (click)="$event.stopPropagation();onHeaderCheckClick();" >
+                check_box
+              </mat-icon>
+            </ng-template>
+            <ng-template [ngSwitchCase]="'None'">
+              <mat-icon class="icon material-icons-outlined"
+                        (click)="onHeaderCheckClick();$event.stopPropagation();" >
+                check_box_outline_blank
+              </mat-icon>
+            </ng-template>
+            <ng-template [ngSwitchCase]="'Some'">
+              <mat-icon class="icon material-icons" color="primary"
+                        (click)="$event.stopPropagation();this.onHeaderCheckClick();" >
+                indeterminate_check_box
+              </mat-icon>
+            </ng-template>
+          </mat-header-cell>
+          <!-- Cell -->
+          <mat-cell class="column_small"  *matCellDef="let currRow;">
+            <ng-container *ngIf="currRow._checked; then iconChecked; else iconNotChecked;">
+            </ng-container>
+            <ng-template #iconChecked>
+              <mat-icon class="icon material-icons" color="primary"
+                        (click)="$event.stopPropagation();onRowCheckClick(currRow);">
+                check_box
+              </mat-icon>
+            </ng-template>
+            <ng-template #iconNotChecked>
+              <mat-icon class="icon material-icons-outlined"
+                        (click)="$event.stopPropagation();onRowCheckClick(currRow);">
+                check_box_outline_blank
+              </mat-icon>
+            </ng-template>
+          </mat-cell>
+          <!-- Footer -->
+          <mat-footer-cell  class="column_small" *matFooterCellDef>
+              <mat-icon (click)="onStatisticsHelp()">
+                functions
+              </mat-icon>
+            </mat-footer-cell>
+          </ng-container>
+
+          <!-- Column with + for expanding details -->
+          <ng-container *ngSwitchCase="'_details'" matColumnDef="{{colName}}">
+          <!-- Header -->
+          <mat-header-cell class="column_small" *matHeaderCellDef
+                           [ngSwitch]="colName" ></mat-header-cell>
+          <!-- Cell -->
+          <mat-cell class="column_small"
+                    *matCellDef="let currRow;"
+                    [ngSwitch]="currRow._details">
+            <ng-template [ngSwitchCase]="'No'">
+              <span class="iconCharNo">+</span>
+            </ng-template>
+            <ng-template [ngSwitchCase]="'YesExpanded'">
+              <span class="iconChar"
+                    (click)="$event.stopPropagation();onRowExpandClick(currRow);">-</span>
+            </ng-template>
+            <ng-template [ngSwitchCase]="'YesCollapsed'">
+              <span class="iconChar"
+                    (click)="$event.stopPropagation();onRowExpandClick(currRow);">+</span>
+            </ng-template>
+            <ng-template *ngSwitchDefault>
+              <span class="iconCharNo">+</span>
+            </ng-template>
+          </mat-cell>
+          <!-- Footer -->
+          <mat-footer-cell  class="column_small" *matFooterCellDef></mat-footer-cell>
+        </ng-container>
+
+        <!-- Columns with data -->
+        <ng-container *ngSwitchDefault matColumnDef="{{colName}}">
+          <!-- Header -->
+          <mat-header-cell *matHeaderCellDef mat-sort-header >{{colName}}
+              <mat-icon [ngClass]="(getIsFilterActive(colName))? 'material-icons-set': 'material-icons-unset' " (click) = "$event.stopPropagation();onFilterClick(colName)">
+                filter_list
+              </mat-icon>
+          </mat-header-cell>
+          <!-- Cell -->
+          <mat-cell *matCellDef="let currRow" >{{currRow[colName]}}</mat-cell>
+          <!-- Footer -->
+          <mat-footer-cell *matFooterCellDef (contextmenu)="onStatisticsMenu($event, colName)">
+            <div *ngIf="isStatisticsProcessing(colName)">
+              <mat-spinner diameter="20"></mat-spinner>
+            </div>
+            {{getStatisticResult(colName)}}
+          </mat-footer-cell>
+        </ng-container>
+      </ng-container>
+
+      <!-- Columns with related details data -->
+      <mat-header-row *matHeaderRowDef="getColumnNames(); sticky: true;"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: getColumnNames();"
+               [cdkDetailsRow]="row"
+               [cdkDetailsRowTpl]="detailsTpl"
+               (click)="$event.stopPropagation();onRowClick(row);">
+      </mat-row>
+      <ng-template #detailsTpl let-currRow>
+        <div class="details-container" [@onDetailsExpand] *ngFor="let featureType of currRow.related_featuretypes">
+          <tailormap-attributelist-details
+            [parentLayerId]="dataSource.getLayerId()"
+            [parentLayerName]="dataSource.getLayerName()"
+            [featureType]="featureType">
+          </tailormap-attributelist-details>
+        </div>
+      </ng-template>
+      <mat-footer-row *matFooterRowDef="getColumnNames(); sticky: true;"></mat-footer-row>
+
+    </mat-table>
+  </div>
+
+  <div style="visibility: hidden; position: fixed"
+       [style.left]="contextMenuPosition.x"
+       [style.top]="contextMenuPosition.y"
+       [matMenuTriggerFor]="statisticsMenu">
+  </div>
+
+  <mat-menu #statisticsMenu="matMenu">
+    <ng-template matMenuContent let-colName="colName">
+      <ng-container *ngFor="let statType of keys(eStatisticType) ">
+        <div *ngIf="getStatisticFunctionColumnType(colName) === 'numeric' && eStatisticType[statType] !== 'COUNT' && eStatisticType[statType] !== 'NONE'">
+           <button mat-menu-item (click)="onStatisticsMenuClick(colName, eStatisticType[statType])">
+             <mat-icon [ngClass]="(getStatisticTypeInMenu(colName) === eStatisticTypeInMenu[statType])? 'menu-icon material-icons-set': 'menu-icon material-icons-off'">
+               check
+             </mat-icon>
+             {{eStatisticTypeInMenu[statType]}}
+           </button>
+        </div>
+      </ng-container>
+      <ng-container *ngFor="let statType of keys(eStatisticType) ">
+        <div *ngIf="eStatisticType[statType] === ('COUNT')">
+          <button mat-menu-item (click)="onStatisticsMenuClick(colName, eStatisticType[statType])">
+            <mat-icon [ngClass]="(getStatisticTypeInMenu(colName) === eStatisticTypeInMenu[statType])? 'menu-icon material-icons-set': 'menu-icon material-icons-off'">
+              check
+            </mat-icon>
+            {{eStatisticTypeInMenu[statType]}}
+          </button>
+        </div>
+      </ng-container>
+      <mat-divider></mat-divider>
+      <ng-container *ngFor="let statType of keys(eStatisticType) ">
+        <div *ngIf="eStatisticType[statType] === ('NONE')">
+          <button mat-menu-item (click)="onStatisticsMenuClick(colName, eStatisticType[statType])">
+            <mat-icon [ngClass]="(getStatisticTypeInMenu(colName) === eStatisticTypeInMenu[statType])? 'menu-icon material-icons-set': 'menu-icon material-icons-off'">
+              check
+            </mat-icon>
+            {{eStatisticTypeInMenu[statType]}}</button>
+        </div>
+      </ng-container>
+    </ng-template>
+  </mat-menu>
+</div>

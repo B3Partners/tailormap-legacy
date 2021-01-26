@@ -1,0 +1,52 @@
+<div *ngIf="formConfig" class="container">
+
+  <h1>Formulier - {{formConfig.name}} {{formDirty ? '*' : ''}}
+    <button mat-button  mat-mini-fab color="" (click)="closeDialog();" class="close-button" >
+      <mat-icon>close</mat-icon>
+    </button>
+  </h1>
+  <div class="form-container">
+    <div class="tree">
+      <tailormap-form-tree
+      (nodeClicked)='openForm($event)'
+      [features]=features
+      [isBulk]="isBulk"
+      [feature]=feature></tailormap-form-tree>
+    </div>
+    <div class="form">
+      <tailormap-form-creator #formCreator
+                             [feature]=feature
+                             [features]=features
+                             [formConfig]=formConfig
+                             [isBulk]=isBulk
+                             (formChanged)="formChanged($event)"
+      >
+      </tailormap-form-creator>
+    </div>
+  </div>
+  <div class="bottom-bar">
+
+
+    <button [disabled]="!formDirty && !data.closeAfterSave"
+            mat-flat-button color="primary"  (click)="formCreator.beforeSave();">
+
+      <span *ngIf="!data.closeAfterSave" >Opslaan</span>
+      <span *ngIf="data.closeAfterSave" >Volgende</span>
+    </button>
+    <mat-menu #menu="matMenu">
+      <button *ngFor="let co of formsForNew" [id]="co.featureType" mat-menu-item (click)="this.newItem($event);">
+       {{co.name}}
+      </button>
+    </mat-menu>
+
+    <button mat-flat-button color="primary" [matMenuTriggerFor]="optiesMenu">
+      Opties
+    </button>
+    <mat-menu #optiesMenu="matMenu" yPosition="above" class="tailormap-menu-panel">
+      <button mat-menu-item [matMenuTriggerFor]="menu">Object toevoegen</button>
+      <button mat-menu-item  (click)="this.copy();">Paspoort gegevens kopiëren</button>
+      <button mat-menu-item  (click)="this.editGeometry();">Bewerk geometrie</button>
+      <button mat-menu-item class="red-item"  (click)="this.remove();"><mat-icon color="warn">delete_forever</mat-icon>Verwijderen</button>
+    </mat-menu>
+  </div>
+</div>

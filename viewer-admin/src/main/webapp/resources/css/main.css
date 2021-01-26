@@ -253,7 +253,7 @@ input[type="submit"]:hover,
 }
 #grid-container {
   min-height: 395px;
-  height: 500px;
+  height: 300px;
   padding-top: 40px;
 }
 #grid-container + #form-container {
@@ -869,4 +869,9 @@ body.x-body {
 }
 .helpBlock h1 {
  background-color: #ef5765;
+}
+
+.form-container{
+    display: flex;
+    flex-direction: row;
 }

@@ -153,6 +153,13 @@ Ext.define("viewer.viewercontroller.ol.OpenLayers5Map", {
         this.getFrameworkMap().updateSize();
     },
 
+    update: function () {
+        for(var i = 0 ; i < this.layers.length ; i++){
+            var layer = this.layers[i];
+            layer.frameworkLayer.getSource().refresh();
+        }
+    },
+
     getResolution: function () {
         return this.getFrameworkMap().getView().getResolution();
     },

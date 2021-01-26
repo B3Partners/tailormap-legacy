@@ -1,0 +1,30 @@
+<div class="container">
+    <mat-form-field>
+      <mat-select [(value)]="this.layer" (selectionChange)="layerSelected($event)">
+        <mat-option [value]="'-1'">Geen</mat-option>
+        <mat-option *ngFor="let layer of layers" [value]="layer">{{layer}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+  <tailormap-menu-button
+    icon="draw_polygon"
+    (clicked)="draw('POLYGON')"
+    [enabled]="isPolygon()"
+  ></tailormap-menu-button>
+
+  <tailormap-menu-button
+    icon="draw_line"
+    (clicked)="draw('LINESTRING')"
+    [enabled]="isLineString()"
+  ></tailormap-menu-button>
+
+  <tailormap-menu-button
+    icon="draw_point"
+    (clicked)="draw('POINT')"
+    [enabled]="isPoint()"
+  ></tailormap-menu-button>
+
+  <mat-divider [vertical]="true" inset="false"></mat-divider>
+
+  <mat-icon color="warn"  (click)="close()">close</mat-icon>
+</div>
