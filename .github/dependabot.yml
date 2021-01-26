@@ -126,10 +126,8 @@ updates:
   reviewers:
     - mtoonen
     - mvdstruijk
-    - matthijsln
   assignees:
     - mtoonen
     - mvdstruijk
-    - matthijsln
   labels:
     - dependencies
