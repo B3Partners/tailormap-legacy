@@ -21,7 +21,6 @@ import { Store } from '@ngrx/store';
 export abstract class Workflow {
 
   protected destroyed;
-  protected readonly FORMCOMPONENT_DIALOG_ID = 'formcomponent';
   public id = 0;
   public vectorLayer: VectorLayer;
   public highlightLayer: VectorLayer;

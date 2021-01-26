@@ -5,16 +5,16 @@ export const formStateKey = 'form';
 
 export interface FormState {
   features : Feature[];
+  feature: Feature;
   closeAfterSave: boolean;
   alreadyDirty: boolean;
   formOpen: boolean;
-  savedFeature: Feature;
 }
 
 export const initialFormState: FormState = {
+  feature: null,
   features: [],
   closeAfterSave: false,
   formOpen: false,
-  savedFeature: null,
   alreadyDirty: false,
 }

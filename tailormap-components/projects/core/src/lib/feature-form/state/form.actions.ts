@@ -11,7 +11,8 @@ export const setCloseFeatureForm = createAction(
   `${formActionsPrefix} Close feature form`,
 );
 
-export const setSavedFeature = createAction(
-  `${formActionsPrefix} Feature saved`,
+export const setFeature = createAction(
+  `${formActionsPrefix} Set feature`,
   props<{ feature : Feature }>(),
 );
+

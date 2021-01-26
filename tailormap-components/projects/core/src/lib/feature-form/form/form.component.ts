@@ -75,7 +75,7 @@ export class FormComponent implements OnDestroy, OnChanges, OnInit {
     this.formDirty = false;
     this.formConfig = this.formConfigRepo.getFormConfig(this.feature.clazz);
     if (!this.formConfig) {
-  //    this.dialogRef.close(this.feature);
+      this.store$.dispatch(FormActions.setCloseFeatureForm());
     }
 
     this.metadataService.getFeatureTypeMetadata$(this.feature.clazz);
@@ -89,27 +89,12 @@ export class FormComponent implements OnDestroy, OnChanges, OnInit {
     throw new Error('Method not implemented.');
   }
 
-  public openForm(feature) {
-    if (feature && !this.isBulk) {
-      if (this.formDirty) {
-        this.closeNotification(function () {
-          this.feature = feature;
-          this.initForm();
-        });
-      } else {
-        this.feature = feature;
-        this.initForm();
-      }
-    }
-  }
-
   public formChanged(result: any) {
     this.formDirty = result.changed;
     if (!result.changed) {
       this.features = result.features;
       this.feature = result.feature;
       if (this.closeAfterSave) {
-        this.store$.dispatch(FormActions.setSavedFeature({feature: this.feature}));
         this.store$.dispatch(FormActions.setCloseFeatureForm());
       }
     }

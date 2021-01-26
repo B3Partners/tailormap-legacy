@@ -1,5 +1,5 @@
-import { selectFeatureFormOpen, selectSavedFeature } from './form.selectors';
-import { combineLatest, pipe } from 'rxjs';
+import { selectFeatureFormOpen } from './form.selectors';
+import { pipe } from 'rxjs';
 import { select } from '@ngrx/store';
 import { filter } from 'rxjs/operators';
 

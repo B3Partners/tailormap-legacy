@@ -11,6 +11,8 @@ import { FormCopyComponent } from './form-copy/form-copy.component';
 import { StoreModule } from '@ngrx/store';
 import { formStateKey } from './state/form.state';
 import { formReducer } from './state/form.reducer';
+import { EffectsModule } from '@ngrx/effects';
+import { FormEffects } from './state/form.effects';
 
 @NgModule({
   declarations: [
@@ -26,6 +28,7 @@ import { formReducer } from './state/form.reducer';
     ApiModule,
     UserIntefaceModule,
     StoreModule.forFeature(formStateKey, formReducer),
+    EffectsModule.forFeature([ FormEffects ]),
   ],
   exports: [
     FormComponent,

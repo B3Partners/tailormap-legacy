@@ -11,9 +11,8 @@ import { ChooseTypesComponent } from '../../user-interface/sewage/choose-types/c
 import { combineLatest, Observable } from 'rxjs';
 import { filter, take, takeUntil } from 'rxjs/operators';
 import { Choice } from './WorkflowModels';
-import { DialogData } from '../../feature-form/form/form-models';
 import { setOpenFeatureForm } from '../../feature-form/state/form.actions';
-import { selectFeatureFormOpen, selectSavedFeature } from '../../feature-form/state/form.selectors';
+import { selectCurrentFeature, selectFeatureFormOpen } from '../../feature-form/state/form.selectors';
 
 export class SewageWorkflow extends Workflow {
   private currentStep: Step;
@@ -149,16 +148,16 @@ export class SewageWorkflow extends Workflow {
     this.store$.dispatch(setOpenFeatureForm({ features: [feature], closeAfterSave: true }));
 
     combineLatest([
-      this.store$.select(selectSavedFeature),
+      this.store$.select(selectCurrentFeature),
       this.store$.select(selectFeatureFormOpen),
     ])
-      .pipe(filter(([savedFeature, close]) => {
+      .pipe(filter(([currentFeature, close]) => {
         return !close;
       }))
       .pipe(takeUntil(this.destroyed))
       .pipe(take(1))
-      .subscribe(([savedFeature, close]) => {
-        this.afterEditting(savedFeature);
+      .subscribe(([currentFeature, close]) => {
+        this.afterEditting(currentFeature);
       });
   }
 

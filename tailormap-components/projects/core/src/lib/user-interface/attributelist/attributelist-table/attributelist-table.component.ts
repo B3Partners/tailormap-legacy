@@ -1,36 +1,11 @@
-import {
-  AfterViewInit,
-  Component,
-  ElementRef,
-  EventEmitter, OnDestroy,
-  OnInit,
-  Output,
-  ViewChild,
-} from '@angular/core';
-
+import { AfterViewInit, Component, ElementRef, EventEmitter, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
-import {
-  MatSort,
-  Sort,
-} from '@angular/material/sort';
+import { MatSort, Sort } from '@angular/material/sort';
 import { MatTable } from '@angular/material/table';
-import {
-  MatDialog,
-  MatDialogConfig,
-} from '@angular/material/dialog';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import {
-  animate,
-  state,
-  style,
-  transition,
-  trigger,
-} from '@angular/animations';
-import {
-  AttributelistTable,
-  RowClickData,
-  RowData,
-} from '../attributelist-common/attributelist-models';
+import { animate, state, style, transition, trigger } from '@angular/animations';
+import { AttributelistTable, RowClickData, RowData } from '../attributelist-common/attributelist-models';
 import { AttributeDataSource } from '../attributelist-common/attributelist-datasource';
 import { AttributelistFilter } from '../attributelist-common/attributelist-filter';
 import { AttributelistTableOptionsFormComponent } from '../attributelist-table-options-form/attributelist-table-options-form.component';
@@ -57,7 +32,7 @@ import { AttributelistColumnController } from '../attributelist-common/attribute
 import { setOpenFeatureForm } from '../../../feature-form/state/form.actions';
 import { Store } from '@ngrx/store';
 import { FormState } from '../../../feature-form/state/form.state';
-// import { LiteralMapKey } from '@angular/compiler';
+
 
 @Component({
   selector: 'tailormap-attributelist-table',

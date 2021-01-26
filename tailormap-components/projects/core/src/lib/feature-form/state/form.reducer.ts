@@ -6,12 +6,13 @@ import { Feature } from '../../shared/generated';
 const onCloseFeatureForm  = (state: FormState): FormState => ({
   ...state,
   features: [],
+  feature: null,
   formOpen: false,
 });
 
-const onFeatureSaved = (state: FormState, payload: { feature : Feature }): FormState => ({
+const onSetFeature = (state: FormState, payload : { feature: Feature }): FormState => ({
   ...state,
-  savedFeature: payload.feature,
+  feature: payload.feature,
 });
 
 const onSetOpenFeatureForm = (state: FormState, payload: { features?: Feature[], closeAfterSave?: boolean,
@@ -25,7 +26,7 @@ const onSetOpenFeatureForm = (state: FormState, payload: { features?: Feature[],
 
 const formReducerImpl = createReducer(
   initialFormState,
-  on(FormActions.setSavedFeature, onFeatureSaved),
+  on(FormActions.setFeature, onSetFeature),
   on(FormActions.setOpenFeatureForm, onSetOpenFeatureForm),
   on(FormActions.setCloseFeatureForm, onCloseFeatureForm),
 );
