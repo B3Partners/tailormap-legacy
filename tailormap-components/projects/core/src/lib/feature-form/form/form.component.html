@@ -1,9 +1,4 @@
-<tailormap-form-tree
-  [features]=features
-  [isBulk]="isBulk"
-  [feature]=feature></tailormap-form-tree>
-
-
+<tailormap-form-tree [features]=features [isBulk]="isBulk" [feature]=feature></tailormap-form-tree>
 
 <div *ngIf="isOpen$ | async" class="overlay-panel mat-elevation-z4">
   <button mat-button (click)="openTree()"  class="overlay-panel mat-elevation-z4 drawerbutton"  *ngIf="!(treeOpen$ | async)">
@@ -11,9 +6,7 @@
     <mat-icon>chevron_left</mat-icon>
   </button>
   <h1>{{formConfig.name}} {{formDirty ? '*' : ''}}
-    <button mat-button mat-mini-fab color="" (click)="closeForm();" class="close-button" >
-      <mat-icon>close</mat-icon>
-    </button>
+    <tailormap-dialog-close-button (closeDialog)="closeForm()"></tailormap-dialog-close-button>
   </h1>
   <div class="form-container">
     <div class="form">
