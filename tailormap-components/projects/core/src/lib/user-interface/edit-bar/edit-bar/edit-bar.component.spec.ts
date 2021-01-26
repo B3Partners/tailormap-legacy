@@ -5,9 +5,13 @@ import { getTailorMapServiceMockProvider } from '../../../../../../bridge/src/ta
 import { WorkflowControllerService } from '../../../workflow/workflow-controller/workflow-controller.service';
 import { WorkflowActionManagerService } from '../../../workflow/workflow-controller/workflow-action-manager.service';
 import { MenuButtonComponent } from '../add-feature-menu/menu-button/menu-button.component';
+import { formStateKey, initialFormState } from '../../../feature-form/state/form.state';
+import { MockStore, provideMockStore } from '@ngrx/store/testing';
 
 describe('EditBarComponent', () => {
   let spectator: Spectator<EditBarComponent>;
+  const initialState = { [formStateKey]: initialFormState };
+  let store: MockStore;
   const createComponent = createComponentFactory({
     component: EditBarComponent,
     declarations: [
@@ -15,6 +19,7 @@ describe('EditBarComponent', () => {
     ],
     imports: [ SharedModule ],
     providers: [
+      provideMockStore({ initialState }),
       getTailorMapServiceMockProvider(),
       { provide: WorkflowControllerService, useValue: createSpyObject(WorkflowControllerService) },
       { provide: WorkflowActionManagerService, useValue: createSpyObject(WorkflowActionManagerService) },
@@ -23,6 +28,7 @@ describe('EditBarComponent', () => {
 
   beforeEach(() => {
     spectator = createComponent();
+    store = spectator.inject(MockStore);
   });
 
   it('should create', () => {

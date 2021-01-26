@@ -15,11 +15,15 @@ import { OLFeature } from '../../../../../bridge/typings';
 import { Coordinate } from '../../user-interface/models';
 import { createMockDialogProvider } from './mocks/workflow.mock';
 import { getTailorMapServiceMockProvider } from '../../../../../bridge/src/tailor-map.service.mock';
+import { MockStore, provideMockStore } from '@ngrx/store/testing';
+import { formStateKey, initialFormState } from '../../feature-form/state/form.state';
 
 describe('EditgeometryWorkflow', () => {
   let workflow: EditgeometryWorkflow;
   let factory: SpectatorService<WorkflowFactoryService>;
 
+  const initialState = { [formStateKey]: initialFormState };
+  let store: MockStore;
   const vectorLayer = vectorLayerMock({
     getActiveFeature(): OLFeature {
       return {color: '', config: {wktgeom: '', id: 'string', attributes: {}}}
@@ -40,6 +44,7 @@ describe('EditgeometryWorkflow', () => {
       ConfirmDialogService,
     ],
     providers: [
+      provideMockStore({ initialState }),
       getTailorMapServiceMockProvider(),
       {provide: GeometryConfirmService, useValue: geometryConfirmService},
       FeatureInitializerService,
@@ -57,9 +62,9 @@ describe('EditgeometryWorkflow', () => {
       feature: mockBoom({objecttype: 'Boom'}),
       action: WORKFLOW_ACTION.EDIT_GEOMETRY,
     };
+    store = factory.inject(MockStore);
     workflow = factory.service.getWorkflow(event) as EditgeometryWorkflow;
     expect(workflow instanceof EditgeometryWorkflow).toBe(true, 'instance of EditgeometryWorkflow');
-
   });
 
 
