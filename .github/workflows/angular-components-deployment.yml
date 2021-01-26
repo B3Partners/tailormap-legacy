@@ -63,7 +63,7 @@ jobs:
           mv * $DIR 2>/dev/null || true
 
       - name: Deploy to staging server
-        uses: easingthemes/ssh-deploy@4f928a3efcb95f593a10caf74003bcd3674a769b
+        uses: easingthemes/ssh-deploy@191986574c0735ffad7ae1a297a414d6e6f95375
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SERVER_SSH_PRIVATE_KEY }}
           ARGS: "-rltgoDzvO"
