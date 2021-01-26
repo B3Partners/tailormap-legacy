@@ -1,7 +1,6 @@
 package nl.b3p.gbi.converter;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import java.util.List;
 
 public class PaspoortTab {
