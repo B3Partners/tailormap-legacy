@@ -51,7 +51,7 @@
     "@angular-devkit/build-ng-packagr": "~0.1000.7",
     "@angular/cli": "~10.0.7",
     "@angular/compiler-cli": "~10.0.11",
-    "@angular/language-service": "~10.0.11",
+    "@angular/language-service": "~11.1.0",
     "@ngneat/spectator": "^6.1.2",
     "@types/jasmine": "~3.3.8",
     "@types/jasminewd2": "~2.0.3",
