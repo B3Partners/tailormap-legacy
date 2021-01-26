@@ -37,7 +37,7 @@
     "@ngrx/store-devtools": "^10.0.1",
     "@types/wellknown": "^0.5.1",
     "document-register-element": "^1.14.5",
-    "dpdm": "^3.5.0",
+    "dpdm": "^3.6.0",
     "material-design-icons": "^3.0.1",
     "moment": "^2.29.1",
     "ng-openapi-gen": "^0.12.1",
