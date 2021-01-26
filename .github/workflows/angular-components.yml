@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
+      - uses: actions/setup-node@v2.1.4
         with:
           node-version: 14
       - uses: actions/cache@v1
@@ -31,7 +31,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       # Copy/paste unfortunately required, see https://github.community/t/reusing-sharing-inheriting-steps-between-jobs-declarations/16851/14
-      - uses: actions/setup-node@v1
+      - uses: actions/setup-node@v2.1.4
         with:
           node-version: 14
       - uses: actions/cache@v1
@@ -51,7 +51,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       # Copy/paste unfortunately required, see https://github.community/t/reusing-sharing-inheriting-steps-between-jobs-declarations/16851/14
-      - uses: actions/setup-node@v1
+      - uses: actions/setup-node@v2.1.4
         with:
           node-version: 14
       - uses: actions/cache@v1
