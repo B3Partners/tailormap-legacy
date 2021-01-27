@@ -53,7 +53,7 @@
     "@angular/compiler-cli": "~10.0.11",
     "@angular/language-service": "~10.0.11",
     "@ngneat/spectator": "^6.1.2",
-    "@types/jasmine": "~3.3.8",
+    "@types/jasmine": "~3.6.3",
     "@types/jasminewd2": "~2.0.3",
     "@types/node": "^12.11.1",
     "codelyzer": "^6.0.1",
