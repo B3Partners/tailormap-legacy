@@ -1,4 +1,4 @@
-name: MacOS Maven build
+name: Windows Maven build
 
 on: [pull_request,push]
   #paths:
