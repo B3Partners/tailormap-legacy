@@ -1,7 +1,7 @@
 <tailormap-form-tree [features]=features [isBulk]="isBulk" [feature]=feature></tailormap-form-tree>
 
 <div *ngIf="isOpen$ | async" class="overlay-panel mat-elevation-z4">
-  <button mat-button (click)="openTree()"  class="overlay-panel mat-elevation-z4 drawerbutton"  *ngIf="!(treeOpen$ | async)">
+  <button mat-button (click)="openTree()"  class="overlay-panel mat-elevation-z4 drawerbutton" *ngIf="(treeOpen$ | async) === (false)">
 
     <mat-icon>chevron_left</mat-icon>
   </button>
