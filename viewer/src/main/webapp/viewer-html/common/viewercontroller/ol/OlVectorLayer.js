@@ -32,6 +32,7 @@ Ext.define("viewer.viewercontroller.ol.OlVectorLayer", {
     tempFeature: null,
     tempStyle: null,
     idNumber: 0,
+    rotation: 0,
     freehand: null,
     drawFeatureControls: null,
     activeDrawFeatureControl: null,
@@ -85,6 +86,10 @@ Ext.define("viewer.viewercontroller.ol.OlVectorLayer", {
             features: this.select.getFeatures()
         });
 
+        this.translate = new ol.interaction.Translate({
+            features: this.select.getFeatures()
+        });
+
         this.select.getFeatures().on('add', function (args) {
             me.activeFeatureChanged(args);
         }, me);
@@ -104,6 +109,8 @@ Ext.define("viewer.viewercontroller.ol.OlVectorLayer", {
         this.maps.addInteraction(this.drawBox);
         this.maps.addInteraction(this.select);
         this.maps.addInteraction(this.modify);
+        this.maps.addInteraction(this.translate);
+        this.translate.setActive(false);
         this.select.setActive(false);
         this.drawBox.setActive(false);
         
@@ -528,6 +535,22 @@ Ext.define("viewer.viewercontroller.ol.OlVectorLayer", {
     },
     getType: function () {
         return this.mixins.olLayer.getType.call(this);
+    },
+
+    setTranslate: function (active) {
+        this.modify.setActive(!active);
+        this.translate.setActive(active);
+    },
+
+    updateRotation: function (value) {
+        var f = this.source.getFeatures()[0];
+        this.g = f.getGeometry();
+        var ex = this.g.getExtent();
+        var x = ex[0] + (ex[2]-ex[0])/2;
+        var y = ex[1] + (ex[3]-ex[1])/2;
+        this.center = [x, y];
+        this.g.rotate((this.rotation - value) * Math.PI / 180, this.center);
+        this.rotation = value;
     },
 
     frameworkStyleToFeatureStyle: function (oLfeature) {
