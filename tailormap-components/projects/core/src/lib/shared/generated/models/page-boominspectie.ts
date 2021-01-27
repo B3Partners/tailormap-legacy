@@ -1,4 +1,5 @@
 /* tslint:disable */
+/* eslint-disable */
 import { Boominspectie } from './boominspectie';
 import { Pageable } from './pageable';
 import { Sort } from './sort';

@@ -1,4 +1,5 @@
 /* tslint:disable */
+/* eslint-disable */
 import { CultBeplantingPlanning } from './cult-beplanting-planning';
 import { Feature } from './feature';
 import { Geometry } from './geometry';

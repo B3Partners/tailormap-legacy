@@ -1,4 +1,5 @@
 /* tslint:disable */
+/* eslint-disable */
 import { Boominspectie } from './boominspectie';
 import { Boomplanning } from './boomplanning';
 import { Feature } from './feature';

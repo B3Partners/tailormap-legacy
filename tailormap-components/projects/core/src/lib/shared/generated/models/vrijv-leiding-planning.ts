@@ -1,4 +1,5 @@
 /* tslint:disable */
+/* eslint-disable */
 import { Feature } from './feature';
 export interface VrijvLeidingPlanning extends Feature {
   afstand_begin?: number;

@@ -1,4 +1,5 @@
 /* tslint:disable */
+/* eslint-disable */
 import { Pageable } from './pageable';
 import { Sort } from './sort';
 import { Weginspectie } from './weginspectie';

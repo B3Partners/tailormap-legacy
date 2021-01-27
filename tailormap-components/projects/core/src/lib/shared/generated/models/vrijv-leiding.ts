@@ -1,4 +1,5 @@
 /* tslint:disable */
+/* eslint-disable */
 import { Feature } from './feature';
 import { Geometry } from './geometry';
 import { Rioolput } from './rioolput';
