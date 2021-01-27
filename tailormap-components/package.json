@@ -10,6 +10,8 @@
     "test:ci": "ng test --project=core --code-coverage --no-watch --browsers=ChromeHeadless",
     "lint": "ng lint",
     "lint-fix": "ng lint --fix",
+    "stylelint": "stylelint **/*.css",
+    "stylelint-fix": "stylelint **/*.css --fix",
     "e2e": "ng e2e",
     "ng-openapi-gen": "ng-openapi-gen",
     "generate": "ng-openapi-gen -c generateConfig.json",
@@ -67,6 +69,8 @@
     "ng-packagr": "^10.0.0",
     "protractor": "~7.0.0",
     "rxjs-tslint-rules": "^4.34.0",
+    "stylelint": "^13.9.0",
+    "stylelint-config-standard": "^20.0.0",
     "ts-node": "~7.0.0",
     "tslint": "~6.1.0",
     "typescript": "~3.9.7"

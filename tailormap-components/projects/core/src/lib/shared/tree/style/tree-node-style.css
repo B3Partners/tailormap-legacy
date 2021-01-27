@@ -41,7 +41,7 @@
   align-items: center;
   justify-content: center;
   height: 38px;
-  background-image: linear-gradient(to right, rgba(214,222,255,0) 0%, rgba(214,222,255,1) 30%, rgba(214,222,255,1) 100%);
+  background-image: linear-gradient(to right, rgba(214, 222, 255, 0) 0%, rgba(214, 222, 255, 1) 30%, rgba(214, 222, 255, 1) 100%);
   position: var(--actions-pos);
   right: 0;
   margin-right: calc(-1 * var(--scroll-pos));

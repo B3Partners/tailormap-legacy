@@ -1,11 +1,10 @@
-.edit-bar{
+.edit-bar {
   position: absolute;
   z-index: 10000;
   background: white;
   width: 200px;
-
 }
 
-::ng-deep .panelClass >  mat-dialog-container {
+::ng-deep .panelClass > mat-dialog-container {
   padding: 12px;
 }
