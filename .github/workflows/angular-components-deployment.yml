@@ -12,6 +12,7 @@ on:
     - '**.ts'
     - '**.css'
     - '**.html'
+    - '**.yaml'
 
 jobs:
   build:

@@ -5,6 +5,7 @@ on: [push, pull_request]
     - '**.ts'
     - '**.css'
     - '**.html'
+    - '**.yaml'
   
 jobs:
   test:
