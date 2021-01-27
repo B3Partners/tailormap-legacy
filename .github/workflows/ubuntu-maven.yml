@@ -1,11 +1,8 @@
 name: Ubuntu Maven build
 
 on: [push, pull_request, workflow_dispatch]
-  paths:
-      - '**.java'
-      - '**.xml'
-      - '**.js'
-      - '**.yaml'
+  paths-ignore:
+    - 'tailormap-components/**'
 #on:
 #  push:
 #    branches:

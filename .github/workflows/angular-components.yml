@@ -2,11 +2,8 @@ name: Angular components CI
 
 on: [push, pull_request]
   paths:
-    - '**.ts'
-    - '**.css'
-    - '**.html'
+    - 'tailormap-components/**'
     - '**.yaml'
-    - '**.json'
   
 jobs:
   test:

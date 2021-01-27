@@ -1,11 +1,8 @@
 name: Windows Maven build
 
 on: [pull_request,push]
-  paths:
-    - '**.java'
-    - '**.xml'
-    - '**.js'
-    - '**.yaml'
+  paths-ignore:
+    - 'tailormap-components/**'
 
 jobs:
   build:
