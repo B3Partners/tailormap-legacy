@@ -1,30 +1,9 @@
-import {
-  AfterViewInit,
-  Component,
-  EventEmitter,
-  Input,
-  OnChanges,
-  OnDestroy,
-  Output,
-} from '@angular/core';
-import {
-  FormControl,
-  FormGroup,
-} from '@angular/forms';
+import { AfterViewInit, Component, EventEmitter, Input, OnChanges, OnDestroy, Output } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Subject, Subscription } from 'rxjs';
-import {
-  Feature,
-} from '../../shared/generated';
-
-import {
-  Attribute,
-  ColumnizedFields,
-  FormConfiguration,
-  FormFieldType,
-  IndexedFeatureAttributes,
-  TabbedFields,
-} from '../form/form-models';
+import { Feature } from '../../shared/generated';
+import { Attribute, ColumnizedFields, FormConfiguration, FormFieldType, IndexedFeatureAttributes, TabbedFields } from '../form/form-models';
 import { FormCreatorHelpers } from './form-creator-helpers';
 import { FormActionsService } from '../form-actions/form-actions.service';
 import { FeatureInitializerService } from '../../shared/feature-initializer/feature-initializer.service';

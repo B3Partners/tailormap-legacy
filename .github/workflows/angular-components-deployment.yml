@@ -11,13 +11,13 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
+      - uses: actions/setup-node@v2
         with:
           node-version: 14
-      - uses: actions/cache@v1
+      - uses: actions/cache@v2
         with:
           path: ~/.npm
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
@@ -36,7 +36,7 @@ jobs:
             tailormap-components/dist/bridge/*
           
   deploy-pr:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     needs: build
     steps:
       - uses: chrnorm/deployment-action@releases/v1
@@ -63,7 +63,7 @@ jobs:
           mv * $DIR 2>/dev/null || true
 
       - name: Deploy to staging server
-        uses: easingthemes/ssh-deploy@4f928a3efcb95f593a10caf74003bcd3674a769b
+        uses: easingthemes/ssh-deploy@v2.1.5
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SERVER_SSH_PRIVATE_KEY }}
           ARGS: "-rltgoDzvO"

@@ -14,6 +14,7 @@ updates:
   - mprins
   labels:
   - build infrastructure
+
 - package-ecosystem: maven
   directory: "/"
   schedule:
@@ -32,6 +33,7 @@ updates:
   - dependencies
   - backport v5.4.x
   - backport v5.6.x
+  - backport v5.8.x
   ignore:
   - dependency-name: com.microsoft.sqlserver:mssql-jdbc
     versions:
@@ -48,12 +50,6 @@ updates:
   - dependency-name: javax.servlet.jsp:javax.servlet.jsp-api
     versions:
     - ">= 2.3.a, < 2.4"
-  - dependency-name: nl.geodienstencentrum.maven:closure-compiler-maven-plugin
-    versions:
-    - "> 2.4"
-  - dependency-name: nl.geodienstencentrum.maven:closure-compiler-maven-plugin
-    versions:
-    - ">= 2.8.a, < 2.9"
   - dependency-name: org.apache.lucene:lucene-core
     versions:
     - "> 4.6.0"
@@ -90,6 +86,11 @@ updates:
   - dependency-name: org.apache.tomcat.embed:*
     versions:
     - ">= 8.a"
+  - dependency-name: com.fasterxml.jackson.core:jackson-databind
+    versions:
+      # beperk tot 2.12.x
+      - ">= 2.13.x"
+
 - package-ecosystem: npm
   directory: "/viewer/src/main/webapp/viewer-html"
   schedule:
@@ -105,6 +106,7 @@ updates:
   - mprins
   labels:
   - dependencies
+
 - package-ecosystem: "github-actions"
   directory: "/"
   schedule:
@@ -113,6 +115,7 @@ updates:
     timezone: Europe/Amsterdam
   labels:
   - build infrastructure
+
 - package-ecosystem: npm
   directory: "/tailormap-components"
   schedule:
@@ -123,10 +126,8 @@ updates:
   reviewers:
     - mtoonen
     - mvdstruijk
-    - matthijsln
   assignees:
     - mtoonen
     - mvdstruijk
-    - matthijsln
   labels:
     - dependencies

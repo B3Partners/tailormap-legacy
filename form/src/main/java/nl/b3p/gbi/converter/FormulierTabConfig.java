@@ -1,7 +1,5 @@
 package nl.b3p.gbi.converter;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-
 import java.util.HashMap;
 import java.util.Map;
 

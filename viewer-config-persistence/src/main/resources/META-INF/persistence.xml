@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <persistence version="2.0" xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
-    
+
     <persistence-unit name="viewer-config-oracle" transaction-type="RESOURCE_LOCAL">
         <provider>org.hibernate.ejb.HibernatePersistence</provider>
         <non-jta-data-source>java:comp/env/jdbc/geo_viewer</non-jta-data-source>
@@ -18,17 +18,19 @@
             <!-- XXX does not work setting here, works in /WEB-INF/classes/hibernate.properties -->
             <!-- XXX move to viewer-config-persistence -->
             <property name="hibernate.jdbc.use_streams_for_binary" value="true"/>
-      
+
             <!-- workaround for Hibernate bug expecting the generated id to be the first column
                  http://postgresql.1045698.n5.nabble.com/Problems-with-Hibernate-Discriminators-and-9-0-801-jdbc4-td4259788.html
             -->
             <property name="hibernate.jdbc.use_get_generated_keys" value="false"/>
-      
+
             <property name="hibernate.ejb.naming_strategy" value="org.hibernate.cfg.ImprovedNamingStrategy"/>
             <property name="hibernate.cache.provider_class" value="org.hibernate.cache.NoCacheProvider"/>
+            <!-- mitigation for CVE-2020-25638 -->
+            <property name="hibernate.use_sql_comments" value="false"/>
         </properties>
     </persistence-unit>
-    
+
     <persistence-unit name="viewer-config-postgresql" transaction-type="RESOURCE_LOCAL">
         <provider>org.hibernate.ejb.HibernatePersistence</provider>
         <non-jta-data-source>java:comp/env/jdbc/geo_viewer</non-jta-data-source>
@@ -40,17 +42,19 @@
 
             <!-- See comments for Oracle -->
             <property name="hibernate.jdbc.use_streams_for_binary" value="true"/>
-      
+
             <!-- workaround for Hibernate bug expecting the generated id to be the first column
                  http://postgresql.1045698.n5.nabble.com/Problems-with-Hibernate-Discriminators-and-9-0-801-jdbc4-td4259788.html
             -->
             <property name="hibernate.jdbc.use_get_generated_keys" value="false"/>
-      
+
             <property name="hibernate.ejb.naming_strategy" value="org.hibernate.cfg.ImprovedNamingStrategy"/>
             <property name="hibernate.cache.provider_class" value="org.hibernate.cache.NoCacheProvider"/>
+            <!-- mitigation for CVE-2020-25638 -->
+            <property name="hibernate.use_sql_comments" value="false"/>
         </properties>
     </persistence-unit>
-    
+
     <persistence-unit name="viewer-config-microsoft_sql_server" transaction-type="RESOURCE_LOCAL">
         <provider>org.hibernate.ejb.HibernatePersistence</provider>
         <non-jta-data-source>java:comp/env/jdbc/geo_viewer</non-jta-data-source>
@@ -62,17 +66,19 @@
 
             <!-- See comments for Oracle -->
             <property name="hibernate.jdbc.use_streams_for_binary" value="true"/>
-      
+
             <!-- workaround for Hibernate bug expecting the generated id to be the first column
                  http://postgresql.1045698.n5.nabble.com/Problems-with-Hibernate-Discriminators-and-9-0-801-jdbc4-td4259788.html
             -->
             <property name="hibernate.jdbc.use_get_generated_keys" value="false"/>
-      
+
             <property name="hibernate.ejb.naming_strategy" value="org.hibernate.cfg.ImprovedNamingStrategy"/>
             <property name="hibernate.cache.provider_class" value="org.hibernate.cache.NoCacheProvider"/>
+            <!-- mitigation for CVE-2020-25638 -->
+            <property name="hibernate.use_sql_comments" value="false"/>
         </properties>
-    </persistence-unit>    
-    
+    </persistence-unit>
+
      <persistence-unit name="viewer-config-hsqldb" transaction-type="RESOURCE_LOCAL">
         <!-- de hsqldb in-memory of file database wordt gebruikt voor unit tests. -->
         <provider>org.hibernate.ejb.HibernatePersistence</provider>
@@ -86,6 +92,8 @@
             <property name="javax.persistence.jdbc.driver" value="org.hsqldb.jdbcDriver"/>
             <property name="javax.persistence.jdbc.url" value="jdbc:hsqldb:file:./target/unittest-hsqldb/db;shutdown=true"/>
             <property name="hibernate.dialect" value="org.hibernate.dialect.HSQLDialect"/>
+            <!-- mitigation for CVE-2020-25638 -->
+            <property name="hibernate.use_sql_comments" value="false"/>
         </properties>
     </persistence-unit>
 </persistence>
