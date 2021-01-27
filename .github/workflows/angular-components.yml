@@ -1,6 +1,6 @@
 name: Angular components CI
 
-on: 
+on:
   push:
     paths:
     - '**.ts'
