@@ -71,7 +71,7 @@ export class StandardFormWorkflow extends Workflow {
   public openDialog(formFeatures ?: Feature[]): void {
     this.store$.dispatch(setOpenFeatureForm({features: formFeatures}))
     this.store$.pipe(selectFormClosed)
-      .pipe(takeUntil(this.destroyed)).pipe(take(1))
+      .pipe(take(1))
       .subscribe(( close) => {
         this.afterEditting();
       });

@@ -13,6 +13,7 @@ import { filter, take, takeUntil } from 'rxjs/operators';
 import { Choice } from './WorkflowModels';
 import { setOpenFeatureForm } from '../../feature-form/state/form.actions';
 import { selectCurrentFeature, selectFeatureFormOpen } from '../../feature-form/state/form.selectors';
+import { selectFormClosed } from '../../feature-form/state/form.state-helpers';
 
 export class SewageWorkflow extends Workflow {
   private currentStep: Step;
@@ -149,12 +150,8 @@ export class SewageWorkflow extends Workflow {
 
     combineLatest([
       this.store$.select(selectCurrentFeature),
-      this.store$.select(selectFeatureFormOpen),
+      this.store$.pipe(selectFormClosed),
     ])
-      .pipe(filter(([currentFeature, close]) => {
-        return !close;
-      }))
-      .pipe(takeUntil(this.destroyed))
       .pipe(take(1))
       .subscribe(([currentFeature, close]) => {
         this.afterEditting(currentFeature);

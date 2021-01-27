@@ -1,3 +1,6 @@
 [hidden] {
   display: none;
 }
+:host, mat-form-field{
+  display: block;
+}

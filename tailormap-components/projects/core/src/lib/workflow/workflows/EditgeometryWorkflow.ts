@@ -22,12 +22,8 @@ export class EditgeometryWorkflow extends Workflow {
     super.afterInit();
     combineLatest([
       this.store$.select(selectFeatureFormOpen),
-      this.store$.select(selectOpenFeatureForm),
+      this.store$.pipe(selectFormClosed),
     ])
-      .pipe(filter(([close, features]) => {
-        return !close;
-      }))
-      .pipe(takeUntil(this.destroyed))
       .pipe(take(1))
       .subscribe(([close, savedFeature]) => {
         this.drawGeom();
@@ -65,7 +61,7 @@ export class EditgeometryWorkflow extends Workflow {
     this.store$.dispatch(setOpenFeatureForm({ features: [feat], closeAfterSave: false, alreadyDirty: geomChanged }))
 
     this.store$.pipe(selectFormClosed)
-      .pipe(takeUntil(this.destroyed)).pipe(take(1))
+      .pipe(take(1))
       .subscribe(( close) => {
         this.afterEditting();
       });

@@ -8,12 +8,10 @@
   [hidden]="isHiddenAttribute(attribute)"
 ></tailormap-input-field>
 
-<div class="form-field">
+<div class="form-field" *ngIf="isSelectAttribute(attribute) || isDomainAttribute(attribute)">
   <mat-form-field
     [formGroup]="groep"
-    [hidden]="isHiddenAttribute(attribute)"
-    *ngIf="isSelectAttribute(attribute) || isDomainAttribute(attribute)"
-  >
+    [hidden]="isHiddenAttribute(attribute)">
 
     <mat-label>{{attribute.label}}</mat-label>
     <mat-select
