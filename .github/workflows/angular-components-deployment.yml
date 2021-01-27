@@ -7,7 +7,9 @@ on:
 #      - feat/GBIW-142_continuous_deployment
   pull_request:
     branches:
-      - feat/gbi-component
+      - master
+  paths:
+    - '**.ts'
 
 jobs:
   build:
