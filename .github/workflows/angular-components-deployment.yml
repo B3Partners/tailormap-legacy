@@ -11,7 +11,7 @@ on:
   paths:
     - '**.ts'
     - '**.css'
-    - '**.js'
+    - '**.html'
 
 jobs:
   build:
