@@ -1,9 +1,9 @@
 name: MacOS Maven build
 
 on: [pull_request,push]
-  paths:
-      - '**.java'
-      - '**.xml'
+  #paths:
+   #   - '**.java'
+    #  - '**.xml'
 
 jobs:
   build:
