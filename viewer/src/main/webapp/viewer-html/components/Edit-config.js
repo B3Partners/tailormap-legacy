@@ -72,6 +72,13 @@ Ext.define("viewer.components.CustomConfiguration", {
             },
             {
                 xtype: 'checkbox',
+                fieldLabel: i18next.t('edit_config_7'),
+                name: 'allowTranslate',
+                value: this.configObject.allowTranslate !== undefined ? this.configObject.allowTranslate : true,
+                labelWidth: this.labelWidth
+            },
+            {
+                xtype: 'checkbox',
                 fieldLabel: i18next.t('edit_config_5'),
                 name: 'showEditLinkInFeatureInfo',
                 hidden: hidden.showEditLinkInFeatureInfo === "true" ? true:false,

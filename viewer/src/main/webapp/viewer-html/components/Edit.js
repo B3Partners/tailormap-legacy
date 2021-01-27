@@ -58,6 +58,7 @@ Ext.define("viewer.components.Edit", {
         allowCopy: false,
         allowNew: true,
         allowEdit: true,
+        allowTranslate: true,
         cancelOtherControls: ["viewer.components.Merge", "viewer.components.Split", "viewer.components.EditBulk"],
         formLayout: 'anchor',
         showEditLinkInFeatureInfo: false,
@@ -335,9 +336,10 @@ Ext.define("viewer.components.Edit", {
         }
         if (this.config.allowEdit) {
             buttons.push(this.createButton("editButton", i18next.t('viewer_components_edit_3'), this.edit, true));
-            buttons.push(this.createButton("moveButton", i18next.t('viewer_components_edit_3'), this.translateRotate, true));
         }
-       
+        if (this.config.allowTranslate) {
+            buttons.push(this.createButton("translateButton", i18next.t('viewer_components_edit_51'), this.translateRotate, true));
+        }
         return buttons;
     },
     createExternalButtons:function(){
@@ -595,7 +597,7 @@ Ext.define("viewer.components.Edit", {
             "copyButton": this.config.allowCopy,
             "editButton": this.config.allowEdit,
             "deleteButton": this.config.allowDelete,
-            "moveButton": this.config.allowEdit
+            "translateButton": this.config.allowEdit
         };
         return configKey[itemid];
     },
@@ -809,7 +811,7 @@ Ext.define("viewer.components.Edit", {
                 this.setButtonDisabled("editButton", false);
                 this.setButtonDisabled("deleteButton", false);
                 this.setButtonDisabled("copyButton", false);
-                this.setButtonDisabled("moveButton", false);
+                this.setButtonDisabled("translateButton", false);
                 if (this.newGeomType === null) {
                     tekst = i18next.t('viewer_components_edit_12');
                 } else {
@@ -1345,6 +1347,8 @@ Ext.define("viewer.components.Edit", {
     clearFeatureAndForm: function () {
         this.toggleGeomToggleForm(false);
         this.vectorLayer.removeAllFeatures();
+        this.maincontainer.down("#" + 'rotateSlider').setHidden(true);
+        this.maincontainer.down("#" + 'rotateSlider').setValue(0);
         this.inputContainer.getForm().reset();
         this.currentFID = null;
         this.setFormVisible(false);
@@ -1390,7 +1394,7 @@ Ext.define("viewer.components.Edit", {
         this.save();
     },
     translateRotate: function () {
-        this.untoggleButtons('moveButton');
+        this.untoggleButtons('translateButton');
         var slider = this.maincontainer.down("#" + 'rotateSlider');
         slider.setHidden(false);
         slider.setValue(0);
@@ -1407,7 +1411,7 @@ Ext.define("viewer.components.Edit", {
         }, this);
     },
     untoggleButtons: function (filter) {
-        var buttons = ["newButton", "editButton","splitButton","moveButton"];
+        var buttons = ["newButton", "editButton","splitButton","translateButton"];
         var itemid;
         var button;
         for (var i = 0; i < buttons.length; i++) {
@@ -1671,6 +1675,7 @@ Ext.define("viewer.components.Edit", {
         if (this.vectorLayer) {
             // vector layer may be null when cancel() is called
             this.vectorLayer.removeAllFeatures();
+            this.vectorLayer.setTranslate(false);
         }
     },
     getExtComponents: function () {

@@ -248,6 +248,8 @@ Ext.define("viewer.viewercontroller.ol.OlVectorLayer", {
         this.source.clear();
         this.maps.removeInteraction(this.draw);
         this.drawBox.setActive(false);
+        this.stopDrawing();
+        this.setTranslate(false);
     },
     removeFeature: function (feature) {
         var olFeature = this.source.getFeatureById(feature.getId());
@@ -544,13 +546,15 @@ Ext.define("viewer.viewercontroller.ol.OlVectorLayer", {
 
     updateRotation: function (value) {
         var f = this.source.getFeatures()[0];
-        this.g = f.getGeometry();
-        var ex = this.g.getExtent();
-        var x = ex[0] + (ex[2]-ex[0])/2;
-        var y = ex[1] + (ex[3]-ex[1])/2;
-        this.center = [x, y];
-        this.g.rotate((this.rotation - value) * Math.PI / 180, this.center);
-        this.rotation = value;
+        if (f) {
+            this.g = f.getGeometry();
+            var ex = this.g.getExtent();
+            var x = ex[0] + (ex[2] - ex[0]) / 2;
+            var y = ex[1] + (ex[3] - ex[1]) / 2;
+            this.center = [x, y];
+            this.g.rotate((this.rotation - value) * Math.PI / 180, this.center);
+            this.rotation = value;
+        }
     },
 
     frameworkStyleToFeatureStyle: function (oLfeature) {
