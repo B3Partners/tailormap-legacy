@@ -14,7 +14,7 @@ tailormap-criteria + tailormap-criteria {
 .criteria-group-header {
   display: flex;
   align-items: center;
-  border-bottom: 1px solid #E1E1E1;
+  border-bottom: 1px solid #e1e1e1;
   padding: 10px 6px;
 }
 
@@ -32,9 +32,9 @@ tailormap-criteria + tailormap-criteria {
   height: 32px;
   width: 32px;
   line-height: 32px;
-  border: 1px solid #E1E1E1;
+  border: 1px solid #e1e1e1;
   border-radius: 3px;
-  background-color: #FFFFFF;
+  background-color: #fff;
 }
 
 .criteria-group-header .mat-icon-button + .mat-icon-button {
@@ -48,11 +48,11 @@ tailormap-criteria + tailormap-criteria {
 }
 
 .criteria-group__title {
-  background-color: #F9F9F9;
+  background-color: #f9f9f9;
   text-align: center;
   line-height: 26px;
-  border-top: 1px solid #E1E1E1;
-  border-bottom: 1px solid #E1E1E1;
+  border-top: 1px solid #e1e1e1;
+  border-bottom: 1px solid #e1e1e1;
   font-size: 14px;
   color: rgba(12, 5, 36, 0.4);
   font-weight: 600;

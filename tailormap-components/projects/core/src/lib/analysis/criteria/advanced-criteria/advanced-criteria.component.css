@@ -6,7 +6,7 @@
 .form {
   flex: 1;
   overflow: hidden;
-  background-color: #FAFAFA;
+  background-color: #fafafa;
   display: flex;
   flex-direction: column;
 }
@@ -42,18 +42,19 @@ tailormap-criteria-group {
   display: block;
   background: #fff;
   border-radius: 4px;
-  border: 1px solid #E1E1E1;
+  border: 1px solid #e1e1e1;
   margin-top: 14px;
 }
 
 .add-group-button {
-  background-color: #FAFAFA;
+  background-color: #fafafa;
   width: 100%;
   margin-bottom: 6px;
   font-size: 15px;
   font-weight: 600;
   text-align: left;
 }
+
 .cdk-drag-animating {
   transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
 }
@@ -63,7 +64,7 @@ tailormap-criteria-group {
 }
 
 .group-placeholder {
-  background: #FAFAFA;
+  background: #fafafa;
   border: dotted 3px #999;
   min-height: 60px;
   margin-top: 14px;

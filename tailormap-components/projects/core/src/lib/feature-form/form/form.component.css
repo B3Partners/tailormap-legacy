@@ -1,25 +1,29 @@
-.container, :host{
-  height:100%;
+.container,
+:host {
+  height: 100%;
 }
-.container{
+
+.container {
   display: flex;
   flex-direction: column;
 }
-.form-container{
+
+.form-container {
   display: flex;
   flex-direction: row;
   width: 100%;
-  flex:1;
+  flex: 1;
   justify-content: stretch;
   overflow: hidden;
 }
-.tree{
+
+.tree {
   width: 350px;
   overflow: auto;
   margin-right: 10px;
 }
 
-.form{
+.form {
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -27,20 +31,20 @@
   overflow: auto;
 }
 
-.close-button{
+.close-button {
   float: right;
   bottom: 20px;
 }
-.red-item{
+
+.red-item {
   color: red;
 }
 
-.bottom-bar{
+.bottom-bar {
   margin-left: auto;
 }
 
-.bottom-bar button{
+.bottom-bar button {
   float: right;
-
   margin-right: 15px;
 }

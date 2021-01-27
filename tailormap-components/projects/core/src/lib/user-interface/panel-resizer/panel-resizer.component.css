@@ -1,8 +1,7 @@
 
 .resize-panel {
-  background-color: rgba(255,0,0,0.3);
-  background-color: rgba(255,0,0,0.0);
-
+  background-color: rgba(255, 0, 0, 0.3);
+  background-color: rgba(255, 0, 0, 0);
   top: -10px;
   width: 100%;
   height: 20px;
@@ -14,6 +13,7 @@
   justify-content: center;
   align-items: center;
 }
+
 .resize-handle {
   background: gray;
   border-radius: 50%;
@@ -27,17 +27,18 @@
   justify-items: center;
   align-items: center;
 }
+
 .resize-handle-inner {
   background: white;
   border-radius: 50%;
   width: 18px;
   height: 18px;
-
   display: flex;
   flex-flow: column nowrap;
   justify-items: center;
   align-items: center;
 }
+
 .resize-handle-icon {
   margin: 1px;
   font-size: 16px;

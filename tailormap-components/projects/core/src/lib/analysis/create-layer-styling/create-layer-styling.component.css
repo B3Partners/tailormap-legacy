@@ -40,6 +40,11 @@
   padding: 14px;
 }
 
+.style-link button {
+  flex: 1;
+  font-weight: bold;
+}
+
 .buttons button + button {
   margin-left: 14px;
 }
@@ -57,11 +62,6 @@ button mat-spinner {
 .style-link mat-checkbox {
   margin: 0 5px;
   width: 30px;
-}
-
-.style-link button {
-  flex: 1;
-  font-weight: bold;
 }
 
 tailormap-style-preview {

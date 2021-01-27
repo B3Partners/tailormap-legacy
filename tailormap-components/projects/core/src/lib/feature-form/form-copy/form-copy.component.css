@@ -4,16 +4,16 @@
   color: #fff;
 }
 
-.container{
+.container {
   display: flex;
   flex-direction: row;
   width: 100%;
-  flex:1;
+  flex: 1;
   justify-content: stretch;
   overflow: hidden;
 }
 
-.form{
+.form {
   float: right;
   flex: 1;
   display: flex;
@@ -23,6 +23,6 @@
   height: 50%;
 }
 
-.copy-side-panel{
+.copy-side-panel {
   width: 50%;
 }
