@@ -1,13 +1,11 @@
 name: Angular components CI
 
-on:
-  push:
-    paths:
+on: [push, pull_request]
+  paths:
     - '**.ts'
-  pull_request:
-    paths:
-    - '**.ts'
-
+    - '**.css'
+    - '**.js'
+  
 jobs:
   test:
     runs-on: ubuntu-20.04

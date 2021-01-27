@@ -10,6 +10,8 @@ on:
       - master
   paths:
     - '**.ts'
+    - '**.css'
+    - '**.js'
 
 jobs:
   build:
