@@ -1,6 +1,6 @@
 @import "inter-font.css";
 
-:root{
+:root {
   --left-panel-width: 0;
   --right-panel-width: 0;
   --top-panel-height: 0;
@@ -45,7 +45,7 @@
   font-size: 14px;
   line-height: 20px;
   margin: 0;
-  color: rgba(12,5,36,0.40);
+  color: rgba(12, 5, 36, 0.4);
   padding: 0 3px;
 }
 
@@ -55,7 +55,7 @@
   top: 10px;
   bottom: 10px;
   width: 300px;
-  background-color: #ffffff;
+  background-color: #fff;
   z-index: var(--overlay-panel-z-index);
   padding-top: 30px;
   display: flex;
@@ -79,7 +79,7 @@
 }
 
 .tab-group .mat-tab-header {
-  border-bottom: 1px solid #E1E1E1;
+  border-bottom: 1px solid #e1e1e1;
   padding: 0 14px;
 }
 
@@ -89,6 +89,11 @@
 
 .form-field + .form-field {
   margin-top: 16px;
+}
+
+.form-field__columns {
+  display: flex;
+  align-items: center;
 }
 
 .form-field + .form-field__columns,
@@ -101,11 +106,6 @@
 .form-field + .form-field__slider,
 .form-field__columns + .form-field__slider {
   margin-top: -10px;
-}
-
-.form-field__columns {
-  display: flex;
-  align-items: center;
 }
 
 .form-field__columns > * {
@@ -133,11 +133,15 @@
   height: 40px;
   line-height: 38px;
   width: 100%;
-  border: 1px solid #E1E1E1;
+  border: 1px solid #e1e1e1;
   border-radius: 3px;
   font-size: 14px;
   padding: 0 10px;
-  background-color: #ffffff;
+  background-color: #fff;
+}
+
+.datepicker-input input {
+  padding-right: 44px;
 }
 
 .form-field mat-slider {
@@ -151,16 +155,20 @@
   right: 0;
 }
 
+.form-field .form-button {
+  padding: 5px;
+}
+
 .form-field input:hover,
 .form-field .form-button:hover,
 .form-field mat-select:hover {
-  border-color: #6236FF;
+  border-color: #6236ff;
 }
 
 .form-field input:focus,
 .form-field .form-button:focus,
 .form-field mat-select:focus {
-  border-color: #6236FF;
+  border-color: #6236ff;
   box-shadow: 0 0 6px rgba(98, 54, 255, 0.5);
 }
 
@@ -169,8 +177,7 @@
 .form-field input[disabled]:hover,
 .form-field .mat-select-disabled:hover,
 .form-field input[disabled]:focus,
-.form-field .mat-select-disabled:focus,
-.form-field .mat-select-disabled {
+.form-field .mat-select-disabled:focus {
   background-color: rgb(241, 241, 241);
   border-color: rgb(225, 225, 225);
   box-shadow: none;
@@ -180,10 +187,6 @@
   font-size: 14px;
   line-height: 3em;
   height: 3em;
-}
-
-.form-field .form-button {
-  padding: 5px;
 }
 
 .form-field .form-button .mat-button-wrapper {
@@ -212,23 +215,19 @@
   top: 0;
 }
 
-.datepicker-input input {
-  padding-right: 44px;
-}
-
 .form-field mat-icon {
-  color: #6236FF;
+  color: #6236ff;
 }
 
 .form-field .form-button--active .mat-button-wrapper {
-  color: #6236FF;
+  color: #6236ff;
   font-weight: 600;
-  background-color: rgba(98,54,255,0.1);
+  background-color: rgba(98, 54, 255, 0.1);
 }
 
 .link-button {
   font-size: 12px;
-  color: #1A8FEA;
+  color: #1a8fea;
   font-weight: 600;
   text-align: center;
 }

@@ -1,38 +1,49 @@
 
 .container {
   overflow: auto;
+
   /* as child */
   flex: 1;
+
   /* as container */
   display: flex;
   flex-flow: column nowrap;
+
   /* Details specific */
   margin: 10px 10px 10px 40px;
 }
+
 .table-container {
   max-width: 100%;
   overflow: auto;
+
   /* as child */
   flex: 1;
 }
+
 mat-table {
   min-width: min-content;
 }
-.mat-row, .mat-header-row {
+
+.mat-row,
+.mat-header-row {
   min-height: 24px;
 }
-.mat-cell:first-of-type,
-.mat-header-cell:first-of-type,
-.mat-footer-cell:first-of-type {
-  padding-left: 5px;
-}
-.mat-cell, .mat-header-cell {
+
+.mat-cell,
+.mat-header-cell {
   overflow-x: hidden;
   white-space: nowrap;
   width: 150px;
   max-width: 150px;
   padding-right: 5px;
   margin-right: 5px;
+}
+
+.mat-cell:first-of-type,
+.mat-header-cell:first-of-type,
+.mat-footer-cell:first-of-type {
+  padding-left: 5px;
 }
 
 /* Details specific */

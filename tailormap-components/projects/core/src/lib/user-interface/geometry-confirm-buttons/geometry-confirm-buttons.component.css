@@ -1,4 +1,4 @@
-.geometry-confirm{
+.geometry-confirm {
   position: absolute;
   transform: translate(var(--left-panel-width), var(--top-panel-height));
   transition: transform 0.5s;

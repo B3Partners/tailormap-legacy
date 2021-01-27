@@ -44,6 +44,14 @@
   border: 1px solid #999;
 }
 
+.color-picker__toggle--as-line span {
+  position: absolute;
+  width: 26px;
+  height: 4px;
+  top: 13px;
+  left: 1px;
+}
+
 .color-picker__toggle.color-picker__color-transparent span,
 .color-picker__toggle.color-picker__color-transparent mat-icon {
   display: none;
@@ -52,14 +60,6 @@
 .color-picker__toggle--as-text,
 .color-picker__toggle--as-polygon {
   border-radius: 0;
-}
-
-.color-picker__toggle--as-line span {
-  position: absolute;
-  width: 26px;
-  height: 4px;
-  top: 13px;
-  left: 1px;
 }
 
 .color-picker__form-field,
@@ -92,11 +92,12 @@
 }
 
 .color-picker__color:hover {
-  box-shadow: 0px 2px 4px -1px rgba(0, 0, 0, 0.2),
-    0px 4px 5px 0px rgba(0, 0, 0, 0.14),
-    0px 1px 10px 0px rgba(0, 0, 0, 0.12);
+  box-shadow:
+    0 2px 4px -1px rgba(0, 0, 0, 0.2),
+    0 4px 5px 0 rgba(0, 0, 0, 0.14),
+    0 1px 10px 0 rgba(0, 0, 0, 0.12);
 }
 
 .color-picker__color-transparent {
-  background-image: linear-gradient(45deg, #ffffff 25%, #ffffff 40%, #e65757 40%, #e65757 60%, #ffffff 60%, #ffffff 100%);
+  background-image: linear-gradient(45deg, #fff 25%, #fff 40%, #e65757 40%, #e65757 60%, #fff 60%, #fff 100%);
 }
