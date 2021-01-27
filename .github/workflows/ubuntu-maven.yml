@@ -1,6 +1,9 @@
 name: Ubuntu Maven build
 
 on: [push, pull_request, workflow_dispatch]
+  paths:
+      - '**.java'
+      - '**.xml'
 #on:
 #  push:
 #    branches:
