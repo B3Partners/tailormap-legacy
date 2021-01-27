@@ -1,5 +1,6 @@
 import { createAction, props } from '@ngrx/store';
 import { AttributelistConfig } from '../models/attributelist.config';
+import { AttributelistTabModel } from '../models/attributelist-tab.model';
 
 const attributelistActionsPrefix = '[Attributelist]';
 
@@ -15,4 +16,9 @@ export const toggleAttributelistVisibility = createAction(
 export const setAttributelistConfig = createAction(
   `${attributelistActionsPrefix} Set Attributelist Configuration`,
   props<{ config: Partial<AttributelistConfig> }>(),
+);
+
+export const addAttributelistTab = createAction(
+  `${attributelistActionsPrefix} Set Attributelist Configuration`,
+  props<{ tab: AttributelistTabModel }>(),
 );

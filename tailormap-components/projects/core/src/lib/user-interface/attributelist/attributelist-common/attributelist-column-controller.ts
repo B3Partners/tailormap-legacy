@@ -1,6 +1,6 @@
 
 import { Attribute } from '../../../shared/attribute-service/attribute-models';
-import { AttributelistColumn } from './attributelist-column-models'
+import { AttributelistColumn, AttributelistColumnType } from '../models/attributelist-column-models'
 
 export class AttributelistColumnController {
 
@@ -30,13 +30,15 @@ export class AttributelistColumnController {
     let column: AttributelistColumn = {
       name: '_checked',
       visible: true,
-      type: 'boolean',
+      dataType: 'boolean',
+      columnType: 'special',
     };
     this.specialColumns.push(column);
     column = {
       name: '_details',
       visible: true,
-      type: 'boolean',
+      dataType: 'boolean',
+      columnType: 'special',
     };
     this.specialColumns.push(column);
   }
@@ -75,6 +77,7 @@ export class AttributelistColumnController {
       const column: AttributelistColumn = {
         name: columnName,
         visible: true,
+        columnType: 'passport',
       };
       columns.push(column);
     }
@@ -102,7 +105,7 @@ export class AttributelistColumnController {
     return this.attributes.find(c => c.name === columnName)
   }
 
-  public columnDefsToColumns(columnDefs: Attribute[]): AttributelistColumn[] {
+  public columnDefsToColumns(columnDefs: Attribute[], columnType: AttributelistColumnType): AttributelistColumn[] {
     const columns: AttributelistColumn[] = [];
     // Add new columns.
     for (const columnDef of columnDefs) {
@@ -113,7 +116,8 @@ export class AttributelistColumnController {
       const column: AttributelistColumn = {
         name: columnDef.name,
         visible: true,
-        type: columnDef.type,
+        dataType: columnDef.type,
+        columnType,
       };
       columns.push(column);
     }
@@ -145,7 +149,7 @@ export class AttributelistColumnController {
 
   public getColumnType(colName: string): string {
     const colIndex = this.arrayIndexOfColumn(this.dataColumns, colName)
-    return this.dataColumns[colIndex].type;
+    return this.dataColumns[colIndex].dataType;
   }
 
   /**
@@ -197,7 +201,7 @@ export class AttributelistColumnController {
    */
   public setDataColumnNames(columnDefs: Attribute[]): void {
     // this.dataColumns = this.columnNamesToColumns(columnNames);
-    this.dataColumns = this.columnDefsToColumns(columnDefs);
+    this.dataColumns = this.columnDefsToColumns(columnDefs, 'data');
     // console.log('#AttColumns - setDataColumnNames');
     // console.log(this.dataColumns);
 

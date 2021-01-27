@@ -1,11 +1,3 @@
-/**
- * Remarks: The dialog has been opened in: table.onTableOptionsClick.
- *
- * https://material.angular.io/components/dialog/examples
- * https://www.material.io/components/dialogs#anatomy
- * https://www.techiediaries.com/angular-material-dialogs/   !!!!!!!!!!!!!
- */
-
 import { Component, OnInit, Inject, ElementRef } from '@angular/core';
 
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
@@ -13,7 +5,7 @@ import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 import { AttributelistColumnController } from '../attributelist-common/attributelist-column-controller';
-import { AttributelistColumn } from '../attributelist-common/attributelist-column-models';
+import { AttributelistColumn } from '../models/attributelist-column-models';
 
 @Component({
   selector: 'tailormap-attributelist-table-options-form',

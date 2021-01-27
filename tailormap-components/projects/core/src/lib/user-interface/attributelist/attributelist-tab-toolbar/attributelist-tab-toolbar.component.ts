@@ -1,5 +1,5 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { AttributelistColumn } from '../attributelist-common/attributelist-column-models';
+import { AttributelistColumn } from '../models/attributelist-column-models';
 import { ExportService } from '../../../shared/export-service/export.service';
 import { ExportFeaturesParameters } from '../../../shared/export-service/export-models';
 import { MatSnackBar } from '@angular/material/snack-bar';

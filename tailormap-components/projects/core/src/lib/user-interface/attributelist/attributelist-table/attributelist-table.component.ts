@@ -47,7 +47,7 @@ import { ValueService } from '../../../shared/value-service/value.service';
 import { TailorMapService } from '../../../../../../bridge/src/tailor-map.service';
 import { HighlightService } from '../../../shared/highlight-service/highlight.service';
 import { MatMenuTrigger } from '@angular/material/menu';
-import { AttributelistColumn } from '../attributelist-common/attributelist-column-models';
+import { AttributelistColumn } from '../models/attributelist-column-models';
 import { from, Subject } from 'rxjs';
 import { concatMap, takeUntil } from 'rxjs/operators';
 import { AttributelistTreeComponent } from '../attributelist-tree/attributelist-tree.component';
@@ -661,6 +661,7 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
     });
     return;
   }
+
   /**
    * Shows a popup to set visible columns.
    */
