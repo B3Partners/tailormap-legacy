@@ -6,6 +6,7 @@ on: [push, pull_request]
     - '**.css'
     - '**.html'
     - '**.yaml'
+    - '**.json'
   
 jobs:
   test:
