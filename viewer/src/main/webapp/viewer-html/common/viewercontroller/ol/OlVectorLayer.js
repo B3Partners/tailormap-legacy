@@ -542,17 +542,16 @@ Ext.define("viewer.viewercontroller.ol.OlVectorLayer", {
     setTranslate: function (active) {
         this.modify.setActive(!active);
         this.translate.setActive(active);
+        if(!active) {
+            this.rotation = 0;
+        }
     },
 
     updateRotation: function (value) {
         var f = this.source.getFeatures()[0];
         if (f) {
-            this.g = f.getGeometry();
-            var ex = this.g.getExtent();
-            var x = ex[0] + (ex[2] - ex[0]) / 2;
-            var y = ex[1] + (ex[3] - ex[1]) / 2;
-            this.center = [x, y];
-            this.g.rotate((this.rotation - value) * Math.PI / 180, this.center);
+            this.center = ol.extent.getCenter(f.getGeometry().getExtent())
+            f.getGeometry().rotate((this.rotation - value) * Math.PI / 180, this.center);
             this.rotation = value;
         }
     },

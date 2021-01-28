@@ -1654,6 +1654,10 @@ Ext.define("viewer.components.Edit", {
         Ext.Msg.alert("Mislukt", msg);
     },
     cancel: function () {
+        if (this.mode === "copy") {
+            this.mode = "edit";
+            return;
+        }
         if(this.mobileHide) {
             return;
         }
@@ -1664,7 +1668,6 @@ Ext.define("viewer.components.Edit", {
     },
     resetForm: function () {
         this.savebutton.setText(i18next.t('viewer_components_edit_42'));
-        this.mode = null;
         this.geomlabel.setHtml("");
         this.setFormVisible(false);
         this.buttonPanel.setVisible(true);

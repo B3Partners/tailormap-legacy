@@ -34,6 +34,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
     drawFeatureControls: null,
     activeDrawFeatureControl: null,
     modifyFeature:null,
+    rotation: 0,
     constructor : function (config){
         config.colorPrefix = '#';
         viewer.viewercontroller.openlayers.OpenLayersVectorLayer.superclass.constructor.call(this, config);
@@ -83,6 +84,10 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
             }
         },this.frameworkLayer));
 
+        this.translate = new OpenLayers.Control.DragFeature(this.frameworkLayer, {
+           documentDrag: false
+        });
+
         this.freehandLine = new OpenLayers.Control.DrawFeature(this.frameworkLayer, OpenLayers.Handler.Path, this.addMeasureListener(OpenLayers.Handler.Path, {
             displayClass: 'olControlDrawFeaturePath',
             handlerOptions: {
@@ -111,6 +116,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
         map.addControl(this.freehand);
         map.addControl(this.freehandLine);
         map.addControl(this.modifyFeature);
+        map.addControl(this.translate);
         var me = this;
         this.modifyFeature.selectControl.onBeforeSelect = function(){ me.beforeSelect();};
         this.modifyFeature.selectControl.events.register("featurehighlighted", this, this.activeFeatureChanged);
@@ -118,6 +124,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
         this.frameworkLayer.events.register("featuremodified", this, this.featureModified);
         this.frameworkLayer.events.register("featureadded", this, this.featureAdded);
 
+        this.translate.deactivate();
         if(this.allowSelection()) {
             this.modifyFeature.activate();
         }
@@ -221,6 +228,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
     removeAllFeatures : function(){
         this.getFrameworkLayer().removeAllFeatures();
         this.stopDrawing();
+        this.setTranslate(false);
     },
 
     getActiveFeature : function(){        
@@ -616,5 +624,24 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
      */
     destroy: function (){
         this.mixins.openLayersLayer.destroy.call(this);
-    }
+    },
+
+    setTranslate: function (active) {
+        if (active) {
+            this.translate.activate();
+        } else {
+            this.translate.deactivate();
+            this.rotation = 0;
+        }
+    },
+
+    updateRotation: function (value) {
+        var f = this.getFeature(0);
+        if (f) {
+            this.g = f.geometry;
+            f.geometry.rotate((this.rotation - value), f.geometry.getCentroid());
+            f.layer.drawFeature(f);
+            this.rotation = value;
+        }
+    },
 });
