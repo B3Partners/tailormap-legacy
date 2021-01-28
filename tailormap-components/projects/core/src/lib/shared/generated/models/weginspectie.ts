@@ -1,4 +1,5 @@
 /* tslint:disable */
+/* eslint-disable */
 import { Feature } from './feature';
 export interface Weginspectie extends Feature {
   a1_rafeling?: number;

@@ -1,4 +1,5 @@
 /* tslint:disable */
+/* eslint-disable */
 export interface Domeinwaarde {
   afkorting?: string;
   domein_id?: number;

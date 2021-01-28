@@ -1,4 +1,5 @@
 /* tslint:disable */
+/* eslint-disable */
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { BaseService } from '../base-service';
@@ -34,15 +35,13 @@ export class AttributeControllerService extends BaseService {
    */
   attributes$Response(params: {
     ids: Array<number>;
-
   }): Observable<StrictHttpResponse<Array<Attribuut>>> {
 
     const rb = new RequestBuilder(this.rootUrl, AttributeControllerService.AttributesPath, 'get');
     if (params) {
-
       rb.path('ids', params.ids, {});
-
     }
+
     return this.http.request(rb.build({
       responseType: 'json',
       accept: 'application/json'
@@ -62,7 +61,6 @@ export class AttributeControllerService extends BaseService {
    */
   attributes(params: {
     ids: Array<number>;
-
   }): Observable<Array<Attribuut>> {
 
     return this.attributes$Response(params).pipe(

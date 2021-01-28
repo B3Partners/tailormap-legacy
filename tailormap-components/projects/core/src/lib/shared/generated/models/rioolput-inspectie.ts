@@ -1,4 +1,5 @@
 /* tslint:disable */
+/* eslint-disable */
 import { Feature } from './feature';
 export interface RioolputInspectie extends Feature {
   dab_scheur?: number;

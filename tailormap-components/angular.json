@@ -13,7 +13,6 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "extractCss": true,
             "outputPath": "dist/bridge",
             "index": "projects/bridge/src/index.html",
             "main": "projects/bridge/src/main.ts",
@@ -37,7 +36,8 @@
             ],
             "scripts": [
               {
-                "input": "node_modules/document-register-element/build/document-register-element.js"
+                "input": "node_modules/document-register-element/build/document-register-element.js",
+                "inject": true
               }
             ]
           },
@@ -52,7 +52,6 @@
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": true,
               "namedChunks": false,
               "extractLicenses": true,
               "vendorChunk": false,
@@ -81,8 +80,7 @@
           },
           "configurations": {
             "production": {
-              "browserTarget": "bridge:build:production",
-              "extractCss": true
+              "browserTarget": "bridge:build:production"
             }
           }
         },
@@ -150,7 +148,7 @@
       "prefix": "tailormap",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-ng-packagr:build",
+          "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
             "tsConfig": "projects/core/tsconfig.lib.json",
             "project": "projects/core/ng-package.json",

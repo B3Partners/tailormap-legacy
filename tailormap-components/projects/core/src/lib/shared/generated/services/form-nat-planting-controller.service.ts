@@ -1,4 +1,5 @@
 /* tslint:disable */
+/* eslint-disable */
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { BaseService } from '../base-service';
@@ -34,15 +35,13 @@ export class FormNatPlantingControllerService extends BaseService {
    */
   get6$Response(params: {
     objectGuid: string;
-
   }): Observable<StrictHttpResponse<NatBeplanting>> {
 
     const rb = new RequestBuilder(this.rootUrl, FormNatPlantingControllerService.Get6Path, 'get');
     if (params) {
-
       rb.path('objectGuid', params.objectGuid, {});
-
     }
+
     return this.http.request(rb.build({
       responseType: 'json',
       accept: 'application/json'
@@ -62,7 +61,6 @@ export class FormNatPlantingControllerService extends BaseService {
    */
   get6(params: {
     objectGuid: string;
-
   }): Observable<NatBeplanting> {
 
     return this.get6$Response(params).pipe(
@@ -85,17 +83,15 @@ export class FormNatPlantingControllerService extends BaseService {
     'x': number;
     'y': number;
     scale: number;
-
   }): Observable<StrictHttpResponse<Array<NatBeplanting>>> {
 
     const rb = new RequestBuilder(this.rootUrl, FormNatPlantingControllerService.OnPoint6Path, 'get');
     if (params) {
-
       rb.path('x', params['x'], {});
       rb.path('y', params['y'], {});
       rb.path('scale', params.scale, {});
-
     }
+
     return this.http.request(rb.build({
       responseType: 'json',
       accept: 'application/json'
@@ -117,7 +113,6 @@ export class FormNatPlantingControllerService extends BaseService {
     'x': number;
     'y': number;
     scale: number;
-
   }): Observable<Array<NatBeplanting>> {
 
     return this.onPoint6$Response(params).pipe(

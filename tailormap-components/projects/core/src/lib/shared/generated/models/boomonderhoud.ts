@@ -1,4 +1,5 @@
 /* tslint:disable */
+/* eslint-disable */
 import { Feature } from './feature';
 export interface Boomonderhoud extends Feature {
   akkoord?: string;
