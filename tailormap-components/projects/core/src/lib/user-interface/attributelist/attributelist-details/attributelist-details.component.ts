@@ -30,8 +30,6 @@ export class AttributelistDetailsComponent implements OnInit,
                                                       AttributelistTable,
                                                       AfterViewInit {
 
-  @ViewChild(MatSort) private sort: MatSort;
-
   // Table reference for 'manually' rendering.
   @ViewChild('detailtable') public table: MatTable<any>;
 
@@ -69,9 +67,6 @@ export class AttributelistDetailsComponent implements OnInit,
 
   public ngAfterViewInit(): void {
     // console.log('#Details - ngAfterViewInit');
-
-    // Set datasource sort.
-    this.dataSource.sorter = this.sort;
 
     // console.log(this.parentLayerId);
     // console.log(this.parentLayerName);
@@ -113,13 +108,14 @@ export class AttributelistDetailsComponent implements OnInit,
    * Fired when a column header is clicked.
    */
   public onSortClick(sort: Sort): void {
-    this.updateTable();
+    this.updateTable(sort);
   }
 
   /**
    * (Re)loads the data, which fires the "onAfterLoadData" method.
    */
-  private updateTable(): void {
-    this.dataSource.loadData(this);
+  private updateTable(sort?: Sort): void {
+    const sortDirection = (sort && sort.direction === 'asc') ? 'ASC' : (sort && sort.direction) === 'desc' ? 'DESC' : undefined;
+    this.dataSource.loadData(this, undefined, undefined, sort ? sort.active : undefined, sortDirection);
   }
 }

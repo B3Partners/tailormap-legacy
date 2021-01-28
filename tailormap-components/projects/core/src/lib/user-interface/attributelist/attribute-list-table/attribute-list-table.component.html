@@ -1,6 +1,8 @@
-<div class="container">
-  <mat-paginator [pageSize]="attributelistService.config.pageSize"
+<div class="container" *ngIf="tab">
+  <mat-paginator [pageSize]="tab.pageSize"
+                 [pageIndex]="tab.pageIndex"
                  [length]="0"
+                 [hidePageSize]="true"
                  (page)="onPageChange($event)">
   </mat-paginator>
   <mat-divider></mat-divider>

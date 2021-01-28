@@ -54,9 +54,9 @@ import { AttributeListEffects } from './state/attribute-list.effects';
 })
 export class AttributeListModule {
   public constructor(injector: Injector) {
-    customElements.define('tailormap-attributelist-button',
+    customElements.define('tailormap-attribute-list-button',
       createCustomElement(AttributeListButtonComponent, {injector}));
-    customElements.define('tailormap-attributelist',
+    customElements.define('tailormap-attribute-list',
       createCustomElement(AttributeListComponent, {injector}));
   }
 }

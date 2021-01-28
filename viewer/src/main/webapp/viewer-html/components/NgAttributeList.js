@@ -53,11 +53,11 @@ Ext.define ("viewer.components.NgAttributeList",{
         this.renderAttributelistButton();
     },
     addPanel: function(){
-        var panel = document.createElement("tailormap-attributelist");
+        var panel = document.createElement("tailormap-attribute-list");
         document.body.appendChild(panel);
     },
     renderAttributelistButton: function() {
-        var btn = document.createElement('tailormap-attributelist-button');
+        var btn = document.createElement('tailormap-attribute-list-button');
         btn.setAttribute("config", JSON.stringify({
             pageSize: this.config.pageSize,
             zoomToBuffer: this.config.zoomToBuffer,

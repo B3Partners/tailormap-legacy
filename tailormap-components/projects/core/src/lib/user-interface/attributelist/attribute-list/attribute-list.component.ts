@@ -3,6 +3,7 @@ import { Store } from '@ngrx/store';
 import { AttributeListState } from '../state/attribute-list.state';
 import { selectAttributeListVisible } from '../state/attribute-list.selectors';
 import { Observable } from 'rxjs';
+import { AttributeListManagerService } from '../services/attribute-list-manager.service';
 
 @Component({
   selector: 'tailormap-attribute-list',
@@ -15,6 +16,7 @@ export class AttributeListComponent implements OnInit {
 
   constructor(
     private store$: Store<AttributeListState>,
+    private attributeListManagerService: AttributeListManagerService,
   ) {
     this.isVisible$ = this.store$.select(selectAttributeListVisible);
   }

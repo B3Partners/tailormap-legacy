@@ -9,8 +9,6 @@
 import { DataSource } from '@angular/cdk/table';
 import * as wellknown from 'wellknown';
 import { forkJoin, Observable, of } from 'rxjs';
-import { MatSort } from '@angular/material/sort';
-import { MatPaginator } from '@angular/material/paginator';
 
 import { AttributelistTable, RowData } from './attributelist-models';
 import { AttributelistColumnController } from './attributelist-column-controller';
@@ -49,14 +47,8 @@ export class AttributeDataSource extends DataSource<any> {
 
   public uniqueMainFeatureIds = new Map<number, string[]>();
 
-  // The paginator for paging.
-  public paginator?: MatPaginator;
-
   // the clazz name for the mainFeature
   public mainFeatureClazzName = '';
-
-  // The sorter for sorting.
-  public sorter: MatSort;
 
   // Total number of rows.
   public totalNrOfRows = 0;
@@ -66,11 +58,13 @@ export class AttributeDataSource extends DataSource<any> {
 
   private checkedIds: number[] = [];
 
-  constructor(private attributeService: AttributeService,
-              private valueService: ValueService,
-              private attributelistService: AttributelistService,
-              private tailorMapService: TailorMapService,
-              private formconfigRepoService: FormconfigRepositoryService) {
+  constructor(
+    private attributeService: AttributeService,
+    private valueService: ValueService,
+    private attributelistService: AttributelistService,
+    private tailorMapService: TailorMapService,
+    private formconfigRepoService: FormconfigRepositoryService,
+  ) {
     super();
   }
 
@@ -225,7 +219,7 @@ export class AttributeDataSource extends DataSource<any> {
     })
   }
 
-  public loadDataForAttributeTree$(): Observable<AttributelistNode> {
+  public loadDataForAttributeTree$(pageSize: number): Observable<AttributelistNode> {
     // get columns
     const passportName = LayerUtils.sanitizeLayername(this.params.featureTypeName);
     let columnNames: string[] = [];
@@ -241,7 +235,7 @@ export class AttributeDataSource extends DataSource<any> {
       application: this.tailorMapService.getApplicationId(),
       appLayer: this.params.layerId,
       filter: this.params.valueFilter,
-      limit: this.paginator.pageSize,
+      limit: pageSize,
       page: 1,
       featureType: this.params.featureTypeId,
       start: 0,
@@ -312,7 +306,13 @@ export class AttributeDataSource extends DataSource<any> {
   /**
    * Loads the data of a main or details table.
    */
-  public loadData(attrTable: AttributelistTable): void {
+  public loadData(
+    attrTable: AttributelistTable,
+    pageSize?: number,
+    pageIndex?: number,
+    sortedField?: string,
+    sortDirection?: 'ASC' | 'DESC',
+  ): void {
 
     // if (!this.params.hasDetail()) {
     //   console.log('#DataSource - loadData - ' + this.params.layerName);
@@ -349,11 +349,6 @@ export class AttributeDataSource extends DataSource<any> {
       });
     }
 
-    // if (this.paginator) {
-    //   console.log(this.paginator.pageSize);
-    //   console.log(this.paginator.pageIndex);
-    // }
-
     // Get the app id.
     const appId = this.tailorMapService.getApplicationId();
 
@@ -386,10 +381,10 @@ export class AttributeDataSource extends DataSource<any> {
     }
 
     // Set paging params.
-    if (this.paginator) {
-      attrParams.limit = this.paginator.pageSize;
+    if (typeof pageSize !== 'undefined' && typeof pageIndex !== 'undefined') {
+      attrParams.limit = pageSize;
       attrParams.page = 1;
-      attrParams.start = this.paginator.pageIndex * this.paginator.pageSize;
+      attrParams.start = pageIndex * pageSize;
     } else {
       attrParams.limit = -1;
       attrParams.page = 1;
@@ -397,14 +392,8 @@ export class AttributeDataSource extends DataSource<any> {
     }
     attrParams.clearTotalCountCache = true;
     // Set sorting params.
-    attrParams.dir = this.sorter.direction.toUpperCase();
-    if (attrParams.dir === '') {
-      attrParams.dir = 'ASC';
-    }
-    attrParams.sort = this.sorter.active;
-    if (attrParams.sort === undefined) {
-      attrParams.sort = '';
-    }
+    attrParams.dir = sortDirection || 'ASC';
+    attrParams.sort = sortedField || '';
 
     // Remove all rows.
     this.rows.splice(0, this.rows.length);

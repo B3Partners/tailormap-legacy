@@ -21,7 +21,6 @@ import { ValueService } from '../../../shared/value-service/value.service';
 import { TailorMapService } from '../../../../../../bridge/src/tailor-map.service';
 import { HighlightService } from '../../../shared/highlight-service/highlight.service';
 import { MatMenuTrigger } from '@angular/material/menu';
-import { AttributeListColumnModel } from '../models/attribute-list-column-models';
 import { from, Subject } from 'rxjs';
 import { concatMap, takeUntil } from 'rxjs/operators';
 import { AttributelistTreeComponent } from '../attributelist-tree/attributelist-tree.component';
@@ -45,7 +44,7 @@ import { AttributeListTabModel } from '../models/attribute-list-tab.model';
     ]),
   ],
 })
-export class AttributeListTableComponent implements AttributelistTable, OnInit, AfterViewInit, OnDestroy {
+export class AttributeListTableComponent implements AttributelistTable, OnInit, OnDestroy {
 
   @Input()
   public layerId: string;
@@ -107,7 +106,7 @@ export class AttributeListTableComponent implements AttributelistTable, OnInit, 
 
   private destroyed = new Subject();
 
-  private tab: AttributeListTabModel;
+  public tab: AttributeListTabModel;
 
   constructor(private store$: Store<AttributeListState>,
               private attributeService: AttributeService,
@@ -166,27 +165,6 @@ export class AttributeListTableComponent implements AttributelistTable, OnInit, 
       this.isRelatedRefresh = false;
       this.dataSource.loadTableData(this, selectedTreeData);
     });
-  }
-
-  public ngAfterViewInit(): void {
-    // console.log('#Table - ngAfterViewInit');
-
-    // Set datasource paginator.
-    this.dataSource.paginator = this.paginator;
-    // Set datasource sort.
-    this.dataSource.sorter = this.sort;
-
-    // Prevent ExpressionChangedAfterItHasBeenCheckedErrors using setTimeout
-    // maybe loadData and paginator settings in ngOnInit would be better
-    setTimeout(() => {
-      // console.log('#Table - ngAfterViewInit - paginator settings');
-
-      // Hide the paginator pagesize combo.
-      this.paginator.hidePageSize = true;
-
-      // Init the paginator with the startup page index.
-      this.paginator.pageIndex = 0;
-    }, 0)
   }
 
   private afterloadRelatedData(): void {
@@ -356,7 +334,7 @@ export class AttributeListTableComponent implements AttributelistTable, OnInit, 
       this.dataSource.params.featureTypeId = feature.id;
       this.dataSource.params.featureTypeName = feature.foreignFeatureTypeName;
       this.dataSource.params.valueFilter = this.filterMap.get(feature.id).getFinalFilter(this.filterMap);
-      return this.dataSource.loadDataForAttributeTree$();
+      return this.dataSource.loadDataForAttributeTree$(this.tab.pageSize);
     })).subscribe({
       next: (result) => {
         this.setTreeData(result);
@@ -650,7 +628,7 @@ export class AttributeListTableComponent implements AttributelistTable, OnInit, 
 
   private updateTable(): void {
     // (Re)load data. Fires the onAfterLoadData method.
-    this.dataSource.loadData(this);
+    this.dataSource.loadData(this, this.tab.pageSize, this.tab.pageIndex);
     this.columnController = this.dataSource.columnController;
     // Update check info (number checked/check state).
     this.updateCheckedInfo();
