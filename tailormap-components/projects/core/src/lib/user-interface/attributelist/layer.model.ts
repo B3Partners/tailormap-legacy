@@ -1,9 +1,9 @@
 
-import { AttributelistTabComponent } from './attributelist-tab/attributelist-tab.component';
+import { AttributeListTabComponent } from './attribute-list-tab/attribute-list-tab.component';
 
 export interface Layer {
   name: string;
   alias: string;
   id: number;
-  tabComponent?: AttributelistTabComponent;
+  tabComponent?: AttributeListTabComponent;
 }

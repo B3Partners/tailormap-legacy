@@ -1,0 +1,61 @@
+:host {
+  /* !* as child *! */
+
+  /* flex: 1; */
+
+  /* !* as container *! */
+
+  /* display: flex; */
+
+  /* flex-flow: column nowrap; */
+
+  overflow: auto;
+
+  /* as child */
+  flex: 1;
+
+  /* as container */
+  display: flex;
+  flex-flow: column nowrap;
+}
+
+/* .container { */
+
+/*  display: flex; */
+
+/*  flex-flow: column nowrap; */
+
+/* } */
+
+tailormap-attribute-list-table {
+  overflow: auto;
+
+  /* as child */
+  flex: 1;
+
+  /* as container */
+  display: flex;
+  flex-flow: column nowrap;
+}
+
+/* 20200928 */
+
+/* tailormap-attributelist-table { */
+
+/*  background: red; */
+
+/*  !* 20200928 *! */
+
+/*  overflow: auto; */
+
+/*  !* as child *! */
+
+/*  flex: 1; */
+
+/*  !* as container *! */
+
+/*  display: flex; */
+
+/*  flex-flow: column nowrap; */
+
+/* } */

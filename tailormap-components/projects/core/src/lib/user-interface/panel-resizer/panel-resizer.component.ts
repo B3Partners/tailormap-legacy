@@ -1,10 +1,4 @@
-/**
- * Shows a resize 'handle' on top of a panel.
- *
- * https://stackoverflow.com/questions/36273791/how-to-implement-a-draggable-div-in-angular-2-using-rx
- */
-
-import { Component, OnInit, HostListener, AfterViewInit } from '@angular/core';
+import { Component, HostListener, AfterViewInit } from '@angular/core';
 import { LayoutService } from '../layout.service';
 
 @Component({
@@ -12,12 +6,7 @@ import { LayoutService } from '../layout.service';
   templateUrl: './panel-resizer.component.html',
   styleUrls: ['./panel-resizer.component.css'],
 })
-export class PanelResizerComponent implements OnInit, AfterViewInit {
-
-  // mouseup = new EventEmitter<MouseEvent>();
-  // mousedown = new EventEmitter<MouseEvent>();
-  // mousemove = new EventEmitter<MouseEvent>();
-  // mousedrag: Observable<{top, left}>;
+export class PanelResizerComponent implements AfterViewInit {
 
   public visible = false;
 
@@ -25,38 +14,30 @@ export class PanelResizerComponent implements OnInit, AfterViewInit {
 
   private isMouseDown = false;
 
-  constructor(private layoutService: LayoutService) {
-  }
-
-  public ngOnInit(): void {
-  }
+  constructor(
+    private layoutService: LayoutService,
+  ) {}
 
   public ngAfterViewInit(): void {
-    // console.log('#Resizer - ngAfterViewInit');
-    // Hide handle at startup.
     this.showHandle(false);
   }
 
   public onPanelMouseEnter(): void {
-    // console.log('#Resizer - onMouseEnter');
     this.showHandle(true);
   }
 
   public onPanelMouseLeave(): void {
-    // console.log('#Resizer - onMouseLeave');
     if (!this.isMouseDown) {
       this.showHandle(false);
     }
   }
 
   public onHandleMouseDown(event: MouseEvent): void {
-    // console.log('#Resizer - onHandleMouseDown');
     this.isMouseDown = true;
     this.dragStartY = event.screenY;
   }
 
   @HostListener('window:mousemove', ['$event'])
-  // @ts-ignore
   private onWindowMouseMove(event: MouseEvent): void {
     if (this.isMouseDown) {
       const deltaY = event.screenY - this.dragStartY;
@@ -66,7 +47,6 @@ export class PanelResizerComponent implements OnInit, AfterViewInit {
   }
 
   @HostListener('window:mouseup', ['$event'])
-  // @ts-ignore
   private onWindowMouseUp(event: MouseEvent): void {
     this.isMouseDown = false;
   }
@@ -74,4 +54,5 @@ export class PanelResizerComponent implements OnInit, AfterViewInit {
   public showHandle(show: boolean): void {
     this.visible = show;
   }
+
 }

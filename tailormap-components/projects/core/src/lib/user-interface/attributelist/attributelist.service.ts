@@ -3,7 +3,7 @@
  */
 
 import { Injectable } from '@angular/core';
-import { AttributelistConfig } from './models/attributelist.config';
+import { AttributeListConfig } from './models/attribute-list.config';
 import { Subject } from 'rxjs';
 import {
   AttributelistNode,
@@ -15,7 +15,7 @@ import {
 })
 export class AttributelistService {
 
-  public config: AttributelistConfig;
+  public config: AttributeListConfig;
 
   private loadTableDataSubject$ = new Subject();
 

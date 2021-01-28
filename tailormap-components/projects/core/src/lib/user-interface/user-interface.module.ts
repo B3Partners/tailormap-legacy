@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatPaginatorIntl } from '@angular/material/paginator';
 
-import { AttributelistModule } from './attributelist/attributelist.module';
+import { AttributeListModule } from './attributelist/attribute-list.module';
 import { CommonModule } from '@angular/common';
 import { PaginatorLabels } from './paginator-labels';
 import { SharedModule } from '../shared/shared.module';
@@ -29,7 +29,7 @@ import { BaseFieldComponent } from './generic-components/base-field/base-field.c
     CommonModule,
     SharedModule,
     MatIconModule,
-    AttributelistModule,
+    AttributeListModule,
   ],
   exports: [
         MatIconModule,

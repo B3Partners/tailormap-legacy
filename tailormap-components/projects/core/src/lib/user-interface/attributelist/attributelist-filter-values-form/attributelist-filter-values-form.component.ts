@@ -12,7 +12,7 @@ import { AttributeTypeEnum } from '../../../application/models/attribute-type.en
 import {
   FilterValueSettings,
   FilterDialogSettings,
-} from '../attributelist-common/attributelist-filter-models';
+} from '../models/attribute-list-filter-models';
 import { CriteriaConditionModel } from '../../../analysis/models/criteria-condition.model';
 import { FormControl } from '@angular/forms';
 

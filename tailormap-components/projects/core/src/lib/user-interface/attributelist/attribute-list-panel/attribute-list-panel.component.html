@@ -1,0 +1,32 @@
+<tailormap-panel-resize #panelResizer></tailormap-panel-resize>
+<div class="container">
+
+  <mat-toolbar #captionbar>
+    <span>Attributenlijst</span>
+    <span class="spacer"></span>
+    <button mat-icon-button>
+      <mat-icon (click)="onMinimizeClick();">remove</mat-icon>
+    </button>
+    <button mat-icon-button>
+      <mat-icon (click)="onMaximizeClick();">keyboard_arrow_up</mat-icon>
+    </button>
+    <button mat-icon-button>
+      <mat-icon (click)="onCloseClick();">clear</mat-icon>
+    </button>
+  </mat-toolbar>
+
+  <mat-divider></mat-divider>
+
+  <span class="nolayers" *ngIf="tabs.length === 0">Geen geldige kaartlagen aanwezig.</span>
+
+  <mat-tab-group *ngIf="tabs.length > 0" animationDuration="0ms" (selectedTabChange)="onSelectedTabChange($event);">
+    <mat-tab *ngFor="let tab of tabs; let index = index; trackBy: trackByLayerId" [label]="tab.layerName">
+      <ng-template mat-tab-label>
+        {{tab.layerAlias === "" ? tab.layerName : tab.layerAlias}}
+        <mat-icon (click)="onTableOptionsClick($event, tab)">keyboard_arrow_down</mat-icon>
+      </ng-template>
+      <tailormap-attribute-list-tab [layerId]="tab.layerId"></tailormap-attribute-list-tab>
+    </mat-tab>
+  </mat-tab-group>
+
+</div>

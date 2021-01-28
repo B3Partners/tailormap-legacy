@@ -1,5 +1,5 @@
 import { AttributelistColumnController } from './attributelist-column-controller';
-import { AttributelistConfig } from '../models/attributelist.config';
+import { AttributeListConfig } from '../models/attribute-list.config';
 
 export interface AttributelistTable {
   onAfterLoadData: () => void;

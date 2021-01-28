@@ -2,7 +2,7 @@ import {
   FilterColumns,
   FilterValueSettings,
   LayerFilterValues,
-} from './attributelist-filter-models';
+} from '../models/attribute-list-filter-models';
 import {
   UniqueValuesResponse,
   ValueParameters,

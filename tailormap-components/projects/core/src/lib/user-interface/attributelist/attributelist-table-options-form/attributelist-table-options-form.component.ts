@@ -5,7 +5,7 @@ import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 import { AttributelistColumnController } from '../attributelist-common/attributelist-column-controller';
-import { AttributelistColumn } from '../models/attributelist-column-models';
+import { AttributeListColumnModel } from '../models/attribute-list-column-models';
 
 @Component({
   selector: 'tailormap-attributelist-table-options-form',
@@ -14,7 +14,7 @@ import { AttributelistColumn } from '../models/attributelist-column-models';
 })
 export class AttributelistTableOptionsFormComponent implements OnInit {
 
-  public columns: AttributelistColumn[];
+  public columns: AttributeListColumnModel[];
   // Dit helpt niet.
   // @Input('cdkDragPreviewClass')
   // previewClass: string;

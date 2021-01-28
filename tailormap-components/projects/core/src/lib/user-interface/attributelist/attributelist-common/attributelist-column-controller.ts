@@ -1,6 +1,6 @@
 
 import { Attribute } from '../../../shared/attribute-service/attribute-models';
-import { AttributelistColumn, AttributelistColumnType } from '../models/attributelist-column-models'
+import { AttributeListColumnModel, AttributelistColumnType } from '../models/attribute-list-column-models'
 
 export class AttributelistColumnController {
 
@@ -8,16 +8,16 @@ export class AttributelistColumnController {
   private attributes: Attribute[] = [];
 
   // List with special columns, needed for within this app.
-  private specialColumns: AttributelistColumn[] = [];
+  private specialColumns: AttributeListColumnModel[] = [];
 
   // List with all columns, based on the original data.
-  private dataColumns: AttributelistColumn[] = [];
+  private dataColumns: AttributeListColumnModel[] = [];
 
   // List with passport columns, i.e. selection of all columns.
-  private passportColumns: AttributelistColumn[] = [];
+  private passportColumns: AttributeListColumnModel[] = [];
 
   // List of active (i.e. visible) columns.
-  private activeColumns: AttributelistColumn[] = [];
+  private activeColumns: AttributeListColumnModel[] = [];
 
   // List of active (i.e. visible) column names.
   private activeColumnNames: string[] = [];
@@ -27,7 +27,7 @@ export class AttributelistColumnController {
 
   constructor() {
     // Fill the list with special column, add special column name '_checked'.
-    let column: AttributelistColumn = {
+    let column: AttributeListColumnModel = {
       name: '_checked',
       visible: true,
       dataType: 'boolean',
@@ -46,7 +46,7 @@ export class AttributelistColumnController {
   /**
    * Returns the column with the specified column name.
    */
-  public arrayIndexOfColumn(arr: AttributelistColumn[],
+  public arrayIndexOfColumn(arr: AttributeListColumnModel[],
                             columnName: string): number {
     for (let i = 0; i < arr.length; i++) {
       if (arr[i].name === columnName) {
@@ -61,8 +61,8 @@ export class AttributelistColumnController {
    * All columns are visible by default.
    * The special column name '_checked' is skipped.
    */
-  public columnNamesToColumns(columnNames: string[]): AttributelistColumn[] {
-    const columns: AttributelistColumn[] = [];
+  public columnNamesToColumns(columnNames: string[]): AttributeListColumnModel[] {
+    const columns: AttributeListColumnModel[] = [];
 
     // Check the column names.
     if (columnNames.length === 0) {
@@ -74,7 +74,7 @@ export class AttributelistColumnController {
         // Skip.
         continue;
       }
-      const column: AttributelistColumn = {
+      const column: AttributeListColumnModel = {
         name: columnName,
         visible: true,
         columnType: 'passport',
@@ -105,15 +105,15 @@ export class AttributelistColumnController {
     return this.attributes.find(c => c.name === columnName)
   }
 
-  public columnDefsToColumns(columnDefs: Attribute[], columnType: AttributelistColumnType): AttributelistColumn[] {
-    const columns: AttributelistColumn[] = [];
+  public columnDefsToColumns(columnDefs: Attribute[], columnType: AttributelistColumnType): AttributeListColumnModel[] {
+    const columns: AttributeListColumnModel[] = [];
     // Add new columns.
     for (const columnDef of columnDefs) {
       if (columnDef.name === '_checked') {
         // Skip.
         continue;
       }
-      const column: AttributelistColumn = {
+      const column: AttributeListColumnModel = {
         name: columnDef.name,
         visible: true,
         dataType: columnDef.type,
@@ -127,7 +127,7 @@ export class AttributelistColumnController {
   /**
    * Returns a list of active passport columns or if no passport all columns.
    */
-  public getActiveColumns(includeSpecial: boolean): AttributelistColumn[] {
+  public getActiveColumns(includeSpecial: boolean): AttributeListColumnModel[] {
     if (includeSpecial) {
       return [...this.specialColumns, ...this.activeColumns];
 
@@ -139,7 +139,7 @@ export class AttributelistColumnController {
   /**
    * Returns a list of all columns (i.e. all data columns).
    */
-  public getAllColumns(includeSpecial: boolean): AttributelistColumn[] {
+  public getAllColumns(includeSpecial: boolean): AttributeListColumnModel[] {
     if (includeSpecial) {
       return [...this.specialColumns, ...this.dataColumns];
     } else {

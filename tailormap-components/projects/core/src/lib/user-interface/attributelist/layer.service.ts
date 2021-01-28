@@ -6,7 +6,7 @@ import {
 
 import { Layer } from './layer.model';
 import { LayerUtils } from '../../shared/layer-utils/layer-utils.service';
-import { AttributelistTabComponent } from './attributelist-tab/attributelist-tab.component';
+import { AttributeListTabComponent } from './attribute-list-tab/attribute-list-tab.component';
 import { TailorMapService } from '../../../../../bridge/src/tailor-map.service';
 import { HighlightService } from '../../shared/highlight-service/highlight.service';
 
@@ -107,7 +107,7 @@ export class LayerService {
   /**
    * Returns null when no valid index.
    */
-  public getTabComponent(index: number): AttributelistTabComponent {
+  public getTabComponent(index: number): AttributeListTabComponent {
     if ((index < 0) || (index > this.layers.length - 1)) {
       // console.log('LayerService.getTabComponent - No valid index.');
       return null;
@@ -191,7 +191,7 @@ export class LayerService {
   /**
    * Binds the tab to the layer.
    */
-  public registerTabComponent(index: number, tab: AttributelistTabComponent): void {
+  public registerTabComponent(index: number, tab: AttributeListTabComponent): void {
     if ((index < 0) || (index > this.layers.length - 1)) {
       // console.log('LayerService.registerTabComponent - No valid index.');
       return;
