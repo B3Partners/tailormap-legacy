@@ -1,4 +1,5 @@
 /* tslint:disable */
+/* eslint-disable */
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { BaseService } from '../base-service';
@@ -35,15 +36,13 @@ export class FormRoadInspectionControllerService extends BaseService {
    */
   get7$Response(params: {
     objectGuid: string;
-
   }): Observable<StrictHttpResponse<Weginspectie>> {
 
     const rb = new RequestBuilder(this.rootUrl, FormRoadInspectionControllerService.Get7Path, 'get');
     if (params) {
-
       rb.path('objectGuid', params.objectGuid, {});
-
     }
+
     return this.http.request(rb.build({
       responseType: 'json',
       accept: 'application/json'
@@ -63,7 +62,6 @@ export class FormRoadInspectionControllerService extends BaseService {
    */
   get7(params: {
     objectGuid: string;
-
   }): Observable<Weginspectie> {
 
     return this.get7$Response(params).pipe(
@@ -84,16 +82,15 @@ export class FormRoadInspectionControllerService extends BaseService {
    */
   update1$Response(params: {
     objectGuid: string;
-      body: Weginspectie
+    body: Weginspectie
   }): Observable<StrictHttpResponse<Weginspectie>> {
 
     const rb = new RequestBuilder(this.rootUrl, FormRoadInspectionControllerService.Update1Path, 'put');
     if (params) {
-
       rb.path('objectGuid', params.objectGuid, {});
-
       rb.body(params.body, 'application/json');
     }
+
     return this.http.request(rb.build({
       responseType: 'json',
       accept: 'application/json'
@@ -113,7 +110,7 @@ export class FormRoadInspectionControllerService extends BaseService {
    */
   update1(params: {
     objectGuid: string;
-      body: Weginspectie
+    body: Weginspectie
   }): Observable<Weginspectie> {
 
     return this.update1$Response(params).pipe(
@@ -134,15 +131,13 @@ export class FormRoadInspectionControllerService extends BaseService {
    */
   delete1$Response(params: {
     objectGuid: string;
-
   }): Observable<StrictHttpResponse<void>> {
 
     const rb = new RequestBuilder(this.rootUrl, FormRoadInspectionControllerService.Delete1Path, 'delete');
     if (params) {
-
       rb.path('objectGuid', params.objectGuid, {});
-
     }
+
     return this.http.request(rb.build({
       responseType: 'text',
       accept: '*/*'
@@ -162,7 +157,6 @@ export class FormRoadInspectionControllerService extends BaseService {
    */
   delete1(params: {
     objectGuid: string;
-
   }): Observable<void> {
 
     return this.delete1$Response(params).pipe(
@@ -197,17 +191,15 @@ export class FormRoadInspectionControllerService extends BaseService {
      * Sorting criteria in the format: property(,asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
      */
     sort?: Array<string>;
-
   }): Observable<StrictHttpResponse<PageWeginspectie>> {
 
     const rb = new RequestBuilder(this.rootUrl, FormRoadInspectionControllerService.GetAllPagedPath, 'get');
     if (params) {
-
       rb.query('page', params.page, {});
       rb.query('size', params.size, {});
       rb.query('sort', params.sort, {});
-
     }
+
     return this.http.request(rb.build({
       responseType: 'json',
       accept: 'application/json'
@@ -241,7 +233,6 @@ export class FormRoadInspectionControllerService extends BaseService {
      * Sorting criteria in the format: property(,asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
      */
     sort?: Array<string>;
-
   }): Observable<PageWeginspectie> {
 
     return this.getAllPaged$Response(params).pipe(
@@ -261,15 +252,14 @@ export class FormRoadInspectionControllerService extends BaseService {
    * This method sends `application/json` and handles request body of type `application/json`.
    */
   save1$Response(params: {
-      body: { 'wv'?: Weginspectie, 'parentId'?: string }
+    body: { 'wv'?: Weginspectie, 'parentId'?: string }
   }): Observable<StrictHttpResponse<Weginspectie>> {
 
     const rb = new RequestBuilder(this.rootUrl, FormRoadInspectionControllerService.Save1Path, 'post');
     if (params) {
-
-
       rb.body(params.body, 'application/json');
     }
+
     return this.http.request(rb.build({
       responseType: 'json',
       accept: 'application/json'
@@ -288,7 +278,7 @@ export class FormRoadInspectionControllerService extends BaseService {
    * This method sends `application/json` and handles request body of type `application/json`.
    */
   save1(params: {
-      body: { 'wv'?: Weginspectie, 'parentId'?: string }
+    body: { 'wv'?: Weginspectie, 'parentId'?: string }
   }): Observable<Weginspectie> {
 
     return this.save1$Response(params).pipe(
@@ -308,14 +298,12 @@ export class FormRoadInspectionControllerService extends BaseService {
    * This method doesn't expect any request body.
    */
   getAll1$Response(params?: {
-
   }): Observable<StrictHttpResponse<Array<Weginspectie>>> {
 
     const rb = new RequestBuilder(this.rootUrl, FormRoadInspectionControllerService.GetAll1Path, 'get');
     if (params) {
-
-
     }
+
     return this.http.request(rb.build({
       responseType: 'json',
       accept: 'application/json'
@@ -334,7 +322,6 @@ export class FormRoadInspectionControllerService extends BaseService {
    * This method doesn't expect any request body.
    */
   getAll1(params?: {
-
   }): Observable<Array<Weginspectie>> {
 
     return this.getAll1$Response(params).pipe(

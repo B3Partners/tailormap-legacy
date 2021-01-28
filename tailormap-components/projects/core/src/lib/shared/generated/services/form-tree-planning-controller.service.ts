@@ -1,4 +1,5 @@
 /* tslint:disable */
+/* eslint-disable */
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { BaseService } from '../base-service';
@@ -35,15 +36,13 @@ export class FormTreePlanningControllerService extends BaseService {
    */
   get12$Response(params: {
     objectGuid: string;
-
   }): Observable<StrictHttpResponse<Boomplanning>> {
 
     const rb = new RequestBuilder(this.rootUrl, FormTreePlanningControllerService.Get12Path, 'get');
     if (params) {
-
       rb.path('objectGuid', params.objectGuid, {});
-
     }
+
     return this.http.request(rb.build({
       responseType: 'json',
       accept: 'application/json'
@@ -63,7 +62,6 @@ export class FormTreePlanningControllerService extends BaseService {
    */
   get12(params: {
     objectGuid: string;
-
   }): Observable<Boomplanning> {
 
     return this.get12$Response(params).pipe(
@@ -84,16 +82,15 @@ export class FormTreePlanningControllerService extends BaseService {
    */
   update5$Response(params: {
     objectGuid: string;
-      body: Boomplanning
+    body: Boomplanning
   }): Observable<StrictHttpResponse<Boomplanning>> {
 
     const rb = new RequestBuilder(this.rootUrl, FormTreePlanningControllerService.Update5Path, 'put');
     if (params) {
-
       rb.path('objectGuid', params.objectGuid, {});
-
       rb.body(params.body, 'application/json');
     }
+
     return this.http.request(rb.build({
       responseType: 'json',
       accept: 'application/json'
@@ -113,7 +110,7 @@ export class FormTreePlanningControllerService extends BaseService {
    */
   update5(params: {
     objectGuid: string;
-      body: Boomplanning
+    body: Boomplanning
   }): Observable<Boomplanning> {
 
     return this.update5$Response(params).pipe(
@@ -134,15 +131,13 @@ export class FormTreePlanningControllerService extends BaseService {
    */
   delete5$Response(params: {
     objectGuid: string;
-
   }): Observable<StrictHttpResponse<void>> {
 
     const rb = new RequestBuilder(this.rootUrl, FormTreePlanningControllerService.Delete5Path, 'delete');
     if (params) {
-
       rb.path('objectGuid', params.objectGuid, {});
-
     }
+
     return this.http.request(rb.build({
       responseType: 'text',
       accept: '*/*'
@@ -162,7 +157,6 @@ export class FormTreePlanningControllerService extends BaseService {
    */
   delete5(params: {
     objectGuid: string;
-
   }): Observable<void> {
 
     return this.delete5$Response(params).pipe(
@@ -197,17 +191,15 @@ export class FormTreePlanningControllerService extends BaseService {
      * Sorting criteria in the format: property(,asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
      */
     sort?: Array<string>;
-
   }): Observable<StrictHttpResponse<PageBoomplanning>> {
 
     const rb = new RequestBuilder(this.rootUrl, FormTreePlanningControllerService.GetAllPaged4Path, 'get');
     if (params) {
-
       rb.query('page', params.page, {});
       rb.query('size', params.size, {});
       rb.query('sort', params.sort, {});
-
     }
+
     return this.http.request(rb.build({
       responseType: 'json',
       accept: 'application/json'
@@ -241,7 +233,6 @@ export class FormTreePlanningControllerService extends BaseService {
      * Sorting criteria in the format: property(,asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
      */
     sort?: Array<string>;
-
   }): Observable<PageBoomplanning> {
 
     return this.getAllPaged4$Response(params).pipe(
@@ -261,15 +252,14 @@ export class FormTreePlanningControllerService extends BaseService {
    * This method sends `application/json` and handles request body of type `application/json`.
    */
   save5$Response(params: {
-      body: { 'wv'?: Boomplanning, 'parentId'?: string }
+    body: { 'wv'?: Boomplanning, 'parentId'?: string }
   }): Observable<StrictHttpResponse<Boomplanning>> {
 
     const rb = new RequestBuilder(this.rootUrl, FormTreePlanningControllerService.Save5Path, 'post');
     if (params) {
-
-
       rb.body(params.body, 'application/json');
     }
+
     return this.http.request(rb.build({
       responseType: 'json',
       accept: 'application/json'
@@ -288,7 +278,7 @@ export class FormTreePlanningControllerService extends BaseService {
    * This method sends `application/json` and handles request body of type `application/json`.
    */
   save5(params: {
-      body: { 'wv'?: Boomplanning, 'parentId'?: string }
+    body: { 'wv'?: Boomplanning, 'parentId'?: string }
   }): Observable<Boomplanning> {
 
     return this.save5$Response(params).pipe(
@@ -308,14 +298,12 @@ export class FormTreePlanningControllerService extends BaseService {
    * This method doesn't expect any request body.
    */
   getAll5$Response(params?: {
-
   }): Observable<StrictHttpResponse<Array<Boomplanning>>> {
 
     const rb = new RequestBuilder(this.rootUrl, FormTreePlanningControllerService.GetAll5Path, 'get');
     if (params) {
-
-
     }
+
     return this.http.request(rb.build({
       responseType: 'json',
       accept: 'application/json'
@@ -334,7 +322,6 @@ export class FormTreePlanningControllerService extends BaseService {
    * This method doesn't expect any request body.
    */
   getAll5(params?: {
-
   }): Observable<Array<Boomplanning>> {
 
     return this.getAll5$Response(params).pipe(

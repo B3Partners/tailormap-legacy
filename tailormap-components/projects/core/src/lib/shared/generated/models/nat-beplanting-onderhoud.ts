@@ -1,4 +1,5 @@
 /* tslint:disable */
+/* eslint-disable */
 import { Feature } from './feature';
 export interface NatBeplantingOnderhoud extends Feature {
   belang?: number;

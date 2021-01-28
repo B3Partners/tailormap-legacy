@@ -45,7 +45,25 @@ jobs:
           cd tailormap-components
           npm install
           npm run lint
-
+  stylelint:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      # Copy/paste unfortunately required, see https://github.community/t/reusing-sharing-inheriting-steps-between-jobs-declarations/16851/14
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 14
+      - uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+      - name: Lint
+        run: |
+          cd tailormap-components
+          npm install
+          npm run stylelint
   checkCircular:
     runs-on: ubuntu-20.04
     steps:

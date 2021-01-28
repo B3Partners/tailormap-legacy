@@ -1,4 +1,5 @@
 /* tslint:disable */
+/* eslint-disable */
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { BaseService } from '../base-service';
@@ -57,16 +58,14 @@ export class FeatureControllerService extends BaseService {
   get$Response(params: {
     featuretype: string;
     objectGuid: string;
-
   }): Observable<StrictHttpResponse<Boom | Boominspectie | Boomonderhoud | Boomplanning | CultBeplanting | CultBeplantingPlanning | Gras | GrasPlanning | Haag | HaagPlanning | MechLeiding | MechLeidingPlanning | NatBeplanting | NatBeplantingOnderhoud | Rioolput | RioolputInspectie | RioolputPlanning | VrijvLeiding | VrijvLeidingPlanning | Weginspectie | Wegvakonderdeel | Wegvakonderdeelplanning>> {
 
     const rb = new RequestBuilder(this.rootUrl, FeatureControllerService.GetPath, 'get');
     if (params) {
-
       rb.path('featuretype', params.featuretype, {});
       rb.path('objectGuid', params.objectGuid, {});
-
     }
+
     return this.http.request(rb.build({
       responseType: 'json',
       accept: 'application/json'
@@ -87,7 +86,6 @@ export class FeatureControllerService extends BaseService {
   get(params: {
     featuretype: string;
     objectGuid: string;
-
   }): Observable<Boom | Boominspectie | Boomonderhoud | Boomplanning | CultBeplanting | CultBeplantingPlanning | Gras | GrasPlanning | Haag | HaagPlanning | MechLeiding | MechLeidingPlanning | NatBeplanting | NatBeplantingOnderhoud | Rioolput | RioolputInspectie | RioolputPlanning | VrijvLeiding | VrijvLeidingPlanning | Weginspectie | Wegvakonderdeel | Wegvakonderdeelplanning> {
 
     return this.get$Response(params).pipe(
@@ -109,16 +107,14 @@ export class FeatureControllerService extends BaseService {
   delete$Response(params: {
     featuretype: string;
     objectGuid: string;
-
   }): Observable<StrictHttpResponse<void>> {
 
     const rb = new RequestBuilder(this.rootUrl, FeatureControllerService.DeletePath, 'delete');
     if (params) {
-
       rb.path('featuretype', params.featuretype, {});
       rb.path('objectGuid', params.objectGuid, {});
-
     }
+
     return this.http.request(rb.build({
       responseType: 'text',
       accept: '*/*'
@@ -139,7 +135,6 @@ export class FeatureControllerService extends BaseService {
   delete(params: {
     featuretype: string;
     objectGuid: string;
-
   }): Observable<void> {
 
     return this.delete$Response(params).pipe(
@@ -160,16 +155,15 @@ export class FeatureControllerService extends BaseService {
    */
   update$Response(params: {
     objectGuid: string;
-      body: Boom | Boominspectie | Boomonderhoud | Boomplanning | CultBeplanting | CultBeplantingPlanning | Gras | GrasPlanning | Haag | HaagPlanning | MechLeiding | MechLeidingPlanning | NatBeplanting | NatBeplantingOnderhoud | Rioolput | RioolputInspectie | RioolputPlanning | VrijvLeiding | VrijvLeidingPlanning | Weginspectie | Wegvakonderdeel | Wegvakonderdeelplanning
+    body: Boom | Boominspectie | Boomonderhoud | Boomplanning | CultBeplanting | CultBeplantingPlanning | Gras | GrasPlanning | Haag | HaagPlanning | MechLeiding | MechLeidingPlanning | NatBeplanting | NatBeplantingOnderhoud | Rioolput | RioolputInspectie | RioolputPlanning | VrijvLeiding | VrijvLeidingPlanning | Weginspectie | Wegvakonderdeel | Wegvakonderdeelplanning
   }): Observable<StrictHttpResponse<Boom | Boominspectie | Boomonderhoud | Boomplanning | CultBeplanting | CultBeplantingPlanning | Gras | GrasPlanning | Haag | HaagPlanning | MechLeiding | MechLeidingPlanning | NatBeplanting | NatBeplantingOnderhoud | Rioolput | RioolputInspectie | RioolputPlanning | VrijvLeiding | VrijvLeidingPlanning | Weginspectie | Wegvakonderdeel | Wegvakonderdeelplanning>> {
 
     const rb = new RequestBuilder(this.rootUrl, FeatureControllerService.UpdatePath, 'put');
     if (params) {
-
       rb.path('objectGuid', params.objectGuid, {});
-
       rb.body(params.body, 'application/json');
     }
+
     return this.http.request(rb.build({
       responseType: 'json',
       accept: 'application/json'
@@ -189,7 +183,7 @@ export class FeatureControllerService extends BaseService {
    */
   update(params: {
     objectGuid: string;
-      body: Boom | Boominspectie | Boomonderhoud | Boomplanning | CultBeplanting | CultBeplantingPlanning | Gras | GrasPlanning | Haag | HaagPlanning | MechLeiding | MechLeidingPlanning | NatBeplanting | NatBeplantingOnderhoud | Rioolput | RioolputInspectie | RioolputPlanning | VrijvLeiding | VrijvLeidingPlanning | Weginspectie | Wegvakonderdeel | Wegvakonderdeelplanning
+    body: Boom | Boominspectie | Boomonderhoud | Boomplanning | CultBeplanting | CultBeplantingPlanning | Gras | GrasPlanning | Haag | HaagPlanning | MechLeiding | MechLeidingPlanning | NatBeplanting | NatBeplantingOnderhoud | Rioolput | RioolputInspectie | RioolputPlanning | VrijvLeiding | VrijvLeidingPlanning | Weginspectie | Wegvakonderdeel | Wegvakonderdeelplanning
   }): Observable<Boom | Boominspectie | Boomonderhoud | Boomplanning | CultBeplanting | CultBeplantingPlanning | Gras | GrasPlanning | Haag | HaagPlanning | MechLeiding | MechLeidingPlanning | NatBeplanting | NatBeplantingOnderhoud | Rioolput | RioolputInspectie | RioolputPlanning | VrijvLeiding | VrijvLeidingPlanning | Weginspectie | Wegvakonderdeel | Wegvakonderdeelplanning> {
 
     return this.update$Response(params).pipe(
@@ -210,16 +204,15 @@ export class FeatureControllerService extends BaseService {
    */
   save$Response(params: {
     parentId?: string;
-      body: Boom | Boominspectie | Boomonderhoud | Boomplanning | CultBeplanting | CultBeplantingPlanning | Gras | GrasPlanning | Haag | HaagPlanning | MechLeiding | MechLeidingPlanning | NatBeplanting | NatBeplantingOnderhoud | Rioolput | RioolputInspectie | RioolputPlanning | VrijvLeiding | VrijvLeidingPlanning | Weginspectie | Wegvakonderdeel | Wegvakonderdeelplanning
+    body: Boom | Boominspectie | Boomonderhoud | Boomplanning | CultBeplanting | CultBeplantingPlanning | Gras | GrasPlanning | Haag | HaagPlanning | MechLeiding | MechLeidingPlanning | NatBeplanting | NatBeplantingOnderhoud | Rioolput | RioolputInspectie | RioolputPlanning | VrijvLeiding | VrijvLeidingPlanning | Weginspectie | Wegvakonderdeel | Wegvakonderdeelplanning
   }): Observable<StrictHttpResponse<Boom | Boominspectie | Boomonderhoud | Boomplanning | CultBeplanting | CultBeplantingPlanning | Gras | GrasPlanning | Haag | HaagPlanning | MechLeiding | MechLeidingPlanning | NatBeplanting | NatBeplantingOnderhoud | Rioolput | RioolputInspectie | RioolputPlanning | VrijvLeiding | VrijvLeidingPlanning | Weginspectie | Wegvakonderdeel | Wegvakonderdeelplanning>> {
 
     const rb = new RequestBuilder(this.rootUrl, FeatureControllerService.SavePath, 'post');
     if (params) {
-
       rb.query('parentId', params.parentId, {});
-
       rb.body(params.body, 'application/json');
     }
+
     return this.http.request(rb.build({
       responseType: 'json',
       accept: 'application/json'
@@ -239,7 +232,7 @@ export class FeatureControllerService extends BaseService {
    */
   save(params: {
     parentId?: string;
-      body: Boom | Boominspectie | Boomonderhoud | Boomplanning | CultBeplanting | CultBeplantingPlanning | Gras | GrasPlanning | Haag | HaagPlanning | MechLeiding | MechLeidingPlanning | NatBeplanting | NatBeplantingOnderhoud | Rioolput | RioolputInspectie | RioolputPlanning | VrijvLeiding | VrijvLeidingPlanning | Weginspectie | Wegvakonderdeel | Wegvakonderdeelplanning
+    body: Boom | Boominspectie | Boomonderhoud | Boomplanning | CultBeplanting | CultBeplantingPlanning | Gras | GrasPlanning | Haag | HaagPlanning | MechLeiding | MechLeidingPlanning | NatBeplanting | NatBeplantingOnderhoud | Rioolput | RioolputInspectie | RioolputPlanning | VrijvLeiding | VrijvLeidingPlanning | Weginspectie | Wegvakonderdeel | Wegvakonderdeelplanning
   }): Observable<Boom | Boominspectie | Boomonderhoud | Boomplanning | CultBeplanting | CultBeplantingPlanning | Gras | GrasPlanning | Haag | HaagPlanning | MechLeiding | MechLeidingPlanning | NatBeplanting | NatBeplantingOnderhoud | Rioolput | RioolputInspectie | RioolputPlanning | VrijvLeiding | VrijvLeidingPlanning | Weginspectie | Wegvakonderdeel | Wegvakonderdeelplanning> {
 
     return this.save$Response(params).pipe(
@@ -259,14 +252,12 @@ export class FeatureControllerService extends BaseService {
    * This method doesn't expect any request body.
    */
   getAll$Response(params?: {
-
   }): Observable<StrictHttpResponse<Array<Boom | Boominspectie | Boomonderhoud | Boomplanning | CultBeplanting | CultBeplantingPlanning | Gras | GrasPlanning | Haag | HaagPlanning | MechLeiding | MechLeidingPlanning | NatBeplanting | NatBeplantingOnderhoud | Rioolput | RioolputInspectie | RioolputPlanning | VrijvLeiding | VrijvLeidingPlanning | Weginspectie | Wegvakonderdeel | Wegvakonderdeelplanning>>> {
 
     const rb = new RequestBuilder(this.rootUrl, FeatureControllerService.GetAllPath, 'get');
     if (params) {
-
-
     }
+
     return this.http.request(rb.build({
       responseType: 'json',
       accept: 'application/json'
@@ -285,7 +276,6 @@ export class FeatureControllerService extends BaseService {
    * This method doesn't expect any request body.
    */
   getAll(params?: {
-
   }): Observable<Array<Boom | Boominspectie | Boomonderhoud | Boomplanning | CultBeplanting | CultBeplantingPlanning | Gras | GrasPlanning | Haag | HaagPlanning | MechLeiding | MechLeidingPlanning | NatBeplanting | NatBeplantingOnderhoud | Rioolput | RioolputInspectie | RioolputPlanning | VrijvLeiding | VrijvLeidingPlanning | Weginspectie | Wegvakonderdeel | Wegvakonderdeelplanning>> {
 
     return this.getAll$Response(params).pipe(
@@ -306,15 +296,13 @@ export class FeatureControllerService extends BaseService {
    */
   featuretypeInformation$Response(params: {
     featureTypes: Array<string>;
-
   }): Observable<StrictHttpResponse<Array<FeaturetypeMetadata>>> {
 
     const rb = new RequestBuilder(this.rootUrl, FeatureControllerService.FeaturetypeInformationPath, 'get');
     if (params) {
-
       rb.path('featureTypes', params.featureTypes, {});
-
     }
+
     return this.http.request(rb.build({
       responseType: 'json',
       accept: 'application/json'
@@ -334,7 +322,6 @@ export class FeatureControllerService extends BaseService {
    */
   featuretypeInformation(params: {
     featureTypes: Array<string>;
-
   }): Observable<Array<FeaturetypeMetadata>> {
 
     return this.featuretypeInformation$Response(params).pipe(
@@ -357,17 +344,15 @@ export class FeatureControllerService extends BaseService {
     'x': number;
     'y': number;
     scale: number;
-
   }): Observable<StrictHttpResponse<Array<Boom | Boominspectie | Boomonderhoud | Boomplanning | CultBeplanting | CultBeplantingPlanning | Gras | GrasPlanning | Haag | HaagPlanning | MechLeiding | MechLeidingPlanning | NatBeplanting | NatBeplantingOnderhoud | Rioolput | RioolputInspectie | RioolputPlanning | VrijvLeiding | VrijvLeidingPlanning | Weginspectie | Wegvakonderdeel | Wegvakonderdeelplanning>>> {
 
     const rb = new RequestBuilder(this.rootUrl, FeatureControllerService.OnPointPath, 'get');
     if (params) {
-
       rb.path('x', params['x'], {});
       rb.path('y', params['y'], {});
       rb.path('scale', params.scale, {});
-
     }
+
     return this.http.request(rb.build({
       responseType: 'json',
       accept: 'application/json'
@@ -389,7 +374,6 @@ export class FeatureControllerService extends BaseService {
     'x': number;
     'y': number;
     scale: number;
-
   }): Observable<Array<Boom | Boominspectie | Boomonderhoud | Boomplanning | CultBeplanting | CultBeplantingPlanning | Gras | GrasPlanning | Haag | HaagPlanning | MechLeiding | MechLeidingPlanning | NatBeplanting | NatBeplantingOnderhoud | Rioolput | RioolputInspectie | RioolputPlanning | VrijvLeiding | VrijvLeidingPlanning | Weginspectie | Wegvakonderdeel | Wegvakonderdeelplanning>> {
 
     return this.onPoint$Response(params).pipe(
@@ -413,18 +397,16 @@ export class FeatureControllerService extends BaseService {
     'x': number;
     'y': number;
     scale: number;
-
   }): Observable<StrictHttpResponse<Array<Boom | Boominspectie | Boomonderhoud | Boomplanning | CultBeplanting | CultBeplantingPlanning | Gras | GrasPlanning | Haag | HaagPlanning | MechLeiding | MechLeidingPlanning | NatBeplanting | NatBeplantingOnderhoud | Rioolput | RioolputInspectie | RioolputPlanning | VrijvLeiding | VrijvLeidingPlanning | Weginspectie | Wegvakonderdeel | Wegvakonderdeelplanning>>> {
 
     const rb = new RequestBuilder(this.rootUrl, FeatureControllerService.FeaturetypeOnPointPath, 'get');
     if (params) {
-
       rb.path('featureTypes', params.featureTypes, {});
       rb.path('x', params['x'], {});
       rb.path('y', params['y'], {});
       rb.path('scale', params.scale, {});
-
     }
+
     return this.http.request(rb.build({
       responseType: 'json',
       accept: 'application/json'
@@ -447,7 +429,6 @@ export class FeatureControllerService extends BaseService {
     'x': number;
     'y': number;
     scale: number;
-
   }): Observable<Array<Boom | Boominspectie | Boomonderhoud | Boomplanning | CultBeplanting | CultBeplantingPlanning | Gras | GrasPlanning | Haag | HaagPlanning | MechLeiding | MechLeidingPlanning | NatBeplanting | NatBeplantingOnderhoud | Rioolput | RioolputInspectie | RioolputPlanning | VrijvLeiding | VrijvLeidingPlanning | Weginspectie | Wegvakonderdeel | Wegvakonderdeelplanning>> {
 
     return this.featuretypeOnPoint$Response(params).pipe(

@@ -1,4 +1,5 @@
 /* tslint:disable */
+/* eslint-disable */
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { BaseService } from '../base-service';
@@ -35,15 +36,13 @@ export class FormRoadsectionPartControllerService extends BaseService {
    */
   get8$Response(params: {
     objectGuid: string;
-
   }): Observable<StrictHttpResponse<Wegvakonderdeel>> {
 
     const rb = new RequestBuilder(this.rootUrl, FormRoadsectionPartControllerService.Get8Path, 'get');
     if (params) {
-
       rb.path('objectGuid', params.objectGuid, {});
-
     }
+
     return this.http.request(rb.build({
       responseType: 'json',
       accept: 'application/json'
@@ -63,7 +62,6 @@ export class FormRoadsectionPartControllerService extends BaseService {
    */
   get8(params: {
     objectGuid: string;
-
   }): Observable<Wegvakonderdeel> {
 
     return this.get8$Response(params).pipe(
@@ -84,16 +82,15 @@ export class FormRoadsectionPartControllerService extends BaseService {
    */
   update2$Response(params: {
     objectGuid: string;
-      body: Wegvakonderdeel
+    body: Wegvakonderdeel
   }): Observable<StrictHttpResponse<Wegvakonderdeel>> {
 
     const rb = new RequestBuilder(this.rootUrl, FormRoadsectionPartControllerService.Update2Path, 'put');
     if (params) {
-
       rb.path('objectGuid', params.objectGuid, {});
-
       rb.body(params.body, 'application/json');
     }
+
     return this.http.request(rb.build({
       responseType: 'json',
       accept: 'application/json'
@@ -113,7 +110,7 @@ export class FormRoadsectionPartControllerService extends BaseService {
    */
   update2(params: {
     objectGuid: string;
-      body: Wegvakonderdeel
+    body: Wegvakonderdeel
   }): Observable<Wegvakonderdeel> {
 
     return this.update2$Response(params).pipe(
@@ -134,15 +131,13 @@ export class FormRoadsectionPartControllerService extends BaseService {
    */
   delete2$Response(params: {
     objectGuid: string;
-
   }): Observable<StrictHttpResponse<void>> {
 
     const rb = new RequestBuilder(this.rootUrl, FormRoadsectionPartControllerService.Delete2Path, 'delete');
     if (params) {
-
       rb.path('objectGuid', params.objectGuid, {});
-
     }
+
     return this.http.request(rb.build({
       responseType: 'text',
       accept: '*/*'
@@ -162,7 +157,6 @@ export class FormRoadsectionPartControllerService extends BaseService {
    */
   delete2(params: {
     objectGuid: string;
-
   }): Observable<void> {
 
     return this.delete2$Response(params).pipe(
@@ -182,15 +176,14 @@ export class FormRoadsectionPartControllerService extends BaseService {
    * This method sends `application/json` and handles request body of type `application/json`.
    */
   save2$Response(params: {
-      body: { 'wv'?: Wegvakonderdeel, 'parentId'?: string }
+    body: { 'wv'?: Wegvakonderdeel, 'parentId'?: string }
   }): Observable<StrictHttpResponse<Wegvakonderdeel>> {
 
     const rb = new RequestBuilder(this.rootUrl, FormRoadsectionPartControllerService.Save2Path, 'post');
     if (params) {
-
-
       rb.body(params.body, 'application/json');
     }
+
     return this.http.request(rb.build({
       responseType: 'json',
       accept: 'application/json'
@@ -209,7 +202,7 @@ export class FormRoadsectionPartControllerService extends BaseService {
    * This method sends `application/json` and handles request body of type `application/json`.
    */
   save2(params: {
-      body: { 'wv'?: Wegvakonderdeel, 'parentId'?: string }
+    body: { 'wv'?: Wegvakonderdeel, 'parentId'?: string }
   }): Observable<Wegvakonderdeel> {
 
     return this.save2$Response(params).pipe(
@@ -229,14 +222,12 @@ export class FormRoadsectionPartControllerService extends BaseService {
    * This method doesn't expect any request body.
    */
   getAll2$Response(params?: {
-
   }): Observable<StrictHttpResponse<Array<Wegvakonderdeel>>> {
 
     const rb = new RequestBuilder(this.rootUrl, FormRoadsectionPartControllerService.GetAll2Path, 'get');
     if (params) {
-
-
     }
+
     return this.http.request(rb.build({
       responseType: 'json',
       accept: 'application/json'
@@ -255,7 +246,6 @@ export class FormRoadsectionPartControllerService extends BaseService {
    * This method doesn't expect any request body.
    */
   getAll2(params?: {
-
   }): Observable<Array<Wegvakonderdeel>> {
 
     return this.getAll2$Response(params).pipe(
@@ -278,17 +268,15 @@ export class FormRoadsectionPartControllerService extends BaseService {
     'x': number;
     'y': number;
     scale: number;
-
   }): Observable<StrictHttpResponse<Array<Wegvakonderdeel>>> {
 
     const rb = new RequestBuilder(this.rootUrl, FormRoadsectionPartControllerService.OnPoint7Path, 'get');
     if (params) {
-
       rb.path('x', params['x'], {});
       rb.path('y', params['y'], {});
       rb.path('scale', params.scale, {});
-
     }
+
     return this.http.request(rb.build({
       responseType: 'json',
       accept: 'application/json'
@@ -310,7 +298,6 @@ export class FormRoadsectionPartControllerService extends BaseService {
     'x': number;
     'y': number;
     scale: number;
-
   }): Observable<Array<Wegvakonderdeel>> {
 
     return this.onPoint7$Response(params).pipe(
@@ -345,17 +332,15 @@ export class FormRoadsectionPartControllerService extends BaseService {
      * Sorting criteria in the format: property(,asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
      */
     sort?: Array<string>;
-
   }): Observable<StrictHttpResponse<PageWegvakonderdeel>> {
 
     const rb = new RequestBuilder(this.rootUrl, FormRoadsectionPartControllerService.GetAllPaged1Path, 'get');
     if (params) {
-
       rb.query('page', params.page, {});
       rb.query('size', params.size, {});
       rb.query('sort', params.sort, {});
-
     }
+
     return this.http.request(rb.build({
       responseType: 'json',
       accept: 'application/json'
@@ -389,7 +374,6 @@ export class FormRoadsectionPartControllerService extends BaseService {
      * Sorting criteria in the format: property(,asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
      */
     sort?: Array<string>;
-
   }): Observable<PageWegvakonderdeel> {
 
     return this.getAllPaged1$Response(params).pipe(

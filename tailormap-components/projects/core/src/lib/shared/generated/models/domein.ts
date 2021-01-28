@@ -1,4 +1,5 @@
 /* tslint:disable */
+/* eslint-disable */
 import { Domeinwaarde } from './domeinwaarde';
 export interface Domein {
   id?: number;
