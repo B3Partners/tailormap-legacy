@@ -1,8 +1,4 @@
-import {
-  Component,
-  NgZone,
-  OnInit,
-} from '@angular/core';
+import { Component, NgZone, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { LayerUtils } from '../../../shared/layer-utils/layer-utils.service';
 import { TailorMapService } from '../../../../../../bridge/src/tailor-map.service';
@@ -11,24 +7,31 @@ import { MatSelectChange } from '@angular/material/select';
 import { FormConfiguration } from '../../../feature-form/form/form-models';
 import { WorkflowActionManagerService } from '../../../workflow/workflow-controller/workflow-action-manager.service';
 import { WORKFLOW_ACTION } from '../../../workflow/workflow-controller/workflow-models';
+import { Store } from '@ngrx/store';
+import { FormState } from '../../../feature-form/state/form.state';
+import { selectFormConfigForFeatureType, selectFormConfigs, selectFormFeaturetypes } from '../../../feature-form/state/form.selectors';
+import { takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'tailormap-add-feature-menu',
   templateUrl: './add-feature-menu.component.html',
   styleUrls: ['./add-feature-menu.component.css'],
 })
-export class AddFeatureMenuComponent implements OnInit {
+export class AddFeatureMenuComponent implements OnInit, OnDestroy {
 
   public layer = '-1';
   public layers: string[];
 
   private selectedConfig: FormConfiguration;
+  private destroyed = new Subject();
 
   constructor(
     public dialogRef: MatDialogRef<AddFeatureMenuComponent>,
     public tailorMapService: TailorMapService,
     private workflowActionManagerService: WorkflowActionManagerService,
     private ngZone: NgZone,
+    private store$: Store<FormState>,
     public formConfigRepo: FormconfigRepositoryService,
   ) {
     this.tailorMapService.layerVisibilityChanged$.subscribe(value => {
@@ -40,30 +43,43 @@ export class AddFeatureMenuComponent implements OnInit {
   }
 
   public init(): void {
-    this.formConfigRepo.formConfigs$.subscribe(formConfigs => {
-      this.calculateVisibleLayers();
-    });
+    this.store$.select(selectFormConfigs)
+      .pipe(takeUntil(this.destroyed))
+      .subscribe(formConfigs => {
+        this.calculateVisibleLayers();
+      });
+  }
+
+  public ngOnDestroy(): void {
+    this.destroyed.next();
+    this.destroyed.complete();
   }
 
   public layerSelected(event: MatSelectChange): void {
     const layer: string = event.value;
-    this.selectedConfig = this.formConfigRepo.getFormConfig(layer);
+    this.store$.select(selectFormConfigForFeatureType, layer)
+      .pipe(takeUntil(this.destroyed))
+      .subscribe(formConfig => this.selectedConfig = formConfig);
   }
 
   public calculateVisibleLayers(): void {
     this.layers = [];
-    const allowFts = this.formConfigRepo.getFeatureTypes();
 
-    const appLayers = this.tailorMapService.getViewerController().getVisibleLayers() as number[];
-    appLayers.forEach(appLayerId => {
-      const appLayer = this.tailorMapService.getViewerController().getAppLayerById(appLayerId);
-      let layerName: string = appLayer.layerName;
-      layerName = LayerUtils.sanitizeLayername(layerName);
+    this.store$.select(selectFormFeaturetypes)
+      .pipe(takeUntil(this.destroyed))
+      .subscribe(featureTypes => {
 
-      if (allowFts.findIndex(l => l.toLowerCase() === layerName) !== -1) {
-        this.layers.push(layerName);
-      }
-    });
+        const appLayers = this.tailorMapService.getViewerController().getVisibleLayers() as number[];
+        appLayers.forEach(appLayerId => {
+          const appLayer = this.tailorMapService.getViewerController().getAppLayerById(appLayerId);
+          let layerName: string = appLayer.layerName;
+          layerName = LayerUtils.sanitizeLayername(layerName);
+
+          if (featureTypes.findIndex(l => l.toLowerCase() === layerName) !== -1) {
+            this.layers.push(layerName);
+          }
+        });
+      });
   }
 
   public ngOnInit(): void {

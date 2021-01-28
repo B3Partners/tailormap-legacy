@@ -73,7 +73,8 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
                                               this.valueService,
                                               this.attributelistService,
                                               this.tailorMapService,
-                                              this.formconfigRepoService);
+                                              this.formconfigRepoService,
+                                              this.store$);
   public checkedRows = [];
   public treeData: AttributelistNode[] = [];
 

@@ -1,4 +1,5 @@
 import { Feature } from '../../shared/generated';
+import { FormConfiguration, FormConfigurations } from '../form/form-models';
 
 
 export const formStateKey = 'form';
@@ -10,6 +11,7 @@ export interface FormState {
   alreadyDirty: boolean;
   formOpen: boolean;
   treeOpen: boolean;
+  formConfigs: Map<string, FormConfiguration>;
 }
 
 export const initialFormState: FormState = {
@@ -19,4 +21,5 @@ export const initialFormState: FormState = {
   formOpen: false,
   alreadyDirty: false,
   treeOpen: false,
+  formConfigs: null,
 }

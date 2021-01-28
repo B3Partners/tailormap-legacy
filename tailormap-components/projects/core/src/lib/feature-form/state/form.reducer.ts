@@ -2,6 +2,7 @@ import { Action, createReducer, on } from '@ngrx/store';
 import { FormState, initialFormState } from './form.state';
 import * as FormActions from './form.actions';
 import { Feature } from '../../shared/generated';
+import { FormConfiguration, FormConfigurations } from '../form/form-models';
 
 const onCloseFeatureForm  = (state: FormState): FormState => ({
   ...state,
@@ -31,8 +32,14 @@ const onSetTreeOpen = (state: FormState, payload : { treeOpen: boolean }): FormS
   treeOpen: payload.treeOpen,
 });
 
+const onSetFormConfigs = (state: FormState, payload : { formConfigs: Map<string, FormConfiguration> }): FormState => ({
+  ...state,
+  formConfigs: payload.formConfigs,
+});
+
 const formReducerImpl = createReducer(
   initialFormState,
+  on(FormActions.setFormConfigs, onSetFormConfigs),
   on(FormActions.setTreeOpen, onSetTreeOpen),
   on(FormActions.setFeature, onSetFeature),
   on(FormActions.setOpenFeatureForm, onSetOpenFeatureForm),

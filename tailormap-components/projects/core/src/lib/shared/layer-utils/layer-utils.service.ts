@@ -10,7 +10,8 @@ export class LayerUtils {
 
   private static prefixes = ['gb'];
 
-  constructor(private tailorMap: TailorMapService) {
+  constructor(
+    private tailorMap: TailorMapService) {
   }
 
   public static sanitizeLayername(layer: string | AppLayer): string {
@@ -33,10 +34,10 @@ export class LayerUtils {
     return FormHelpers.snakecaseToCamel(layername).toLowerCase();
   }
 
-  public getFeatureTypesAllowed(allFeatureTypes : string[]): string[] {
+  public getFeatureTypesAllowed(allFeatureTypes: string[], ignoreSelected : boolean = false): string[] {
     let allowedFeaturesTypes = [];
     const sl = this.tailorMap.selectedLayer;
-    if (sl) {
+    if (sl && !ignoreSelected) {
       allowedFeaturesTypes.push( this.getLayerName(sl));
     } else {
       allowedFeaturesTypes = allFeatureTypes;

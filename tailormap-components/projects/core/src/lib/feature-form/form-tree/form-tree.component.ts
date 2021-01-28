@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { FlatTreeControl } from '@angular/cdk/tree';
 import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
 import { FlatNode } from './form-tree-models';
@@ -8,21 +8,24 @@ import { FormconfigRepositoryService } from '../../shared/formconfig-repository/
 import { Store } from '@ngrx/store';
 import { FormState } from '../state/form.state';
 import * as FormActions from '../state/form.actions';
-import { selectTreeOpen } from '../state/form.selectors';
-import { Observable } from 'rxjs';
+import { selectFormConfigs, selectTreeOpen } from '../state/form.selectors';
+import { Observable, Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'tailormap-form-tree',
   templateUrl: './form-tree.component.html',
   styleUrls: ['./form-tree.component.css'],
 })
-export class FormTreeComponent implements OnInit, OnChanges {
+export class FormTreeComponent implements OnInit, OnChanges, OnDestroy {
   public isOpen$: Observable<boolean>;
 
   constructor(
     private store$: Store<FormState>,
     private formConfigRepo: FormconfigRepositoryService) {
   }
+
+  private destroyed = new Subject();
 
   @Input()
   public features: Feature[];
@@ -50,9 +53,17 @@ export class FormTreeComponent implements OnInit, OnChanges {
     this.isOpen$ = this.store$.select(selectTreeOpen);
   }
 
+  public ngOnDestroy() {
+    this.destroyed.next();
+    this.destroyed.complete();
+  }
+
   public ngOnChanges(changes: SimpleChanges): void {
-    this.dataSource.data = FormTreeHelpers.convertFeatureToNode(this.features, this.formConfigRepo, this.feature.objectGuid);
-    this.treeControl.expand(this.treeControl.dataNodes[0]);
+    this.store$.select(selectFormConfigs).pipe(takeUntil(this.destroyed)).subscribe(formConfigs => {
+      this.dataSource.data = FormTreeHelpers.convertFeatureToNode(this.features, this.formConfigRepo,
+                                                                  this.feature.objectGuid, formConfigs);
+      this.treeControl.expand(this.treeControl.dataNodes[0]);
+    });
   }
 
   public setNodeSelected(node: FlatNode) {

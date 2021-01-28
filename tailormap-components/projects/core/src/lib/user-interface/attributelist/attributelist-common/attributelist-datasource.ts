@@ -11,7 +11,7 @@ import * as wellknown from 'wellknown';
 import {
   forkJoin,
   Observable,
-  of,
+  of, Subject,
 } from 'rxjs';
 import { MatSort } from '@angular/material/sort';
 import { MatPaginator } from '@angular/material/paginator';
@@ -42,12 +42,15 @@ import { LayerUtils } from '../../../shared/layer-utils/layer-utils.service';
 import {
   FormConfiguration,
 } from '../../../feature-form/form/form-models';
-import { map, take } from 'rxjs/operators';
+import { map, take, takeUntil } from 'rxjs/operators';
 import { AttributelistNode, SelectedTreeData } from '../attributelist-tree/attributelist-tree-models';
 import { TailorMapService } from '../../../../../../bridge/src/tailor-map.service';
 import { AttributelistService } from '../attributelist.service';
 import { ValueService } from '../../../shared/value-service/value.service';
 import { ValueParameters } from '../../../shared/value-service/value-models';
+import { selectFormConfigForFeatureType } from '../../../feature-form/state/form.selectors';
+import { Store } from '@ngrx/store';
+import { FormState } from '../../../feature-form/state/form.state';
 
 export class AttributeDataSource extends DataSource<any> {
 
@@ -83,12 +86,14 @@ export class AttributeDataSource extends DataSource<any> {
 
   private checkedIds: number[] = [];
 
+  private destroyed = new Subject();
   constructor(private layerService: LayerService,
               private attributeService: AttributeService,
               private valueService: ValueService,
               private attributelistService: AttributelistService,
               private tailorMapService: TailorMapService,
-              private formconfigRepoService: FormconfigRepositoryService) {
+              private formconfigRepoService: FormconfigRepositoryService,
+              private store$: Store<FormState>) {
     super();
   }
 
@@ -102,6 +107,8 @@ export class AttributeDataSource extends DataSource<any> {
   }
 
   public disconnect(): void {
+    this.destroyed.next();
+    this.destroyed.complete();
   }
 
   public checkAll(): void {
@@ -507,38 +514,42 @@ export class AttributeDataSource extends DataSource<any> {
                   const appLayer = this.tailorMapService.getApplayerById(this.params.layerId);
                   this.mainFeatureClazzName = LayerUtils.sanitizeLayername(appLayer);
                 }
-                const formConfig = this.formconfigRepoService.getFormConfig(passportName);
 
-                data.features.forEach(d => {
-                  // console.log(d);
-                  // console.log(d.related_featuretypes);
+                this.store$.select(selectFormConfigForFeatureType, passportName)
+                  .pipe(takeUntil(this.destroyed))
+                  .subscribe(formConfig => {
+                    data.features.forEach(d => {
+                      // console.log(d);
+                      // console.log(d.related_featuretypes);
 
-                  // Main data?
-                  if (!this.params.hasDetail()) {
-                    // Add property _checked
-                    if (this.checkedIds.find ( id => id === d.object_guid)) {
-                      d._checked = true;
-                    } else {
-                      d._checked = false;
-                    }
-                    // Add property related_featuretypes if not exists.
-                    if (!d.hasOwnProperty('related_featuretypes')) {
-                      d.related_featuretypes = [];
-                    }
-                    // Add property _details and set initial state.
-                    if (d.related_featuretypes.length > 0) {
-                      d._details = DetailsState.YesCollapsed;
-                      d.related_featuretypes.forEach((rel) => {
-                        this.relatedFeatures.set(rel.id, rel);
-                      });
-                    } else {
-                      d._details = DetailsState.No;
-                    }
-                  }
-                  d = this.processRow(d, formConfig);
+                      // Main data?
+                      if (!this.params.hasDetail()) {
+                        // Add property _checked
+                        if (this.checkedIds.find(id => id === d.object_guid)) {
+                          d._checked = true;
+                        } else {
+                          d._checked = false;
+                        }
+                        // Add property related_featuretypes if not exists.
+                        if (!d.hasOwnProperty('related_featuretypes')) {
+                          d.related_featuretypes = [];
+                        }
+                        // Add property _details and set initial state.
+                        if (d.related_featuretypes.length > 0) {
+                          d._details = DetailsState.YesCollapsed;
+                          d.related_featuretypes.forEach((rel) => {
+                            this.relatedFeatures.set(rel.id, rel);
+                          });
+                        } else {
+                          d._details = DetailsState.No;
+                        }
+                      }
+                      d = this.processRow(d, formConfig);
 
-                  this.rows.push(d);
-                });
+                      this.rows.push(d);
+                    });
+
+                  });
               }
             },
             () => {},

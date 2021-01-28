@@ -4,10 +4,12 @@ import { GeoJSONGeometry } from 'wellknown';
 import { Feature } from '../../shared/generated';
 import { MapClickedEvent } from '../../shared/models/event-models';
 import { OLFeature, VectorLayer } from '../../../../../bridge/typings';
-import { take, takeUntil } from 'rxjs/operators';
+import { map, take, takeUntil } from 'rxjs/operators';
 import { WorkflowHelper } from './workflow.helper';
-import { setOpenFeatureForm } from '../../feature-form/state/form.actions';
+import * as FormActions from '../../feature-form/state/form.actions';
 import { selectFormClosed } from '../../feature-form/state/form.state-helpers';
+import { selectFormConfigForFeatureType, selectFormConfigs, selectFormFeaturetypes } from '../../feature-form/state/form.selectors';
+
 
 export class StandardFormWorkflow extends Workflow {
 
@@ -22,8 +24,17 @@ export class StandardFormWorkflow extends Workflow {
     super.afterInit();
     this.featureType = this.event.featureType;
     if (this.event.geometryType || this.featureType) {
-      const geomtype = this.event.geometryType || this.formConfigRepo.getFormConfig(this.featureType).featuretypeMetadata.geometryType;
-      this.vectorLayer.drawFeature(this.convertGeomType(geomtype));
+      if (this.event.geometryType) {
+        const geomtype = this.event.geometryType;
+        this.vectorLayer.drawFeature(this.convertGeomType(geomtype));
+      } else {
+        this.store$.select(selectFormConfigForFeatureType, this.featureType)
+          .pipe(takeUntil(this.destroyed))
+          .subscribe(formConfig => {
+            const geomtype = formConfig.featuretypeMetadata.geometryType;
+            this.vectorLayer.drawFeature(this.convertGeomType(geomtype));
+        });
+      }
       this.isDrawing = true;
     }
   }
@@ -69,7 +80,7 @@ export class StandardFormWorkflow extends Workflow {
   }
 
   public openDialog(formFeatures ?: Feature[]): void {
-    this.store$.dispatch(setOpenFeatureForm({features: formFeatures}))
+    this.store$.dispatch(FormActions.setOpenFeatureForm({features: formFeatures}))
     this.store$.pipe(selectFormClosed)
       .pipe(take(1))
       .subscribe(( close) => {
@@ -83,26 +94,30 @@ export class StandardFormWorkflow extends Workflow {
       const x = data.x;
       const y = data.y;
       const scale = data.scale;
-      const featureTypes: string[] = this.layerUtils.getFeatureTypesAllowed(this.formConfigRepo.getFeatureTypes());
-      this.service.featuretypeOnPoint({featureTypes, x, y, scale}).subscribe(
-        (features: Feature[]) => {
-          if (features && features.length > 0) {
-            const feat = features[0];
 
-            const geom = this.featureInitializerService.retrieveGeometry(feat);
-            if (geom) {
-              this.highlightLayer.readGeoJSON(geom);
-            }
+      this.store$.select(selectFormFeaturetypes)
+        .pipe(takeUntil(this.destroyed))
+        .subscribe(allFeatureTypes => {
+          const featureTypes: string[] = this.layerUtils.getFeatureTypesAllowed(allFeatureTypes);
+          this.service.featuretypeOnPoint({featureTypes, x, y, scale}).subscribe(
+            (features: Feature[]) => {
+              if (features && features.length > 0) {
+                const feat = features[0];
 
-            this.openDialog([feat]);
-          }
-        },
-        error => {
-          this.snackBar.open('Fout: Feature niet kunnen ophalen: ' + error, '', {
-            duration: 5000,
-          });
-        },
-      );
+                const geom = this.featureInitializerService.retrieveGeometry(feat);
+                if (geom) {
+                  this.highlightLayer.readGeoJSON(geom);
+                }
+                this.openDialog([feat]);
+              }
+            },
+            error => {
+              this.snackBar.open('Fout: Feature niet kunnen ophalen: ' + error, '', {
+                duration: 5000,
+              });
+            },
+          );
+        });
     }
   }
 

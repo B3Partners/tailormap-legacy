@@ -21,6 +21,9 @@ import { FormCopyService } from './form-copy.service';
 import { ConfirmDialogService } from '../../shared/confirm-dialog/confirm-dialog.service';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
+import { selectFormConfigForFeatureType, selectFormConfigs } from '../state/form.selectors';
+import { Store } from '@ngrx/store';
+import { FormState } from '../state/form.state';
 
 @Component({
   selector: 'tailormap-form-copy',
@@ -50,6 +53,7 @@ export class FormCopyComponent implements OnInit, OnDestroy {
               private _snackBar: MatSnackBar,
               private featureInitializer: FeatureInitializerService,
               private formCopyService: FormCopyService,
+              private store$: Store<FormState>,
               private confirmDialogService: ConfirmDialogService) {
   }
 
@@ -59,32 +63,35 @@ export class FormCopyComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
-    let fieldsToCopy = new Map<string, string>();
-    this.originalFeature = this.data.originalFeature;
-    if (this.formCopyService.parentFeature != null) {
-      if (this.formCopyService.parentFeature.objecttype === this.data.originalFeature.objecttype) {
-        fieldsToCopy = this.formCopyService.featuresToCopy.get(this.formCopyService.parentFeature.objectGuid);
-      }
-    }
-    this.formCopyService.parentFeature = this.data.originalFeature;
-    this.formConfig = this.configService.getFormConfig(this.originalFeature.clazz);
-    this.formCopyService.featuresToCopy.set(this.originalFeature['objectGuid'], fieldsToCopy);
-    if (this.originalFeature.children) {
-      for (const child of this.originalFeature.children) {
-        const config = this.configService.getFormConfig(child.clazz);
-        if (config) {
-          // tslint:disable-next-line:no-shadowed-variable
-          let fieldsToCopy = new Map<string, string>();
-          this.formCopyService.featuresToCopy.forEach((oldfieldsToCopy, key) => {
-            if (oldfieldsToCopy.get('objecttype') === child.objecttype) {
-                fieldsToCopy = oldfieldsToCopy;
-            }
-          });
-          fieldsToCopy.set('objecttype', child.objecttype);
-          this.formCopyService.featuresToCopy.set(child.objectGuid, fieldsToCopy);
+    this.store$.select(selectFormConfigs)
+      .pipe(takeUntil(this.destroyed)).subscribe(formConfigs => {
+      let fieldsToCopy = new Map<string, string>();
+      this.originalFeature = this.data.originalFeature;
+      if (this.formCopyService.parentFeature != null) {
+        if (this.formCopyService.parentFeature.objecttype === this.data.originalFeature.objecttype) {
+          fieldsToCopy = this.formCopyService.featuresToCopy.get(this.formCopyService.parentFeature.objectGuid);
         }
       }
-    }
+      this.formCopyService.parentFeature = this.data.originalFeature;
+      this.formConfig = formConfigs.get(this.originalFeature.clazz);
+      this.formCopyService.featuresToCopy.set(this.originalFeature['objectGuid'], fieldsToCopy);
+      if (this.originalFeature.children) {
+        for (const child of this.originalFeature.children) {
+          const config = formConfigs.get(child.clazz);
+          if (config) {
+            // tslint:disable-next-line:no-shadowed-variable
+            let fieldsToCopy = new Map<string, string>();
+            this.formCopyService.featuresToCopy.forEach((oldfieldsToCopy, key) => {
+              if (oldfieldsToCopy.get('objecttype') === child.objecttype) {
+                fieldsToCopy = oldfieldsToCopy;
+              }
+            });
+            fieldsToCopy.set('objecttype', child.objecttype);
+            this.formCopyService.featuresToCopy.set(child.objectGuid, fieldsToCopy);
+          }
+        }
+      }
+    });
   }
 
   public cancel() {
@@ -249,8 +256,12 @@ export class FormCopyComponent implements OnInit, OnDestroy {
 
   public openForm(feature) {
     if (feature) {
-        this.originalFeature = feature;
-        this.formConfig = this.configService.getFormConfig(this.originalFeature.clazz);
+      this.originalFeature = feature;
+      this.store$.select(selectFormConfigForFeatureType, this.originalFeature.clazz)
+        .pipe(takeUntil(this.destroyed))
+        .subscribe(formConfig => {
+          this.formConfig = formConfig;
+        });
     }
   }
 

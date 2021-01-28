@@ -2,7 +2,7 @@ import { Component, NgZone, OnChanges, OnDestroy, OnInit, SimpleChanges } from '
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ConfirmDialogService } from '../../shared/confirm-dialog/confirm-dialog.service';
 import { filter, take, takeUntil } from 'rxjs/operators';
-import { combineLatest, Observable, Subject } from 'rxjs';
+import { combineLatest, Observable, pipe, Subject } from 'rxjs';
 import { FormConfiguration } from './form-models';
 import { Feature } from '../../shared/generated';
 import { FormActionsService } from '../form-actions/form-actions.service';
@@ -14,9 +14,12 @@ import { FormState } from '../state/form.state';
 import { Store } from '@ngrx/store';
 import * as FormActions from '../state/form.actions';
 import {
-  selectCloseAfterSaveFeatureForm, selectCurrentFeature, selectFeatureFormOpen, selectFormAlreadyDirty, selectOpenFeatureForm,
+  selectCloseAfterSaveFeatureForm, selectCurrentFeature, selectFeatureFormOpen, selectFormAlreadyDirty, selectFormConfigForFeatureType,
+  selectOpenFeatureForm,
   selectTreeOpen,
 } from '../state/form.selectors';
+import { LayerUtils } from '../../shared/layer-utils/layer-utils.service';
+import { FormHelpers } from './form-helpers';
 
 @Component({
   selector: 'tailormap-form',
@@ -82,12 +85,17 @@ export class FormComponent implements OnDestroy, OnChanges, OnInit {
 
   private initForm() {
     this.formDirty = false;
-    this.formConfig = this.formConfigRepo.getFormConfig(this.feature.clazz);
-    this.metadataService.getFeatureTypeMetadata$(this.feature.clazz);
-    const configs = this.formConfigRepo.getAllFormConfigs();
-    configs.forEach((config, key) => {
-      this.formsForNew.push(config);
+    this.store$.select(selectFormConfigForFeatureType, this.feature.clazz)
+      .pipe(takeUntil(this.destroyed))
+      .subscribe(formConfig => {
+      this.formConfig = formConfig;
+      this.metadataService.getFeatureTypeMetadata$(this.feature.clazz);
+      const configs = this.formConfigRepo.getAllFormConfigs();
+      configs.forEach((config, key) => {
+        this.formsForNew.push(config);
+      });
     });
+
   }
 
   public ngOnChanges(changes: SimpleChanges): void {
@@ -106,12 +114,16 @@ export class FormComponent implements OnDestroy, OnChanges, OnInit {
   }
 
   public newItem(evt) {
-    this.actions.newItem$(evt, this.features).pipe(takeUntil(this.destroyed)).subscribe(features => {
-        this.features = features.features;
-        this.feature = features.feature;
-        this.initForm();
+    const type = LayerUtils.sanitizeLayername(evt.srcElement.id);
+    this.store$.select(selectFormConfigForFeatureType, type)
+      .pipe(takeUntil(this.destroyed))
+      .subscribe(formConfig => {
+        this.actions.newItem$(this.features, type, formConfig).pipe(takeUntil(this.destroyed)).subscribe(features => {
+          this.features = features.features;
+          this.feature = features.feature;
+          this.initForm();
+        });
       });
-
   }
 
   public remove() {

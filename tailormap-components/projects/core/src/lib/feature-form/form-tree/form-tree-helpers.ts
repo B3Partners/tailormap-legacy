@@ -5,6 +5,7 @@ import {
 import { Feature } from '../../shared/generated';
 import { FormconfigRepositoryService } from '../../shared/formconfig-repository/formconfig-repository.service';
 import { FormHelpers } from '../form/form-helpers';
+import { FormConfiguration } from '../form/form-models';
 
 export class FormTreeHelpers {
 
@@ -21,7 +22,7 @@ export class FormTreeHelpers {
 
 
   public static convertFeatureToNode(features: Feature[], formConfigRepo: FormconfigRepositoryService,
-                                     selectedGuid: string): FeatureNode[] {
+                                     selectedGuid: string, formConfigs : Map<string, FormConfiguration>): FeatureNode[] {
     const nodes: FeatureNode[] = [];
     features.forEach(feature => {
       const children: FeatureNode[] = [];
@@ -29,7 +30,7 @@ export class FormTreeHelpers {
         const fts = {};
         feature.children.forEach((child: Feature) => {
           const featureType = child.clazz;
-          if (formConfigRepo.getFormConfig(featureType)) {
+          if (formConfigs.get(featureType)) {
             if (!fts.hasOwnProperty(featureType)) {
               fts[featureType] = {
                 name: FormHelpers.capitalize(featureType),
@@ -38,7 +39,7 @@ export class FormTreeHelpers {
                 isFeatureType: true,
               };
             }
-            fts[featureType].children.push(FormTreeHelpers.convertFeatureToNode([child], formConfigRepo, selectedGuid)[0]);
+            fts[featureType].children.push(FormTreeHelpers.convertFeatureToNode([child], formConfigRepo, selectedGuid, formConfigs)[0]);
           }
         });
         for (const key in fts) {
