@@ -42,7 +42,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
 
         this.defaultFeatureStyle = config.defaultFeatureStyle || this.mapStyleConfigToFeatureStyle();
         config.styleMap = this.getStylemapFromFeatureStyle(this.defaultFeatureStyle);
-
+        var me = this;
         // Delete style from config, because it messes up the styling in the vectorlayer.
         delete config.style;
         this.frameworkLayer = new OpenLayers.Layer.Vector(config.id, config);
@@ -85,8 +85,11 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
         },this.frameworkLayer));
 
         this.translate = new OpenLayers.Control.DragFeature(this.frameworkLayer, {
-           documentDrag: false
-        });
+           documentDrag: false,
+            onComplete: function (feature, pixel) {
+               me.modifyFeature.selectFeature(feature);
+            }
+        },this);
 
         this.freehandLine = new OpenLayers.Control.DrawFeature(this.frameworkLayer, OpenLayers.Handler.Path, this.addMeasureListener(OpenLayers.Handler.Path, {
             displayClass: 'olControlDrawFeaturePath',
@@ -117,7 +120,6 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
         map.addControl(this.freehandLine);
         map.addControl(this.modifyFeature);
         map.addControl(this.translate);
-        var me = this;
         this.modifyFeature.selectControl.onBeforeSelect = function(){ me.beforeSelect();};
         this.modifyFeature.selectControl.events.register("featurehighlighted", this, this.activeFeatureChanged);
         this.frameworkLayer.events.register("afterfeaturemodified", this, this.featureModified);
