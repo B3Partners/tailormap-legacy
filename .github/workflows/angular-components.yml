@@ -1,7 +1,10 @@
 name: Angular components CI
 
 on: [push, pull_request]
-
+  paths:
+    - 'tailormap-components/**'
+    - '**.yaml'
+  
 jobs:
   test:
     runs-on: ubuntu-20.04

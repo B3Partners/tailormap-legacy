@@ -16,7 +16,7 @@ export class EditgeometryWorkflow extends Workflow {
   constructor() {
     super();
   }
-
+ 
   public afterInit() {
     super.afterInit();
     this.dialog.getDialogById(this.FORMCOMPONENT_DIALOG_ID).afterClosed().subscribe(value => {

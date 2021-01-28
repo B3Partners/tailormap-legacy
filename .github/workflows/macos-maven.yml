@@ -1,6 +1,8 @@
 name: MacOS Maven build
 
 on: [pull_request]
+  paths-ignore:
+    - 'tailormap-components/**'
 
 jobs:
   build:
