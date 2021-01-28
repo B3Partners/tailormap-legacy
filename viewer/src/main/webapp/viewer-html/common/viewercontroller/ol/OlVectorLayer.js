@@ -32,6 +32,7 @@ Ext.define("viewer.viewercontroller.ol.OlVectorLayer", {
     tempFeature: null,
     tempStyle: null,
     idNumber: 0,
+    rotation: 0,
     freehand: null,
     drawFeatureControls: null,
     activeDrawFeatureControl: null,
@@ -85,6 +86,10 @@ Ext.define("viewer.viewercontroller.ol.OlVectorLayer", {
             features: this.select.getFeatures()
         });
 
+        this.translate = new ol.interaction.Translate({
+            features: this.select.getFeatures()
+        });
+
         this.select.getFeatures().on('add', function (args) {
             me.activeFeatureChanged(args);
         }, me);
@@ -104,6 +109,8 @@ Ext.define("viewer.viewercontroller.ol.OlVectorLayer", {
         this.maps.addInteraction(this.drawBox);
         this.maps.addInteraction(this.select);
         this.maps.addInteraction(this.modify);
+        this.maps.addInteraction(this.translate);
+        this.translate.setActive(false);
         this.select.setActive(false);
         this.drawBox.setActive(false);
         
@@ -241,6 +248,8 @@ Ext.define("viewer.viewercontroller.ol.OlVectorLayer", {
         this.source.clear();
         this.maps.removeInteraction(this.draw);
         this.drawBox.setActive(false);
+        this.stopDrawing();
+        this.setTranslate(false);
     },
     removeFeature: function (feature) {
         var olFeature = this.source.getFeatureById(feature.getId());
@@ -528,6 +537,23 @@ Ext.define("viewer.viewercontroller.ol.OlVectorLayer", {
     },
     getType: function () {
         return this.mixins.olLayer.getType.call(this);
+    },
+
+    setTranslate: function (active) {
+        this.modify.setActive(!active);
+        this.translate.setActive(active);
+        if(!active) {
+            this.rotation = 0;
+        }
+    },
+
+    updateRotation: function (value) {
+        var f = this.source.getFeatures()[0];
+        if (f) {
+            this.center = ol.extent.getCenter(f.getGeometry().getExtent())
+            f.getGeometry().rotate((this.rotation - value) * Math.PI / 180, this.center);
+            this.rotation = value;
+        }
     },
 
     frameworkStyleToFeatureStyle: function (oLfeature) {
