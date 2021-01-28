@@ -7,6 +7,7 @@ skip_commits:
     
 clone_folder: C:\projects\flamingo
 clone_depth: 20
+image: Visual Studio 2019
 
 init:
   - cmd: net start %SQL%
