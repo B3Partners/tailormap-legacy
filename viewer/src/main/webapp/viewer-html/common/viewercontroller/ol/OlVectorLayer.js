@@ -146,42 +146,12 @@ Ext.define("viewer.viewercontroller.ol.OlVectorLayer", {
                         var preproccesorOfCenter = coords[0][coords[0].length-3]
                         var line = new ol.geom.LineString([center, newPoint]);
                         var radius = line.getLength();
-                        // Hoek van de lijn berekenen die gemaakt wordt met de muis (deze veranderd dus telkens als je de muist beweegt)
-                        var delta_x = newPoint[0] - center[0];
-                        var delta_y = newPoint[1] - center[1];
-                        var angleOfTempLineDegrees = (Math.atan2(delta_y, delta_x)) * 180 / Math.PI;
-                        // Hoek van de getekende lijn berekenen
-                        delta_x = center[0] - preproccesorOfCenter[0];
-                        delta_y = center[1] - preproccesorOfCenter[1];
-                        var corAngleRadians = Math.atan2(delta_y, delta_x);
-                        var corAngleDegrees = corAngleRadians * 180/Math.PI;
-
-                        // doe een correctie op de hoek (de cirkel loopt vanb 0 tot 180 en -180 tot 0
-                        if (angleOfTempLineDegrees > -180 && angleOfTempLineDegrees < 0) {
-                            angleOfTempLineDegrees += 360;
-                        }
-                        if (corAngleDegrees > -180 && corAngleDegrees < 0) {
-                            corAngleDegrees += 360;
-                        }
-                        // bereken welke kant de haakse hoek op moet
-                        var rightOrLeftAngle;
-                        if (corAngleDegrees <= 180) {
-                            if (angleOfTempLineDegrees >= corAngleDegrees && angleOfTempLineDegrees <= corAngleDegrees + 180 ) {
-                                rightOrLeftAngle = 90
-                            } else {
-                                rightOrLeftAngle = -90;
-                            }
-                        } else {
-                            if (angleOfTempLineDegrees <= corAngleDegrees && angleOfTempLineDegrees >= corAngleDegrees - 180 ) {
-                                rightOrLeftAngle = -90
-                            } else {
-                                rightOrLeftAngle = 90;
-                            }
-                        }
-                        // bereken het nieuwe punt
-                        var newX  = Math.cos((rightOrLeftAngle * Math.PI / 180) + corAngleRadians) * radius + center[0];
-                        var newY  = Math.sin((rightOrLeftAngle * Math.PI / 180) + corAngleRadians) * radius + center[1];
-                        coords[0][coords[0].length-1] = [newX,newY];
+                        var rightAnglePoint = me.calculateRightAnglePoint(
+                            {x: newPoint[0],y: newPoint[1]},
+                            {x: center[0], y: center[1]},
+                            {x: preproccesorOfCenter[0], y: preproccesorOfCenter[1]},
+                            radius);
+                        coords[0][coords[0].length-1] = [rightAnglePoint.x, rightAnglePoint.y];
                     }
                     geom.setCoordinates(coords);
                     return geom;

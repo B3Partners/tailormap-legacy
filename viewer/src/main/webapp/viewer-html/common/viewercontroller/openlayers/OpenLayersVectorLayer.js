@@ -668,42 +668,8 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
                 // dit is 2 punten terug, deze is nodig om de vorige lijn te maken
                 var preproccesorOfCenter = evt.vertex.parent.components[evt.vertex.parent.components.length-4];
                 var radius = center.distanceTo(newPoint);
-                // Hoek van de lijn berekenen die gemaakt wordt met de muis (deze veranderd dus telkens als je de muist beweegt)
-                var delta_x = newPoint.x - center.x;
-                var delta_y = newPoint.y - center.y;
-                var angleOfTempLineDegrees = (Math.atan2(delta_y, delta_x)) * 180 / Math.PI;
-                // Hoek van de getekende lijn berekenen
-                delta_x = center.x - preproccesorOfCenter.x;
-                delta_y = center.y - preproccesorOfCenter.y;
-                var corAngleRadians = Math.atan2(delta_y, delta_x);
-                var corAngleDegrees = corAngleRadians * 180/Math.PI;
-
-                // doe een correctie op de hoek (de cirkel loopt vanb 0 tot 180 en -180 tot 0
-                if (angleOfTempLineDegrees > -180 && angleOfTempLineDegrees < 0) {
-                    angleOfTempLineDegrees += 360;
-                }
-                if (corAngleDegrees > -180 && corAngleDegrees < 0) {
-                    corAngleDegrees += 360;
-                }
-                // bereken welke kant de haakse hoek op moet
-                var rightOrLeftAngle;
-                if (corAngleDegrees <= 180) {
-                    if (angleOfTempLineDegrees >= corAngleDegrees && angleOfTempLineDegrees <= corAngleDegrees + 180 ) {
-                        rightOrLeftAngle = 90
-                    } else {
-                        rightOrLeftAngle = -90;
-                    }
-                } else {
-                    if (angleOfTempLineDegrees <= corAngleDegrees && angleOfTempLineDegrees >= corAngleDegrees - 180 ) {
-                        rightOrLeftAngle = -90
-                    } else {
-                        rightOrLeftAngle = 90;
-                    }
-                }
-                // bereken het nieuwe punt
-                var newX  = Math.cos((rightOrLeftAngle * Math.PI / 180) + corAngleRadians) * radius + center.x;
-                var newY  = Math.sin((rightOrLeftAngle * Math.PI / 180) + corAngleRadians) * radius + center.y;
-                evt.vertex.parent.components[evt.vertex.parent.components.length-2] = new OpenLayers.Geometry.Point(newX, newY);
+                var rightAnglePoint = this.calculateRightAnglePoint(newPoint, center, preproccesorOfCenter, radius);
+                evt.vertex.parent.components[evt.vertex.parent.components.length-2] = new OpenLayers.Geometry.Point(rightAnglePoint.x, rightAnglePoint.y);
                 return new OpenLayers.Geometry.Polygon(evt.vertex.parent);
             }
             evt.vertex.parent.components[evt.vertex.parent.components.length-2] = evt.vertex;
