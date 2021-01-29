@@ -1,11 +1,11 @@
-import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort, Sort } from '@angular/material/sort';
 import { MatTable } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { animate, state, style, transition, trigger } from '@angular/animations';
-import { AttributelistTable, RowClickData, RowData } from '../attributelist-common/attributelist-models';
+import { AttributelistTable, RowData } from '../attributelist-common/attributelist-models';
 import { AttributeDataSource } from '../attributelist-common/attributelist-datasource';
 import { AttributelistFilter } from '../attributelist-common/attributelist-filter';
 import { AttributelistService } from '../attributelist.service';
@@ -29,13 +29,14 @@ import { AttributelistColumnController } from '../attributelist-common/attribute
 import { FormComponent } from '../../../feature-form/form/form.component';
 import { Store } from '@ngrx/store';
 import { AttributeListState } from '../state/attribute-list.state';
-import { selectTab } from '../state/attribute-list.selectors';
+import { selectAttributeListConfig, selectTab } from '../state/attribute-list.selectors';
 import { AttributeListTabModel } from '../models/attribute-list-tab.model';
+import { AttributeListConfig } from '../models/attribute-list.config';
 
 @Component({
-  selector: 'tailormap-attribute-list-table',
-  templateUrl: './attribute-list-table.component.html',
-  styleUrls: ['./attribute-list-table.component.css'],
+  selector: 'tailormap-attribute-tab-content',
+  templateUrl: './attribute-list-tab-content.component.html',
+  styleUrls: ['./attribute-list-tab-content.component.css'],
   animations: [
     trigger('onDetailsExpand', [
       state('void', style({height: '0px', minHeight: '0', visibility: 'hidden'})),
@@ -44,7 +45,7 @@ import { AttributeListTabModel } from '../models/attribute-list-tab.model';
     ]),
   ],
 })
-export class AttributeListTableComponent implements AttributelistTable, OnInit, OnDestroy {
+export class AttributeListTabContentComponent implements AttributelistTable, OnInit, OnDestroy {
 
   @Input()
   public layerId: string;
@@ -107,6 +108,7 @@ export class AttributeListTableComponent implements AttributelistTable, OnInit, 
   private destroyed = new Subject();
 
   public tab: AttributeListTabModel;
+  private config: AttributeListConfig;
 
   constructor(private store$: Store<AttributeListState>,
               private attributeService: AttributeService,
@@ -136,6 +138,10 @@ export class AttributeListTableComponent implements AttributelistTable, OnInit, 
           this.updateTable();
         }
       });
+
+    this.store$.select(selectAttributeListConfig)
+      .pipe(takeUntil(this.destroyed))
+      .subscribe(conf => this.config = conf);
 
     // called from passport form
     this.attributelistService.loadTableData$.pipe(takeUntil(this.destroyed)).subscribe(result => {
@@ -200,13 +206,15 @@ export class AttributeListTableComponent implements AttributelistTable, OnInit, 
     this.updateCheckedInfo();
   }
 
+  public getVisibleColumns() {
+    return this.tab.columns.filter(c => c.visible);
+  }
+
   /**
    * Return the column names. Include special column names.
    */
   public getColumnNames(): string[] {
-    const colNames = this.dataSource.columnController.getVisibleColumnNames(true);
-    // console.log(colNames);
-    return colNames;
+    return this.getVisibleColumns().map(c => c.name);
   }
 
   /**
@@ -249,7 +257,7 @@ export class AttributeListTableComponent implements AttributelistTable, OnInit, 
   // Creates a filter for all the checked features in the maintable on the related tabled
   private createFeatureFilterForCheckedFeatures(): void {
     let filter = '';
-    const checkedFeatures = this.dataSource.getCheckedRowsAsAttributeListFeature();
+    const checkedFeatures = this.dataSource.getAllRowAsAttributeListFeature(true);
     const filterForFeatureTypes = new Map<number, string>();
     checkedFeatures.forEach((row) => {
       const related = row.related_featuretypes;
@@ -302,7 +310,7 @@ export class AttributeListTableComponent implements AttributelistTable, OnInit, 
     if (this.dataSource.getNrChecked() > 0 ) {
       this.createFeatureFilterForCheckedFeatures();
       this.rowsChecked = true;
-      features = this.dataSource.getCheckedRowsAsAttributeListFeature();
+      features = this.dataSource.getAllRowAsAttributeListFeature(true);
       numberOfFeatures = this.dataSource.getNrChecked();
     } else {
       if (this.filterMap.get(-1).getFinalFilter(this.filterMap)) {
@@ -477,16 +485,8 @@ export class AttributeListTableComponent implements AttributelistTable, OnInit, 
    * Fired when a row is clicked.
    */
   public onRowClick(row: RowData): void {
-    // console.log('#Table - onRowClicked');
-    // console.log(row);
-
-    // OM TE TESTEN!!!
-    // if (row.__fid.indexOf('.2')>=0) {
-    //   row.__fid = '';
-    // }
-
     // Get zoomto buffer size.
-    const zoomToBuffer = this.attributelistService.config.zoomToBuffer;
+    const zoomToBuffer = this.config.zoomToBuffer;
 
     // Highlight and zoom to clicked feature.
     this.highlightService.highlightFeature(row.__fid, +(this.tab.layerId), true, zoomToBuffer);

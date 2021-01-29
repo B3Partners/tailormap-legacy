@@ -1,15 +1,24 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+import { Store } from '@ngrx/store';
+import { AttributeListState } from '../state/attribute-list.state';
+import { loadDataForTab } from '../state/attribute-list.actions';
 
 @Component({
   selector: 'tailormap-attribute-list-tab',
   templateUrl: './attribute-list-tab.component.html',
   styleUrls: ['./attribute-list-tab.component.css'],
 })
-export class AttributeListTabComponent {
+export class AttributeListTabComponent implements OnInit {
 
   @Input()
   public layerId: string;
 
-  constructor() {}
+  constructor(
+    private store$: Store<AttributeListState>,
+  ) {}
+
+  public ngOnInit() {
+    this.store$.dispatch(loadDataForTab({ layerId: this.layerId }));
+  }
 
 }

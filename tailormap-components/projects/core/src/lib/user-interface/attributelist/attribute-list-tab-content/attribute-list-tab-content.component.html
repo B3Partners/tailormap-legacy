@@ -12,11 +12,11 @@
                matSort multiTemplateDataRows
                (matSortChange) = "onSortClick($event)">
 
-      <ng-container *ngFor="let colName of getColumnNames()"
-                    [ngSwitch]="colName">
+      <ng-container *ngFor="let col of getVisibleColumns()"
+                    [ngSwitch]="col.name">
 
         <!-- First column with checkboxes -->
-        <ng-container *ngSwitchCase="'_checked'" matColumnDef="{{colName}}">
+        <ng-container *ngSwitchCase="'_checked'" matColumnDef="{{col.name}}">
           <!-- Header -->
           <mat-header-cell class="column_small" *matHeaderCellDef [ngSwitch]="checkState">
             <ng-template [ngSwitchCase]="'All'">
@@ -64,10 +64,10 @@
           </ng-container>
 
           <!-- Column with + for expanding details -->
-          <ng-container *ngSwitchCase="'_details'" matColumnDef="{{colName}}">
+          <ng-container *ngSwitchCase="'_details'" matColumnDef="{{col.name}}">
           <!-- Header -->
           <mat-header-cell class="column_small" *matHeaderCellDef
-                           [ngSwitch]="colName" ></mat-header-cell>
+                           [ngSwitch]="col.name" ></mat-header-cell>
           <!-- Cell -->
           <mat-cell class="column_small"
                     *matCellDef="let currRow;"
@@ -92,21 +92,22 @@
         </ng-container>
 
         <!-- Columns with data -->
-        <ng-container *ngSwitchDefault matColumnDef="{{colName}}">
+        <ng-container *ngSwitchDefault matColumnDef="{{col.name}}">
           <!-- Header -->
-          <mat-header-cell *matHeaderCellDef mat-sort-header >{{colName}}
-              <mat-icon [ngClass]="(getIsFilterActive(colName))? 'material-icons-set': 'material-icons-unset' " (click) = "$event.stopPropagation();onFilterClick(colName)">
-                filter_list
-              </mat-icon>
+          <mat-header-cell *matHeaderCellDef mat-sort-header >
+            {{col.alias || col.name}}
+            <mat-icon [ngClass]="(getIsFilterActive(col.name))? 'material-icons-set': 'material-icons-unset' " (click) = "$event.stopPropagation();onFilterClick(col.name)">
+              filter_list
+            </mat-icon>
           </mat-header-cell>
           <!-- Cell -->
-          <mat-cell *matCellDef="let currRow" >{{currRow[colName]}}</mat-cell>
+          <mat-cell *matCellDef="let currRow" >{{currRow[col.name]}}</mat-cell>
           <!-- Footer -->
-          <mat-footer-cell *matFooterCellDef (contextmenu)="onStatisticsMenu($event, colName)">
-            <div *ngIf="isStatisticsProcessing(colName)">
+          <mat-footer-cell *matFooterCellDef (contextmenu)="onStatisticsMenu($event, col.name)">
+            <div *ngIf="isStatisticsProcessing(col.name)">
               <mat-spinner diameter="20"></mat-spinner>
             </div>
-            {{getStatisticResult(colName)}}
+            {{getStatisticResult(col.name)}}
           </mat-footer-cell>
         </ng-container>
       </ng-container>
@@ -121,8 +122,8 @@
       <ng-template #detailsTpl let-currRow>
         <div class="details-container" [@onDetailsExpand] *ngFor="let featureType of currRow.related_featuretypes">
           <tailormap-attributelist-details
-            [parentLayerId]="dataSource.getLayerId()"
-            [parentLayerName]="dataSource.getLayerName()"
+            [parentLayerId]="tab.layerId"
+            [parentLayerName]="tab.layerName"
             [featureType]="featureType">
           </tailormap-attributelist-details>
         </div>
@@ -139,7 +140,7 @@
   </div>
 
   <mat-menu #statisticsMenu="matMenu">
-    <ng-template matMenuContent let-colName="colName">
+    <ng-template matMenuContent let-colName="col.name">
       <ng-container *ngFor="let statType of keys(eStatisticType) ">
         <div *ngIf="getStatisticFunctionColumnType(colName) === 'numeric' && eStatisticType[statType] !== 'COUNT' && eStatisticType[statType] !== 'NONE'">
            <button mat-menu-item (click)="onStatisticsMenuClick(colName, eStatisticType[statType])">

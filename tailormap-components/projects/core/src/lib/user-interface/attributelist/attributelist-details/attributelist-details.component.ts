@@ -6,7 +6,7 @@ import {
   AfterViewInit,
 } from '@angular/core';
 
-import { MatSort, Sort } from '@angular/material/sort';
+import { Sort } from '@angular/material/sort';
 import { MatTable } from '@angular/material/table';
 
 import {
@@ -35,7 +35,7 @@ export class AttributelistDetailsComponent implements OnInit,
 
   // The parent layer id for this detail table.
   @Input()
-  public parentLayerId = -1;
+  public parentLayerId: string;
 
   // The parent layer name for this detail table.
   @Input()
@@ -76,7 +76,7 @@ export class AttributelistDetailsComponent implements OnInit,
     // console.log(this.featureType.filter);
 
     // Set datasource params.
-    this.dataSource.params.layerId = this.parentLayerId;
+    this.dataSource.params.layerId = +(this.parentLayerId);
     this.dataSource.params.layerName = this.parentLayerName;
     this.dataSource.params.featureTypeId = this.featureType.id;
     this.dataSource.params.featureTypeName = this.featureType.foreignFeatureTypeName;

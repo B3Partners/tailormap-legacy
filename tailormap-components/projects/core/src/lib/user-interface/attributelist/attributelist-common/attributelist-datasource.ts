@@ -105,23 +105,6 @@ export class AttributeDataSource extends DataSource<any> {
   }
 
   /**
-   * Returns the associated layer id.
-   */
-  public getLayerId(): number {
-    return this.params.layerId;
-  }
-
-  /**
-   * Returns the associated layer name.
-   */
-  public getLayerName(): string {
-    return this.params.layerName;
-  }
-
-  public getAttributeForColumnName(columnName: string): Attribute {
-    return this.columnController.getAttributeForColumnName(columnName);
-  }
-  /**
    * Returns the number of checked rows.
    */
   public getNrChecked(): number {
@@ -134,30 +117,18 @@ export class AttributeDataSource extends DataSource<any> {
     return cnt;
   }
 
-  public getAllRowAsAttributeListFeature(): AttributeListFeature[] {
+  public getAllRowAsAttributeListFeature(onlyChecked?: boolean): AttributeListFeature[] {
     const features: AttributeListFeature[] = [];
     this.rows.forEach( (row: RowData) => {
-      features.push({
-        features: row,
-        related_featuretypes: row.related_featuretypes,
-        __fid: row.__fid,
-      });
-    });
-    return features;
-  }
-
-  public getCheckedRowsAsAttributeListFeature(): AttributeListFeature[] {
-    const featuresChecked: AttributeListFeature[] = [];
-    this.rows.forEach( (row: RowData) => {
-      if (row._checked) {
-        featuresChecked.push({
+      if (!onlyChecked || (onlyChecked && row._checked)) {
+        features.push({
           features: row,
           related_featuretypes: row.related_featuretypes,
           __fid: row.__fid,
         });
       }
     });
-    return featuresChecked;
+    return features;
   }
 
   /**

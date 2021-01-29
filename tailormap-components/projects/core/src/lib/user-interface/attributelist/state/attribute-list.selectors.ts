@@ -16,6 +16,8 @@ export const selectAttributeListTabDictionary = createSelector(
   tabs => new Map<string, AttributeListTabModel>(tabs.map(tab => [tab.layerId, tab])),
 );
 
+export const selectAttributeListConfig = createSelector(selectAttributeListState, state => state.config);
+
 export const selectTab = createSelector(
   selectAttributeListTabDictionary,
   (tabs, layerId: string): AttributeListTabModel => tabs.get(layerId),

@@ -24,7 +24,7 @@ const onChangeAttributeTabs = (
   payload: ReturnType<typeof AttributeListActions.changeAttributeListTabs>,
 ): AttributeListState => {
   const tabs = [...state.tabs]
-    .filter(t => payload.removedTabs.indexOf(t.layerId) === -1)
+    .filter(t => payload.closedTabs.indexOf(t.layerId) === -1)
     .concat(payload.newTabs);
   return {
     ...state,
@@ -59,6 +59,16 @@ const updateTab = (
   };
 }
 
+const onLoadDataForTab = (
+  state: AttributeListState,
+  payload: ReturnType<typeof AttributeListActions.loadDataForTab>,
+): AttributeListState => updateTab(state, payload.layerId, tab => ({ ...tab, loadingData: true }));
+
+const onLoadDataForTabSuccess = (
+  state: AttributeListState,
+  payload: ReturnType<typeof AttributeListActions.loadDataForTabSuccess>,
+): AttributeListState => updateTab(state, payload.layerId, tab => ({ ...tab, ...payload.tabChanges, loadingData: false }));
+
 const onClearAllFilters = (
   state: AttributeListState,
   payload: ReturnType<typeof AttributeListActions.clearAllFilters>,
@@ -70,6 +80,8 @@ const attributeListReducerImpl = createReducer(
   on(AttributeListActions.setAttributeListConfig, onSetAttributeListConfig),
   on(AttributeListActions.changeAttributeListTabs, onChangeAttributeTabs),
   on(AttributeListActions.setSelectedTab, onSetSelectedTab),
+  on(AttributeListActions.loadDataForTab, onLoadDataForTab),
+  on(AttributeListActions.loadDataForTabSuccess, onLoadDataForTabSuccess),
   on(AttributeListActions.clearAllFilters, onClearAllFilters),
 );
 

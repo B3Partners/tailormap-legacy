@@ -17,8 +17,18 @@ export const setAttributeListConfig = createAction(
 
 export const changeAttributeListTabs = createAction(
   `${attributeListActionsPrefix} Change AttributeList Tabs`,
-  props<{ newTabs: AttributeListTabModel[], removedTabs: string[] }>(),
+  props<{ newTabs: AttributeListTabModel[], closedTabs: string[] }>(),
 );
+
+export const loadDataForTab = createAction(
+  `${attributeListActionsPrefix} Load Data For Tab`,
+  props<{ layerId: string }>(),
+);
+
+export const loadDataForTabSuccess = createAction(
+  `${attributeListActionsPrefix} Load Data For Tab Success`,
+  props<{ layerId: string, tabChanges: Partial<AttributeListTabModel> }>(),
+)
 
 export const setSelectedTab = createAction(
   `${attributeListActionsPrefix} Set Selected Tab`,

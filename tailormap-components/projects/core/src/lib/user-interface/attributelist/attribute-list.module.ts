@@ -6,7 +6,7 @@ import { SharedModule } from '../../shared/shared.module';
 import { AttributeListPanelComponent } from './attribute-list-panel/attribute-list-panel.component';
 import { AttributeListTabComponent } from './attribute-list-tab/attribute-list-tab.component';
 import { AttributeListTabToolbarComponent } from './attribute-list-tab-toolbar/attribute-list-tab-toolbar.component';
-import { AttributeListTableComponent } from './attribute-list-table/attribute-list-table.component';
+import { AttributeListTabContentComponent } from './attribute-list-tab-content/attribute-list-tab-content.component';
 import { AttributelistDetailsComponent } from './attributelist-details/attributelist-details.component';
 import { AttributelistTableOptionsFormComponent } from './attributelist-table-options-form/attributelist-table-options-form.component';
 
@@ -31,7 +31,7 @@ import { AttributeListEffects } from './state/attribute-list.effects';
     AttributeListPanelComponent,
     AttributeListTabComponent,
     AttributeListTabToolbarComponent,
-    AttributeListTableComponent,
+    AttributeListTabContentComponent,
     AttributelistDetailsComponent,
     AttributelistTableOptionsFormComponent,
     DetailsrowDirective,
