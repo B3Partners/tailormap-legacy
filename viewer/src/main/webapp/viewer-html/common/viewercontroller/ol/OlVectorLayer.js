@@ -33,6 +33,7 @@ Ext.define("viewer.viewercontroller.ol.OlVectorLayer", {
     tempStyle: null,
     idNumber: 0,
     rotation: 0,
+    drawRightAngle: false,
     freehand: null,
     drawFeatureControls: null,
     activeDrawFeatureControl: null,
@@ -130,7 +131,33 @@ Ext.define("viewer.viewercontroller.ol.OlVectorLayer", {
         
         this.polygon = new ol.interaction.Draw({type: "Polygon",
             source: this.source,
-            freehand: false
+            freehand: false,
+            geometryFunction: function (coords, geom){
+                if (!geom) {
+                    geom = new ol.geom.Polygon(coords);
+                    return geom;
+                } else if(coords[0].length >= 3) {
+                    if (me.drawRightAngle) {
+                        //Dit is het punt van de muis
+                        var newPoint = coords[0][coords[0].length-1];
+                        // dit is het punt waar de haakse hoek op gemaakt wordt
+                        var center = coords[0][coords[0].length-2];
+                        // dit is 2 punten terug, deze is nodig om de vorige lijn te maken
+                        var preproccesorOfCenter = coords[0][coords[0].length-3]
+                        var line = new ol.geom.LineString([center, newPoint]);
+                        var radius = line.getLength();
+                        var rightAnglePoint = me.calculateRightAnglePoint(
+                            {x: newPoint[0],y: newPoint[1]},
+                            {x: center[0], y: center[1]},
+                            {x: preproccesorOfCenter[0], y: preproccesorOfCenter[1]},
+                            radius);
+                        coords[0][coords[0].length-1] = [rightAnglePoint.x, rightAnglePoint.y];
+                    }
+                    geom.setCoordinates(coords);
+                    return geom;
+                }
+
+            }
         });
         this.maps.addInteraction(this.polygon);
         this.polygon.setActive(false);
@@ -169,12 +196,19 @@ Ext.define("viewer.viewercontroller.ol.OlVectorLayer", {
             me.idNumber++;
             me.stopDrawing();
         }, this);
-        
         this.polygon.on('drawend', function (evt) {
+            me.sketchComplete();
+            var coords  = evt.feature.getGeometry().getCoordinates();
+            coords[0].push(coords[0][0]);
+            evt.feature.getGeometry().setCoordinates(coords);
             me.select.setActive(true);
             evt.feature.setId("OpenLayers_Feature_Vector_" + me.idNumber);
             me.idNumber++;
             me.stopDrawing();
+        }, this);
+        this.polygon.on('drawstart', function (evt) {
+            // add key listeners
+            me.sketchStarted();
         }, this);
         
         this.circle.on('drawend', function (evt) {
@@ -638,4 +672,3 @@ Ext.define("viewer.viewercontroller.ol.OlVectorLayer", {
         }
     }
 });
-   

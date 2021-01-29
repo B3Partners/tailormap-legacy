@@ -31,6 +31,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
     circle: null,
     box:null,
     freehand:null,
+    drawRightAngle: false,
     drawFeatureControls: null,
     activeDrawFeatureControl: null,
     modifyFeature:null,
@@ -125,6 +126,9 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
         this.frameworkLayer.events.register("afterfeaturemodified", this, this.featureModified);
         this.frameworkLayer.events.register("featuremodified", this, this.featureModified);
         this.frameworkLayer.events.register("featureadded", this, this.featureAdded);
+        this.frameworkLayer.events.register("sketchstarted", this, this.sketchStarted);
+        this.frameworkLayer.events.register("sketchmodified", this, this.sketchModified);
+        this.frameworkLayer.events.register("sketchcomplete", this, this.sketchComplete);
 
         this.translate.deactivate();
         if(this.allowSelection()) {
@@ -434,7 +438,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
         this.removeMeasures();
         this.fireEvent(viewer.viewercontroller.controller.Event.ON_ACTIVE_FEATURE_CHANGED,this,featureObject,evt);
     },
-    
+
     /**
      * Called when a feature is added to the vectorlayer. It deactivates all drawFeature controls, makes the added feature editable and fires @see viewer.viewercontroller.controller.Event.ON_FEATURE_ADDED
      */
@@ -646,4 +650,26 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
             this.rotation = value;
         }
     },
+
+    /**
+     *
+     */
+    sketchModified : function (evt) {
+        if(evt.feature.geometry.getVertices().length >= 3 && this.polygon.active) {
+            if (this.drawRightAngle){
+                //Dit is het punt van de muis
+                var newPoint = evt.vertex;
+                // dit is het punt waar de haakse hoek op gemaakt wordt
+                var center = evt.vertex.parent.components[evt.vertex.parent.components.length-3];
+                // dit is 2 punten terug, deze is nodig om de vorige lijn te maken
+                var preproccesorOfCenter = evt.vertex.parent.components[evt.vertex.parent.components.length-4];
+                var radius = center.distanceTo(newPoint);
+                var rightAnglePoint = this.calculateRightAnglePoint(newPoint, center, preproccesorOfCenter, radius);
+                evt.vertex.parent.components[evt.vertex.parent.components.length-2] = new OpenLayers.Geometry.Point(rightAnglePoint.x, rightAnglePoint.y);
+                return new OpenLayers.Geometry.Polygon(evt.vertex.parent);
+            }
+            evt.vertex.parent.components[evt.vertex.parent.components.length-2] = evt.vertex;
+            return new OpenLayers.Geometry.Polygon(evt.vertex.parent);
+        }
+    }
 });
