@@ -688,7 +688,6 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
     },
 
     keyDown: function (event) {
-        console.log(event.key);
         if (event.key === "s" || event.key === "S") {
             this.drawRightAngle = true;
         }
