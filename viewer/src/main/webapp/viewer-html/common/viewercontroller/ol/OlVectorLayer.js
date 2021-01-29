@@ -140,9 +140,9 @@ Ext.define("viewer.viewercontroller.ol.OlVectorLayer", {
                     if (me.drawRightAngle) {
                         //Dit is het punt van de muis
                         var newPoint = coords[0][coords[0].length-1];
-                        // dit is het punt het waar de haaksehoek opgemaakt wordt
+                        // dit is het punt waar de haakse hoek op gemaakt wordt
                         var center = coords[0][coords[0].length-2];
-                        // dit is 2 punten terug deze is nodig om de vorige lijn te maken
+                        // dit is 2 punten terug, deze is nodig om de vorige lijn te maken
                         var preproccesorOfCenter = coords[0][coords[0].length-3]
                         var line = new ol.geom.LineString([center, newPoint]);
                         var radius = line.getLength();
