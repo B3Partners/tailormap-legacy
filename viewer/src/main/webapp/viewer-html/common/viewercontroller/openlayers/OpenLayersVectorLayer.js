@@ -659,7 +659,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
      *
      */
     sketchModified : function (evt) {
-        if(evt.feature.geometry.getVertices().length >= 4) {
+        if(evt.feature.geometry.getVertices().length >= 3 && this.polygon.active) {
             if (this.drawRightAngle){
                 //Dit is het punt van de muis
                 var newPoint = evt.vertex;
