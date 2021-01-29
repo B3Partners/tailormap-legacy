@@ -214,11 +214,7 @@ Ext.define("viewer.viewercontroller.ol.OlVectorLayer", {
             document.addEventListener("keydown", keyDownListener, true);
             document.addEventListener("keyup", keyUpListener, true);
         }, this);
-
-        this.polygon.on('change', function (evt) {
-            console.log(evt);
-        }, this);
-
+        
         this.circle.on('drawend', function (evt) {
             me.select.setActive(true);
             evt.feature.setId("OpenLayers_Feature_Vector_" + me.idNumber);
