@@ -48,10 +48,14 @@ Ext.define("viewer.viewercontroller.controller.VectorLayer",{
         defaultFeatureStyle: null,
         addStyleToFeature: false,
         addAttributesToFeature: false,
-        allowselection: true
+        allowselection: true,
+        drawRightAngle: false,
     },
     constructor : function (config){
         viewer.viewercontroller.controller.VectorLayer.superclass.constructor.call(this, config);
+        //listeners for key presses
+        this.keyDownListener = this.keyDown.bind(this);
+        this.keyUpListener = this.keyUp.bind(this);
     },
     removeAllFeatures : function(){
         Ext.Error.raise({msg: i18next.t('viewer_viewercontroller_controller_vectorlayer_0')});
@@ -183,6 +187,28 @@ Ext.define("viewer.viewercontroller.controller.VectorLayer",{
         return {
             x: newX,
             y: newY
+        }
+    },
+
+    sketchStarted: function (evt) {
+        document.addEventListener("keydown", this.keyDownListener, true);
+        document.addEventListener("keyup", this.keyUpListener, true);
+    },
+
+    sketchComplete: function (evt) {
+        document.removeEventListener("keydown", this.keyDownListener, true);
+        document.removeEventListener("keyup", this.keyUpListener, true);
+    },
+
+    keyDown: function (event) {
+        if (event.key === "s" || event.key === "S") {
+            this.drawRightAngle = true;
+        }
+    },
+
+    keyUp: function (event) {
+        if (event.key === "s" || event.key === "S") {
+            this.drawRightAngle = false;
         }
     }
 });

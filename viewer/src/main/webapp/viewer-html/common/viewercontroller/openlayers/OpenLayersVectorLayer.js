@@ -112,10 +112,6 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
         var createVertices = config.mustCreateVertices !== undefined && config.mustCreateVertices !== null ? config.mustCreateVertices : true;
         this.modifyFeature = new OpenLayers.Control.ModifyFeature(this.frameworkLayer,{createVertices : createVertices,vertexRenderIntent: "select"});
 
-        //listeners for key presses
-        this.keyDownListener = this.keyDown.bind(this);
-        this.keyUpListener = this.keyUp.bind(this);
-
         map.addControl(this.point);
         map.addControl(this.line);
         map.addControl(this.polygon);
@@ -674,28 +670,6 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
             }
             evt.vertex.parent.components[evt.vertex.parent.components.length-2] = evt.vertex;
             return new OpenLayers.Geometry.Polygon(evt.vertex.parent);
-        }
-    },
-
-    sketchStarted: function (evt) {
-        document.addEventListener("keydown", this.keyDownListener, true);
-        document.addEventListener("keyup", this.keyUpListener, true);
-    },
-
-    sketchComplete: function (evt) {
-        document.removeEventListener("keydown", this.keyDownListener, true);
-        document.removeEventListener("keyup", this.keyUpListener, true);
-    },
-
-    keyDown: function (event) {
-        if (event.key === "s" || event.key === "S") {
-            this.drawRightAngle = true;
-        }
-    },
-
-    keyUp: function (event) {
-        if (event.key === "s" || event.key === "S") {
-            this.drawRightAngle = false;
         }
     }
 });

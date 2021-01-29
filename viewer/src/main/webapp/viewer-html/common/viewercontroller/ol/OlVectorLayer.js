@@ -196,11 +196,8 @@ Ext.define("viewer.viewercontroller.ol.OlVectorLayer", {
             me.idNumber++;
             me.stopDrawing();
         }, this);
-        var keyDownListener = this.keyDown.bind(this);
-        var keyUpListener = this.keyUp.bind(this);
         this.polygon.on('drawend', function (evt) {
-            document.removeEventListener("keydown", keyDownListener, true);
-            document.removeEventListener("keyup", keyUpListener, true);
+            me.sketchComplete();
             var coords  = evt.feature.getGeometry().getCoordinates();
             coords[0].push(coords[0][0]);
             evt.feature.getGeometry().setCoordinates(coords);
@@ -211,8 +208,7 @@ Ext.define("viewer.viewercontroller.ol.OlVectorLayer", {
         }, this);
         this.polygon.on('drawstart', function (evt) {
             // add key listeners
-            document.addEventListener("keydown", keyDownListener, true);
-            document.addEventListener("keyup", keyUpListener, true);
+            me.sketchStarted();
         }, this);
         
         this.circle.on('drawend', function (evt) {
@@ -673,18 +669,6 @@ Ext.define("viewer.viewercontroller.ol.OlVectorLayer", {
             });
             style.featureStyle = featureStyle.config;
             olFeature.setStyle(style);
-        }
-    },
-
-    keyDown: function (event) {
-        if (event.key === "s" || event.key === "S") {
-            this.drawRightAngle = true;
-        }
-    },
-
-    keyUp: function (event) {
-        if (event.key === "s" || event.key === "S") {
-            this.drawRightAngle = false;
         }
     }
 });
