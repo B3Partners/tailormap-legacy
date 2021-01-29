@@ -216,7 +216,6 @@ Ext.define("viewer.viewercontroller.ol.OlVectorLayer", {
         }, this);
 
         this.polygon.on('change', function (evt) {
-            console.log(evt);
         }, this);
 
         this.circle.on('drawend', function (evt) {
