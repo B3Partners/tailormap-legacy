@@ -31,6 +31,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
     circle: null,
     box:null,
     freehand:null,
+    drawRightAngle: false,
     drawFeatureControls: null,
     activeDrawFeatureControl: null,
     modifyFeature:null,
@@ -111,6 +112,10 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
         var createVertices = config.mustCreateVertices !== undefined && config.mustCreateVertices !== null ? config.mustCreateVertices : true;
         this.modifyFeature = new OpenLayers.Control.ModifyFeature(this.frameworkLayer,{createVertices : createVertices,vertexRenderIntent: "select"});
 
+        //listeners for key presses
+        this.keyDownListener = this.keyDown.bind(this);
+        this.keyUpListener = this.keyUp.bind(this);
+
         map.addControl(this.point);
         map.addControl(this.line);
         map.addControl(this.polygon);
@@ -125,6 +130,9 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
         this.frameworkLayer.events.register("afterfeaturemodified", this, this.featureModified);
         this.frameworkLayer.events.register("featuremodified", this, this.featureModified);
         this.frameworkLayer.events.register("featureadded", this, this.featureAdded);
+        this.frameworkLayer.events.register("sketchstarted", this, this.sketchStarted);
+        this.frameworkLayer.events.register("sketchmodified", this, this.sketchModified);
+        this.frameworkLayer.events.register("sketchcomplete", this, this.sketchComplete);
 
         this.translate.deactivate();
         if(this.allowSelection()) {
@@ -434,7 +442,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
         this.removeMeasures();
         this.fireEvent(viewer.viewercontroller.controller.Event.ON_ACTIVE_FEATURE_CHANGED,this,featureObject,evt);
     },
-    
+
     /**
      * Called when a feature is added to the vectorlayer. It deactivates all drawFeature controls, makes the added feature editable and fires @see viewer.viewercontroller.controller.Event.ON_FEATURE_ADDED
      */
@@ -646,4 +654,83 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
             this.rotation = value;
         }
     },
+
+    /**
+     *
+     */
+    sketchModified : function (evt) {
+        if(evt.feature.geometry.getVertices().length >= 4) {
+            if (this.drawRightAngle){
+                //Dit is het punt van de muis
+                var newPoint = evt.vertex;
+                // dit is het punt waar de haakse hoek op gemaakt wordt
+                var center = evt.vertex.parent.components[evt.vertex.parent.components.length-3];
+                // dit is 2 punten terug, deze is nodig om de vorige lijn te maken
+                var preproccesorOfCenter = evt.vertex.parent.components[evt.vertex.parent.components.length-4];
+                var radius = center.distanceTo(newPoint);
+                // Hoek van de lijn berekenen die gemaakt wordt met de muis (deze veranderd dus telkens als je de muist beweegt)
+                var delta_x = newPoint.x - center.x;
+                var delta_y = newPoint.y - center.y;
+                var angleOfTempLineDegrees = (Math.atan2(delta_y, delta_x)) * 180 / Math.PI;
+                // Hoek van de getekende lijn berekenen
+                delta_x = center.x - preproccesorOfCenter.x;
+                delta_y = center.y - preproccesorOfCenter.y;
+                var corAngleRadians = Math.atan2(delta_y, delta_x);
+                var corAngleDegrees = corAngleRadians * 180/Math.PI;
+
+                // doe een correctie op de hoek (de cirkel loopt vanb 0 tot 180 en -180 tot 0
+                if (angleOfTempLineDegrees > -180 && angleOfTempLineDegrees < 0) {
+                    angleOfTempLineDegrees += 360;
+                }
+                if (corAngleDegrees > -180 && corAngleDegrees < 0) {
+                    corAngleDegrees += 360;
+                }
+                // bereken welke kant de haakse hoek op moet
+                var rightOrLeftAngle;
+                if (corAngleDegrees <= 180) {
+                    if (angleOfTempLineDegrees >= corAngleDegrees && angleOfTempLineDegrees <= corAngleDegrees + 180 ) {
+                        rightOrLeftAngle = 90
+                    } else {
+                        rightOrLeftAngle = -90;
+                    }
+                } else {
+                    if (angleOfTempLineDegrees <= corAngleDegrees && angleOfTempLineDegrees >= corAngleDegrees - 180 ) {
+                        rightOrLeftAngle = -90
+                    } else {
+                        rightOrLeftAngle = 90;
+                    }
+                }
+                // bereken het nieuwe punt
+                var newX  = Math.cos((rightOrLeftAngle * Math.PI / 180) + corAngleRadians) * radius + center.x;
+                var newY  = Math.sin((rightOrLeftAngle * Math.PI / 180) + corAngleRadians) * radius + center.y;
+                evt.vertex.parent.components[evt.vertex.parent.components.length-2] = new OpenLayers.Geometry.Point(newX, newY);
+                return new OpenLayers.Geometry.Polygon(evt.vertex.parent);
+            }
+            evt.vertex.parent.components[evt.vertex.parent.components.length-2] = evt.vertex;
+            return new OpenLayers.Geometry.Polygon(evt.vertex.parent);
+        }
+    },
+
+    sketchStarted: function (evt) {
+        document.addEventListener("keydown", this.keyDownListener, true);
+        document.addEventListener("keyup", this.keyUpListener, true);
+    },
+
+    sketchComplete: function (evt) {
+        document.removeEventListener("keydown", this.keyDownListener, true);
+        document.removeEventListener("keyup", this.keyUpListener, true);
+    },
+
+    keyDown: function (event) {
+        console.log(event.key);
+        if (event.key === "s" || event.key === "S") {
+            this.drawRightAngle = true;
+        }
+    },
+
+    keyUp: function (event) {
+        if (event.key === "s" || event.key === "S") {
+            this.drawRightAngle = false;
+        }
+    }
 });
