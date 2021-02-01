@@ -14,7 +14,7 @@ export class FormHelpers {
     });
   }
 
-  public static copyFeature(feature: Feature) : Feature{
+  public static copyFeature(feature: Feature) : Feature {
     const copy = {...feature};
 
     if (copy.children) {

@@ -4,11 +4,11 @@ import { GeoJSONGeometry } from 'wellknown';
 import { Feature } from '../../shared/generated';
 import { MapClickedEvent } from '../../shared/models/event-models';
 import { OLFeature, VectorLayer } from '../../../../../bridge/typings';
-import { map, take, takeUntil } from 'rxjs/operators';
+import { take, takeUntil } from 'rxjs/operators';
 import { WorkflowHelper } from './workflow.helper';
 import * as FormActions from '../../feature-form/state/form.actions';
 import { selectFormClosed } from '../../feature-form/state/form.state-helpers';
-import { selectFormConfigForFeatureType, selectFormConfigs, selectFormFeaturetypes } from '../../feature-form/state/form.selectors';
+import { selectFormConfigForFeatureType, selectFormFeaturetypes } from '../../feature-form/state/form.selectors';
 
 
 export class StandardFormWorkflow extends Workflow {

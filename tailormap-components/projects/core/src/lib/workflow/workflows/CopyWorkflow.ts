@@ -3,7 +3,6 @@ import { VectorLayer } from '../../../../../bridge/typings';
 import { MapClickedEvent } from '../../shared/models/event-models';
 import { Feature } from '../../shared/generated';
 import { FormCopyComponent } from '../../feature-form/form-copy/form-copy.component';
-import { LayerUtils } from '../../shared/layer-utils/layer-utils.service';
 import { CopyDialogData } from '../../feature-form/form-copy/form-copy-models';
 
 export class CopyWorkflow extends Workflow {

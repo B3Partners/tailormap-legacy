@@ -1,18 +1,15 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Attribute, FormConfiguration, FormConfigurations, FormFieldType } from '../../feature-form/form/form-models';
+import { FormConfiguration, FormConfigurations } from '../../feature-form/form/form-models';
 import { DomainRepositoryService } from '../../feature-form/linked-fields/domain-repository/domain-repository.service';
 import { TailorMapService } from '../../../../../bridge/src/tailor-map.service';
 import { LayerUtils } from '../layer-utils/layer-utils.service';
-import { Feature, FeatureControllerService } from '../generated';
-import { Observable, of, ReplaySubject } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
-import { FormFieldHelpers } from '../../feature-form/form-field/form-field-helpers';
-import { AttributeListFeature } from '../attribute-service/attribute-models';
+import { FeatureControllerService } from '../generated';
+import { of, ReplaySubject } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 import { FormState } from '../../feature-form/state/form.state';
 import { Store } from '@ngrx/store';
 import * as FormActions from '../../feature-form/state/form.actions';
-import { environment } from '../../../../../bridge/src/environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -66,10 +63,4 @@ export class FormconfigRepositoryService {
       });
   }
 
-
-/*
-  public getAllFormConfigs(): Map<string, FormConfiguration> {
-    return this.formConfigs;
-  }
-*/
 }

@@ -1,5 +1,5 @@
 import { Feature } from '../../shared/generated';
-import { FormConfiguration, FormConfigurations } from '../form/form-models';
+import { FormConfiguration } from '../form/form-models';
 
 
 export const formStateKey = 'form';

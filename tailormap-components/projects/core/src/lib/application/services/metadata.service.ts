@@ -6,7 +6,6 @@ import { selectApplicationId } from '../state/application.selectors';
 import { concatMap, map, switchMap, takeUntil, takeWhile, tap } from 'rxjs/operators';
 import { combineLatest, Observable, of, Subject } from 'rxjs';
 import { AttributeListParameters, AttributeListResponse, AttributeMetadataResponse } from '../../shared/attribute-service/attribute-models';
-import { FormconfigRepositoryService } from '../../shared/formconfig-repository/formconfig-repository.service';
 import { Attribute as GbiAttribute } from '../../feature-form/form/form-models';
 import { PassportAttributeModel } from '../models/passport-attribute.model';
 import { UniqueValuesResponse } from '../../shared/value-service/value-models';
@@ -28,7 +27,6 @@ export class MetadataService implements OnDestroy {
   constructor(
     private store$: Store<ApplicationState | FormState>,
     private attributeService: AttributeService,
-    private formConfigService: FormconfigRepositoryService,
     private valueService: ValueService,
   ) {
     this.store$.select(selectApplicationId)

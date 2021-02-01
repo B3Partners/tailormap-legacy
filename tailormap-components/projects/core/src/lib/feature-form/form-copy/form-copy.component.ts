@@ -1,18 +1,8 @@
 /* tslint:disable:no-string-literal */
-import {
-  Component,
-  Inject, OnDestroy,
-  OnInit,
-} from '@angular/core';
-import {
-  MAT_DIALOG_DATA,
-  MatDialogRef,
-} from '@angular/material/dialog';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Feature } from '../../shared/generated';
-import { FormconfigRepositoryService } from '../../shared/formconfig-repository/formconfig-repository.service';
-import {
-  FormConfiguration,
-} from '../form/form-models';
+import { FormConfiguration } from '../form/form-models';
 import { FormActionsService } from '../form-actions/form-actions.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CopyDialogData } from './form-copy-models';
@@ -48,7 +38,6 @@ export class FormCopyComponent implements OnInit, OnDestroy {
 
   constructor(public dialogRef: MatDialogRef<FormCopyComponent>,
               @Inject(MAT_DIALOG_DATA) public data: CopyDialogData,
-              private configService: FormconfigRepositoryService,
               private actionService: FormActionsService,
               private _snackBar: MatSnackBar,
               private featureInitializer: FeatureInitializerService,

@@ -4,11 +4,11 @@ import { GeoJSONGeometry } from 'wellknown';
 import { Feature, Geometry } from '../../shared/generated';
 import { MapClickedEvent } from '../../shared/models/event-models';
 import { VectorLayer } from '../../../../../bridge/typings';
-import { filter, take, takeUntil } from 'rxjs/operators';
+import { take, takeUntil } from 'rxjs/operators';
 import { WorkflowHelper } from './workflow.helper';
 import { Coordinate } from '../../user-interface/models';
 import { setOpenFeatureForm } from '../../feature-form/state/form.actions';
-import { selectFeatureFormOpen, selectOpenFeatureForm } from '../../feature-form/state/form.selectors';
+import { selectFeatureFormOpen } from '../../feature-form/state/form.selectors';
 import { combineLatest } from 'rxjs';
 import { selectFormClosed } from '../../feature-form/state/form.state-helpers';
 
@@ -17,7 +17,7 @@ export class EditgeometryWorkflow extends Workflow {
   constructor() {
     super();
   }
- 
+
   public afterInit() {
     super.afterInit();
     combineLatest([

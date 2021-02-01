@@ -2,11 +2,10 @@ import { Component, NgZone, OnChanges, OnDestroy, OnInit, SimpleChanges } from '
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ConfirmDialogService } from '../../shared/confirm-dialog/confirm-dialog.service';
 import { filter, take, takeUntil } from 'rxjs/operators';
-import { combineLatest, Observable, pipe, Subject } from 'rxjs';
+import { combineLatest, Observable, Subject } from 'rxjs';
 import { FormConfiguration } from './form-models';
 import { Feature } from '../../shared/generated';
 import { FormActionsService } from '../form-actions/form-actions.service';
-import { FormconfigRepositoryService } from '../../shared/formconfig-repository/formconfig-repository.service';
 import { WorkflowActionManagerService } from '../../workflow/workflow-controller/workflow-action-manager.service';
 import { WORKFLOW_ACTION, WorkflowActionEvent } from '../../workflow/workflow-controller/workflow-models';
 import { MetadataService } from '../../application/services/metadata.service';
@@ -15,12 +14,9 @@ import { Store } from '@ngrx/store';
 import * as FormActions from '../state/form.actions';
 import {
   selectCloseAfterSaveFeatureForm, selectCurrentFeature, selectFeatureFormOpen, selectFormAlreadyDirty, selectFormConfigForFeatureType,
-  selectFormConfigs,
-  selectOpenFeatureForm,
-  selectTreeOpen,
+  selectFormConfigs, selectOpenFeatureForm, selectTreeOpen,
 } from '../state/form.selectors';
 import { LayerUtils } from '../../shared/layer-utils/layer-utils.service';
-import { FormHelpers } from './form-helpers';
 
 @Component({
   selector: 'tailormap-form',
@@ -48,7 +44,6 @@ export class FormComponent implements OnDestroy, OnChanges, OnInit {
               private _snackBar: MatSnackBar,
               private ngZone: NgZone,
               private metadataService: MetadataService,
-              private formConfigRepo: FormconfigRepositoryService,
               public actions: FormActionsService,
               public workflowAction: WorkflowActionManagerService) {
   }
@@ -91,7 +86,7 @@ export class FormComponent implements OnDestroy, OnChanges, OnInit {
       this.store$.select(selectFormConfigs),
     ])
       .pipe(takeUntil(this.destroyed))
-      .subscribe(([formConfig, configs]) =>{
+      .subscribe(([formConfig, configs]) => {
       this.formConfig = formConfig;
       this.metadataService.getFeatureTypeMetadata$(this.feature.clazz);
       configs.forEach((config, key) => {

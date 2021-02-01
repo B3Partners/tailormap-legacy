@@ -4,10 +4,6 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Feature, FeatureControllerService } from '../../shared/generated';
 import { forkJoin, Observable, of } from 'rxjs';
 import { FeatureInitializerService } from '../../shared/feature-initializer/feature-initializer.service';
-import { FormconfigRepositoryService } from '../../shared/formconfig-repository/formconfig-repository.service';
-import { LayerUtils } from '../../shared/layer-utils/layer-utils.service';
-import { selectFormConfigForFeatureType } from '../state/form.selectors';
-import { takeUntil } from 'rxjs/operators';
 import { FormConfiguration } from '../form/form-models';
 
 
@@ -18,7 +14,6 @@ export class FormActionsService {
 
   constructor(
     private service: FeatureControllerService,
-    private formConfigRepo: FormconfigRepositoryService,
     private featureInitializerService: FeatureInitializerService,
     private _snackBar: MatSnackBar) {
   }

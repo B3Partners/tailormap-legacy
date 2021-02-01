@@ -9,10 +9,10 @@ import { MapClickedEvent } from '../../shared/models/event-models';
 import { VectorLayer } from '../../../../../bridge/typings';
 import { ChooseTypesComponent } from '../../user-interface/sewage/choose-types/choose-types.component';
 import { combineLatest, Observable } from 'rxjs';
-import { filter, take, takeUntil } from 'rxjs/operators';
+import { take, takeUntil } from 'rxjs/operators';
 import { Choice } from './WorkflowModels';
 import { setOpenFeatureForm } from '../../feature-form/state/form.actions';
-import { selectCurrentFeature, selectFeatureFormOpen, selectFeatureLabel } from '../../feature-form/state/form.selectors';
+import { selectCurrentFeature, selectFeatureLabel } from '../../feature-form/state/form.selectors';
 import { selectFormClosed } from '../../feature-form/state/form.state-helpers';
 
 export class SewageWorkflow extends Workflow {
