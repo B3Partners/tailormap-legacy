@@ -1,5 +1,7 @@
-:host, form, mat-tab-group{
-  height:100%;
+:host,
+form,
+mat-tab-group {
+  height: 100%;
 }
 
 .column {

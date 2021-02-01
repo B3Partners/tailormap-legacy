@@ -1,12 +1,12 @@
 
-.tree{
+.tree {
   right: 310px;
   width: 350px;
   overflow: auto;
   margin-right: 10px;
 }
 
-.newNode{
+.newNode {
   font-style: italic;
 }
 
