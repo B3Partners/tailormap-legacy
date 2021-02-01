@@ -15,6 +15,7 @@ import { Store } from '@ngrx/store';
 import * as FormActions from '../state/form.actions';
 import {
   selectCloseAfterSaveFeatureForm, selectCurrentFeature, selectFeatureFormOpen, selectFormAlreadyDirty, selectFormConfigForFeatureType,
+  selectFormConfigs,
   selectOpenFeatureForm,
   selectTreeOpen,
 } from '../state/form.selectors';
@@ -85,17 +86,18 @@ export class FormComponent implements OnDestroy, OnChanges, OnInit {
 
   private initForm() {
     this.formDirty = false;
-    this.store$.select(selectFormConfigForFeatureType, this.feature.clazz)
+    combineLatest([
+      this.store$.select(selectFormConfigForFeatureType, this.feature.clazz),
+      this.store$.select(selectFormConfigs),
+    ])
       .pipe(takeUntil(this.destroyed))
-      .subscribe(formConfig => {
+      .subscribe(([formConfig, configs]) =>{
       this.formConfig = formConfig;
       this.metadataService.getFeatureTypeMetadata$(this.feature.clazz);
-      const configs = this.formConfigRepo.getAllFormConfigs();
       configs.forEach((config, key) => {
         this.formsForNew.push(config);
       });
-    });
-
+      });
   }
 
   public ngOnChanges(changes: SimpleChanges): void {

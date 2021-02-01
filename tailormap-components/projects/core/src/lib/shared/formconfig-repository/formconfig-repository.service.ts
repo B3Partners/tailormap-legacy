@@ -67,9 +67,9 @@ export class FormconfigRepositoryService {
   }
 
 
-
+/*
   public getAllFormConfigs(): Map<string, FormConfiguration> {
     return this.formConfigs;
   }
-
+*/
 }
