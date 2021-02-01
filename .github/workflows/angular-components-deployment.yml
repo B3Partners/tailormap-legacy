@@ -8,9 +8,9 @@ on:
   pull_request:
     branches:
       - master
-  paths:
-    - 'tailormap-components/**'
-    - '**.yaml'
+    paths:
+      - 'tailormap-components/**'
+      - '**.yaml'
 
 jobs:
   build:
