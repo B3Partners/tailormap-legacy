@@ -5,7 +5,7 @@ import { DomainRepositoryService } from '../../feature-form/linked-fields/domain
 import { TailorMapService } from '../../../../../bridge/src/tailor-map.service';
 import { LayerUtils } from '../layer-utils/layer-utils.service';
 import { FeatureControllerService } from '../generated';
-import { of, ReplaySubject } from 'rxjs';
+import { of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { FormState } from '../../feature-form/state/form.state';
 import { Store } from '@ngrx/store';

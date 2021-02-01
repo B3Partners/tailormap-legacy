@@ -8,40 +8,23 @@
 
 import { DataSource } from '@angular/cdk/table';
 import * as wellknown from 'wellknown';
-import {
-  forkJoin,
-  Observable,
-  of, Subject,
-} from 'rxjs';
+import { forkJoin, Observable, of, Subject } from 'rxjs';
 import { MatSort } from '@angular/material/sort';
 import { MatPaginator } from '@angular/material/paginator';
 
-import {
-  AttributelistTable,
-  RowData,
-} from './attributelist-models';
+import { AttributelistTable, RowData } from './attributelist-models';
 import { AttributelistColumnController } from './attributelist-column-controller';
 import { AttributeService } from '../../../shared/attribute-service/attribute.service';
 import {
-  Attribute,
-  AttributeListFeature,
-  AttributeListParameters,
-  AttributeListResponse,
-  AttributeMetadataParameters,
-  AttributeMetadataResponse, RelatedFeatureType,
+  Attribute, AttributeListFeature, AttributeListParameters, AttributeListResponse, AttributeMetadataParameters, AttributeMetadataResponse,
+  RelatedFeatureType,
 } from '../../../shared/attribute-service/attribute-models';
-import {
-  CheckState,
-  DetailsState,
-} from './attributelist-enums';
+import { CheckState, DetailsState } from './attributelist-enums';
 import { DatasourceParams } from './datasource-params';
 import { Feature } from '../../../shared/generated';
-import { FormconfigRepositoryService } from '../../../shared/formconfig-repository/formconfig-repository.service';
 import { LayerService } from '../layer.service';
 import { LayerUtils } from '../../../shared/layer-utils/layer-utils.service';
-import {
-  FormConfiguration,
-} from '../../../feature-form/form/form-models';
+import { FormConfiguration } from '../../../feature-form/form/form-models';
 import { map, take, takeUntil } from 'rxjs/operators';
 import { AttributelistNode, SelectedTreeData } from '../attributelist-tree/attributelist-tree-models';
 import { TailorMapService } from '../../../../../../bridge/src/tailor-map.service';
@@ -93,7 +76,6 @@ export class AttributeDataSource extends DataSource<any> {
               private valueService: ValueService,
               private attributelistService: AttributelistService,
               private tailorMapService: TailorMapService,
-              private formconfigRepoService: FormconfigRepositoryService,
               private store$: Store<FormState>) {
     super();
   }
