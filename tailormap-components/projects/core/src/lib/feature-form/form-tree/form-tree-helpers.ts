@@ -5,7 +5,11 @@ import {
 import { Feature } from '../../shared/generated';
 import { FormconfigRepositoryService } from '../../shared/formconfig-repository/formconfig-repository.service';
 import { FormHelpers } from '../form/form-helpers';
-import { FormConfiguration } from '../form/form-models';
+import { Attribute, FormConfiguration, FormFieldType } from '../form/form-models';
+import { FormState } from '../state/form.state';
+import { Store } from '@ngrx/store';
+import { AttributeListFeature } from '../../shared/attribute-service/attribute-models';
+import { FormFieldHelpers } from '../form-field/form-field-helpers';
 
 export class FormTreeHelpers {
 
@@ -49,8 +53,9 @@ export class FormTreeHelpers {
           }
         }
       }
+      const config = formConfigs.get(feature.clazz);
       nodes.push({
-        name: formConfigRepo.getFeatureLabel(feature),
+        name: FormTreeHelpers.getFeatureValueForField(feature, config),
         children,
         objectGuid: feature.objectGuid,
         feature,
@@ -59,5 +64,18 @@ export class FormTreeHelpers {
       });
     });
     return nodes;
+  }
+
+  public static getFeatureValueForField(feat: Feature | AttributeListFeature, config : FormConfiguration, key : string = config.treeNodeColumn): string {
+    const attr: Attribute = config.fields.find(field => field.key === key);
+    let value = feat[key];
+    if (attr.type === FormFieldType.DOMAIN) {
+      attr.options.forEach(option => {
+        if ((FormFieldHelpers.isNumber(value) && option.val === parseInt('' + value, 10))) {
+          value = option.label;
+        }
+      });
+    }
+    return value;
   }
 }

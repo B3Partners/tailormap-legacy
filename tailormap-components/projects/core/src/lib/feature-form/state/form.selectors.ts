@@ -2,6 +2,8 @@ import { createFeatureSelector, createSelector } from '@ngrx/store';
 import { FormState, formStateKey } from './form.state';
 import { map, takeUntil } from 'rxjs/operators';
 import { FormHelpers } from '../form/form-helpers';
+import { LayerUtils } from '../../shared/layer-utils/layer-utils.service';
+import { Feature } from '../../shared/generated';
 
 const selectFormState = createFeatureSelector<FormState>(formStateKey);
 
@@ -24,5 +26,12 @@ export const selectFormFeaturetypes = createSelector(selectFormConfigs,
 
 export const selectFormConfigForFeatureType = createSelector(
   selectFormConfigs,
-  (formConfigs, featureType : string) => formConfigs.get(featureType),
+  (formConfigs, featureType : string) => formConfigs.get(LayerUtils.sanitizeLayername(featureType)),
+);
+
+export const selectFeatureLabel = createSelector(
+  selectFormConfigs,
+  (formConfigs, feature : Feature) : string => {
+   return feature[formConfigs.get(LayerUtils.sanitizeLayername(feature.clazz))];
+  },
 );

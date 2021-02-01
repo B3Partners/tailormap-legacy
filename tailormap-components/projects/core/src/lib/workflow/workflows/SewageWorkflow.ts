@@ -12,7 +12,7 @@ import { combineLatest, Observable } from 'rxjs';
 import { filter, take, takeUntil } from 'rxjs/operators';
 import { Choice } from './WorkflowModels';
 import { setOpenFeatureForm } from '../../feature-form/state/form.actions';
-import { selectCurrentFeature, selectFeatureFormOpen } from '../../feature-form/state/form.selectors';
+import { selectCurrentFeature, selectFeatureFormOpen, selectFeatureLabel } from '../../feature-form/state/form.selectors';
 import { selectFormClosed } from '../../feature-form/state/form.state-helpers';
 
 export class SewageWorkflow extends Workflow {
@@ -70,26 +70,30 @@ export class SewageWorkflow extends Workflow {
       if (this.currentStep === Step.WELL2) {
         this.well2 = coords
       }
-      this.retrieveFeatures$(coords).subscribe(features => {
-        let feat = null;
-        if (features.length > 0) {
-          const message = 'Wilt u de bestaande ' + this.featureType + ' met naam \"' + this.formConfigRepo.getFeatureLabel(features[0]) +
-            '\" gebruiken?';
-
-          feat = features[0];
-          this.confirmService.confirm$('Bestaande feature gebruiken?',
-            message, false)
-            .pipe(take(1)).subscribe(useExisting => {
-            if (!useExisting) {
-              feat = this.createFeature(geoJson, this.getExtraParams());
-            }
+      this.retrieveFeatures$(coords)
+        .pipe(takeUntil(this.destroyed))
+        .subscribe(features => {
+          let feat = null;
+          if (features.length > 0) {
+            feat = features[0];
+            this.store$.select(selectFeatureLabel, feat).pipe(takeUntil(this.destroyed)).subscribe(label => {
+              const message = 'Wilt u de bestaande ' + this.featureType + ' met naam \"' + label + '\" gebruiken?';
+              this.confirmService.confirm$('Bestaande feature gebruiken?',
+                message, false)
+                .pipe(take(1)).subscribe(useExisting => {
+                if (!useExisting) {
+                  feat = this.createFeature(geoJson, this.getExtraParams());
+                }
+                this.openDialog(feat);
+              });
+            });
+          } else {
+            feat = this.createFeature(geoJson, this.getExtraParams());
             this.openDialog(feat);
-          });
-        } else {
-          feat = this.createFeature(geoJson, this.getExtraParams());
-          this.openDialog(feat);
-        }
-      });
+          }
+
+
+        });
     } else {
       const feat = this.createFeature(geoJson, this.getExtraParams());
       this.openDialog(feat);
@@ -146,7 +150,7 @@ export class SewageWorkflow extends Workflow {
   }
 
   public openDialog(feature ?: Feature): void {
-    this.store$.dispatch(setOpenFeatureForm({ features: [feature], closeAfterSave: true }));
+    this.store$.dispatch(setOpenFeatureForm({features: [feature], closeAfterSave: true}));
 
     combineLatest([
       this.store$.select(selectCurrentFeature),

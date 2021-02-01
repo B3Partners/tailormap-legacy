@@ -11,6 +11,8 @@ import { Attribute as GbiAttribute } from '../../feature-form/form/form-models';
 import { PassportAttributeModel } from '../models/passport-attribute.model';
 import { UniqueValuesResponse } from '../../shared/value-service/value-models';
 import { ValueService } from '../../shared/value-service/value.service';
+import { FormState } from '../../feature-form/state/form.state';
+import { selectFormConfigForFeatureType } from '../../feature-form/state/form.selectors';
 
 export type UniqueValueCountResponse = { uniqueValue: string, total: number };
 
@@ -24,7 +26,7 @@ export class MetadataService implements OnDestroy {
   private attributeCache: Map<string, AttributeMetadataResponse> = new Map();
 
   constructor(
-    private store$: Store<ApplicationState>,
+    private store$: Store<ApplicationState | FormState>,
     private attributeService: AttributeService,
     private formConfigService: FormconfigRepositoryService,
     private valueService: ValueService,
@@ -63,10 +65,10 @@ export class MetadataService implements OnDestroy {
           const formConfigs$ = [
             ...metadata.relations.map(relation => relation.foreignFeatureTypeName),
             ...metadata.invertedRelations.map(invertedRelation => invertedRelation.featureTypeName),
-          ].map(relation => this.formConfigService.getFormConfigForLayer$(relation));
+          ].map(relation => this.store$.select(selectFormConfigForFeatureType, relation));
           return combineLatest([
             of(metadata),
-            this.formConfigService.getFormConfigForLayer$(metadata.featureTypeName),
+            this.store$.select(selectFormConfigForFeatureType, metadata.featureTypeName),
             combineLatest(formConfigs$),
           ]);
         }),

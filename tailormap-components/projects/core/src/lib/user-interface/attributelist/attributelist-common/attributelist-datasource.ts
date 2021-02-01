@@ -51,6 +51,7 @@ import { ValueParameters } from '../../../shared/value-service/value-models';
 import { selectFormConfigForFeatureType } from '../../../feature-form/state/form.selectors';
 import { Store } from '@ngrx/store';
 import { FormState } from '../../../feature-form/state/form.state';
+import { FormTreeHelpers } from '../../../feature-form/form-tree/form-tree-helpers';
 
 export class AttributeDataSource extends DataSource<any> {
 
@@ -575,7 +576,7 @@ export class AttributeDataSource extends DataSource<any> {
       ...feat,
     };
     formConfig.fields.forEach(field => {
-      newFeat[field.key] = this.formconfigRepoService.getFeatureValueForField(newFeat, field.key, formConfig);
+      newFeat[field.key] = FormTreeHelpers.getFeatureValueForField(newFeat, formConfig, field.key);
     });
     return newFeat;
   }

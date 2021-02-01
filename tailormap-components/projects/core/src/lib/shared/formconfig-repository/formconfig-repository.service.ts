@@ -66,39 +66,10 @@ export class FormconfigRepositoryService {
       });
   }
 
-  public getFormConfigForLayer$(layerName: string): Observable<FormConfiguration | undefined> {
-    return this.formConfigs$.pipe(map(formConfigs => formConfigs.get(LayerUtils.sanitizeLayername(layerName))));
-  }
 
-  public getFeatureLabel(feature: Feature): string {
-    const config: FormConfiguration = this.formConfigs.get(feature.clazz);
-    let label = this.getFeatureValueForField(feature, config.treeNodeColumn, config);
-    if (config.idInTreeNodeColumn) {
-      const id = feature.objectGuid;
-      label = (label ? label : config.name) + ' (id: ' + id + ')';
-    }
-    return label;
-  }
-
-  public getFeatureValueForField(feat: Feature | AttributeListFeature, key: string, config : FormConfiguration): string {
-    const attr: Attribute = config.fields.find(field => field.key === key);
-    let value = feat[key];
-    if (attr.type === FormFieldType.DOMAIN) {
-      attr.options.forEach(option => {
-        if ((FormFieldHelpers.isNumber(value) && option.val === parseInt('' + value, 10))) {
-          value = option.label;
-        }
-      });
-    }
-    return value;
-  }
 
   public getAllFormConfigs(): Map<string, FormConfiguration> {
     return this.formConfigs;
   }
-/*
-  public getFormConfig(featureType: string): FormConfiguration {
-    return this.formConfigs.get(featureType);
-  }*/
 
 }
