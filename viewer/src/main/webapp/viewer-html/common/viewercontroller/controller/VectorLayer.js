@@ -196,6 +196,10 @@ Ext.define("viewer.viewercontroller.controller.VectorLayer",{
     },
 
     sketchComplete: function (evt) {
+        var measureValueDiv = document.getElementById("measureLineLength");
+        if(measureValueDiv) {
+            measureValueDiv.style.display="none";
+        }
         document.removeEventListener("keydown", this.keyDownListener, true);
         document.removeEventListener("keyup", this.keyUpListener, true);
     },

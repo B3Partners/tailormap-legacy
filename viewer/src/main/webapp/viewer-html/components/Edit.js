@@ -132,6 +132,7 @@ Ext.define("viewer.components.Edit", {
             name: this.name + 'VectorLayer',
             geometrytypes: ["Circle", "Polygon", "MultiPolygon", "Point", "LineString"],
             showmeasures: false,
+            showLineLength: this.config.showLineLength,
             mustCreateVertices:true,
             allowselection:true,
             viewerController: this.config.viewerController,
