@@ -48,7 +48,7 @@ import { TailorMapService } from '../../../../../../bridge/src/tailor-map.servic
 import { AttributelistService } from '../attributelist.service';
 import { ValueService } from '../../../shared/value-service/value.service';
 import { ValueParameters } from '../../../shared/value-service/value-models';
-import { selectFormConfigForFeatureType } from '../../../feature-form/state/form.selectors';
+import { selectFormConfigForFeatureType, selectFormConfigs } from '../../../feature-form/state/form.selectors';
 import { Store } from '@ngrx/store';
 import { FormState } from '../../../feature-form/state/form.state';
 import { FormTreeHelpers } from '../../../feature-form/form-tree/form-tree-helpers';
@@ -256,7 +256,7 @@ export class AttributeDataSource extends DataSource<any> {
     const passportName = LayerUtils.sanitizeLayername(this.params.featureTypeName);
     let columnNames: string[] = [];
     // let response: AttributelistNode;
-    this.formconfigRepoService.formConfigs$.subscribe(formConfigs => {
+    this.store$.select(selectFormConfigs).subscribe(formConfigs => {
       const formConfig = formConfigs.get(passportName);
       if (formConfig && formConfig.fields) {
         columnNames = formConfig.fields.map(attr => attr.key);
@@ -274,7 +274,7 @@ export class AttributeDataSource extends DataSource<any> {
       clearTotalCountCache: true,
     };
     return forkJoin([
-      this.formconfigRepoService.formConfigs$.pipe(take(1), map(formConfigs => {
+      this.store$.select(selectFormConfigs).pipe(take(1), map(formConfigs => {
         const formConfig = formConfigs.get(passportName);
         if (formConfig && formConfig.fields) {
           columnNames = formConfig.fields.map(attr => attr.key);
@@ -357,7 +357,7 @@ export class AttributeDataSource extends DataSource<any> {
       // console.log('passportName: '+passportName);
 
       // Get passport field/column names.
-      this.formconfigRepoService.formConfigs$.subscribe(formConfigs => {
+      this.store$.select(selectFormConfigs).subscribe(formConfigs => {
         const formConfig = formConfigs.get(passportName);
 
         // FOR TESTING!!!

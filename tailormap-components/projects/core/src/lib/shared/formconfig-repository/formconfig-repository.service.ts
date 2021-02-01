@@ -18,8 +18,6 @@ export class FormconfigRepositoryService {
 
   private formConfigs: Map<string, FormConfiguration>;
 
-  public formConfigs$ = new ReplaySubject<Map<string, FormConfiguration>>(1);
-
   constructor(
     private http: HttpClient,
     private featureController: FeatureControllerService,
@@ -56,7 +54,6 @@ export class FormconfigRepositoryService {
 
             this.store$.dispatch(FormActions.setFormConfigs ({formConfigs: this.formConfigs}));
 
-            this.formConfigs$.next(this.formConfigs);
             this.domainRepo.initFormConfig(this.formConfigs);
         });
 
