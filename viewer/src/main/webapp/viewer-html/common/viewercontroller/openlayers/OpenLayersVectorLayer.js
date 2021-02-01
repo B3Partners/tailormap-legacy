@@ -696,7 +696,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
                 measureValueDiv.style.left = px.x + 40 + 'px';
                 measureValueDiv.style.display = "block";
                 var measureValueText = document.getElementById("measureLineLength" + 'Text');
-                measureValueText.innerHTML = radius.toFixed(2).replace('.', ',') + " " + "m";
+                measureValueText.innerHTML = radius.toFixed(2) + " " + "m";
             }
             if (this.drawRightAngle && evt.feature.geometry.getVertices().length >= 3){
                 var rightAnglePoint = this.calculateRightAnglePoint(newPoint, center, preproccesorOfCenter, radius);
