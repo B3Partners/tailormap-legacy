@@ -132,6 +132,7 @@ Ext.define("viewer.viewercontroller.ol.OlVectorLayer", {
         this.polygon = new ol.interaction.Draw({type: "Polygon",
             source: this.source,
             freehand: false,
+            stopClick: true,
             geometryFunction: function (coords, geom){
                 if (!geom) {
                     geom = new ol.geom.Polygon(coords);
