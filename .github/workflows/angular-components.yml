@@ -1,9 +1,15 @@
 name: Angular components CI
 
-on: [push, pull_request]
-  paths:
+on: 
+  workflow_dispatch:
+  push:
+    paths:
     - 'tailormap-components/**'
-    - '**.yaml'
+    - '**.yml'
+  pull_request:
+    paths:
+      - 'tailormap-components/**'
+      - '**.yml'
   
 jobs:
   test:
