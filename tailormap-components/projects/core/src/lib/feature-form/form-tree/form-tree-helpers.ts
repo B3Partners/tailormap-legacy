@@ -1,64 +1,60 @@
-import {
-  FeatureNode,
-  FlatNode,
-} from './form-tree-models';
+import { FormTreeMetadata } from './form-tree-models';
 import { Feature } from '../../shared/generated';
 import { FormconfigRepositoryService } from '../../shared/formconfig-repository/formconfig-repository.service';
 import { FormHelpers } from '../form/form-helpers';
 import { Attribute, FormConfiguration, FormFieldType } from '../form/form-models';
 import { AttributeListFeature } from '../../shared/attribute-service/attribute-models';
 import { FormFieldHelpers } from '../form-field/form-field-helpers';
+import { TreeModel } from '../../shared/tree/models/tree.model';
 
 export class FormTreeHelpers {
 
-  public static transformer(node: FeatureNode, level: number): FlatNode {
-    return {
-      expandable: !!node.children && node.children.length > 0,
-      name: node.name,
-      level,
-      feature: node.feature,
-      isFeatureType: node.isFeatureType,
-      selected: node.selected,
-    };
-  }
-
-
-  public static convertFeatureToNode(features: Feature[], formConfigRepo: FormconfigRepositoryService,
-                                     selectedGuid: string, formConfigs : Map<string, FormConfiguration>): FeatureNode[] {
-    const nodes: FeatureNode[] = [];
+  public static convertFeatureToTreeModel(features: Feature[],
+                                          formConfigRepo: FormconfigRepositoryService,
+                                          selectedGuid: string,
+                                          formConfigs : Map<string, FormConfiguration>): TreeModel<FormTreeMetadata>[] {
+    const nodes: TreeModel[] = [];
+    const allChildren: TreeModel[] = [];
     features.forEach(feature => {
-      const children: FeatureNode[] = [];
       if (feature.children) {
-        const fts = {};
+        const fts : Record<string , TreeModel<FormTreeMetadata>> = {};
+
         feature.children.forEach((child: Feature) => {
           const featureType = child.clazz;
-          if (formConfigs.get(featureType)) {
+          if (formConfigs.has(featureType)) {
             if (!fts.hasOwnProperty(featureType)) {
-              fts[featureType] = {
-                name: FormHelpers.capitalize(featureType),
+              const featureTypeNode: TreeModel<FormTreeMetadata> = {
+                label: FormHelpers.capitalize(featureType),
                 children: [],
                 id: featureType,
-                isFeatureType: true,
-              };
+                metadata: {
+                  isFeatureType: true,
+                },
+              }
+              fts[featureType] = featureTypeNode;
             }
-            fts[featureType].children.push(FormTreeHelpers.convertFeatureToNode([child], formConfigRepo, selectedGuid, formConfigs)[0]);
+            const children = FormTreeHelpers.convertFeatureToTreeModel([child], formConfigRepo, selectedGuid, formConfigs)[0];
+            fts[featureType].children.push(children);
           }
         });
         for (const key in fts) {
           if (fts.hasOwnProperty(key)) {
             const child = fts[key];
-            children.push(child);
+            allChildren.push(child);
           }
         }
       }
       const config = formConfigs.get(feature.clazz);
-      nodes.push({
-        name: FormTreeHelpers.getFeatureValueForField(feature, config),
-        children,
-        objectGuid: feature.objectGuid,
-        feature,
-        selected: feature.objectGuid === selectedGuid,
+      const metadata = {
         isFeatureType: false,
+        feature,
+        objectGuid: feature.objectGuid,
+      };
+      nodes.push({
+        label: FormTreeHelpers.getFeatureValueForField(feature, config),
+        children: allChildren.length > 0 ? allChildren : undefined,
+        id: feature.objectGuid,
+        metadata,
       });
     });
     return nodes;

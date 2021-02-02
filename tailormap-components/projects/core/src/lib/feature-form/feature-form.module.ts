@@ -14,6 +14,8 @@ import { formReducer } from './state/form.reducer';
 import { EffectsModule } from '@ngrx/effects';
 import { FormEffects } from './state/form.effects';
 import { DomainRepositoryService } from './linked-fields/domain-repository/domain-repository.service';
+import { ApplicationModule } from '../application/application.module';
+import { FormNodeComponent } from './form-tree/form-node/form-node.component';
 
 @NgModule({
   declarations: [
@@ -22,6 +24,7 @@ import { DomainRepositoryService } from './linked-fields/domain-repository/domai
     FormfieldComponent,
     FormCreatorComponent,
     FormCopyComponent,
+    FormNodeComponent,
   ],
   imports: [
     CommonModule,
@@ -29,7 +32,8 @@ import { DomainRepositoryService } from './linked-fields/domain-repository/domai
     ApiModule,
     UserIntefaceModule,
     StoreModule.forFeature(formStateKey, formReducer),
-    EffectsModule.forFeature([ FormEffects ]),
+    EffectsModule.forFeature([FormEffects]),
+    ApplicationModule,
   ],
   exports: [
     FormComponent,

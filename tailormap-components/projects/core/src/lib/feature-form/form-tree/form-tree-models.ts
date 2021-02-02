@@ -1,6 +1,5 @@
 import { Feature } from '../../shared/generated';
 
-
 export interface FeatureNode {
   name: string;
   children?: FeatureNode[];
@@ -10,12 +9,8 @@ export interface FeatureNode {
   selected: boolean;
 }
 
-/** Flat node with expandable and level information */
-export interface FlatNode {
-  expandable: boolean;
-  name: string;
-  level: number;
+export interface FormTreeMetadata {
   feature?: Feature;
   isFeatureType: boolean;
-  selected: boolean;
+  objectGuid?: string;
 }

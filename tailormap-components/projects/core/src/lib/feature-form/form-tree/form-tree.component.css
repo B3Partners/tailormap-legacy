@@ -1,3 +1,12 @@
+tailormap-tree {
+  display: block;
+  flex: 1;
+  overflow: hidden;
+}
+
+tailormap-tree ::ng-deep .tree-wrapper {
+  padding: 0 14px;
+}
 
 .tree {
   right: 310px;
@@ -8,14 +17,6 @@
 
 .newNode {
   font-style: italic;
-}
-
-.tree-node-wrapper {
-  text-overflow: ellipsis;
-
-  /* Required for text-overflow to do anything */
-  white-space: nowrap;
-  overflow: hidden;
 }
 
 .tree-node-wrapper--selected {

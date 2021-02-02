@@ -58,6 +58,7 @@ import { IconPickerComponent } from './icon-picker/icon-picker.component';
 import { IconService } from './icons/icon.service';
 import { DomSanitizer } from '@angular/platform-browser';
 import { ErrorMessageComponent } from './error-message/error-message.component';
+import { TreeService } from './tree/tree.service';
 
 @NgModule({
   declarations: [
@@ -147,6 +148,7 @@ import { ErrorMessageComponent } from './error-message/error-message.component';
   ],
   entryComponents: [],
   providers: [
+    TreeService,
     ConfirmDialogService,
     {
       provide: DateAdapter,

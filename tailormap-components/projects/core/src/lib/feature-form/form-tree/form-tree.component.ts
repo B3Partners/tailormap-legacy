@@ -1,7 +1,5 @@
 import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
-import { FlatTreeControl } from '@angular/cdk/tree';
-import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
-import { FlatNode } from './form-tree-models';
+import { FeatureNode, FormTreeMetadata } from './form-tree-models';
 import { Feature } from '../../shared/generated';
 import { FormTreeHelpers } from './form-tree-helpers';
 import { FormconfigRepositoryService } from '../../shared/formconfig-repository/formconfig-repository.service';
@@ -10,7 +8,10 @@ import { FormState } from '../state/form.state';
 import * as FormActions from '../state/form.actions';
 import { selectFormConfigs, selectTreeOpen } from '../state/form.selectors';
 import { Observable, Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { filter, map, takeUntil } from 'rxjs/operators';
+import { TreeService } from '../../shared/tree/tree.service';
+import { TreeModel } from '../../shared/tree/models/tree.model';
+import { TransientTreeHelper } from '../../shared/tree/helpers/transient-tree.helper';
 
 @Component({
   selector: 'tailormap-form-tree',
@@ -19,11 +20,6 @@ import { takeUntil } from 'rxjs/operators';
 })
 export class FormTreeComponent implements OnInit, OnChanges, OnDestroy {
   public isOpen$: Observable<boolean>;
-
-  constructor(
-    private store$: Store<FormState>,
-    private formConfigRepo: FormconfigRepositoryService) {
-  }
 
   private destroyed = new Subject();
 
@@ -42,12 +38,20 @@ export class FormTreeComponent implements OnInit, OnChanges, OnDestroy {
   @Input()
   public isBulk = false;
 
-  public treeControl = new FlatTreeControl<FlatNode>(node => node.level, node => node.expandable);
+  private transientTreeHelper: TransientTreeHelper<FeatureNode>;
 
-  public treeFlattener = new MatTreeFlattener(
-    FormTreeHelpers.transformer, node => node.level, node => node.expandable, node => node.children);
-
-  public dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
+  constructor(
+    private store$: Store<FormState>,
+    private treeService: TreeService,
+    private formConfigRepo: FormconfigRepositoryService) {
+    this.treeService.selectionStateChangedSource$.pipe(
+      takeUntil(this.destroyed),
+      map(nodeId => this.treeService.getNode(nodeId)),
+      filter(node => !node.metadata.isFeatureType),
+    ).subscribe(node => {
+      this.store$.dispatch(FormActions.setFeature({feature: node.metadata.feature}));
+    });
+  }
 
   public ngOnInit() {
     this.isOpen$ = this.store$.select(selectTreeOpen);
@@ -60,14 +64,21 @@ export class FormTreeComponent implements OnInit, OnChanges, OnDestroy {
 
   public ngOnChanges(changes: SimpleChanges): void {
     this.store$.select(selectFormConfigs).pipe(takeUntil(this.destroyed)).subscribe(formConfigs => {
-      this.dataSource.data = FormTreeHelpers.convertFeatureToNode(this.features, this.formConfigRepo,
+      const tree : TreeModel<FormTreeMetadata> [] = FormTreeHelpers.convertFeatureToTreeModel(this.features, this.formConfigRepo,
                                                                   this.feature.objectGuid, formConfigs);
-      this.treeControl.expand(this.treeControl.dataNodes[0]);
+      this.createTree(tree);
     });
   }
 
-  public setNodeSelected(node: FlatNode) {
-    this.store$.dispatch(FormActions.setFeature({feature: node.feature}));
+  private createTree(tree: TreeModel<FormTreeMetadata>[]) {
+    this.transientTreeHelper = new TransientTreeHelper(
+      this.treeService,
+      tree,
+      true,
+      node => {
+        return !node.metadata.isFeatureType && this.feature.objectGuid === node.metadata.objectGuid;
+      },
+    );
   }
 
   public closePanel() {
@@ -96,24 +107,6 @@ export class FormTreeComponent implements OnInit, OnChanges, OnDestroy {
         }
       }
     }
-
   }
 
-  public getNodeClassName(node: FlatNode) {
-    const treeNodeBaseClass = 'tree-node-wrapper';
-
-    const cls = [
-      treeNodeBaseClass,
-      node.expandable ? `${treeNodeBaseClass}--folder` : `${treeNodeBaseClass}--leaf`,
-      `${treeNodeBaseClass}--level-${node.level}`,
-    ];
-
-    if (node.selected && !this.isBulk) {
-      cls.push(`${treeNodeBaseClass}--selected`);
-    }
-
-    return cls.join(' ');
-  }
-
-  public hasChild = (_: number, node: FlatNode) => node.expandable;
 }
