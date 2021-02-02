@@ -1,5 +1,5 @@
 import { Injectable, OnDestroy } from '@angular/core';
-import { Attribute, FormConfiguration, FormFieldType, SelectOption } from '../../form/form-models';
+import { FormConfiguration, FormFieldType, SelectOption } from '../../form/form-models';
 import { LinkedAttributeRegistryService } from '../registry/linked-attribute-registry.service';
 import { AttributeControllerService, Attribuut } from '../../../shared/generated';
 import { LayerUtils } from '../../../shared/layer-utils/layer-utils.service';
@@ -7,23 +7,24 @@ import { FormState } from '../../state/form.state';
 import { Store } from '@ngrx/store';
 import { selectFormConfigs } from '../../state/form.selectors';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { filter, takeUntil } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
 })
-export class DomainRepositoryService implements OnDestroy{
+export class DomainRepositoryService implements OnDestroy {
   private formConfigs: Map<string, FormConfiguration>;
   private linkedAttributes: Array<Attribuut>;
-  // tslint:disable-next-line:no-unused-variable
-  private domainToAttribute: { [key: string]: Attribute; }
-
   private destroyed = new Subject();
+
   constructor(
     private repo: AttributeControllerService,
     private store$: Store<FormState>,
     private registry: LinkedAttributeRegistryService) {
-    this.store$.select(selectFormConfigs).pipe(takeUntil(this.destroyed)).subscribe(this.initFormConfig);
+    this.store$.select(selectFormConfigs).pipe(
+      takeUntil(this.destroyed),
+      filter(formConfigs => !!formConfigs),
+    ).subscribe(formConfigs => this.initFormConfig(formConfigs));
   }
 
   public ngOnDestroy(): void {

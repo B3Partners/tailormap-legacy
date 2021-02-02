@@ -13,6 +13,7 @@ import { formStateKey } from './state/form.state';
 import { formReducer } from './state/form.reducer';
 import { EffectsModule } from '@ngrx/effects';
 import { FormEffects } from './state/form.effects';
+import { DomainRepositoryService } from './linked-fields/domain-repository/domain-repository.service';
 
 @NgModule({
   declarations: [
@@ -37,5 +38,7 @@ import { FormEffects } from './state/form.effects';
   ],
 })
 export class FeatureFormModule {
+  constructor(domainRepo: DomainRepositoryService) {
+  }
 }
 
