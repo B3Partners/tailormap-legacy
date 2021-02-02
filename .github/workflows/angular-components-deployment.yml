@@ -1,6 +1,7 @@
 name: Angular components CD
 
 on:
+  workflow_dispatch:
   push:
     paths:
       - 'tailormap-components/**'
@@ -9,7 +10,7 @@ on:
       - master
     paths:
       - 'tailormap-components/**'
-      - '**.yaml'
+      - '**.yml'
 
 jobs:
   build:
