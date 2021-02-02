@@ -17,6 +17,11 @@ const onSetFeature = (state: FormState, payload : { feature: Feature }): FormSta
   feature: payload.feature,
 });
 
+const onSaveFeature = (state: FormState, payload: { features: Feature[] }) : FormState =>({
+  ...state,
+  features: payload.features,
+});
+
 const onSetOpenFeatureForm = (state: FormState, payload: { features?: Feature[], closeAfterSave?: boolean,
                                                            alreadyDirty?: boolean }): FormState => ({
   ...state,
@@ -41,6 +46,7 @@ const formReducerImpl = createReducer(
   initialFormState,
   on(FormActions.setFormConfigs, onSetFormConfigs),
   on(FormActions.setTreeOpen, onSetTreeOpen),
+  on(FormActions.setSaveFeatures, onSaveFeature),
   on(FormActions.setFeature, onSetFeature),
   on(FormActions.setOpenFeatureForm, onSetOpenFeatureForm),
   on(FormActions.setCloseFeatureForm, onCloseFeatureForm),

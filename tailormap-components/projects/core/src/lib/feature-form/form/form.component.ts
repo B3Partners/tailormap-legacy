@@ -99,15 +99,8 @@ export class FormComponent implements OnDestroy, OnChanges, OnInit {
     throw new Error('Method not implemented.');
   }
 
-  public formChanged(result: any) {
-    this.formDirty = result.changed;
-    if (!result.changed) {
-      this.features = result.features;
-      this.feature = result.feature;
-      if (this.closeAfterSave) {
-        this.store$.dispatch(FormActions.setCloseFeatureForm());
-      }
-    }
+  public formChanged(result: boolean) {
+    this.formDirty = result;
   }
 
   public newItem(evt) {

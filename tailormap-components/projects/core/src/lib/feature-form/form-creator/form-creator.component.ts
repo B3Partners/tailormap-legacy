@@ -12,6 +12,11 @@ import { FormFieldHelpers } from '../form-field/form-field-helpers';
 import { AttributelistService } from '../../user-interface/attributelist/attributelist.service';
 import { ConfirmDialogService } from '../../shared/confirm-dialog/confirm-dialog.service';
 import { takeUntil } from 'rxjs/operators';
+import { Store } from '@ngrx/store';
+import { FormState } from '../state/form.state';
+import * as FormActions from '../state/form.actions';
+import * as WorkflowActions from '../../workflow/state/workflow.actions';
+import { WorkflowAction, WorkflowState } from '../../workflow/state/workflow.state';
 
 @Component({
   selector: 'tailormap-form-creator',
@@ -21,6 +26,7 @@ import { takeUntil } from 'rxjs/operators';
 export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit {
 
   constructor(
+    private store$: Store<FormState | WorkflowState>,
     private actions: FormActionsService,
     private registry: LinkedAttributeRegistryService,
     private _snackBar: MatSnackBar,
@@ -40,7 +46,7 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
   @Input()
   public isBulk = false;
   @Output()
-  public formChanged = new EventEmitter<any>();
+  public formChanged = new EventEmitter<boolean>();
 
   public tabbedConfig: TabbedFields;
 
@@ -59,7 +65,7 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
       this.createFormControls();
       this.registry.resetLinkedAttributes();
       this.formgroep.valueChanges.subscribe(s => {
-        this.formChanged.emit({changed: true});
+        this.formChanged.emit(true);
       });
     }
   }
@@ -129,12 +135,12 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
     feature.__fid = this.feature.objectGuid;
     const clazzName = this.feature.clazz;
     this.mergeFormToFeature(feature);
+
     this.actions.save$(this.isBulk, this.isBulk ? this.features : [this.feature], this.features[0]).subscribe(savedFeature => {
         const fs = this.updateFeatureInArray(savedFeature, this.features);
-        this.features = [...fs];
-        this.feature = {...savedFeature};
+        this.store$.dispatch(FormActions.setSaveFeatures({features: fs}));
         this._snackBar.open('Opgeslagen', '', {duration: 5000});
-        this.formChanged.emit({changed: false, feature: savedFeature, features: this.features});
+        this.store$.dispatch(WorkflowActions.setAction({action: WorkflowAction.SAVED}));
       },
       error => {
         this._snackBar.open('Fout: Feature niet kunnen opslaan: ' + error.error.message, '', {
