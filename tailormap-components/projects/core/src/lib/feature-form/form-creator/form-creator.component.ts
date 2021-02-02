@@ -3,7 +3,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Subject, Subscription } from 'rxjs';
 import { Feature } from '../../shared/generated';
-import { Attribute, ColumnizedFields, FormConfiguration, FormFieldType, IndexedFeatureAttributes, TabbedFields } from '../form/form-models';
+import { Attribute, FormConfiguration, FormFieldType, IndexedFeatureAttributes, TabbedFields } from '../form/form-models';
 import { FormCreatorHelpers } from './form-creator-helpers';
 import { FormActionsService } from '../form-actions/form-actions.service';
 import { FeatureInitializerService } from '../../shared/feature-initializer/feature-initializer.service';
@@ -71,36 +71,12 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
   }
 
   private prepareFormConfig(): TabbedFields {
-    const tabbedFields: TabbedFields = {tabs: new Map<number, ColumnizedFields>()};
+    const tabbedFields: TabbedFields = {tabs: new Map<number, Attribute[]>()};
     const attrs = this.formConfig.fields;
     for (let tabNr = 1; tabNr <= this.formConfig.tabs; tabNr++) {
-      const fields: Attribute[] = [];
-      attrs.forEach(attr => {
-        if (attr.tab === tabNr) {
-          fields.push(attr);
-        }
-      });
-      tabbedFields.tabs.set(tabNr, this.getColumizedFields(fields));
+      tabbedFields.tabs.set(tabNr, attrs.filter(attr => attr.tab === tabNr));
     }
     return tabbedFields;
-  }
-
-  private getColumizedFields(attrs: Attribute[]): ColumnizedFields {
-    const columnizedFields: ColumnizedFields = {columns: new Map<number, Attribute[]>()};
-    if (attrs.length === 0) {
-      return columnizedFields;
-    }
-    const numCols = attrs.reduce((max, b) => Math.max(max, b.column), attrs[0].column);
-    for (let col = 1; col <= numCols; col++) {
-      const fields: Attribute[] = [];
-      attrs.forEach(attr => {
-        if (attr.column === col) {
-          fields.push(attr);
-        }
-      });
-      columnizedFields.columns.set(col, fields);
-    }
-    return columnizedFields;
   }
 
   private createFormControls() {
