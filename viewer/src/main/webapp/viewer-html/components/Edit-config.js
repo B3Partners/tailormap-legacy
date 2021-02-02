@@ -79,6 +79,13 @@ Ext.define("viewer.components.CustomConfiguration", {
             },
             {
                 xtype: 'checkbox',
+                fieldLabel: i18next.t('edit_config_8'),
+                name: 'showLineLength',
+                value: this.configObject.showLineLength !== undefined ? this.configObject.showLineLength : false,
+                labelWidth: this.labelWidth
+            },
+            {
+                xtype: 'checkbox',
                 fieldLabel: i18next.t('edit_config_5'),
                 name: 'showEditLinkInFeatureInfo',
                 hidden: hidden.showEditLinkInFeatureInfo === "true" ? true:false,

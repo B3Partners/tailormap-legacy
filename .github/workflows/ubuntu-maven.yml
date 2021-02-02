@@ -1,24 +1,15 @@
 name: Ubuntu Maven build
 
-on: [push, pull_request, workflow_dispatch]
+on:
+ push:
   paths-ignore:
-    - 'tailormap-components/**'
-#on:
-#  push:
-#    branches:
-#    - master
-#    - v5.8.x
-#    - v5.6.x
-#    - v5.4.x
-#  pull_request:
-#    branches:
-#    - master
-#    - v5.4.x
-#    - v5.6.x
-#    - v5.8.x
-#  workflow_dispatch:
-#    branches: []
- 
+  - 'tailormap-components/**'
+ pull_request:
+  paths-ignore:
+  - 'tailormap-components/**'
+ workflow_dispatch:
+  paths-ignore:
+  - 'tailormap-components/**'
 jobs:
   build:
     name: Ubuntu Java ${{ matrix.java }}

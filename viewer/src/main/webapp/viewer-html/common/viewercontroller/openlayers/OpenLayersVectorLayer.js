@@ -134,6 +134,31 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
         if(this.allowSelection()) {
             this.modifyFeature.activate();
         }
+
+        if (this.config.showLineLength) {
+            if(!config.showmeasures) {
+                this.polygonMeasureControl = new OpenLayers.Control.Measure(OpenLayers.Handler.Polygon);
+                map.addControl(this.polygonMeasureControl);
+            }
+            // create div for the line
+            var measureValueDiv = document.getElementById("measureLineLength");
+            if (measureValueDiv === null){
+                measureValueDiv = document.createElement('div');
+                measureValueDiv.id = 'measureLineLength';
+                measureValueDiv.style.position = 'absolute';
+                this.polygonMeasureControl.map.div.appendChild(measureValueDiv);
+                measureValueDiv.style.zIndex = "10000";
+                measureValueDiv.className = "olControlMaptip";
+                var measureValueText = document.createElement('div');
+                measureValueText.id = "measureLineLength" + 'Text';
+                measureValueDiv.appendChild(measureValueText);
+            }
+            // var px= this.polygonMeasureControl.map.getViewPortPxFromLonLat(new OpenLayers.LonLat(evt.x,evt.y));
+            //measureValueDiv.style.top = px.y + "px";
+            //measureValueDiv.style.left = px.x + 40 + 'px';
+            measureValueDiv.style.display = "block";
+            var measureValueText = document.getElementById("measureLineLength" + 'Text');
+        }
     },
 
     beforeSelect:function(){
@@ -655,15 +680,25 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
      *
      */
     sketchModified : function (evt) {
-        if(evt.feature.geometry.getVertices().length >= 3 && this.polygon.active) {
-            if (this.drawRightAngle){
-                //Dit is het punt van de muis
-                var newPoint = evt.vertex;
-                // dit is het punt waar de haakse hoek op gemaakt wordt
-                var center = evt.vertex.parent.components[evt.vertex.parent.components.length-3];
-                // dit is 2 punten terug, deze is nodig om de vorige lijn te maken
-                var preproccesorOfCenter = evt.vertex.parent.components[evt.vertex.parent.components.length-4];
-                var radius = center.distanceTo(newPoint);
+        if(evt.feature.geometry.getVertices().length >= 2 && this.polygon.active) {
+            //Dit is het punt van de muis
+            var newPoint = evt.vertex;
+            // dit is het punt waar de haakse hoek op gemaakt wordt
+            var center = evt.vertex.parent.components[evt.vertex.parent.components.length-3];
+            // dit is 2 punten terug, deze is nodig om de vorige lijn te maken
+            var preproccesorOfCenter = evt.vertex.parent.components[evt.vertex.parent.components.length-4];
+            var radius = center.distanceTo(newPoint);
+
+            if(this.config.showLineLength) {
+                var measureValueDiv = document.getElementById("measureLineLength");
+                var px = this.polygonMeasureControl.map.getViewPortPxFromLonLat(new OpenLayers.LonLat(evt.vertex.x, evt.vertex.y));
+                measureValueDiv.style.top = px.y + "px";
+                measureValueDiv.style.left = px.x + 40 + 'px';
+                measureValueDiv.style.display = "block";
+                var measureValueText = document.getElementById("measureLineLength" + 'Text');
+                measureValueText.innerHTML = radius.toFixed(2) + " " + "m";
+            }
+            if (this.drawRightAngle && evt.feature.geometry.getVertices().length >= 3){
                 var rightAnglePoint = this.calculateRightAnglePoint(newPoint, center, preproccesorOfCenter, radius);
                 evt.vertex.parent.components[evt.vertex.parent.components.length-2] = new OpenLayers.Geometry.Point(rightAnglePoint.x, rightAnglePoint.y);
                 return new OpenLayers.Geometry.Polygon(evt.vertex.parent);
