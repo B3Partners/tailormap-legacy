@@ -1,10 +1,9 @@
 name: Angular components CD
 
 on:
-#  push:
-#    branches:
-#      - feat/gbi-component
-#      - feat/GBIW-142_continuous_deployment
+  push:
+    paths:
+      - 'tailormap-components/**'
   pull_request:
     branches:
       - master
