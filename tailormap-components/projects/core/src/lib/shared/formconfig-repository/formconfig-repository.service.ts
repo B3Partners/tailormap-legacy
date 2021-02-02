@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { FormConfiguration, FormConfigurations } from '../../feature-form/form/form-models';
-import { DomainRepositoryService } from '../../feature-form/linked-fields/domain-repository/domain-repository.service';
 import { TailorMapService } from '../../../../../bridge/src/tailor-map.service';
 import { LayerUtils } from '../layer-utils/layer-utils.service';
 import { FeatureControllerService } from '../generated';
@@ -21,7 +20,6 @@ export class FormconfigRepositoryService {
   constructor(
     private http: HttpClient,
     private featureController: FeatureControllerService,
-    private domainRepo: DomainRepositoryService,
     private tailorMap: TailorMapService,
     private store$ : Store<FormState>,
   ) {
@@ -53,8 +51,6 @@ export class FormconfigRepositoryService {
             });
 
             this.store$.dispatch(FormActions.setFormConfigs ({formConfigs: this.formConfigs}));
-
-            this.domainRepo.initFormConfig(this.formConfigs);
         });
 
       });

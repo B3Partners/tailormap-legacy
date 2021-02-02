@@ -1,32 +1,37 @@
-import { Injectable } from '@angular/core';
-import {
-  Attribute,
-  FormConfiguration,
-  FormFieldType,
-  SelectOption,
-} from '../../form/form-models';
+import { Injectable, OnDestroy } from '@angular/core';
+import { Attribute, FormConfiguration, FormFieldType, SelectOption } from '../../form/form-models';
 import { LinkedAttributeRegistryService } from '../registry/linked-attribute-registry.service';
-import {
-  AttributeControllerService,
-  Attribuut,
-} from '../../../shared/generated';
+import { AttributeControllerService, Attribuut } from '../../../shared/generated';
 import { LayerUtils } from '../../../shared/layer-utils/layer-utils.service';
+import { FormState } from '../../state/form.state';
+import { Store } from '@ngrx/store';
+import { selectFormConfigs } from '../../state/form.selectors';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
 })
-export class DomainRepositoryService {
+export class DomainRepositoryService implements OnDestroy{
   private formConfigs: Map<string, FormConfiguration>;
   private linkedAttributes: Array<Attribuut>;
   // tslint:disable-next-line:no-unused-variable
   private domainToAttribute: { [key: string]: Attribute; }
 
+  private destroyed = new Subject();
   constructor(
     private repo: AttributeControllerService,
+    private store$: Store<FormState>,
     private registry: LinkedAttributeRegistryService) {
+    this.store$.select(selectFormConfigs).pipe(takeUntil(this.destroyed)).subscribe(this.initFormConfig);
   }
 
-  public initFormConfig(formConfigs: Map<string, FormConfiguration>) {
+  public ngOnDestroy(): void {
+    this.destroyed.next();
+    this.destroyed.complete();
+  }
+
+  private initFormConfig(formConfigs: Map<string, FormConfiguration>) {
     this.formConfigs = formConfigs;
     const domainAttrs: Array<number> = [];
     formConfigs.forEach((config, key) => {
@@ -37,7 +42,7 @@ export class DomainRepositoryService {
       });
     });
     if (domainAttrs.length > 0) {
-      this.repo.attributes({ids: domainAttrs}).subscribe(result => {
+      this.repo.attributes({ids: domainAttrs}).pipe(takeUntil(this.destroyed)).subscribe(result => {
 
         this.linkedAttributes = result;
         this.registry.setLinkedAttributes(this.linkedAttributes);

@@ -55,7 +55,6 @@ export class AttributelistDetailsComponent implements OnInit,
     this.valueService,
     this.attributelistService,
     this.tailorMapService,
-    this.formconfigRepoService,
     this.store$);
 
   constructor(private attributeService: AttributeService,
@@ -63,8 +62,7 @@ export class AttributelistDetailsComponent implements OnInit,
               private valueService: ValueService,
               private attributelistService: AttributelistService,
               private tailorMapService: TailorMapService,
-              private store$: Store<FormState>,
-              private formconfigRepoService: FormconfigRepositoryService) {
+              private store$: Store<FormState>) {
     // console.log('#Details - constructor');
   }
 
