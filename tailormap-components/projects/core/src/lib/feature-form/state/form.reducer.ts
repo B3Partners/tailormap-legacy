@@ -1,8 +1,10 @@
 import { Action, createReducer, on } from '@ngrx/store';
-import { FormState, initialFormState } from './form.state';
+import { FormAction, FormState, initialFormState } from './form.state';
 import * as FormActions from './form.actions';
 import { Feature } from '../../shared/generated';
 import { FormConfiguration } from '../form/form-models';
+import { WorkflowState } from '../../workflow/state/workflow.state';
+import { WORKFLOW_ACTION } from '../../workflow/state/workflow-models';
 
 const onCloseFeatureForm  = (state: FormState): FormState => ({
   ...state,
@@ -42,8 +44,14 @@ const onSetFormConfigs = (state: FormState, payload : { formConfigs: Map<string,
   formConfigs: payload.formConfigs,
 });
 
+const onSetAction = (state: FormState, payload : { action: FormAction }): FormState => ({
+  ...state,
+  action: payload.action,
+});
+
 const formReducerImpl = createReducer(
   initialFormState,
+  on(FormActions.setFormAction, onSetAction),
   on(FormActions.setFormConfigs, onSetFormConfigs),
   on(FormActions.setTreeOpen, onSetTreeOpen),
   on(FormActions.setSaveFeatures, onSaveFeature),

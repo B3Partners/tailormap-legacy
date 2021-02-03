@@ -1,19 +1,13 @@
-import {
-  Injectable,
-  NgZone,
-  OnDestroy,
-} from '@angular/core';
+import { Injectable, NgZone, OnDestroy } from '@angular/core';
 import { Workflow } from '../workflows/Workflow';
 import { WorkflowFactoryService } from '../workflow-factory/workflow-factory.service';
 import { MapClickedEvent } from '../../shared/models/event-models';
 import { Feature } from '../../shared/generated';
 import { Subscription } from 'rxjs';
 import { WorkflowActionManagerService } from './workflow-action-manager.service';
-import {
-  WORKFLOW_ACTION,
-  WorkflowActionEvent,
-} from './workflow-models';
+import {  WorkflowActionEvent } from './workflow-models';
 import { VectorLayer } from '../../../../../bridge/typings';
+import { WORKFLOW_ACTION } from '../state/workflow-models';
 
 @Injectable({
   providedIn: 'root',

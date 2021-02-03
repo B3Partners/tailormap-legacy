@@ -1,14 +1,13 @@
-export enum WorkflowAction {
-  IDLE = 'idle',
-  SAVED = 'saved',
-}
+import { WORKFLOW_ACTION } from './workflow-models';
 
 export const workflowStateKey = 'workflow';
 
 export interface WorkflowState {
-  action: WorkflowAction;
+  action: WORKFLOW_ACTION;
 }
 
 export const initialWorkflowState: WorkflowState = {
-  action: WorkflowAction.IDLE,
+  action: WORKFLOW_ACTION.DEFAULT,
 }
+
+// deze verder uitwerken

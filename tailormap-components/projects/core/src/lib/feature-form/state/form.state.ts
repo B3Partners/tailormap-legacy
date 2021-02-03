@@ -4,6 +4,11 @@ import { FormConfiguration } from '../form/form-models';
 
 export const formStateKey = 'form';
 
+export enum FormAction {
+  IDLE = 'idle',
+  SAVED = 'saved',
+}
+
 export interface FormState {
   features : Feature[];
   feature: Feature;
@@ -12,6 +17,7 @@ export interface FormState {
   formOpen: boolean;
   treeOpen: boolean;
   formConfigs: Map<string, FormConfiguration>;
+  action: FormAction;
 }
 
 export const initialFormState: FormState = {
@@ -22,4 +28,5 @@ export const initialFormState: FormState = {
   alreadyDirty: false,
   treeOpen: false,
   formConfigs: null,
+  action: FormAction.IDLE,
 }

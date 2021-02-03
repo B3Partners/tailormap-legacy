@@ -6,12 +6,12 @@ import { FormconfigRepositoryService } from '../../../shared/formconfig-reposito
 import { MatSelectChange } from '@angular/material/select';
 import { FormConfiguration } from '../../../feature-form/form/form-models';
 import { WorkflowActionManagerService } from '../../../workflow/workflow-controller/workflow-action-manager.service';
-import { WORKFLOW_ACTION } from '../../../workflow/workflow-controller/workflow-models';
 import { Store } from '@ngrx/store';
 import { FormState } from '../../../feature-form/state/form.state';
 import { selectFormConfigForFeatureType, selectFormConfigs, selectFormFeaturetypes } from '../../../feature-form/state/form.selectors';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
+import { WORKFLOW_ACTION } from '../../../workflow/state/workflow-models';
 
 @Component({
   selector: 'tailormap-add-feature-menu',

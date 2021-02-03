@@ -3,11 +3,11 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { AddFeatureMenuComponent } from '../add-feature-menu/add-feature-menu.component';
 import { TailorMapService } from '../../../../../../bridge/src/tailor-map.service';
 import { WorkflowActionManagerService } from '../../../workflow/workflow-controller/workflow-action-manager.service';
-import { WORKFLOW_ACTION } from '../../../workflow/workflow-controller/workflow-models';
 import { MergeComponent, SplitComponent } from '../../../../../../bridge/typings';
 import { WorkflowControllerService } from '../../../workflow/workflow-controller/workflow-controller.service';
 import { Store } from '@ngrx/store';
 import { FormState } from '../../../feature-form/state/form.state';
+import { WORKFLOW_ACTION } from '../../../workflow/state/workflow-models';
 
 @Component({
   selector: 'tailormap-edit-bar',

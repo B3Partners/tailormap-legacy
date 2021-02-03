@@ -1,12 +1,18 @@
 import { createAction, props } from '@ngrx/store';
 import { Feature } from '../../shared/generated';
 import { FormConfiguration } from '../form/form-models';
+import { FormAction } from './form.state';
 
 const formActionsPrefix = '[Form]';
 
 export let setTreeOpen = createAction(
   `${formActionsPrefix} Open form tree`,
   props<{ treeOpen : boolean }>(),
+);
+
+export let setFormAction = createAction(
+  `${formActionsPrefix} Set form action`,
+  props<{ action : FormAction }>(),
 );
 
 export const setOpenFeatureForm = createAction(

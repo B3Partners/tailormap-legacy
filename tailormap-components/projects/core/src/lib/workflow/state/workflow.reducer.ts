@@ -1,8 +1,9 @@
 import { Action, createReducer, on } from '@ngrx/store';
-import { initialWorkflowState, WorkflowAction, WorkflowState } from './workflow.state';
+import { initialWorkflowState,  WorkflowState } from './workflow.state';
 import * as WorkflowActions from './workflow.actions';
+import { WORKFLOW_ACTION } from './workflow-models';
 
-const onSetAction = (state: WorkflowState, payload : { action: WorkflowAction }): WorkflowState => ({
+const onSetAction = (state: WorkflowState, payload : { action: WORKFLOW_ACTION }): WorkflowState => ({
   ...state,
   action: payload.action,
 });

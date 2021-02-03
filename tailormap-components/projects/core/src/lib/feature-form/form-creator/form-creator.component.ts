@@ -13,10 +13,11 @@ import { AttributelistService } from '../../user-interface/attributelist/attribu
 import { ConfirmDialogService } from '../../shared/confirm-dialog/confirm-dialog.service';
 import { takeUntil } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
-import { FormState } from '../state/form.state';
+import { FormAction, FormState } from '../state/form.state';
 import * as FormActions from '../state/form.actions';
 import * as WorkflowActions from '../../workflow/state/workflow.actions';
-import { WorkflowAction, WorkflowState } from '../../workflow/state/workflow.state';
+import { WorkflowState } from '../../workflow/state/workflow.state';
+import { WORKFLOW_ACTION } from '../../workflow/state/workflow-models';
 
 @Component({
   selector: 'tailormap-form-creator',
@@ -140,7 +141,7 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
         const fs = this.updateFeatureInArray(savedFeature, this.features);
         this.store$.dispatch(FormActions.setSaveFeatures({features: fs}));
         this._snackBar.open('Opgeslagen', '', {duration: 5000});
-        this.store$.dispatch(WorkflowActions.setAction({action: WorkflowAction.SAVED}));
+        this.store$.dispatch(FormActions.setFormAction({action: FormAction.SAVED}));
       },
       error => {
         this._snackBar.open('Fout: Feature niet kunnen opslaan: ' + error.error.message, '', {

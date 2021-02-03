@@ -1,9 +1,10 @@
 import { createAction, props } from '@ngrx/store';
-import { WorkflowAction } from './workflow.state';
+import { WORKFLOW_ACTION } from './workflow-models';
+
 
 const formActionsPrefix = '[Workflow]';
 
 export let setAction = createAction(
   `${formActionsPrefix} Set current action`,
-  props<{ action : WorkflowAction }>(),
+  props<{ action : WORKFLOW_ACTION }>(),
 );

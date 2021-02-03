@@ -7,7 +7,7 @@ import { FormConfiguration } from './form-models';
 import { Feature } from '../../shared/generated';
 import { FormActionsService } from '../form-actions/form-actions.service';
 import { WorkflowActionManagerService } from '../../workflow/workflow-controller/workflow-action-manager.service';
-import { WORKFLOW_ACTION, WorkflowActionEvent } from '../../workflow/workflow-controller/workflow-models';
+import { WorkflowActionEvent } from '../../workflow/workflow-controller/workflow-models';
 import { MetadataService } from '../../application/services/metadata.service';
 import { FormState } from '../state/form.state';
 import { Store } from '@ngrx/store';
@@ -17,6 +17,7 @@ import {
   selectFormConfigs, selectOpenFeatureForm, selectTreeOpen,
 } from '../state/form.selectors';
 import { LayerUtils } from '../../shared/layer-utils/layer-utils.service';
+import { WORKFLOW_ACTION } from '../../workflow/state/workflow-models';
 
 @Component({
   selector: 'tailormap-form',
