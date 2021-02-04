@@ -18,7 +18,7 @@ export class FormNodeComponent implements OnInit {
   public ngOnInit(): void {
   }
 
-  public isLevel() {
+  public isFeatureType() {
     return this.node.metadata.isFeatureType && this.node.expandable;
   }
 

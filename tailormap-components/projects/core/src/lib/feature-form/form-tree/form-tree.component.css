@@ -1,9 +1,3 @@
-tailormap-tree {
-  display: block;
-  flex: 1;
-  overflow: hidden;
-}
-
 tailormap-tree ::ng-deep .tree-wrapper {
   padding: 0 14px;
 }
@@ -13,10 +7,6 @@ tailormap-tree ::ng-deep .tree-wrapper {
   width: 350px;
   overflow: auto;
   margin-right: 10px;
-}
-
-.newNode {
-  font-style: italic;
 }
 
 .tree ::ng-deep .tree-node-wrapper--selected {
@@ -30,16 +20,6 @@ tailormap-tree ::ng-deep .tree-wrapper {
   padding-right: 0;
 }
 
-
 .tree ::ng-deep .tree-node-wrapper{
   overflow: hidden;
-}
-
-.tree-node-wrapper--level-0.tree-node-wrapper--leaf,
-.tree-node-wrapper--leaf {
-  padding-left: 0;
-}
-
-.tree-node-wrapper--level-0 {
-  padding-left: 0;
 }
