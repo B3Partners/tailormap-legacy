@@ -1,7 +1,7 @@
 import { AttributeListColumnModel } from './attribute-list-column-models';
-import { RowData } from '../attributelist-common/attributelist-models';
 import { RelatedFeatureType } from '../../../shared/attribute-service/attribute-models';
 import { AttributeListFilterModel } from './attribute-list-filter.model';
+import { AttributeListRowModel } from './attribute-list-row.model';
 
 export interface AttributeListTabModel {
   layerId: string;
@@ -14,7 +14,7 @@ export interface AttributeListTabModel {
   // leftSideRelations: string[];
   // rightSideRelations: string[];
   filter: AttributeListFilterModel[];
-  rows: RowData[];
+  rows: AttributeListRowModel[];
   pageSize: number;
   pageIndex: number;
   totalCount: number;

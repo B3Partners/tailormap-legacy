@@ -23,7 +23,7 @@ export class DetailsrowDirective {
   @Input()
   public set cdkDetailsRow(value: RowData) {
     if (value !== this.row) {
-      this.row = value;
+      this.row = { ...value };
       this.row._detailsRow = this;
     }
   }

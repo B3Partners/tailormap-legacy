@@ -29,7 +29,7 @@ mat-table {
   min-width: min-content;
 }
 
-.mat-row,
+.mat-row:not(.details-row),
 .mat-header-row,
 mat-footer-row {
   min-height: 24px;
@@ -68,8 +68,7 @@ mat-footer-cell {
   margin-left: 5px;
 }
 
-.material-icons,
-.material-icons-outlined {
+.material-icons {
   font-size: 20px;
 }
 
@@ -119,6 +118,11 @@ mat-footer-cell {
   padding: 0 !important;
 }
 
+.details-row {
+  overflow: hidden;
+}
+
 .details-container {
   overflow: hidden;
+  flex: 1;
 }

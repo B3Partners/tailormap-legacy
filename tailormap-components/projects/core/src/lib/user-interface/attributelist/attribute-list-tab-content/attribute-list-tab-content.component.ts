@@ -1,11 +1,11 @@
-import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { MatPaginator } from '@angular/material/paginator';
+import { Component, Input, OnDestroy, OnInit, TrackByFunction, ViewChild } from '@angular/core';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort, Sort } from '@angular/material/sort';
 import { MatTable } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { animate, state, style, transition, trigger } from '@angular/animations';
-import { AttributelistTable, RowData } from '../attributelist-common/attributelist-models';
+import { AttributelistTable } from '../attributelist-common/attributelist-models';
 import { AttributeDataSource } from '../attributelist-common/attributelist-datasource';
 import { AttributelistFilter } from '../attributelist-common/attributelist-filter';
 import { AttributelistService } from '../attributelist.service';
@@ -19,29 +19,31 @@ import { StatisticService } from '../../../shared/statistic-service/statistic.se
 import { StatisticType } from '../../../shared/statistic-service/statistic-models';
 import { ValueService } from '../../../shared/value-service/value.service';
 import { TailorMapService } from '../../../../../../bridge/src/tailor-map.service';
-import { HighlightService } from '../../../shared/highlight-service/highlight.service';
 import { MatMenuTrigger } from '@angular/material/menu';
-import { from, Subject } from 'rxjs';
-import { concatMap, takeUntil } from 'rxjs/operators';
+import { from, Observable, Subject } from 'rxjs';
+import { concatMap, map, takeUntil } from 'rxjs/operators';
 import { AttributelistTreeComponent } from '../attributelist-tree/attributelist-tree.component';
 import { AttributelistNode, SelectedTreeData, TreeDialogData } from '../attributelist-tree/attributelist-tree-models';
 import { AttributelistColumnController } from '../attributelist-common/attributelist-column-controller';
 import { FormComponent } from '../../../feature-form/form/form.component';
 import { Store } from '@ngrx/store';
 import { AttributeListState } from '../state/attribute-list.state';
-import { selectAttributeListConfig, selectTab } from '../state/attribute-list.selectors';
+import { selectTab } from '../state/attribute-list.selectors';
 import { AttributeListTabModel } from '../models/attribute-list-tab.model';
-import { AttributeListConfig } from '../models/attribute-list.config';
+import {
+  toggleCheckedAllRows, updatePage, updateRowChecked, updateRowExpanded, updateRowSelected, updateSort,
+} from '../state/attribute-list.actions';
+import { AttributeListRowModel } from '../models/attribute-list-row.model';
 
 @Component({
   selector: 'tailormap-attribute-tab-content',
   templateUrl: './attribute-list-tab-content.component.html',
   styleUrls: ['./attribute-list-tab-content.component.css'],
   animations: [
-    trigger('onDetailsExpand', [
-      state('void', style({height: '0px', minHeight: '0', visibility: 'hidden'})),
-      state('*', style({height: '*', visibility: 'visible'})),
-      transition('void <=> *', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+    trigger('detailExpand', [
+      state('collapsed', style({ height: '0px', minHeight: '0' })),
+      state('expanded', style({ height: '*' })),
+      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
     ]),
   ],
 })
@@ -108,7 +110,8 @@ export class AttributeListTabContentComponent implements AttributelistTable, OnI
   private destroyed = new Subject();
 
   public tab: AttributeListTabModel;
-  private config: AttributeListConfig;
+  public rows$: Observable<AttributeListRowModel[]>;
+  public trackByRowId: TrackByFunction<AttributeListRowModel> = (idx: number, row: AttributeListRowModel) => row.rowId;
 
   constructor(private store$: Store<AttributeListState>,
               private attributeService: AttributeService,
@@ -117,7 +120,6 @@ export class AttributeListTabContentComponent implements AttributelistTable, OnI
               private valueService: ValueService,
               public attributelistService: AttributelistService,
               private formconfigRepoService: FormconfigRepositoryService,
-              private highlightService: HighlightService,
               private snackBar: MatSnackBar,
               private dialog: MatDialog) {}
 
@@ -131,17 +133,15 @@ export class AttributeListTabContentComponent implements AttributelistTable, OnI
       .pipe(takeUntil(this.destroyed))
       .subscribe(tab => {
         this.tab = tab;
-        if (tab) {
-          this.dataSource.params.layerName = tab.layerName;
-          this.dataSource.params.layerId = +(tab.layerId);
-          this.initFilterMap();
-          this.updateTable();
-        }
+        const someUnchecked = tab.rows.findIndex(row => !row._checked) !== -1;
+        const someChecked = tab.rows.findIndex(row => row._checked) !== -1;
+        this.checkState = someChecked && someUnchecked ? CheckState.Some : (someUnchecked ? CheckState.None : CheckState.All);
       });
 
-    this.store$.select(selectAttributeListConfig)
-      .pipe(takeUntil(this.destroyed))
-      .subscribe(conf => this.config = conf);
+    this.rows$ = this.store$.select(selectTab, this.layerId).pipe(
+      takeUntil(this.destroyed),
+      map(tab => tab.rows),
+    );
 
     // called from passport form
     this.attributelistService.loadTableData$.pipe(takeUntil(this.destroyed)).subscribe(result => {
@@ -243,15 +243,9 @@ export class AttributeListTabContentComponent implements AttributelistTable, OnI
   /**
    * Fired when the checkbox in the header is clicked.
    */
-  public onHeaderCheckClick(): void {
-    const currCheckState = this.checkState;
-    if (currCheckState === CheckState.All) {
-      this.dataSource.checkNone();
-    } else {
-      this.dataSource.checkAll();
-    }
-    // Update check info.
-    this.updateCheckedInfo();
+  public onHeaderCheckClick($event: MouseEvent): void {
+    $event.stopPropagation();
+    this.store$.dispatch(toggleCheckedAllRows({ layerId: this.tab.layerId }));
   }
 
   // Creates a filter for all the checked features in the maintable on the related tabled
@@ -450,56 +444,39 @@ export class AttributeListTabContentComponent implements AttributelistTable, OnI
     this.updateTable();
   }
 
-  public onPageChange(event): void {
-    // Clear highligthing.
-    this.highlightService.clearHighlight();
-    // Update the table.
-    this.updateTable();
+  public onPageChange($event: PageEvent): void {
+    this.store$.dispatch(updatePage({ layerId: this.tab.layerId, page: $event.pageIndex }));
   }
 
   /**
    * Fired when a checkbox is clicked.
    */
-  public onRowCheckClick(row: RowData): void {
-    // console.log('#Table - onRowCheckClick');
-    // console.log(row);
-    // Toggle the checkbox in the checked row.
-    this.dataSource.toggleChecked(row);
-    // Update check info.
-    this.updateCheckedInfo();
+  public onRowCheckClick($event: MouseEvent, row: AttributeListRowModel): void {
+    $event.stopPropagation();
+    this.store$.dispatch(updateRowChecked({ layerId: this.tab.layerId, rowId: row.rowId, checked: !row._checked }));
   }
 
   /**
    * Fired when a expand/collapse icon/char is clicked.
    */
-  public onRowExpandClick(row: RowData): void {
-    // console.log('#Table - onRowExpandClick');
-    // console.log(row);
-    if (row.hasOwnProperty('_detailsRow')) {
-      // Toggle the expanded/collapsed state of the row.
-      row._detailsRow.toggle();
-    }
+  public onRowExpandClick($event: MouseEvent, row: AttributeListRowModel): void {
+    $event.stopPropagation();
+    this.store$.dispatch(updateRowExpanded({ layerId: this.tab.layerId, rowId: row.rowId, expanded: !row._expanded }));
   }
 
   /**
    * Fired when a row is clicked.
    */
-  public onRowClick(row: RowData): void {
-    // Get zoomto buffer size.
-    const zoomToBuffer = this.config.zoomToBuffer;
-
-    // Highlight and zoom to clicked feature.
-    this.highlightService.highlightFeature(row.__fid, +(this.tab.layerId), true, zoomToBuffer);
+  public onRowClick($event: MouseEvent, row: AttributeListRowModel): void {
+    $event.stopPropagation();
+    this.store$.dispatch(updateRowSelected({ layerId: this.tab.layerId, rowId: row.rowId, selected: !row._selected }));
   }
 
   /**
    * Fired when a column header is clicked.
    */
   public onSortClick(sort: Sort): void {
-    // Reset the paginator page index.
-    this.paginator.pageIndex = 0;
-    // Update the table.
-    this.updateTable();
+    this.store$.dispatch(updateSort({ layerId: this.tab.layerId, column: sort.active, direction: sort.direction }));
   }
 
   /**
@@ -673,5 +650,15 @@ export class AttributeListTabContentComponent implements AttributelistTable, OnI
 
   public isRelatedFeatures(): boolean {
     return this.dataSource.getRelatedFeaturesAsArray().length > 0;
+  }
+
+  public getCheckIcon() {
+    if (this.checkState === 'All') {
+      return 'check_box';
+    }
+    if (this.checkState === 'None') {
+      return 'check_box_outline_blank';
+    }
+    return 'indeterminate_check_box';
   }
 }

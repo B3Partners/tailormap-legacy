@@ -13,6 +13,8 @@ export class ApplicationService implements OnDestroy {
 
   private destroyed = new Subject();
 
+  private applicationId: number;
+
   constructor(
     tailormapService: TailorMapService,
     store$: Store<ApplicationState>,
@@ -28,6 +30,7 @@ export class ApplicationService implements OnDestroy {
           levels: Object.values(app.levels),
           layers: Object.values(app.appLayers),
         }));
+        this.applicationId = app.id;
       });
 
     tailormapService.layersInitialized$
@@ -54,6 +57,10 @@ export class ApplicationService implements OnDestroy {
   public ngOnDestroy() {
     this.destroyed.next();
     this.destroyed.complete();
+  }
+
+  public getId() {
+    return this.applicationId;
   }
 
 }

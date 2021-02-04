@@ -35,16 +35,6 @@ export const setSelectedTab = createAction(
   props<{ layerId: string }>(),
 );
 
-export const addAttributelistTabData = createAction(
-  `${attributeListActionsPrefix} Add Attributelist Tab Data`,
-  props<{ layerId: string, rows: RowData[] }>(),
-);
-
-export const replaceAttributelistTabData = createAction(
-  `${attributeListActionsPrefix} Replace Attributelist Tab Data`,
-  props<{ layerId: string, rows: RowData[] }>(),
-);
-
 export const clearFilterForLayer = createAction(
   `${attributeListActionsPrefix} Clear Filter For Layer`,
   props<{ layerId: string }>(),
@@ -53,4 +43,34 @@ export const clearFilterForLayer = createAction(
 export const clearAllFilters = createAction(
   `${attributeListActionsPrefix} Clear All Filters`,
   props<{ layerId: string }>(),
+);
+
+export const updatePage = createAction(
+  `${attributeListActionsPrefix} Update Page`,
+  props<{ layerId: string, page: number }>(),
+);
+
+export const updateSort = createAction(
+  `${attributeListActionsPrefix} Update Sort`,
+  props<{ layerId: string, column: string, direction: 'asc' | 'desc' | '' }>(),
+);
+
+export const toggleCheckedAllRows = createAction(
+  `${attributeListActionsPrefix} Toggle Checked All Rows`,
+  props<{ layerId: string }>(),
+);
+
+export const updateRowChecked = createAction(
+  `${attributeListActionsPrefix} Update Row Checked`,
+  props<{ layerId: string, rowId: string, checked: boolean }>(),
+);
+
+export const updateRowExpanded = createAction(
+  `${attributeListActionsPrefix} Update Row Expanded`,
+  props<{ layerId: string, rowId: string, expanded: boolean }>(),
+);
+
+export const updateRowSelected = createAction(
+  `${attributeListActionsPrefix} Update Row Selected`,
+  props<{ layerId: string, rowId: string, selected: boolean }>(),
 );
