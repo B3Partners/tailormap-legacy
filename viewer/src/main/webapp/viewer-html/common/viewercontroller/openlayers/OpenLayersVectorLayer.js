@@ -31,9 +31,11 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
     circle: null,
     box:null,
     freehand:null,
+    drawRightAngle: false,
     drawFeatureControls: null,
     activeDrawFeatureControl: null,
     modifyFeature:null,
+    rotation: 0,
     constructor : function (config){
         config.colorPrefix = '#';
         viewer.viewercontroller.openlayers.OpenLayersVectorLayer.superclass.constructor.call(this, config);
@@ -41,7 +43,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
 
         this.defaultFeatureStyle = config.defaultFeatureStyle || this.mapStyleConfigToFeatureStyle();
         config.styleMap = this.getStylemapFromFeatureStyle(this.defaultFeatureStyle);
-
+        var me = this;
         // Delete style from config, because it messes up the styling in the vectorlayer.
         delete config.style;
         this.frameworkLayer = new OpenLayers.Layer.Vector(config.id, config);
@@ -83,6 +85,13 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
             }
         },this.frameworkLayer));
 
+        this.translate = new OpenLayers.Control.DragFeature(this.frameworkLayer, {
+           documentDrag: false,
+            onComplete: function (feature, pixel) {
+               me.modifyFeature.selectFeature(feature);
+            }
+        },this);
+
         this.freehandLine = new OpenLayers.Control.DrawFeature(this.frameworkLayer, OpenLayers.Handler.Path, this.addMeasureListener(OpenLayers.Handler.Path, {
             displayClass: 'olControlDrawFeaturePath',
             handlerOptions: {
@@ -111,15 +120,44 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
         map.addControl(this.freehand);
         map.addControl(this.freehandLine);
         map.addControl(this.modifyFeature);
-        var me = this;
+        map.addControl(this.translate);
         this.modifyFeature.selectControl.onBeforeSelect = function(){ me.beforeSelect();};
         this.modifyFeature.selectControl.events.register("featurehighlighted", this, this.activeFeatureChanged);
         this.frameworkLayer.events.register("afterfeaturemodified", this, this.featureModified);
         this.frameworkLayer.events.register("featuremodified", this, this.featureModified);
         this.frameworkLayer.events.register("featureadded", this, this.featureAdded);
+        this.frameworkLayer.events.register("sketchstarted", this, this.sketchStarted);
+        this.frameworkLayer.events.register("sketchmodified", this, this.sketchModified);
+        this.frameworkLayer.events.register("sketchcomplete", this, this.sketchComplete);
 
+        this.translate.deactivate();
         if(this.allowSelection()) {
             this.modifyFeature.activate();
+        }
+
+        if (this.config.showLineLength) {
+            if(!config.showmeasures) {
+                this.polygonMeasureControl = new OpenLayers.Control.Measure(OpenLayers.Handler.Polygon);
+                map.addControl(this.polygonMeasureControl);
+            }
+            // create div for the line
+            var measureValueDiv = document.getElementById("measureLineLength");
+            if (measureValueDiv === null){
+                measureValueDiv = document.createElement('div');
+                measureValueDiv.id = 'measureLineLength';
+                measureValueDiv.style.position = 'absolute';
+                this.polygonMeasureControl.map.div.appendChild(measureValueDiv);
+                measureValueDiv.style.zIndex = "10000";
+                measureValueDiv.className = "olControlMaptip";
+                var measureValueText = document.createElement('div');
+                measureValueText.id = "measureLineLength" + 'Text';
+                measureValueDiv.appendChild(measureValueText);
+            }
+            // var px= this.polygonMeasureControl.map.getViewPortPxFromLonLat(new OpenLayers.LonLat(evt.x,evt.y));
+            //measureValueDiv.style.top = px.y + "px";
+            //measureValueDiv.style.left = px.x + 40 + 'px';
+            measureValueDiv.style.display = "block";
+            var measureValueText = document.getElementById("measureLineLength" + 'Text');
         }
     },
 
@@ -221,6 +259,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
     removeAllFeatures : function(){
         this.getFrameworkLayer().removeAllFeatures();
         this.stopDrawing();
+        this.setTranslate(false);
     },
 
     getActiveFeature : function(){        
@@ -424,7 +463,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
         this.removeMeasures();
         this.fireEvent(viewer.viewercontroller.controller.Event.ON_ACTIVE_FEATURE_CHANGED,this,featureObject,evt);
     },
-    
+
     /**
      * Called when a feature is added to the vectorlayer. It deactivates all drawFeature controls, makes the added feature editable and fires @see viewer.viewercontroller.controller.Event.ON_FEATURE_ADDED
      */
@@ -616,5 +655,56 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
      */
     destroy: function (){
         this.mixins.openLayersLayer.destroy.call(this);
+    },
+
+    setTranslate: function (active) {
+        if (active) {
+            this.translate.activate();
+        } else {
+            this.translate.deactivate();
+            this.rotation = 0;
+        }
+    },
+
+    updateRotation: function (value) {
+        var f = this.getFeature(0);
+        if (f) {
+            this.g = f.geometry;
+            f.geometry.rotate((this.rotation - value), f.geometry.getCentroid());
+            f.layer.drawFeature(f);
+            this.rotation = value;
+        }
+    },
+
+    /**
+     *
+     */
+    sketchModified : function (evt) {
+        if(evt.feature.geometry.getVertices().length >= 2 && this.polygon.active) {
+            //Dit is het punt van de muis
+            var newPoint = evt.vertex;
+            // dit is het punt waar de haakse hoek op gemaakt wordt
+            var center = evt.vertex.parent.components[evt.vertex.parent.components.length-3];
+            // dit is 2 punten terug, deze is nodig om de vorige lijn te maken
+            var preproccesorOfCenter = evt.vertex.parent.components[evt.vertex.parent.components.length-4];
+            var radius = center.distanceTo(newPoint);
+
+            if(this.config.showLineLength) {
+                var measureValueDiv = document.getElementById("measureLineLength");
+                var px = this.polygonMeasureControl.map.getViewPortPxFromLonLat(new OpenLayers.LonLat(evt.vertex.x, evt.vertex.y));
+                measureValueDiv.style.top = px.y + "px";
+                measureValueDiv.style.left = px.x + 40 + 'px';
+                measureValueDiv.style.display = "block";
+                var measureValueText = document.getElementById("measureLineLength" + 'Text');
+                measureValueText.innerHTML = radius.toFixed(2) + " " + "m";
+            }
+            if (this.drawRightAngle && evt.feature.geometry.getVertices().length >= 3){
+                var rightAnglePoint = this.calculateRightAnglePoint(newPoint, center, preproccesorOfCenter, radius);
+                evt.vertex.parent.components[evt.vertex.parent.components.length-2] = new OpenLayers.Geometry.Point(rightAnglePoint.x, rightAnglePoint.y);
+                return new OpenLayers.Geometry.Polygon(evt.vertex.parent);
+            }
+            evt.vertex.parent.components[evt.vertex.parent.components.length-2] = evt.vertex;
+            return new OpenLayers.Geometry.Polygon(evt.vertex.parent);
+        }
     }
 });
