@@ -11,7 +11,6 @@ export class FormTreeHelpers {
 
   public static convertFeatureToTreeModel(features: Feature[],
                                           formConfigRepo: FormconfigRepositoryService,
-                                          selectedGuid: string,
                                           formConfigs : Map<string, FormConfiguration>): TreeModel<FormTreeMetadata>[] {
     const nodes: TreeModel[] = [];
     const allChildren: TreeModel[] = [];
@@ -33,7 +32,7 @@ export class FormTreeHelpers {
               }
               fts[featureType] = featureTypeNode;
             }
-            const children = FormTreeHelpers.convertFeatureToTreeModel([child], formConfigRepo, selectedGuid, formConfigs)[0];
+            const children = FormTreeHelpers.convertFeatureToTreeModel([child], formConfigRepo, formConfigs)[0];
             fts[featureType].children.push(children);
           }
         });

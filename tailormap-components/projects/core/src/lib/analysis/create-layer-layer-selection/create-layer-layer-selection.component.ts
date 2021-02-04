@@ -77,7 +77,6 @@ export class CreateLayerLayerSelectionComponent implements OnInit, OnDestroy {
   private createTree(tree: TreeModel[], selectedDataSource: AnalysisSourceModel) {
     this.transientTreeHelper = new TransientTreeHelper(
       this.treeService,
-      tree,
       true,
       node => {
         return !!selectedDataSource
@@ -85,5 +84,6 @@ export class CreateLayerLayerSelectionComponent implements OnInit, OnDestroy {
           && node.metadata.id === `${selectedDataSource.layerId}`;
       },
     );
+    this.transientTreeHelper.createTree(tree);
   }
 }

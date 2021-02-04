@@ -17,20 +17,30 @@ export class TransientTreeHelper<T> {
 
   private nodeCount = 1;
 
+  private selectedNode = new Subject<string>();
+
   public constructor(
     treeService: TreeService,
-    treeData: TreeModel[],
     private defaultExpanded = false,
     private isSelected?: (treeNode: TreeModel) => boolean,
+    private hasCheckboxes = true,
   ) {
-    this.treeData = this.createLocalModels(treeData);
-    this.nodesSubject$.next(this.treeData);
     treeService.setDataSource(this.nodesSubject$.asObservable());
+    treeService.setSelectedNode(this.selectedNode.asObservable());
 
     treeService.checkStateChangedSource$
       .pipe(takeUntil(this.destroyed)).subscribe(change => this.handleCheckStateChange(change));
     treeService.nodeExpansionChangedSource$
       .pipe(takeUntil(this.destroyed)).subscribe(nodeId => this.toggleNodeExpanded(nodeId));
+
+    treeService.selectionStateChangedSource$.pipe(takeUntil(this.destroyed)).subscribe(nodeId => {
+      this.selectedNode.next(nodeId);
+    });
+  }
+
+  public createTree(treeData: TreeModel[]){
+    this.treeData = this.createLocalModels(treeData);
+    this.nodesSubject$.next(this.treeData);
   }
 
   public destroy() {
@@ -38,13 +48,16 @@ export class TransientTreeHelper<T> {
     this.destroyed.complete();
   }
 
+  public selectNode(nodeId:string) :void{
+    this.selectedNode.next(nodeId);
+  }
+
   private createLocalModels(treeData: TreeModel[]): TreeModel[] {
     return treeData.map(treeModel => {
       const model: TreeModel = {
         ...treeModel,
-        id: `treenode-${this.nodeCount++}`,
         children: typeof treeModel.children !== 'undefined' ? this.createLocalModels(treeModel.children) : undefined,
-        checked: this.isSelected ? this.isSelected(treeModel) : false,
+        checked: !this.hasCheckboxes ? undefined : (this.isSelected ? this.isSelected(treeModel) : false),
         expanded: typeof treeModel.children !== 'undefined' ? this.defaultExpanded : undefined,
       }
       return model;

@@ -148,7 +148,6 @@ import { TreeService } from './tree/tree.service';
   ],
   entryComponents: [],
   providers: [
-    TreeService,
     ConfirmDialogService,
     {
       provide: DateAdapter,
