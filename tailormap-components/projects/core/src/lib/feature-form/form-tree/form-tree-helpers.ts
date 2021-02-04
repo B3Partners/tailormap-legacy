@@ -25,7 +25,7 @@ export class FormTreeHelpers {
               const featureTypeNode: TreeModel<FormTreeMetadata> = {
                 label: FormHelpers.capitalize(featureType),
                 children: [],
-                id: featureType,
+                id: 'featuretype_' + featureType,
                 metadata: {
                   isFeatureType: true,
                 },

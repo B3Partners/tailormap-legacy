@@ -15,12 +15,10 @@ export class TransientTreeHelper<T> {
   private nodesSubject$ = new BehaviorSubject<TreeModel[]>([]);
   private destroyed = new Subject();
 
-  private nodeCount = 1;
-
   private selectedNode = new Subject<string>();
 
   public constructor(
-    treeService: TreeService,
+    private treeService: TreeService,
     private defaultExpanded = false,
     private isSelected?: (treeNode: TreeModel) => boolean,
     private hasCheckboxes = true,
@@ -65,23 +63,27 @@ export class TransientTreeHelper<T> {
   }
 
   private handleCheckStateChange(checkStateChange: CheckStateChange) {
-    this.treeData = [...this.treeData].map(model => {
-      return {
-        ...model,
-        checked: checkStateChange.has(model.id) ? checkStateChange.get(model.id) : model.checked,
-      };
-    });
+    this.treeData = this.recurseIntoNodes([...this.treeData],
+        model =>({checked: checkStateChange.has(model.id) ? checkStateChange.get(model.id) : model.checked}))
+
     this.nodesSubject$.next(this.treeData);
   }
 
   private toggleNodeExpanded(nodeId: string) {
-    this.treeData = [...this.treeData].map(model => {
+    this.treeData = this.recurseIntoNodes([...this.treeData],
+        model =>({expanded: nodeId === model.id ? !model.expanded : model.expanded}));
+    this.nodesSubject$.next(this.treeData);
+  }
+
+  private recurseIntoNodes( nodes: TreeModel[], callback : (node: TreeModel) => Partial<TreeModel>) :TreeModel[]{
+    const treeData = nodes.map(model => {
       return {
         ...model,
-        expanded: nodeId === model.id ? !model.expanded : model.expanded,
+        children: model.children ? this.recurseIntoNodes( model.children, callback) : null,
+        ...callback(model),
       };
     });
-    this.nodesSubject$.next(this.treeData);
+    return treeData;
   }
 
 }
