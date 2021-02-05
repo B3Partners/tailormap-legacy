@@ -1,0 +1,64 @@
+<div class="table-container">
+
+  <mat-table [dataSource]="rows$"
+             [trackBy]="trackByRowId"
+             matSort
+             multiTemplateDataRows
+             (matSortChange)="onSortClick($event)">
+
+    <tailormap-attribute-list-checkbox-column [rows]="tab.rows" [layerId]="layerId"></tailormap-attribute-list-checkbox-column>
+
+    <tailormap-attribute-list-details-column [layerId]="layerId"></tailormap-attribute-list-details-column>
+
+    <!-- Columns with data -->
+    <ng-container *ngFor="let col of getVisibleColumns()" matColumnDef="{{col.name}}">
+      <!-- Header -->
+      <mat-header-cell *matHeaderCellDef mat-sort-header>
+        {{col.alias || col.name}}
+        <mat-icon [ngClass]="(getIsFilterActive(col.name))? 'material-icons-set': 'material-icons-unset'"
+                  (click)="$event.stopPropagation();onFilterClick(col.name)">
+          filter_list
+        </mat-icon>
+      </mat-header-cell>
+
+      <mat-cell *matCellDef="let currRow">{{currRow[col.name]}}</mat-cell>
+
+      <mat-footer-cell *matFooterCellDef (contextmenu)="onStatisticsMenu($event, col.name)">
+        <div *ngIf="isStatisticsProcessing(col.name)">
+          <mat-spinner diameter="20"></mat-spinner>
+        </div>
+        {{getStatisticResult(col.name)}}
+      </mat-footer-cell>
+
+    </ng-container>
+
+    <ng-container matColumnDef="expandedDetail">
+      <mat-cell *matCellDef="let currRow" [attr.colspan]="columnNames.length">
+        <div class="details-container" *ngIf="currRow._expanded">
+          <tailormap-attributelist-details
+            *ngFor="let featureType of currRow.related_featuretypes"
+            [parentLayerId]="tab.layerId"
+            [parentLayerName]="tab.layerName"
+            [featureType]="featureType">
+          </tailormap-attributelist-details>
+        </div>
+      </mat-cell>
+    </ng-container>
+
+    <!-- Columns with related details data -->
+    <mat-header-row *matHeaderRowDef="columnNames; sticky: true;"></mat-header-row>
+
+    <mat-row *matRowDef="let row; columns: columnNames;"
+             (click)="onRowClick($event, row);"></mat-row>
+
+    <mat-row *matRowDef="let row; columns: ['expandedDetail']" class="details-row"
+             [@detailExpand]="row._expanded ? 'expanded' : 'collapsed'"></mat-row>
+
+    <mat-footer-row *matFooterRowDef="columnNames; sticky: true;"></mat-footer-row>
+
+  </mat-table>
+
+</div>
+
+<tailormap-attribute-list-statistics-menu [layerId]="layerId"
+                                          [statistic]="statistic"></tailormap-attribute-list-statistics-menu>

@@ -24,6 +24,10 @@ import { attributeListReducer } from './state/attribute-list.reducer';
 import { createCustomElement } from '@angular/elements';
 import { EffectsModule } from '@ngrx/effects';
 import { AttributeListEffects } from './state/attribute-list.effects';
+import { AttributeListTableComponent } from './attribute-list-table/attribute-list-table.component';
+import { AttributeListCheckboxColumnComponent } from './attribute-list-table/attribute-list-checkbox-column/attribute-list-checkbox-column.component';
+import { AttributeListDetailsColumnComponent } from './attribute-list-table/attribute-list-details-column/attribute-list-details-column.component';
+import { AttributeListStatisticsMenuComponent } from './attribute-list-table/attribute-list-statistics-menu/attribute-list-statistics-menu.component';
 
 @NgModule({
   // The components, directives, and pipes that belong to this NgModule.
@@ -41,6 +45,10 @@ import { AttributeListEffects } from './state/attribute-list.effects';
     AttributelistLayernameChooserComponent,
     AttributeListComponent,
     AttributeListButtonComponent,
+    AttributeListTableComponent,
+    AttributeListCheckboxColumnComponent,
+    AttributeListDetailsColumnComponent,
+    AttributeListStatisticsMenuComponent,
   ],
   imports: [
     CommonModule,

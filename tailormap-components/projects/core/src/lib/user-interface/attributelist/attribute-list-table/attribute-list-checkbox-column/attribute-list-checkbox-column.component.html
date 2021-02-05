@@ -1,0 +1,21 @@
+<ng-container matColumnDef="_checked">
+  <mat-header-cell class="column_small" *matHeaderCellDef>
+    <mat-icon class="icon material-icons"
+              color="primary"
+              (click)="onHeaderCheckClick($event);">
+      {{getCheckIcon()}}
+    </mat-icon>
+  </mat-header-cell>
+
+  <mat-cell class="column_small" *matCellDef="let currRow;">
+    <mat-icon class="icon material-icons"
+              color="primary"
+              (click)="onRowCheckClick($event, currRow);">
+      {{currRow._checked ? 'check_box' : 'check_box_outline_blank'}}
+    </mat-icon>
+  </mat-cell>
+
+  <mat-footer-cell class="column_small" *matFooterCellDef>
+    <mat-icon (click)="onStatisticsHelp()">functions</mat-icon>
+  </mat-footer-cell>
+</ng-container>

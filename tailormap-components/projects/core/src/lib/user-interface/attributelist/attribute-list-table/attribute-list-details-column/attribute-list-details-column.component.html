@@ -1,0 +1,10 @@
+<ng-container matColumnDef="_details">
+  <mat-header-cell class="column_small" *matHeaderCellDef></mat-header-cell>
+  <mat-cell class="column_small" *matCellDef="let currRow;">
+    <span *ngIf="currRow.related_featuretypes.length === 0" class="iconCharNo">+</span>
+    <span *ngIf="currRow.related_featuretypes.length > 0"
+          class="iconChar"
+          (click)="onRowExpandClick($event, currRow);">{{ currRow._expanded ? '-' : '+'}}</span>
+  </mat-cell>
+  <mat-footer-cell class="column_small" *matFooterCellDef></mat-footer-cell>
+</ng-container>

@@ -1,27 +1,18 @@
-import { Component, Input, OnDestroy, OnInit, TrackByFunction, ViewChild } from '@angular/core';
-import { MatPaginator, PageEvent } from '@angular/material/paginator';
-import { MatSort, Sort } from '@angular/material/sort';
-import { MatTable } from '@angular/material/table';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { PageEvent } from '@angular/material/paginator';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { animate, state, style, transition, trigger } from '@angular/animations';
 import { AttributelistTable } from '../attributelist-common/attributelist-models';
 import { AttributeDataSource } from '../attributelist-common/attributelist-datasource';
 import { AttributelistFilter } from '../attributelist-common/attributelist-filter';
 import { AttributelistService } from '../attributelist.service';
-import { AttributelistStatistic } from '../attributelist-common/attributelist-statistic';
 import { AttributeService } from '../../../shared/attribute-service/attribute.service';
-import { CheckState } from '../attributelist-common/attributelist-enums';
 import { Feature } from '../../../shared/generated';
 import { FormconfigRepositoryService } from '../../../shared/formconfig-repository/formconfig-repository.service';
-import { StatisticTypeInMenu } from '../attributelist-common/attributelist-statistic-models';
-import { StatisticService } from '../../../shared/statistic-service/statistic.service';
-import { StatisticType } from '../../../shared/statistic-service/statistic-models';
 import { ValueService } from '../../../shared/value-service/value.service';
 import { TailorMapService } from '../../../../../../bridge/src/tailor-map.service';
-import { MatMenuTrigger } from '@angular/material/menu';
-import { from, Observable, Subject } from 'rxjs';
-import { concatMap, map, takeUntil } from 'rxjs/operators';
+import { from, Subject } from 'rxjs';
+import { concatMap, takeUntil } from 'rxjs/operators';
 import { AttributelistTreeComponent } from '../attributelist-tree/attributelist-tree.component';
 import { AttributelistNode, SelectedTreeData, TreeDialogData } from '../attributelist-tree/attributelist-tree-models';
 import { AttributelistColumnController } from '../attributelist-common/attributelist-column-controller';
@@ -30,39 +21,17 @@ import { Store } from '@ngrx/store';
 import { AttributeListState } from '../state/attribute-list.state';
 import { selectTab } from '../state/attribute-list.selectors';
 import { AttributeListTabModel } from '../models/attribute-list-tab.model';
-import {
-  toggleCheckedAllRows, updatePage, updateRowChecked, updateRowExpanded, updateRowSelected, updateSort,
-} from '../state/attribute-list.actions';
-import { AttributeListRowModel } from '../models/attribute-list-row.model';
+import { updatePage } from '../state/attribute-list.actions';
 
 @Component({
   selector: 'tailormap-attribute-tab-content',
   templateUrl: './attribute-list-tab-content.component.html',
   styleUrls: ['./attribute-list-tab-content.component.css'],
-  animations: [
-    trigger('detailExpand', [
-      state('collapsed', style({ height: '0px', minHeight: '0' })),
-      state('expanded', style({ height: '*' })),
-      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
-    ]),
-  ],
 })
 export class AttributeListTabContentComponent implements AttributelistTable, OnInit, OnDestroy {
 
   @Input()
   public layerId: string;
-
-  @ViewChild(MatPaginator)
-  private paginator: MatPaginator;
-
-  @ViewChild(MatSort)
-  private sort: MatSort;
-
-  @ViewChild('table')
-  public table: MatTable<any>;
-
-  @ViewChild(MatMenuTrigger)
-  private statisticsMenu: MatMenuTrigger;
 
   public columnController: AttributelistColumnController;
 
@@ -84,38 +53,15 @@ export class AttributeListTabContentComponent implements AttributelistTable, OnI
 
   private rowsChecked;
 
-  public statistic = new AttributelistStatistic(
-    this.statisticsService,
-    this.dataSource,
-  );
-
   // Number of checked rows.
   public nrChecked = 0;
-
-  // State of checked rows ('All','None','Some').
-  public checkState = CheckState.None;
-
-  /**
-   * Declare enums to use in template
-   */
-  public eStatisticType = StatisticType;
-  public eStatisticTypeInMenu = StatisticTypeInMenu;
-
-  public keys = Object.keys;
-
-  public values = Object.values;
-
-  public contextMenuPosition = { x: '0px', y: '0px' };
 
   private destroyed = new Subject();
 
   public tab: AttributeListTabModel;
-  public rows$: Observable<AttributeListRowModel[]>;
-  public trackByRowId: TrackByFunction<AttributeListRowModel> = (idx: number, row: AttributeListRowModel) => row.rowId;
 
   constructor(private store$: Store<AttributeListState>,
               private attributeService: AttributeService,
-              private statisticsService: StatisticService,
               private tailorMapService: TailorMapService,
               private valueService: ValueService,
               public attributelistService: AttributelistService,
@@ -133,15 +79,8 @@ export class AttributeListTabContentComponent implements AttributelistTable, OnI
       .pipe(takeUntil(this.destroyed))
       .subscribe(tab => {
         this.tab = tab;
-        const someUnchecked = tab.rows.findIndex(row => !row._checked) !== -1;
-        const someChecked = tab.rows.findIndex(row => row._checked) !== -1;
-        this.checkState = someChecked && someUnchecked ? CheckState.Some : (someUnchecked ? CheckState.None : CheckState.All);
+        this.nrChecked = this.tab.rows.filter(r => r._checked).length;
       });
-
-    this.rows$ = this.store$.select(selectTab, this.layerId).pipe(
-      takeUntil(this.destroyed),
-      map(tab => tab.rows),
-    );
 
     // called from passport form
     this.attributelistService.loadTableData$.pipe(takeUntil(this.destroyed)).subscribe(result => {
@@ -174,54 +113,16 @@ export class AttributeListTabContentComponent implements AttributelistTable, OnI
   }
 
   private afterloadRelatedData(): void {
-    this.paginator.length = this.dataSource.totalNrOfRows;
-
-    // Update the table rows.
-    this.table.renderRows();
-
-    this.filterMap.get(this.dataSource.params.featureTypeId).initFiltering(this.getColumnNames());
-    this.statistic.initStatistics(this.getColumnNames());
-    this.updateCheckedInfo();
+    // this.filterMap.get(this.dataSource.params.featureTypeId).initFiltering(this.getColumnNames());
   }
 
   public onAfterLoadData(): void {
-    // console.log('#Table - onAfterLoadData');
-
-    // Update paginator total number of rows (needed!)
-    this.paginator.length = this.dataSource.totalNrOfRows;
-
-    // Update the table rows.
-    this.table.renderRows();
-
-    if (this.rowsChecked) {
-      this.dataSource.setAllRowsChecked();
-    }
-
-    this.filterMap.get(this.dataSource.params.featureTypeId).initFiltering(this.getColumnNames());
-
-    this.statistic.initStatistics(this.getColumnNames());
-
+    // this.filterMap.get(this.dataSource.params.featureTypeId).initFiltering(this.getColumnNames());
     this.onObjectOptionsClick();
-
-    this.updateCheckedInfo();
   }
 
   public getVisibleColumns() {
     return this.tab.columns.filter(c => c.visible);
-  }
-
-  /**
-   * Return the column names. Include special column names.
-   */
-  public getColumnNames(): string[] {
-    return this.getVisibleColumns().map(c => c.name);
-  }
-
-  /**
-   * Returns numeric when statistic functions like min, max, average are possible
-   */
-  public getStatisticFunctionColumnType(name: string): string {
-    return this.statistic.getStatisticFunctionColumnType(name);
   }
 
   public getColumnWidth(name: string): string {
@@ -238,14 +139,6 @@ export class AttributeListTabContentComponent implements AttributelistTable, OnI
     } else {
       return 'block';
     }
-  }
-
-  /**
-   * Fired when the checkbox in the header is clicked.
-   */
-  public onHeaderCheckClick($event: MouseEvent): void {
-    $event.stopPropagation();
-    this.store$.dispatch(toggleCheckedAllRows({ layerId: this.tab.layerId }));
   }
 
   // Creates a filter for all the checked features in the maintable on the related tabled
@@ -448,45 +341,6 @@ export class AttributeListTabContentComponent implements AttributelistTable, OnI
     this.store$.dispatch(updatePage({ layerId: this.tab.layerId, page: $event.pageIndex }));
   }
 
-  /**
-   * Fired when a checkbox is clicked.
-   */
-  public onRowCheckClick($event: MouseEvent, row: AttributeListRowModel): void {
-    $event.stopPropagation();
-    this.store$.dispatch(updateRowChecked({ layerId: this.tab.layerId, rowId: row.rowId, checked: !row._checked }));
-  }
-
-  /**
-   * Fired when a expand/collapse icon/char is clicked.
-   */
-  public onRowExpandClick($event: MouseEvent, row: AttributeListRowModel): void {
-    $event.stopPropagation();
-    this.store$.dispatch(updateRowExpanded({ layerId: this.tab.layerId, rowId: row.rowId, expanded: !row._expanded }));
-  }
-
-  /**
-   * Fired when a row is clicked.
-   */
-  public onRowClick($event: MouseEvent, row: AttributeListRowModel): void {
-    $event.stopPropagation();
-    this.store$.dispatch(updateRowSelected({ layerId: this.tab.layerId, rowId: row.rowId, selected: !row._selected }));
-  }
-
-  /**
-   * Fired when a column header is clicked.
-   */
-  public onSortClick(sort: Sort): void {
-    this.store$.dispatch(updateSort({ layerId: this.tab.layerId, column: sort.active, direction: sort.direction }));
-  }
-
-  /**
-   * Fired when a column filter is clicked.
-   */
-  public onFilterClick(columnName: string): void {
-    // this.dataSource.columnController.columnNamesToColumns()
-    this.filterMap.get(this.dataSource.params.featureTypeId).setFilter(this, columnName);
-  }
-
   public onClearLayerFilter() {
     this.filterMap.get(this.dataSource.params.featureTypeId).clearFilterForLayer(this.filterMap, this.rowsChecked);
     this.refreshTable();
@@ -514,10 +368,8 @@ export class AttributeListTabContentComponent implements AttributelistTable, OnI
       this.isRelatedRefresh = false;
     }
     this.dataSource.params.valueFilter = this.filterMap.get(-1).getFinalFilter(this.filterMap);
-    this.paginator.pageIndex = 0;
     this.updateTable();
     this.setFilterInAppLayer();
-    this.statistic.refreshStatistics(this.dataSource.params.layerId, this.dataSource.params.valueFilter);
   }
 
   private setFilterInAppLayer() {
@@ -544,71 +396,10 @@ export class AttributeListTabContentComponent implements AttributelistTable, OnI
     return result;
   }
 
-  /**
-   * Fired when a cell on footer row is clicked.
-   */
-  public onStatisticsMenu(event: MouseEvent, colName: string) {
-    event.preventDefault();
-    this.contextMenuPosition.x = event.clientX + 'px';
-    this.contextMenuPosition.y = event.clientY + 'px';
-    this.statisticsMenu.menuData = { colName };
-    this.statisticsMenu.menu.focusFirstItem('mouse');
-    this.statisticsMenu.openMenu()
-  }
-
-  public onStatisticsMenuClick(colName: string, statisticType: StatisticType) {
-    this.statistic.setStatistics(colName, statisticType, this.dataSource.params.layerId, this.dataSource.params.valueFilter);
-  }
-
-  public getStatisticTypeInMenu(colName: string): string {
-    return this.statistic.getStatisticTypeInMenu(colName);
-  }
-
-  public getStatisticResult(colName: string): string {
-    return this.statistic.getStatisticResult(colName);
-  }
-
-  public isStatisticsProcessing(colName: string): boolean {
-    return this.statistic.isStatisticsProcessing(colName);
-  }
-
-  public onStatisticsHelp(): void {
-    this.snackBar.open('Open contextmenu in de betreffende kolom voor statistiche functies', 'Sluiten', {
-      duration: 5000,
-    });
-    return;
-  }
-
-  public onTest(): void {
-    // console.log('#Table.onTest');
-    // this.table.renderRows();
-
-    // // Get passport field/column names.
-    // console.log(this.formconfigRepoService.getAllFormConfigs());
-    // const passportName = 'wegvakonderdeel';
-    // this.formconfigRepoService.formConfigs$.subscribe(formConfigs => {
-    //     const formConfig = formConfigs.config[passportName];
-    //     console.log(formConfig);
-    //   },
-    //   ()=>{},
-    //   ()=> {
-    //     console.log('onTest - complete');
-    // });
-  }
-
-  private updateCheckedInfo(): void {
-    // Update the number checked.
-    this.nrChecked = this.dataSource.getNrChecked();
-    // Update the check state.
-    this.checkState = this.dataSource.getCheckState(this.nrChecked);
-  }
-
   private updateTable(): void {
     // (Re)load data. Fires the onAfterLoadData method.
     this.dataSource.loadData(this, this.tab.pageSize, this.tab.pageIndex);
     this.columnController = this.dataSource.columnController;
-    // Update check info (number checked/check state).
-    this.updateCheckedInfo();
   }
 
   public initFilterMap(): void {
@@ -652,13 +443,4 @@ export class AttributeListTabContentComponent implements AttributelistTable, OnI
     return this.dataSource.getRelatedFeaturesAsArray().length > 0;
   }
 
-  public getCheckIcon() {
-    if (this.checkState === 'All') {
-      return 'check_box';
-    }
-    if (this.checkState === 'None') {
-      return 'check_box_outline_blank';
-    }
-    return 'indeterminate_check_box';
-  }
 }

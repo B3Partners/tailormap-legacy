@@ -128,11 +128,7 @@ export class AttributeListManagerService implements OnDestroy {
         attributeType: AttributeTypeHelper.getAttributeType(a),
       };
     });
-    const specialColumns: AttributeListColumnModel[] = [
-      { name: '_checked', visible: true, dataType: 'boolean', columnType: 'special' },
-      { name: '_details', visible: true, dataType: 'boolean', columnType: 'special'  },
-    ];
-    return specialColumns.concat(attributeColumns);
+    return attributeColumns;
   }
 
   private getFilters(metadata: AttributeMetadataResponse, layerId: number): AttributeListFilterModel[] {
