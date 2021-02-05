@@ -12,7 +12,6 @@ import { UserLayerHelper } from '../../../analysis/helpers/user-layer.helper';
 import { Store } from '@ngrx/store';
 import { AttributeListState } from '../state/attribute-list.state';
 import { selectRelatedFeaturesForTab } from '../state/attribute-list.selectors';
-import { clearAllFilters, clearFilterForLayer } from '../state/attribute-list.actions';
 import { AttributeListExportService, ExportType } from '../services/attribute-list-export.service';
 
 @Component({
@@ -24,6 +23,9 @@ export class AttributeListTabToolbarComponent implements OnInit, OnDestroy {
 
   @Input()
   public layerId: string;
+
+  @Input()
+  public featureType: number;
 
   public columns: AttributeListColumnModel[];
   public noRelations$: Observable<boolean>;
@@ -59,7 +61,7 @@ export class AttributeListTabToolbarComponent implements OnInit, OnDestroy {
   }
 
   public onExportClick(format: ExportType): void {
-    this.attributeListExportService.createAttributeListExport(format, this.layerId);
+    this.attributeListExportService.createAttributeListExport(format, this.layerId, this.featureType);
   }
 
   public createUserLayer(): void {
@@ -91,11 +93,11 @@ export class AttributeListTabToolbarComponent implements OnInit, OnDestroy {
   }
 
   public onClearLayerFilterClick(): void {
-    this.store$.dispatch(clearFilterForLayer({ layerId: this.layerId }));
+    // this.store$.dispatch(clearFilterForLayer({ layerId: this.layerId }));
   }
 
   public onClearAllFilterClick(): void {
-    this.store$.dispatch(clearAllFilters({ layerId: this.layerId }));
+    // this.store$.dispatch(clearAllFilters({ layerId: this.layerId }));
   }
 
   public onSearchClick(): void {

@@ -1,8 +1,8 @@
 import { Action } from '@ngrx/store';
-import { AttributeListTabModel } from '../models/attribute-list-tab.model';
 import { updatePage, updateSort } from '../state/attribute-list.actions';
+import { AttributeListFeatureTypeData } from '../models/attribute-list-feature-type-data.model';
 
-export class TabUpdateHelper {
+export class UpdateFeatureDataHelper {
 
   private static isUpdatePageAction(action: Action): action is ReturnType<typeof updatePage> {
     return action.type === updatePage.type;
@@ -12,16 +12,16 @@ export class TabUpdateHelper {
     return action.type === updateSort.type;
   }
 
-  public static updateTabForAction(action: Action, tab: AttributeListTabModel): AttributeListTabModel {
-    if (TabUpdateHelper.isUpdatePageAction(action)) {
+  public static updateDataForAction(action: Action, data: AttributeListFeatureTypeData): AttributeListFeatureTypeData {
+    if (UpdateFeatureDataHelper.isUpdatePageAction(action)) {
       return {
-        ...tab,
+        ...data,
         pageIndex: action.page,
       };
     }
-    if (TabUpdateHelper.isUpdateSortAction(action)) {
+    if (UpdateFeatureDataHelper.isUpdateSortAction(action)) {
       return {
-        ...tab,
+        ...data,
         sortedColumn: action.direction !== '' ? action.column : '',
         sortDirection: action.direction === 'desc' ? 'DESC' : 'ASC',
       };

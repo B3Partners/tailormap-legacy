@@ -1,19 +1,16 @@
 import { Injectable } from '@angular/core';
-import {
-  Actions,
-  createEffect,
-  ofType,
-} from '@ngrx/effects';
+import { Actions, createEffect, ofType } from '@ngrx/effects';
 import * as AttributeListActions from './attribute-list.actions';
 import { concatMap, filter, map, tap, withLatestFrom } from 'rxjs/operators';
 import { HighlightService } from '../../../shared/highlight-service/highlight.service';
 import { Store } from '@ngrx/store';
 import { AttributeListState } from './attribute-list.state';
-import { selectAttributeListConfig, selectTab } from './attribute-list.selectors';
+import {
+  selectAttributeListConfig, selectFeatureDataAndRelatedFeatureDataForFeatureType, selectFeatureDataForTab, selectTab, selectTabForFeatureType,
+} from './attribute-list.selectors';
 import { of } from 'rxjs';
 import { AttributeListDataService, LoadDataResult } from '../services/attribute-list-data.service';
-import { AttributeListTabModel } from '../models/attribute-list-tab.model';
-import { TabUpdateHelper } from '../helpers/tab-update.helper';
+import { UpdateFeatureDataHelper } from '../helpers/update-feature-data.helper';
 
 @Injectable()
 export class AttributeListEffects {
@@ -23,14 +20,14 @@ export class AttributeListEffects {
     filter((action) => !action.visible),
     tap(action => {
       this.highlightService.clearHighlight();
-    })), { dispatch: false },
+    })), {dispatch: false},
   );
 
   public changeAttributeListTab$ = createEffect(() => this.actions$.pipe(
     ofType(AttributeListActions.setSelectedTab),
     tap(action => {
       this.highlightService.clearHighlight();
-    })), { dispatch: false },
+    })), {dispatch: false},
   );
 
   public updateRowSelected$ = createEffect(() => this.actions$.pipe(
@@ -38,45 +35,49 @@ export class AttributeListEffects {
     concatMap(action => of(action).pipe(
       withLatestFrom(this.store$.select(selectAttributeListConfig)),
     )),
-    tap(([ action, attributeListConfig ]) => {
+    tap(([action, attributeListConfig]) => {
       this.highlightService.highlightFeature(`${action.rowId}`, +(action.layerId), true, attributeListConfig.zoomToBuffer);
-    })), { dispatch: false },
+    })), {dispatch: false},
   );
 
   public loadDataForTab$ = createEffect(() => this.actions$.pipe(
     ofType(AttributeListActions.loadDataForTab),
     concatMap(action => of(action).pipe(
-      withLatestFrom(this.store$.select(selectTab, action.layerId)),
+      withLatestFrom(
+        this.store$.select(selectTab, action.layerId),
+        this.store$.select(selectFeatureDataForTab, action.layerId),
+      ),
     )),
-    concatMap(([ action, tab ]) => this.attributeListDataService.loadData(tab)),
-    map((result: LoadDataResult) => {
-      const tabChanges: Partial<AttributeListTabModel> = {
-        totalCount: result.totalCount,
-        rows: result.features,
-        relatedFeatures: result.relatedFeatures,
-        loadingError: result.errorMessage,
-      };
-      return AttributeListActions.loadDataForTabSuccess({ layerId: result.layerId, tabChanges });
+    concatMap(([action, tab, featureData]) => {
+      return this.attributeListDataService.loadData(tab, featureData).pipe(
+        map(result => AttributeListActions.loadDataForTabSuccess({layerId: action.layerId, data: result})),
+      );
     }),
   ));
 
-  public updateTabProperties$ = createEffect(() => this.actions$.pipe(
+  public updateFeatureDataProperties$ = createEffect(() => this.actions$.pipe(
     ofType(AttributeListActions.updatePage, AttributeListActions.updateSort),
     concatMap(action => of(action).pipe(
-      withLatestFrom(this.store$.select(selectTab, action.layerId)),
+      withLatestFrom(
+        this.store$.select(selectTabForFeatureType, action.featureType),
+        this.store$.select(selectFeatureDataAndRelatedFeatureDataForFeatureType, action.featureType),
+      ),
     )),
-    concatMap(([ action, tab ]) => {
-      return this.attributeListDataService.loadData(TabUpdateHelper.updateTabForAction(action, tab));
+    filter(([action, tab, data]) => !!tab),
+    concatMap(([action, tab, featureData]) => {
+      const updatedFeatureData = featureData.map(data => {
+        if (data.featureType === action.featureType) {
+          return UpdateFeatureDataHelper.updateDataForAction(action, data);
+        }
+        return data;
+      });
+      return this.attributeListDataService.loadDataForFeatureType(tab, action.featureType, updatedFeatureData);
     }),
     tap(() => {
       this.highlightService.clearHighlight();
     }),
     map((result: LoadDataResult) => {
-      const tabChanges: Partial<AttributeListTabModel> = {
-        rows: result.features,
-        loadingError: result.errorMessage,
-      };
-      return AttributeListActions.loadDataForTabSuccess({ layerId: result.layerId, tabChanges });
+      return AttributeListActions.loadDataForFeatureTypeSuccess({featureType: result.featureType, data: result});
     }),
   ));
 
@@ -85,6 +86,7 @@ export class AttributeListEffects {
     private store$: Store<AttributeListState>,
     private attributeListDataService: AttributeListDataService,
     private highlightService: HighlightService,
-  ) {}
+  ) {
+  }
 
 }

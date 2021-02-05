@@ -8,7 +8,7 @@ import { updateRowExpanded } from '../../state/attribute-list.actions';
 @Component({
   selector: 'tailormap-attribute-list-details-column',
   templateUrl: './attribute-list-details-column.component.html',
-  styleUrls: ['./attribute-list-details-column.component.css'],
+  styleUrls: ['../attribute-list-table.component.css'],
 })
 export class AttributeListDetailsColumnComponent implements OnInit {
 
@@ -16,7 +16,7 @@ export class AttributeListDetailsColumnComponent implements OnInit {
   public columnDef: MatColumnDef;
 
   @Input()
-  public layerId: string;
+  public featureType: number;
 
   constructor(
     private store$: Store<AttributeListState>,
@@ -32,7 +32,7 @@ export class AttributeListDetailsColumnComponent implements OnInit {
   }
   public onRowExpandClick($event: MouseEvent, row: AttributeListRowModel): void {
     $event.stopPropagation();
-    this.store$.dispatch(updateRowExpanded({ layerId: this.layerId, rowId: row.rowId, expanded: !row._expanded }));
+    this.store$.dispatch(updateRowExpanded({ featureType: this.featureType, rowId: row.rowId, expanded: !row._expanded }));
   }
 
 }

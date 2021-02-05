@@ -16,7 +16,12 @@ import { Attribute, FormConfiguration } from '../../../feature-form/form/form-mo
 import { AttributeTypeHelper } from '../../../application/helpers/attribute-type.helper';
 import { AttributeMetadataResponse } from '../../../shared/attribute-service/attribute-models';
 import { AttributeListConfig } from '../models/attribute-list.config';
-import { AttributeListFilterModel } from '../models/attribute-list-filter.model';
+import { AttributeListFeatureTypeData } from '../models/attribute-list-feature-type-data.model';
+
+interface TabFromLayerResult {
+  tab: AttributeListTabModel;
+  featureData: AttributeListFeatureTypeData[];
+}
 
 @Injectable({
   providedIn: 'root',
@@ -28,8 +33,14 @@ export class AttributeListManagerService implements OnDestroy {
     layerAlias: '',
     layerName: '',
     loadingData: false,
-    columns: [],
+    featureType: 0,
     relatedFeatures: [],
+  };
+
+  public static readonly EMPTY_FEATURE_TYPE_DATA: AttributeListFeatureTypeData = {
+    layerId: '',
+    columns: [],
+    featureType: 0,
     filter: [],
     rows: [],
     pageIndex: 0,
@@ -57,7 +68,11 @@ export class AttributeListManagerService implements OnDestroy {
         filter(([ closedTabs, newTabs ]) => closedTabs.length > 0 || newTabs.length > 0),
       )
       .subscribe(([ closedTabs, newTabs ]) => {
-        this.store$.dispatch(changeAttributeListTabs({ newTabs, closedTabs }));
+        this.store$.dispatch(changeAttributeListTabs({
+          newTabs: newTabs.map(result => result.tab),
+          newFeatureData: newTabs.reduce((featureData, result) => featureData.concat(...result.featureData), []),
+          closedTabs,
+        }));
       });
   }
 
@@ -66,20 +81,20 @@ export class AttributeListManagerService implements OnDestroy {
     this.destroyed.complete();
   }
 
-  private getClosedTabs(visibleLayers: TailormapAppLayer[], currentTabs: AttributeListTabModel[]): string[] {
+  private getClosedTabs(visibleLayers: TailormapAppLayer[], currentTabs: AttributeListTabModel[]): number[] {
     if (!currentTabs || currentTabs.length === 0) {
       return [];
     }
     return currentTabs
       .filter(tab => visibleLayers.findIndex(l => l.id === tab.layerId) === -1)
-      .map<string>(tab => tab.layerId);
+      .map<number>(tab => tab.featureType);
   }
 
   private getNewTabs(
     visibleLayers: TailormapAppLayer[],
     currentTabs: AttributeListTabModel[],
     attributeListConfig: AttributeListConfig,
-  ): Observable<AttributeListTabModel[]> {
+  ): Observable<TabFromLayerResult[]> {
     if (!visibleLayers || visibleLayers.length === 0) {
       return of([]);
     }
@@ -87,29 +102,51 @@ export class AttributeListManagerService implements OnDestroy {
     if (layersWithoutTab.length === 0) {
       return of([]);
     }
-    return forkJoin(layersWithoutTab.map<Observable<AttributeListTabModel>>(layer => {
+    return forkJoin(layersWithoutTab.map<Observable<TabFromLayerResult>>(layer => {
       return this.createTabFromLayer(layer, attributeListConfig.pageSize)
     }));
   }
 
-  private createTabFromLayer(layer: TailormapAppLayer, pageSize = 10): Observable<AttributeListTabModel> {
+  private createTabFromLayer(
+    layer: TailormapAppLayer,
+    pageSize = 10,
+  ): Observable<TabFromLayerResult> {
     const layerName = LayerUtils.sanitizeLayername(layer.layerName);
     return forkJoin([
       this.formConfigRepoService.getFormConfigForLayer$(layerName).pipe(take(1)),
       this.metadataService.getFeatureTypeMetadata$(layer.id),
     ]).pipe(
-      map(([ formConfig, metadata ]) => {
-        return {
+      map(([ formConfig, metadata ]): TabFromLayerResult => {
+        const tab: AttributeListTabModel = {
           ...AttributeListManagerService.EMPTY_ATTRIBUTE_LIST_TAB,
           layerId: layer.id,
           layerAlias: layer.alias,
           layerName,
-          columns: this.getColumnsForLayer(metadata, formConfig),
-          filter: this.getFilters(metadata, +(layer.id)),
-          pageSize,
+          featureType: metadata.featureType,
         };
+        const featureData: AttributeListFeatureTypeData[] = [ metadata.featureType, ...metadata.relations.map(r => r.foreignFeatureType) ]
+          .map(featureType => this.createDataForFeatureType(featureType, metadata.featureType, pageSize, layer.id, metadata, formConfig));
+        return { tab, featureData };
       }),
     );
+  }
+
+  private createDataForFeatureType(
+    featureType: number,
+    parentFeatureType: number,
+    pageSize: number,
+    layerId: string,
+    metadata: AttributeMetadataResponse,
+    formConfig?: FormConfiguration,
+  ): AttributeListFeatureTypeData {
+    return {
+      ...AttributeListManagerService.EMPTY_FEATURE_TYPE_DATA,
+      layerId,
+      featureType,
+      parentFeatureType: featureType !== parentFeatureType ? parentFeatureType : undefined,
+      columns: this.getColumnsForLayer(metadata, formConfig),
+      pageSize,
+    }
   }
 
   private getColumnsForLayer(metadata: AttributeMetadataResponse, formConfig?: FormConfiguration): AttributeListColumnModel[] {
@@ -117,7 +154,7 @@ export class AttributeListManagerService implements OnDestroy {
       ? new Map(formConfig.fields.map(attr => [ attr.key, attr ]))
       : new Map();
     const attributes = metadata.attributes.filter(a => a.featureType === metadata.featureType);
-    const attributeColumns = attributes.map<AttributeListColumnModel>(a => {
+    return attributes.map<AttributeListColumnModel>(a => {
       const isPassportAttribute = passportFields.has(a.name);
       return {
         name: a.name,
@@ -128,27 +165,6 @@ export class AttributeListManagerService implements OnDestroy {
         attributeType: AttributeTypeHelper.getAttributeType(a),
       };
     });
-    return attributeColumns;
-  }
-
-  private getFilters(metadata: AttributeMetadataResponse, layerId: number): AttributeListFilterModel[] {
-    return [
-      this.getFilter(metadata.featureType, layerId),
-      ...metadata.relations.map(relation => this.getFilter(relation.foreignFeatureType, layerId)),
-    ];
-  }
-
-  private getFilter(featureTypeId: number, layerId: number): AttributeListFilterModel {
-    return {
-      featureTypeId,
-      featureFilter: '',
-      relatedFilter: '',
-      valueFilter: '',
-      filter: {
-        columns: [],
-        layerId,
-      },
-    };
   }
 
 }

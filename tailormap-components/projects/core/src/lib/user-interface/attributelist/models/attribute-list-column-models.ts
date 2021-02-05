@@ -1,6 +1,6 @@
 import { AttributeTypeEnum } from '../../../application/models/attribute-type.enum';
 
-export type AttributelistColumnType = 'passport' | 'data' | 'special';
+export type AttributelistColumnType = 'passport' | 'data';
 
 export interface AttributeListColumnModel {
   name: string;

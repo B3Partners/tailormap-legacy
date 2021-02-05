@@ -1,5 +1,5 @@
 import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { selectTab } from '../state/attribute-list.selectors';
+import { selectFeatureTypeData, selectTab } from '../state/attribute-list.selectors';
 import { map, takeUntil } from 'rxjs/operators';
 import { Observable, Subject } from 'rxjs';
 import { AttributeListRowModel } from '../models/attribute-list-row.model';
@@ -12,6 +12,7 @@ import { updateRowSelected, updateSort } from '../state/attribute-list.actions';
 import { Sort } from '@angular/material/sort';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { AttributeListStatisticsMenuComponent } from './attribute-list-statistics-menu/attribute-list-statistics-menu.component';
+import { AttributeListColumnModel } from '../models/attribute-list-column-models';
 
 @Component({
   selector: 'tailormap-attribute-list-table',
@@ -30,6 +31,9 @@ export class AttributeListTableComponent implements OnInit, OnDestroy {
   @Input()
   public layerId: string;
 
+  @Input()
+  public featureType: number;
+
   @ViewChild(AttributeListStatisticsMenuComponent)
   public statisticsMenuComponent: AttributeListStatisticsMenuComponent;
 
@@ -39,7 +43,12 @@ export class AttributeListTableComponent implements OnInit, OnDestroy {
   public rows$: Observable<AttributeListRowModel[]>;
 
   public statistic: AttributelistStatistic;
+
+  private columns: AttributeListColumnModel[];
   public columnNames: string[];
+
+  public uncheckedCount: number;
+  public checkedCount: number;
 
   constructor(
     private store$: Store<AttributeListState>,
@@ -52,15 +61,19 @@ export class AttributeListTableComponent implements OnInit, OnDestroy {
       this.statisticsService,
       this.layerId,
     );
-    this.store$.select(selectTab, this.layerId)
-      .pipe(takeUntil(this.destroyed))
-      .subscribe(tab => {
-        this.tab = tab;
+
+    const featureTypeData$ = this.store$.select(selectFeatureTypeData, this.featureType);
+
+    featureTypeData$.pipe(takeUntil(this.destroyed))
+      .subscribe(featureData => {
+        this.columns = featureData.columns;
         this.statistic.initStatistics(this.getVisibleColumns());
         this.columnNames = this.getColumnNames();
+        this.uncheckedCount = featureData.rows.filter(row => !row._checked).length;
+        this.checkedCount = featureData.rows.filter(row => row._checked).length;
       });
 
-    this.rows$ = this.store$.select(selectTab, this.layerId).pipe(
+    this.rows$ = featureTypeData$.pipe(
       takeUntil(this.destroyed),
       map(tab => tab.rows),
     );
@@ -72,7 +85,7 @@ export class AttributeListTableComponent implements OnInit, OnDestroy {
   }
 
   public getVisibleColumns() {
-    return this.tab.columns.filter(c => c.visible);
+    return this.columns.filter(c => c.visible);
   }
 
   public trackByRowId(idx: number, row: AttributeListRowModel) {
@@ -81,11 +94,16 @@ export class AttributeListTableComponent implements OnInit, OnDestroy {
 
   public onRowClick($event: MouseEvent, row: AttributeListRowModel): void {
     $event.stopPropagation();
-    this.store$.dispatch(updateRowSelected({ layerId: this.tab.layerId, rowId: row.rowId, selected: !row._selected }));
+    this.store$.dispatch(updateRowSelected({
+      featureType: this.featureType,
+      layerId: this.layerId,
+      rowId: row.rowId,
+      selected: !row._selected,
+    }));
   }
 
   public onSortClick(sort: Sort): void {
-    this.store$.dispatch(updateSort({ layerId: this.tab.layerId, column: sort.active, direction: sort.direction }));
+    this.store$.dispatch(updateSort({ featureType: this.featureType, column: sort.active, direction: sort.direction }));
   }
 
   public onFilterClick(columnName: string): void {

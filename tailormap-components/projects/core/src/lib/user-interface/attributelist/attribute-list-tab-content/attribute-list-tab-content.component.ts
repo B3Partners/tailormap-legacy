@@ -19,9 +19,10 @@ import { AttributelistColumnController } from '../attributelist-common/attribute
 import { FormComponent } from '../../../feature-form/form/form.component';
 import { Store } from '@ngrx/store';
 import { AttributeListState } from '../state/attribute-list.state';
-import { selectTab } from '../state/attribute-list.selectors';
+import { selectFeatureTypeData, selectTab } from '../state/attribute-list.selectors';
 import { AttributeListTabModel } from '../models/attribute-list-tab.model';
 import { updatePage } from '../state/attribute-list.actions';
+import { AttributeListFeatureTypeData } from '../models/attribute-list-feature-type-data.model';
 
 @Component({
   selector: 'tailormap-attribute-tab-content',
@@ -32,6 +33,9 @@ export class AttributeListTabContentComponent implements AttributelistTable, OnI
 
   @Input()
   public layerId: string;
+
+  @Input()
+  public featureType: number;
 
   public columnController: AttributelistColumnController;
 
@@ -59,6 +63,7 @@ export class AttributeListTabContentComponent implements AttributelistTable, OnI
   private destroyed = new Subject();
 
   public tab: AttributeListTabModel;
+  public featureTypeData: AttributeListFeatureTypeData;
 
   constructor(private store$: Store<AttributeListState>,
               private attributeService: AttributeService,
@@ -79,7 +84,13 @@ export class AttributeListTabContentComponent implements AttributelistTable, OnI
       .pipe(takeUntil(this.destroyed))
       .subscribe(tab => {
         this.tab = tab;
-        this.nrChecked = this.tab.rows.filter(r => r._checked).length;
+      });
+
+    this.store$.select(selectFeatureTypeData, this.featureType)
+      .pipe(takeUntil(this.destroyed))
+      .subscribe(data => {
+        this.featureTypeData = data;
+        this.nrChecked = data.rows.filter(r => r._checked).length;
       });
 
     // called from passport form
@@ -122,7 +133,7 @@ export class AttributeListTabContentComponent implements AttributelistTable, OnI
   }
 
   public getVisibleColumns() {
-    return this.tab.columns.filter(c => c.visible);
+    return this.featureTypeData.columns.filter(c => c.visible);
   }
 
   public getColumnWidth(name: string): string {
@@ -229,7 +240,7 @@ export class AttributeListTabContentComponent implements AttributelistTable, OnI
       this.dataSource.params.featureTypeId = feature.id;
       this.dataSource.params.featureTypeName = feature.foreignFeatureTypeName;
       this.dataSource.params.valueFilter = this.filterMap.get(feature.id).getFinalFilter(this.filterMap);
-      return this.dataSource.loadDataForAttributeTree$(this.tab.pageSize);
+      return this.dataSource.loadDataForAttributeTree$(this.featureTypeData.pageSize);
     })).subscribe({
       next: (result) => {
         this.setTreeData(result);
@@ -338,7 +349,7 @@ export class AttributeListTabContentComponent implements AttributelistTable, OnI
   }
 
   public onPageChange($event: PageEvent): void {
-    this.store$.dispatch(updatePage({ layerId: this.tab.layerId, page: $event.pageIndex }));
+    this.store$.dispatch(updatePage({ featureType: this.featureTypeData.featureType, page: $event.pageIndex }));
   }
 
   public onClearLayerFilter() {
@@ -398,7 +409,7 @@ export class AttributeListTabContentComponent implements AttributelistTable, OnI
 
   private updateTable(): void {
     // (Re)load data. Fires the onAfterLoadData method.
-    this.dataSource.loadData(this, this.tab.pageSize, this.tab.pageIndex);
+    this.dataSource.loadData(this, this.featureTypeData.pageSize, this.featureTypeData.pageIndex);
     this.columnController = this.dataSource.columnController;
   }
 

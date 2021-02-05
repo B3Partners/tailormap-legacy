@@ -18,15 +18,22 @@ export class AttributeListCheckboxColumnComponent implements OnInit {
   public columnDef: MatColumnDef;
 
   @Input()
-  public layerId: string;
+  public featureType: number;
 
   @Input()
-  public set rows(rows: AttributeListRowModel[]) {
-    const someUnchecked = rows.findIndex(row => !row._checked) !== -1;
-    const someChecked = rows.findIndex(row => row._checked) !== -1;
-    this.checkState = someChecked && someUnchecked ? CheckState.Some : (someUnchecked ? CheckState.None : CheckState.All);
+  public set checkedCount(count: number) {
+    this._checkedCount = count;
+    this.updateCheckState();
   }
 
+  @Input()
+  public set uncheckedCount(count: number) {
+    this._uncheckedCount = count;
+    this.updateCheckState();
+  }
+
+  private _checkedCount: number;
+  private _uncheckedCount: number;
   public checkState = CheckState.None;
 
   constructor(
@@ -45,12 +52,12 @@ export class AttributeListCheckboxColumnComponent implements OnInit {
 
   public onHeaderCheckClick($event: MouseEvent): void {
     $event.stopPropagation();
-    this.store$.dispatch(toggleCheckedAllRows({ layerId: this.layerId }));
+    this.store$.dispatch(toggleCheckedAllRows({ featureType: this.featureType }));
   }
 
   public onRowCheckClick($event: MouseEvent, row: AttributeListRowModel): void {
     $event.stopPropagation();
-    this.store$.dispatch(updateRowChecked({ layerId: this.layerId, rowId: row.rowId, checked: !row._checked }));
+    this.store$.dispatch(updateRowChecked({ featureType: this.featureType, rowId: row.rowId, checked: !row._checked }));
   }
 
   public getCheckIcon() {
@@ -68,6 +75,12 @@ export class AttributeListCheckboxColumnComponent implements OnInit {
       duration: 5000,
     });
     return;
+  }
+
+  private updateCheckState() {
+    this.checkState = this._uncheckedCount && this._checkedCount
+      ? CheckState.Some
+      : (this._uncheckedCount ? CheckState.None : CheckState.All);
   }
 
 }

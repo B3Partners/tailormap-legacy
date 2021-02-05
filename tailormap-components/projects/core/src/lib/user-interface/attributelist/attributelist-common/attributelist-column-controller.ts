@@ -31,14 +31,14 @@ export class AttributelistColumnController {
       name: '_checked',
       visible: true,
       dataType: 'boolean',
-      columnType: 'special',
+      columnType: 'data',
     };
     this.specialColumns.push(column);
     column = {
       name: '_details',
       visible: true,
       dataType: 'boolean',
-      columnType: 'special',
+      columnType: 'data',
     };
     this.specialColumns.push(column);
   }

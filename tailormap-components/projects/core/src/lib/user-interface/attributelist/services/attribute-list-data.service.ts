@@ -2,24 +2,24 @@ import { Injectable } from '@angular/core';
 import { AttributeListTabModel } from '../models/attribute-list-tab.model';
 import { Store } from '@ngrx/store';
 import { AttributeListState } from '../state/attribute-list.state';
-import { selectApplicationId } from '../../../application/state/application.selectors';
-import { catchError, concatMap, map, take } from 'rxjs/operators';
+import { catchError, map, take } from 'rxjs/operators';
 import {
   AttributeListFeature, AttributeListParameters, AttributeListResponse, RelatedFeatureType,
 } from '../../../shared/attribute-service/attribute-models';
 import { AttributeService } from '../../../shared/attribute-service/attribute.service';
 import { forkJoin, Observable, of } from 'rxjs';
-import { DetailsState } from '../attributelist-common/attributelist-enums';
 import { FormconfigRepositoryService } from '../../../shared/formconfig-repository/formconfig-repository.service';
 import { FormConfiguration } from '../../../feature-form/form/form-models';
 import { AttributeListRowModel } from '../models/attribute-list-row.model';
 import { ApplicationService } from '../../../application/services/application.service';
+import { AttributeListFeatureTypeData } from '../models/attribute-list-feature-type-data.model';
 
 export interface LoadDataResult {
   layerId: string;
+  featureType: number;
   errorMessage?: string;
   totalCount: number;
-  features: AttributeListRowModel[];
+  rows: AttributeListRowModel[];
   relatedFeatures: RelatedFeatureType[];
 }
 
@@ -37,42 +37,55 @@ export class AttributeListDataService {
 
   public loadData(
     tab: AttributeListTabModel,
+    tabFeatureData: AttributeListFeatureTypeData[],
+  ): Observable<LoadDataResult[]> {
+      return forkJoin([ tab.featureType, ...tab.relatedFeatures.map(r => r.id) ]
+        .map(featureType => this.loadDataForFeatureType(tab, featureType, tabFeatureData)))
+  }
+
+  public loadDataForFeatureType(
+    tab: AttributeListTabModel,
+    featureType: number,
+    tabFeatureData: AttributeListFeatureTypeData[],
   ): Observable<LoadDataResult> {
-      const attrParams: AttributeListParameters = {
-        application: this.applicationService.getId(),
-        appLayer: +(tab.layerId),
-        filter: this.getFilter(tab),
-        limit: tab.pageSize,
-        page: 1,
-        start: tab.pageIndex * tab.pageSize,
-        clearTotalCountCache: true,
-        dir: tab.sortDirection,
-        sort: tab.sortedColumn || '',
-      };
-      return forkJoin([
-        this.attributeService.features$(attrParams).pipe(
-          catchError(e => of<AttributeListResponse>({ success: false, message: '', features: [], total: 0 })),
-        ),
-        this.formConfigRepoService.getFormConfigForLayer$(tab.layerName).pipe(take(1)),
-      ]).pipe(
-        map(([ response, formConfig ]) => {
-          if (!response.success) {
-            return {
-              layerId: tab.layerId,
-              totalCount: 0,
-              features: [],
-              relatedFeatures: [],
-              errorMessage: response.message || 'Failed loading attributes',
-            }
-          }
+    const featureTypeData = tabFeatureData.find(data => data.featureType === featureType);
+    const attrParams: AttributeListParameters = {
+      application: this.applicationService.getId(),
+      appLayer: +(tab.layerId),
+      filter: this.getFilter(tab, featureType, tabFeatureData),
+      limit: featureTypeData.pageSize,
+      page: 1,
+      start: featureTypeData.pageIndex * featureTypeData.pageSize,
+      clearTotalCountCache: true,
+      dir: featureTypeData.sortDirection,
+      sort: featureTypeData.sortedColumn || '',
+    };
+    return forkJoin([
+      this.attributeService.features$(attrParams).pipe(
+        catchError(e => of<AttributeListResponse>({ success: false, message: '', features: [], total: 0 })),
+      ),
+      this.formConfigRepoService.getFormConfigForLayer$(tab.layerName).pipe(take(1)),
+    ]).pipe(
+      map(([ response, formConfig ]): LoadDataResult => {
+        if (!response.success) {
           return {
             layerId: tab.layerId,
-            totalCount: response.total,
-            features: this.decorateFeatures(response.features, formConfig),
-            relatedFeatures: response.features.length > 0 ? (response.features[0].related_featuretypes || []) : [],
-          };
-        }),
-      )
+            featureType: featureTypeData.featureType,
+            totalCount: 0,
+            rows: [],
+            relatedFeatures: [],
+            errorMessage: response.message || 'Failed loading attributes',
+          }
+        }
+        return {
+          layerId: tab.layerId,
+          featureType: featureTypeData.featureType,
+          totalCount: response.total,
+          rows: this.decorateFeatures(response.features, formConfig),
+          relatedFeatures: response.features.length > 0 ? (response.features[0].related_featuretypes || []) : [],
+        };
+      }),
+    )
   }
 
   private decorateFeatures(features: AttributeListFeature[], formConfig: FormConfiguration): AttributeListRowModel[] {
@@ -95,7 +108,11 @@ export class AttributeListDataService {
     });
   }
 
-  private getFilter(tab: AttributeListTabModel) {
+  private getFilter(
+    tab: AttributeListTabModel,
+    featureType: number,
+    tabFeatureData: AttributeListFeatureTypeData[],
+  ): string {
     // @TODO: implement
     return '';
   }

@@ -6,9 +6,11 @@
              multiTemplateDataRows
              (matSortChange)="onSortClick($event)">
 
-    <tailormap-attribute-list-checkbox-column [rows]="tab.rows" [layerId]="layerId"></tailormap-attribute-list-checkbox-column>
+    <tailormap-attribute-list-checkbox-column [uncheckedCount]="uncheckedCount"
+                                              [checkedCount]="checkedCount"
+                                              [featureType]="featureType"></tailormap-attribute-list-checkbox-column>
 
-    <tailormap-attribute-list-details-column [layerId]="layerId"></tailormap-attribute-list-details-column>
+    <tailormap-attribute-list-details-column [featureType]="featureType"></tailormap-attribute-list-details-column>
 
     <!-- Columns with data -->
     <ng-container *ngFor="let col of getVisibleColumns()" matColumnDef="{{col.name}}">
