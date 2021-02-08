@@ -1,6 +1,5 @@
 import { FormTreeMetadata } from './form-tree-models';
 import { Feature } from '../../shared/generated';
-import { FormconfigRepositoryService } from '../../shared/formconfig-repository/formconfig-repository.service';
 import { FormHelpers } from '../form/form-helpers';
 import { Attribute, FormConfiguration, FormFieldType } from '../form/form-models';
 import { AttributeListFeature } from '../../shared/attribute-service/attribute-models';
@@ -10,7 +9,6 @@ import { TreeModel } from '../../shared/tree/models/tree.model';
 export class FormTreeHelpers {
 
   public static convertFeatureToTreeModel(features: Feature[],
-                                          formConfigRepo: FormconfigRepositoryService,
                                           formConfigs : Map<string, FormConfiguration>): TreeModel<FormTreeMetadata>[] {
     const nodes: TreeModel[] = [];
     const allChildren: TreeModel[] = [];
@@ -32,7 +30,7 @@ export class FormTreeHelpers {
               }
               fts[featureType] = featureTypeNode;
             }
-            const children = FormTreeHelpers.convertFeatureToTreeModel([child], formConfigRepo, formConfigs)[0];
+            const children = FormTreeHelpers.convertFeatureToTreeModel([child], formConfigs)[0];
             fts[featureType].children.push(children);
           }
         });

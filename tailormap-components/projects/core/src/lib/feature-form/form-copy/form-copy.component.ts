@@ -11,7 +11,7 @@ import { FormCopyService } from './form-copy.service';
 import { ConfirmDialogService } from '../../shared/confirm-dialog/confirm-dialog.service';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
-import { selectFormConfigForFeatureType, selectFormConfigs } from '../state/form.selectors';
+import { selectCurrentFeature, selectFormConfigForFeatureType, selectFormConfigs } from '../state/form.selectors';
 import { Store } from '@ngrx/store';
 import { FormState } from '../state/form.state';
 
@@ -52,6 +52,9 @@ export class FormCopyComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
+    this.store$.select(selectCurrentFeature)
+      .pipe(takeUntil(this.destroyed)).subscribe(feature => this.openForm(feature));
+
     this.store$.select(selectFormConfigs)
       .pipe(takeUntil(this.destroyed)).subscribe(formConfigs => {
       let fieldsToCopy = new Map<string, string>();

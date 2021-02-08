@@ -1,4 +1,6 @@
-<tailormap-form-tree [features]=features [isBulk]="isBulk" [feature]=feature></tailormap-form-tree>
+<div class="tree overlay-panel mat-elevation-z4" *ngIf="treeOpen$ | async">
+  <tailormap-form-tree [features]=features [isBulk]="isBulk" [feature]=feature></tailormap-form-tree>
+</div>
 
 <div *ngIf="isOpen$ | async" class="overlay-panel mat-elevation-z4">
   <button mat-button (click)="openTree()"  class="overlay-panel mat-elevation-z4 drawerbutton" *ngIf="(treeOpen$ | async) === (false)">

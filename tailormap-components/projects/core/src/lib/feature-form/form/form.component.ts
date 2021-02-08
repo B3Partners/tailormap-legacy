@@ -39,6 +39,7 @@ export class FormComponent implements OnDestroy, OnChanges, OnInit {
   public isOpen$: Observable<boolean>;
   public treeOpen$: Observable<boolean>;
 
+
   constructor(
               private store$: Store<FormState>,
               private confirmDialogService: ConfirmDialogService,
@@ -137,11 +138,12 @@ export class FormComponent implements OnDestroy, OnChanges, OnInit {
   }
 
   public copy() {
-    this.closeForm();
+    let f = {...this.features[0]};
     this.workflowAction.setAction({
-      feature: this.features[0],
+      feature: f,
       action: WORKFLOW_ACTION.COPY,
     });
+    this.closeForm();
   }
 
   public editGeometry(): void {
