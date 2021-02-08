@@ -5,13 +5,14 @@ import { TailorMapService } from '../../../../../../bridge/src/tailor-map.servic
 import { FormconfigRepositoryService } from '../../../shared/formconfig-repository/formconfig-repository.service';
 import { MatSelectChange } from '@angular/material/select';
 import { FormConfiguration } from '../../../feature-form/form/form-models';
-import { WorkflowActionManagerService } from '../../../workflow/workflow-controller/workflow-action-manager.service';
 import { Store } from '@ngrx/store';
 import { FormState } from '../../../feature-form/state/form.state';
 import { selectFormConfigForFeatureType, selectFormConfigs, selectFormFeaturetypes } from '../../../feature-form/state/form.selectors';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { WORKFLOW_ACTION } from '../../../workflow/state/workflow-models';
+import { WorkflowState } from '../../../workflow/state/workflow.state';
+import * as WorkflowActions from '../../../workflow/state/workflow.actions';
 
 @Component({
   selector: 'tailormap-add-feature-menu',
@@ -29,9 +30,8 @@ export class AddFeatureMenuComponent implements OnInit, OnDestroy {
   constructor(
     public dialogRef: MatDialogRef<AddFeatureMenuComponent>,
     public tailorMapService: TailorMapService,
-    private workflowActionManagerService: WorkflowActionManagerService,
     private ngZone: NgZone,
-    private store$: Store<FormState>,
+    private store$: Store<FormState | WorkflowState>,
     public formConfigRepo: FormconfigRepositoryService,
   ) {
     this.tailorMapService.layerVisibilityChanged$.subscribe(value => {
@@ -90,11 +90,11 @@ export class AddFeatureMenuComponent implements OnInit, OnDestroy {
   }
 
   public draw(type: string): void {
-    this.workflowActionManagerService.setAction({
-      action: WORKFLOW_ACTION.ADD_FEATURE,
+    this.store$.dispatch(WorkflowActions.setTypes({
+      action:WORKFLOW_ACTION.ADD_FEATURE,
       geometryType: type,
       featureType: this.layer,
-    });
+    }));
     this.dialogRef.close();
   }
 

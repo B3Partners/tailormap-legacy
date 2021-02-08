@@ -9,6 +9,8 @@ import { WorkflowHelper } from './workflow.helper';
 import * as FormActions from '../../feature-form/state/form.actions';
 import { selectFormClosed } from '../../feature-form/state/form.state-helpers';
 import { selectFormConfigForFeatureType, selectFormFeaturetypes } from '../../feature-form/state/form.selectors';
+import { selectAction, selectFeatureType, selectGeometryType } from '../state/workflow.selectors';
+import { combineLatest } from 'rxjs';
 
 
 export class StandardFormWorkflow extends Workflow {
@@ -22,21 +24,26 @@ export class StandardFormWorkflow extends Workflow {
 
   public afterInit() {
     super.afterInit();
-    this.featureType = this.event.featureType;
-    if (this.event.geometryType || this.featureType) {
-      if (this.event.geometryType) {
-        const geomtype = this.event.geometryType;
-        this.vectorLayer.drawFeature(this.convertGeomType(geomtype));
-      } else {
-        this.store$.select(selectFormConfigForFeatureType, this.featureType)
-          .pipe(takeUntil(this.destroyed))
-          .subscribe(formConfig => {
-            const geomtype = formConfig.featuretypeMetadata.geometryType;
-            this.vectorLayer.drawFeature(this.convertGeomType(geomtype));
-        });
-      }
-      this.isDrawing = true;
-    }
+    combineLatest([
+      this.store$.select(selectGeometryType),
+      this.store$.select(selectFeatureType),
+    ]).pipe(takeUntil(this.destroyed))
+      .subscribe(([geometryType, featureType]) => {
+        this.featureType = featureType;
+        if (geometryType || this.featureType) {
+          if (geometryType) {
+            this.vectorLayer.drawFeature(this.convertGeomType(geometryType));
+          } else {
+            this.store$.select(selectFormConfigForFeatureType, this.featureType)
+              .pipe(takeUntil(this.destroyed))
+              .subscribe(formConfig => {
+                const geomtype = formConfig.featuretypeMetadata.geometryType;
+                this.vectorLayer.drawFeature(this.convertGeomType(geomtype));
+              });
+          }
+          this.isDrawing = true;
+        }
+      });
   }
 
   private convertGeomType(type: string): string {

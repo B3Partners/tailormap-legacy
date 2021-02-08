@@ -11,6 +11,7 @@ import { setOpenFeatureForm } from '../../feature-form/state/form.actions';
 import { selectFeatureFormOpen } from '../../feature-form/state/form.selectors';
 import { combineLatest } from 'rxjs';
 import { selectFormClosed } from '../../feature-form/state/form.state-helpers';
+import { selectFeature } from '../state/workflow.selectors';
 
 export class EditgeometryWorkflow extends Workflow {
 
@@ -18,21 +19,24 @@ export class EditgeometryWorkflow extends Workflow {
     super();
   }
 
+  private feature: Feature = null;
   public afterInit() {
     super.afterInit();
     combineLatest([
       this.store$.select(selectFeatureFormOpen),
       this.store$.pipe(selectFormClosed),
+      this.store$.select(selectFeature),
     ])
       .pipe(take(1))
-      .subscribe(([close, savedFeature]) => {
+      .subscribe(([close, nothing, feature]) => {
+        this.feature = feature;
         this.drawGeom();
       });
   }
 
   public drawGeom() : void {
-    const feat = this.event.feature
-    const geom = this.featureInitializerService.retrieveGeometry(feat);
+
+    const geom = this.featureInitializerService.retrieveGeometry(this.feature);
     if (geom) {
       this.vectorLayer.readGeoJSON(geom);
 
@@ -53,7 +57,7 @@ export class EditgeometryWorkflow extends Workflow {
   }
 
   private openForm(geom: GeoJSONGeometry | Geometry, geomChanged: boolean) {
-    const feature = this.event.feature;
+    const feature = this.feature;
     const objecttype = feature.objecttype;
     const feat = this.featureInitializerService.create(objecttype,
       {...feature, geometrie: geom  });

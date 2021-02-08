@@ -6,18 +6,18 @@ import { combineLatest, Observable, Subject } from 'rxjs';
 import { FormConfiguration } from './form-models';
 import { Feature } from '../../shared/generated';
 import { FormActionsService } from '../form-actions/form-actions.service';
-import { WorkflowActionManagerService } from '../../workflow/workflow-controller/workflow-action-manager.service';
-import { WorkflowActionEvent } from '../../workflow/workflow-controller/workflow-models';
 import { MetadataService } from '../../application/services/metadata.service';
 import { FormState } from '../state/form.state';
 import { Store } from '@ngrx/store';
 import * as FormActions from '../state/form.actions';
+import * as WorkflowActions from '../../workflow/state/workflow.actions';
 import {
   selectCloseAfterSaveFeatureForm, selectCurrentFeature, selectFeatureFormOpen, selectFormAlreadyDirty, selectFormConfigForFeatureType,
   selectFormConfigs, selectOpenFeatureForm, selectTreeOpen,
 } from '../state/form.selectors';
 import { LayerUtils } from '../../shared/layer-utils/layer-utils.service';
 import { WORKFLOW_ACTION } from '../../workflow/state/workflow-models';
+import { WorkflowState } from '../../workflow/state/workflow.state';
 
 @Component({
   selector: 'tailormap-form',
@@ -41,13 +41,12 @@ export class FormComponent implements OnDestroy, OnChanges, OnInit {
 
 
   constructor(
-              private store$: Store<FormState>,
+              private store$: Store<FormState | WorkflowState>,
               private confirmDialogService: ConfirmDialogService,
               private _snackBar: MatSnackBar,
               private ngZone: NgZone,
               private metadataService: MetadataService,
-              public actions: FormActionsService,
-              public workflowAction: WorkflowActionManagerService) {
+              public actions: FormActionsService,) {
   }
 
   public ngOnInit(): void {
@@ -61,6 +60,7 @@ export class FormComponent implements OnDestroy, OnChanges, OnInit {
         this.isBulk = features.length > 1;
         this.closeAfterSave = closeAfterSave;
     });
+
     this.store$.select(selectFormAlreadyDirty).pipe(takeUntil(this.destroyed)).subscribe(value => this.formDirty = value);
     this.store$.select(selectCurrentFeature).pipe(takeUntil(this.destroyed)).subscribe((feature) => {
       this.feature = {...feature};
@@ -138,20 +138,19 @@ export class FormComponent implements OnDestroy, OnChanges, OnInit {
   }
 
   public copy() {
-    let f = {...this.features[0]};
-    this.workflowAction.setAction({
-      feature: f,
-      action: WORKFLOW_ACTION.COPY,
-    });
+    this.store$.dispatch(WorkflowActions.setFeature({
+      feature:{...this.features[0]},
+      action:WORKFLOW_ACTION.COPY
+    }));
     this.closeForm();
   }
 
   public editGeometry(): void {
-    const event: WorkflowActionEvent = {
-      feature: {...this.feature},
-      action: WORKFLOW_ACTION.EDIT_GEOMETRY,
-    };
-    this.workflowAction.setAction(event);
+    this.store$.dispatch(WorkflowActions.setFeature({
+      feature:{...this.feature},
+      action:WORKFLOW_ACTION.EDIT_GEOMETRY
+    }));
+
     this.closeForm();
   }
 

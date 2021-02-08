@@ -14,6 +14,7 @@ import { Choice } from './WorkflowModels';
 import { setOpenFeatureForm } from '../../feature-form/state/form.actions';
 import { selectCurrentFeature, selectFeatureLabel } from '../../feature-form/state/form.selectors';
 import { selectFormClosed } from '../../feature-form/state/form.state-helpers';
+import { selectFeatureType } from '../state/workflow.selectors';
 
 export class SewageWorkflow extends Workflow {
   private currentStep: Step;
@@ -35,7 +36,9 @@ export class SewageWorkflow extends Workflow {
   public afterInit() {
     super.afterInit();
     if (this.currentStep === Step.START) {
-      this.makeChoices(this.event.featureType);
+      this.store$.select(selectFeatureType).pipe(takeUntil(this.destroyed)).subscribe(featureType =>{
+        this.makeChoices(featureType);
+      });
     }
     if (this.currentStep === Step.WELL1 || this.currentStep === Step.WELL2) {
       if (this.currentStep === Step.WELL1) {

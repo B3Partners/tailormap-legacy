@@ -3,11 +3,16 @@ import { Workflow } from '../workflows/Workflow';
 import { WorkflowFactoryService } from '../workflow-factory/workflow-factory.service';
 import { MapClickedEvent } from '../../shared/models/event-models';
 import { Feature } from '../../shared/generated';
-import { Subscription } from 'rxjs';
-import { WorkflowActionManagerService } from './workflow-action-manager.service';
-import {  WorkflowActionEvent } from './workflow-models';
+import { combineLatest, Subject } from 'rxjs';
 import { VectorLayer } from '../../../../../bridge/typings';
 import { WORKFLOW_ACTION } from '../state/workflow-models';
+import { WorkflowState } from '../state/workflow.state';
+import { Store } from '@ngrx/store';
+import { selectAction, selectFeatureType } from '../state/workflow.selectors';
+import { takeUntil } from 'rxjs/operators';
+import { selectApplicationTreeWithoutBackgroundLayers } from '../../application/state/application.selectors';
+import { selectSelectedDataSource } from '../../analysis/state/analysis.selectors';
+import * as WorkflowActions from '../state/workflow.actions';
 
 @Injectable({
   providedIn: 'root',
@@ -15,43 +20,50 @@ import { WORKFLOW_ACTION } from '../state/workflow-models';
 export class WorkflowControllerService implements OnDestroy {
 
   private currentWorkflow: Workflow;
-  private subscriptions = new Subscription();
+  private destroyed = new Subject();
 
   constructor(
     private workflowFactory: WorkflowFactoryService,
+    private store$: Store<WorkflowState>,
     private ngZone: NgZone,
-    private workflowActionManagerService: WorkflowActionManagerService,
   ) {
-    this.workflowActionManagerService.actionChanged$.subscribe(value => {
-      if (!value) {
-        return;
-      }
-      this.workflowChanged(value);
-    })
+
+    combineLatest([
+      this.store$.select(selectAction),
+      this.store$.select(selectFeatureType),
+    ])
+      .pipe(takeUntil(this.destroyed))
+      .subscribe(([ action, featureType ]) => {
+        if(action){
+          this.workflowChanged(action, featureType);
+        }
+      });
+
   }
 
   public init(): void {
-    this.currentWorkflow = this.getWorkflow({action: WORKFLOW_ACTION.DEFAULT});
+    this.store$.dispatch(WorkflowActions.setAction({action: WORKFLOW_ACTION.DEFAULT}))
   }
 
   public ngOnDestroy() {
-    this.subscriptions.unsubscribe();
+    this.destroyed.next();
+    this.destroyed.complete();
   }
 
   public workflowFinished(): void {
     this.init();
   }
 
-  public workflowChanged(event: WorkflowActionEvent): void {
-    this.currentWorkflow = this.getWorkflow(event);
+  public workflowChanged(action: WORKFLOW_ACTION, featureType: string): void {
+    this.currentWorkflow = this.getWorkflow(action, featureType);
   }
 
-  public getWorkflow(event: WorkflowActionEvent): Workflow {
+  public getWorkflow(event: WORKFLOW_ACTION, featureType: string): Workflow {
     if (this.currentWorkflow) {
       this.currentWorkflow.destroy();
     }
-    const wf = this.workflowFactory.getWorkflow(event);
-    this.subscriptions.add(wf.close$.subscribe(value => this.init()));
+    const wf = this.workflowFactory.getWorkflow(event, featureType);
+    wf.close$.pipe(takeUntil(this.destroyed)).subscribe(value => this.init());
     return wf;
   }
 

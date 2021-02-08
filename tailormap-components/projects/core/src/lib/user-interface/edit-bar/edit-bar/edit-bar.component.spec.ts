@@ -3,7 +3,7 @@ import { createComponentFactory, createSpyObject, Spectator } from '@ngneat/spec
 import { SharedModule } from '../../../shared/shared.module';
 import { getTailorMapServiceMockProvider } from '../../../../../../bridge/src/tailor-map.service.mock';
 import { WorkflowControllerService } from '../../../workflow/workflow-controller/workflow-controller.service';
-import { WorkflowActionManagerService } from '../../../workflow/workflow-controller/workflow-action-manager.service';
+
 import { MenuButtonComponent } from '../add-feature-menu/menu-button/menu-button.component';
 import { formStateKey, initialFormState } from '../../../feature-form/state/form.state';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
@@ -22,7 +22,6 @@ describe('EditBarComponent', () => {
       provideMockStore({ initialState }),
       getTailorMapServiceMockProvider(),
       { provide: WorkflowControllerService, useValue: createSpyObject(WorkflowControllerService) },
-      { provide: WorkflowActionManagerService, useValue: createSpyObject(WorkflowActionManagerService) },
     ]
   });
 

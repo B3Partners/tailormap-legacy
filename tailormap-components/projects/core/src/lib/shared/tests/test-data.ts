@@ -35,16 +35,19 @@ export const mockFeature = (overrides?: Partial<Feature>): Feature => ({
 
 export const mockWegvakonderdeel = (overrides?: Partial<Wegvakonderdeel>): Wegvakonderdeel => ({
   ...mockFeature(),
+  objecttype: 'Wegvakonderdeel',
   ...overrides,
 });
 
 export const mockWegvakonderdeelplanning = (overrides?: Partial<Wegvakonderdeelplanning>): Wegvakonderdeelplanning => ({
   ...mockFeature(),
+  objecttype: 'Wegvakonderdeelplanning',
   ...overrides,
 });
 
 export const mockBoom = (overrides?: Partial<Boom>): Boom => ({
   ...mockFeature(),
+  objecttype: 'Boom',
   geometrie: mockGeometry(),
   ...overrides,
 });

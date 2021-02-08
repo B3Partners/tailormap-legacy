@@ -5,7 +5,6 @@ import { getTailorMapServiceMockProvider } from '../../../../../bridge/src/tailo
 import { WorkflowControllerService } from './workflow-controller.service';
 import { WorkflowFactoryService } from '../workflow-factory/workflow-factory.service';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { analysisStateKey, initialAnalysisState } from '../../analysis/state/analysis.state';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { formStateKey, initialFormState } from '../../feature-form/state/form.state';
 

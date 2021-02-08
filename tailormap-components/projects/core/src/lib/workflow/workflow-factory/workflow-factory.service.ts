@@ -43,13 +43,13 @@ export class WorkflowFactoryService {
     private store$: Store<FormState>) {
   }
 
-  public getWorkflow(event: WorkflowActionEvent): Workflow {
+  public getWorkflow(action: WORKFLOW_ACTION, featureType: string): Workflow {
 
     let workflow: Workflow = null;
-    switch (event.action) {
+    switch (action) {
 
       case WORKFLOW_ACTION.ADD_FEATURE:
-        switch (event.featureType) {
+        switch (featureType) {
           case 'mechleiding':
           case 'vrijvleiding':
             workflow = new SewageWorkflow();
@@ -77,7 +77,7 @@ export class WorkflowFactoryService {
     workflow.vectorLayer = this.vectorLayer;
     workflow.highlightLayer = this.highlightLayer;
     workflow.id = this.numWorkflows;
-    workflow.init(event, this.tailorMap, this.dialog, this.featureInitializerService,
+    workflow.init(this.tailorMap, this.dialog, this.featureInitializerService,
       this.formConfigRepo, this.snackBar, this.service, this.ngZone, this.confirmService,
       this.geometryConfirmService, this.layerUtils, this.store$);
 

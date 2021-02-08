@@ -3,20 +3,17 @@ import { MatDialog } from '@angular/material/dialog';
 import { FeatureInitializerService } from '../../shared/feature-initializer/feature-initializer.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { FormconfigRepositoryService } from '../../shared/formconfig-repository/formconfig-repository.service';
-import {
-  Feature,
-  FeatureControllerService,
-} from '../../shared/generated';
+import { Feature, FeatureControllerService } from '../../shared/generated';
 import { VectorLayer } from '../../../../../bridge/typings';
 import { MapClickedEvent } from '../../shared/models/event-models';
 import { NgZone } from '@angular/core';
 import { Subject } from 'rxjs';
 import { ConfirmDialogService } from '../../shared/confirm-dialog/confirm-dialog.service';
-import { WorkflowActionEvent } from '../workflow-controller/workflow-models';
 import { GeometryConfirmService } from '../../user-interface/geometry-confirm-buttons/geometry-confirm.service';
 import { LayerUtils } from '../../shared/layer-utils/layer-utils.service';
 import { FormState } from '../../feature-form/state/form.state';
 import { Store } from '@ngrx/store';
+import { WorkflowState } from '../state/workflow.state';
 
 export abstract class Workflow {
 
@@ -35,14 +32,12 @@ export abstract class Workflow {
   protected ngZone: NgZone;
   public closeAfterSave: boolean;
   protected geometryConfirmService: GeometryConfirmService;
-  protected event: WorkflowActionEvent;
   protected layerUtils: LayerUtils;
-  protected store$: Store<FormState>;
+  protected store$: Store<FormState | WorkflowState>;
 
   public close$ = new Subject<boolean>();
 
   public init(
-    event: WorkflowActionEvent,
     tailorMap: TailorMapService,
     dialog: MatDialog,
     featureInitializerService: FeatureInitializerService,
@@ -54,7 +49,6 @@ export abstract class Workflow {
     geometryConfirmService: GeometryConfirmService,
     layerUtils: LayerUtils,
     store$: Store<FormState>): void {
-    this.event = event;
 
     this.tailorMap = tailorMap;
     this.dialog = dialog;

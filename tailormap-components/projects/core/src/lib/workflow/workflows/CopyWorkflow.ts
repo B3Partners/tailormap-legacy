@@ -4,6 +4,8 @@ import { MapClickedEvent } from '../../shared/models/event-models';
 import { Feature } from '../../shared/generated';
 import { FormCopyComponent } from '../../feature-form/form-copy/form-copy.component';
 import { CopyDialogData } from '../../feature-form/form-copy/form-copy-models';
+import { selectFeature } from '../state/workflow.selectors';
+import { takeUntil } from 'rxjs/operators';
 
 export class CopyWorkflow extends Workflow {
   private feature: Feature;
@@ -14,8 +16,11 @@ export class CopyWorkflow extends Workflow {
 
   public afterInit() {
     super.afterInit();
-    this.feature = this.event.feature;
-    this.openDialog();
+    this.store$.select(selectFeature).pipe(takeUntil(this.destroyed)).subscribe(feature =>{
+      this.feature = feature;
+      this.openDialog();
+    });
+
   }
 
   public afterEditting(): void {
