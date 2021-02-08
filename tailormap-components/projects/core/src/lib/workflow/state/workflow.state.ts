@@ -6,8 +6,8 @@ export const workflowStateKey = 'workflow';
 export interface WorkflowState {
   action: WORKFLOW_ACTION,
   featureType: string,
-  geometryType:string,
-  feature:Feature,
+  geometryType: string,
+  feature: Feature,
 }
 
 export const initialWorkflowState: WorkflowState = {

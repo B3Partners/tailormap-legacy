@@ -13,7 +13,7 @@ import { TreeModel } from '../../shared/tree/models/tree.model';
 import { TransientTreeHelper } from '../../shared/tree/helpers/transient-tree.helper';
 
 @Component({
-  providers:[TreeService],
+  providers: [TreeService],
   selector: 'tailormap-form-tree',
   templateUrl: './form-tree.component.html',
   styleUrls: ['./form-tree.component.css'],
@@ -31,8 +31,8 @@ export class FormTreeComponent implements OnInit, OnChanges, OnDestroy {
   private selectedFeature: Feature;
 
   @Input()
-  public set feature (feature: Feature){
-    if(feature && this.transientTreeHelper){
+  public set feature (feature: Feature) {
+    if (feature && this.transientTreeHelper) {
       this.transientTreeHelper.selectNode(feature.objectGuid);
     }
     this.selectedFeature = feature;
@@ -42,7 +42,7 @@ export class FormTreeComponent implements OnInit, OnChanges, OnDestroy {
   public featuresToCopy = [];
 
   @Input()
-  public hasCheckboxes : boolean = false;
+  public hasCheckboxes = false;
 
   @Input()
   public isBulk = false;
@@ -69,7 +69,7 @@ export class FormTreeComponent implements OnInit, OnChanges, OnDestroy {
       },
       this.hasCheckboxes,
     );
-    if(this.features && this.features.length > 0){
+    if (this.features && this.features.length > 0) {
       this.createTree(this.features);
     }
   }
@@ -84,7 +84,7 @@ export class FormTreeComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   private createTree(features) {
-    this.store$.select(selectFormConfigs).pipe(takeUntil(this.destroyed)).subscribe(formConfigs=>{
+    this.store$.select(selectFormConfigs).pipe(takeUntil(this.destroyed)).subscribe(formConfigs => {
       const tree : TreeModel<FormTreeMetadata> [] = FormTreeHelpers.convertFeatureToTreeModel(features, formConfigs);
       this.transientTreeHelper.createTree(tree);
     });

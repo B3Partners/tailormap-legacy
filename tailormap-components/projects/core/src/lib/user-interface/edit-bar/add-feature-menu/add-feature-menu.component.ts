@@ -91,7 +91,7 @@ export class AddFeatureMenuComponent implements OnInit, OnDestroy {
 
   public draw(type: string): void {
     this.store$.dispatch(WorkflowActions.setTypes({
-      action:WORKFLOW_ACTION.ADD_FEATURE,
+      action: WORKFLOW_ACTION.ADD_FEATURE,
       geometryType: type,
       featureType: this.layer,
     }));

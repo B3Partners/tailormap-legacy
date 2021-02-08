@@ -36,7 +36,7 @@ export class SewageWorkflow extends Workflow {
   public afterInit() {
     super.afterInit();
     if (this.currentStep === Step.START) {
-      this.store$.select(selectFeatureType).pipe(takeUntil(this.destroyed)).subscribe(featureType =>{
+      this.store$.select(selectFeatureType).pipe(takeUntil(this.destroyed)).subscribe(featureType => {
         this.makeChoices(featureType);
       });
     }

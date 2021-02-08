@@ -16,7 +16,7 @@ export class CopyWorkflow extends Workflow {
 
   public afterInit() {
     super.afterInit();
-    this.store$.select(selectFeature).pipe(takeUntil(this.destroyed)).subscribe(feature =>{
+    this.store$.select(selectFeature).pipe(takeUntil(this.destroyed)).subscribe(feature => {
       this.feature = feature;
       this.openDialog();
     });

@@ -3,8 +3,6 @@ import { FormAction, FormState, initialFormState } from './form.state';
 import * as FormActions from './form.actions';
 import { Feature } from '../../shared/generated';
 import { FormConfiguration } from '../form/form-models';
-import { WorkflowState } from '../../workflow/state/workflow.state';
-import { WORKFLOW_ACTION } from '../../workflow/state/workflow-models';
 
 const onCloseFeatureForm  = (state: FormState): FormState => ({
   ...state,
@@ -19,7 +17,7 @@ const onSetFeature = (state: FormState, payload : { feature: Feature }): FormSta
   feature: payload.feature,
 });
 
-const onSaveFeature = (state: FormState, payload: { features: Feature[] }) : FormState =>({
+const onSaveFeature = (state: FormState, payload: { features: Feature[] }) : FormState => ({
   ...state,
   features: payload.features,
 });

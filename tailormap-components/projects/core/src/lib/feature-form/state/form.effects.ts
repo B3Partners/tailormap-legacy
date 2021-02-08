@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { concatMap, filter, map, withLatestFrom } from 'rxjs/operators';
 import * as FormActions from './form.actions';
-import * as WorkflowActions from '../../workflow/state/workflow.actions';
 import { of } from 'rxjs';
 import { selectCloseAfterSaveFeatureForm } from './form.selectors';
 import { Store } from '@ngrx/store';

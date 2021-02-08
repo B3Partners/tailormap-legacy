@@ -46,7 +46,7 @@ export class FormComponent implements OnDestroy, OnChanges, OnInit {
               private _snackBar: MatSnackBar,
               private ngZone: NgZone,
               private metadataService: MetadataService,
-              public actions: FormActionsService,) {
+              public actions: FormActionsService) {
   }
 
   public ngOnInit(): void {
@@ -139,16 +139,16 @@ export class FormComponent implements OnDestroy, OnChanges, OnInit {
 
   public copy() {
     this.store$.dispatch(WorkflowActions.setFeature({
-      feature:{...this.features[0]},
-      action:WORKFLOW_ACTION.COPY
+      feature: {...this.features[0]},
+      action: WORKFLOW_ACTION.COPY,
     }));
     this.closeForm();
   }
 
   public editGeometry(): void {
     this.store$.dispatch(WorkflowActions.setFeature({
-      feature:{...this.feature},
-      action:WORKFLOW_ACTION.EDIT_GEOMETRY
+      feature: {...this.feature},
+      action: WORKFLOW_ACTION.EDIT_GEOMETRY,
     }));
 
     this.closeForm();

@@ -10,8 +10,6 @@ import { WorkflowState } from '../state/workflow.state';
 import { Store } from '@ngrx/store';
 import { selectAction, selectFeatureType } from '../state/workflow.selectors';
 import { takeUntil } from 'rxjs/operators';
-import { selectApplicationTreeWithoutBackgroundLayers } from '../../application/state/application.selectors';
-import { selectSelectedDataSource } from '../../analysis/state/analysis.selectors';
 import * as WorkflowActions from '../state/workflow.actions';
 
 @Injectable({
@@ -34,7 +32,7 @@ export class WorkflowControllerService implements OnDestroy {
     ])
       .pipe(takeUntil(this.destroyed))
       .subscribe(([ action, featureType ]) => {
-        if(action){
+        if (action) {
           this.workflowChanged(action, featureType);
         }
       });

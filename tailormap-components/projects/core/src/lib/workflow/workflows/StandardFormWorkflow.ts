@@ -9,7 +9,7 @@ import { WorkflowHelper } from './workflow.helper';
 import * as FormActions from '../../feature-form/state/form.actions';
 import { selectFormClosed } from '../../feature-form/state/form.state-helpers';
 import { selectFormConfigForFeatureType, selectFormFeaturetypes } from '../../feature-form/state/form.selectors';
-import { selectAction, selectFeatureType, selectGeometryType } from '../state/workflow.selectors';
+import { selectFeatureType, selectGeometryType } from '../state/workflow.selectors';
 import { combineLatest } from 'rxjs';
 
 

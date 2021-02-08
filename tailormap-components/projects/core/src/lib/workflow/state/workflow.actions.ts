@@ -1,7 +1,6 @@
 import { createAction, props } from '@ngrx/store';
 import { WORKFLOW_ACTION } from './workflow-models';
 import { Feature } from '../../shared/generated';
-import { WorkflowActionEvent } from '../workflow-controller/workflow-models';
 
 
 const formActionsPrefix = '[Workflow]';

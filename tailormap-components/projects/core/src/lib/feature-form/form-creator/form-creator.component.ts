@@ -15,9 +15,7 @@ import { takeUntil } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
 import { FormAction, FormState } from '../state/form.state';
 import * as FormActions from '../state/form.actions';
-import * as WorkflowActions from '../../workflow/state/workflow.actions';
 import { WorkflowState } from '../../workflow/state/workflow.state';
-import { WORKFLOW_ACTION } from '../../workflow/state/workflow-models';
 
 @Component({
   selector: 'tailormap-form-creator',

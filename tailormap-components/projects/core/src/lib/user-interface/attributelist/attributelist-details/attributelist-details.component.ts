@@ -15,7 +15,6 @@ import {
 import { AttributeDataSource } from '../attributelist-common/attributelist-datasource';
 import { AttributeService } from '../../../shared/attribute-service/attribute.service';
 import { LayerService } from '../layer.service';
-import { FormconfigRepositoryService } from '../../../shared/formconfig-repository/formconfig-repository.service';
 import { RelatedFeatureType } from '../../../shared/attribute-service/attribute-models';
 import { TailorMapService } from '../../../../../../bridge/src/tailor-map.service';
 import { ValueService } from '../../../shared/value-service/value.service';
