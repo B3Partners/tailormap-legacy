@@ -39,6 +39,8 @@
 
 .bottom-bar {
   margin-left: auto;
+  padding-bottom: 5px;
+  padding-top: 5px;
 }
 
 .bottom-bar button {

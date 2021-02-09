@@ -15,6 +15,9 @@ export class FormfieldComponent implements AfterViewInit {
     public attribute: FeatureAttribute;
 
     @Input()
+    public editting: boolean = false;
+
+    @Input()
     public value: string;
 
     @Input()

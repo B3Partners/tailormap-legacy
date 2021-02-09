@@ -49,6 +49,8 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
 
   public tabbedConfig: TabbedFields;
 
+  public editting: boolean = false;
+
   public formgroep = new FormGroup({});
 
   private subscriptions = new Subscription();

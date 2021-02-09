@@ -23,7 +23,11 @@
   </div>
   <div class="bottom-bar">
 
-    <button [disabled]="!formDirty && !closeAfterSave"
+    <button mat-flat-button *ngIf="!formCreator.editting" color="primary" (click)="formCreator.editting = true">
+      Bewerken
+    </button>
+
+    <button [disabled]="!formDirty && !closeAfterSave"  *ngIf="formCreator.editting"
             mat-flat-button color="primary"  (click)="formCreator.beforeSave();">
 
       <span *ngIf="!closeAfterSave" >Opslaan</span>

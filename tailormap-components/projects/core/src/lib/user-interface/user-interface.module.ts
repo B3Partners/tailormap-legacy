@@ -14,6 +14,7 @@ import { MenuButtonComponent } from './edit-bar/add-feature-menu/menu-button/men
 import { GeometryConfirmButtonsComponent } from './geometry-confirm-buttons/geometry-confirm-buttons.component';
 import { InputFieldComponent } from './generic-components/input-field/input-field.component';
 import { BaseFieldComponent } from './generic-components/base-field/base-field.component';
+import { LabelFieldComponent } from './generic-components/label-field/label-field.component';
 
 @NgModule({
   declarations: [
@@ -24,6 +25,7 @@ import { BaseFieldComponent } from './generic-components/base-field/base-field.c
     GeometryConfirmButtonsComponent,
     InputFieldComponent,
     BaseFieldComponent,
+    LabelFieldComponent,
   ],
   imports: [
     CommonModule,
@@ -31,11 +33,12 @@ import { BaseFieldComponent } from './generic-components/base-field/base-field.c
     MatIconModule,
     AttributelistModule,
   ],
-  exports: [
+    exports: [
         MatIconModule,
         EditBarComponent,
         GeometryConfirmButtonsComponent,
         InputFieldComponent,
+        LabelFieldComponent,
     ],
   entryComponents: [],
   providers: [
