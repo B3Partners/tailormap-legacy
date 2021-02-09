@@ -27,6 +27,12 @@ export const selectFormConfigForFeatureType = createSelector(
   (formConfigs, featureType : string) => formConfigs.get(LayerUtils.sanitizeLayername(featureType)),
 );
 
+export const selectFormConfigForFeature = createSelector(
+  selectFormConfigs,
+  selectCurrentFeature,
+  (formConfigs, feature : Feature) => formConfigs.get(LayerUtils.sanitizeLayername(feature.objecttype)),
+);
+
 export const selectFeatureLabel = createSelector(
   selectFormConfigs,
   (formConfigs, feature : Feature) : string => {

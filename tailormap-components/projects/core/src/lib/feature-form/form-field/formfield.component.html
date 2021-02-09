@@ -1,6 +1,6 @@
 <tailormap-label-field
   *ngIf="!editting"
-  [value]="!isBulk ? value : ''"
+  [value]="humanReadableValue$() | async"
   [label]="attribute.label"
 ></tailormap-label-field>
 
