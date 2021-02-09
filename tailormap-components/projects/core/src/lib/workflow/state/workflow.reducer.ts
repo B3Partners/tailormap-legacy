@@ -18,7 +18,7 @@ const onSetFeature = (state: WorkflowState, payload : { feature: Feature, action
 const onSetTypes = (state: WorkflowState, payload: {
   featureType: string,
   geometryType: string,
-  action: WORKFLOW_ACTION
+  action: WORKFLOW_ACTION,
 }): WorkflowState => ({
   ...state,
   featureType: payload.featureType,

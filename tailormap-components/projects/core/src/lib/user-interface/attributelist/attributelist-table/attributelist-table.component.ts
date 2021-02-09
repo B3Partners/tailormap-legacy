@@ -14,7 +14,6 @@ import { AttributelistStatistic } from '../attributelist-common/attributelist-st
 import { AttributeService } from '../../../shared/attribute-service/attribute.service';
 import { CheckState } from '../attributelist-common/attributelist-enums';
 import { Feature } from '../../../shared/generated';
-import { FormconfigRepositoryService } from '../../../shared/formconfig-repository/formconfig-repository.service';
 import { LayerService } from '../layer.service';
 import { StatisticTypeInMenu } from '../attributelist-common/attributelist-statistic-models';
 import { StatisticService } from '../../../shared/statistic-service/statistic.service';
