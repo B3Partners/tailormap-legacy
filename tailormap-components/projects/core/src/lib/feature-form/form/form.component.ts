@@ -18,6 +18,7 @@ import {
 import { LayerUtils } from '../../shared/layer-utils/layer-utils.service';
 import { WORKFLOW_ACTION } from '../../workflow/state/workflow-models';
 import { WorkflowState } from '../../workflow/state/workflow.state';
+import { MatButtonToggleChange } from '@angular/material/button-toggle';
 
 @Component({
   selector: 'tailormap-form',
@@ -72,8 +73,8 @@ export class FormComponent implements OnDestroy, OnChanges, OnInit {
     this.treeOpen$ = this.store$.select(selectTreeOpen);
   }
 
-  public openTree(): void {
-    this.store$.dispatch(FormActions.setTreeOpen({treeOpen: true}));
+  public openTree(event: MatButtonToggleChange): void {
+    this.store$.dispatch(FormActions.setTreeOpen({treeOpen: event.source.checked}));
   }
 
   public ngOnDestroy() {
