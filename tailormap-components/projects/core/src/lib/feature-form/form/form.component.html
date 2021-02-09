@@ -27,6 +27,9 @@
       Bewerken
     </button>
 
+    <button mat-flat-button color="primary" (click)="formCreator.resetForm()" *ngIf="formCreator.editting">
+      Annuleren
+    </button>
     <button [disabled]="!formDirty && !closeAfterSave"  *ngIf="formCreator.editting"
             mat-flat-button color="primary"  (click)="formCreator.beforeSave();">
 
@@ -39,7 +42,7 @@
       </button>
     </mat-menu>
 
-    <button mat-flat-button color="primary" [matMenuTriggerFor]="optiesMenu">
+    <button mat-flat-button color="primary" [matMenuTriggerFor]="optiesMenu" *ngIf="!formCreator.editting">
       Opties
     </button>
     <mat-menu #optiesMenu="matMenu" yPosition="above" class="tailormap-menu-panel">

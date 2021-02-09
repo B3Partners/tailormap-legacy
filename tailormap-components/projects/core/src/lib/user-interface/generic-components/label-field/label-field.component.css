@@ -1,11 +1,7 @@
 .form-field {
   width: 100%;
   padding-top: 10px;
-  padding-bottom: 5px;
-}
-
-.value {
-  height: 40px;
+  padding-bottom: 15px;
 }
 
 .label {
@@ -13,3 +9,7 @@
   font-weight: bold;
 }
 
+.value {
+  height: 40px;
+  margin-left: 10px;
+}
