@@ -1,6 +1,7 @@
 import { Boom, Feature, Geometry, Wegvakonderdeel, Wegvakonderdeelplanning } from '../generated';
 import { App, AppLayer, Map, MapComponent, VectorLayer, ViewerController } from '../../../../../bridge/typings';
 import { Attribute } from '../attribute-service/attribute-models';
+import { FormConfiguration, FormFieldType } from '../../feature-form/form/form-models';
 
 export const mockAttribute = (overrides?: Partial<Attribute>): Attribute => ({
   allowValueListOnly: true,
@@ -136,4 +137,27 @@ export const getVisibleLayerMocks = (visibleLayers: number[]) => {
     (castToStrings?: false): number[];
     (castToStrings: true): string[];
   }
+}
+
+export const getFormConfigsMocks = () => {
+  const configs = new Map<string, FormConfiguration>();
+  const boomconfig : FormConfiguration = {
+    tabConfig: undefined,
+    fields: [
+      {
+        key: 'tak',
+        column: 1,
+        type: FormFieldType.TEXTFIELD,
+        tab: 1,
+      },
+    ],
+    featureType: 'Boom',
+    name: 'Boomconfig',
+    featuretypeMetadata: null,
+    relation: null,
+    tabs: 1,
+    treeNodeColumn: 'test'
+  };
+  configs.set('boom', boomconfig);
+  return configs;
 }

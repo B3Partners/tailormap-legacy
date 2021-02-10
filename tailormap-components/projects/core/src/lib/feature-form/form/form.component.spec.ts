@@ -1,8 +1,5 @@
 import { FormComponent } from './form.component';
-import {
-  FormsModule,
-  ReactiveFormsModule,
-} from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { SharedModule } from '../../shared/shared.module';
 import { FormCreatorComponent } from '../form-creator/form-creator.component';
@@ -15,7 +12,6 @@ import { createComponentFactory, Spectator } from '@ngneat/spectator';
 import { getDialogRefMockProvider } from '../../shared/tests/test-mocks';
 import { getMetadataServiceMockProvider } from '../../application/services/mocks/metadata.service.mock';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
-import { analysisStateKey, initialAnalysisState } from '../../analysis/state/analysis.state';
 import { formStateKey, initialFormState } from '../state/form.state';
 
 describe('FormComponent', () => {
