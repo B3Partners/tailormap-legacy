@@ -28,7 +28,7 @@ export const loadDataForTab = createAction(
 
 export const loadDataForTabSuccess = createAction(
   `${attributeListActionsPrefix} Load Data For Tab Success`,
-  props<{ layerId: string, data: LoadDataResult[] }>(),
+  props<{ layerId: string, data: LoadDataResult }>(),
 );
 
 export const loadDataForFeatureTypeSuccess = createAction(

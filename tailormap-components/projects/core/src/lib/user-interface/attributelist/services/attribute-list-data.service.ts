@@ -38,9 +38,8 @@ export class AttributeListDataService {
   public loadData(
     tab: AttributeListTabModel,
     tabFeatureData: AttributeListFeatureTypeData[],
-  ): Observable<LoadDataResult[]> {
-      return forkJoin([ tab.featureType, ...tab.relatedFeatures.map(r => r.id) ]
-        .map(featureType => this.loadDataForFeatureType(tab, featureType, tabFeatureData)))
+  ): Observable<LoadDataResult> {
+      return this.loadDataForFeatureType(tab, tab.selectedRelatedFeatureType || tab.featureType, tabFeatureData);
   }
 
   public loadDataForFeatureType(

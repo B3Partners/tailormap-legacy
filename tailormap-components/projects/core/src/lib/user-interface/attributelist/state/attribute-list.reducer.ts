@@ -116,7 +116,6 @@ const onLoadDataForTabSuccess = (
   state: AttributeListState,
   payload: ReturnType<typeof AttributeListActions.loadDataForTabSuccess>,
 ): AttributeListState => {
-  const resultMap = new Map<number, LoadDataResult>(payload.data.map(result => [ result.featureType, result ]));
   return {
     ...state,
     tabs: updateArrayItemInState<AttributeListTabModel>(
@@ -125,15 +124,14 @@ const onLoadDataForTabSuccess = (
       (tab => ({ ...tab, loadingData: false })),
     ),
     featureTypeData: state.featureTypeData.map<AttributeListFeatureTypeData>(featureTypeData => {
-      if (!resultMap.has(featureTypeData.featureType)) {
+      if (payload.data.featureType !== featureTypeData.featureType) {
         return featureTypeData;
       }
-      const result = resultMap.get(featureTypeData.featureType);
       return {
         ...featureTypeData,
-        errorMessage: result.errorMessage,
-        totalCount: result.totalCount,
-        rows: result.rows,
+        errorMessage: payload.data.errorMessage,
+        totalCount: payload.data.totalCount,
+        rows: payload.data.rows,
       };
     }),
   }
