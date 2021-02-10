@@ -10,7 +10,8 @@ import {
 } from './attribute-list.selectors';
 import { of } from 'rxjs';
 import { AttributeListDataService, LoadDataResult } from '../services/attribute-list-data.service';
-import { UpdateFeatureDataHelper } from '../helpers/update-feature-data.helper';
+import { UpdateAttributeListStateHelper } from '../helpers/update-attribute-list-state.helper';
+import { setSelectedFeatureType } from './attribute-list.actions';
 
 @Injectable()
 export class AttributeListEffects {
@@ -56,7 +57,7 @@ export class AttributeListEffects {
   ));
 
   public updateFeatureDataProperties$ = createEffect(() => this.actions$.pipe(
-    ofType(AttributeListActions.updatePage, AttributeListActions.updateSort),
+    ofType(AttributeListActions.updatePage, AttributeListActions.updateSort, AttributeListActions.setSelectedFeatureType),
     concatMap(action => of(action).pipe(
       withLatestFrom(
         this.store$.select(selectTabForFeatureType, action.featureType),
@@ -67,17 +68,33 @@ export class AttributeListEffects {
     concatMap(([action, tab, featureData]) => {
       const updatedFeatureData = featureData.map(data => {
         if (data.featureType === action.featureType) {
-          return UpdateFeatureDataHelper.updateDataForAction(action, data);
+          return UpdateAttributeListStateHelper.updateDataForAction(action, data);
         }
         return data;
       });
-      return this.attributeListDataService.loadDataForFeatureType(tab, action.featureType, updatedFeatureData);
+      const updatedTab = UpdateAttributeListStateHelper.updateTabForAction(action, tab);
+      return this.attributeListDataService.loadDataForFeatureType(updatedTab, tab.selectedRelatedFeatureType, updatedFeatureData);
     }),
     tap(() => {
       this.highlightService.clearHighlight();
     }),
     map((result: LoadDataResult) => {
       return AttributeListActions.loadDataForFeatureTypeSuccess({featureType: result.featureType, data: result});
+    }),
+  ));
+
+  public loadTotalCountForTab$ = createEffect(() => this.actions$.pipe(
+    ofType(AttributeListActions.loadTotalCountForTab),
+    concatMap(action => of(action).pipe(
+      withLatestFrom(
+        this.store$.select(selectTab, action.layerId),
+        this.store$.select(selectFeatureDataForTab, action.layerId),
+      ),
+    )),
+    concatMap(([action, tab, featureData]) => {
+      return this.attributeListDataService.loadTotalCount(tab, featureData).pipe(
+        map(result => AttributeListActions.loadTotalCountForTabSuccess({layerId: action.layerId, counts: result })),
+      );
     }),
   ));
 

@@ -1,10 +1,11 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
 import { AttributeListState, attributeListStateKey } from './attribute-list.state';
-import { RelatedFeatureType } from '../../../shared/attribute-service/attribute-models';
+import { Relation } from '../../../shared/attribute-service/attribute-models';
 import { AttributeListColumnModel } from '../models/attribute-list-column-models';
 import { AttributeListTabModel } from '../models/attribute-list-tab.model';
 import { AttributeListFeatureTypeData } from '../models/attribute-list-feature-type-data.model';
 import { selectOrDefault } from '../../../shared/util/map.helper';
+import { TreeModel } from '../../../shared/tree/models/tree.model';
 
 const selectAttributeListState = createFeatureSelector<AttributeListState>(attributeListStateKey);
 
@@ -16,12 +17,16 @@ export const selectAttributeListFeatureData = createSelector(selectAttributeList
 
 export const selectAttributeListTabDictionary = createSelector(
   selectAttributeListTabs,
-  tabs => new Map<string, AttributeListTabModel>(tabs.map(tab => [tab.layerId, tab])),
+  (tabs): Map<string, AttributeListTabModel> => {
+    return new Map<string, AttributeListTabModel>(tabs.map(tab => [tab.layerId, tab]));
+  },
 );
 
 export const selectAttributeListFeatureDataDictionary = createSelector(
   selectAttributeListFeatureData,
-  data => new Map<number, AttributeListFeatureTypeData>(data.map(tab => [tab.featureType, tab])),
+  (data): Map<number, AttributeListFeatureTypeData> => {
+    return new Map<number, AttributeListFeatureTypeData>(data.map(tab => [tab.featureType, tab]));
+  },
 );
 
 export const selectAttributeListConfig = createSelector(selectAttributeListState, state => state.config);
@@ -47,6 +52,14 @@ export const selectSelectedFeatureTypeForTab = createSelector(
   },
 );
 
+export const selectFeatureTypeDataForTab = createSelector(
+  selectAttributeListFeatureDataDictionary,
+  selectSelectedFeatureTypeForTab,
+  (data: Map<number, AttributeListFeatureTypeData>, selectedFeatureType: number): AttributeListFeatureTypeData => {
+    return data.get(selectedFeatureType);
+  },
+)
+
 const getFeatureDataForTab = (
   tabs: Map<string, AttributeListTabModel>,
   data: Map<number, AttributeListFeatureTypeData>,
@@ -56,7 +69,7 @@ const getFeatureDataForTab = (
   if (!tab) {
     return [];
   }
-  return [ tab.featureType, ...tab.relatedFeatures.map(r => r.id) ]
+  return [ tab.featureType, ...tab.relatedFeatures.map(r => r.foreignFeatureType) ]
     .map(featureType => data.get(featureType))
     .filter(featureData => !!featureData);
 };
@@ -76,7 +89,7 @@ export const selectTabForFeatureType = createSelector(
     if (tab) {
       return tab;
     }
-    return tabs.find(t => t.relatedFeatures.findIndex(r => r.id === featureType) !== -1);
+    return tabs.find(t => t.relatedFeatures.findIndex(r => r.foreignFeatureType === featureType) !== -1);
   },
 );
 
@@ -106,6 +119,35 @@ export const selectActiveColumnsForFeature = createSelector(
 export const selectRelatedFeaturesForTab = createSelector(
   selectAttributeListTabDictionary,
   (tabs, layerId: string) => {
-    return selectOrDefault<AttributeListTabModel, string, RelatedFeatureType[]>(tabs, layerId, 'relatedFeatures', []);
+    return selectOrDefault<AttributeListTabModel, string, Relation[]>(tabs, layerId, 'relatedFeatures', []);
+  },
+);
+
+export const selectAttributeListRelationsTree = createSelector(
+  selectAttributeListTabDictionary,
+  selectAttributeListFeatureDataDictionary,
+  (
+    tabs: Map<string, AttributeListTabModel>,
+    featureTypeData: Map<number, AttributeListFeatureTypeData>,
+    layerId: string,
+  ): TreeModel[] => {
+    const tab = tabs.get(layerId);
+    if (!tab) {
+      return [];
+    }
+    const featureData = getFeatureDataForTab(tabs, featureTypeData, layerId);
+    const featureDataTreeModels = featureData
+      .filter(data => data.featureType !== tab.featureType)
+      .map<TreeModel>(data => ({
+        id: `${data.featureType}`,
+        label: `${data.featureTypeName} (${data.totalCount || 0})`,
+      }));
+    const tabFeatureData = featureTypeData.get(tab.featureType);
+    return [{
+      id: `${tab.featureType}`,
+      label: `${tab.layerAlias || tab.layerName} (${tabFeatureData.totalCount || 0})`,
+      children: featureDataTreeModels,
+      expanded: true,
+    }];
   },
 );

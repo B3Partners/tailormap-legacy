@@ -34,6 +34,7 @@ export class AttributeListManagerService implements OnDestroy {
     layerName: '',
     loadingData: false,
     featureType: 0,
+    selectedRelatedFeatureType: 0,
     relatedFeatures: [],
   };
 
@@ -41,11 +42,12 @@ export class AttributeListManagerService implements OnDestroy {
     layerId: '',
     columns: [],
     featureType: 0,
+    featureTypeName: '',
     filter: [],
     rows: [],
     pageIndex: 0,
     pageSize: 10,
-    totalCount: 0,
+    totalCount: null,
     sortDirection: 'ASC',
   };
 
@@ -123,9 +125,31 @@ export class AttributeListManagerService implements OnDestroy {
           layerAlias: layer.alias,
           layerName,
           featureType: metadata.featureType,
+          selectedRelatedFeatureType: metadata.featureType,
+          relatedFeatures: metadata.relations,
         };
-        const featureData: AttributeListFeatureTypeData[] = [ metadata.featureType, ...metadata.relations.map(r => r.foreignFeatureType) ]
-          .map(featureType => this.createDataForFeatureType(featureType, metadata.featureType, pageSize, layer.id, metadata, formConfig));
+        const featureData: AttributeListFeatureTypeData[] = [
+          this.createDataForFeatureType(
+            metadata.featureType,
+            layer.alias || layerName,
+            metadata.featureType,
+            pageSize,
+            layer.id,
+            metadata,
+            formConfig,
+          ),
+          ...metadata.relations.map(featureType => {
+            return this.createDataForFeatureType(
+              featureType.foreignFeatureType,
+              featureType.foreignFeatureTypeName,
+              metadata.featureType,
+              pageSize,
+              layer.id,
+              metadata,
+              formConfig,
+            );
+          }),
+        ];
         return { tab, featureData };
       }),
     );
@@ -133,6 +157,7 @@ export class AttributeListManagerService implements OnDestroy {
 
   private createDataForFeatureType(
     featureType: number,
+    featureTypeName: string,
     parentFeatureType: number,
     pageSize: number,
     layerId: string,
@@ -143,17 +168,22 @@ export class AttributeListManagerService implements OnDestroy {
       ...AttributeListManagerService.EMPTY_FEATURE_TYPE_DATA,
       layerId,
       featureType,
+      featureTypeName,
       parentFeatureType: featureType !== parentFeatureType ? parentFeatureType : undefined,
-      columns: this.getColumnsForLayer(metadata, formConfig),
+      columns: this.getColumnsForLayer(metadata, featureType, formConfig),
       pageSize,
     }
   }
 
-  private getColumnsForLayer(metadata: AttributeMetadataResponse, formConfig?: FormConfiguration): AttributeListColumnModel[] {
+  private getColumnsForLayer(
+    metadata: AttributeMetadataResponse,
+    featureType: number,
+    formConfig?: FormConfiguration,
+  ): AttributeListColumnModel[] {
     const passportFields: Map<string, Attribute> = formConfig && formConfig.fields
       ? new Map(formConfig.fields.map(attr => [ attr.key, attr ]))
       : new Map();
-    const attributes = metadata.attributes.filter(a => a.featureType === metadata.featureType);
+    const attributes = metadata.attributes.filter(a => a.featureType === featureType);
     return attributes.map<AttributeListColumnModel>(a => {
       const isPassportAttribute = passportFields.has(a.name);
       return {

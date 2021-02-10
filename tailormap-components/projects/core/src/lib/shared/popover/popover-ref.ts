@@ -1,5 +1,3 @@
-import { fromEvent, Subscription } from 'rxjs';
-import { filter, take } from 'rxjs/operators';
 import { OverlayRef as CdkOverlayRef } from '@angular/cdk/overlay/overlay-ref';
 import {
   OverlayRef,
@@ -13,7 +11,8 @@ interface PopoverRefConfig extends OverlayRefConfig {
 
 export class PopoverRef<R = any, T = any> extends OverlayRef {
 
-  private eventSubscription: Subscription;
+  private readonly clickOutsideListener: () => void;
+  private readonly clickInsideListener: () => void;
 
   constructor(
     public overlay: CdkOverlayRef,
@@ -22,33 +21,32 @@ export class PopoverRef<R = any, T = any> extends OverlayRef {
   ) {
     super(overlay, data, refConfig);
 
-    if (refConfig && refConfig.closeOnClickOutside) {
+    this.clickInsideListener = this.listenToClickInside.bind(this);
+    this.clickOutsideListener = this.listenToClickOutside.bind(this);
+
+    if (refConfig && refConfig.closeOnClickOutside && this.overlay) {
         window.setTimeout(() => {
-        this.listenToClickOutside();
-      }, 0);
+          document.addEventListener('click', this.clickOutsideListener);
+          this.overlay.overlayElement.addEventListener('click', this.clickInsideListener);
+        }, 0);
     }
+  }
+
+  public listenToClickInside(event: MouseEvent) {
+    event.preventDefault();
+    event.stopPropagation();
   }
 
   public listenToClickOutside() {
-    this.eventSubscription = fromEvent<MouseEvent>(document, 'click')
-      .pipe(
-        filter(event => {
-          const clickTarget = event.target as HTMLElement;
-          return clickTarget !== this.refConfig.origin &&
-            (!!this.overlay && !this.overlay.overlayElement.contains(clickTarget));
-        }),
-        take(1),
-      )
-      .subscribe(() => {
-        this._close('backdropClick', this.data);
-      });
+    this._close('backdropClick', this.data);
   }
 
   protected destroy() {
-    super.destroy();
-    if (this.eventSubscription) {
-      this.eventSubscription.unsubscribe();
+    if (this.overlay && this.overlay.overlayElement) {
+      this.overlay.overlayElement.removeEventListener('click', this.clickInsideListener);
     }
+    super.destroy();
+    document.removeEventListener('click', this.clickOutsideListener);
   }
 
 }

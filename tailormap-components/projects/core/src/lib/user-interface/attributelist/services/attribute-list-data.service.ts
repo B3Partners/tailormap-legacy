@@ -13,6 +13,7 @@ import { FormConfiguration } from '../../../feature-form/form/form-models';
 import { AttributeListRowModel } from '../models/attribute-list-row.model';
 import { ApplicationService } from '../../../application/services/application.service';
 import { AttributeListFeatureTypeData } from '../models/attribute-list-feature-type-data.model';
+import { MetadataService } from '../../../application/services/metadata.service';
 
 export interface LoadDataResult {
   layerId: string;
@@ -21,6 +22,11 @@ export interface LoadDataResult {
   totalCount: number;
   rows: AttributeListRowModel[];
   relatedFeatures: RelatedFeatureType[];
+}
+
+export interface LoadTotalCountResult {
+  featureType: number;
+  totalCount: number;
 }
 
 @Injectable({
@@ -33,13 +39,35 @@ export class AttributeListDataService {
     private attributeService: AttributeService,
     private formConfigRepoService: FormconfigRepositoryService,
     private applicationService: ApplicationService,
+    private metadataService: MetadataService,
   ) {}
 
   public loadData(
     tab: AttributeListTabModel,
     tabFeatureData: AttributeListFeatureTypeData[],
   ): Observable<LoadDataResult> {
-      return this.loadDataForFeatureType(tab, tab.selectedRelatedFeatureType || tab.featureType, tabFeatureData);
+      return this.loadDataForFeatureType(tab, tab.selectedRelatedFeatureType, tabFeatureData);
+  }
+
+  public loadTotalCount(
+    tab: AttributeListTabModel,
+    tabFeatureData: AttributeListFeatureTypeData[],
+  ): Observable<LoadTotalCountResult[]> {
+    const counts$ = [ tab.featureType, ...tabFeatureData.map(data => data.featureType) ]
+      .map(featureType => this.getCountForFeatureType(tab, featureType, tabFeatureData))
+    return forkJoin(counts$);
+  }
+
+  private getCountForFeatureType(
+    tab: AttributeListTabModel,
+    featureType: number,
+    tabFeatureData: AttributeListFeatureTypeData[],
+  ): Observable<LoadTotalCountResult> {
+    return this.metadataService.getTotalFeaturesForQuery$(
+      +(tab.layerId),
+      this.getFilter(tab, featureType, tabFeatureData),
+      featureType,
+    ).pipe(map(count => ({ featureType, totalCount: count })));
   }
 
   public loadDataForFeatureType(
@@ -51,6 +79,7 @@ export class AttributeListDataService {
     const attrParams: AttributeListParameters = {
       application: this.applicationService.getId(),
       appLayer: +(tab.layerId),
+      featureType,
       filter: this.getFilter(tab, featureType, tabFeatureData),
       limit: featureTypeData.pageSize,
       page: 1,

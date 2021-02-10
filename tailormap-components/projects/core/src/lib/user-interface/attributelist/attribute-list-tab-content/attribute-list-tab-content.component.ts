@@ -12,14 +12,14 @@ import { FormconfigRepositoryService } from '../../../shared/formconfig-reposito
 import { ValueService } from '../../../shared/value-service/value.service';
 import { TailorMapService } from '../../../../../../bridge/src/tailor-map.service';
 import { from, Subject } from 'rxjs';
-import { concatMap, takeUntil } from 'rxjs/operators';
+import { concatMap, filter, takeUntil } from 'rxjs/operators';
 import { AttributelistTreeComponent } from '../attributelist-tree/attributelist-tree.component';
 import { AttributelistNode, SelectedTreeData, TreeDialogData } from '../attributelist-tree/attributelist-tree-models';
 import { AttributelistColumnController } from '../attributelist-common/attributelist-column-controller';
 import { FormComponent } from '../../../feature-form/form/form.component';
 import { Store } from '@ngrx/store';
 import { AttributeListState } from '../state/attribute-list.state';
-import { selectFeatureTypeData, selectTab } from '../state/attribute-list.selectors';
+import { selectFeatureTypeData, selectFeatureTypeDataForTab, selectTab } from '../state/attribute-list.selectors';
 import { AttributeListTabModel } from '../models/attribute-list-tab.model';
 import { updatePage } from '../state/attribute-list.actions';
 import { AttributeListFeatureTypeData } from '../models/attribute-list-feature-type-data.model';
@@ -33,9 +33,6 @@ export class AttributeListTabContentComponent implements AttributelistTable, OnI
 
   @Input()
   public layerId: string;
-
-  @Input()
-  public featureType: number;
 
   public columnController: AttributelistColumnController;
 
@@ -81,13 +78,19 @@ export class AttributeListTabContentComponent implements AttributelistTable, OnI
 
   public ngOnInit(): void {
     this.store$.select(selectTab, this.layerId)
-      .pipe(takeUntil(this.destroyed))
+      .pipe(
+        takeUntil(this.destroyed),
+        filter(tab => !!tab),
+      )
       .subscribe(tab => {
         this.tab = tab;
       });
 
-    this.store$.select(selectFeatureTypeData, this.featureType)
-      .pipe(takeUntil(this.destroyed))
+    this.store$.select(selectFeatureTypeDataForTab, this.layerId)
+      .pipe(
+        takeUntil(this.destroyed),
+        filter(data => !!data),
+      )
       .subscribe(data => {
         this.featureTypeData = data;
         this.nrChecked = data.rows.filter(r => r._checked).length;

@@ -28,6 +28,8 @@ import { AttributeListTableComponent } from './attribute-list-table/attribute-li
 import { AttributeListCheckboxColumnComponent } from './attribute-list-table/attribute-list-checkbox-column/attribute-list-checkbox-column.component';
 import { AttributeListDetailsColumnComponent } from './attribute-list-table/attribute-list-details-column/attribute-list-details-column.component';
 import { AttributeListStatisticsMenuComponent } from './attribute-list-table/attribute-list-statistics-menu/attribute-list-statistics-menu.component';
+import { AttributeListTreeComponent } from './attribute-list-tree/attribute-list-tree.component';
+import { AttributeListTreeDialogComponent } from './attribute-list-tree-dialog/attribute-list-tree-dialog.component';
 
 @NgModule({
   // The components, directives, and pipes that belong to this NgModule.
@@ -49,6 +51,8 @@ import { AttributeListStatisticsMenuComponent } from './attribute-list-table/att
     AttributeListCheckboxColumnComponent,
     AttributeListDetailsColumnComponent,
     AttributeListStatisticsMenuComponent,
+    AttributeListTreeComponent,
+    AttributeListTreeDialogComponent,
   ],
   imports: [
     CommonModule,

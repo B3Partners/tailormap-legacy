@@ -1,0 +1,12 @@
+:host,
+.tree-dialog {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.tree-dialog {
+  background-color: #fff;
+  overflow: auto;
+  padding: 10px;
+}

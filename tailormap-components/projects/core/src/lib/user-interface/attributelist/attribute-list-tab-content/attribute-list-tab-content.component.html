@@ -1,10 +1,10 @@
 <div class="container" *ngIf="featureTypeData">
   <mat-paginator [pageSize]="featureTypeData.pageSize"
                  [pageIndex]="featureTypeData.pageIndex"
-                 [length]="featureTypeData.totalCount"
+                 [length]="featureTypeData.totalCount || 0"
                  [hidePageSize]="true"
                  (page)="onPageChange($event)">
   </mat-paginator>
   <mat-divider></mat-divider>
-  <tailormap-attribute-list-table [layerId]="layerId" [featureType]="featureType"></tailormap-attribute-list-table>
+  <tailormap-attribute-list-table [layerId]="layerId"></tailormap-attribute-list-table>
 </div>

@@ -12,6 +12,7 @@
     </button>
 
     <button mat-flat-button color="primary"
+            #relationsButton
             (click)="openAttributeTree()"
             [disabled]="noRelations$ | async">
       <span>Relaties</span>

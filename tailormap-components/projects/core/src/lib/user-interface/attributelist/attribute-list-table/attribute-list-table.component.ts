@@ -1,6 +1,6 @@
 import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { selectFeatureTypeData, selectTab } from '../state/attribute-list.selectors';
-import { map, takeUntil } from 'rxjs/operators';
+import { selectFeatureTypeData, selectFeatureTypeDataForTab, selectTab } from '../state/attribute-list.selectors';
+import { filter, map, takeUntil } from 'rxjs/operators';
 import { Observable, Subject } from 'rxjs';
 import { AttributeListRowModel } from '../models/attribute-list-row.model';
 import { Store } from '@ngrx/store';
@@ -31,7 +31,6 @@ export class AttributeListTableComponent implements OnInit, OnDestroy {
   @Input()
   public layerId: string;
 
-  @Input()
   public featureType: number;
 
   @ViewChild(AttributeListStatisticsMenuComponent)
@@ -62,19 +61,25 @@ export class AttributeListTableComponent implements OnInit, OnDestroy {
       this.layerId,
     );
 
-    const featureTypeData$ = this.store$.select(selectFeatureTypeData, this.featureType);
+    const featureTypeData$ = this.store$.select(selectFeatureTypeDataForTab, this.layerId);
 
-    featureTypeData$.pipe(takeUntil(this.destroyed))
+    featureTypeData$
+      .pipe(
+        takeUntil(this.destroyed),
+        filter(featureData => !!featureData),
+      )
       .subscribe(featureData => {
         this.columns = featureData.columns;
         this.statistic.initStatistics(this.getVisibleColumns());
         this.columnNames = this.getColumnNames();
         this.uncheckedCount = featureData.rows.filter(row => !row._checked).length;
         this.checkedCount = featureData.rows.filter(row => row._checked).length;
+        this.featureType = featureData.featureType;
       });
 
     this.rows$ = featureTypeData$.pipe(
       takeUntil(this.destroyed),
+      filter(tab => !!tab),
       map(tab => tab.rows),
     );
   }

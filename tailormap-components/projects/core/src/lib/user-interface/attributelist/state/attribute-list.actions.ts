@@ -2,7 +2,7 @@ import { createAction, props } from '@ngrx/store';
 import { AttributeListConfig } from '../models/attribute-list.config';
 import { AttributeListTabModel } from '../models/attribute-list-tab.model';
 import { AttributeListFeatureTypeData } from '../models/attribute-list-feature-type-data.model';
-import { LoadDataResult } from '../services/attribute-list-data.service';
+import { LoadDataResult, LoadTotalCountResult } from '../services/attribute-list-data.service';
 
 const attributeListActionsPrefix = '[Attributelist]';
 
@@ -26,9 +26,19 @@ export const loadDataForTab = createAction(
   props<{ layerId: string }>(),
 );
 
+export const loadTotalCountForTab = createAction(
+  `${attributeListActionsPrefix} Load Total Count For Tab`,
+  props<{ layerId: string }>(),
+);
+
 export const loadDataForTabSuccess = createAction(
   `${attributeListActionsPrefix} Load Data For Tab Success`,
   props<{ layerId: string, data: LoadDataResult }>(),
+);
+
+export const loadTotalCountForTabSuccess = createAction(
+  `${attributeListActionsPrefix} Load Total Count For Tab Success`,
+  props<{ layerId: string, counts: LoadTotalCountResult[] }>(),
 );
 
 export const loadDataForFeatureTypeSuccess = createAction(
@@ -69,4 +79,9 @@ export const updateRowExpanded = createAction(
 export const updateRowSelected = createAction(
   `${attributeListActionsPrefix} Update Row Selected`,
   props<{ layerId: string, featureType: number, rowId: string, selected: boolean }>(),
+);
+
+export const setSelectedFeatureType = createAction(
+  `${attributeListActionsPrefix} Set Selected Feature Type`,
+  props<{ layerId: string, featureType: number }>(),
 );

@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { AttributeListColumnModel } from '../models/attribute-list-column-models';
 import { ExportFeaturesParameters } from '../../../shared/export-service/export-models';
 import { TailorMapService } from '../../../../../../bridge/src/tailor-map.service';
@@ -13,6 +13,10 @@ import { Store } from '@ngrx/store';
 import { AttributeListState } from '../state/attribute-list.state';
 import { selectRelatedFeaturesForTab } from '../state/attribute-list.selectors';
 import { AttributeListExportService, ExportType } from '../services/attribute-list-export.service';
+import { PopoverService } from '../../../shared/popover/popover.service';
+import { OverlayRef } from '../../../shared/overlay-service/overlay-ref';
+import { AttributeListTreeDialogComponent } from '../attribute-list-tree-dialog/attribute-list-tree-dialog.component';
+import { PopoverPositionEnum } from '../../../shared/popover/models/popover-position.enum';
 
 @Component({
   selector: 'tailormap-attribute-list-tab-toolbar',
@@ -27,6 +31,9 @@ export class AttributeListTabToolbarComponent implements OnInit, OnDestroy {
   @Input()
   public featureType: number;
 
+  @ViewChild('relationsButton', { static: true, read: ElementRef })
+  private relationsButton: ElementRef<HTMLButtonElement>;
+
   public columns: AttributeListColumnModel[];
   public noRelations$: Observable<boolean>;
 
@@ -39,6 +46,8 @@ export class AttributeListTabToolbarComponent implements OnInit, OnDestroy {
     type: '',
   };
 
+  private popoverRef: OverlayRef;
+
   constructor(
     private attributeListExportService: AttributeListExportService,
     private userLayer: UserLayerService,
@@ -46,6 +55,7 @@ export class AttributeListTabToolbarComponent implements OnInit, OnDestroy {
     public dialog: MatDialog,
     private metadataService: MetadataService,
     private store$: Store<AttributeListState>,
+    private popoverService: PopoverService,
   ) {
   }
 
@@ -58,6 +68,9 @@ export class AttributeListTabToolbarComponent implements OnInit, OnDestroy {
   public ngOnDestroy() {
     this.destroyed.next();
     this.destroyed.complete();
+    if (this.popoverRef) {
+      this.popoverRef.close();
+    }
   }
 
   public onExportClick(format: ExportType): void {
@@ -105,7 +118,20 @@ export class AttributeListTabToolbarComponent implements OnInit, OnDestroy {
   }
 
   public openAttributeTree(): void {
-    alert('Open Attribute Tree Dialog - Table component');
+    if (this.popoverRef && this.popoverRef.isOpen) {
+      this.popoverRef.close();
+    }
+    const WINDOW_WIDTH = 400;
+    this.popoverRef = this.popoverService.open({
+      origin: this.relationsButton.nativeElement,
+      content: AttributeListTreeDialogComponent,
+      data: { layerId: this.layerId },
+      height: 250,
+      width: Math.min(WINDOW_WIDTH, window.innerWidth),
+      closeOnClickOutside: true,
+      position: PopoverPositionEnum.TOP_RIGHT_DOWN,
+      positionOffset: 10,
+    });
   }
 
   public openPassportForm(): void {

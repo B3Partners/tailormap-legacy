@@ -3,7 +3,7 @@ import * as AttributeListActions from './attribute-list.actions';
 import { AttributeListState, initialAttributeListState } from './attribute-list.state';
 import { AttributeListTabModel } from '../models/attribute-list-tab.model';
 import { AttributeListRowModel } from '../models/attribute-list-row.model';
-import { UpdateFeatureDataHelper } from '../helpers/update-feature-data.helper';
+import { UpdateAttributeListStateHelper } from '../helpers/update-attribute-list-state.helper';
 import { AttributeListFeatureTypeData } from '../models/attribute-list-feature-type-data.model';
 import { LoadDataResult } from '../services/attribute-list-data.service';
 
@@ -147,15 +147,34 @@ const onLoadDataForFeatureTypeSuccess = (
   rows: payload.data.rows,
 }));
 
+const onLoadTotalCountForTabSuccess = (
+  state: AttributeListState,
+  payload: ReturnType<typeof AttributeListActions.loadTotalCountForTabSuccess>,
+): AttributeListState => {
+  const dict = new Map<number, number>(payload.counts.map(countResult => [countResult.featureType, countResult.totalCount]));
+  return {
+    ...state,
+    featureTypeData: state.featureTypeData.map(data => ({ ...data, totalCount: dict.get(data.featureType) || data.totalCount })),
+  }
+};
+
 const onUpdatePage = (
   state: AttributeListState,
   payload: ReturnType<typeof AttributeListActions.updatePage>,
-): AttributeListState => updateFeatureData(state, payload.featureType, data => UpdateFeatureDataHelper.updateDataForAction(payload, data));
+): AttributeListState => updateFeatureData(
+  state,
+  payload.featureType,
+  data => UpdateAttributeListStateHelper.updateDataForAction(payload, data),
+);
 
 const onUpdateSort = (
   state: AttributeListState,
   payload: ReturnType<typeof AttributeListActions.updateSort>,
-): AttributeListState => updateFeatureData(state, payload.featureType, data => UpdateFeatureDataHelper.updateDataForAction(payload, data));
+): AttributeListState => updateFeatureData(
+  state,
+  payload.featureType,
+  data => UpdateAttributeListStateHelper.updateDataForAction(payload, data),
+);
 
 const onToggleCheckedAllRows = (
   state: AttributeListState,
@@ -183,6 +202,11 @@ const onUpdateRowSelected = (
   payload: ReturnType<typeof AttributeListActions.updateRowSelected>,
 ): AttributeListState => updateTabRow(state, payload.featureType, payload.rowId, row => ({ ...row, _selected: payload.selected }));
 
+const onSetSelectedFeatureType = (
+  state: AttributeListState,
+  payload: ReturnType<typeof AttributeListActions.updateRowSelected>,
+): AttributeListState => updateTab(state, payload.layerId, tab => UpdateAttributeListStateHelper.updateTabForAction(payload, tab));
+
 const attributeListReducerImpl = createReducer(
   initialAttributeListState,
   on(AttributeListActions.setAttributeListVisibility, onSetAttributeListVisibility),
@@ -198,6 +222,8 @@ const attributeListReducerImpl = createReducer(
   on(AttributeListActions.updateRowChecked, onUpdateRowChecked),
   on(AttributeListActions.updateRowExpanded, onUpdateRowExpanded),
   on(AttributeListActions.updateRowSelected, onUpdateRowSelected),
+  on(AttributeListActions.setSelectedFeatureType, onSetSelectedFeatureType),
+  on(AttributeListActions.loadTotalCountForTabSuccess, onLoadTotalCountForTabSuccess),
 );
 
 export const attributeListReducer = (state: AttributeListState | undefined, action: Action) => {
