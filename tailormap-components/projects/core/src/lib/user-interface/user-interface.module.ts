@@ -33,7 +33,7 @@ import { LabelFieldComponent } from './generic-components/label-field/label-fiel
     MatIconModule,
     AttributelistModule,
   ],
-    exports: [
+  exports: [
         MatIconModule,
         EditBarComponent,
         GeometryConfirmButtonsComponent,

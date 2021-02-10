@@ -156,7 +156,7 @@ export const getFormConfigsMocks = () => {
     featuretypeMetadata: null,
     relation: null,
     tabs: 1,
-    treeNodeColumn: 'test'
+    treeNodeColumn: 'test',
   };
   configs.set('boom', boomconfig);
   return configs;

@@ -49,7 +49,7 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
 
   public tabbedConfig: TabbedFields;
 
-  public editting: boolean = false;
+  public editting = false;
 
   public formgroep = new FormGroup({});
 
@@ -116,7 +116,7 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
     });
   }
 
-  public resetForm() :void{
+  public resetForm() : void {
     this.editting = false;
     this.createFormControls();
   }

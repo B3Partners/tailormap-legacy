@@ -4,7 +4,7 @@ import { Attribute, FeatureAttribute, FormFieldType } from '../form/form-models'
 import { LinkedAttributeRegistryService } from '../linked-fields/registry/linked-attribute-registry.service';
 import { FormFieldHelpers } from './form-field-helpers';
 import { FormTreeHelpers } from '../form-tree/form-tree-helpers';
-import { combineLatest, Observable, of, Subject } from 'rxjs';
+import { combineLatest, Observable, Subject } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { FormState } from '../state/form.state';
 import { selectCurrentFeature, selectFormConfigForFeature } from '../state/form.selectors';
@@ -21,7 +21,7 @@ export class FormfieldComponent implements AfterViewInit, OnDestroy {
   public attribute: FeatureAttribute;
 
   @Input()
-  public editting: boolean = false;
+  public editting = false;
 
   @Input()
   public value: string;
