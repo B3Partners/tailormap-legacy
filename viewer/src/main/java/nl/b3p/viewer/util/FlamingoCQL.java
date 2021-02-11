@@ -58,7 +58,7 @@ public class FlamingoCQL {
     private static final Log LOG = LogFactory.getLog(FlamingoCQL.class);
 
     private final static String BEGIN_APPLAYER_PART = "APPLAYER(";
-    private final static String BEGIN_RELATED_PART = "RELATED_LAYER(";
+    private final static String BEGIN_RELATED_FEATURE_PART = "RELATED_FEATURE(";
 
     private static FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2(null);
 
@@ -83,7 +83,7 @@ public class FlamingoCQL {
     private static Filter getFilter(String filter, EntityManager em, boolean simplify) throws CQLException {
         Filter f = null;
 
-        if (filter.contains(BEGIN_RELATED_PART)) {
+        if (filter.contains(BEGIN_RELATED_FEATURE_PART)) {
             f = replaceSubselectsFromFilter(filter, em, simplify);
         } else {
             f = ECQL.toFilter(filter);
@@ -99,16 +99,16 @@ public class FlamingoCQL {
         Filter current = null;
 
         if (startsWithRelatedLayer(remainingFilter)) {
-            int startIndex = remainingFilter.indexOf(BEGIN_RELATED_PART) + BEGIN_RELATED_PART.length();
+            int startIndex = remainingFilter.indexOf(BEGIN_RELATED_FEATURE_PART) + BEGIN_RELATED_FEATURE_PART.length();
             int endIndex = findIndexOfClosingBracket(startIndex - 1, remainingFilter);
-            String filterPart = BEGIN_RELATED_PART + remainingFilter.substring(startIndex, endIndex + 1);
+            String filterPart = BEGIN_RELATED_FEATURE_PART + remainingFilter.substring(startIndex, endIndex + 1);
             if(simplify){
                 String replaced = replaceRelatedFilter(filterPart, em);
                 current = ECQL.toFilter(replaced);
             }else {
                 current = createSubselect(filterPart, em);
             }
-            remainingFilter = remainingFilter.substring(0, remainingFilter.indexOf(BEGIN_RELATED_PART)) + remainingFilter.substring(endIndex + 1);
+            remainingFilter = remainingFilter.substring(0, remainingFilter.indexOf(BEGIN_RELATED_FEATURE_PART)) + remainingFilter.substring(endIndex + 1);
         } else {
             int endAnd = Math.max(0, remainingFilter.toLowerCase().indexOf(" and "));
             int endOR = Math.max(0, remainingFilter.toLowerCase().indexOf(" or "));
@@ -175,7 +175,7 @@ public class FlamingoCQL {
 
     private static boolean startsWithRelatedLayer(String filter) {
         int threshold = 6;
-        return filter.substring(0, BEGIN_RELATED_PART.length() + threshold).contains(BEGIN_RELATED_PART);
+        return filter.substring(0, BEGIN_RELATED_FEATURE_PART.length() + threshold).contains(BEGIN_RELATED_FEATURE_PART);
     }
 
     private static BinaryLogicOperator getBinaryLogicOperator(String filter, Filter prev, Filter current) {
@@ -228,8 +228,8 @@ public class FlamingoCQL {
 
     private static FeatureTypeRelation retrieveFeatureTypeRelation(String filter, EntityManager em) throws CQLException {
              /*
-          RELATED_LAYER(<LAYERID_MAIN>, <SIMPLEFEATURETYPEID_SUB>, <FILTER>)
-                LAYERID_MAIN number  id of application layer (!) main layer in tailormap db: on this layer the filter will be set
+          RELATED_LAYER(<SIMPLEFEATURETYPEID_MAIN>, <SIMPLEFEATURETYPEID_SUB>, <FILTER>)
+                SIMPLEFEATURETYPEID_MAIN number  id of simplefeaturetype (not applayer ID!)  main layer in tailormap db: on this featuretype the filter will be set
                 SIMPLEFEATURETYPEID_SUB number  id of related simplefeaturetype in tailormap db
                 FILTER: string  FlamingoCQL filter
 
@@ -241,26 +241,27 @@ public class FlamingoCQL {
                 haal met behulp van de relatie de kolom uit sub op waar de relatie op ligt: kolom_sub
                 maak filter op LAYER_SUB, en haal alle values voor kolom_sub op: values
          */
-        int beginPartLength = filter.indexOf(BEGIN_RELATED_PART) + BEGIN_RELATED_PART.length();
-        int endMainLayer = filter.indexOf(",", beginPartLength + 1);
-        int endSimpleFeatureIdSub = filter.indexOf(",", endMainLayer + 1);
-        if (endMainLayer == -1 || endSimpleFeatureIdSub == -1) {
-            throw new CQLException("Related layer filter incorrectly formed. Must be of form: RELATED_LAYER(<LAYERID_MAIN>, <SIMPLEFEATURETYPEID_SUB>, <FILTER>)");
+        int beginPartLength = filter.indexOf(BEGIN_RELATED_FEATURE_PART) + BEGIN_RELATED_FEATURE_PART.length();
+        int endMainFeatureType = filter.indexOf(",", beginPartLength + 1);
+        int endSimpleFeatureIdSub = filter.indexOf(",", endMainFeatureType + 1);
+        if (endMainFeatureType == -1 || endSimpleFeatureIdSub == -1) {
+            throw new CQLException("Related layer filter incorrectly formed. Must be of form: RELATED_LAYER(<SIMPLEFEATURETYPEID_MAIN>, <SIMPLEFEATURETYPEID_SUB>, <FILTER>)");
         }
-        String appLayerIdMain = filter.substring(beginPartLength, endMainLayer);
-        String simpleFeatureIdSub = filter.substring(endMainLayer + 1, endSimpleFeatureIdSub);
+        String simpleFeatureTypeIdMain = filter.substring(beginPartLength, endMainFeatureType);
+        String simpleFeatureIdSub = filter.substring(endMainFeatureType + 1, endSimpleFeatureIdSub);
 
-        if (appLayerIdMain.isEmpty() || simpleFeatureIdSub.isEmpty()) {
-            throw new CQLException("Related layer filter incorrectly formed. Must be of form: RELATED_LAYER(<LAYERID_MAIN>, <SIMPLEFEATURETYPEID_SUB>, <FILTER>)");
+        if (simpleFeatureTypeIdMain.isEmpty() || simpleFeatureIdSub.isEmpty()) {
+            throw new CQLException("Related layer filter incorrectly formed. Must be of form: RELATED_LAYER(<SIMPLEFEATURETYPEID_MAIN>, <SIMPLEFEATURETYPEID_SUB>, <FILTER>)");
         }
-        appLayerIdMain = appLayerIdMain.trim();
+        simpleFeatureTypeIdMain = simpleFeatureTypeIdMain.trim();
         simpleFeatureIdSub = simpleFeatureIdSub.trim();
         try {
 
-            ApplicationLayer appLayer = em.find(ApplicationLayer.class, Long.parseLong(appLayerIdMain));
+           // ApplicationLayer appLayer = em.find(ApplicationLayer.class, Long.parseLong(simpleFeatureTypeIdMain));
             SimpleFeatureType sub = em.find(SimpleFeatureType.class, Long.parseLong(simpleFeatureIdSub));
-            Layer main = appLayer.getService() == null ? null : appLayer.getService().getLayer(appLayer.getLayerName(), em);
-            List<FeatureTypeRelation> rels = main.getFeatureType().getRelations();
+            SimpleFeatureType main = em.find(SimpleFeatureType.class, Long.parseLong(simpleFeatureTypeIdMain));
+            //Layer main = appLayer.getService() == null ? null : appLayer.getService().getLayer(appLayer.getLayerName(), em);
+            List<FeatureTypeRelation> rels = main.getRelations();
             AtomicReference<FeatureTypeRelation> atomRel = new AtomicReference<>();
             rels.forEach(rel -> {
                 if (rel.getForeignFeatureType().getId().equals(sub.getId())) {
