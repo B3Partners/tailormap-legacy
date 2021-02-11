@@ -17,6 +17,7 @@ import { AttributeTypeHelper } from '../../../application/helpers/attribute-type
 import { AttributeMetadataResponse } from '../../../shared/attribute-service/attribute-models';
 import { AttributeListConfig } from '../models/attribute-list.config';
 import { AttributeListFeatureTypeData } from '../models/attribute-list-feature-type-data.model';
+import { IdService } from '../../../shared/id-service/id.service';
 
 interface TabFromLayerResult {
   tab: AttributeListTabModel;
@@ -41,6 +42,7 @@ export class AttributeListManagerService implements OnDestroy {
   public static readonly EMPTY_FEATURE_TYPE_DATA: AttributeListFeatureTypeData = {
     layerId: '',
     columns: [],
+    showPassportColumnsOnly: true,
     featureType: 0,
     featureTypeName: '',
     filter: [],
@@ -57,6 +59,7 @@ export class AttributeListManagerService implements OnDestroy {
     private store$: Store<AttributeListState>,
     private formConfigRepoService: FormconfigRepositoryService,
     private metadataService: MetadataService,
+    private idService: IdService,
   ) {
     this.store$.select(selectVisibleLayers)
       .pipe(
@@ -187,9 +190,10 @@ export class AttributeListManagerService implements OnDestroy {
     return attributes.map<AttributeListColumnModel>(a => {
       const isPassportAttribute = passportFields.has(a.name);
       return {
+        id: this.idService.getUniqueId('column'),
         name: a.name,
         alias: isPassportAttribute ? passportFields.get(a.name).label : undefined,
-        visible: isPassportAttribute,
+        visible: true,
         dataType: a.type,
         columnType: isPassportAttribute ? 'passport' : 'data',
         attributeType: AttributeTypeHelper.getAttributeType(a),

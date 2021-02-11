@@ -13,7 +13,7 @@
     <tailormap-attribute-list-details-column [featureType]="featureType"></tailormap-attribute-list-details-column>
 
     <!-- Columns with data -->
-    <ng-container *ngFor="let col of getVisibleColumns()" matColumnDef="{{col.name}}">
+    <ng-container *ngFor="let col of columns" matColumnDef="{{col.name}}">
       <!-- Header -->
       <mat-header-cell *matHeaderCellDef mat-sort-header>
         {{col.alias || col.name}}

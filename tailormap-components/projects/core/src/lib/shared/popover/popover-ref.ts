@@ -26,8 +26,10 @@ export class PopoverRef<R = any, T = any> extends OverlayRef {
 
     if (refConfig && refConfig.closeOnClickOutside && this.overlay) {
         window.setTimeout(() => {
-          document.addEventListener('click', this.clickOutsideListener);
-          this.overlay.overlayElement.addEventListener('click', this.clickInsideListener);
+          document.addEventListener('mousedown', this.clickOutsideListener);
+          document.addEventListener('touchstart', this.clickOutsideListener);
+          this.overlay.overlayElement.addEventListener('mousedown', this.clickInsideListener);
+          this.overlay.overlayElement.addEventListener('touchstart', this.clickInsideListener);
         }, 0);
     }
   }
@@ -43,10 +45,12 @@ export class PopoverRef<R = any, T = any> extends OverlayRef {
 
   protected destroy() {
     if (this.overlay && this.overlay.overlayElement) {
-      this.overlay.overlayElement.removeEventListener('click', this.clickInsideListener);
+      this.overlay.overlayElement.removeEventListener('mousedown', this.clickInsideListener);
+      this.overlay.overlayElement.removeEventListener('touchstart', this.clickInsideListener);
     }
     super.destroy();
-    document.removeEventListener('click', this.clickOutsideListener);
+    document.removeEventListener('mousedown', this.clickOutsideListener);
+    document.removeEventListener('touchstart', this.clickOutsideListener);
   }
 
 }

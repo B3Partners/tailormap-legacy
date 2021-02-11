@@ -50,13 +50,11 @@ export class AttributeListCheckboxColumnComponent implements OnInit {
     }
   }
 
-  public onHeaderCheckClick($event: MouseEvent): void {
-    $event.stopPropagation();
+  public onHeaderCheckClick(): void {
     this.store$.dispatch(toggleCheckedAllRows({ featureType: this.featureType }));
   }
 
-  public onRowCheckClick($event: MouseEvent, row: AttributeListRowModel): void {
-    $event.stopPropagation();
+  public onRowCheckClick(row: AttributeListRowModel): void {
     this.store$.dispatch(updateRowChecked({ featureType: this.featureType, rowId: row.rowId, checked: !row._checked }));
   }
 

@@ -5,7 +5,6 @@ import { AttributeListTabModel } from '../models/attribute-list-tab.model';
 import { AttributeListRowModel } from '../models/attribute-list-row.model';
 import { UpdateAttributeListStateHelper } from '../helpers/update-attribute-list-state.helper';
 import { AttributeListFeatureTypeData } from '../models/attribute-list-feature-type-data.model';
-import { LoadDataResult } from '../services/attribute-list-data.service';
 
 const onSetAttributeListVisibility = (
   state: AttributeListState,
@@ -207,6 +206,52 @@ const onSetSelectedFeatureType = (
   payload: ReturnType<typeof AttributeListActions.updateRowSelected>,
 ): AttributeListState => updateTab(state, payload.layerId, tab => UpdateAttributeListStateHelper.updateTabForAction(payload, tab));
 
+const onChangeColumnPosition = (
+  state: AttributeListState,
+  payload: ReturnType<typeof AttributeListActions.changeColumnPosition>,
+): AttributeListState => updateFeatureData(state, payload.featureType, data => {
+  const columnIdx = data.columns.findIndex(col => col.id === payload.columnId);
+  const siblingIndex = payload.previousColumn === null ? 0 : data.columns.findIndex(col => col.id === payload.previousColumn);
+  if (columnIdx === -1 || siblingIndex === -1) {
+    return data;
+  }
+  const updatedColumns = [ ...data.columns ];
+  const newPosition = payload.previousColumn === null ? 0 : siblingIndex + 1;
+  updatedColumns.splice(newPosition, 0, updatedColumns.splice(columnIdx, 1)[0]);
+  return {
+    ...data,
+    columns: updatedColumns,
+  };
+});
+
+const onToggleColumnVisible = (
+  state: AttributeListState,
+  payload: ReturnType<typeof AttributeListActions.toggleColumnVisible>,
+): AttributeListState => updateFeatureData(state, payload.featureType, data => {
+  const columnIdx = data.columns.findIndex(col => col.id === payload.columnId);
+  if (columnIdx === -1) {
+    return data;
+  }
+  return {
+    ...data,
+    columns: [
+      ...data.columns.slice(0, columnIdx),
+      {
+        ...data.columns[columnIdx],
+        visible: !data.columns[columnIdx].visible,
+      },
+      ...data.columns.slice(columnIdx + 1),
+    ],
+  };
+})
+
+const onToggleShowPassportColumns = (
+  state: AttributeListState,
+  payload: ReturnType<typeof AttributeListActions.toggleShowPassportColumns>,
+): AttributeListState => {
+  return updateFeatureData(state, payload.featureType, data => ({ ...data, showPassportColumnsOnly: !data.showPassportColumnsOnly }));
+}
+
 const attributeListReducerImpl = createReducer(
   initialAttributeListState,
   on(AttributeListActions.setAttributeListVisibility, onSetAttributeListVisibility),
@@ -224,6 +269,9 @@ const attributeListReducerImpl = createReducer(
   on(AttributeListActions.updateRowSelected, onUpdateRowSelected),
   on(AttributeListActions.setSelectedFeatureType, onSetSelectedFeatureType),
   on(AttributeListActions.loadTotalCountForTabSuccess, onLoadTotalCountForTabSuccess),
+  on(AttributeListActions.changeColumnPosition, onChangeColumnPosition),
+  on(AttributeListActions.toggleColumnVisible, onToggleColumnVisible),
+  on(AttributeListActions.toggleShowPassportColumns, onToggleShowPassportColumns),
 );
 
 export const attributeListReducer = (state: AttributeListState | undefined, action: Action) => {

@@ -62,7 +62,7 @@ export class PopoverService {
   }
 
   private getPositions(position?: PopoverPositionEnum, positionOffset?: number): ConnectionPositionPair[] {
-    if (position === PopoverPositionEnum.TOP_RIGHT_DOWN) {
+    if (position === PopoverPositionEnum.BOTTOM_RIGHT_DOWN) {
       return [
         {
           originX: 'end',
@@ -77,6 +77,42 @@ export class PopoverService {
           overlayX: 'end',
           overlayY: 'bottom',
           offsetY: -1 * (positionOffset || 0),
+        },
+      ];
+    }
+    if (position === PopoverPositionEnum.BOTTOM_LEFT_DOWN) {
+      return [
+        {
+          originX: 'start',
+          originY: 'bottom',
+          overlayX: 'start',
+          overlayY: 'top',
+          offsetY: positionOffset || 0,
+        },
+        {
+          originX: 'start',
+          originY: 'top',
+          overlayX: 'start',
+          overlayY: 'bottom',
+          offsetY: -1 * (positionOffset || 0),
+        },
+      ];
+    }
+    if (position === PopoverPositionEnum.TOP_RIGHT_UP) {
+      return [
+        {
+          originX: 'end',
+          originY: 'top',
+          overlayX: 'end',
+          overlayY: 'bottom',
+          offsetY: -1 * (positionOffset || 0),
+        },
+        {
+          originX: 'end',
+          originY: 'bottom',
+          overlayX: 'end',
+          overlayY: 'top',
+          offsetY: positionOffset || 0,
         },
       ];
     }

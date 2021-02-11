@@ -85,3 +85,18 @@ export const setSelectedFeatureType = createAction(
   `${attributeListActionsPrefix} Set Selected Feature Type`,
   props<{ layerId: string, featureType: number }>(),
 );
+
+export const changeColumnPosition = createAction(
+  `${attributeListActionsPrefix} Change Column Position`,
+  props<{ featureType: number, columnId: string, previousColumn: string | null}>(),
+);
+
+export const toggleColumnVisible = createAction(
+  `${attributeListActionsPrefix} Toggle Column Visibility`,
+  props<{ featureType: number, columnId: string }>(),
+);
+
+export const toggleShowPassportColumns = createAction(
+  `${attributeListActionsPrefix} Toggle Show Passport Columns`,
+  props<{ featureType: number }>(),
+);
