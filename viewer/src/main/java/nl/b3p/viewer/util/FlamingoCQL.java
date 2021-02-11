@@ -308,7 +308,7 @@ public class FlamingoCQL {
         FeatureTypeRelationKey key = relation.getRelationKeys().get(0);
         String relatedFilter = retrieveRelatedFilter(filter);
 
-        List<Object> ids = FlamingoCQL.getFIDSFromRelatedFeatures(relation.getForeignFeatureType(), relatedFilter, key.getRightSide().getName());
+        List<Object> ids = FlamingoCQL.getFIDSFromRelatedFeatures(relation.getForeignFeatureType(), relatedFilter, key.getRightSide().getName(), em);
         String cql;
         if (ids.isEmpty()) {
             cql = "1 = 0";
@@ -328,14 +328,15 @@ public class FlamingoCQL {
         return cql;
     }
 
-    private static List<Object> getFIDSFromRelatedFeatures(SimpleFeatureType sft, String filter, String column) {
+    private static List<Object> getFIDSFromRelatedFeatures(SimpleFeatureType sft, String filter, String column, EntityManager em) {
         List<Object> fids = new ArrayList<>();
         try {
             FeatureSource fs = sft.openGeoToolsFeatureSource();
 
             Query q = new Query(fs.getName().toString());
             if (filter != null && !filter.isEmpty()) {
-                Filter attributeFilter = ECQL.toFilter(filter);
+
+                Filter attributeFilter = FlamingoCQL.toFilter(filter, em);
                 attributeFilter = (Filter) attributeFilter.accept(new ChangeMatchCase(false), null);
 
                 q.setFilter(attributeFilter);
