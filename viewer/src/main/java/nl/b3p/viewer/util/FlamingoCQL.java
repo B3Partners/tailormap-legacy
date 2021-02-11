@@ -220,7 +220,7 @@ public class FlamingoCQL {
         int endSubFilter = StringUtils.ordinalIndexOf(filter, ",", 2) + 1;
 
         int endIndex = findIndexOfClosingBracket(endSubFilter, filter);
-        if (endIndex == endSubFilter) {
+        if (endIndex == endSubFilter || (endIndex - 1) == endSubFilter) {
             endIndex = filter.indexOf(")", endSubFilter) - 1;
         }
         String relatedFilterString = filter.substring(endSubFilter, endIndex + 1);

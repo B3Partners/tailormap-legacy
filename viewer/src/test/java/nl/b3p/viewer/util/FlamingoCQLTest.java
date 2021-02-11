@@ -97,14 +97,14 @@ public class FlamingoCQLTest extends TestUtil{
         assertEquals("fid", ((Subselect)output).getMainColumn());
         assertEquals("ident", ((Subselect)output).getRelatedColumn());
     }
-/*
+
     @Test
     public void linkedRelatedFilter() throws CQLException {
-        String input = "RELATED_FEATURE(5,2, RELATED_FEATURE(2,5,fysiek_voork = 'aap'))";
+        String input = "RELATED_FEATURE(5,2, (RELATED_FEATURE(2,5,fysiek_voork = 'aap')))";
         Filter output = cql.toFilter(input, entityManager, false);
         assertEquals(Subselect.class, output.getClass());
         assertEquals(Subselect.class, ((Subselect)output).getRelatedFilter().getClass());
-    }*/
+    }
 
 
     @Test
