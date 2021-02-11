@@ -135,10 +135,6 @@ export class AttributeListTabContentComponent implements AttributelistTable, OnI
     this.onObjectOptionsClick();
   }
 
-  public getVisibleColumns() {
-    return this.featureTypeData.columns.filter(c => c.visible);
-  }
-
   public getColumnWidth(name: string): string {
     // console.log('#Table - getColumnWidth - ' + name);
     return '180px';
@@ -157,16 +153,16 @@ export class AttributeListTabContentComponent implements AttributelistTable, OnI
 
   // Creates a filter for all the checked features in the maintable on the related tabled
   private createFeatureFilterForCheckedFeatures(): void {
-    let filter = '';
+    let filterStr = '';
     const checkedFeatures = this.dataSource.getAllRowAsAttributeListFeature(true);
     const filterForFeatureTypes = new Map<number, string>();
     checkedFeatures.forEach((row) => {
       const related = row.related_featuretypes;
       related.forEach((r) => {
         if (filterForFeatureTypes.has(r.id)) {
-          filter = filterForFeatureTypes.get(r.id);
+          filterStr = filterForFeatureTypes.get(r.id);
           const value = r.filter.split('=')[1].split(' ')[1];
-          filterForFeatureTypes.set(r.id, filter += ', ' + value );
+          filterForFeatureTypes.set(r.id, filterStr += ', ' + value );
         } else {
           const column = r.filter.split('=')[0].split(' ')[0];
           const value = r.filter.split('=')[1].split(' ')[1];
@@ -187,13 +183,13 @@ export class AttributeListTabContentComponent implements AttributelistTable, OnI
     const filterForFeatureTypes = new Map<number, string>();
     uniqueValues.forEach((values, key) => {
         const column = this.dataSource.relatedRightSides.get(key);
-        let filter = column + ' IN (';
+        let filterStr = column + ' IN (';
         values.forEach((val) => {
-          filter += '\'' + val + '\',';
+          filterStr += '\'' + val + '\',';
         });
-        filter = filter.slice(0, -1);
-        filter += ')';
-        filterForFeatureTypes.set(key, filter);
+        filterStr = filterStr.slice(0, -1);
+        filterStr += ')';
+        filterForFeatureTypes.set(key, filterStr);
     });
     filterForFeatureTypes.forEach((value, key) => {
       this.filterMap.get(key).setFeatureFilter(filterForFeatureTypes.get(key));
@@ -217,8 +213,8 @@ export class AttributeListTabContentComponent implements AttributelistTable, OnI
       if (this.filterMap.get(-1).getFinalFilter(this.filterMap)) {
         this.creaFeatureFilterForAllFeatures();
       } else {
-        this.filterMap.forEach((filter, key) => {
-          filter.setFeatureFilter('');
+        this.filterMap.forEach((attListFilter, key) => {
+          attListFilter.setFeatureFilter('');
         })
       }
       this.rowsChecked = false;
@@ -362,8 +358,8 @@ export class AttributeListTabContentComponent implements AttributelistTable, OnI
 
   public onClearAllFilters() {
     this.rowsChecked = false;
-    this.filterMap.forEach( (filter, key) => {
-      filter.clearFilter(this);
+    this.filterMap.forEach( (attListFilter, key) => {
+      attListFilter.clearFilter(this);
     });
     this.refreshTable();
   }

@@ -129,7 +129,7 @@ export class AttributeListTabToolbarComponent implements OnInit, OnDestroy {
       height: 250,
       width: Math.min(WINDOW_WIDTH, window.innerWidth),
       closeOnClickOutside: true,
-      position: PopoverPositionEnum.TOP_RIGHT_DOWN,
+      position: PopoverPositionEnum.BOTTOM_RIGHT_DOWN,
       positionOffset: 10,
     });
   }

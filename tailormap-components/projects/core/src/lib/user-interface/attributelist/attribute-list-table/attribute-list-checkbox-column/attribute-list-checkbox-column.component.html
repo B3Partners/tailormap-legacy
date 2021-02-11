@@ -1,18 +1,10 @@
 <ng-container matColumnDef="_checked">
   <mat-header-cell class="column_small" *matHeaderCellDef>
-    <mat-icon class="icon material-icons"
-              color="primary"
-              (click)="onHeaderCheckClick($event);">
-      {{getCheckIcon()}}
-    </mat-icon>
+    <mat-checkbox [checked]="checkState === 'All'" [indeterminate]="checkState === 'Some'" (change)="onHeaderCheckClick()"></mat-checkbox>
   </mat-header-cell>
 
   <mat-cell class="column_small" *matCellDef="let currRow;">
-    <mat-icon class="icon material-icons"
-              color="primary"
-              (click)="onRowCheckClick($event, currRow);">
-      {{currRow._checked ? 'check_box' : 'check_box_outline_blank'}}
-    </mat-icon>
+    <mat-checkbox [checked]="currRow._checked" (change)="onRowCheckClick(currRow)"></mat-checkbox>
   </mat-cell>
 
   <mat-footer-cell class="column_small" *matFooterCellDef>

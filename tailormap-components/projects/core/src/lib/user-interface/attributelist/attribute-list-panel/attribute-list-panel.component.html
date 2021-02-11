@@ -23,7 +23,7 @@
     <mat-tab *ngFor="let tab of tabs; let index = index; trackBy: trackByLayerId" [label]="tab.layerName">
       <ng-template mat-tab-label>
         {{tab.layerAlias === "" ? tab.layerName : tab.layerAlias}}
-        <mat-icon (click)="onTableOptionsClick($event, tab)">keyboard_arrow_down</mat-icon>
+        <mat-icon (click)="openColumnSelection($event, tab)">keyboard_arrow_down</mat-icon>
       </ng-template>
       <tailormap-attribute-list-tab [layerId]="tab.layerId"></tailormap-attribute-list-tab>
     </mat-tab>

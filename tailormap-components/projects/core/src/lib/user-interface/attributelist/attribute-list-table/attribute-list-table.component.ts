@@ -1,5 +1,5 @@
 import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { selectFeatureTypeData, selectFeatureTypeDataForTab, selectTab } from '../state/attribute-list.selectors';
+import { selectActiveColumnsForTab, selectFeatureTypeDataForTab } from '../state/attribute-list.selectors';
 import { filter, map, takeUntil } from 'rxjs/operators';
 import { Observable, Subject } from 'rxjs';
 import { AttributeListRowModel } from '../models/attribute-list-row.model';
@@ -43,7 +43,7 @@ export class AttributeListTableComponent implements OnInit, OnDestroy {
 
   public statistic: AttributelistStatistic;
 
-  private columns: AttributeListColumnModel[];
+  public columns: AttributeListColumnModel[];
   public columnNames: string[];
 
   public uncheckedCount: number;
@@ -69,12 +69,17 @@ export class AttributeListTableComponent implements OnInit, OnDestroy {
         filter(featureData => !!featureData),
       )
       .subscribe(featureData => {
-        this.columns = featureData.columns;
-        this.statistic.initStatistics(this.getVisibleColumns());
-        this.columnNames = this.getColumnNames();
         this.uncheckedCount = featureData.rows.filter(row => !row._checked).length;
         this.checkedCount = featureData.rows.filter(row => row._checked).length;
         this.featureType = featureData.featureType;
+      });
+
+    this.store$.select(selectActiveColumnsForTab, this.layerId)
+      .pipe(takeUntil(this.destroyed))
+      .subscribe(columns => {
+        this.columns = columns;
+        this.columnNames = this.getColumnNames(columns);
+        this.statistic.initStatistics(columns);
       });
 
     this.rows$ = featureTypeData$.pipe(
@@ -87,10 +92,6 @@ export class AttributeListTableComponent implements OnInit, OnDestroy {
   public ngOnDestroy(): void {
     this.destroyed.next();
     this.destroyed.complete();
-  }
-
-  public getVisibleColumns() {
-    return this.columns.filter(c => c.visible);
   }
 
   public trackByRowId(idx: number, row: AttributeListRowModel) {
@@ -132,11 +133,11 @@ export class AttributeListTableComponent implements OnInit, OnDestroy {
     return this.statistic.isStatisticsProcessing(colName);
   }
 
-  public getColumnNames(): string[] {
+  public getColumnNames(columns: AttributeListColumnModel[]): string[] {
     return [
       '_checked',
       '_details',
-      ...this.getVisibleColumns().map(c => c.name),
+      ...columns.map(c => c.name),
     ];
   }
 

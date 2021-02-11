@@ -6,12 +6,12 @@ import { HighlightService } from '../../../shared/highlight-service/highlight.se
 import { Store } from '@ngrx/store';
 import { AttributeListState } from './attribute-list.state';
 import {
-  selectAttributeListConfig, selectFeatureDataAndRelatedFeatureDataForFeatureType, selectFeatureDataForTab, selectTab, selectTabForFeatureType,
+  selectAttributeListConfig, selectFeatureDataAndRelatedFeatureDataForFeatureType, selectFeatureDataForTab, selectTab,
+  selectTabForFeatureType,
 } from './attribute-list.selectors';
 import { of } from 'rxjs';
 import { AttributeListDataService, LoadDataResult } from '../services/attribute-list-data.service';
 import { UpdateAttributeListStateHelper } from '../helpers/update-attribute-list-state.helper';
-import { setSelectedFeatureType } from './attribute-list.actions';
 
 @Injectable()
 export class AttributeListEffects {

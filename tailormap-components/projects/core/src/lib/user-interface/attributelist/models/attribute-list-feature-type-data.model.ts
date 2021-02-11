@@ -8,6 +8,7 @@ export interface AttributeListFeatureTypeData {
   featureTypeName: string;
   parentFeatureType?: number;
   columns: AttributeListColumnModel[];
+  showPassportColumnsOnly: boolean;
   rows: AttributeListRowModel[];
   filter: FilterColumns[];
   pageSize: number;

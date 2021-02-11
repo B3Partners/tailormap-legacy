@@ -3,6 +3,7 @@ import { AttributeTypeEnum } from '../../../application/models/attribute-type.en
 export type AttributelistColumnType = 'passport' | 'data';
 
 export interface AttributeListColumnModel {
+  id: string;
   name: string;
   alias?: string;
   visible: boolean;

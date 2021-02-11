@@ -58,7 +58,7 @@ export const selectFeatureTypeDataForTab = createSelector(
   (data: Map<number, AttributeListFeatureTypeData>, selectedFeatureType: number): AttributeListFeatureTypeData => {
     return data.get(selectedFeatureType);
   },
-)
+);
 
 const getFeatureDataForTab = (
   tabs: Map<string, AttributeListTabModel>,
@@ -108,11 +108,42 @@ export const selectFeatureDataAndRelatedFeatureDataForFeatureType = createSelect
   },
 );
 
+export const selectShowPassportColumnsOnly = createSelector(
+  selectAttributeListFeatureDataDictionary,
+  (data: Map<number, AttributeListFeatureTypeData>, featureType: number) => {
+    return selectOrDefault<AttributeListFeatureTypeData, number, boolean>(data, featureType, 'showPassportColumnsOnly', true);
+  },
+);
+
+export const selectSelectedColumnsForFeature = createSelector(
+  selectAttributeListFeatureDataDictionary,
+  selectShowPassportColumnsOnly,
+  (data, showPassportOnly: boolean, featureType: number) => {
+    return selectOrDefault<AttributeListFeatureTypeData, number, AttributeListColumnModel[]>(data, featureType, 'columns', [])
+      .filter(c => showPassportOnly ? c.columnType === 'passport' : true);
+  },
+);
+
+const filterColumns = (column: AttributeListColumnModel, showPassportOnly: boolean) => {
+  if (showPassportOnly) {
+    return column.visible && column.columnType === 'passport';
+  }
+  return column.visible;
+};
+
 export const selectActiveColumnsForFeature = createSelector(
   selectAttributeListFeatureDataDictionary,
-  (tabs, featureType: number) => {
-    return selectOrDefault<AttributeListFeatureTypeData, number, AttributeListColumnModel[]>(tabs, featureType, 'columns', [])
-      .filter(c => c.visible);
+  selectShowPassportColumnsOnly,
+  (data, showPassportOnly: boolean, featureType: number) => {
+    return selectOrDefault<AttributeListFeatureTypeData, number, AttributeListColumnModel[]>(data, featureType, 'columns', [])
+      .filter(c => filterColumns(c, showPassportOnly));
+  },
+);
+
+export const selectActiveColumnsForTab = createSelector(
+  selectFeatureTypeDataForTab,
+  (tabFeatureData): AttributeListColumnModel[] => {
+    return tabFeatureData.columns.filter(c => filterColumns(c, tabFeatureData.showPassportColumnsOnly));
   },
 );
 

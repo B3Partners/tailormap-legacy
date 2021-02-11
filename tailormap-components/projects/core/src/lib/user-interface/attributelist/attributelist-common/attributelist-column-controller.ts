@@ -28,6 +28,7 @@ export class AttributelistColumnController {
   constructor() {
     // Fill the list with special column, add special column name '_checked'.
     let column: AttributeListColumnModel = {
+      id: '',
       name: '_checked',
       visible: true,
       dataType: 'boolean',
@@ -35,6 +36,7 @@ export class AttributelistColumnController {
     };
     this.specialColumns.push(column);
     column = {
+      id: '',
       name: '_details',
       visible: true,
       dataType: 'boolean',
@@ -75,6 +77,7 @@ export class AttributelistColumnController {
         continue;
       }
       const column: AttributeListColumnModel = {
+        id: columnName,
         name: columnName,
         visible: true,
         columnType: 'passport',
@@ -114,6 +117,7 @@ export class AttributelistColumnController {
         continue;
       }
       const column: AttributeListColumnModel = {
+        id: columnDef.name,
         name: columnDef.name,
         visible: true,
         dataType: columnDef.type,

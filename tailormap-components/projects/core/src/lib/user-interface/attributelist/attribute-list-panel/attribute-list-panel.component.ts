@@ -15,6 +15,12 @@ import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { selectAttributeListTabs } from '../state/attribute-list.selectors';
 import { AttributeListTabModel } from '../models/attribute-list-tab.model';
+import { AttributeListTreeDialogComponent } from '../attribute-list-tree-dialog/attribute-list-tree-dialog.component';
+import { PopoverPositionEnum } from '../../../shared/popover/models/popover-position.enum';
+import { AttributeListColumnSelectionComponent } from '../attribute-list-column-selection/attribute-list-column-selection.component';
+import { PopoverService } from '../../../shared/popover/popover.service';
+import { PopoverRef } from '../../../shared/popover/popover-ref';
+import { OverlayRef } from '../../../shared/overlay-service/overlay-ref';
 
 @Component({
   selector: 'tailormap-attribute-list-panel',
@@ -37,10 +43,13 @@ export class AttributeListPanelComponent implements OnInit, AfterViewInit, Layou
   private captionbarHeight = 30;
   private destroyed = new Subject();
 
+  private columnSelectionOverlayRef: OverlayRef;
+
   constructor(
     private store$: Store<AttributeListState>,
     private elementRef: ElementRef,
     private layoutService: LayoutService,
+    private popoverService: PopoverService,
   ) {
   }
 
@@ -88,34 +97,20 @@ export class AttributeListPanelComponent implements OnInit, AfterViewInit, Layou
     return layer.id;
   }
 
-  public onTableOptionsClick($event: MouseEvent, index: AttributeListTabModel) {
-    alert('implement options popup');
-    // // Get the target for setting the dialog position.
-    // let target = null;
-    // if (evt !== null) {
-    //   target = new ElementRef(evt.currentTarget);
-    // }
-    //
-    // // Create and set the dialog config.
-    // const config = new MatDialogConfig();
-    //
-    // // Show transparent backdrop, click outside dialog for closing.
-    // config.backdropClass = 'cdk-overlay-backdrop';
-    //
-    // // Possible additional settings:
-    // //     config.hasBackdrop = false;     // Don't show a gray mask.
-    // //     config.maxHeight = '100px';
-    // //     config.height = '300px';
-    // //     config.panelClass = 'attributelist-table-options-form';
-    //
-    // config.data = {
-    //   trigger: target,
-    //   columnController: this.dataSource.columnController,
-    // };
-    // const dialogRef = this.dialog.open(AttributelistTableOptionsFormComponent, config);
-    // dialogRef.afterClosed().subscribe(value => {
-    //   // Collapse all rows.
-    //   this.dataSource.resetExpanded();
-    // });
+  public openColumnSelection($event: MouseEvent, tab: AttributeListTabModel) {
+    if (this.columnSelectionOverlayRef && this.columnSelectionOverlayRef.isOpen) {
+      this.columnSelectionOverlayRef.close();
+    }
+    const WINDOW_WIDTH = 300;
+    this.columnSelectionOverlayRef = this.popoverService.open({
+      origin: $event.currentTarget as HTMLElement,
+      content: AttributeListColumnSelectionComponent,
+      data: { featureType: tab.selectedRelatedFeatureType || tab.featureType },
+      height: 250,
+      width: Math.min(WINDOW_WIDTH, window.innerWidth),
+      closeOnClickOutside: true,
+      position: PopoverPositionEnum.BOTTOM_RIGHT_DOWN,
+      positionOffset: 10,
+    });
   }
 }

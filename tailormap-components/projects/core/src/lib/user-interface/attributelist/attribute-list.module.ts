@@ -30,6 +30,7 @@ import { AttributeListDetailsColumnComponent } from './attribute-list-table/attr
 import { AttributeListStatisticsMenuComponent } from './attribute-list-table/attribute-list-statistics-menu/attribute-list-statistics-menu.component';
 import { AttributeListTreeComponent } from './attribute-list-tree/attribute-list-tree.component';
 import { AttributeListTreeDialogComponent } from './attribute-list-tree-dialog/attribute-list-tree-dialog.component';
+import { AttributeListColumnSelectionComponent } from './attribute-list-column-selection/attribute-list-column-selection.component';
 
 @NgModule({
   // The components, directives, and pipes that belong to this NgModule.
@@ -53,6 +54,7 @@ import { AttributeListTreeDialogComponent } from './attribute-list-tree-dialog/a
     AttributeListStatisticsMenuComponent,
     AttributeListTreeComponent,
     AttributeListTreeDialogComponent,
+    AttributeListColumnSelectionComponent,
   ],
   imports: [
     CommonModule,
