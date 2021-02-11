@@ -41,6 +41,7 @@ import org.opengis.filter.FilterFactory2;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 
 /**
  * Parser for creating valid cql filters, even when passing the invented APPLAYER filter.
@@ -257,20 +258,44 @@ public class FlamingoCQL {
         simpleFeatureIdSub = simpleFeatureIdSub.trim();
         try {
 
-           // ApplicationLayer appLayer = em.find(ApplicationLayer.class, Long.parseLong(simpleFeatureTypeIdMain));
             SimpleFeatureType sub = em.find(SimpleFeatureType.class, Long.parseLong(simpleFeatureIdSub));
             SimpleFeatureType main = em.find(SimpleFeatureType.class, Long.parseLong(simpleFeatureTypeIdMain));
-            //Layer main = appLayer.getService() == null ? null : appLayer.getService().getLayer(appLayer.getLayerName(), em);
-            List<FeatureTypeRelation> rels = main.getRelations();
+
             AtomicReference<FeatureTypeRelation> atomRel = new AtomicReference<>();
-            rels.forEach(rel -> {
+
+            List<FeatureTypeRelation> mainRelations = main.getRelations();
+            mainRelations.forEach(rel -> {
                 if (rel.getForeignFeatureType().getId().equals(sub.getId())) {
                     atomRel.set(rel);
                 }
             });
 
+            if(atomRel.get() == null) {
+                List<FeatureTypeRelation> subRelations = sub.getRelations();
+                subRelations.forEach(rel -> {
+                    if (rel.getForeignFeatureType().getId().equals(main.getId())) {
+                        atomRel.set(rel);
+                    }
+                });
+                // the relation is backwards, so we have to switch the foreignfeaturetype and the keys
+                if (atomRel.get() != null) {
+                    FeatureTypeRelation old = atomRel.get();
+                    FeatureTypeRelation switched = new FeatureTypeRelation();
+
+                    switched.setFeatureType(old.getForeignFeatureType());
+                    switched.setForeignFeatureType(old.getFeatureType());
+                    switched.setRelationKeys(old.getRelationKeys().stream().map(featureTypeRelationKey -> {
+                        FeatureTypeRelationKey tmp = new FeatureTypeRelationKey();
+                        tmp.setLeftSide(featureTypeRelationKey.getRightSide());
+                        tmp.setRightSide(featureTypeRelationKey.getLeftSide());
+                        return tmp;
+                    }).collect(Collectors.toList()));
+                    atomRel.set(switched);
+                }
+            }
+
             if (atomRel.get() == null) {
-                throw new CQLException("Applicationlayer does not have a relation");
+                throw new CQLException("featuretypes do not have a relation");
             }
             return atomRel.get();
         } catch (NumberFormatException nfe) {

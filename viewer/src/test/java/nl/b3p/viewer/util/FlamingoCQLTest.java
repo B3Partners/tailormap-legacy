@@ -66,18 +66,38 @@ public class FlamingoCQLTest extends TestUtil{
 
     @Test
     public void testtoFilterRelatedLayer() throws CQLException {
+        // 2: begroeid_terreinvakonderdeel_bestaand
+        // 5: begroeid_terreindeel
+        // relationkeys:
+        // left: 43: ident
+        // right: 11: FID
+        // uitkomst moet dus zijn:
+        // select * from begroeid_terreindeel where ident in (select fid from begroeid_terreinvakonderdeel_bestaand where fysiek_voork = 'aap')
         String input = "RELATED_FEATURE(5,2,fysiek_voork = 'aap')";
         Filter output = cql.toFilter(input, entityManager, false);
         assertEquals(Subselect.class, output.getClass());
-    }
-/*
-    @Test
-    public void reversedRelatedFilter() throws CQLException {
-        String input = "RELATED_FEATURE(2,4,fysiek_voork = 'aap')";
-        Filter output = cql.toFilter(input, entityManager, false);
-        assertEquals(Subselect.class, output.getClass());
+        assertEquals("begroeid_terreinvakonderdeel_bestaand", ((Subselect)output).getRelatedTable());
+        assertEquals("ident", ((Subselect)output).getMainColumn());
+        assertEquals("fid", ((Subselect)output).getRelatedColumn());
     }
 
+    @Test
+    public void reversedRelatedFilter() throws CQLException {
+        // 2: begroeid_terreinvakonderdeel_bestaand
+        // 5: begroeid_terreindeel
+        // relationkeys:
+        // left: 43: ident
+        // right: 11: FID
+        // uitkomst moet dus zijn:
+        // select * from begroeid_terreinvakonderdeel_bestaand where fid in (select ident from begroeid_terreindeel where fysiek_voork = 'aap')
+        String input = "RELATED_FEATURE(2,5,fysiek_voork = 'aap')";
+        Filter output = cql.toFilter(input, entityManager, false);
+        assertEquals(Subselect.class, output.getClass());
+        assertEquals("begroeid_terreindeel", ((Subselect)output).getRelatedTable());
+        assertEquals("fid", ((Subselect)output).getMainColumn());
+        assertEquals("ident", ((Subselect)output).getRelatedColumn());
+    }
+/*
     @Test
     public void linkedRelatedFilter() throws CQLException {
         String input = "RELATED_FEATURE(5,2, RELATED_FEATURE(2,5,fysiek_voork = 'aap'))";
