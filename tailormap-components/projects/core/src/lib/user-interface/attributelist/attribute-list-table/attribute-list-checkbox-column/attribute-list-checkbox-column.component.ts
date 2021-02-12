@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Input, OnInit, Optional, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, OnDestroy, OnInit, Optional, ViewChild } from '@angular/core';
 import { toggleCheckedAllRows, updateRowChecked } from '../../state/attribute-list.actions';
 import { AttributeListRowModel } from '../../models/attribute-list-row.model';
 import { AttributeListState } from '../../state/attribute-list.state';
@@ -12,7 +12,7 @@ import { MatColumnDef, MatTable } from '@angular/material/table';
   templateUrl: './attribute-list-checkbox-column.component.html',
   styleUrls: ['../attribute-list-table.component.css'],
 })
-export class AttributeListCheckboxColumnComponent implements OnInit {
+export class AttributeListCheckboxColumnComponent implements OnInit, OnDestroy {
 
   @ViewChild(MatColumnDef)
   public columnDef: MatColumnDef;
@@ -47,6 +47,12 @@ export class AttributeListCheckboxColumnComponent implements OnInit {
     if (this.table) {
       this.cdRef.detectChanges();
       this.table.addColumnDef(this.columnDef);
+    }
+  }
+
+  public ngOnDestroy() {
+    if (this.table) {
+      this.table.removeColumnDef(this.columnDef);
     }
   }
 

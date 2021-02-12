@@ -60,6 +60,19 @@ export const selectFeatureTypeDataForTab = createSelector(
   },
 );
 
+export const selectTabAndFeatureTypeDataForTab = createSelector(
+  selectAttributeListFeatureDataDictionary,
+  selectSelectedFeatureTypeForTab,
+  selectTab,
+  (
+    data: Map<number, AttributeListFeatureTypeData>,
+    selectedFeatureType: number,
+    tab: AttributeListTabModel,
+  ): [ AttributeListTabModel, AttributeListFeatureTypeData ] => {
+    return [ tab, data.get(selectedFeatureType) ];
+  },
+);
+
 const getFeatureDataForTab = (
   tabs: Map<string, AttributeListTabModel>,
   data: Map<number, AttributeListFeatureTypeData>,

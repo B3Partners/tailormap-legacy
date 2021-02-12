@@ -1,7 +1,9 @@
 import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { selectActiveColumnsForTab, selectFeatureTypeDataForTab } from '../state/attribute-list.selectors';
+import {
+  selectActiveColumnsForTab, selectFeatureTypeDataForTab, selectTabAndFeatureTypeDataForTab,
+} from '../state/attribute-list.selectors';
 import { filter, map, takeUntil } from 'rxjs/operators';
-import { Observable, Subject } from 'rxjs';
+import { combineLatest, Observable, Subject } from 'rxjs';
 import { AttributeListRowModel } from '../models/attribute-list-row.model';
 import { Store } from '@ngrx/store';
 import { AttributeListState } from '../state/attribute-list.state';
@@ -52,6 +54,7 @@ export class AttributeListTableComponent implements OnInit, OnDestroy {
   public uncheckedCount: number;
   public checkedCount: number;
   private filters: AttributeListFilterModels[];
+  public showCheckboxColumn$: Observable<boolean>;
 
   constructor(
     private store$: Store<AttributeListState>,
@@ -76,18 +79,26 @@ export class AttributeListTableComponent implements OnInit, OnDestroy {
         this.filters = featureData.filter;
       });
 
-    this.store$.select(selectActiveColumnsForTab, this.layerId)
+    this.showCheckboxColumn$ = this.store$.select(selectTabAndFeatureTypeDataForTab, this.layerId)
+      .pipe(
+        map(([tab, featureData]) => tab.featureType === featureData.featureType),
+      );
+
+    combineLatest([
+      this.store$.select(selectActiveColumnsForTab, this.layerId),
+      this.showCheckboxColumn$,
+    ])
       .pipe(takeUntil(this.destroyed))
-      .subscribe(columns => {
+      .subscribe(([ columns, showCheckboxColumn ]) => {
         this.columns = columns;
-        this.columnNames = this.getColumnNames(columns);
+        this.columnNames = this.getColumnNames(columns, showCheckboxColumn);
         this.statistic.initStatistics(columns);
       });
 
     this.rows$ = featureTypeData$.pipe(
       takeUntil(this.destroyed),
-      filter(tab => !!tab),
-      map(tab => tab.rows),
+      filter(data => !!data),
+      map(data => data.rows),
     );
   }
 
@@ -148,12 +159,15 @@ export class AttributeListTableComponent implements OnInit, OnDestroy {
     return this.statistic.isStatisticsProcessing(colName);
   }
 
-  public getColumnNames(columns: AttributeListColumnModel[]): string[] {
-    return [
-      '_checked',
+  public getColumnNames(columns: AttributeListColumnModel[], showCheckboxColumn: boolean): string[] {
+    const columnNames = [
       '_details',
       ...columns.map(c => c.name),
     ];
+    if (showCheckboxColumn) {
+      columnNames.unshift('_checked');
+    }
+    return columnNames;
   }
 
 }
