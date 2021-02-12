@@ -16,10 +16,15 @@ import {MatSnackBarModule} from "@angular/material/snack-bar";
 import {FeatureInitializerService} from "../../shared/feature-initializer/feature-initializer.service";
 import { FormConfigMockModule } from '../../shared/formconfig-repository/formconfig-mock.module.spec';
 import { mockFeature, mockWegvakonderdeel, mockWegvakonderdeelplanning } from '../../shared/tests/test-data';
+import { MockStore, provideMockStore } from '@ngrx/store/testing';
+import { workflowStateKey, initialWorkflowState } from '../../workflow/state/workflow.state';
 
 describe('FormCreatorComponent', () => {
   let component: FormCreatorComponent;
   let fixture: ComponentFixture<FormCreatorComponent>;
+
+  const initialState = { [workflowStateKey]: initialWorkflowState };
+  let store: MockStore;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -32,6 +37,7 @@ describe('FormCreatorComponent', () => {
       ],
       providers:[
         FeatureControllerService,
+        provideMockStore({ initialState }),
 
       ],
       declarations: [
@@ -54,6 +60,7 @@ describe('FormCreatorComponent', () => {
       name: 'pietje',
       treeNodeColumn:'wer'
     };
+    store = TestBed.inject(MockStore);
     component.formConfig = formConfig;
     component.ngOnChanges();
 

@@ -8,11 +8,13 @@ import {
 import { MapClickedEvent } from '../../shared/models/event-models';
 import { VectorLayer } from '../../../../../bridge/typings';
 import { ChooseTypesComponent } from '../../user-interface/sewage/choose-types/choose-types.component';
-import { Observable } from 'rxjs';
-import { take } from 'rxjs/operators';
+import { combineLatest, Observable } from 'rxjs';
+import { take, takeUntil } from 'rxjs/operators';
 import { Choice } from './WorkflowModels';
-import { FormComponent } from '../../feature-form/form/form.component';
-import { DialogData } from '../../feature-form/form/form-models';
+import { setOpenFeatureForm } from '../../feature-form/state/form.actions';
+import { selectCurrentFeature, selectFeatureLabel } from '../../feature-form/state/form.selectors';
+import { selectFormClosed } from '../../feature-form/state/form.state-helpers';
+import { selectFeatureType } from '../state/workflow.selectors';
 
 export class SewageWorkflow extends Workflow {
   private currentStep: Step;
@@ -34,7 +36,9 @@ export class SewageWorkflow extends Workflow {
   public afterInit() {
     super.afterInit();
     if (this.currentStep === Step.START) {
-      this.makeChoices(this.event.featureType);
+      this.store$.select(selectFeatureType).pipe(takeUntil(this.destroyed)).subscribe(featureType => {
+        this.makeChoices(featureType);
+      });
     }
     if (this.currentStep === Step.WELL1 || this.currentStep === Step.WELL2) {
       if (this.currentStep === Step.WELL1) {
@@ -69,26 +73,30 @@ export class SewageWorkflow extends Workflow {
       if (this.currentStep === Step.WELL2) {
         this.well2 = coords
       }
-      this.retrieveFeatures$(coords).subscribe(features => {
-        let feat = null;
-        if (features.length > 0) {
-          const message = 'Wilt u de bestaande ' + this.featureType + ' met naam \"' + this.formConfigRepo.getFeatureLabel(features[0]) +
-            '\" gebruiken?';
-
-          feat = features[0];
-          this.confirmService.confirm$('Bestaande feature gebruiken?',
-            message, false)
-            .pipe(take(1)).subscribe(useExisting => {
-            if (!useExisting) {
-              feat = this.createFeature(geoJson, this.getExtraParams());
-            }
+      this.retrieveFeatures$(coords)
+        .pipe(takeUntil(this.destroyed))
+        .subscribe(features => {
+          let feat = null;
+          if (features.length > 0) {
+            feat = features[0];
+            this.store$.select(selectFeatureLabel, feat).pipe(takeUntil(this.destroyed)).subscribe(label => {
+              const message = 'Wilt u de bestaande ' + this.featureType + ' met naam \"' + label + '\" gebruiken?';
+              this.confirmService.confirm$('Bestaande feature gebruiken?',
+                message, false)
+                .pipe(take(1)).subscribe(useExisting => {
+                if (!useExisting) {
+                  feat = this.createFeature(geoJson, this.getExtraParams());
+                }
+                this.openDialog(feat);
+              });
+            });
+          } else {
+            feat = this.createFeature(geoJson, this.getExtraParams());
             this.openDialog(feat);
-          });
-        } else {
-          feat = this.createFeature(geoJson, this.getExtraParams());
-          this.openDialog(feat);
-        }
-      });
+          }
+
+
+        });
     } else {
       const feat = this.createFeature(geoJson, this.getExtraParams());
       this.openDialog(feat);
@@ -145,21 +153,16 @@ export class SewageWorkflow extends Workflow {
   }
 
   public openDialog(feature ?: Feature): void {
-    const dialogData: DialogData = {
-      formFeatures: [feature],
-      isBulk: false,
-      closeAfterSave: true,
-    };
-    const dialogRef = this.dialog.open(FormComponent, {
-      width: '1050px',
-      height: '800px',
-      disableClose: true,
-      data: dialogData,
-    });
-    // tslint:disable-next-line: rxjs-no-ignored-subscription
-    dialogRef.afterClosed().subscribe(result => {
-      this.afterEditting(result);
-    });
+    this.store$.dispatch(setOpenFeatureForm({features: [feature], closeAfterSave: true}));
+
+    combineLatest([
+      this.store$.select(selectCurrentFeature),
+      this.store$.pipe(selectFormClosed),
+    ])
+      .pipe(take(1))
+      .subscribe(([currentFeature, close]) => {
+        this.afterEditting(currentFeature);
+      });
   }
 
   public mapClick(data: MapClickedEvent): void {

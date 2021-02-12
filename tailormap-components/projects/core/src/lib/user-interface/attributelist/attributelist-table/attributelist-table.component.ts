@@ -1,36 +1,11 @@
-import {
-  AfterViewInit,
-  Component,
-  ElementRef,
-  EventEmitter, OnDestroy,
-  OnInit,
-  Output,
-  ViewChild,
-} from '@angular/core';
-
+import { AfterViewInit, Component, ElementRef, EventEmitter, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
-import {
-  MatSort,
-  Sort,
-} from '@angular/material/sort';
+import { MatSort, Sort } from '@angular/material/sort';
 import { MatTable } from '@angular/material/table';
-import {
-  MatDialog,
-  MatDialogConfig,
-} from '@angular/material/dialog';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import {
-  animate,
-  state,
-  style,
-  transition,
-  trigger,
-} from '@angular/animations';
-import {
-  AttributelistTable,
-  RowClickData,
-  RowData,
-} from '../attributelist-common/attributelist-models';
+import { animate, state, style, transition, trigger } from '@angular/animations';
+import { AttributelistTable, RowClickData, RowData } from '../attributelist-common/attributelist-models';
 import { AttributeDataSource } from '../attributelist-common/attributelist-datasource';
 import { AttributelistFilter } from '../attributelist-common/attributelist-filter';
 import { AttributelistTableOptionsFormComponent } from '../attributelist-table-options-form/attributelist-table-options-form.component';
@@ -39,7 +14,6 @@ import { AttributelistStatistic } from '../attributelist-common/attributelist-st
 import { AttributeService } from '../../../shared/attribute-service/attribute.service';
 import { CheckState } from '../attributelist-common/attributelist-enums';
 import { Feature } from '../../../shared/generated';
-import { FormconfigRepositoryService } from '../../../shared/formconfig-repository/formconfig-repository.service';
 import { LayerService } from '../layer.service';
 import { StatisticTypeInMenu } from '../attributelist-common/attributelist-statistic-models';
 import { StatisticService } from '../../../shared/statistic-service/statistic.service';
@@ -54,8 +28,10 @@ import { concatMap, takeUntil } from 'rxjs/operators';
 import { AttributelistTreeComponent } from '../attributelist-tree/attributelist-tree.component';
 import { AttributelistNode, SelectedTreeData, TreeDialogData } from '../attributelist-tree/attributelist-tree-models';
 import { AttributelistColumnController } from '../attributelist-common/attributelist-column-controller';
-import { FormComponent } from '../../../feature-form/form/form.component';
-// import { LiteralMapKey } from '@angular/compiler';
+import { setOpenFeatureForm } from '../../../feature-form/state/form.actions';
+import { Store } from '@ngrx/store';
+import { FormState } from '../../../feature-form/state/form.state';
+
 
 @Component({
   selector: 'tailormap-attributelist-table',
@@ -96,7 +72,7 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
                                               this.valueService,
                                               this.attributelistService,
                                               this.tailorMapService,
-                                              this.formconfigRepoService);
+                                              this.store$);
   public checkedRows = [];
   public treeData: AttributelistNode[] = [];
 
@@ -145,9 +121,9 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
               private tailorMapService: TailorMapService,
               private valueService: ValueService,
               public attributelistService: AttributelistService,
-              private formconfigRepoService: FormconfigRepositoryService,
               private highlightService: HighlightService,
               private snackBar: MatSnackBar,
+              private store$: Store<FormState>,
               private dialog: MatDialog) {
     // console.log('=============================');
     // console.log('#Table - constructor');
@@ -772,16 +748,7 @@ export class AttributelistTableComponent implements AttributelistTable, OnInit, 
       });
       return;
     }
-    this.dialog.open(FormComponent, {
-      width: '1050px',
-      height: '800px',
-      disableClose: true,
-      data: {
-        formFeatures,
-        isBulk: formFeatures.length > 1,
-        closeAfterSave: true,
-      },
-    });
+    this.store$.dispatch(setOpenFeatureForm({ features: formFeatures, closeAfterSave: true }))
   }
 
   public isRelatedFeatures(): boolean {

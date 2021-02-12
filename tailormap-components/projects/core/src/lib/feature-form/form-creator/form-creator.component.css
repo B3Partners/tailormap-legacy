@@ -1,7 +1,7 @@
-
-.tab {
-  display: flex;
-  flex-direction: row;
+:host,
+form,
+mat-tab-group {
+  height: 100%;
 }
 
 .column {

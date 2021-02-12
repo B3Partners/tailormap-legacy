@@ -1,3 +1,5 @@
+import { Feature } from '../../shared/generated';
+
 export class FormHelpers {
 
   public static capitalize(input: string): string {
@@ -10,5 +12,18 @@ export class FormHelpers {
         .replace('-', '')
         .replace('_', '');
     });
+  }
+
+  public static copyFeature(feature: Feature) : Feature {
+    const copy = {...feature};
+
+    if (copy.children) {
+      copy.children = copy.children.map(value => FormHelpers.copyFeature(value));
+    }
+    return copy;
+  }
+
+  public static copyFeatures(feature: Feature[]) : Feature[] {
+    return [...feature].map(child => FormHelpers.copyFeature(child));
   }
 }

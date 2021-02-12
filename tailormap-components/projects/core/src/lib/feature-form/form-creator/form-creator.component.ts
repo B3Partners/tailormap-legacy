@@ -3,7 +3,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Subject, Subscription } from 'rxjs';
 import { Feature } from '../../shared/generated';
-import { Attribute, ColumnizedFields, FormConfiguration, FormFieldType, IndexedFeatureAttributes, TabbedFields } from '../form/form-models';
+import { Attribute, FormConfiguration, FormFieldType, IndexedFeatureAttributes, TabbedFields } from '../form/form-models';
 import { FormCreatorHelpers } from './form-creator-helpers';
 import { FormActionsService } from '../form-actions/form-actions.service';
 import { FeatureInitializerService } from '../../shared/feature-initializer/feature-initializer.service';
@@ -12,6 +12,10 @@ import { FormFieldHelpers } from '../form-field/form-field-helpers';
 import { AttributelistService } from '../../user-interface/attributelist/attributelist.service';
 import { ConfirmDialogService } from '../../shared/confirm-dialog/confirm-dialog.service';
 import { takeUntil } from 'rxjs/operators';
+import { Store } from '@ngrx/store';
+import { FormState } from '../state/form.state';
+import * as FormActions from '../state/form.actions';
+import { WorkflowState } from '../../workflow/state/workflow.state';
 
 @Component({
   selector: 'tailormap-form-creator',
@@ -21,6 +25,7 @@ import { takeUntil } from 'rxjs/operators';
 export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit {
 
   constructor(
+    private store$: Store<FormState | WorkflowState>,
     private actions: FormActionsService,
     private registry: LinkedAttributeRegistryService,
     private _snackBar: MatSnackBar,
@@ -40,9 +45,11 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
   @Input()
   public isBulk = false;
   @Output()
-  public formChanged = new EventEmitter<any>();
+  public formChanged = new EventEmitter<boolean>();
 
   public tabbedConfig: TabbedFields;
+
+  public editting = false;
 
   public formgroep = new FormGroup({});
 
@@ -59,7 +66,7 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
       this.createFormControls();
       this.registry.resetLinkedAttributes();
       this.formgroep.valueChanges.subscribe(s => {
-        this.formChanged.emit({changed: true});
+        this.formChanged.emit(true);
       });
     }
   }
@@ -71,36 +78,12 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
   }
 
   private prepareFormConfig(): TabbedFields {
-    const tabbedFields: TabbedFields = {tabs: new Map<number, ColumnizedFields>()};
+    const tabbedFields: TabbedFields = {tabs: new Map<number, Attribute[]>()};
     const attrs = this.formConfig.fields;
     for (let tabNr = 1; tabNr <= this.formConfig.tabs; tabNr++) {
-      const fields: Attribute[] = [];
-      attrs.forEach(attr => {
-        if (attr.tab === tabNr) {
-          fields.push(attr);
-        }
-      });
-      tabbedFields.tabs.set(tabNr, this.getColumizedFields(fields));
+      tabbedFields.tabs.set(tabNr, attrs.filter(attr => attr.tab === tabNr));
     }
     return tabbedFields;
-  }
-
-  private getColumizedFields(attrs: Attribute[]): ColumnizedFields {
-    const columnizedFields: ColumnizedFields = {columns: new Map<number, Attribute[]>()};
-    if (attrs.length === 0) {
-      return columnizedFields;
-    }
-    const numCols = attrs.reduce((max, b) => Math.max(max, b.column), attrs[0].column);
-    for (let col = 1; col <= numCols; col++) {
-      const fields: Attribute[] = [];
-      attrs.forEach(attr => {
-        if (attr.column === col) {
-          fields.push(attr);
-        }
-      });
-      columnizedFields.columns.set(col, fields);
-    }
-    return columnizedFields;
   }
 
   private createFormControls() {
@@ -133,6 +116,11 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
     });
   }
 
+  public resetForm() : void {
+    this.editting = false;
+    this.createFormControls();
+  }
+
   public beforeSave() {
     // show confirm message when multi-edit
     if (this.isBulk) {
@@ -153,12 +141,11 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
     feature.__fid = this.feature.objectGuid;
     const clazzName = this.feature.clazz;
     this.mergeFormToFeature(feature);
+
     this.actions.save$(this.isBulk, this.isBulk ? this.features : [this.feature], this.features[0]).subscribe(savedFeature => {
         const fs = this.updateFeatureInArray(savedFeature, this.features);
-        this.features = [...fs];
-        this.feature = {...savedFeature};
+        this.store$.dispatch(FormActions.setSaveFeatures({features: fs}));
         this._snackBar.open('Opgeslagen', '', {duration: 5000});
-        this.formChanged.emit({changed: false, feature: savedFeature, features: this.features});
       },
       error => {
         this._snackBar.open('Fout: Feature niet kunnen opslaan: ' + error.error.message, '', {

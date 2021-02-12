@@ -12,10 +12,14 @@ import { getTailorMapServiceMockProvider } from '../../../../../bridge/src/tailo
 import { FeatureControllerService } from '../generated';
 import { createSpyObject } from '@ngneat/spectator';
 import { Observable, of } from 'rxjs';
+import { MockStore, provideMockStore } from '@ngrx/store/testing';
+import { formStateKey, initialFormState } from '../../feature-form/state/form.state';
 
 describe('FormconfigRepositoryService', () => {
   let httpMock: HttpTestingController;
   let injector: TestBed;
+  let store: MockStore;
+  const initialState = { [formStateKey]: initialFormState };
   const featureControllerMockService = createSpyObject(FeatureControllerService, {
     featuretypeInformation(): Observable<[]> {
       return of([]);
@@ -27,12 +31,14 @@ describe('FormconfigRepositoryService', () => {
         HttpClientTestingModule,
       ],
       providers: [
+        provideMockStore({ initialState }),
         getTailorMapServiceMockProvider({ getApplicationId() { return 1; }}),
         { provide: FeatureControllerService, useValue: featureControllerMockService },
       ]
     });
     injector = getTestBed();
     httpMock = TestBed.inject(HttpTestingController);
+    store = TestBed.inject(MockStore);
 
   });
 
@@ -51,25 +57,5 @@ describe('FormconfigRepositoryService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should return all formconfigs', () => {
-    const service: FormconfigRepositoryService = TestBed.inject(FormconfigRepositoryService);
-    expectConfigRequest();
-    expect(service.getAllFormConfigs()).toBeTruthy();
-    expect(service.getAllFormConfigs()).toBeTruthy();
-    expect(service.getAllFormConfigs().get('test')).toBeTruthy();
-  });
 
-  it('should return all featuretypes', () => {
-    const service: FormconfigRepositoryService = TestBed.inject(FormconfigRepositoryService);
-    expectConfigRequest();
-    expect(service.getFeatureTypes()).toContain('test');
-    expect(service.getFeatureTypes().length).toBe(1);
-  });
-
-  it('should return no featuretypes when no configs present', () => {
-    const service: FormconfigRepositoryService = TestBed.inject(FormconfigRepositoryService);
-    const req = httpMock.expectOne('/viewer/action/form?application=1');
-    req.flush({ config: { }});
-    expect(service.getFeatureTypes().length).toBe(0);
-  });
 });

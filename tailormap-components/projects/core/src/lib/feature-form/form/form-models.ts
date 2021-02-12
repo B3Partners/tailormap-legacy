@@ -64,11 +64,7 @@ export interface IndexedFeatureAttributes {
 }
 
 export interface TabbedFields {
-  tabs: Map<number, ColumnizedFields>;
-}
-
-export interface ColumnizedFields {
-  columns: Map<number, Attribute[]>;
+  tabs: Map<number, Attribute[]>;
 }
 
 export interface DialogData {

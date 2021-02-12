@@ -6,11 +6,12 @@ import { selectApplicationId } from '../state/application.selectors';
 import { concatMap, map, switchMap, takeUntil, takeWhile, tap } from 'rxjs/operators';
 import { combineLatest, Observable, of, Subject } from 'rxjs';
 import { AttributeListParameters, AttributeListResponse, AttributeMetadataResponse } from '../../shared/attribute-service/attribute-models';
-import { FormconfigRepositoryService } from '../../shared/formconfig-repository/formconfig-repository.service';
 import { Attribute as GbiAttribute } from '../../feature-form/form/form-models';
 import { PassportAttributeModel } from '../models/passport-attribute.model';
 import { UniqueValuesResponse } from '../../shared/value-service/value-models';
 import { ValueService } from '../../shared/value-service/value.service';
+import { FormState } from '../../feature-form/state/form.state';
+import { selectFormConfigForFeatureType } from '../../feature-form/state/form.selectors';
 
 export type UniqueValueCountResponse = { uniqueValue: string, total: number };
 
@@ -24,9 +25,8 @@ export class MetadataService implements OnDestroy {
   private attributeCache: Map<string, AttributeMetadataResponse> = new Map();
 
   constructor(
-    private store$: Store<ApplicationState>,
+    private store$: Store<ApplicationState | FormState>,
     private attributeService: AttributeService,
-    private formConfigService: FormconfigRepositoryService,
     private valueService: ValueService,
   ) {
     this.store$.select(selectApplicationId)
@@ -63,10 +63,10 @@ export class MetadataService implements OnDestroy {
           const formConfigs$ = [
             ...metadata.relations.map(relation => relation.foreignFeatureTypeName),
             ...metadata.invertedRelations.map(invertedRelation => invertedRelation.featureTypeName),
-          ].map(relation => this.formConfigService.getFormConfigForLayer$(relation));
+          ].map(relation => this.store$.select(selectFormConfigForFeatureType, relation));
           return combineLatest([
             of(metadata),
-            this.formConfigService.getFormConfigForLayer$(metadata.featureTypeName),
+            this.store$.select(selectFormConfigForFeatureType, metadata.featureTypeName),
             combineLatest(formConfigs$),
           ]);
         }),

@@ -1,20 +1,14 @@
-import {
-  Component,
-  OnInit,
-} from '@angular/core';
-import {
-  MatDialog,
-  MatDialogRef,
-} from '@angular/material/dialog';
+import { Component, OnInit } from '@angular/core';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { AddFeatureMenuComponent } from '../add-feature-menu/add-feature-menu.component';
 import { TailorMapService } from '../../../../../../bridge/src/tailor-map.service';
-import { WorkflowActionManagerService } from '../../../workflow/workflow-controller/workflow-action-manager.service';
-import { WORKFLOW_ACTION } from '../../../workflow/workflow-controller/workflow-models';
-import {
-  MergeComponent,
-  SplitComponent,
-} from '../../../../../../bridge/typings';
+import { MergeComponent, SplitComponent } from '../../../../../../bridge/typings';
 import { WorkflowControllerService } from '../../../workflow/workflow-controller/workflow-controller.service';
+import { Store } from '@ngrx/store';
+import { FormState } from '../../../feature-form/state/form.state';
+import { WORKFLOW_ACTION } from '../../../workflow/state/workflow-models';
+import { WorkflowState } from '../../../workflow/state/workflow.state';
+import * as WorkflowActions from '../../../workflow/state/workflow.actions';
 
 @Component({
   selector: 'tailormap-edit-bar',
@@ -32,7 +26,7 @@ export class EditBarComponent implements OnInit {
   constructor(
     private tailorMapService: TailorMapService,
     private workflowService: WorkflowControllerService,
-    private workflowManager: WorkflowActionManagerService,
+    protected store$: Store<FormState | WorkflowState>,
     public dialog: MatDialog) {
   }
 
@@ -85,12 +79,12 @@ export class EditBarComponent implements OnInit {
   }
 
   public onSplit(): void {
-    this.workflowManager.setAction({action: WORKFLOW_ACTION.SPLIT_MERGE});
+    this.store$.dispatch(WorkflowActions.setAction({action: WORKFLOW_ACTION.SPLIT_MERGE}))
     this.splitComponent.showWindow();
   }
 
   public onMerge(): void {
-    this.workflowManager.setAction({action: WORKFLOW_ACTION.SPLIT_MERGE});
+    this.store$.dispatch(WorkflowActions.setAction({action: WORKFLOW_ACTION.SPLIT_MERGE}))
     this.mergeComponent.showWindow();
   }
 

@@ -1,27 +1,16 @@
-<mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
-    <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding (click)="setNodeSelected(node)">
-      <div [className]="getNodeClassName(node)">
-        <button mat-icon-button disabled>
-          <mat-icon class="mat-icon-rtl-mirror">
-          </mat-icon>
-        </button>
-        <mat-checkbox *ngIf="isCopy" name="{{node?.feature.id}}" id="{{node?.feature.id}}" (change)="addFeatureForCopy($event, node?.feature.id)" [checked]="isFeatureForCopyChecked(node?.feature.id) " ></mat-checkbox>
-        <span class="{{node.selected && !isBulk ? 'selected' : ''}} {{node?.feature.id ? '' : 'newNode'}}">
+<ng-template #treeNode let-node>
+  <tailormap-form-node [node]="node"></tailormap-form-node>
+</ng-template>
 
-          {{node.name}}</span>
-      </div>
-    </mat-tree-node>
 
-    <mat-tree-node *matTreeNodeDef="let node;when: hasChild"
-      matTreeNodePadding (click)="setNodeSelected(node)">
-      <div [className]="getNodeClassName(node)">
-        <button mat-icon-button matTreeNodeToggle [attr.aria-label]="'toggle ' + node.name">
-          <mat-icon class="mat-icon-rtl-mirror">
-            {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
-          </mat-icon>
-        </button>
-        <span *ngIf="node.isFeatureType" matTreeNodeToggle class="{{node.selected && !isBulk  ? 'selected' : ''}} {{node.feature?.id || node.isFeatureType ? '' : 'newNode'}}">{{node.name}}</span>
-        <span *ngIf="!node.isFeatureType" class="{{node.selected && !isBulk ? 'selected' : ''}} {{node.feature?.id || node.isFeatureType ? '' : 'newNode'}}">{{node.name}}</span>
-      </div>
-    </mat-tree-node>
-  </mat-tree>
+<tailormap-dialog-close-button (closeDialog)="closePanel()" icon="chevron_left"></tailormap-dialog-close-button>
+
+  <tailormap-tree  [treeNodeTemplate]="treeNode" [expandOnGroupClick]="true"></tailormap-tree>
+
+  <!-- maak geschikt voor formcopy:
+          (change)="addFeatureForCopy($event, node?.feature.id)"
+          [checked]="isFeatureForCopyChecked(node?.feature.id)
+       Selectie maken
+       nieuwe nodes schuingedrukt
+       -->
+

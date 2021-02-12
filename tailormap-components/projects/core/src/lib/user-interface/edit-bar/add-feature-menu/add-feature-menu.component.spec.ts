@@ -8,9 +8,13 @@ import { WorkflowControllerService } from '../../../workflow/workflow-controller
 import { FormConfigMockModule } from '../../../shared/formconfig-repository/formconfig-mock.module.spec';
 import { SharedModule } from '../../../shared/shared.module';
 import { MenuButtonComponent } from './menu-button/menu-button.component';
+import { formStateKey, initialFormState } from '../../../feature-form/state/form.state';
+import { MockStore, provideMockStore } from '@ngrx/store/testing';
 
 describe('AddFeatureMenuComponent', () => {
   let spectator: Spectator<AddFeatureMenuComponent>;
+  const initialState = { [formStateKey]: initialFormState };
+  let store: MockStore;
   const createComponent = createComponentFactory({
     component: AddFeatureMenuComponent,
     imports: [
@@ -21,6 +25,7 @@ describe('AddFeatureMenuComponent', () => {
       MenuButtonComponent,
     ],
     providers: [
+      provideMockStore({ initialState }),
       getDialogRefMockProvider(),
       getTailorMapServiceMockProvider(),
       { provide: WorkflowControllerService, useValue: createSpyObject(WorkflowControllerService) },
@@ -29,6 +34,7 @@ describe('AddFeatureMenuComponent', () => {
 
   beforeEach((() => {
     spectator = createComponent();
+    store = spectator.inject(MockStore);
   }));
 
   it('should create', () => {

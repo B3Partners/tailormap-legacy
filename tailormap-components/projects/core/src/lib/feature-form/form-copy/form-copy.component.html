@@ -7,14 +7,12 @@
             Gerelateerde objecten
           </mat-panel-title>
         </mat-expansion-panel-header>
-        <div class="tree">
           <tailormap-form-tree
-            (nodeClicked)='openForm($event)'
             [features]=[this.data.originalFeature]
             [isCopy] = true
+            [hasCheckboxes]="true"
             [featuresToCopy] = relatedFeatures
             [feature]=originalFeature></tailormap-form-tree>
-        </div>
       </mat-expansion-panel>
     </mat-accordion>
     <mat-accordion>

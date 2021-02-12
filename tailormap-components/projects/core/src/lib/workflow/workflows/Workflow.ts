@@ -3,23 +3,21 @@ import { MatDialog } from '@angular/material/dialog';
 import { FeatureInitializerService } from '../../shared/feature-initializer/feature-initializer.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { FormconfigRepositoryService } from '../../shared/formconfig-repository/formconfig-repository.service';
-import {
-  Feature,
-  FeatureControllerService,
-} from '../../shared/generated';
+import { Feature, FeatureControllerService } from '../../shared/generated';
 import { VectorLayer } from '../../../../../bridge/typings';
 import { MapClickedEvent } from '../../shared/models/event-models';
 import { NgZone } from '@angular/core';
 import { Subject } from 'rxjs';
 import { ConfirmDialogService } from '../../shared/confirm-dialog/confirm-dialog.service';
-import { WorkflowActionEvent } from '../workflow-controller/workflow-models';
 import { GeometryConfirmService } from '../../user-interface/geometry-confirm-buttons/geometry-confirm.service';
 import { LayerUtils } from '../../shared/layer-utils/layer-utils.service';
+import { FormState } from '../../feature-form/state/form.state';
+import { Store } from '@ngrx/store';
+import { WorkflowState } from '../state/workflow.state';
 
 export abstract class Workflow {
 
   protected destroyed;
-  protected readonly FORMCOMPONENT_DIALOG_ID = 'formcomponent';
   public id = 0;
   public vectorLayer: VectorLayer;
   public highlightLayer: VectorLayer;
@@ -34,13 +32,12 @@ export abstract class Workflow {
   protected ngZone: NgZone;
   public closeAfterSave: boolean;
   protected geometryConfirmService: GeometryConfirmService;
-  protected event: WorkflowActionEvent;
   protected layerUtils: LayerUtils;
+  protected store$: Store<FormState | WorkflowState>;
 
   public close$ = new Subject<boolean>();
 
   public init(
-    event: WorkflowActionEvent,
     tailorMap: TailorMapService,
     dialog: MatDialog,
     featureInitializerService: FeatureInitializerService,
@@ -50,8 +47,8 @@ export abstract class Workflow {
     ngZone: NgZone,
     confirmService: ConfirmDialogService,
     geometryConfirmService: GeometryConfirmService,
-    layerUtils: LayerUtils): void {
-    this.event = event;
+    layerUtils: LayerUtils,
+    store$: Store<FormState>): void {
 
     this.tailorMap = tailorMap;
     this.dialog = dialog;
@@ -64,6 +61,7 @@ export abstract class Workflow {
     this.confirmService = confirmService;
     this.geometryConfirmService = geometryConfirmService;
     this.layerUtils = layerUtils;
+    this.store$ = store$;
     this.destroyed = new Subject();
     this.afterInit();
   }

@@ -15,11 +15,12 @@ import {
 import { AttributeDataSource } from '../attributelist-common/attributelist-datasource';
 import { AttributeService } from '../../../shared/attribute-service/attribute.service';
 import { LayerService } from '../layer.service';
-import { FormconfigRepositoryService } from '../../../shared/formconfig-repository/formconfig-repository.service';
 import { RelatedFeatureType } from '../../../shared/attribute-service/attribute-models';
 import { TailorMapService } from '../../../../../../bridge/src/tailor-map.service';
 import { ValueService } from '../../../shared/value-service/value.service';
 import { AttributelistService } from '../attributelist.service';
+import { Store } from '@ngrx/store';
+import { FormState } from '../../../feature-form/state/form.state';
 
 @Component({
   selector: 'tailormap-attributelist-details',
@@ -53,14 +54,14 @@ export class AttributelistDetailsComponent implements OnInit,
     this.valueService,
     this.attributelistService,
     this.tailorMapService,
-    this.formconfigRepoService);
+    this.store$);
 
   constructor(private attributeService: AttributeService,
               private layerService: LayerService,
               private valueService: ValueService,
               private attributelistService: AttributelistService,
               private tailorMapService: TailorMapService,
-              private formconfigRepoService: FormconfigRepositoryService) {
+              private store$: Store<FormState>) {
     // console.log('#Details - constructor');
   }
 
