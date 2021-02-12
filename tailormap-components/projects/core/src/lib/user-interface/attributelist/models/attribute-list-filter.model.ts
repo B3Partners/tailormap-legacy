@@ -1,4 +1,4 @@
-import { AttributeListFilterModel, LayerFilterValues } from './attribute-list-filter-models';
+import { AttributeListFilterModel } from './attribute-list-filter-models';
 
 
 export interface FilterDialogData {

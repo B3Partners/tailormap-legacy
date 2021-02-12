@@ -22,9 +22,9 @@ import { AttributeListColumnModel } from '../models/attribute-list-column-models
 })
 // export class AttributelistDetailsComponent implements OnInit, AttributelistTable {
 export class AttributelistDetailsComponent implements OnInit,
-                                                      OnDestroy,
-                                                      AttributelistTable,
-                                                      AfterViewInit {
+  OnDestroy,
+  AttributelistTable,
+  AfterViewInit {
 
   // Table reference for 'manually' rendering.
   @ViewChild('detailtable') public table: MatTable<any>;
@@ -39,25 +39,25 @@ export class AttributelistDetailsComponent implements OnInit,
 
   public rows$: Observable<AttributeListRowModel[]>;
 
-  public columnsNames : string[];
-  public columns : AttributeListColumnModel[];
+  public columnsNames: string[];
+  public columns: AttributeListColumnModel[];
 
   private destroyed = new Subject();
 
   constructor(private attributeService: AttributeService,
               private store$: Store<AttributeListState>,
-              private applicationService: ApplicationService,) {
+              private applicationService: ApplicationService) {
   }
 
   public ngOnDestroy(): void {
     this.destroyed.next();
     this.destroyed.complete();
-    }
+  }
 
   public ngOnInit(): void {
     this.store$.select(selectActiveColumnsForFeature, this.featureType.id).pipe(
       takeUntil(this.destroyed)).subscribe(columns => {
-        this.columns = columns;
+      this.columns = columns;
       this.columnsNames = columns.map(column => column.name);
     })
     // Update the table.
@@ -65,15 +65,12 @@ export class AttributelistDetailsComponent implements OnInit,
   }
 
   public ngAfterViewInit(): void {
-
   }
 
   /**
    * Renders the table rows after the data is loaded.
    */
   public onAfterLoadData(): void {
-    // Update the table rows.
-    this.table.renderRows();
   }
 
   /**
@@ -87,29 +84,24 @@ export class AttributelistDetailsComponent implements OnInit,
    * (Re)loads the data, which fires the "onAfterLoadData" method.
    */
   private updateTable(sort?: Sort): void {
-    const sortDirection = (sort && sort.direction === 'asc') ? 'ASC' : (sort && sort.direction) === 'desc' ? 'DESC' : undefined;
 
     const attrParams: AttributeListParameters = {
       application: this.applicationService.getId(),
       appLayer: +(this.parentLayerId),
       featureType: this.featureType.id,
       filter: this.featureType.filter,
-      //limit: featureTypeData.pageSize,
       page: 1,
-    //  start: featureTypeData.pageIndex * featureTypeData.pageSize,
       clearTotalCountCache: true,
-     // dir: featureTypeData.sortDirection,
-     // sort: featureTypeData.sortedColumn || '',
     };
     this.rows$ = this.attributeService.features$(attrParams)
       .pipe(
         takeUntil(this.destroyed),
         map(response => {
-          if(response.success){
-            return response.features.map(feature =>{
-              const a : AttributeListRowModel= {
+          if (response.success) {
+            return response.features.map(feature => {
+              const a: AttributeListRowModel = {
                 ...feature,
-                rowId: ''+ feature.__fid,
+                rowId: '' + feature.__fid,
                 _checked: false,
                 _expanded: false,
                 _selected: false,
@@ -117,15 +109,10 @@ export class AttributelistDetailsComponent implements OnInit,
               };
               return a;
             });
-          }else{
+          } else {
             return null;
           }
-
-
-        })
-
-      )
-
-  //  this.dataSource.loadData(this, undefined, undefined, sort ? sort.active : undefined, sortDirection);
+        }),
+      );
   }
 }

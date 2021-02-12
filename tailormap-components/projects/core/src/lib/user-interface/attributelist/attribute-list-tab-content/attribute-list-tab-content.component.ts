@@ -1,5 +1,4 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { PageEvent } from '@angular/material/paginator';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AttributelistTable } from '../attributelist-common/attributelist-models';
@@ -21,7 +20,6 @@ import { Store } from '@ngrx/store';
 import { AttributeListState } from '../state/attribute-list.state';
 import { selectFeatureTypeDataForTab, selectTab } from '../state/attribute-list.selectors';
 import { AttributeListTabModel } from '../models/attribute-list-tab.model';
-import { updatePage } from '../state/attribute-list.actions';
 import { AttributeListFeatureTypeData } from '../models/attribute-list-feature-type-data.model';
 
 @Component({

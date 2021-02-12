@@ -309,9 +309,9 @@ const onDeleteColumnFilter = (
   payload: ReturnType<typeof AttributeListActions.deleteColumnFilter>,
 ): AttributeListState => updateFeatureData(state, payload.featureType, tab => {
   const index = tab.filter.findIndex(filter => filter.name === payload.colName);
-  let newFilterColumns = [...tab.filter];
+  const newFilterColumns = [...tab.filter];
   if (index >= 0) {
-    newFilterColumns.splice(index,1);
+    newFilterColumns.splice(index, 1);
   }
   return {
     ...tab,

@@ -13,7 +13,6 @@ import { ApplicationService } from '../../../application/services/application.se
 import { AttributeListFeatureTypeData } from '../models/attribute-list-feature-type-data.model';
 import { MetadataService } from '../../../application/services/metadata.service';
 import { FilterType } from '../models/attribute-list-filter-models';
-import { ofType } from '@ngrx/effects';
 
 export interface LoadDataResult {
   layerId: string;

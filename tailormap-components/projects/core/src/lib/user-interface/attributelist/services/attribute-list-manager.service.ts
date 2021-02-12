@@ -1,7 +1,7 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { AttributeListState } from '../state/attribute-list.state';
-import { selectVisibleLayers, selectVisibleLayersWithAttributes } from '../../../application/state/application.selectors';
+import { selectVisibleLayersWithAttributes } from '../../../application/state/application.selectors';
 import { concatMap, filter, map, take, takeUntil, withLatestFrom } from 'rxjs/operators';
 import { forkJoin, Observable, of, Subject } from 'rxjs';
 import { selectAttributeListConfig, selectAttributeListTabs } from '../state/attribute-list.selectors';

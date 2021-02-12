@@ -7,7 +7,6 @@ import { combineLatest, Observable, Subject } from 'rxjs';
 import { AttributeListRowModel } from '../models/attribute-list-row.model';
 import { Store } from '@ngrx/store';
 import { AttributeListState } from '../state/attribute-list.state';
-import { AttributeListTabModel } from '../models/attribute-list-tab.model';
 import { AttributelistStatistic } from '../attributelist-common/attributelist-statistic';
 import { StatisticService } from '../../../shared/statistic-service/statistic.service';
 import { updateRowSelected, updateSort } from '../state/attribute-list.actions';
