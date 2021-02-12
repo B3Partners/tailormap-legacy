@@ -73,7 +73,7 @@ export class AttributeListEffects {
         return data;
       });
       const updatedTab = UpdateAttributeListStateHelper.updateTabForAction(action, tab);
-      return this.attributeListDataService.loadDataForFeatureType(updatedTab, tab.selectedRelatedFeatureType, updatedFeatureData);
+      return this.attributeListDataService.loadDataForFeatureType$(updatedTab, tab.selectedRelatedFeatureType, updatedFeatureData);
     }),
     tap(() => {
       this.highlightService.clearHighlight();

@@ -43,7 +43,7 @@ export class AttributeListDataService {
     tab: AttributeListTabModel,
     tabFeatureData: AttributeListFeatureTypeData[],
   ): Observable<LoadDataResult> {
-      return this.loadDataForFeatureType(tab, tab.selectedRelatedFeatureType, tabFeatureData);
+      return this.loadDataForFeatureType$(tab, tab.selectedRelatedFeatureType, tabFeatureData);
   }
 
   public loadTotalCount$(
@@ -67,7 +67,7 @@ export class AttributeListDataService {
     ).pipe(map(count => ({ featureType, totalCount: count })));
   }
 
-  public loadDataForFeatureType(
+  public loadDataForFeatureType$(
     tab: AttributeListTabModel,
     featureType: number,
     tabFeatureData: AttributeListFeatureTypeData[],
