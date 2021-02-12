@@ -32,6 +32,7 @@ import { AttributeListTreeComponent } from './attribute-list-tree/attribute-list
 import { AttributeListTreeDialogComponent } from './attribute-list-tree-dialog/attribute-list-tree-dialog.component';
 import { AttributeListColumnSelectionComponent } from './attribute-list-column-selection/attribute-list-column-selection.component';
 import { AttributeListFilterComponent } from './attribute-list-filter/attribute-list-filter.component';
+import { AttributeListManagerService } from './services/attribute-list-manager.service';
 
 @NgModule({
   // The components, directives, and pipes that belong to this NgModule.
@@ -69,7 +70,11 @@ import { AttributeListFilterComponent } from './attribute-list-filter/attribute-
   ],
 })
 export class AttributeListModule {
-  public constructor(injector: Injector) {
+  public constructor(
+    injector: Injector,
+    // Service is instantiated here, watches changes to visible layers to create tabs
+    public attributeListManagerService: AttributeListManagerService,
+  ) {
     customElements.define('tailormap-attribute-list-button',
       createCustomElement(AttributeListButtonComponent, {injector}));
     customElements.define('tailormap-attribute-list',

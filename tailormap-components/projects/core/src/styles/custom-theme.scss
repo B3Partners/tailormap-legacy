@@ -23,11 +23,44 @@ $custom-typography: mat-typography-config(
 // Be sure that you only ever include this mixin once!
 @include mat-core($custom-typography);
 
+$mat-tailormap: (
+  50: #efe8fe,
+  100: #d5c6fc,
+  200: #b89ffb,
+  300: #9976fb,
+  400: #7e56fa,
+  500: #5f35f7,
+  600: #5130f0,
+  700: #3a28e8,
+  800: #1722e2,
+  900: #0012db,
+  A100: #fff,
+  A200: #6236ff,
+  A400: #c1c4ff,
+  A700: #a7acff,
+  contrast: (
+    50 : #000,
+    100 : #000,
+    200 : #000,
+    300 : #fff,
+    400 : #fff,
+    500 : #fff,
+    600 : #fff,
+    700 : #fff,
+    800 : #fff,
+    900 : #fff,
+    A100 : #fff,
+    A200 : #fff,
+    A400 : #fff,
+    A700 : #fff,
+  )
+);
+
 // Define the palettes for your theme using the Material Design palettes available in palette.scss
 // (imported above). For each palette, you can optionally specify a default, lighter, and darker
 // hue. Available color palettes: https://material.io/design/color/
-$tailormap-app-primary: mat-palette($mat-indigo);
-$tailormap-app-accent:  mat-palette($mat-pink, A200, A100, A400);
+$tailormap-app-primary: mat-palette($mat-tailormap);
+$tailormap-app-accent:  mat-palette($mat-tailormap, A200, A100, A400);
 
 // The warn palette is optional (defaults to red).
 $tailormap-app-warn:    mat-palette($mat-red);
@@ -46,3 +79,15 @@ $tailormap-app-theme: mat-light-theme((
 // Alternatively, you can import and @include the theme mixins for each component
 // that you are using.
 @include angular-material-theme($tailormap-app-theme);
+
+button.mat-button,
+button.mat-stroked-button,
+button.mat-flat-button {
+  border-radius: 0;
+}
+
+button.mat-stroked-button {
+  border: 1px solid #eeeeef;
+  background-color: #fff;
+  box-shadow: 0 1px 0 0 rgba(0, 0, 0, 0.05), 0 1px 2px 0 rgba(0, 0, 0, 0.08);
+}

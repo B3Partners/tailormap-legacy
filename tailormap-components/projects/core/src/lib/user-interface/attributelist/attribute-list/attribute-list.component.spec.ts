@@ -3,7 +3,6 @@ import { Spectator, createComponentFactory } from '@ngneat/spectator';
 import { AttributeListComponent } from './attribute-list.component';
 import { attributeListStateKey, initialAttributeListState } from '../state/attribute-list.state';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
-import { getAttributeListManagerServiceMockProvider } from '../services/mocks/attribute-list-manager.service.mock';
 import { SharedModule } from '../../../shared/shared.module';
 
 describe('AttributeListComponent', () => {
@@ -17,7 +16,6 @@ describe('AttributeListComponent', () => {
     imports: [ SharedModule ],
     providers: [
       provideMockStore({ initialState }),
-      getAttributeListManagerServiceMockProvider(),
     ]
   });
 

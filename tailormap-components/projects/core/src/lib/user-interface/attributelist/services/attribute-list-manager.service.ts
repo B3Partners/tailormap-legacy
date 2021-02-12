@@ -1,7 +1,7 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { AttributeListState } from '../state/attribute-list.state';
-import { selectVisibleLayers } from '../../../application/state/application.selectors';
+import { selectVisibleLayers, selectVisibleLayersWithAttributes } from '../../../application/state/application.selectors';
 import { concatMap, filter, map, take, takeUntil, withLatestFrom } from 'rxjs/operators';
 import { forkJoin, Observable, of, Subject } from 'rxjs';
 import { selectAttributeListConfig, selectAttributeListTabs } from '../state/attribute-list.selectors';
@@ -62,7 +62,7 @@ export class AttributeListManagerService implements OnDestroy {
     private metadataService: MetadataService,
     private idService: IdService,
   ) {
-    this.store$.select(selectVisibleLayers)
+    this.store$.select(selectVisibleLayersWithAttributes)
       .pipe(
         takeUntil(this.destroyed),
         withLatestFrom(this.store$.select(selectAttributeListTabs), this.store$.select(selectAttributeListConfig)),
@@ -130,7 +130,7 @@ export class AttributeListManagerService implements OnDestroy {
           layerName,
           featureType: metadata.featureType,
           selectedRelatedFeatureType: metadata.featureType,
-          relatedFeatures: metadata.relations,
+          relatedFeatures: metadata.relations || [],
         };
         const featureData: AttributeListFeatureTypeData[] = [
           this.createDataForFeatureType(
@@ -142,7 +142,7 @@ export class AttributeListManagerService implements OnDestroy {
             metadata,
             formConfig,
           ),
-          ...metadata.relations.map(featureType => {
+          ...(metadata.relations || []).map(featureType => {
             return this.createDataForFeatureType(
               featureType.foreignFeatureType,
               featureType.foreignFeatureTypeName,

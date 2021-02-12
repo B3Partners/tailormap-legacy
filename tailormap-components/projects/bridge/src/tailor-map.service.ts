@@ -82,7 +82,7 @@ export class TailorMapService {
     const vc = this.getViewerController();
     const mc = vc.mapComponent;
     const map = mc.getMap();
-    map.addListener('ON_LAYERS_INITIALIZED', () => {
+    vc.addListener('ON_LAYERS_INITIALIZED', () => {
       this.ngZone.run(() => this.layersInitializedSubject$.next(true));
     });
     map.addListener('ON_LAYER_VISIBILITY_CHANGED', (object, event) => {

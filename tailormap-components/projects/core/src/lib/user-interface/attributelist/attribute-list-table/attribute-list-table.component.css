@@ -2,6 +2,7 @@
   max-width: 100%;
   overflow: auto;
   flex: 1;
+  padding: 0 6px;
 }
 
 mat-table {
@@ -11,7 +12,11 @@ mat-table {
 .mat-row:not(.details-row),
 .mat-header-row,
 mat-footer-row {
-  min-height: 24px;
+  min-height: 45px;
+}
+
+.mat-row {
+  border-bottom: 0 none;
 }
 
 .column_small {
@@ -52,8 +57,7 @@ mat-footer-cell {
 }
 
 .material-icons-set {
-  /* indigo primary 500 */
-  color: #3f51b5;
+  color: #5f35f7;
 }
 
 .material-icons-unset {
@@ -63,20 +67,6 @@ mat-footer-cell {
 .mat-icon {
   padding-top: 4px;
   padding-left: 4px;
-}
-
-::ng-deep .mat-paginator-container {
-  min-height: 40px;
-  max-height: 40px;
-}
-
-::ng-deep .mat-paginator-range-label {
-  margin: 0 0 0 10px !important;
-}
-
-.mat-toolbar {
-  background: rgba(0, 0, 0, 0);
-  height: 40px;
 }
 
 .mat-flat-button {
@@ -90,4 +80,8 @@ mat-footer-cell {
 .details-container {
   overflow: hidden;
   flex: 1;
+}
+
+.even_row {
+  background-color: #f6f5f6;
 }

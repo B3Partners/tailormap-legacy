@@ -16,41 +16,35 @@ export class ApplicationService implements OnDestroy {
   private applicationId: number;
 
   constructor(
-    tailormapService: TailorMapService,
-    store$: Store<ApplicationState>,
+    private tailormapService: TailorMapService,
+    private store$: Store<ApplicationState>,
   ) {
-    tailormapService.applicationConfig$
+    this.tailormapService.applicationConfig$
       .pipe(
         take(1),
       )
       .subscribe(app => {
-        store$.dispatch(setApplicationContent({
+        this.store$.dispatch(setApplicationContent({
           id: app.id,
           root: app.selectedContent,
           levels: Object.values(app.levels),
           layers: Object.values(app.appLayers),
         }));
         this.applicationId = app.id;
+
+        this.updateLayerVisibility();
       });
 
-    tailormapService.layersInitialized$
-      .pipe(takeUntil(this.destroyed))
-      .subscribe(() => {
-        const visibleLayers = tailormapService.getViewerController().getVisibleLayers();
-        const layerVisibility = new Map<string, boolean>(visibleLayers.map(layerId => [ `${layerId}`, true ]));
-        store$.dispatch(setLayerVisibility({ visibility: layerVisibility }));
-      });
-
-    tailormapService.layerVisibilityChanged$
+    this.tailormapService.layerVisibilityChanged$
       .pipe(takeUntil(this.destroyed))
       .subscribe(event => {
-        store$.dispatch(setLayerVisibility({ visibility: new Map<string, boolean>([[ `${event.layer.id}`, event.visible ]]) }));
+        this.store$.dispatch(setLayerVisibility({ visibility: new Map<string, boolean>([[ `${event.layer.id}`, event.visible ]]) }));
       });
 
-    tailormapService.selectedLayerChanged$
+    this.tailormapService.selectedLayerChanged$
       .pipe(takeUntil(this.destroyed))
       .subscribe(selectedAppLayer => {
-        store$.dispatch(setSelectedAppLayer({ layerId: `${selectedAppLayer.id}` }));
+        this.store$.dispatch(setSelectedAppLayer({ layerId: `${selectedAppLayer.id}` }));
       });
   }
 
@@ -61,6 +55,16 @@ export class ApplicationService implements OnDestroy {
 
   public getId() {
     return this.applicationId;
+  }
+
+  private updateLayerVisibility() {
+    this.tailormapService.layersInitialized$
+      .pipe(take(1))
+      .subscribe(() => {
+        const visibleLayers = this.tailormapService.getViewerController().getVisibleLayers();
+        const layerVisibility = new Map<string, boolean>(visibleLayers.map(layerId => [ `${layerId}`, true ]));
+        this.store$.dispatch(setLayerVisibility({ visibility: layerVisibility }));
+      });
   }
 
 }

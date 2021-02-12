@@ -347,10 +347,6 @@ export class AttributeListTabContentComponent implements AttributelistTable, OnI
     this.updateTable();
   }
 
-  public onPageChange($event: PageEvent): void {
-    this.store$.dispatch(updatePage({ featureType: this.featureTypeData.featureType, page: $event.pageIndex }));
-  }
-
   public onClearLayerFilter() {
     this.filterMap.get(this.dataSource.params.featureTypeId).clearFilterForLayer(this.filterMap, this.rowsChecked);
     this.refreshTable();
