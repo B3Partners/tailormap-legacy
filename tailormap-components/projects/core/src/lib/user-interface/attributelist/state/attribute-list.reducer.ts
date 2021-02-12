@@ -304,6 +304,21 @@ const onSetSelectedColumnFilter = (
   };
 });
 
+const onDeleteColumnFilter = (
+  state: AttributeListState,
+  payload: ReturnType<typeof AttributeListActions.deleteColumnFilter>,
+): AttributeListState => updateFeatureData(state, payload.featureType, tab => {
+  const index = tab.filter.findIndex(filter => filter.name === payload.colName);
+  let newFilterColumns = [...tab.filter];
+  if (index >= 0) {
+    newFilterColumns.splice(index,1);
+  }
+  return {
+    ...tab,
+    filter: newFilterColumns,
+  };
+});
+
 const attributeListReducerImpl = createReducer(
   initialAttributeListState,
   on(AttributeListActions.setAttributeListVisibility, onSetAttributeListVisibility),
@@ -325,6 +340,7 @@ const attributeListReducerImpl = createReducer(
   on(AttributeListActions.toggleColumnVisible, onToggleColumnVisible),
   on(AttributeListActions.toggleShowPassportColumns, onToggleShowPassportColumns),
   on(AttributeListActions.setColumnFilter, onSetSelectedColumnFilter),
+  on(AttributeListActions.deleteColumnFilter, onDeleteColumnFilter),
 );
 
 export const attributeListReducer = (state: AttributeListState | undefined, action: Action) => {

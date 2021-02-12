@@ -105,3 +105,8 @@ export const setColumnFilter = createAction(
   `${attributeListActionsPrefix} Set filter for column on data tab`,
   props<{ filterType: string, value: string[], featureType: number, colName: string, layerId: string }>(),
 );
+
+export const deleteColumnFilter = createAction(
+  `${attributeListActionsPrefix} Delete filter for column on data tab`,
+  props<{ colName: string, featureType: number, layerId: string }>(),
+);
