@@ -13,6 +13,7 @@ import { ApplicationService } from '../../../application/services/application.se
 import { AttributeListFeatureTypeData } from '../models/attribute-list-feature-type-data.model';
 import { MetadataService } from '../../../application/services/metadata.service';
 import { FilterType } from '../models/attribute-list-filter-models';
+import { ofType } from '@ngrx/effects';
 
 export interface LoadDataResult {
   layerId: string;
@@ -160,7 +161,9 @@ export class AttributeListDataService {
   private buildValueFilterString(values: string[]): string {
     let valueFilterString = '';
     values.forEach(value => {
-      value = value.replace('\'', '&quot;');
+      if (typeof value === 'string') {
+        value = value.replace('\'', '&quot;');
+      }
       valueFilterString += '\'' + value + '\',';
     })
     return valueFilterString.slice(0, -1);
