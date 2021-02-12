@@ -169,7 +169,7 @@ export class AttributeListDataService {
     return valueFilterString.slice(0, -1);
   }
 
-  private getFilterMethod(type: string): string {
+  private getFilterMethod(type: FilterType): string {
     let filterType = '';
     if (type === FilterType.LIKE || type === FilterType.UNIQUE_VALUES) {
       filterType = 'IN';
