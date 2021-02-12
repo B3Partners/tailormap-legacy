@@ -6,7 +6,8 @@
              multiTemplateDataRows
              (matSortChange)="onSortClick($event)">
 
-    <tailormap-attribute-list-checkbox-column [uncheckedCount]="uncheckedCount"
+    <tailormap-attribute-list-checkbox-column *ngIf="showCheckboxColumn$ | async"
+                                              [uncheckedCount]="uncheckedCount"
                                               [checkedCount]="checkedCount"
                                               [featureType]="featureType"></tailormap-attribute-list-checkbox-column>
 
