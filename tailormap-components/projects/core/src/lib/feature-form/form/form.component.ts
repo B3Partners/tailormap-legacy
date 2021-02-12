@@ -156,15 +156,13 @@ export class FormComponent implements OnDestroy, OnChanges, OnInit {
   }
 
   public closeForm() {
-    this.ngZone.run(() => {
-      if (this.formDirty) {
-        this.closeNotification(function () {
-          this.store$.dispatch(FormActions.setCloseFeatureForm());
-        });
-      } else {
+    if (this.formDirty) {
+      this.closeNotification(function () {
         this.store$.dispatch(FormActions.setCloseFeatureForm());
-      }
-    });
+      });
+    } else {
+      this.store$.dispatch(FormActions.setCloseFeatureForm());
+    }
   }
 
   private closeNotification(afterAction) {

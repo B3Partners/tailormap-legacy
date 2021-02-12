@@ -8,7 +8,7 @@ import { combineLatest, Observable, Subject } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { FormState } from '../state/form.state';
 import { selectCurrentFeature, selectFormConfigForFeature } from '../state/form.selectors';
-import { map, takeUntil } from 'rxjs/operators';
+import { filter, map, takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'tailormap-formfield',
@@ -83,6 +83,7 @@ export class FormfieldComponent implements AfterViewInit, OnDestroy {
       this.store$.select(selectFormConfigForFeature),
     ])
       .pipe(
+        filter(([feature, config])=>!!feature),
         takeUntil(this.destroyed),
         map(([feature, config]) => {
           return FormTreeHelpers.getFeatureValueForField(feature, config, this.attribute.key);
