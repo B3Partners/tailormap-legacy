@@ -1,7 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { FormControl } from '@angular/forms';
-import { setColumnFilter } from '../state/attribute-list.actions';
+import { deleteColumnFilter, setColumnFilter } from '../state/attribute-list.actions';
 import { Store } from '@ngrx/store';
 import { AttributeListState } from '../state/attribute-list.state';
 import { FilterDialogData } from '../models/attribute-list-filter.model';
@@ -72,7 +72,13 @@ export class AttributeListFilterComponent implements OnInit {
   }
 
   public onClear() {
+    this.store$.dispatch(deleteColumnFilter({
+      colName: this.data.columnName,
+      featureType: this.data.featureType,
+      layerId: this.data.layerId,
+    }));
 
+    this.dialogRef.close();
   }
 
   public setAll (select: boolean) {

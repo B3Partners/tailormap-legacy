@@ -103,6 +103,11 @@ export class AttributeListEffects {
     map( action => AttributeListActions.loadDataForTab({layerId: action.layerId})),
   ));
 
+  public deleteColumnFilter$ = createEffect(() => this.actions$.pipe(
+    ofType(AttributeListActions.deleteColumnFilter),
+    map( action => AttributeListActions.loadDataForTab({layerId: action.layerId})),
+  ));
+
   constructor(
     private actions$: Actions,
     private store$: Store<AttributeListState>,
