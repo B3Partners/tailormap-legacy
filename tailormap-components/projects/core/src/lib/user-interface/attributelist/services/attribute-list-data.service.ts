@@ -102,25 +102,31 @@ export class AttributeListDataService {
             errorMessage: response.message || 'Failed loading attributes',
           }
         }
+        const checkedRows = new Set<string>(featureTypeData.checkedFeatures);
         return {
           layerId: tab.layerId,
           featureType: featureTypeData.featureType,
           totalCount: response.total,
-          rows: this.decorateFeatures(response.features, formConfig),
+          rows: this.decorateFeatures(response.features, formConfig, checkedRows),
           relatedFeatures: response.features.length > 0 ? (response.features[0].related_featuretypes || []) : [],
         };
       }),
     )
   }
 
-  private decorateFeatures(features: AttributeListFeature[], formConfig: FormConfiguration): AttributeListRowModel[] {
+  private decorateFeatures(
+    features: AttributeListFeature[],
+    formConfig: FormConfiguration,
+    checkedRows: Set<string>,
+  ): AttributeListRowModel[] {
     return features.map<AttributeListRowModel>(feature => {
       const relatedFeatures = feature.related_featuretypes || [];
+      const rowId = `${feature.__fid}`;
       const decoratedFeature: AttributeListRowModel = {
-        _checked: false,
+        _checked: checkedRows.has(rowId),
         _expanded: false,
         _selected: false,
-        rowId: `${feature.__fid}`,
+        rowId,
         related_featuretypes: relatedFeatures,
         ...feature,
       };

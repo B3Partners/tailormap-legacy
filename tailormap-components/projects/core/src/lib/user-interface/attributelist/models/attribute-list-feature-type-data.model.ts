@@ -10,6 +10,7 @@ export interface AttributeListFeatureTypeData {
   columns: AttributeListColumnModel[];
   showPassportColumnsOnly: boolean;
   rows: AttributeListRowModel[];
+  checkedFeatures: string[];
   filter: FilterColumns[];
   pageSize: number;
   pageIndex: number;

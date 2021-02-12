@@ -47,6 +47,7 @@ export class AttributeListManagerService implements OnDestroy {
     featureTypeName: '',
     filter: [],
     rows: [],
+    checkedFeatures: [],
     pageIndex: 0,
     pageSize: 10,
     totalCount: null,

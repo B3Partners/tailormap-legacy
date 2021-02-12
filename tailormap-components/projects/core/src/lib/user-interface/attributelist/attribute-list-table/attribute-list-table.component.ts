@@ -55,11 +55,7 @@ export class AttributeListTableComponent implements OnInit, OnDestroy {
   ) { }
 
   public ngOnInit(): void {
-    this.statistic = new AttributelistStatistic(
-      this.store$,
-      this.statisticsService,
-      this.layerId,
-    );
+    this.statistic = new AttributelistStatistic(this.statisticsService, this.layerId);
 
     const featureTypeData$ = this.store$.select(selectFeatureTypeDataForTab, this.layerId);
 

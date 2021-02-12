@@ -178,18 +178,43 @@ const onUpdateSort = (
 const onToggleCheckedAllRows = (
   state: AttributeListState,
   payload: ReturnType<typeof AttributeListActions.toggleCheckedAllRows>,
-): AttributeListState => updateFeatureData(state, payload.featureType, tab => {
-  const someUnchecked = tab.rows.findIndex(row => !row._checked) !== -1;
+): AttributeListState => updateFeatureData(state, payload.featureType, data => {
+  const someUnchecked = data.rows.findIndex(row => !row._checked) !== -1;
+  const checkedRows = new Set<string>(data.checkedFeatures);
+  data.rows.forEach(row => {
+    if (someUnchecked) {
+      checkedRows.add(row.rowId);
+    } else {
+      checkedRows.delete(row.rowId);
+    }
+  });
   return {
-    ...tab,
-    rows: tab.rows.map(row => ({ ...row, _checked: someUnchecked })),
+    ...data,
+    rows: data.rows.map(row => ({ ...row, _checked: someUnchecked })),
+    checkedFeatures: Array.from(checkedRows),
   };
 });
 
 const onUpdateRowChecked = (
   state: AttributeListState,
   payload: ReturnType<typeof AttributeListActions.updateRowChecked>,
-): AttributeListState => updateTabRow(state, payload.featureType, payload.rowId, row => ({ ...row, _checked: payload.checked }));
+): AttributeListState => updateFeatureData(state, payload.featureType, data => {
+  const checkedRows = new Set<string>(data.checkedFeatures);
+  if (payload.checked) {
+    checkedRows.add(payload.rowId);
+  } else {
+    checkedRows.delete(payload.rowId);
+  }
+  return {
+    ...data,
+    rows: updateArrayItemInState<AttributeListRowModel>(
+      data.rows,
+      r => r.rowId === payload.rowId,
+      row => ({ ...row, _checked: payload.checked }),
+    ),
+    checkedFeatures: Array.from(checkedRows),
+  }
+});
 
 const onUpdateRowExpanded = (
   state: AttributeListState,
