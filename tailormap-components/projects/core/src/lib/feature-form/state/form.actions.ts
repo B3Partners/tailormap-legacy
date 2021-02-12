@@ -1,7 +1,6 @@
 import { createAction, props } from '@ngrx/store';
 import { Feature } from '../../shared/generated';
 import { FormConfiguration } from '../form/form-models';
-import { FormAction } from './form.state';
 
 const formActionsPrefix = '[Form]';
 

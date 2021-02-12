@@ -1,8 +1,6 @@
 import { Action, createReducer, on } from '@ngrx/store';
-import { FormAction, FormState, initialFormState } from './form.state';
+import { FormState, initialFormState } from './form.state';
 import * as FormActions from './form.actions';
-import { Feature } from '../../shared/generated';
-import { FormConfiguration } from '../form/form-models';
 
 const onCloseFeatureForm  = (state: FormState): FormState => ({
   ...state,

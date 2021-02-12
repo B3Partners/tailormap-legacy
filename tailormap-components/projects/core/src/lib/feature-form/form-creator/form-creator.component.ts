@@ -13,7 +13,7 @@ import { AttributelistService } from '../../user-interface/attributelist/attribu
 import { ConfirmDialogService } from '../../shared/confirm-dialog/confirm-dialog.service';
 import { takeUntil } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
-import { FormAction, FormState } from '../state/form.state';
+import { FormState } from '../state/form.state';
 import * as FormActions from '../state/form.actions';
 import { WorkflowState } from '../../workflow/state/workflow.state';
 

@@ -1,4 +1,4 @@
-import { Component, NgZone, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
+import { Component, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ConfirmDialogService } from '../../shared/confirm-dialog/confirm-dialog.service';
 import { filter, take, takeUntil } from 'rxjs/operators';
@@ -45,7 +45,6 @@ export class FormComponent implements OnDestroy, OnChanges, OnInit {
               private store$: Store<FormState | WorkflowState>,
               private confirmDialogService: ConfirmDialogService,
               private _snackBar: MatSnackBar,
-              private ngZone: NgZone,
               private metadataService: MetadataService,
               public actions: FormActionsService) {
   }
