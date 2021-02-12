@@ -283,41 +283,65 @@ const onSetSelectedColumnFilter = (
   payload: ReturnType<typeof AttributeListActions.setColumnFilter>,
 ): AttributeListState => updateFeatureData(state, payload.featureType, tab => {
   const index = tab.filter.findIndex(filter => filter.name === payload.colName);
-  let newFilterColumns: AttributeListFilterModel[] = [];
   if (index >= 0) {
-    newFilterColumns = updateArrayItemInState<AttributeListFilterModel>(
-      tab.filter,
-      (f => f.name === payload.colName),
-      (filter => ({...filter, name: payload.colName, value: payload.value, type: payload.filterType})),
-    );
-  } else {
-    newFilterColumns = [...tab.filter,
-                        {
-      name: payload.colName,
-      value: payload.value,
-      type: payload.filterType,
-    }];
+    return {
+      ...tab,
+      filter: updateArrayItemInState<AttributeListFilterModel>(
+        tab.filter,
+        (f => f.name === payload.colName),
+        (filter => ({...filter, name: payload.colName, value: payload.value, type: payload.filterType})),
+      ),
+    };
   }
   return {
     ...tab,
-    filter: newFilterColumns,
+    filter: [
+      ...tab.filter,
+      {
+        name: payload.colName,
+        value: payload.value,
+        type: payload.filterType,
+      },
+    ],
   };
 });
 
 const onDeleteColumnFilter = (
   state: AttributeListState,
   payload: ReturnType<typeof AttributeListActions.deleteColumnFilter>,
-): AttributeListState => updateFeatureData(state, payload.featureType, tab => {
-  const index = tab.filter.findIndex(filter => filter.name === payload.colName);
-  let newFilterColumns = [...tab.filter];
-  if (index >= 0) {
-    newFilterColumns.splice(index,1);
+): AttributeListState => updateFeatureData(state, payload.featureType, featureData => {
+  const idx = featureData.filter.findIndex(filter => filter.name === payload.colName);
+  if (idx === -1) {
+    return featureData;
   }
   return {
-    ...tab,
-    filter: newFilterColumns,
+    ...featureData,
+    filter: [
+      ...featureData.filter.slice(0, idx),
+      ...featureData.filter.slice(idx + 1),
+    ],
   };
 });
+
+const onClearFilterForFeatureType = (
+  state: AttributeListState,
+  payload: ReturnType<typeof AttributeListActions.clearFilterForFeatureType>,
+): AttributeListState => updateFeatureData(state, payload.featureType, featureData => ({ ...featureData, filter: [] }));
+
+const onClearAllFilters = (
+  state: AttributeListState,
+  payload: ReturnType<typeof AttributeListActions.clearAllFilters>,
+): AttributeListState => {
+  return {
+    ...state,
+    featureTypeData: state.featureTypeData.map(featureData => {
+      if (featureData.layerId === payload.layerId) {
+        return { ...featureData, filter: [] };
+      }
+      return featureData;
+    }),
+  };
+};
 
 const attributeListReducerImpl = createReducer(
   initialAttributeListState,
@@ -341,6 +365,8 @@ const attributeListReducerImpl = createReducer(
   on(AttributeListActions.toggleShowPassportColumns, onToggleShowPassportColumns),
   on(AttributeListActions.setColumnFilter, onSetSelectedColumnFilter),
   on(AttributeListActions.deleteColumnFilter, onDeleteColumnFilter),
+  on(AttributeListActions.clearFilterForFeatureType, onClearFilterForFeatureType),
+  on(AttributeListActions.clearAllFilters, onClearAllFilters),
 );
 
 export const attributeListReducer = (state: AttributeListState | undefined, action: Action) => {

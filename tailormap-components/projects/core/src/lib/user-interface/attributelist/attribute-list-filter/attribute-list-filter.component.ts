@@ -6,7 +6,14 @@ import { Store } from '@ngrx/store';
 import { AttributeListState } from '../state/attribute-list.state';
 import { FilterDialogData } from '../models/attribute-list-filter.model';
 import { MetadataService } from '../../../application/services/metadata.service';
-import { AttributeListUniqueFilterValueSettings, FilterType } from '../models/attribute-list-filter-models';
+import { FilterType } from '../models/attribute-list-filter-models';
+
+interface AttributeListUniqueFilterValueSettings {
+  // value in column.
+  value: string;
+  // value in filter selected
+  select: boolean;
+}
 
 @Component({
   selector: 'tailormap-attribute-list-filter',
