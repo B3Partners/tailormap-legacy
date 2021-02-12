@@ -160,6 +160,7 @@ export class AttributeListDataService {
   private buildValueFilterString(values: string[]): string {
     let valueFilterString = '';
     values.forEach(value => {
+      value = value.replace('\'', '&quot;');
       valueFilterString += '\'' + value + '\',';
     })
     return valueFilterString.slice(0, -1);
