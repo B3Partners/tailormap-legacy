@@ -12,6 +12,7 @@ import { AttributeListRowModel } from '../models/attribute-list-row.model';
 import { ApplicationService } from '../../../application/services/application.service';
 import { AttributeListFeatureTypeData } from '../models/attribute-list-feature-type-data.model';
 import { MetadataService } from '../../../application/services/metadata.service';
+import { FilterType } from '../models/attribute-list-filter-models';
 
 export interface LoadDataResult {
   layerId: string;
@@ -166,7 +167,7 @@ export class AttributeListDataService {
 
   private getFilterMethod(type: string): string {
     let filterType = '';
-    if (type === 'LIKE' || type === 'UniqueValues') {
+    if (type === FilterType.LIKE || type === FilterType.UNIQUE_VALUES) {
       filterType = 'IN';
     } else {
       filterType = 'NOT IN';

@@ -6,7 +6,7 @@ import { Store } from '@ngrx/store';
 import { AttributeListState } from '../state/attribute-list.state';
 import { FilterDialogData } from '../models/attribute-list-filter.model';
 import { MetadataService } from '../../../application/services/metadata.service';
-import { AttributeListUniqueFilterValueSettings } from '../models/attribute-list-filter-models';
+import { AttributeListUniqueFilterValueSettings, FilterType } from '../models/attribute-list-filter-models';
 
 @Component({
   selector: 'tailormap-attribute-list-filter',
@@ -15,7 +15,7 @@ import { AttributeListUniqueFilterValueSettings } from '../models/attribute-list
 })
 export class AttributeListFilterComponent implements OnInit {
 
-  public filterTypeSelected: string;
+  public filterTypeSelected: FilterType;
   public criteriaValue = new FormControl();
   public uniqueValues: AttributeListUniqueFilterValueSettings[] = [];
   public allOn: boolean
@@ -29,7 +29,7 @@ export class AttributeListFilterComponent implements OnInit {
   public ngOnInit(): void {
     if (this.data.filter) {
       this.filterTypeSelected = this.data.filter.type;
-      if (this.filterTypeSelected === 'UniqueValues') {
+      if (this.filterTypeSelected === FilterType.UNIQUE_VALUES) {
         this.loadUniqueValues();
       } else {
         this.criteriaValue.setValue(this.data.filter.value);
@@ -38,7 +38,7 @@ export class AttributeListFilterComponent implements OnInit {
   }
 
   private getFilterValue(): string[] {
-    if (this.filterTypeSelected !== 'UniqueValues') {
+    if (this.filterTypeSelected !== FilterType.UNIQUE_VALUES) {
       return [this.criteriaValue.value];
     } else {
       return this.getSelectedUniqueValues();

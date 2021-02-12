@@ -5,7 +5,7 @@ import { AttributeListTabModel } from '../models/attribute-list-tab.model';
 import { AttributeListRowModel } from '../models/attribute-list-row.model';
 import { UpdateAttributeListStateHelper } from '../helpers/update-attribute-list-state.helper';
 import { AttributeListFeatureTypeData } from '../models/attribute-list-feature-type-data.model';
-import { AttributeListFilterModels } from '../models/attribute-list-filter-models';
+import { AttributeListFilterModel } from '../models/attribute-list-filter-models';
 
 const onSetAttributeListVisibility = (
   state: AttributeListState,
@@ -283,9 +283,9 @@ const onSetSelectedColumnFilter = (
   payload: ReturnType<typeof AttributeListActions.setColumnFilter>,
 ): AttributeListState => updateFeatureData(state, payload.featureType, tab => {
   const index = tab.filter.findIndex(filter => filter.name === payload.colName);
-  let newFilterColumns: AttributeListFilterModels[] = [];
+  let newFilterColumns: AttributeListFilterModel[] = [];
   if (index >= 0) {
-    newFilterColumns = updateArrayItemInState<AttributeListFilterModels>(
+    newFilterColumns = updateArrayItemInState<AttributeListFilterModel>(
       tab.filter,
       (f => f.name === payload.colName),
       (filter => ({...filter, name: payload.colName, value: payload.value, type: payload.filterType})),

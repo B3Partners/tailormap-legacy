@@ -9,14 +9,14 @@
       <input matInput type="text" [formControl]="criteriaValue" />
     </mat-form-field>
   </div>
-  <mat-radio-button value="NOT LIKE">Waarde bevat niet</mat-radio-button><br/>
-  <div *ngIf="filterTypeSelected === 'NOT LIKE'">
+  <mat-radio-button value="NOT_LIKE">Waarde bevat niet</mat-radio-button><br/>
+  <div *ngIf="filterTypeSelected === 'NOT_LIKE'">
     <mat-form-field appearance="standard">
       <input matInput type="text" [formControl]="criteriaValue" />
     </mat-form-field>
   </div>
-  <mat-radio-button (click)="loadUniqueValues()" value="UniqueValues">Waarden</mat-radio-button><br/>
-  <div  *ngIf="filterTypeSelected === 'UniqueValues' && !isLoadingUniqueValuesData">
+  <mat-radio-button (click)="loadUniqueValues()" value="UNIQUE_VALUES">Waarden</mat-radio-button><br/>
+  <div  *ngIf="filterTypeSelected === 'UNIQUE_VALUES' && !isLoadingUniqueValuesData">
     <div class="row">
       <mat-checkbox color="primary"
                     [checked]="allOn"

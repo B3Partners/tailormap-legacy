@@ -17,7 +17,7 @@ import { AttributeListStatisticsMenuComponent } from './attribute-list-statistic
 import { AttributeListColumnModel } from '../models/attribute-list-column-models';
 import { AttributeListFilterComponent } from '../attribute-list-filter/attribute-list-filter.component';
 import { MatDialog } from '@angular/material/dialog';
-import { AttributeListFilterModels } from '../models/attribute-list-filter-models';
+import { AttributeListFilterModel } from '../models/attribute-list-filter-models';
 
 @Component({
   selector: 'tailormap-attribute-list-table',
@@ -53,7 +53,7 @@ export class AttributeListTableComponent implements OnInit, OnDestroy {
 
   public uncheckedCount: number;
   public checkedCount: number;
-  private filters: AttributeListFilterModels[];
+  private filters: AttributeListFilterModel[];
   public showCheckboxColumn$: Observable<boolean>;
 
   constructor(
