@@ -52,26 +52,26 @@ public class ApplicationLayer {
     
     @ElementCollection
     @Column(name="role_name")
-    private Set<String> readers = new HashSet<String>();
+    private Set<String> readers = new HashSet<>();
 
     @ElementCollection
     @Column(name="role_name")
-    private Set<String> writers = new HashSet<String>();
+    private Set<String> writers = new HashSet<>();
 
     @ElementCollection
     @JoinTable(joinColumns=@JoinColumn(name="application_layer"))
     // Element wrapper required because of http://opensource.atlassian.com/projects/hibernate/browse/JPA-11    
-    private Map<String,ClobElement> details = new HashMap<String,ClobElement>();
+    private Map<String,ClobElement> details = new HashMap<>();
 
     @ManyToMany(cascade=CascadeType.ALL) // Actually @OneToMany, workaround for HHH-1268    
     @JoinTable(inverseJoinColumns=@JoinColumn(name="attribute_"))
     @OrderColumn(name="list_index")
-    private List<ConfiguredAttribute> attributes = new ArrayList<ConfiguredAttribute>();
+    private List<ConfiguredAttribute> attributes = new ArrayList<>();
 
 
     @OneToMany(mappedBy = "applicationLayer",orphanRemoval = true, cascade = CascadeType.ALL)
     @MapKey(name = "application")
-    private Map<Application, StartLayer> startLayers = new HashMap<Application, StartLayer>();
+    private Map<Application, StartLayer> startLayers = new HashMap<>();
 
     //<editor-fold defaultstate="collapsed" desc="getters en setters">
     public List<ConfiguredAttribute> getAttributes() {
@@ -152,10 +152,10 @@ public class ApplicationLayer {
      * @return list of configured attributes
      */
     public List<ConfiguredAttribute> getAttributes(SimpleFeatureType sft){
-        return getAttributes(sft, false, new ArrayList<ConfiguredAttribute>());
+        return getAttributes(sft, false, new ArrayList<>());
     }
     public List<ConfiguredAttribute> getAttributes(SimpleFeatureType sft, boolean includeJoined){
-        return getAttributes(sft, includeJoined, new  ArrayList<ConfiguredAttribute>());
+        return getAttributes(sft, includeJoined, new ArrayList<>());
     }
     private List<ConfiguredAttribute> getAttributes(SimpleFeatureType sft,boolean includeJoined, List<ConfiguredAttribute> attri){
         for(ConfiguredAttribute att: this.attributes) {
@@ -233,7 +233,7 @@ public class ApplicationLayer {
             addLayerListDetails(o, l);
         }
         StartLayer sl = getStartLayers().get(app);
-        o.put("checked", sl != null ? sl.isChecked() : false);
+        o.put("checked", sl != null && sl.isChecked());
 
         return o;
     }
@@ -266,7 +266,7 @@ public class ApplicationLayer {
     
     public void addAttributesJSON(JSONObject json, boolean includeRelations, EntityManager em) throws JSONException {
         Layer layer = getService().getSingleLayer(getLayerName(),em);
-        Map<String,AttributeDescriptor> featureTypeAttributes = new HashMap<String,AttributeDescriptor>();        
+        Map<String,AttributeDescriptor> featureTypeAttributes = new HashMap<>();
         SimpleFeatureType ft = null;
         if(layer != null) {
             ft = layer.getFeatureType();
@@ -352,7 +352,7 @@ public class ApplicationLayer {
      * all the child FeatureTypes (related by join/relate)
      */
     private Map<String, AttributeDescriptor> makeAttributeDescriptorList(SimpleFeatureType ft) {
-        Map<String,AttributeDescriptor> featureTypeAttributes = new HashMap<String,AttributeDescriptor>();
+        Map<String,AttributeDescriptor> featureTypeAttributes = new HashMap<>();
         for(AttributeDescriptor ad: ft.getAttributes()) {
             String name=ft.getId()+":"+ad.getName();
             //stop when already added. Stop a infinite configurated loop
@@ -375,7 +375,7 @@ public class ApplicationLayer {
        if(sl != null){
            this.getStartLayers().put(app, sl.deepCopy(this, app));
         } else if (Objects.equals(app.getId(), copyFrom.getId())) {
-            List<StartLayer> al = new ArrayList(original.startLayers.values());
+            List<StartLayer> al = new ArrayList<>(original.startLayers.values());
             for (int i = 0; i < al.size(); i++) {
                 StartLayer sl2 = al.get(i);
                 this.getStartLayers().put(app, sl2.deepCopy(this, app));
@@ -412,7 +412,7 @@ public class ApplicationLayer {
             if (layer.getFeatureType() == null || layer.getFeatureType().getAttributes().isEmpty()) {
                 this.getAttributes().clear();
             } else {
-                List<String> attributesToRetain = new ArrayList();
+                List<String> attributesToRetain;
 
                 SimpleFeatureType sft = layer.getFeatureType();
                 // Rebuild ApplicationLayer.attributes according to Layer FeatureType
@@ -425,7 +425,7 @@ public class ApplicationLayer {
                 attributesToRetain = rebuildAttributes(sft, em, context, bundle, attributeAliases, geomVisible);
 
                 // Remove ConfiguredAttributes which are no longer present
-                List<ConfiguredAttribute> attributesToRemove = new ArrayList();
+                List<ConfiguredAttribute> attributesToRemove = new ArrayList<>();
                 for (ConfiguredAttribute ca : this.getAttributes()) {
                     if (ca.getFeatureType() == null) {
                         ca.setFeatureType(layer.getFeatureType());
@@ -450,7 +450,7 @@ public class ApplicationLayer {
     private List<String> rebuildAttributes(SimpleFeatureType sft, EntityManager em, ActionBeanContext context,
                                            ResourceBundle bundle, Map<String, String> attributeAliases, boolean geomVisible) {
         Layer layer = this.getService().getSingleLayer(this.getLayerName(),em);
-        List<String> attributesToRetain = new ArrayList<String>();
+        List<String> attributesToRetain = new ArrayList<>();
         for(AttributeDescriptor ad: sft.getAttributes()) {
             String name = ad.getName();
 

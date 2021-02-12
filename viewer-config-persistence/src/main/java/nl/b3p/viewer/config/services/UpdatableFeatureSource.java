@@ -37,6 +37,7 @@ public abstract class UpdatableFeatureSource extends FeatureSource{
     /**
      * Update this featuresource.
      *
+     * @param em the entity manager to use
      * @return the result of the update
      * @throws java.lang.Exception if any
      */
