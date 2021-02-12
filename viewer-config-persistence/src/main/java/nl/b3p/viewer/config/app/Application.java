@@ -16,6 +16,38 @@
  */
 package nl.b3p.viewer.config.app;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
+import javax.persistence.Basic;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.EntityManager;
+import javax.persistence.FetchType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.PostPersist;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.persistence.Transient;
+import javax.persistence.UniqueConstraint;
+import javax.servlet.http.HttpServletRequest;
 import net.sourceforge.stripes.action.ActionBeanContext;
 import nl.b3p.viewer.config.ClobElement;
 import nl.b3p.viewer.config.security.Authorizations;
@@ -32,10 +64,6 @@ import org.hibernate.Session;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import javax.persistence.*;
-import javax.servlet.http.HttpServletRequest;
-import java.util.*;
 
 /**
  *
@@ -417,13 +445,17 @@ public class Application implements Comparable<Application>{
     }
 
     /**
-     * @deprecated gebruik {@link #toJSON(HttpServletRequest, boolean, boolean, boolean, boolean, EntityManager, boolean)}
-     * @param request
-     * @param validXmlTags
-     * @param onlyServicesAndLayers
-     * @param em
-     * @return
-     * @throws JSONException
+     * Create a JSON representation for use in browser to start this application.
+     *
+     * @param request               servlet request to check authorisation
+     * @param validXmlTags          {@code true} if valid xml names should be produced
+     * @param onlyServicesAndLayers {@code true} if only services and layers should be returned
+     *                              should be included
+     * @param em                    the entity manager to use
+     * @return a json representation of this object
+     * @throws JSONException if transforming to json fails
+     * @deprecated gebruik {@link #toJSON(HttpServletRequest, boolean, boolean, boolean, boolean,
+     * EntityManager, boolean)}
      */
     @Deprecated
     public JSONObject toJSON(HttpServletRequest request, boolean validXmlTags, boolean onlyServicesAndLayers, EntityManager em) throws JSONException {
