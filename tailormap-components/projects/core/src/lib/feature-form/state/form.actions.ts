@@ -10,11 +10,6 @@ export let setTreeOpen = createAction(
   props<{ treeOpen : boolean }>(),
 );
 
-export let setFormAction = createAction(
-  `${formActionsPrefix} Set form action`,
-  props<{ action : FormAction }>(),
-);
-
 export const setOpenFeatureForm = createAction(
   `${formActionsPrefix} Open feature form`,
   props<{ features : Feature[], closeAfterSave ?: boolean, alreadyDirty?: boolean }>(),

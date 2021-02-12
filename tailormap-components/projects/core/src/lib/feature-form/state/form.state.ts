@@ -5,8 +5,8 @@ import { FormConfiguration } from '../form/form-models';
 export const formStateKey = 'form';
 
 export enum FormAction {
-  IDLE = 'idle',
-  SAVED = 'saved',
+  IDLE = 'IDLE',
+  SAVED = 'SAVED',
 }
 
 export interface FormState {

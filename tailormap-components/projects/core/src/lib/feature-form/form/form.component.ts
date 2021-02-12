@@ -57,7 +57,7 @@ export class FormComponent implements OnDestroy, OnChanges, OnInit {
     ])
       .pipe(takeUntil(this.destroyed))
       .subscribe(([features, closeAfterSave]) => {
-        this.features = features;
+        this.features = [...features];
         this.isBulk = features.length > 1;
         this.closeAfterSave = closeAfterSave;
     });

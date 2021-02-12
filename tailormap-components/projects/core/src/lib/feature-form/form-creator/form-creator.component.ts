@@ -146,7 +146,6 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
         const fs = this.updateFeatureInArray(savedFeature, this.features);
         this.store$.dispatch(FormActions.setSaveFeatures({features: fs}));
         this._snackBar.open('Opgeslagen', '', {duration: 5000});
-        this.store$.dispatch(FormActions.setFormAction({action: FormAction.SAVED}));
       },
       error => {
         this._snackBar.open('Fout: Feature niet kunnen opslaan: ' + error.error.message, '', {

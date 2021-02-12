@@ -12,18 +12,17 @@ const onCloseFeatureForm  = (state: FormState): FormState => ({
   treeOpen: false,
 });
 
-const onSetFeature = (state: FormState, payload : { feature: Feature }): FormState => ({
+const onSetFeature = (state: FormState, payload : ReturnType<typeof FormActions.setFeature>): FormState => ({
   ...state,
   feature: payload.feature,
 });
 
-const onSaveFeature = (state: FormState, payload: { features: Feature[] }) : FormState => ({
+const onSaveFeature = (state: FormState, payload:  ReturnType<typeof FormActions.setSaveFeatures>) : FormState => ({
   ...state,
   features: payload.features,
 });
 
-const onSetOpenFeatureForm = (state: FormState, payload: { features?: Feature[], closeAfterSave?: boolean,
-                                                           alreadyDirty?: boolean }): FormState => ({
+const onSetOpenFeatureForm = (state: FormState, payload:  ReturnType<typeof FormActions.setOpenFeatureForm>): FormState => ({
   ...state,
   features: payload.features,
   formOpen: true,
@@ -32,24 +31,18 @@ const onSetOpenFeatureForm = (state: FormState, payload: { features?: Feature[],
   alreadyDirty: payload.alreadyDirty || false,
 });
 
-const onSetTreeOpen = (state: FormState, payload : { treeOpen: boolean }): FormState => ({
+const onSetTreeOpen = (state: FormState, payload :  ReturnType<typeof FormActions.setTreeOpen>): FormState => ({
   ...state,
   treeOpen: payload.treeOpen,
 });
 
-const onSetFormConfigs = (state: FormState, payload : { formConfigs: Map<string, FormConfiguration> }): FormState => ({
+const onSetFormConfigs = (state: FormState, payload : ReturnType<typeof FormActions.setFormConfigs>): FormState => ({
   ...state,
   formConfigs: payload.formConfigs,
 });
 
-const onSetAction = (state: FormState, payload : { action: FormAction }): FormState => ({
-  ...state,
-  action: payload.action,
-});
-
 const formReducerImpl = createReducer(
   initialFormState,
-  on(FormActions.setFormAction, onSetAction),
   on(FormActions.setFormConfigs, onSetFormConfigs),
   on(FormActions.setTreeOpen, onSetTreeOpen),
   on(FormActions.setSaveFeatures, onSaveFeature),
