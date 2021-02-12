@@ -114,14 +114,22 @@ export class AttributeListFilterComponent implements OnInit {
     subscribe(response =>
       {
         if (response.success) {
+          this.allOn = true;
           response.uniqueValues[this.data.columnName].forEach(value => {
+            let select = true;
+            if (this.data.filter) {
+              if (this.data.filter.value.length > 0) {
+                if (this.data.filter.value.findIndex(v => v === value) === -1) {
+                  select = false;
+                  this.allOn = false;
+                }
+              }
+            }
             this.uniqueValues.push({
               value,
-              select: true,
+              select,
             })
           });
-          // this.updateSelected();
-          this.allOn = true;
         }
       },
       () => {
