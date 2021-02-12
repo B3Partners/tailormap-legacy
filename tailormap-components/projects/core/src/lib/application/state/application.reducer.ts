@@ -11,7 +11,6 @@ import {
   SelectedContentItem,
 } from '../../../../../bridge/typings';
 import { TailormapAppLayer } from '../models/tailormap-app-layer.model';
-import { setLayerVisibility } from './application.actions';
 
 const onSetApplicationContent = (
   state: ApplicationState,

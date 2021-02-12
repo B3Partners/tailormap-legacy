@@ -15,11 +15,9 @@ import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { selectAttributeListTabs } from '../state/attribute-list.selectors';
 import { AttributeListTabModel } from '../models/attribute-list-tab.model';
-import { AttributeListTreeDialogComponent } from '../attribute-list-tree-dialog/attribute-list-tree-dialog.component';
 import { PopoverPositionEnum } from '../../../shared/popover/models/popover-position.enum';
 import { AttributeListColumnSelectionComponent } from '../attribute-list-column-selection/attribute-list-column-selection.component';
 import { PopoverService } from '../../../shared/popover/popover.service';
-import { PopoverRef } from '../../../shared/popover/popover-ref';
 import { OverlayRef } from '../../../shared/overlay-service/overlay-ref';
 
 @Component({

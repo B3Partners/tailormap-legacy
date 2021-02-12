@@ -1,8 +1,6 @@
 import { LayerStatisticValues, StatisticColumns, StatisticTypeInMenu } from './attributelist-statistic-models';
 import { StatisticService } from '../../../shared/statistic-service/statistic.service';
 import { StatisticParameters, StatisticResponse, StatisticType } from '../../../shared/statistic-service/statistic-models';
-import { Store } from '@ngrx/store';
-import { AttributeListState } from '../state/attribute-list.state';
 import { AttributeListColumnModel } from '../models/attribute-list-column-models';
 
 export class AttributelistStatistic {
@@ -21,7 +19,6 @@ export class AttributelistStatistic {
   private columns: AttributeListColumnModel[];
 
   constructor(
-    private store$: Store<AttributeListState>,
     private statisticsService: StatisticService,
     private layerId: string,
   ) {

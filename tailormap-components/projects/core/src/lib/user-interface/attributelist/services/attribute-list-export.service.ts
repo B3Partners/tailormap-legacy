@@ -36,7 +36,7 @@ export class AttributeListExportService {
           columns: columns.map(c => c.name),
         })),
         concatMap(exportParams => {
-          return this.exportService.exportFeatures(exportParams).pipe(
+          return this.exportService.exportFeatures$(exportParams).pipe(
             catchError(() => {
               this.snackBar.open('Error downloading the ' + exportParams.type + ' export\n', 'Close', {
                 duration: 20000,

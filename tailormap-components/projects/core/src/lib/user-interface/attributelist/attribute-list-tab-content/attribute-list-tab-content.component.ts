@@ -19,7 +19,7 @@ import { AttributelistColumnController } from '../attributelist-common/attribute
 import { FormComponent } from '../../../feature-form/form/form.component';
 import { Store } from '@ngrx/store';
 import { AttributeListState } from '../state/attribute-list.state';
-import { selectFeatureTypeData, selectFeatureTypeDataForTab, selectTab } from '../state/attribute-list.selectors';
+import { selectFeatureTypeDataForTab, selectTab } from '../state/attribute-list.selectors';
 import { AttributeListTabModel } from '../models/attribute-list-tab.model';
 import { updatePage } from '../state/attribute-list.actions';
 import { AttributeListFeatureTypeData } from '../models/attribute-list-feature-type-data.model';

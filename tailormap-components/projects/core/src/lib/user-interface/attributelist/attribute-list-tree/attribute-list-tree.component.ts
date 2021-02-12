@@ -5,7 +5,7 @@ import { TreeService } from '../../../shared/tree/tree.service';
 import { selectAttributeListRelationsTree, selectFeatureDataForTab, selectTab } from '../state/attribute-list.selectors';
 import { filter, map, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
-import { loadDataForTab, loadTotalCountForTab, setSelectedFeatureType } from '../state/attribute-list.actions';
+import { loadTotalCountForTab, setSelectedFeatureType } from '../state/attribute-list.actions';
 
 @Component({
   selector: 'tailormap-attribute-list-tree',

@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { AttributeListState } from '../state/attribute-list.state';
 import { loadDataForTab } from '../state/attribute-list.actions';
-import { selectSelectedFeatureTypeForTab, selectTab } from '../state/attribute-list.selectors';
+import { selectSelectedFeatureTypeForTab } from '../state/attribute-list.selectors';
 import { Observable } from 'rxjs';
 
 @Component({

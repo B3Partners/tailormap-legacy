@@ -38,7 +38,7 @@ export class PanelResizerComponent implements AfterViewInit {
   }
 
   @HostListener('window:mousemove', ['$event'])
-  private onWindowMouseMove(event: MouseEvent): void {
+  public onWindowMouseMove(event: MouseEvent): void {
     if (this.isMouseDown) {
       const deltaY = event.screenY - this.dragStartY;
       this.layoutService.updateComponent(this, deltaY);
@@ -47,7 +47,7 @@ export class PanelResizerComponent implements AfterViewInit {
   }
 
   @HostListener('window:mouseup', ['$event'])
-  private onWindowMouseUp(event: MouseEvent): void {
+  public onWindowMouseUp(event: MouseEvent): void {
     this.isMouseDown = false;
   }
 

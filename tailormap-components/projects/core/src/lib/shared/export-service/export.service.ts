@@ -20,7 +20,7 @@ export class ExportService {
   ) {
   }
 
-  public exportFeatures(params: ExportFeaturesParameters): Observable<HttpResponse<Blob>> {
+  public exportFeatures$(params: ExportFeaturesParameters): Observable<HttpResponse<Blob>> {
     let httpParams: HttpParams = new HttpParams();
     Object.entries(params).forEach(([key, value ]) => {
       httpParams = httpParams.set(key, String(value));

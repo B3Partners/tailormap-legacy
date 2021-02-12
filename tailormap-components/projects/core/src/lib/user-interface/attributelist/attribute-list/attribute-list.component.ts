@@ -16,7 +16,8 @@ export class AttributeListComponent implements OnInit {
 
   constructor(
     private store$: Store<AttributeListState>,
-    private attributeListManagerService: AttributeListManagerService,
+    // Service is instantiated here, watches changes to visible layers to create tabs
+    public attributeListManagerService: AttributeListManagerService,
   ) {
     this.isVisible$ = this.store$.select(selectAttributeListVisible);
   }

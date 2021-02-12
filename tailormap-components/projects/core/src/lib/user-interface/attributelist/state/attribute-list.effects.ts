@@ -50,7 +50,7 @@ export class AttributeListEffects {
       ),
     )),
     concatMap(([action, tab, featureData]) => {
-      return this.attributeListDataService.loadData(tab, featureData).pipe(
+      return this.attributeListDataService.loadData$(tab, featureData).pipe(
         map(result => AttributeListActions.loadDataForTabSuccess({layerId: action.layerId, data: result})),
       );
     }),
@@ -92,7 +92,7 @@ export class AttributeListEffects {
       ),
     )),
     concatMap(([action, tab, featureData]) => {
-      return this.attributeListDataService.loadTotalCount(tab, featureData).pipe(
+      return this.attributeListDataService.loadTotalCount$(tab, featureData).pipe(
         map(result => AttributeListActions.loadTotalCountForTabSuccess({layerId: action.layerId, counts: result })),
       );
     }),

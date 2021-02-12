@@ -1,7 +1,5 @@
 import { Injectable } from '@angular/core';
 import { AttributeListTabModel } from '../models/attribute-list-tab.model';
-import { Store } from '@ngrx/store';
-import { AttributeListState } from '../state/attribute-list.state';
 import { catchError, map, take } from 'rxjs/operators';
 import {
   AttributeListFeature, AttributeListParameters, AttributeListResponse, RelatedFeatureType,
@@ -35,30 +33,29 @@ export interface LoadTotalCountResult {
 export class AttributeListDataService {
 
   constructor(
-    private store$: Store<AttributeListState>,
     private attributeService: AttributeService,
     private formConfigRepoService: FormconfigRepositoryService,
     private applicationService: ApplicationService,
     private metadataService: MetadataService,
   ) {}
 
-  public loadData(
+  public loadData$(
     tab: AttributeListTabModel,
     tabFeatureData: AttributeListFeatureTypeData[],
   ): Observable<LoadDataResult> {
       return this.loadDataForFeatureType(tab, tab.selectedRelatedFeatureType, tabFeatureData);
   }
 
-  public loadTotalCount(
+  public loadTotalCount$(
     tab: AttributeListTabModel,
     tabFeatureData: AttributeListFeatureTypeData[],
   ): Observable<LoadTotalCountResult[]> {
     const counts$ = [ tab.featureType, ...tabFeatureData.map(data => data.featureType) ]
-      .map(featureType => this.getCountForFeatureType(tab, featureType, tabFeatureData))
+      .map(featureType => this.getCountForFeatureType$(tab, featureType, tabFeatureData))
     return forkJoin(counts$);
   }
 
-  private getCountForFeatureType(
+  private getCountForFeatureType$(
     tab: AttributeListTabModel,
     featureType: number,
     tabFeatureData: AttributeListFeatureTypeData[],
@@ -144,5 +141,9 @@ export class AttributeListDataService {
     // @TODO: implement
     return '';
   }
+
+  // private getFilterForFeature(featureData: AttributeListFeatureTypeData) {
+  //   return featureData.filter.map(f => )
+  // }
 
 }

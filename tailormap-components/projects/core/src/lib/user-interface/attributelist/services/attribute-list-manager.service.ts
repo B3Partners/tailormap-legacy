@@ -67,8 +67,8 @@ export class AttributeListManagerService implements OnDestroy {
         withLatestFrom(this.store$.select(selectAttributeListTabs), this.store$.select(selectAttributeListConfig)),
         concatMap(([ layers, tabs, config ]) => {
           const closedTabs = this.getClosedTabs(layers, tabs);
-          const newTabs = this.getNewTabs(layers, tabs, config);
-          return forkJoin([ of(closedTabs), newTabs ]);
+          const newTabs$ = this.getNewTabs$(layers, tabs, config);
+          return forkJoin([ of(closedTabs), newTabs$ ]);
         }),
         filter(([ closedTabs, newTabs ]) => closedTabs.length > 0 || newTabs.length > 0),
       )
@@ -95,7 +95,7 @@ export class AttributeListManagerService implements OnDestroy {
       .map<number>(tab => tab.featureType);
   }
 
-  private getNewTabs(
+  private getNewTabs$(
     visibleLayers: TailormapAppLayer[],
     currentTabs: AttributeListTabModel[],
     attributeListConfig: AttributeListConfig,
@@ -108,11 +108,11 @@ export class AttributeListManagerService implements OnDestroy {
       return of([]);
     }
     return forkJoin(layersWithoutTab.map<Observable<TabFromLayerResult>>(layer => {
-      return this.createTabFromLayer(layer, attributeListConfig.pageSize)
+      return this.createTabFromLayer$(layer, attributeListConfig.pageSize)
     }));
   }
 
-  private createTabFromLayer(
+  private createTabFromLayer$(
     layer: TailormapAppLayer,
     pageSize = 10,
   ): Observable<TabFromLayerResult> {
