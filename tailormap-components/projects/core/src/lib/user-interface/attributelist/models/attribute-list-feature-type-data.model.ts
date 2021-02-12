@@ -1,6 +1,6 @@
 import { AttributeListColumnModel } from './attribute-list-column-models';
 import { AttributeListRowModel } from './attribute-list-row.model';
-import { FilterColumns } from './attribute-list-filter-models';
+import { AttributeListFilterModels } from './attribute-list-filter-models';
 
 export interface AttributeListFeatureTypeData {
   layerId: string;
@@ -11,7 +11,7 @@ export interface AttributeListFeatureTypeData {
   showPassportColumnsOnly: boolean;
   rows: AttributeListRowModel[];
   checkedFeatures: string[];
-  filter: FilterColumns[];
+  filter: AttributeListFilterModels[];
   pageSize: number;
   pageIndex: number;
   totalCount: number;

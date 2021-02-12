@@ -98,6 +98,11 @@ export class AttributeListEffects {
     }),
   ));
 
+  public setColumnFilter$ = createEffect(() => this.actions$.pipe(
+    ofType(AttributeListActions.setColumnFilter),
+    map( action => AttributeListActions.loadDataForTab({layerId: action.layerId})),
+  ));
+
   constructor(
     private actions$: Actions,
     private store$: Store<AttributeListState>,

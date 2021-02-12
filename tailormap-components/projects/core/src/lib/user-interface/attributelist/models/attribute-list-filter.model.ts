@@ -1,4 +1,4 @@
-import { LayerFilterValues } from './attribute-list-filter-models';
+import { AttributeListFilterModels, LayerFilterValues } from './attribute-list-filter-models';
 
 export interface AttributeListFilterModel {
   featureTypeId: number;
@@ -7,3 +7,12 @@ export interface AttributeListFilterModel {
   relatedFilter: string;
   featureFilter: string;
 }
+
+export interface FilterDialogData {
+  columnName: string;
+  featureType: number
+  layerId: string;
+  filter: AttributeListFilterModels | null;
+}
+
+

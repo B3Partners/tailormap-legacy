@@ -5,6 +5,7 @@ import { AttributeListTabModel } from '../models/attribute-list-tab.model';
 import { AttributeListRowModel } from '../models/attribute-list-row.model';
 import { UpdateAttributeListStateHelper } from '../helpers/update-attribute-list-state.helper';
 import { AttributeListFeatureTypeData } from '../models/attribute-list-feature-type-data.model';
+import { AttributeListFilterModels } from '../models/attribute-list-filter-models';
 
 const onSetAttributeListVisibility = (
   state: AttributeListState,
@@ -277,6 +278,32 @@ const onToggleShowPassportColumns = (
   return updateFeatureData(state, payload.featureType, data => ({ ...data, showPassportColumnsOnly: !data.showPassportColumnsOnly }));
 }
 
+const onSetSelectedColumnFilter = (
+  state: AttributeListState,
+  payload: ReturnType<typeof AttributeListActions.setColumnFilter>,
+): AttributeListState => updateFeatureData(state, payload.featureType, tab => {
+  const index = tab.filter.findIndex(filter => filter.name === payload.colName);
+  let newFilterColumns: AttributeListFilterModels[] = [];
+  if (index >= 0) {
+    newFilterColumns = updateArrayItemInState<AttributeListFilterModels>(
+      tab.filter,
+      (f => f.name === payload.colName),
+      (filter => ({...filter, name: payload.colName, value: payload.value, type: payload.filterType})),
+    );
+  } else {
+    newFilterColumns = [...tab.filter,
+      {
+      name: payload.colName,
+      value: payload.value,
+      type: payload.filterType,
+    }];
+  }
+  return {
+    ...tab,
+    filter: newFilterColumns,
+  };
+});
+
 const attributeListReducerImpl = createReducer(
   initialAttributeListState,
   on(AttributeListActions.setAttributeListVisibility, onSetAttributeListVisibility),
@@ -297,6 +324,7 @@ const attributeListReducerImpl = createReducer(
   on(AttributeListActions.changeColumnPosition, onChangeColumnPosition),
   on(AttributeListActions.toggleColumnVisible, onToggleColumnVisible),
   on(AttributeListActions.toggleShowPassportColumns, onToggleShowPassportColumns),
+  on(AttributeListActions.setColumnFilter, onSetSelectedColumnFilter),
 );
 
 export const attributeListReducer = (state: AttributeListState | undefined, action: Action) => {

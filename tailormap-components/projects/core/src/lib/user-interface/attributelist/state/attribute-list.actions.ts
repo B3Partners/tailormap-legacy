@@ -100,3 +100,8 @@ export const toggleShowPassportColumns = createAction(
   `${attributeListActionsPrefix} Toggle Show Passport Columns`,
   props<{ featureType: number }>(),
 );
+
+export const setColumnFilter = createAction(
+  `${attributeListActionsPrefix} Set filter for column on data tab`,
+  props<{ filterType: string, value: string[], featureType: number, colName: string, layerId: string }>(),
+);

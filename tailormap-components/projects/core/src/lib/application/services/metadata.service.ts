@@ -138,6 +138,20 @@ export class MetadataService implements OnDestroy {
       );
   }
 
+  public getUniqueValuesForAttribute$(
+    appLayerId: string,
+    attributeName: string,
+    featureType: number
+  ): Observable<UniqueValuesResponse> {
+      return this.valueService.uniqueValues$({
+        applicationLayer: Number(appLayerId),
+        attributes: [attributeName],
+        featureType,
+        maxFeatures: -1,
+      });
+
+  }
+
   public ngOnDestroy() {
     this.destroy.next();
     this.destroy.complete();

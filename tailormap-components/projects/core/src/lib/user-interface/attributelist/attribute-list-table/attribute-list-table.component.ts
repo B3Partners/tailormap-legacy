@@ -13,6 +13,9 @@ import { Sort } from '@angular/material/sort';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { AttributeListStatisticsMenuComponent } from './attribute-list-statistics-menu/attribute-list-statistics-menu.component';
 import { AttributeListColumnModel } from '../models/attribute-list-column-models';
+import { AttributeListFilterComponent } from '../attribute-list-filter/attribute-list-filter.component';
+import { MatDialog } from '@angular/material/dialog';
+import { AttributeListFilterModels } from '../models/attribute-list-filter-models';
 
 @Component({
   selector: 'tailormap-attribute-list-table',
@@ -48,10 +51,12 @@ export class AttributeListTableComponent implements OnInit, OnDestroy {
 
   public uncheckedCount: number;
   public checkedCount: number;
+  private filters: AttributeListFilterModels[];
 
   constructor(
     private store$: Store<AttributeListState>,
     private statisticsService: StatisticService,
+    private dialog: MatDialog,
   ) { }
 
   public ngOnInit(): void {
@@ -68,6 +73,7 @@ export class AttributeListTableComponent implements OnInit, OnDestroy {
         this.uncheckedCount = featureData.rows.filter(row => !row._checked).length;
         this.checkedCount = featureData.rows.filter(row => row._checked).length;
         this.featureType = featureData.featureType;
+        this.filters = featureData.filter;
       });
 
     this.store$.select(selectActiveColumnsForTab, this.layerId)
@@ -109,11 +115,24 @@ export class AttributeListTableComponent implements OnInit, OnDestroy {
   }
 
   public onFilterClick(columnName: string): void {
-    // this.filterMap.get(this.dataSource.params.featureTypeId).setFilter(this, columnName);
+    const filter = this.filters.find(filter => filter.name === columnName);
+    this.dialog.open(AttributeListFilterComponent, {
+      data: {
+        columnName,
+        featureType: this.featureType,
+        layerId: this.layerId,
+        filter,
+      },
+    });
   }
 
   public getIsFilterActive(columnName): boolean {
-    return false;
+    const filter = this.filters.find(filter => filter.name === columnName);
+    if (filter){
+      return true;
+    } else {
+      return false;
+    }
   }
 
   public onStatisticsMenu(event: MouseEvent, colName: string) {

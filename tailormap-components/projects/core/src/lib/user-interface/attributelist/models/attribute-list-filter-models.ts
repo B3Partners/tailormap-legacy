@@ -5,6 +5,19 @@ export interface LayerFilterValues {
   columns: FilterColumns[];
 }
 
+export interface AttributeListFilterModels {
+  name: string;
+  value: string[];
+  type: string;
+}
+
+export interface AttributeListUniqueFilterValueSettings {
+  // value in column.
+  value: string;
+  // value in filter selected
+  select: boolean;
+}
+
 export interface FilterColumns {
   name: string;
   status: boolean;

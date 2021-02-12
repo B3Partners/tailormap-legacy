@@ -1,0 +1,59 @@
+<h3 mat-dialog-title>
+  Filter op {{data.columnName}}
+</h3>
+<div>
+<mat-radio-group color="primary" label="Filterwijze:" [(ngModel)]="filterTypeSelected">
+  <mat-radio-button value="LIKE">Waarde bevat</mat-radio-button><br/>
+  <div *ngIf="filterTypeSelected === 'LIKE'">
+    <mat-form-field appearance="standard">
+      <input matInput type="text" [formControl]="criteriaValue" />
+    </mat-form-field>
+  </div>
+  <mat-radio-button value="NOT LIKE">Waarde bevat niet</mat-radio-button><br/>
+  <div *ngIf="filterTypeSelected === 'NOT LIKE'">
+    <mat-form-field appearance="standard">
+      <input matInput type="text" [formControl]="criteriaValue" />
+    </mat-form-field>
+  </div>
+  <mat-radio-button (click)="loadUniqueValues()" value="UniqueValues">Waarden</mat-radio-button><br/>
+  <div  *ngIf="filterTypeSelected === 'UniqueValues' && !isLoadingUniqueValuesData">
+    <div class="row">
+      <mat-checkbox color="primary"
+                    [checked]="allOn"
+                    [indeterminate]="someSelected()"
+                    (change)="setAll($event.checked)">
+        Selecteer alles
+      </mat-checkbox>
+    </div>
+
+    <mat-divider></mat-divider>
+
+    <mat-dialog-content class="mat-typography">
+      <div class="row"  *ngFor="let value of this.uniqueValues; trackBy: trackByValue">
+        <mat-checkbox class="icon-checkbox" color="primary"
+                      [checked]="value.select"
+                      (change)="updateSelected(value)">
+          {{value.value}}
+        </mat-checkbox>
+
+      </div>
+    </mat-dialog-content>
+
+  </div>
+</mat-radio-group>
+
+<mat-divider></mat-divider>
+
+<mat-dialog-actions>
+  <button mat-raised-button color="primary"
+          (click)="onOk()">
+    OK
+  </button>
+  <button mat-raised-button color="primary"
+          (click)="onClear()">
+    Wis
+  </button>  <button mat-raised-button color="primary"
+                     (click)="onCancel()">
+  Cancel</button>
+</mat-dialog-actions>
+</div>

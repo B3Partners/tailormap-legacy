@@ -145,7 +145,33 @@ export class AttributeListDataService {
     tabFeatureData: AttributeListFeatureTypeData[],
   ): string {
     // @TODO: implement
-    return '';
+    const featureData = tabFeatureData.find(tab => tab.featureType === featureType);
+    let finalFilter = '';
+    featureData.filter.forEach((filter) => {
+      if  (filter.value) {
+        finalFilter += '(' + filter.name + ' ' + this.getFilterMethod(filter.type) + '( ' + this.buildValueFilterString(filter.value) + ')) AND';
+      }
+    });
+    finalFilter = finalFilter.slice(0, -4);
+    return finalFilter;
+  }
+
+  private buildValueFilterString(values: string[]): string {
+    let valueFilterString = '';
+    values.forEach(value => {
+      valueFilterString += '\'' + value + '\',';
+    })
+    return valueFilterString.slice(0, -1);
+  }
+
+  private getFilterMethod(type: string): string {
+    let filterType = '';
+    if (type === 'LIKE' || type === 'UniqueValues') {
+      filterType = 'IN';
+    } else {
+      filterType = 'NOT IN';
+    }
+    return filterType;
   }
 
   // private getFilterForFeature(featureData: AttributeListFeatureTypeData) {
