@@ -292,7 +292,7 @@ const onSetSelectedColumnFilter = (
     );
   } else {
     newFilterColumns = [...tab.filter,
-      {
+                        {
       name: payload.colName,
       value: payload.value,
       type: payload.filterType,

@@ -1,14 +1,33 @@
 import { Spectator, createComponentFactory } from '@ngneat/spectator';
 
 import { AttributeListComponent } from './attribute-list.component';
+import { attributeListStateKey, initialAttributeListState } from '../state/attribute-list.state';
+import { MockStore, provideMockStore } from '@ngrx/store/testing';
+import { getAttributeListManagerServiceMockProvider } from '../services/mocks/attribute-list-manager.service.mock';
+import { SharedModule } from '../../../shared/shared.module';
 
 describe('AttributeListComponent', () => {
+
   let spectator: Spectator<AttributeListComponent>;
-  const createComponent = createComponentFactory(AttributeListComponent);
+  const initialState = { [attributeListStateKey]: initialAttributeListState };
+  let store: MockStore;
+
+  const createComponent = createComponentFactory({
+    component: AttributeListComponent,
+    imports: [ SharedModule ],
+    providers: [
+      provideMockStore({ initialState }),
+      getAttributeListManagerServiceMockProvider(),
+    ]
+  });
+
+  beforeEach(() => {
+    spectator = createComponent();
+    store = spectator.inject(MockStore);
+  });
 
   it('should create', () => {
-    spectator = createComponent();
-
     expect(spectator.component).toBeTruthy();
   });
+
 });

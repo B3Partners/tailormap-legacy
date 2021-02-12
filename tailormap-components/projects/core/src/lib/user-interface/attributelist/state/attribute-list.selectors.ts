@@ -156,6 +156,9 @@ export const selectActiveColumnsForFeature = createSelector(
 export const selectActiveColumnsForTab = createSelector(
   selectFeatureTypeDataForTab,
   (tabFeatureData): AttributeListColumnModel[] => {
+    if (!tabFeatureData) {
+      return [];
+    }
     return tabFeatureData.columns.filter(c => filterColumns(c, tabFeatureData.showPassportColumnsOnly));
   },
 );

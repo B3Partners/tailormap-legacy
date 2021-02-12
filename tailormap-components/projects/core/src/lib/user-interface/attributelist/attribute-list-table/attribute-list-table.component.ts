@@ -81,6 +81,7 @@ export class AttributeListTableComponent implements OnInit, OnDestroy {
 
     this.showCheckboxColumn$ = this.store$.select(selectTabAndFeatureTypeDataForTab, this.layerId)
       .pipe(
+        filter(([tab, featureData]) => !!tab && !!featureData),
         map(([tab, featureData]) => tab.featureType === featureData.featureType),
       );
 
@@ -126,24 +127,20 @@ export class AttributeListTableComponent implements OnInit, OnDestroy {
   }
 
   public onFilterClick(columnName: string): void {
-    const filter = this.filters.find(filter => filter.name === columnName);
+    const filterModel = this.filters.find(f => f.name === columnName);
     this.dialog.open(AttributeListFilterComponent, {
       data: {
         columnName,
         featureType: this.featureType,
         layerId: this.layerId,
-        filter,
+        filter: filterModel,
       },
     });
   }
 
   public getIsFilterActive(columnName): boolean {
-    const filter = this.filters.find(filter => filter.name === columnName);
-    if (filter){
-      return true;
-    } else {
-      return false;
-    }
+    const filterModel = this.filters.find(f => f.name === columnName);
+    return !!filterModel;
   }
 
   public onStatisticsMenu(event: MouseEvent, colName: string) {

@@ -11,7 +11,7 @@ import { AttributeListUniqueFilterValueSettings } from '../models/attribute-list
 @Component({
   selector: 'tailormap-attribute-list-filter',
   templateUrl: './attribute-list-filter.component.html',
-  styleUrls: ['./attribute-list-filter.component.css']
+  styleUrls: ['./attribute-list-filter.component.css'],
 })
 export class AttributeListFilterComponent implements OnInit {
 
@@ -26,7 +26,7 @@ export class AttributeListFilterComponent implements OnInit {
               private store$: Store<AttributeListState>,
               private metadataService: MetadataService) { }
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     if (this.data.filter) {
       this.filterTypeSelected = this.data.filter.type;
       if (this.filterTypeSelected === 'UniqueValues') {
@@ -46,9 +46,9 @@ export class AttributeListFilterComponent implements OnInit {
   }
 
   private getSelectedUniqueValues(): string[] {
-    let value: string[] = [];
+    const value: string[] = [];
     this.uniqueValues.forEach(v => {
-      if (v.select){
+      if (v.select) {
         value.push(v.value);
       }
     });
@@ -111,14 +111,14 @@ export class AttributeListFilterComponent implements OnInit {
           response.uniqueValues[this.data.columnName].forEach(value => {
             this.uniqueValues.push({
               value,
-              select: true
+              select: true,
             })
           });
           // this.updateSelected();
           this.allOn = true;
         }
       },
-      ()=>{
+      () => {
         this.isLoadingUniqueValuesData = false;
       },
       () => {

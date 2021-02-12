@@ -145,7 +145,7 @@ export class AttributeListDataService {
     tabFeatureData: AttributeListFeatureTypeData[],
   ): string {
     // @TODO: implement
-    const featureData = tabFeatureData.find(tab => tab.featureType === featureType);
+    const featureData = tabFeatureData.find(t => t.featureType === featureType);
     let finalFilter = '';
     featureData.filter.forEach((filter) => {
       if  (filter.value) {
