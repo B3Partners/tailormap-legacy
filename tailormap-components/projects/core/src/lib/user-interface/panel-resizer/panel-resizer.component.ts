@@ -6,31 +6,15 @@ import { LayoutService } from '../layout.service';
   templateUrl: './panel-resizer.component.html',
   styleUrls: ['./panel-resizer.component.css'],
 })
-export class PanelResizerComponent implements AfterViewInit {
+export class PanelResizerComponent {
 
-  public visible = false;
-
+  public visible = true;
   private dragStartY = 0;
-
   private isMouseDown = false;
 
   constructor(
     private layoutService: LayoutService,
   ) {}
-
-  public ngAfterViewInit(): void {
-    this.showHandle(false);
-  }
-
-  public onPanelMouseEnter(): void {
-    this.showHandle(true);
-  }
-
-  public onPanelMouseLeave(): void {
-    if (!this.isMouseDown) {
-      this.showHandle(false);
-    }
-  }
 
   public onHandleMouseDown(event: MouseEvent): void {
     this.isMouseDown = true;

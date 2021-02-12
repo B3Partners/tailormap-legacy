@@ -20,37 +20,47 @@
 
     <button mat-flat-button color="primary" [matMenuTriggerFor]="optiesMenu">
       <span>Opties</span>
-      <mat-icon>keyboard_arrow_down</mat-icon>
+      <mat-icon svgIcon="contextual_drop_down"></mat-icon>
     </button>
+
+    <button mat-stroked-button [matMenuTriggerFor]="menu">
+      <span>Exporteren</span>
+      <mat-icon svgIcon="contextual_drop_down"></mat-icon>
+    </button>
+
     <mat-menu #optiesMenu="matMenu" yPosition="below">
       <button mat-menu-item  (click)="createUserLayer()">Laag maken</button>
       <button mat-menu-item  (click)="openPassportForm()">Bewerk geselecteerde objecten</button>
     </mat-menu>
 
-  </div>
-  <span class="spacer"></span>
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item
+              (click)="onExportClick('CSV');">
+        CSV
+      </button>
+      <button mat-menu-item
+              (click)="onExportClick('GEOJSON');">
+        GeoJSON
+      </button>
+      <button mat-menu-item
+              (click)="onExportClick('XLS');">
+        Excel
+      </button>
+      <button mat-menu-item
+              (click)="onExportClick('SHP');">
+        Shape
+      </button>
+    </mat-menu>
 
-  <button mat-button [matMenuTriggerFor]="menu">
-    <span>Exporteren</span>
-    <mat-icon>keyboard_arrow_down</mat-icon>
-  </button>
-  <mat-menu #menu="matMenu">
-    <button mat-menu-item
-            (click)="onExportClick('CSV');">
-      CSV
-    </button>
-    <button mat-menu-item
-            (click)="onExportClick('GEOJSON');">
-      GeoJSON
-    </button>
-    <button mat-menu-item
-            (click)="onExportClick('XLS');">
-      Excel
-    </button>
-    <button mat-menu-item
-            (click)="onExportClick('SHP');">
-      Shape
-    </button>
-  </mat-menu>
+  </div>
+
+  <div class="paging" *ngIf="featureTypeData">
+    <mat-paginator [pageSize]="featureTypeData.pageSize"
+                   [pageIndex]="featureTypeData.pageIndex"
+                   [length]="featureTypeData.totalCount || 0"
+                   [hidePageSize]="true"
+                   (page)="onPageChange($event)">
+    </mat-paginator>
+  </div>
 
 </mat-toolbar>

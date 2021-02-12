@@ -5,18 +5,21 @@ import { TailorMapService } from '../../../../../../bridge/src/tailor-map.servic
 import { UserLayerService } from '../../../analysis/services/user-layer.service';
 import { MetadataService } from '../../../application/services/metadata.service';
 import { forkJoin, Observable, of, Subject } from 'rxjs';
-import { filter, map, switchMap, take } from 'rxjs/operators';
+import { filter, map, switchMap, take, takeUntil } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
 import { AttributelistLayernameChooserComponent } from '../attributelist-layername-chooser/attributelist-layername-chooser.component';
 import { UserLayerHelper } from '../../../analysis/helpers/user-layer.helper';
 import { Store } from '@ngrx/store';
 import { AttributeListState } from '../state/attribute-list.state';
-import { selectRelatedFeaturesForTab } from '../state/attribute-list.selectors';
+import { selectFeatureTypeDataForTab, selectRelatedFeaturesForTab } from '../state/attribute-list.selectors';
 import { AttributeListExportService, ExportType } from '../services/attribute-list-export.service';
 import { PopoverService } from '../../../shared/popover/popover.service';
 import { OverlayRef } from '../../../shared/overlay-service/overlay-ref';
 import { AttributeListTreeDialogComponent } from '../attribute-list-tree-dialog/attribute-list-tree-dialog.component';
 import { PopoverPositionEnum } from '../../../shared/popover/models/popover-position.enum';
+import { AttributeListFeatureTypeData } from '../models/attribute-list-feature-type-data.model';
+import { PageEvent } from '@angular/material/paginator';
+import { updatePage } from '../state/attribute-list.actions';
 
 @Component({
   selector: 'tailormap-attribute-list-tab-toolbar',
@@ -47,6 +50,7 @@ export class AttributeListTabToolbarComponent implements OnInit, OnDestroy {
   };
 
   private popoverRef: OverlayRef;
+  public featureTypeData: AttributeListFeatureTypeData;
 
   constructor(
     private attributeListExportService: AttributeListExportService,
@@ -60,6 +64,15 @@ export class AttributeListTabToolbarComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
+    this.store$.select(selectFeatureTypeDataForTab, this.layerId)
+      .pipe(
+        takeUntil(this.destroyed),
+        filter(featureData => !!featureData),
+      )
+      .subscribe(featureData => {
+        this.featureTypeData = featureData;
+      });
+
     this.exportParams.application = this.tailorMapService.getApplicationId();
     this.noRelations$ = this.store$.select(selectRelatedFeaturesForTab, this.layerId)
       .pipe(map(relations => relations.length === 0));
@@ -132,6 +145,10 @@ export class AttributeListTabToolbarComponent implements OnInit, OnDestroy {
       position: PopoverPositionEnum.BOTTOM_RIGHT_DOWN,
       positionOffset: 10,
     });
+  }
+
+  public onPageChange($event: PageEvent): void {
+    this.store$.dispatch(updatePage({ featureType: this.featureTypeData.featureType, page: $event.pageIndex }));
   }
 
   public openPassportForm(): void {

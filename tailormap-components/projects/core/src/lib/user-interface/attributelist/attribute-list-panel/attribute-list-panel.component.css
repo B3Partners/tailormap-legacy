@@ -1,81 +1,57 @@
-/* CONTAINER */
 .container {
-  border-top-width: 1px;
-  border-top-style: solid;
-  border-color: gray;
+  box-shadow: 0 1px 0 0 rgba(0, 0, 0, 0.05), 0 -3px 4px 0 rgba(0, 0, 0, 0.08);
   width: 100%;
   height: 100%;
-
-  /* 20200928 */
-
-  /* overflow: hidden; */
   overflow: auto;
-
-  /* as container */
   display: flex;
   flex-flow: column nowrap;
+  font-size: 15px;
 }
 
-.nolayers {
-  font-size: 16px;
-  margin: 10px;
+.no-tabs {
+  margin: 16px;
 }
 
-/* SPACER */
 .spacer {
   flex: 1 1 auto;
 }
 
-/* CAPTIONBAR */
 .mat-toolbar {
-  height: 30px;
+  height: 45px;
+  background: #fff;
+  padding: 10px 16px;
+  border-bottom: 1px solid #e1e1e1;
 }
 
 .mat-toolbar span {
-  margin: 5px;
-  font-size: 80%;
-}
-
-.mat-icon-button {
-  width: 24px;
-  height: 24px;
+  color: #0c0524;
+  font-size: 16px;
+  font-weight: 600;
   line-height: 24px;
 }
 
-/* TEST BUTTON */
+.mat-icon-button {
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
+}
+
+.mat-icon {
+  width: 18px;
+  height: 18px;
+  line-height: 18px;
+}
+
+.mat-icon-button + .mat-icon-button {
+  margin-left: 12px;
+}
+
 .mat-flat-button {
   margin-right: 20px;
   line-height: 22px;
   display: none;
 }
 
-/* DIVIDER */
 .mat-divider {
   background: #e5e5e5;
-}
-
-mat-tab-group {
-  /* BELANGRIJK */
-  overflow: auto;
-
-  /* as child */
-  flex: 1;
-
-  /* as container */
-  display: flex;
-  flex-flow: column nowrap;
-}
-
-::ng-deep .mat-tab-body-content {
-  overflow: auto;
-  flex: 1;
-  display: flex;
-  flex-flow: column nowrap;
-}
-
-/* TAB LABELS */
-:host ::ng-deep .mat-tab-label {
-  height: 30px;
-  margin: 5px;
-  min-width: 100px;
 }

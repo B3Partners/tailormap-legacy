@@ -104,3 +104,8 @@ export const selectVisibleLayers = createSelector(
   selectLayers,
   (appLayers) => appLayers.filter(layer => layer.visible),
 );
+
+export const selectVisibleLayersWithAttributes = createSelector(
+  selectLayers,
+  (appLayers) => appLayers.filter(layer => layer.visible && layer.attribute),
+);
