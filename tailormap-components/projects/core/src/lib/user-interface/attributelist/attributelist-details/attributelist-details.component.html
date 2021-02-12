@@ -1,17 +1,16 @@
 <div class="container">
   <div class="table-header">{{featureType.foreignFeatureTypeName}}</div>
   <div class="table-container">
-    <mat-table #detailtable [dataSource]="dataSource"
+    <mat-table #detailtable [dataSource]="rows$"
                matSort
-               (matSortChange) = "onSortClick($event)">
-      <ng-container *ngFor="let colName of getColumnNames()">
-        <ng-container matColumnDef="{{colName}}">
-          <mat-header-cell *matHeaderCellDef >{{colName}}</mat-header-cell>
-          <mat-cell *matCellDef="let currRow;"> {{currRow[colName]}}</mat-cell>
-        </ng-container>
+               (matSortChange)="onSortClick($event)">
+
+      <ng-container *ngFor="let col of columns" matColumnDef="{{col.name}}">
+        <mat-header-cell *matHeaderCellDef>{{col.alias || col.name}}</mat-header-cell>
+        <mat-cell *matCellDef="let currRow;"> {{currRow[col.name]}}</mat-cell>
       </ng-container>
-      <mat-header-row *matHeaderRowDef="getColumnNames()"></mat-header-row>
-      <mat-row *matRowDef="let row; columns: getColumnNames();"></mat-row>
+      <mat-header-row *matHeaderRowDef="columnsNames"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: columnsNames;"></mat-row>
     </mat-table>
   </div>
 </div>

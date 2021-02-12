@@ -43,7 +43,6 @@ export class AttributeListTableComponent implements OnInit, OnDestroy {
 
   private destroyed = new Subject();
 
-  public tab: AttributeListTabModel;
   public rows$: Observable<AttributeListRowModel[]>;
 
   public statistic: AttributelistStatistic;
