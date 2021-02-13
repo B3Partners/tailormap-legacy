@@ -126,16 +126,16 @@ export class CriteriaHelper {
     }
     query.push('ILIKE');
     if (condition.condition === 'EQUALS') {
-      query.push(`'${condition.value}'`);
+      query.push(AttributeTypeHelper.getExpression(`${value}`, AttributeTypeEnum.STRING));
     }
     if (condition.condition === 'LIKE' || condition.condition === 'NOT_LIKE') {
-      query.push(`'%${condition.value}%'`);
+      query.push(AttributeTypeHelper.getExpression(`%${value}%`, AttributeTypeEnum.STRING));
     }
     if (condition.condition === 'STARTS_WITH') {
-      query.push(`'${condition.value}%'`);
+      query.push(AttributeTypeHelper.getExpression(`${value}%`, AttributeTypeEnum.STRING));
     }
     if (condition.condition === 'ENDS_WITH') {
-      query.push(`'%${condition.value}'`);
+      query.push(AttributeTypeHelper.getExpression(`%${value}`, AttributeTypeEnum.STRING));
     }
     return `${query.join(' ')}`;
   }

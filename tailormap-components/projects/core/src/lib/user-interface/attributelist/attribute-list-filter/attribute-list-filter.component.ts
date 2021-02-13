@@ -6,7 +6,14 @@ import { Store } from '@ngrx/store';
 import { AttributeListState } from '../state/attribute-list.state';
 import { FilterDialogData } from '../models/attribute-list-filter.model';
 import { MetadataService } from '../../../application/services/metadata.service';
-import { AttributeListUniqueFilterValueSettings, FilterType } from '../models/attribute-list-filter-models';
+import { FilterType } from '../models/attribute-list-filter-models';
+
+interface AttributeListUniqueFilterValueSettings {
+  // value in column.
+  value: string;
+  // value in filter selected
+  select: boolean;
+}
 
 @Component({
   selector: 'tailormap-attribute-list-filter',
@@ -19,6 +26,7 @@ export class AttributeListFilterComponent implements OnInit {
   public criteriaValue = new FormControl();
   public uniqueValues: AttributeListUniqueFilterValueSettings[] = [];
   public allOn: boolean
+  public someOn: boolean;
   public isLoadingUniqueValuesData: boolean;
 
   constructor(public dialogRef: MatDialogRef<AttributeListFilterComponent>,
@@ -35,6 +43,7 @@ export class AttributeListFilterComponent implements OnInit {
         this.criteriaValue.setValue(this.data.filter.value);
       }
     }
+    this.updateCheckState();
   }
 
   private getFilterValue(): string[] {
@@ -46,13 +55,7 @@ export class AttributeListFilterComponent implements OnInit {
   }
 
   private getSelectedUniqueValues(): string[] {
-    const value: string[] = [];
-    this.uniqueValues.forEach(v => {
-      if (v.select) {
-        value.push(v.value);
-      }
-    });
-    return value;
+    return this.uniqueValues.filter(v => v.select).map(v => v.value);
   }
 
   public onOk() {
@@ -98,37 +101,33 @@ export class AttributeListFilterComponent implements OnInit {
 
   public updateSelected(value: AttributeListUniqueFilterValueSettings) {
     value.select = !value.select;
-    this.allOn = this.uniqueValues != null && this.uniqueValues.every(v => v.select)
+    this.updateCheckState();
   }
+
+  public updateCheckState() {
+    this.allOn = this.uniqueValues != null && this.uniqueValues.every(v => v.select);
+    this.someOn = this.someSelected();
+  }
+
   public trackByValue(index: number, value: AttributeListUniqueFilterValueSettings): string {
     return value.value;
   }
 
   public loadUniqueValues(): void {
-    this.isLoadingUniqueValuesData = true;
     if (this.uniqueValues.length > 0) {
-      this.isLoadingUniqueValuesData = false;
       return;
     }
-    this.metadataService.getUniqueValuesForAttribute$(this.data.layerId, this.data.columnName, this.data.featureType).
-    subscribe(response =>
-      {
+    this.isLoadingUniqueValuesData = true;
+    const hasFilterValues = !!this.data.filter && this.data.filter.value.length > 0;
+    const filterSet = new Set<string>(this.data.filter?.value || []);
+    this.metadataService.getUniqueValuesForAttribute$(this.data.layerId, this.data.columnName, this.data.featureType)
+      .subscribe(response => {
         if (response.success) {
-          this.allOn = true;
           response.uniqueValues[this.data.columnName].forEach(value => {
-            let select = true;
-            if (this.data.filter) {
-              if (this.data.filter.value.length > 0) {
-                if (this.data.filter.value.findIndex(v => v === value) === -1) {
-                  select = false;
-                  this.allOn = false;
-                }
-              }
-            }
             this.uniqueValues.push({
               value,
-              select,
-            })
+              select: !hasFilterValues || filterSet.has(value),
+            });
           });
         }
       },
@@ -137,6 +136,7 @@ export class AttributeListFilterComponent implements OnInit {
       },
       () => {
         this.isLoadingUniqueValuesData = false;
+        this.updateCheckState();
       });
   }
 }

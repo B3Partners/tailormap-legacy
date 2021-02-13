@@ -103,11 +103,21 @@ export const toggleShowPassportColumns = createAction(
 );
 
 export const setColumnFilter = createAction(
-  `${attributeListActionsPrefix} Set filter for column on data tab`,
+  `${attributeListActionsPrefix} Set Filter For Column On Data Tab`,
   props<{ filterType: FilterType, value: string[], featureType: number, colName: string, layerId: string }>(),
 );
 
 export const deleteColumnFilter = createAction(
-  `${attributeListActionsPrefix} Delete filter for column on data tab`,
+  `${attributeListActionsPrefix} Delete Filter For Column On Data Tab`,
   props<{ colName: string, featureType: number, layerId: string }>(),
+);
+
+export const clearFilterForFeatureType = createAction(
+  `${attributeListActionsPrefix} Clear Filter For Feature Type`,
+  props<{ featureType: number }>(),
+);
+
+export const clearAllFilters = createAction(
+  `${attributeListActionsPrefix} Clear All Filters`,
+  props<{ layerId: string }>(),
 );

@@ -19,7 +19,7 @@ import { AttributeListTreeDialogComponent } from '../attribute-list-tree-dialog/
 import { PopoverPositionEnum } from '../../../shared/popover/models/popover-position.enum';
 import { AttributeListFeatureTypeData } from '../models/attribute-list-feature-type-data.model';
 import { PageEvent } from '@angular/material/paginator';
-import { updatePage } from '../state/attribute-list.actions';
+import { clearAllFilters, clearFilterForFeatureType, updatePage } from '../state/attribute-list.actions';
 
 @Component({
   selector: 'tailormap-attribute-list-tab-toolbar',
@@ -118,12 +118,12 @@ export class AttributeListTabToolbarComponent implements OnInit, OnDestroy {
         });
   }
 
-  public onClearLayerFilterClick(): void {
-    // this.store$.dispatch(clearFilterForLayer({ layerId: this.layerId }));
+  public onClearFeatureTypeFilterClick(): void {
+    this.store$.dispatch(clearFilterForFeatureType({ featureType: this.featureType }));
   }
 
   public onClearAllFilterClick(): void {
-    // this.store$.dispatch(clearAllFilters({ layerId: this.layerId }));
+    this.store$.dispatch(clearAllFilters({ layerId: this.layerId }));
   }
 
   public onSearchClick(): void {
