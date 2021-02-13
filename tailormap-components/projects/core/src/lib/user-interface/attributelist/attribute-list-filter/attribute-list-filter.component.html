@@ -20,7 +20,7 @@
     <div class="row">
       <mat-checkbox color="primary"
                     [checked]="allOn"
-                    [indeterminate]="someSelected()"
+                    [indeterminate]="someOn"
                     (change)="setAll($event.checked)">
         Selecteer alles
       </mat-checkbox>
@@ -42,18 +42,20 @@
   </div>
 </mat-radio-group>
 
-<mat-divider></mat-divider>
+  <mat-divider></mat-divider>
 
-<mat-dialog-actions>
-  <button mat-raised-button color="primary"
-          (click)="onOk()">
-    OK
-  </button>
-  <button mat-raised-button color="primary"
-          (click)="onClear()">
-    Wis
-  </button>  <button mat-raised-button color="primary"
-                     (click)="onCancel()">
-  Cancel</button>
-</mat-dialog-actions>
+  <mat-dialog-actions>
+    <button mat-raised-button color="primary"
+            (click)="onOk()">
+      OK
+    </button>
+    <button mat-raised-button color="primary"
+            (click)="onClear()">
+      Wis
+    </button>
+    <button mat-raised-button color="primary"
+            (click)="onCancel()">
+      Cancel
+    </button>
+  </mat-dialog-actions>
 </div>

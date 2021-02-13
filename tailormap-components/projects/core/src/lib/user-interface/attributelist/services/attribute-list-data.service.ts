@@ -12,8 +12,9 @@ import { AttributeListRowModel } from '../models/attribute-list-row.model';
 import { ApplicationService } from '../../../application/services/application.service';
 import { AttributeListFeatureTypeData } from '../models/attribute-list-feature-type-data.model';
 import { MetadataService } from '../../../application/services/metadata.service';
-import { FilterType } from '../models/attribute-list-filter-models';
-import { ofType } from '@ngrx/effects';
+import { AttributeListFilterModel, FilterType } from '../models/attribute-list-filter-models';
+import { AttributeTypeHelper } from '../../../application/helpers/attribute-type.helper';
+import { AttributeTypeEnum } from '../../../application/models/attribute-type.enum';
 
 export interface LoadDataResult {
   layerId: string;
@@ -148,39 +149,27 @@ export class AttributeListDataService {
   ): string {
     // @TODO: implement
     const featureData = tabFeatureData.find(t => t.featureType === featureType);
-    let finalFilter = '';
-    featureData.filter.forEach((filter) => {
-      if  (filter.value) {
-        finalFilter += '(' + filter.name + ' ' + this.getFilterMethod(filter.type) + '( ' + this.buildValueFilterString(filter.value) + ')) AND';
-      }
-    });
-    finalFilter = finalFilter.slice(0, -4);
-    return finalFilter;
+    return featureData.filter.map(filter => this.getQueryForFilter(filter)).join(' AND ');
   }
 
-  private buildValueFilterString(values: string[]): string {
-    let valueFilterString = '';
-    values.forEach(value => {
-      if (typeof value === 'string') {
-        value = value.replace('\'', '&quot;');
-      }
-      valueFilterString += '\'' + value + '\',';
-    })
-    return valueFilterString.slice(0, -1);
-  }
-
-  private getFilterMethod(type: FilterType): string {
-    let filterType = '';
-    if (type === FilterType.LIKE || type === FilterType.UNIQUE_VALUES) {
-      filterType = 'IN';
-    } else {
-      filterType = 'NOT IN';
+  private getQueryForFilter(filter: AttributeListFilterModel): string {
+    if (filter.type === FilterType.NOT_LIKE) {
+      return `${filter.name} NOT ILIKE ${this.buildValueFilterString(filter.type, filter.value)}`;
     }
-    return filterType;
+    if (filter.type === FilterType.UNIQUE_VALUES) {
+      return `${filter.name} IN (${this.buildValueFilterString(filter.type, filter.value)})`;
+    }
+    return `${filter.name} ILIKE ${this.buildValueFilterString(filter.type, filter.value)}`;
   }
 
-  // private getFilterForFeature(featureData: AttributeListFeatureTypeData) {
-  //   return featureData.filter.map(f => )
-  // }
+  private buildValueFilterString(type: FilterType, values: string[]): string {
+    if (values.length === 1) {
+      if (type === FilterType.LIKE || type === FilterType.NOT_LIKE) {
+        return AttributeTypeHelper.getExpression(`%${values[0]}%`, AttributeTypeEnum.STRING);
+      }
+      return AttributeTypeHelper.getExpression(`${values[0]}`, AttributeTypeEnum.STRING);
+    }
+    return values.map(value => AttributeTypeHelper.getExpression(`${value}`, AttributeTypeEnum.STRING)).join(',');
+  }
 
 }

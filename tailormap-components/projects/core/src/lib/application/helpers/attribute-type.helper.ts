@@ -44,6 +44,9 @@ export class AttributeTypeHelper {
    */
   public static getExpression(value: string | number | boolean, attributeType: AttributeTypeEnum): string {
     if (attributeType === AttributeTypeEnum.STRING || attributeType === AttributeTypeEnum.DATE) {
+      if (typeof value === 'string') {
+        value = value.replace(/'/g, '\'\'');
+      }
       return `'${value}'`;
     }
     return `${value}`;
