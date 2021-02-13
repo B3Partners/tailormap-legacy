@@ -40,8 +40,7 @@
         <div class="details-container" *ngIf="currRow._expanded">
           <tailormap-attributelist-details
             *ngFor="let featureType of currRow.related_featuretypes"
-            [parentLayerId]="tab.layerId"
-            [parentLayerName]="tab.layerName"
+            [parentLayerId]="layerId"
             [featureType]="featureType">
           </tailormap-attributelist-details>
         </div>

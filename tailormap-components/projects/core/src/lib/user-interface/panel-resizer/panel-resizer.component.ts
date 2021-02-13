@@ -1,4 +1,4 @@
-import { Component, HostListener, AfterViewInit } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { LayoutService } from '../layout.service';
 
 @Component({

@@ -1,121 +1,72 @@
-import {
-  Component,
-  OnInit,
-  Input,
-  ViewChild,
-  AfterViewInit,
-} from '@angular/core';
-
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Sort } from '@angular/material/sort';
-import { MatTable } from '@angular/material/table';
-
-import {
-  AttributelistTable,
-} from '../attributelist-common/attributelist-models';
-import { AttributeDataSource } from '../attributelist-common/attributelist-datasource';
 import { AttributeService } from '../../../shared/attribute-service/attribute.service';
-import { FormconfigRepositoryService } from '../../../shared/formconfig-repository/formconfig-repository.service';
-import { RelatedFeatureType } from '../../../shared/attribute-service/attribute-models';
-import { TailorMapService } from '../../../../../../bridge/src/tailor-map.service';
-import { ValueService } from '../../../shared/value-service/value.service';
-import { AttributelistService } from '../attributelist.service';
+import { AttributeListFeature, AttributeListParameters, RelatedFeatureType } from '../../../shared/attribute-service/attribute-models';
+import { Observable, Subject } from 'rxjs';
+import { AttributeListState } from '../state/attribute-list.state';
+import { Store } from '@ngrx/store';
+import { selectActiveColumnsForFeature } from '../state/attribute-list.selectors';
+import { map, takeUntil } from 'rxjs/operators';
+import { ApplicationService } from '../../../application/services/application.service';
+import { AttributeListColumnModel } from '../models/attribute-list-column-models';
 
 @Component({
   selector: 'tailormap-attributelist-details',
   templateUrl: './attributelist-details.component.html',
   styleUrls: ['./attributelist-details.component.css'],
 })
-// export class AttributelistDetailsComponent implements OnInit, AttributelistTable {
-export class AttributelistDetailsComponent implements OnInit,
-                                                      AttributelistTable,
-                                                      AfterViewInit {
 
-  // Table reference for 'manually' rendering.
-  @ViewChild('detailtable') public table: MatTable<any>;
+export class AttributelistDetailsComponent implements OnInit, OnDestroy {
 
-  // The parent layer id for this detail table.
   @Input()
   public parentLayerId: string;
 
-  // The parent layer name for this detail table.
-  @Input()
-  public parentLayerName = '';
-
-  // The parent row featuretype for this detail table.
   @Input()
   public featureType: RelatedFeatureType;
 
-  public dataSource = new AttributeDataSource(
-    this.attributeService,
-    this.valueService,
-    this.attributelistService,
-    this.tailorMapService,
-    this.formconfigRepoService,
-  );
+  public rows$: Observable<AttributeListFeature[]>;
+
+  public columnsNames: string[];
+  public columns: AttributeListColumnModel[];
+
+  private destroyed = new Subject();
 
   constructor(private attributeService: AttributeService,
-              private valueService: ValueService,
-              private attributelistService: AttributelistService,
-              private tailorMapService: TailorMapService,
-              private formconfigRepoService: FormconfigRepositoryService) {
-    // console.log('#Details - constructor');
+              private store$: Store<AttributeListState>,
+              private applicationService: ApplicationService) {
+  }
+
+  public ngOnDestroy(): void {
+    this.destroyed.next();
+    this.destroyed.complete();
   }
 
   public ngOnInit(): void {
-    // console.log('#Details - ngOnInit');
-  }
-
-  public ngAfterViewInit(): void {
-    // console.log('#Details - ngAfterViewInit');
-
-    // console.log(this.parentLayerId);
-    // console.log(this.parentLayerName);
-    // // console.log(featureType);
-    // console.log(this.featureType.id);
-    // console.log(this.featureType.foreignFeatureTypeName);
-    // console.log(this.featureType.filter);
-
-    // Set datasource params.
-    this.dataSource.params.layerId = +(this.parentLayerId);
-    this.dataSource.params.layerName = this.parentLayerName;
-    this.dataSource.params.featureTypeId = this.featureType.id;
-    this.dataSource.params.featureTypeName = this.featureType.foreignFeatureTypeName;
-    this.dataSource.params.featureFilter = this.featureType.filter;
-
-    // Update the table.
+    this.store$.select(selectActiveColumnsForFeature, this.featureType.id).pipe(
+      takeUntil(this.destroyed)).subscribe(columns => {
+      this.columns = columns;
+      this.columnsNames = columns.map(column => column.name);
+    })
     this.updateTable();
   }
 
-  /**
-   * Renders the table rows after the data is loaded.
-   */
-  public onAfterLoadData(): void {
-    // console.log('#Details - onAfterLoadData');
-    // Update the table rows.
-    this.table.renderRows();
-  }
-
-  /**
-   * Return the column names. Do not include special column names.
-   */
-  public getColumnNames(): string[] {
-    const columnNames = this.dataSource.columnController.getVisibleColumnNames(false);
-    // console.log(columnNames);
-    return columnNames;
-  }
-
-  /**
-   * Fired when a column header is clicked.
-   */
   public onSortClick(sort: Sort): void {
     this.updateTable(sort);
   }
 
-  /**
-   * (Re)loads the data, which fires the "onAfterLoadData" method.
-   */
   private updateTable(sort?: Sort): void {
-    const sortDirection = (sort && sort.direction === 'asc') ? 'ASC' : (sort && sort.direction) === 'desc' ? 'DESC' : undefined;
-    this.dataSource.loadData(this, undefined, undefined, sort ? sort.active : undefined, sortDirection);
+    const attrParams: AttributeListParameters = {
+      application: this.applicationService.getId(),
+      appLayer: +(this.parentLayerId),
+      featureType: this.featureType.id,
+      filter: this.featureType.filter,
+      page: 1,
+      clearTotalCountCache: true,
+    };
+    this.rows$ = this.attributeService.features$(attrParams)
+      .pipe(
+        takeUntil(this.destroyed),
+        map(response => response.success ? response.features : []),
+      );
   }
 }
