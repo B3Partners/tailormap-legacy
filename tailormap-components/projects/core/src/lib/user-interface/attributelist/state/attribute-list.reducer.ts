@@ -4,7 +4,7 @@ import { AttributeListState, initialAttributeListState } from './attribute-list.
 import { AttributeListTabModel } from '../models/attribute-list-tab.model';
 import { AttributeListRowModel } from '../models/attribute-list-row.model';
 import { UpdateAttributeListStateHelper } from '../helpers/update-attribute-list-state.helper';
-import { AttributeListFeatureTypeData } from '../models/attribute-list-feature-type-data.model';
+import { AttributeListFeatureTypeData, CheckedFeature } from '../models/attribute-list-feature-type-data.model';
 import { AttributeListFilterModel } from '../models/attribute-list-filter-models';
 
 const onSetAttributeListVisibility = (
@@ -176,46 +176,102 @@ const onUpdateSort = (
   data => UpdateAttributeListStateHelper.updateDataForAction(payload, data),
 );
 
+const getRelationAttributes = (state: AttributeListState, featureType: number): string[] => {
+  const tabForFeature = state.tabs.find(t => t.featureType === featureType);
+  if (tabForFeature) {
+    return tabForFeature.relatedFeatures.reduce<string[]>((leftSideAttributes, relatedFeature) => {
+      return leftSideAttributes.concat(relatedFeature.relationKeys.map(rk => rk.leftSideName));
+    }, []);
+  }
+  return [];
+}
+
+const getRelatedAttributesForRow = (row: AttributeListRowModel, relationAttributes: string[]) => {
+  const relationAttributesForRow = {
+    rowId: row.rowId,
+  };
+  relationAttributes.forEach(key => {
+    if (!!row[key]) {
+      relationAttributesForRow[key] = row[key];
+    }
+  });
+  return relationAttributesForRow;
+}
+
 const onToggleCheckedAllRows = (
   state: AttributeListState,
   payload: ReturnType<typeof AttributeListActions.toggleCheckedAllRows>,
-): AttributeListState => updateFeatureData(state, payload.featureType, data => {
-  const someUnchecked = data.rows.findIndex(row => !row._checked) !== -1;
-  const checkedRows = new Set<string>(data.checkedFeatures);
-  data.rows.forEach(row => {
+): AttributeListState => {
+  const featureTypeIdx = state.featureTypeData.findIndex(d => d.featureType === payload.featureType);
+  if (featureTypeIdx === -1) {
+    return state;
+  }
+  const featureData = state.featureTypeData[featureTypeIdx];
+  const someUnchecked = featureData.rows.findIndex(row => !row._checked) !== -1;
+  const checkedRows = new Map<string, CheckedFeature>(featureData.checkedFeatures.map(c => [ c.rowId, c ]));
+  const relationAttributes = getRelationAttributes(state, payload.featureType);
+  featureData.rows.forEach(row => {
     if (someUnchecked) {
-      checkedRows.add(row.rowId);
+      checkedRows.set(row.rowId, getRelatedAttributesForRow(row, relationAttributes));
     } else {
       checkedRows.delete(row.rowId);
     }
   });
   return {
-    ...data,
-    rows: data.rows.map(row => ({ ...row, _checked: someUnchecked })),
-    checkedFeatures: Array.from(checkedRows),
+    ...state,
+    featureTypeData: [
+      ...state.featureTypeData.slice(0, featureTypeIdx),
+      {
+        ...featureData,
+        rows: featureData.rows.map(row => ({ ...row, _checked: someUnchecked })),
+        checkedFeatures: Array.from(checkedRows.values()),
+      },
+      ...state.featureTypeData.slice(featureTypeIdx + 1),
+    ],
   };
-});
+}
 
 const onUpdateRowChecked = (
   state: AttributeListState,
   payload: ReturnType<typeof AttributeListActions.updateRowChecked>,
-): AttributeListState => updateFeatureData(state, payload.featureType, data => {
-  const checkedRows = new Set<string>(data.checkedFeatures);
+): AttributeListState => {
+  const featureTypeIdx = state.featureTypeData.findIndex(d => d.featureType === payload.featureType);
+  if (featureTypeIdx === -1) {
+    return state;
+  }
+  const featureData = state.featureTypeData[featureTypeIdx];
+  const rowIdx = featureData.rows.findIndex(r => r.rowId === payload.rowId);
+  if (rowIdx === -1) {
+    return state;
+  }
+  const row = featureData.rows[rowIdx];
+  const relationAttributes = getRelationAttributes(state, payload.featureType);
+  const checkedRows = new Map<string, CheckedFeature>(featureData.checkedFeatures.map(c => [ c.rowId, c ]));
   if (payload.checked) {
-    checkedRows.add(payload.rowId);
+    checkedRows.set(row.rowId, getRelatedAttributesForRow(row, relationAttributes));
   } else {
     checkedRows.delete(payload.rowId);
   }
   return {
-    ...data,
-    rows: updateArrayItemInState<AttributeListRowModel>(
-      data.rows,
-      r => r.rowId === payload.rowId,
-      row => ({ ...row, _checked: payload.checked }),
-    ),
-    checkedFeatures: Array.from(checkedRows),
+    ...state,
+    featureTypeData: [
+      ...state.featureTypeData.slice(0, featureTypeIdx),
+      {
+        ...featureData,
+        rows: [
+          ...featureData.rows.slice(0, rowIdx),
+          {
+            ...row,
+            _checked: payload.checked,
+          },
+          ...featureData.rows.slice(rowIdx + 1),
+        ],
+        checkedFeatures: Array.from(checkedRows.values()),
+      },
+      ...state.featureTypeData.slice(featureTypeIdx + 1),
+    ],
   }
-});
+};
 
 const onUpdateRowExpanded = (
   state: AttributeListState,

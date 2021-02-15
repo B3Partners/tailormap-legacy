@@ -6,15 +6,8 @@ import { SharedModule } from '../../shared/shared.module';
 import { AttributeListPanelComponent } from './attribute-list-panel/attribute-list-panel.component';
 import { AttributeListTabComponent } from './attribute-list-tab/attribute-list-tab.component';
 import { AttributeListTabToolbarComponent } from './attribute-list-tab-toolbar/attribute-list-tab-toolbar.component';
-import { AttributeListTabContentComponent } from './attribute-list-tab-content/attribute-list-tab-content.component';
 import { AttributeListDetailsComponent } from './attribute-list-details/attribute-list-details.component';
-import { AttributelistTableOptionsFormComponent } from './attributelist-table-options-form/attributelist-table-options-form.component';
-
 import { PanelResizerComponent } from '../panel-resizer/panel-resizer.component';
-import { DetailsrowDirective } from './attributelist-common/detailsrow.directive';
-
-import { AttributelistFilterValuesFormComponent } from './attributelist-filter-values-form/attributelist-filter-values-form.component';
-import { AttributelistTreeComponent } from './attributelist-tree/attributelist-tree.component';
 import { AttributelistLayernameChooserComponent } from './attributelist-layername-chooser/attributelist-layername-chooser.component';
 import { AttributeListComponent } from './attribute-list/attribute-list.component';
 import { AttributeListButtonComponent } from './attribute-list-button/attribute-list-button.component';
@@ -40,13 +33,8 @@ import { AttributeListManagerService } from './services/attribute-list-manager.s
     AttributeListPanelComponent,
     AttributeListTabComponent,
     AttributeListTabToolbarComponent,
-    AttributeListTabContentComponent,
     AttributeListDetailsComponent,
-    AttributelistTableOptionsFormComponent,
-    DetailsrowDirective,
     PanelResizerComponent,
-    AttributelistFilterValuesFormComponent,
-    AttributelistTreeComponent,
     AttributelistLayernameChooserComponent,
     AttributeListComponent,
     AttributeListButtonComponent,

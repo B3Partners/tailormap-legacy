@@ -100,12 +100,18 @@ export class AttributeListEffects {
 
   public setColumnFilter$ = createEffect(() => this.actions$.pipe(
     ofType(AttributeListActions.setColumnFilter),
-    map( action => AttributeListActions.loadDataForTab({layerId: action.layerId})),
+    concatMap( action => [
+      AttributeListActions.loadDataForTab({layerId: action.layerId}),
+      AttributeListActions.loadTotalCountForTab({layerId: action.layerId}),
+    ]),
   ));
 
   public deleteColumnFilter$ = createEffect(() => this.actions$.pipe(
     ofType(AttributeListActions.deleteColumnFilter),
-    map( action => AttributeListActions.loadDataForTab({layerId: action.layerId})),
+    concatMap( action => [
+      AttributeListActions.loadDataForTab({layerId: action.layerId}),
+      AttributeListActions.loadTotalCountForTab({layerId: action.layerId}),
+    ]),
   ));
 
   constructor(

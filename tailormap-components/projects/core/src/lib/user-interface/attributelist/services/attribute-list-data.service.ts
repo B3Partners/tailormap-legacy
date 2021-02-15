@@ -6,7 +6,6 @@ import {
 } from '../../../shared/attribute-service/attribute-models';
 import { AttributeService } from '../../../shared/attribute-service/attribute.service';
 import { forkJoin, Observable, of } from 'rxjs';
-import { FormconfigRepositoryService } from '../../../shared/formconfig-repository/formconfig-repository.service';
 import { FormConfiguration } from '../../../feature-form/form/form-models';
 import { AttributeListRowModel } from '../models/attribute-list-row.model';
 import { ApplicationService } from '../../../application/services/application.service';
@@ -15,6 +14,10 @@ import { MetadataService } from '../../../application/services/metadata.service'
 import { AttributeListFilterModel, FilterType } from '../models/attribute-list-filter-models';
 import { AttributeTypeHelper } from '../../../application/helpers/attribute-type.helper';
 import { AttributeTypeEnum } from '../../../application/models/attribute-type.enum';
+import { Store } from '@ngrx/store';
+import { AttributeListState } from '../state/attribute-list.state';
+import { selectFormConfigForFeatureType } from '../../../feature-form/state/form.selectors';
+import { FormTreeHelpers } from '../../../feature-form/form-tree/form-tree-helpers';
 
 export interface LoadDataResult {
   layerId: string;
@@ -37,7 +40,7 @@ export class AttributeListDataService {
 
   constructor(
     private attributeService: AttributeService,
-    private formConfigRepoService: FormconfigRepositoryService,
+    private store$: Store<AttributeListState>,
     private applicationService: ApplicationService,
     private metadataService: MetadataService,
   ) {}
@@ -92,7 +95,7 @@ export class AttributeListDataService {
       this.attributeService.features$(attrParams).pipe(
         catchError(e => of<AttributeListResponse>({ success: false, message: '', features: [], total: 0 })),
       ),
-      this.formConfigRepoService.getFormConfigForLayer$(tab.layerName).pipe(take(1)),
+      this.store$.select(selectFormConfigForFeatureType, tab.layerName).pipe(take(1)),
     ]).pipe(
       map(([ response, formConfig ]): LoadDataResult => {
         if (!response.success) {
@@ -105,7 +108,7 @@ export class AttributeListDataService {
             errorMessage: response.message || 'Failed loading attributes',
           }
         }
-        const checkedRows = new Set<string>(featureTypeData.checkedFeatures);
+        const checkedRows = new Set<string>(featureTypeData.checkedFeatures.map(checkedFeature => checkedFeature.rowId));
         return {
           layerId: tab.layerId,
           featureType: featureTypeData.featureType,
@@ -135,7 +138,7 @@ export class AttributeListDataService {
       };
       if (formConfig) {
         formConfig.fields.forEach(field => {
-          decoratedFeature[field.key] = this.formConfigRepoService.getFeatureValueForField(decoratedFeature, field.key, formConfig);
+          decoratedFeature[field.key] = FormTreeHelpers.getFeatureValueForField(decoratedFeature, formConfig, field.key);
         });
       }
       return decoratedFeature;
@@ -147,9 +150,43 @@ export class AttributeListDataService {
     featureType: number,
     tabFeatureData: AttributeListFeatureTypeData[],
   ): string {
-    // @TODO: implement
-    const featureData = tabFeatureData.find(t => t.featureType === featureType);
-    return featureData.filter.map(filter => this.getQueryForFilter(filter)).join(' AND ');
+    const filters = new Map<number, string>();
+    tabFeatureData.forEach(data => {
+      filters.set(data.featureType, data.filter.map(filter => this.getQueryForFilter(filter)).join(' AND '))
+    });
+    const isRelatedFeature = tab.featureType !== featureType;
+    const mainFeatureData = tabFeatureData.find(data => featureType === tab.featureType);
+    return this.getQueryForFeatureType(tab, featureType, filters, isRelatedFeature, mainFeatureData);
+  }
+
+  private getQueryForFeatureType(
+    tab: AttributeListTabModel,
+    featureType: number,
+    filters: Map<number, string>,
+    isRelatedFeature: boolean,
+    mainFeatureData: AttributeListFeatureTypeData,
+  ) {
+    const featureFilter: string[] = tab.relatedFeatures.map<string>(relation => {
+      if (relation.foreignFeatureType === featureType) {
+        return '';
+      }
+      const relationFilter = filters.get(relation.foreignFeatureType);
+      if (relationFilter) {
+        const filter = `RELATED_FEATURE(${tab.featureType},${relation.foreignFeatureType},(${relationFilter}))`;
+        if (isRelatedFeature) {
+          return `RELATED_FEATURE(${featureType},${tab.featureType},(${filter})`;
+        }
+        return filter;
+      }
+      return '';
+    });
+    if (filters.has(featureType)) {
+      featureFilter.push(filters.get(featureType));
+    }
+    if (isRelatedFeature && filters.has(tab.featureType)) {
+      featureFilter.push(`RELATED_FEATURE(${featureType},${tab.featureType},(${filters.get(tab.featureType)})`);
+    }
+    return featureFilter.filter(f => !!f).join(' AND ');
   }
 
   private getQueryForFilter(filter: AttributeListFilterModel): string {

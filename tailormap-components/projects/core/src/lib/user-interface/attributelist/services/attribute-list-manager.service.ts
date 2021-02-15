@@ -3,13 +3,12 @@ import { Store } from '@ngrx/store';
 import { AttributeListState } from '../state/attribute-list.state';
 import { selectVisibleLayersWithAttributes } from '../../../application/state/application.selectors';
 import { concatMap, filter, map, take, takeUntil, withLatestFrom } from 'rxjs/operators';
-import { forkJoin, Observable, of, Subject } from 'rxjs';
+import { combineLatest, forkJoin, Observable, of, Subject } from 'rxjs';
 import { selectAttributeListConfig, selectAttributeListTabs } from '../state/attribute-list.selectors';
 import { changeAttributeListTabs } from '../state/attribute-list.actions';
 import { AttributeListTabModel } from '../models/attribute-list-tab.model';
 import { TailormapAppLayer } from '../../../application/models/tailormap-app-layer.model';
 import { LayerUtils } from '../../../shared/layer-utils/layer-utils.service';
-import { FormconfigRepositoryService } from '../../../shared/formconfig-repository/formconfig-repository.service';
 import { MetadataService } from '../../../application/services/metadata.service';
 import { AttributeListColumnModel } from '../models/attribute-list-column-models';
 import { Attribute, FormConfiguration } from '../../../feature-form/form/form-models';
@@ -18,6 +17,7 @@ import { AttributeMetadataResponse } from '../../../shared/attribute-service/att
 import { AttributeListConfig } from '../models/attribute-list.config';
 import { AttributeListFeatureTypeData } from '../models/attribute-list-feature-type-data.model';
 import { IdService } from '../../../shared/id-service/id.service';
+import { selectFormConfigForFeatureType, selectFormConfigsLoaded } from '../../../feature-form/state/form.selectors';
 
 interface TabFromLayerResult {
   tab: AttributeListTabModel;
@@ -58,13 +58,17 @@ export class AttributeListManagerService implements OnDestroy {
 
   constructor(
     private store$: Store<AttributeListState>,
-    private formConfigRepoService: FormconfigRepositoryService,
     private metadataService: MetadataService,
     private idService: IdService,
   ) {
-    this.store$.select(selectVisibleLayersWithAttributes)
+    combineLatest([
+      this.store$.select(selectVisibleLayersWithAttributes),
+      this.store$.select(selectFormConfigsLoaded),
+    ])
       .pipe(
         takeUntil(this.destroyed),
+        filter(([ layers, formConfigLoaded ]) => !!formConfigLoaded),
+        map(([ layers, formConfigLoaded ]) => layers),
         withLatestFrom(this.store$.select(selectAttributeListTabs), this.store$.select(selectAttributeListConfig)),
         concatMap(([ layers, tabs, config ]) => {
           const closedTabs = this.getClosedTabs(layers, tabs);
@@ -119,7 +123,7 @@ export class AttributeListManagerService implements OnDestroy {
   ): Observable<TabFromLayerResult> {
     const layerName = LayerUtils.sanitizeLayername(layer.layerName);
     return forkJoin([
-      this.formConfigRepoService.getFormConfigForLayer$(layerName).pipe(take(1)),
+      this.store$.select(selectFormConfigForFeatureType, layerName).pipe(take(1)),
       this.metadataService.getFeatureTypeMetadata$(layer.id),
     ]).pipe(
       map(([ formConfig, metadata ]): TabFromLayerResult => {

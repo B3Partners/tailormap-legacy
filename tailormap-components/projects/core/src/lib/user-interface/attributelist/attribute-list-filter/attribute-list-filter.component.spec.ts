@@ -1,10 +1,9 @@
 import { Spectator, createComponentFactory, createSpyObject } from '@ngneat/spectator';
-import { AttributeListFilterComponent } from './attribute-list-filter.component';
+import { AttributeListFilterComponent, FilterDialogData } from './attribute-list-filter.component';
 import { SharedModule } from '../../../shared/shared.module';
 import { attributeListStateKey, initialAttributeListState } from '../state/attribute-list.state';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { FilterDialogData } from '../models/attribute-list-filter.model';
 import { getMetadataServiceMockProvider } from '../../../application/services/mocks/metadata.service.mock';
 
 describe('AttributeListFilterComponent', () => {

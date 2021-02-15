@@ -4,15 +4,21 @@ import { FormControl } from '@angular/forms';
 import { deleteColumnFilter, setColumnFilter } from '../state/attribute-list.actions';
 import { Store } from '@ngrx/store';
 import { AttributeListState } from '../state/attribute-list.state';
-import { FilterDialogData } from '../models/attribute-list-filter.model';
 import { MetadataService } from '../../../application/services/metadata.service';
-import { FilterType } from '../models/attribute-list-filter-models';
+import { AttributeListFilterModel, FilterType } from '../models/attribute-list-filter-models';
 
 interface AttributeListUniqueFilterValueSettings {
   // value in column.
   value: string;
   // value in filter selected
   select: boolean;
+}
+
+export interface FilterDialogData {
+  columnName: string;
+  featureType: number
+  layerId: string;
+  filter: AttributeListFilterModel | null;
 }
 
 @Component({

@@ -4,8 +4,13 @@ import { AttributeListRowModel } from '../../models/attribute-list-row.model';
 import { AttributeListState } from '../../state/attribute-list.state';
 import { Store } from '@ngrx/store';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { CheckState } from '../../attributelist-common/attributelist-enums';
 import { MatColumnDef, MatTable } from '@angular/material/table';
+
+enum CheckState {
+  None = 'None',
+  Some = 'Some',
+  All = 'All',
+}
 
 @Component({
   selector: 'tailormap-attribute-list-checkbox-column',

@@ -19,6 +19,8 @@ export const selectTreeOpen = createSelector(selectFormState, state => state.tre
 
 export const selectFormConfigs = createSelector(selectFormState, state => state.formConfigs);
 
+export const selectFormConfigsLoaded = createSelector(selectFormState, state => state.formConfigsLoaded);
+
 export const selectFormFeaturetypes = createSelector(selectFormConfigs,
     formConfigs => formConfigs ? Array.from(formConfigs.keys()) : []);
 

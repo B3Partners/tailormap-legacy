@@ -5,8 +5,8 @@ import { AttributeListFeature, AttributeListParameters, RelatedFeatureType } fro
 import { Observable, Subject } from 'rxjs';
 import { AttributeListState } from '../state/attribute-list.state';
 import { Store } from '@ngrx/store';
-import { selectActiveColumnsForFeature } from '../state/attribute-list.selectors';
-import { map, takeUntil } from 'rxjs/operators';
+import { selectActiveColumnsForFeature, selectFeatureTypeData } from '../state/attribute-list.selectors';
+import { filter, map, takeUntil } from 'rxjs/operators';
 import { ApplicationService } from '../../../application/services/application.service';
 import { AttributeListColumnModel } from '../models/attribute-list-column-models';
 
@@ -42,10 +42,12 @@ export class AttributeListDetailsComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
-    this.store$.select(selectActiveColumnsForFeature, this.featureType.id).pipe(
-      takeUntil(this.destroyed)).subscribe(columns => {
-      this.columns = columns;
-      this.columnsNames = columns.map(column => column.name);
+    this.store$.select(selectFeatureTypeData, this.featureType.id).pipe(
+      takeUntil(this.destroyed),
+      filter(featureData => !!featureData),
+    ).subscribe(featureData => {
+      this.columns = featureData.columns;
+      this.columnsNames = featureData.columns.map(column => column.name);
     })
     this.updateTable();
   }
