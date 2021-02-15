@@ -6,6 +6,8 @@ import { selectAttributeListRelationsTree, selectFeatureDataForTab, selectTab } 
 import { filter, map, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { loadTotalCountForTab, setSelectedFeatureType } from '../state/attribute-list.actions';
+import { TransientTreeHelper } from '../../../shared/tree/helpers/transient-tree.helper';
+import { TreeModel } from '../../../shared/tree/models/tree.model';
 
 @Component({
   selector: 'tailormap-attribute-list-tree',
@@ -19,6 +21,7 @@ export class AttributeListTreeComponent implements OnInit, OnDestroy {
   public layerId: string;
 
   private destroyed = new Subject();
+  private transientTreeHelper: TransientTreeHelper<TreeModel>;
 
   constructor(
     private store$: Store<AttributeListState>,
@@ -26,6 +29,8 @@ export class AttributeListTreeComponent implements OnInit, OnDestroy {
   ) { }
 
   public ngOnInit(): void {
+    this.transientTreeHelper = new TransientTreeHelper(this.treeService, true, null, false);
+
     this.store$.select(selectFeatureDataForTab, this.layerId)
       .pipe(takeUntil(this.destroyed))
       .subscribe(featureData => {
@@ -34,14 +39,21 @@ export class AttributeListTreeComponent implements OnInit, OnDestroy {
           this.store$.dispatch(loadTotalCountForTab({ layerId: this.layerId }));
         }
       });
-    this.treeService.setDataSource(this.store$.select(selectAttributeListRelationsTree, this.layerId));
-    this.treeService.setSelectedNode(
-      this.store$.select(selectTab, this.layerId)
-        .pipe(
-          filter(tab => !!tab),
-          map(tab => `${tab.selectedRelatedFeatureType}`),
-        ),
-    );
+
+    this.store$.select(selectAttributeListRelationsTree, this.layerId)
+      .pipe(takeUntil(this.destroyed))
+      .subscribe(tree => this.transientTreeHelper.createTree(tree));
+
+    this.store$.select(selectTab, this.layerId)
+      .pipe(
+        takeUntil(this.destroyed),
+        filter(tab => !!tab),
+        map(tab => `${tab.selectedRelatedFeatureType}`),
+      )
+      .subscribe(selectedNode => {
+        this.transientTreeHelper.selectNode(selectedNode);
+      });
+
     this.treeService.selectionStateChangedSource$
       .pipe(takeUntil(this.destroyed))
       .subscribe(selectedFeatureType => {
