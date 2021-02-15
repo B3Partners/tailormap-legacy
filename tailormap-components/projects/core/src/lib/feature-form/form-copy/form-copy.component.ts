@@ -229,22 +229,24 @@ export class FormCopyComponent implements OnInit, OnDestroy {
     const relatedFeatures = this.relatedFeatures;
     const parentFeature = this.formCopyService.parentFeature;
     this.formCopyService.featuresToCopy.forEach((fieldsToCopy, key) => {
-      let newChild = {};
-      if (key !== this.formCopyService.parentFeature['objectGuid']) {
-        const valuesToCopy = {};
-        for (let i = 0; i <= parentFeature.children.length - 1; i++) {
-          const child = parentFeature.children[i];
-          if (child.objectGuid === key) {
-            fieldsToCopy.forEach((value, key1) => {
-              valuesToCopy[key1] = child[key1];
-            })
+      if (fieldsToCopy.get('objecttype')) {
+        let newChild = {};
+        if (key !== this.formCopyService.parentFeature['objectGuid']) {
+          const valuesToCopy = {};
+          for (let i = 0; i <= parentFeature.children.length - 1; i++) {
+            const child = parentFeature.children[i];
+            if (child.objectGuid === key) {
+              fieldsToCopy.forEach((value, key1) => {
+                valuesToCopy[key1] = child[key1];
+              })
+            }
           }
-        }
-        newChild = this.featureInitializer.create(fieldsToCopy.get('objecttype'), valuesToCopy);
-        // tslint:disable-next-line:prefer-for-of
-        for (let i = 0; i < relatedFeatures.length; i++) {
-          if (relatedFeatures[i] === key) {
-            newChilds.push(newChild);
+          newChild = this.featureInitializer.create(fieldsToCopy.get('objecttype'), valuesToCopy);
+          // tslint:disable-next-line:prefer-for-of
+          for (let i = 0; i < relatedFeatures.length; i++) {
+            if (relatedFeatures[i] === key) {
+              newChilds.push(newChild);
+            }
           }
         }
       }
