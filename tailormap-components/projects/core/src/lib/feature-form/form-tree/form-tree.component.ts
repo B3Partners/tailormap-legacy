@@ -11,7 +11,6 @@ import { filter, map, takeUntil } from 'rxjs/operators';
 import { TreeService } from '../../shared/tree/tree.service';
 import { TreeModel } from '../../shared/tree/models/tree.model';
 import { TransientTreeHelper } from '../../shared/tree/helpers/transient-tree.helper';
-import { kebabToCamelCase } from 'codelyzer/util/utils';
 
 @Component({
   providers: [TreeService],
