@@ -1,8 +1,5 @@
 import { FormComponent } from './form.component';
-import {
-  FormsModule,
-  ReactiveFormsModule,
-} from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { SharedModule } from '../../shared/shared.module';
 import { FormCreatorComponent } from '../form-creator/form-creator.component';
@@ -14,9 +11,13 @@ import { FormConfigMockModule } from '../../shared/formconfig-repository/formcon
 import { createComponentFactory, Spectator } from '@ngneat/spectator';
 import { getDialogRefMockProvider } from '../../shared/tests/test-mocks';
 import { getMetadataServiceMockProvider } from '../../application/services/mocks/metadata.service.mock';
+import { MockStore, provideMockStore } from '@ngrx/store/testing';
+import { formStateKey, initialFormState } from '../state/form.state';
 
 describe('FormComponent', () => {
   let spectator: Spectator<FormComponent>;
+  const initialState = { [formStateKey]: initialFormState };
+  let store: MockStore;
 
   const createComponent = createComponentFactory({
     component: FormComponent,
@@ -35,6 +36,7 @@ describe('FormComponent', () => {
       FormComponent
     ],
     providers: [
+      provideMockStore({ initialState }),
       FeatureControllerService,
       getDialogRefMockProvider(),
       {
@@ -51,6 +53,7 @@ describe('FormComponent', () => {
 
   beforeEach(() => {
     spectator = createComponent();
+    store = spectator.inject(MockStore);
   });
 
   it('should create', () => {

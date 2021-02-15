@@ -1,18 +1,15 @@
-<div *ngIf="formConfig" class="container">
+<div class="tree overlay-panel mat-elevation-z4" *ngIf="treeOpen$ | async">
+  <tailormap-form-tree [features]=features [isBulk]="isBulk" [feature]=feature></tailormap-form-tree>
+</div>
 
-  <h1>Formulier - {{formConfig.name}} {{formDirty ? '*' : ''}}
-    <button mat-button  mat-mini-fab color="" (click)="closeDialog();" class="close-button" >
-      <mat-icon>close</mat-icon>
-    </button>
+<div *ngIf="isOpen$ | async" class="overlay-panel mat-elevation-z4">
+  <mat-button-toggle [checked]="treeOpen$ | async" (change)="openTree($event)"  class="drawerbutton">
+    <mat-icon>menu</mat-icon>
+  </mat-button-toggle>
+  <h1>{{formConfig.name}} {{formDirty ? '*' : ''}}
+    <tailormap-dialog-close-button (closeDialog)="closeForm()"></tailormap-dialog-close-button>
   </h1>
   <div class="form-container">
-    <div class="tree">
-      <tailormap-form-tree
-      (nodeClicked)='openForm($event)'
-      [features]=features
-      [isBulk]="isBulk"
-      [feature]=feature></tailormap-form-tree>
-    </div>
     <div class="form">
       <tailormap-form-creator #formCreator
                              [feature]=feature
@@ -26,12 +23,18 @@
   </div>
   <div class="bottom-bar">
 
+    <button mat-flat-button *ngIf="!formCreator.editting" color="primary" (click)="formCreator.editting = true">
+      Bewerken
+    </button>
 
-    <button [disabled]="!formDirty && !data.closeAfterSave"
+    <button mat-flat-button color="primary" (click)="formCreator.resetForm()" *ngIf="formCreator.editting">
+      Annuleren
+    </button>
+    <button [disabled]="!formDirty && !closeAfterSave"  *ngIf="formCreator.editting"
             mat-flat-button color="primary"  (click)="formCreator.beforeSave();">
 
-      <span *ngIf="!data.closeAfterSave" >Opslaan</span>
-      <span *ngIf="data.closeAfterSave" >Volgende</span>
+      <span *ngIf="!closeAfterSave" >Opslaan</span>
+      <span *ngIf="closeAfterSave" >Volgende</span>
     </button>
     <mat-menu #menu="matMenu">
       <button *ngFor="let co of formsForNew" [id]="co.featureType" mat-menu-item (click)="this.newItem($event);">
@@ -39,7 +42,7 @@
       </button>
     </mat-menu>
 
-    <button mat-flat-button color="primary" [matMenuTriggerFor]="optiesMenu">
+    <button mat-flat-button color="primary" [matMenuTriggerFor]="optiesMenu" *ngIf="!formCreator.editting">
       Opties
     </button>
     <mat-menu #optiesMenu="matMenu" yPosition="above" class="tailormap-menu-panel">

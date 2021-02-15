@@ -1,0 +1,8 @@
+:host,
+mat-form-field {
+  display: block;
+}
+
+.label {
+  font-weight: bold;
+}

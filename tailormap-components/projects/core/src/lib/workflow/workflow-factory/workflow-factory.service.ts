@@ -1,7 +1,4 @@
-import {
-  Injectable,
-  NgZone,
-} from '@angular/core';
+import { Injectable, NgZone } from '@angular/core';
 import { Workflow } from '../workflows/Workflow';
 import { StandardFormWorkflow } from '../workflows/StandardFormWorkflow';
 import { TailorMapService } from '../../../../../bridge/src/tailor-map.service';
@@ -9,21 +6,18 @@ import { MatDialog } from '@angular/material/dialog';
 import { FeatureInitializerService } from '../../shared/feature-initializer/feature-initializer.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { FormconfigRepositoryService } from '../../shared/formconfig-repository/formconfig-repository.service';
-import {
-  FeatureControllerService,
-} from '../../shared/generated';
+import { FeatureControllerService } from '../../shared/generated';
 import { VectorLayer } from '../../../../../bridge/typings';
 import { SewageWorkflow } from '../workflows/SewageWorkflow';
 import { CopyWorkflow } from '../workflows/CopyWorkflow';
 import { ConfirmDialogService } from '../../shared/confirm-dialog/confirm-dialog.service';
-import {
-  WORKFLOW_ACTION,
-  WorkflowActionEvent,
-} from '../workflow-controller/workflow-models';
 import { NoOpWorkflow } from '../workflows/NoOpWorkflow';
 import { GeometryConfirmService } from '../../user-interface/geometry-confirm-buttons/geometry-confirm.service';
 import { EditgeometryWorkflow } from '../workflows/EditgeometryWorkflow';
 import { LayerUtils } from '../../shared/layer-utils/layer-utils.service';
+import { FormState } from '../../feature-form/state/form.state';
+import { Store } from '@ngrx/store';
+import { WORKFLOW_ACTION } from '../state/workflow-models';
 
 @Injectable({
   providedIn: 'root',
@@ -44,16 +38,17 @@ export class WorkflowFactoryService {
     private geometryConfirmService: GeometryConfirmService,
     private confirmService: ConfirmDialogService,
     private featureInitializerService: FeatureInitializerService,
-    private layerUtils: LayerUtils) {
+    private layerUtils: LayerUtils,
+    private store$: Store<FormState>) {
   }
 
-  public getWorkflow(event: WorkflowActionEvent): Workflow {
+  public getWorkflow(action: WORKFLOW_ACTION, featureType: string): Workflow {
 
     let workflow: Workflow = null;
-    switch (event.action) {
+    switch (action) {
 
       case WORKFLOW_ACTION.ADD_FEATURE:
-        switch (event.featureType) {
+        switch (featureType) {
           case 'mechleiding':
           case 'vrijvleiding':
             workflow = new SewageWorkflow();
@@ -81,8 +76,9 @@ export class WorkflowFactoryService {
     workflow.vectorLayer = this.vectorLayer;
     workflow.highlightLayer = this.highlightLayer;
     workflow.id = this.numWorkflows;
-    workflow.init(event, this.tailorMap, this.dialog, this.featureInitializerService,
-      this.formConfigRepo, this.snackBar, this.service, this.ngZone, this.confirmService, this.geometryConfirmService, this.layerUtils);
+    workflow.init(this.tailorMap, this.dialog, this.featureInitializerService,
+      this.formConfigRepo, this.snackBar, this.service, this.ngZone, this.confirmService,
+      this.geometryConfirmService, this.layerUtils, this.store$);
 
     return workflow;
   }

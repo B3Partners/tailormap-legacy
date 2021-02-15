@@ -1,18 +1,10 @@
 import { Injectable } from '@angular/core';
 import { FormHelpers } from '../form/form-helpers';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import {
-  Feature,
-  FeatureControllerService,
-} from '../../shared/generated';
-import {
-  forkJoin,
-  Observable,
-  of,
-} from 'rxjs';
+import { Feature, FeatureControllerService } from '../../shared/generated';
+import { forkJoin, Observable, of } from 'rxjs';
 import { FeatureInitializerService } from '../../shared/feature-initializer/feature-initializer.service';
-import { FormconfigRepositoryService } from '../../shared/formconfig-repository/formconfig-repository.service';
-import { LayerUtils } from '../../shared/layer-utils/layer-utils.service';
+import { FormConfiguration } from '../form/form-models';
 
 
 @Injectable({
@@ -22,7 +14,6 @@ export class FormActionsService {
 
   constructor(
     private service: FeatureControllerService,
-    private formConfigRepo: FormconfigRepositoryService,
     private featureInitializerService: FeatureInitializerService,
     private _snackBar: MatSnackBar) {
   }
@@ -70,9 +61,7 @@ export class FormActionsService {
     return fs;
   }
 
-  public newItem$(evt, features): Observable<any> {
-    const type = LayerUtils.sanitizeLayername(evt.srcElement.id);
-    const formConfig = this.formConfigRepo.getFormConfig(type);
+  public newItem$( features, type: string, formConfig: FormConfiguration): Observable<any> {
     const name = 'Nieuwe ' + formConfig.name;
 
     const parentFeature = features[0];
@@ -88,11 +77,6 @@ export class FormActionsService {
     });
 
     newFeature[formConfig.treeNodeColumn] = name;
-    /* relations.forEach(r => {
-       const relatedKey = r.relatedFeatureColumn;
-       const mainKey = r.mainFeatureColumn;
-       newFeature[relatedKey] = parentFeature[mainKey];
-     });*/
     parentFeature.children.push(newFeature);
     const feature = newFeature;
     features = [...features];

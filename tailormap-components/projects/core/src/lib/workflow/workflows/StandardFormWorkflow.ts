@@ -1,18 +1,17 @@
 import { Workflow } from './Workflow';
 import * as wellknown from 'wellknown';
-import { Feature } from '../../shared/generated';
-// import { FormComponent } from '../../feature-form/form/form.component';
-import {
-  MapClickedEvent,
-} from '../../shared/models/event-models';
-import {
-  OLFeature,
-  VectorLayer,
-} from '../../../../../bridge/typings';
-import { FormComponent } from '../../feature-form/form/form.component';
-import { takeUntil } from 'rxjs/operators';
 import { GeoJSONGeometry } from 'wellknown';
+import { Feature } from '../../shared/generated';
+import { MapClickedEvent } from '../../shared/models/event-models';
+import { OLFeature, VectorLayer } from '../../../../../bridge/typings';
+import { take, takeUntil } from 'rxjs/operators';
 import { WorkflowHelper } from './workflow.helper';
+import * as FormActions from '../../feature-form/state/form.actions';
+import { selectFormClosed } from '../../feature-form/state/form.state-helpers';
+import { selectFormConfigForFeatureType, selectFormFeaturetypes } from '../../feature-form/state/form.selectors';
+import { selectFeatureType, selectGeometryType } from '../state/workflow.selectors';
+import { combineLatest } from 'rxjs';
+
 
 export class StandardFormWorkflow extends Workflow {
 
@@ -25,12 +24,26 @@ export class StandardFormWorkflow extends Workflow {
 
   public afterInit() {
     super.afterInit();
-    this.featureType = this.event.featureType;
-    if (this.event.geometryType || this.featureType) {
-      const geomtype = this.event.geometryType || this.formConfigRepo.getFormConfig(this.featureType).featuretypeMetadata.geometryType;
-      this.vectorLayer.drawFeature(this.convertGeomType(geomtype));
-      this.isDrawing = true;
-    }
+    combineLatest([
+      this.store$.select(selectGeometryType),
+      this.store$.select(selectFeatureType),
+    ]).pipe(takeUntil(this.destroyed))
+      .subscribe(([geometryType, featureType]) => {
+        this.featureType = featureType;
+        if (geometryType || this.featureType) {
+          if (geometryType) {
+            this.vectorLayer.drawFeature(this.convertGeomType(geometryType));
+          } else {
+            this.store$.select(selectFormConfigForFeatureType, this.featureType)
+              .pipe(takeUntil(this.destroyed))
+              .subscribe(formConfig => {
+                const geomtype = formConfig.featuretypeMetadata.geometryType;
+                this.vectorLayer.drawFeature(this.convertGeomType(geomtype));
+              });
+          }
+          this.isDrawing = true;
+        }
+      });
   }
 
   private convertGeomType(type: string): string {
@@ -74,21 +87,12 @@ export class StandardFormWorkflow extends Workflow {
   }
 
   public openDialog(formFeatures ?: Feature[]): void {
-    const dialogRef = this.dialog.open(FormComponent, {
-      id: this.FORMCOMPONENT_DIALOG_ID,
-      width: '1050px',
-      height: '800px',
-      disableClose: true,
-      data: {
-        formFeatures,
-        isBulk: false,
-      },
-    });
-    // tslint:disable-next-line: rxjs-no-ignored-subscription
-    dialogRef.afterClosed().subscribe(result => {
-      this.afterEditting();
-      this.isDrawing = false;
-    });
+    this.store$.dispatch(FormActions.setOpenFeatureForm({features: formFeatures}))
+    this.store$.pipe(selectFormClosed)
+      .pipe(take(1))
+      .subscribe(( close) => {
+        this.afterEditting();
+      });
   }
 
   public mapClick(data: MapClickedEvent): void {
@@ -97,26 +101,30 @@ export class StandardFormWorkflow extends Workflow {
       const x = data.x;
       const y = data.y;
       const scale = data.scale;
-      const featureTypes: string[] = this.layerUtils.getFeatureTypesAllowed(this.formConfigRepo.getFeatureTypes());
-      this.service.featuretypeOnPoint({featureTypes, x, y, scale}).subscribe(
-        (features: Feature[]) => {
-          if (features && features.length > 0) {
-            const feat = features[0];
 
-            const geom = this.featureInitializerService.retrieveGeometry(feat);
-            if (geom) {
-              this.highlightLayer.readGeoJSON(geom);
-            }
+      this.store$.select(selectFormFeaturetypes)
+        .pipe(takeUntil(this.destroyed))
+        .subscribe(allFeatureTypes => {
+          const featureTypes: string[] = this.layerUtils.getFeatureTypesAllowed(allFeatureTypes);
+          this.service.featuretypeOnPoint({featureTypes, x, y, scale}).subscribe(
+            (features: Feature[]) => {
+              if (features && features.length > 0) {
+                const feat = features[0];
 
-            this.openDialog([feat]);
-          }
-        },
-        error => {
-          this.snackBar.open('Fout: Feature niet kunnen ophalen: ' + error, '', {
-            duration: 5000,
-          });
-        },
-      );
+                const geom = this.featureInitializerService.retrieveGeometry(feat);
+                if (geom) {
+                  this.highlightLayer.readGeoJSON(geom);
+                }
+                this.openDialog([feat]);
+              }
+            },
+            error => {
+              this.snackBar.open('Fout: Feature niet kunnen ophalen: ' + error, '', {
+                duration: 5000,
+              });
+            },
+          );
+        });
     }
   }
 

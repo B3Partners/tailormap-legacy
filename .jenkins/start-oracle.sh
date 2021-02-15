@@ -3,18 +3,18 @@ docker version
 
 # Oracle XE 18.0.0.0
 # this docker image has the following users/credentials (user/password = system/oracle)
-# docker pull larmic/oracle-xe:18.4.0
-docker pull pvargacl/oracle-xe-18.4.0:latest
+#docker pull larmic/oracle-xe:18.4.0
+# docker pull pvargacl/oracle-xe-18.4.0:latest
+docker pull imnotjames/oracle-xe:18c
 
 # start the dockerized oracle-xe instance
 # this container can be stopped using:
 #
 #    docker stop oracle-flamingo
 #
-#docker run --rm -p 15211:1521 --cpus=2 --name oracle-flamingo -h oracle-flamingo -d larmic/oracle-xe:18.4.0
-docker run --rm -p 15211:1521 --cpus=2 --name oracle-flamingo -h oracle-flamingo -d pvargacl/oracle-xe-18.4.0:latest
-# print logs
-# docker logs oracle-flamingo
+# docker run --rm -p 15211:1521 --cpus=2 --name oracle-flamingo -h oracle-flamingo -d larmic/oracle-xe:18.4.0
+#docker run --rm -p 15211:1521 --cpus=2 --name oracle-flamingo -h oracle-flamingo -d pvargacl/oracle-xe-18.4.0:latest
+docker run --rm -p 15211:1521 --cpus=2 --name oracle-flamingo -h oracle-flamingo -d imnotjames/oracle-xe:18c
 
 
 printf "\n\nStarting Oracle XE container, this could take a few minutes..."
@@ -28,8 +28,12 @@ do
         printf "\nOracle XE Database started\n\n"
         break
     fi
+    if ((_WAIT > 150)); then
+      printf "\nWaited >150 seconds for Oracle XE Database to start\n\n"
+      break
+    fi
     sleep 10
-    _WAIT=$(($_WAIT+10))
+    _WAIT=$((_WAIT+10))
 done
 
 # docker ps -a
@@ -37,4 +41,4 @@ done
 docker logs oracle-flamingo
 
 printf "\nSetup Flamingo user\n"
-sqlplus -l system/oracle@127.0.0.1:15211/XE < .jenkins/create_oracle_user.sql
+sqlplus -l system/oracle@127.0.0.1:15211/xe < .jenkins/create_oracle_user.sql

@@ -1,12 +1,6 @@
 import { Injectable } from '@angular/core';
-import {
-  Attribute,
-  FeatureAttribute,
-} from '../../form/form-models';
-import {
-  Attribuut,
-  Domeinwaarde,
-} from '../../../shared/generated';
+import { Attribute, FeatureAttribute } from '../../form/form-models';
+import { Attribuut, Domeinwaarde } from '../../../shared/generated';
 
 @Injectable({
   providedIn: 'root',

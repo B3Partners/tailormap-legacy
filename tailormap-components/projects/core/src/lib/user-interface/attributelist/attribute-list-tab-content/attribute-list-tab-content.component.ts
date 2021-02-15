@@ -38,7 +38,7 @@ export class AttributeListTabContentComponent implements AttributelistTable, OnI
                                               this.valueService,
                                               this.attributelistService,
                                               this.tailorMapService,
-                                              this.formconfigRepoService);
+                                              this.store$);
   public checkedRows = [];
   public treeData: AttributelistNode[] = [];
 
@@ -431,16 +431,7 @@ export class AttributeListTabContentComponent implements AttributelistTable, OnI
       });
       return;
     }
-    this.dialog.open(FormComponent, {
-      width: '1050px',
-      height: '800px',
-      disableClose: true,
-      data: {
-        formFeatures,
-        isBulk: formFeatures.length > 1,
-        closeAfterSave: true,
-      },
-    });
+    this.store$.dispatch(setOpenFeatureForm({ features: formFeatures, closeAfterSave: true }))
   }
 
   public isRelatedFeatures(): boolean {

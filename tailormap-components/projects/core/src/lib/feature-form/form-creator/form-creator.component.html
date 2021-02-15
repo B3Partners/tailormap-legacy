@@ -2,16 +2,14 @@
   <mat-tab-group>
       <mat-tab *ngFor="let tab of tabbedConfig.tabs | keyvalue" label="{{formConfig.tabConfig[tab.key]}}">
           <div class="tab">
-            <div *ngFor="let column of tab.value.columns | keyvalue" class="column">
-              <span *ngFor="let attr of column.value" class="cellfield">
-
+            <div *ngFor="let attr of tab.value" class="column">
                 <tailormap-formfield
                   [value]=indexedAttributes.attrs.get(attr.key)?.value
                   [attribute]=indexedAttributes.attrs.get(attr.key)
                   [groep]="formgroep"
                   [isBulk]=isBulk
+                  [editting]="editting || isBulk"
                    ></tailormap-formfield>
-              </span>
             </div>
           </div>
       </mat-tab>

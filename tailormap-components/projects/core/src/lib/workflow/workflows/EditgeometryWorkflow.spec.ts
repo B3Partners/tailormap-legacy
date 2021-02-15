@@ -2,24 +2,32 @@ import { WorkflowFactoryService } from '../workflow-factory/workflow-factory.ser
 import { createServiceFactory, createSpyObject, SpectatorService } from '@ngneat/spectator';
 import { EditgeometryWorkflow } from './EditgeometryWorkflow';
 import { FormconfigRepositoryService } from '../../shared/formconfig-repository/formconfig-repository.service';
-import { Boom, FeatureControllerService } from '../../shared/generated';
+import { FeatureControllerService } from '../../shared/generated';
 import { GeometryConfirmService } from '../../user-interface/geometry-confirm-buttons/geometry-confirm.service';
 import { ConfirmDialogService } from '../../shared/confirm-dialog/confirm-dialog.service';
 import { FeatureInitializerService } from '../../shared/feature-initializer/feature-initializer.service';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { WORKFLOW_ACTION, WorkflowActionEvent } from '../workflow-controller/workflow-models';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { mockBoom, vectorLayerMock } from '../../shared/tests/test-data';
 import { OLFeature } from '../../../../../bridge/typings';
 import { Coordinate } from '../../user-interface/models';
 import { createMockDialogProvider } from './mocks/workflow.mock';
 import { getTailorMapServiceMockProvider } from '../../../../../bridge/src/tailor-map.service.mock';
+import { MockStore, provideMockStore } from '@ngrx/store/testing';
+import { formStateKey, initialFormState } from '../../feature-form/state/form.state';
+import { WORKFLOW_ACTION } from '../state/workflow-models';
+import { initialWorkflowState, workflowStateKey } from '../state/workflow.state';
 
 describe('EditgeometryWorkflow', () => {
   let workflow: EditgeometryWorkflow;
   let factory: SpectatorService<WorkflowFactoryService>;
 
+  const initialState = {
+    [formStateKey]: initialFormState,
+    [workflowStateKey]: {...initialWorkflowState, feature: mockBoom()},
+  };
+  let store: MockStore;
   const vectorLayer = vectorLayerMock({
     getActiveFeature(): OLFeature {
       return {color: '', config: {wktgeom: '', id: 'string', attributes: {}}}
@@ -40,6 +48,7 @@ describe('EditgeometryWorkflow', () => {
       ConfirmDialogService,
     ],
     providers: [
+      provideMockStore({ initialState }),
       getTailorMapServiceMockProvider(),
       {provide: GeometryConfirmService, useValue: geometryConfirmService},
       FeatureInitializerService,
@@ -53,13 +62,11 @@ describe('EditgeometryWorkflow', () => {
     factory = createService();
     factory.service.vectorLayer = vectorLayer;
     factory.service.highlightLayer = vectorLayer;
-    const event: WorkflowActionEvent = {
-      feature: mockBoom({objecttype: 'Boom'}),
-      action: WORKFLOW_ACTION.EDIT_GEOMETRY,
-    };
-    workflow = factory.service.getWorkflow(event) as EditgeometryWorkflow;
-    expect(workflow instanceof EditgeometryWorkflow).toBe(true, 'instance of EditgeometryWorkflow');
 
+    store = factory.inject(MockStore);
+
+    workflow = factory.service.getWorkflow(WORKFLOW_ACTION.EDIT_GEOMETRY, 'wegvakonderdeel') as EditgeometryWorkflow;
+    expect(workflow instanceof EditgeometryWorkflow).toBe(true, 'instance of EditgeometryWorkflow');
   });
 
 

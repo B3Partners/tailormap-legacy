@@ -17,10 +17,8 @@
   overflow: hidden;
 }
 
-.tree {
-  width: 350px;
-  overflow: auto;
-  margin-right: 10px;
+.drawerbutton {
+  width: 50px;
 }
 
 .form {
@@ -28,7 +26,6 @@
   display: flex;
   flex-direction: column;
   width: 100%;
-  overflow: auto;
 }
 
 .close-button {
@@ -42,9 +39,37 @@
 
 .bottom-bar {
   margin-left: auto;
+  padding-bottom: 5px;
+  padding-top: 5px;
 }
 
 .bottom-bar button {
   float: right;
   margin-right: 15px;
+}
+
+.tree {
+  right: 300px;
+  width: 350px;
+  overflow: auto;
+  margin-right: 10px;
+}
+
+tailormap-tree ::ng-deep .tree-wrapper {
+  padding: 0 14px;
+}
+
+.tree ::ng-deep .tree-node-wrapper--selected {
+  font-weight: bold;
+  background-color: rgba(53, 89, 254, 0.2);
+  width: 100%;
+}
+
+.tree ::ng-deep .tree-node__label {
+  overflow: hidden;
+  padding-right: 0;
+}
+
+.tree ::ng-deep .tree-node-wrapper {
+  overflow: hidden;
 }

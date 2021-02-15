@@ -1,97 +1,97 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
-import { FlatTreeControl } from '@angular/cdk/tree';
-import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
-import { FeatureNode, FlatNode } from './form-tree-models';
+import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
+import { FeatureNode, FormTreeMetadata } from './form-tree-models';
 import { Feature } from '../../shared/generated';
 import { FormTreeHelpers } from './form-tree-helpers';
-import { FormconfigRepositoryService } from '../../shared/formconfig-repository/formconfig-repository.service';
-import { FormHelpers } from '../form/form-helpers';
+import { Store } from '@ngrx/store';
+import { FormState } from '../state/form.state';
+import * as FormActions from '../state/form.actions';
+import { selectFormConfigs } from '../state/form.selectors';
+import { Subject } from 'rxjs';
+import { filter, map, takeUntil } from 'rxjs/operators';
+import { TreeService } from '../../shared/tree/tree.service';
+import { TreeModel } from '../../shared/tree/models/tree.model';
+import { TransientTreeHelper } from '../../shared/tree/helpers/transient-tree.helper';
 
 @Component({
+  providers: [TreeService],
   selector: 'tailormap-form-tree',
   templateUrl: './form-tree.component.html',
   styleUrls: ['./form-tree.component.css'],
 })
-export class FormTreeComponent implements OnInit, OnChanges {
+export class FormTreeComponent implements OnInit, OnChanges, OnDestroy {
 
-  constructor(
-    private formConfigRepo: FormconfigRepositoryService) {
-  }
-
-  @Output()
-  public nodeClicked = new EventEmitter<Feature>();
+  private destroyed = new Subject();
 
   @Input()
-  public features: Feature[];
+  public features : Feature[];
 
   @Input()
   public isCopy = false;
 
+  private selectedFeature: Feature;
+
   @Input()
-  public feature: Feature;
+  public set feature (feature: Feature) {
+    if (feature && this.transientTreeHelper) {
+      this.transientTreeHelper.selectNode(feature.objectGuid);
+    }
+    this.selectedFeature = feature;
+  }
 
   @Input()
   public featuresToCopy = [];
 
   @Input()
+  public hasCheckboxes = false;
+
+  @Input()
   public isBulk = false;
+  private transientTreeHelper: TransientTreeHelper<FeatureNode>;
 
-  public treeControl = new FlatTreeControl<FlatNode>(node => node.level, node => node.expandable);
-
-  public treeFlattener = new MatTreeFlattener(
-    FormTreeHelpers.transformer, node => node.level, node => node.expandable, node => node.children);
-
-  public dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
+  constructor(
+    private store$: Store<FormState>,
+    private treeService: TreeService) {
+    this.treeService.selectionStateChangedSource$.pipe(
+      takeUntil(this.destroyed),
+      map(nodeId => this.treeService.getNode(nodeId)),
+      filter(node => !node.metadata.isFeatureType),
+    ).subscribe(node => {
+      this.store$.dispatch(FormActions.setFeature({feature: node.metadata.feature}));
+    });
+  }
 
   public ngOnInit() {
+    this.transientTreeHelper = new TransientTreeHelper(
+      this.treeService,
+      true,
+      node => {
+        return !node.metadata.isFeatureType && this.selectedFeature.objectGuid === node.metadata.objectGuid;
+      },
+      this.hasCheckboxes,
+    );
+    if (this.features && this.features.length > 0) {
+      this.createTree(this.features);
+    }
+  }
+
+  public ngOnDestroy() {
+    this.transientTreeHelper.destroy();
+    this.destroyed.next();
+    this.destroyed.complete();
   }
 
   public ngOnChanges(changes: SimpleChanges): void {
-    this.dataSource.data = this.convertFeatureToNode(this.features);
-    this.treeControl.expandAll();
   }
 
-  public setNodeSelected(node: FlatNode) {
-    this.nodeClicked.emit(node.feature);
-  }
-
-  private convertFeatureToNode(features: Feature[]): FeatureNode[] {
-    const nodes: FeatureNode[] = [];
-    features.forEach(feature => {
-      const children: FeatureNode[] = [];
-      if (feature.children) {
-        const fts = {};
-        feature.children.forEach((child: Feature) => {
-          const featureType = child.clazz;
-          if (this.formConfigRepo.getFormConfig(featureType)) {
-            if (!fts.hasOwnProperty(featureType)) {
-              fts[featureType] = {
-                name: FormHelpers.capitalize(featureType),
-                children: [],
-                id: featureType,
-                isFeatureType: true,
-              };
-            }
-            fts[featureType].children.push(this.convertFeatureToNode([child])[0]);
-          }
-        });
-        for (const key in fts) {
-          if (fts.hasOwnProperty(key)) {
-            const child = fts[key];
-            children.push(child);
-          }
-        }
-      }
-      nodes.push({
-        name: this.formConfigRepo.getFeatureLabel(feature),
-        children,
-        objectGuid: feature.objectGuid,
-        feature,
-        selected: feature.objectGuid === this.feature.objectGuid,
-        isFeatureType: false,
-      });
+  private createTree(features) {
+    this.store$.select(selectFormConfigs).pipe(takeUntil(this.destroyed)).subscribe(formConfigs => {
+      const tree : TreeModel<FormTreeMetadata> [] = FormTreeHelpers.convertFeatureToTreeModel(features, formConfigs);
+      this.transientTreeHelper.createTree(tree);
     });
-    return nodes;
+  }
+
+  public closePanel() {
+    this.store$.dispatch(FormActions.setTreeOpen({treeOpen: false}));
   }
 
   public isFeatureForCopyChecked(featureId: number): boolean {
@@ -116,24 +116,6 @@ export class FormTreeComponent implements OnInit, OnChanges {
         }
       }
     }
-
   }
 
-  public getNodeClassName(node: FlatNode) {
-    const treeNodeBaseClass = 'tree-node-wrapper';
-
-    const cls = [
-      treeNodeBaseClass,
-      node.expandable ? `${treeNodeBaseClass}--folder` : `${treeNodeBaseClass}--leaf`,
-      `${treeNodeBaseClass}--level-${node.level}`,
-    ];
-
-    if (node.selected && !this.isBulk) {
-      cls.push(`${treeNodeBaseClass}--selected`);
-    }
-
-    return cls.join(' ');
-  }
-
-  public hasChild = (_: number, node: FlatNode) => node.expandable;
 }

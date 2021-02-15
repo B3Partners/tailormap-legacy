@@ -88,9 +88,9 @@ timestamps {
         }
 
         withEnv(["JAVA_HOME=${ tool 'OpenJDK8' }", "PATH+MAVEN=${tool 'Maven CURRENT'}/bin:${env.JAVA_HOME}/bin"]) {
-            if (env.BRANCH_NAME == 'master') {
+            if (env.BRANCH_NAME == 'master' && env.NODE_NAME == 'master') {
                 stage("Docker image build & push") {
-                    echo "Create a docker image of the master branch"
+                    echo "Create a docker image of the master branch when running on the master node"
                     sh "mvn install -Dmaven.test.skip=true -B -V -e -fae -q"
                     sh "mvn deploy -B -pl :docker -P docker"
                 }

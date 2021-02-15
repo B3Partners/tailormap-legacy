@@ -1,32 +1,42 @@
 import { Workflow } from './Workflow';
 import * as wellknown from 'wellknown';
-import {
-  Feature, Geometry,
-} from '../../shared/generated';
+import { GeoJSONGeometry } from 'wellknown';
+import { Feature, Geometry } from '../../shared/generated';
 import { MapClickedEvent } from '../../shared/models/event-models';
 import { VectorLayer } from '../../../../../bridge/typings';
-import { takeUntil } from 'rxjs/operators';
+import { take, takeUntil } from 'rxjs/operators';
 import { WorkflowHelper } from './workflow.helper';
-import { FormComponent } from '../../feature-form/form/form.component';
-import { DialogData } from '../../feature-form/form/form-models';
 import { Coordinate } from '../../user-interface/models';
-import { GeoJSONGeometry } from 'wellknown';
+import { setOpenFeatureForm } from '../../feature-form/state/form.actions';
+import { selectFeatureFormOpen } from '../../feature-form/state/form.selectors';
+import { combineLatest } from 'rxjs';
+import { selectFormClosed } from '../../feature-form/state/form.state-helpers';
+import { selectFeature } from '../state/workflow.selectors';
+
 export class EditgeometryWorkflow extends Workflow {
 
   constructor() {
     super();
   }
 
+  private feature: Feature = null;
   public afterInit() {
     super.afterInit();
-    this.dialog.getDialogById(this.FORMCOMPONENT_DIALOG_ID).afterClosed().subscribe(value => {
-      this.drawGeom();
-    });
+    combineLatest([
+      this.store$.select(selectFeatureFormOpen),
+      this.store$.pipe(selectFormClosed),
+      this.store$.select(selectFeature),
+    ])
+      .pipe(take(1))
+      .subscribe(([close, nothing, feature]) => {
+        this.feature = feature;
+        this.drawGeom();
+      });
   }
 
   public drawGeom() : void {
-    const feat = this.event.feature
-    const geom = this.featureInitializerService.retrieveGeometry(feat);
+
+    const geom = this.featureInitializerService.retrieveGeometry(this.feature);
     if (geom) {
       this.vectorLayer.readGeoJSON(geom);
 
@@ -47,28 +57,18 @@ export class EditgeometryWorkflow extends Workflow {
   }
 
   private openForm(geom: GeoJSONGeometry | Geometry, geomChanged: boolean) {
-    const feature = this.event.feature;
+    const feature = this.feature;
     const objecttype = feature.objecttype;
     const feat = this.featureInitializerService.create(objecttype,
       {...feature, geometrie: geom  });
     feat.objectGuid = feature.objectGuid;
-    const data : DialogData = {
-      formFeatures: [feat],
-      isBulk: false,
-      alreadyDirty: geomChanged,
-    };
+    this.store$.dispatch(setOpenFeatureForm({ features: [feat], closeAfterSave: false, alreadyDirty: geomChanged }))
 
-    const dialogRef = this.dialog.open(FormComponent, {
-      id: this.FORMCOMPONENT_DIALOG_ID,
-      width: '1050px',
-      height: '800px',
-      disableClose: true,
-      data,
-    });
-    dialogRef.afterClosed().pipe(takeUntil(this.destroyed)).subscribe(result => {
-      this.afterEditting();
-    });
-
+    this.store$.pipe(selectFormClosed)
+      .pipe(take(1))
+      .subscribe(( close) => {
+        this.afterEditting();
+      });
   }
 
   public afterEditting() {

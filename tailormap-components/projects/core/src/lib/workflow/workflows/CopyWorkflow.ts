@@ -3,8 +3,9 @@ import { VectorLayer } from '../../../../../bridge/typings';
 import { MapClickedEvent } from '../../shared/models/event-models';
 import { Feature } from '../../shared/generated';
 import { FormCopyComponent } from '../../feature-form/form-copy/form-copy.component';
-import { LayerUtils } from '../../shared/layer-utils/layer-utils.service';
 import { CopyDialogData } from '../../feature-form/form-copy/form-copy-models';
+import { selectFeature } from '../state/workflow.selectors';
+import { takeUntil } from 'rxjs/operators';
 
 export class CopyWorkflow extends Workflow {
   private feature: Feature;
@@ -15,8 +16,11 @@ export class CopyWorkflow extends Workflow {
 
   public afterInit() {
     super.afterInit();
-    this.feature = this.event.feature;
-    this.openDialog();
+    this.store$.select(selectFeature).pipe(takeUntil(this.destroyed)).subscribe(feature => {
+      this.feature = feature;
+      this.openDialog();
+    });
+
   }
 
   public afterEditting(): void {
@@ -29,21 +33,15 @@ export class CopyWorkflow extends Workflow {
     const x = data.x;
     const y = data.y;
     const scale = data.scale;
-    const featureTypes: string[] = this.getFeatureTypesAllowed();
+    const featureTypes: string[] = [this.feature.clazz];
     this.service.featuretypeOnPoint({featureTypes, x, y, scale}).subscribe(
       (features: Feature[]) => {
         if (features && features.length > 0) {
           const feat = features[0];
-          if ( this.feature.clazz === feat.clazz) {
-            if (!this.hasDestinationFeature(feat)) {
-              this.destinationFeatures.push(feat);
-            }
-            this.highlightDestinationFeatures();
-          } else {
-            this.snackBar.open('Geselecteerde feature is niet van hetzelfde type', '', {
-              duration: 5000,
-            });
+          if (!this.hasDestinationFeature(feat)) {
+            this.destinationFeatures.push(feat);
           }
+          this.highlightDestinationFeatures();
         }
       },
       error => {
@@ -95,17 +93,6 @@ export class CopyWorkflow extends Workflow {
       this.destinationFeatures = [];
       this.endWorkflow();
     });
-  }
-
-  private getFeatureTypesAllowed(): string[] {
-    let allowedFeaturesTypes = [];
-    const sl = this.tailorMap.selectedLayer;
-    if (sl) {
-      allowedFeaturesTypes.push(LayerUtils.sanitizeLayername(sl.layerName));
-    } else {
-      allowedFeaturesTypes = this.formConfigRepo.getFeatureTypes();
-    }
-    return allowedFeaturesTypes;
   }
 
   public getDestinationFeatures(): Feature[] {

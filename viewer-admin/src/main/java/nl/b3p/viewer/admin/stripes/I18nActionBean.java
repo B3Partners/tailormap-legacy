@@ -22,8 +22,8 @@ public class I18nActionBean extends LocalizableActionBean {
     }
 
     /**
-     * Returns the i18next JS translation file based on ViewerResources bundle
-     * @return
+     * Find the i18next JS translation file based on ViewerResources bundle.
+     * @return the i18next JS translation file based on ViewerResources bundle
      */
     public Resolution i18nextJs() {
         context.getResponse().addDateHeader("Expires", System.currentTimeMillis() + (1000 * 60 * 60 * 24));

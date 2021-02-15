@@ -29,6 +29,10 @@ import { TailorMapService } from '../../../../../../bridge/src/tailor-map.servic
 import { AttributelistService } from '../attributelist.service';
 import { ValueService } from '../../../shared/value-service/value.service';
 import { ValueParameters } from '../../../shared/value-service/value-models';
+import { selectFormConfigForFeatureType, selectFormConfigs } from '../../../feature-form/state/form.selectors';
+import { Store } from '@ngrx/store';
+import { FormState } from '../../../feature-form/state/form.state';
+import { FormTreeHelpers } from '../../../feature-form/form-tree/form-tree-helpers';
 
 export class AttributeDataSource extends DataSource<any> {
 
@@ -78,6 +82,8 @@ export class AttributeDataSource extends DataSource<any> {
   }
 
   public disconnect(): void {
+    this.destroyed.next();
+    this.destroyed.complete();
   }
 
   public checkAll(): void {
@@ -195,7 +201,7 @@ export class AttributeDataSource extends DataSource<any> {
     const passportName = LayerUtils.sanitizeLayername(this.params.featureTypeName);
     let columnNames: string[] = [];
     // let response: AttributelistNode;
-    this.formconfigRepoService.formConfigs$.subscribe(formConfigs => {
+    this.store$.select(selectFormConfigs).subscribe(formConfigs => {
       const formConfig = formConfigs.get(passportName);
       if (formConfig && formConfig.fields) {
         columnNames = formConfig.fields.map(attr => attr.key);
@@ -213,7 +219,7 @@ export class AttributeDataSource extends DataSource<any> {
       clearTotalCountCache: true,
     };
     return forkJoin([
-      this.formconfigRepoService.formConfigs$.pipe(take(1), map(formConfigs => {
+      this.store$.select(selectFormConfigs).pipe(take(1), map(formConfigs => {
         const formConfig = formConfigs.get(passportName);
         if (formConfig && formConfig.fields) {
           columnNames = formConfig.fields.map(attr => attr.key);
@@ -302,7 +308,7 @@ export class AttributeDataSource extends DataSource<any> {
       // console.log('passportName: '+passportName);
 
       // Get passport field/column names.
-      this.formconfigRepoService.formConfigs$.subscribe(formConfigs => {
+      this.store$.select(selectFormConfigs).subscribe(formConfigs => {
         const formConfig = formConfigs.get(passportName);
 
         // FOR TESTING!!!
@@ -449,38 +455,42 @@ export class AttributeDataSource extends DataSource<any> {
                   const appLayer = this.tailorMapService.getApplayerById(this.params.layerId);
                   this.mainFeatureClazzName = LayerUtils.sanitizeLayername(appLayer);
                 }
-                const formConfig = this.formconfigRepoService.getFormConfig(passportName);
 
-                data.features.forEach(d => {
-                  // console.log(d);
-                  // console.log(d.related_featuretypes);
+                this.store$.select(selectFormConfigForFeatureType, passportName)
+                  .pipe(takeUntil(this.destroyed))
+                  .subscribe(formConfig => {
+                    data.features.forEach(d => {
+                      // console.log(d);
+                      // console.log(d.related_featuretypes);
 
-                  // Main data?
-                  if (!this.params.hasDetail()) {
-                    // Add property _checked
-                    if (this.checkedIds.find ( id => id === d.object_guid)) {
-                      d._checked = true;
-                    } else {
-                      d._checked = false;
-                    }
-                    // Add property related_featuretypes if not exists.
-                    if (!d.hasOwnProperty('related_featuretypes')) {
-                      d.related_featuretypes = [];
-                    }
-                    // Add property _details and set initial state.
-                    if (d.related_featuretypes.length > 0) {
-                      d._details = DetailsState.YesCollapsed;
-                      d.related_featuretypes.forEach((rel) => {
-                        this.relatedFeatures.set(rel.id, rel);
-                      });
-                    } else {
-                      d._details = DetailsState.No;
-                    }
-                  }
-                  d = this.processRow(d, formConfig);
+                      // Main data?
+                      if (!this.params.hasDetail()) {
+                        // Add property _checked
+                        if (this.checkedIds.find(id => id === d.object_guid)) {
+                          d._checked = true;
+                        } else {
+                          d._checked = false;
+                        }
+                        // Add property related_featuretypes if not exists.
+                        if (!d.hasOwnProperty('related_featuretypes')) {
+                          d.related_featuretypes = [];
+                        }
+                        // Add property _details and set initial state.
+                        if (d.related_featuretypes.length > 0) {
+                          d._details = DetailsState.YesCollapsed;
+                          d.related_featuretypes.forEach((rel) => {
+                            this.relatedFeatures.set(rel.id, rel);
+                          });
+                        } else {
+                          d._details = DetailsState.No;
+                        }
+                      }
+                      d = this.processRow(d, formConfig);
 
-                  this.rows.push(d);
-                });
+                      this.rows.push(d);
+                    });
+
+                  });
               }
             },
             () => {},
@@ -506,7 +516,7 @@ export class AttributeDataSource extends DataSource<any> {
       ...feat,
     };
     formConfig.fields.forEach(field => {
-      newFeat[field.key] = this.formconfigRepoService.getFeatureValueForField(newFeat, field.key, formConfig);
+      newFeat[field.key] = FormTreeHelpers.getFeatureValueForField(newFeat, formConfig, field.key);
     });
     return newFeat;
   }
