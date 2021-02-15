@@ -63,7 +63,7 @@ timestamps {
             sh "curl -s https://codecov.io/bash | bash"
         }
 
-        withEnv(["JAVA_HOME=${ tool 'JDK8' }", "PATH+MAVEN=${tool 'Maven CURRENT'}/bin:${env.JAVA_HOME}/bin"]) {
+        withEnv(["JAVA_HOME=${ tool 'OpenJDK8' }", "PATH+MAVEN=${tool 'Maven CURRENT'}/bin:${env.JAVA_HOME}/bin"]) {
             stage('Check Javadocs') {
                 sh "mvn javadoc:javadoc"
             }
