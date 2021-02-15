@@ -11,12 +11,12 @@ import { ApplicationService } from '../../../application/services/application.se
 import { AttributeListColumnModel } from '../models/attribute-list-column-models';
 
 @Component({
-  selector: 'tailormap-attributelist-details',
-  templateUrl: './attributelist-details.component.html',
-  styleUrls: ['./attributelist-details.component.css'],
+  selector: 'tailormap-attribute-list-details',
+  templateUrl: './attribute-list-details.component.html',
+  styleUrls: ['./attribute-list-details.component.css'],
 })
 
-export class AttributelistDetailsComponent implements OnInit, OnDestroy {
+export class AttributeListDetailsComponent implements OnInit, OnDestroy {
 
   @Input()
   public parentLayerId: string;
@@ -62,6 +62,8 @@ export class AttributelistDetailsComponent implements OnInit, OnDestroy {
       filter: this.featureType.filter,
       page: 1,
       clearTotalCountCache: true,
+      dir: !!sort && !!sort.direction ? sort.direction.toUpperCase() : 'ASC',
+      sort: !!sort ? sort.active : '',
     };
     this.rows$ = this.attributeService.features$(attrParams)
       .pipe(

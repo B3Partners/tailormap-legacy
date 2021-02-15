@@ -7,7 +7,7 @@ import { AttributeListPanelComponent } from './attribute-list-panel/attribute-li
 import { AttributeListTabComponent } from './attribute-list-tab/attribute-list-tab.component';
 import { AttributeListTabToolbarComponent } from './attribute-list-tab-toolbar/attribute-list-tab-toolbar.component';
 import { AttributeListTabContentComponent } from './attribute-list-tab-content/attribute-list-tab-content.component';
-import { AttributelistDetailsComponent } from './attributelist-details/attributelist-details.component';
+import { AttributeListDetailsComponent } from './attribute-list-details/attribute-list-details.component';
 import { AttributelistTableOptionsFormComponent } from './attributelist-table-options-form/attributelist-table-options-form.component';
 
 import { PanelResizerComponent } from '../panel-resizer/panel-resizer.component';
@@ -41,7 +41,7 @@ import { AttributeListManagerService } from './services/attribute-list-manager.s
     AttributeListTabComponent,
     AttributeListTabToolbarComponent,
     AttributeListTabContentComponent,
-    AttributelistDetailsComponent,
+    AttributeListDetailsComponent,
     AttributelistTableOptionsFormComponent,
     DetailsrowDirective,
     PanelResizerComponent,

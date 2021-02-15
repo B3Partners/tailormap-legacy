@@ -38,11 +38,11 @@
     <ng-container matColumnDef="expandedDetail">
       <mat-cell *matCellDef="let currRow" [attr.colspan]="columnNames.length">
         <div class="details-container" *ngIf="currRow._expanded">
-          <tailormap-attributelist-details
+          <tailormap-attribute-list-details
             *ngFor="let featureType of currRow.related_featuretypes"
             [parentLayerId]="layerId"
             [featureType]="featureType">
-          </tailormap-attributelist-details>
+          </tailormap-attribute-list-details>
         </div>
       </mat-cell>
     </ng-container>
