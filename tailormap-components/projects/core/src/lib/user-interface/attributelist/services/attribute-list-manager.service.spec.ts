@@ -6,6 +6,7 @@ import { getMetadataServiceMockProvider } from '../../../application/services/mo
 import { IdService } from '../../../shared/id-service/id.service';
 import { FormConfigMockModule } from '../../../shared/formconfig-repository/formconfig-mock.module.spec';
 import { applicationStateKey, initialApplicationState } from '../../../application/state/application.state';
+import { formStateKey, initialFormState } from '../../../feature-form/state/form.state';
 
 describe('AttributeListManagerService', () => {
 
@@ -13,6 +14,7 @@ describe('AttributeListManagerService', () => {
   const initialState = {
     [attributeListStateKey]: initialAttributeListState,
     [applicationStateKey]: initialApplicationState,
+    [formStateKey]: initialFormState,
   };
   let store: MockStore;
 

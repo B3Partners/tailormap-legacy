@@ -5,7 +5,7 @@ import { AttributeListFeature, AttributeListParameters, RelatedFeatureType } fro
 import { Observable, Subject } from 'rxjs';
 import { AttributeListState } from '../state/attribute-list.state';
 import { Store } from '@ngrx/store';
-import { selectActiveColumnsForFeature, selectFeatureTypeData } from '../state/attribute-list.selectors';
+import { selectFeatureTypeData } from '../state/attribute-list.selectors';
 import { filter, map, takeUntil } from 'rxjs/operators';
 import { ApplicationService } from '../../../application/services/application.service';
 import { AttributeListColumnModel } from '../models/attribute-list-column-models';
