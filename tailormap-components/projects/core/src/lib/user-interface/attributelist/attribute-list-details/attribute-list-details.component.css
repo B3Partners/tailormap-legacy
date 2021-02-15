@@ -3,7 +3,13 @@
   flex: 1;
   display: flex;
   flex-flow: column nowrap;
-  margin: 10px 10px 10px 40px;
+  margin: 10px;
+  background-color: #fff;
+}
+
+.table-header {
+  margin: 8px;
+  font-weight: bold;
 }
 
 .table-container {
@@ -14,6 +20,11 @@
 
 .mat-row {
   border-bottom: 0 none;
+}
+
+.mat-header-cell {
+  color: #0c0524;
+  font-weight: bold;
 }
 
 .mat-row:not(.details-row),
