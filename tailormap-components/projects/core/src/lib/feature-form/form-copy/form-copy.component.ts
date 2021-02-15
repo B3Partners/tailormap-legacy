@@ -59,13 +59,16 @@ export class FormCopyComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroyed)).subscribe(formConfigs => {
       let fieldsToCopy = new Map<string, string>();
       this.originalFeature = this.data.originalFeature;
+      // Kijk of er al een parentFeature is (dit is er op het moment dat er al een keer eerder is gekopieerd)
       if (this.formCopyService.parentFeature != null) {
+        // Kijk of het nieuwe geselecteerde feature van het zelfde type is, om vorige geselecteerde velden terug te zetten
         if (this.formCopyService.parentFeature.objecttype === this.data.originalFeature.objecttype) {
           fieldsToCopy = this.formCopyService.featuresToCopy.get(this.formCopyService.parentFeature.objectGuid);
         }
       }
       this.formCopyService.parentFeature = this.data.originalFeature;
       this.formConfig = formConfigs.get(this.originalFeature.clazz);
+      // zet uiteindelijke fieldstoCopy op de main feature (herstellen van eventuele vorige geselecteerde velden)
       this.formCopyService.featuresToCopy.set(this.originalFeature['objectGuid'], fieldsToCopy);
       if (this.originalFeature.children) {
         for (const child of this.originalFeature.children) {
@@ -73,6 +76,7 @@ export class FormCopyComponent implements OnInit, OnDestroy {
           if (config) {
             // tslint:disable-next-line:no-shadowed-variable
             let fieldsToCopy = new Map<string, string>();
+            // zet velden terug die hiervoor geselecteerd waren.
             this.formCopyService.featuresToCopy.forEach((oldfieldsToCopy, key) => {
               if (oldfieldsToCopy.get('objecttype') === child.objecttype) {
                 fieldsToCopy = oldfieldsToCopy;
@@ -173,6 +177,7 @@ export class FormCopyComponent implements OnInit, OnDestroy {
     return true
   }
 
+  // zet alles aan of uit voor de geselecteerde tab
   public toggle(event: any, tab: string) {
     if (!event.checked) {
       const fieldsToCopy = this.formCopyService.featuresToCopy.get(this.originalFeature['objectGuid']);
@@ -209,6 +214,7 @@ export class FormCopyComponent implements OnInit, OnDestroy {
     }
   }
 
+  // alleen de properties voor main feature
   private getPropertiesToMerge(): any {
     const valuesToCopy = {};
     const fieldsToCopy = this.formCopyService.featuresToCopy.get(this.formCopyService.parentFeature['objectGuid']);
@@ -289,5 +295,19 @@ export class FormCopyComponent implements OnInit, OnDestroy {
       this.dialogRef.updateSize(this.width);
       this.showSidePanel = 'false';
     }
+  }
+
+  public relatedFeaturesCheckedChanged(relFeatures: Map<string, boolean>) {
+    relFeatures.forEach((checked, id) => {
+      if (checked) {
+        this.relatedFeatures.push(id);
+      } else {
+        for (let i = 0; i < this.relatedFeatures.length; i++) {
+          if (id === this.relatedFeatures[i]) {
+            this.relatedFeatures.splice(i, 1);
+          }
+        }
+      }
+    })
   }
 }
