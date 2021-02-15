@@ -12,6 +12,7 @@ import {
 import { of } from 'rxjs';
 import { AttributeListDataService, LoadDataResult } from '../services/attribute-list-data.service';
 import { UpdateAttributeListStateHelper } from '../helpers/update-attribute-list-state.helper';
+import { TailorMapService } from '../../../../../../bridge/src/tailor-map.service';
 
 @Injectable()
 export class AttributeListEffects {
@@ -49,6 +50,12 @@ export class AttributeListEffects {
         this.store$.select(selectFeatureDataForTab, action.layerId),
       ),
     )),
+    tap(([action, tab, featureData]) => {
+      const mainFilter = this.attributeListDataService.getFilter(tab, tab.featureType, featureData);
+      const viewerController = this.tailorMapService.getViewerController();
+      const appLayer = viewerController.getAppLayerById(+(action.layerId));
+      viewerController.setFilterString(mainFilter, appLayer, 'ngattributelist');
+    }),
     concatMap(([action, tab, featureData]) => {
       return this.attributeListDataService.loadData$(tab, featureData).pipe(
         map(result => AttributeListActions.loadDataForTabSuccess({layerId: action.layerId, data: result})),
@@ -98,20 +105,30 @@ export class AttributeListEffects {
     }),
   ));
 
-  public setColumnFilter$ = createEffect(() => this.actions$.pipe(
-    ofType(AttributeListActions.setColumnFilter),
+  public updateColumnFilter$ = createEffect(() => this.actions$.pipe(
+    ofType(
+      AttributeListActions.setColumnFilter,
+      AttributeListActions.deleteColumnFilter,
+      AttributeListActions.clearAllFilters,
+      AttributeListActions.clearFilterForFeatureType,
+    ),
     concatMap( action => [
       AttributeListActions.loadDataForTab({layerId: action.layerId}),
       AttributeListActions.loadTotalCountForTab({layerId: action.layerId}),
     ]),
   ));
 
-  public deleteColumnFilter$ = createEffect(() => this.actions$.pipe(
-    ofType(AttributeListActions.deleteColumnFilter),
-    concatMap( action => [
-      AttributeListActions.loadDataForTab({layerId: action.layerId}),
-      AttributeListActions.loadTotalCountForTab({layerId: action.layerId}),
-    ]),
+  public clearCountAfterCheckChange$ = createEffect(() => this.actions$.pipe(
+    ofType(AttributeListActions.toggleCheckedAllRows, AttributeListActions.updateRowChecked),
+    concatMap(action => of(action).pipe(
+      withLatestFrom(
+        this.store$.select(selectFeatureDataAndRelatedFeatureDataForFeatureType, action.featureType),
+      ),
+    )),
+    map(([ action, featureData ]) => {
+      const relatedFeatures = featureData.filter(data => data.featureType !== action.featureType);
+      return AttributeListActions.clearCountForFeatureTypes({ featureTypes: relatedFeatures.map(data => data.featureType)});
+    }),
   ));
 
   constructor(
@@ -119,6 +136,7 @@ export class AttributeListEffects {
     private store$: Store<AttributeListState>,
     private attributeListDataService: AttributeListDataService,
     private highlightService: HighlightService,
+    private tailorMapService: TailorMapService,
   ) {
   }
 

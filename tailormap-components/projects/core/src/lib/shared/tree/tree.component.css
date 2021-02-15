@@ -45,7 +45,8 @@ mat-checkbox {
 }
 
 .tree-node-wrapper--selected {
-  background-color: #d6deff;
+  background-color: rgba(98, 54, 255, 0.1);
+  color: #6236ff;
 }
 
 .tree-node-wrapper--level-0.tree-node-wrapper--leaf,

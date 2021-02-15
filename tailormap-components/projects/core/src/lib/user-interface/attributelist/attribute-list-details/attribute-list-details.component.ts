@@ -56,6 +56,10 @@ export class AttributeListDetailsComponent implements OnInit, OnDestroy {
     this.updateTable(sort);
   }
 
+  public trackById(idx: number, feature: AttributeListFeature) {
+    return feature.__fid;
+  }
+
   private updateTable(sort?: Sort): void {
     const attrParams: AttributeListParameters = {
       application: this.applicationService.getId(),

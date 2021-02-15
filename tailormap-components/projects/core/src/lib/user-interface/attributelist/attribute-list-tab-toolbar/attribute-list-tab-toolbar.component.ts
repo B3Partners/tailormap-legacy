@@ -7,7 +7,7 @@ import { MetadataService } from '../../../application/services/metadata.service'
 import { forkJoin, Observable, of, Subject } from 'rxjs';
 import { filter, map, switchMap, take, takeUntil } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
-import { AttributelistLayernameChooserComponent } from '../attributelist-layername-chooser/attributelist-layername-chooser.component';
+import { AttributeListLayernameChooserComponent } from '../attribute-list-layername-chooser/attribute-list-layername-chooser.component';
 import { UserLayerHelper } from '../../../analysis/helpers/user-layer.helper';
 import { Store } from '@ngrx/store';
 import { AttributeListState } from '../state/attribute-list.state';
@@ -20,6 +20,10 @@ import { PopoverPositionEnum } from '../../../shared/popover/models/popover-posi
 import { AttributeListFeatureTypeData } from '../models/attribute-list-feature-type-data.model';
 import { PageEvent } from '@angular/material/paginator';
 import { clearAllFilters, clearFilterForFeatureType, updatePage } from '../state/attribute-list.actions';
+import { Feature } from '../../../shared/generated';
+import * as wellknown from 'wellknown';
+import { LayerUtils } from '../../../shared/layer-utils/layer-utils.service';
+import { setOpenFeatureForm } from '../../../feature-form/state/form.actions';
 
 @Component({
   selector: 'tailormap-attribute-list-tab-toolbar',
@@ -91,7 +95,7 @@ export class AttributeListTabToolbarComponent implements OnInit, OnDestroy {
   }
 
   public createUserLayer(): void {
-      const dialogRef = this.dialog.open(AttributelistLayernameChooserComponent, {
+      const dialogRef = this.dialog.open(AttributeListLayernameChooserComponent, {
         width: '250px',
         data: {},
       });
@@ -119,7 +123,7 @@ export class AttributeListTabToolbarComponent implements OnInit, OnDestroy {
   }
 
   public onClearFeatureTypeFilterClick(): void {
-    this.store$.dispatch(clearFilterForFeatureType({ featureType: this.featureType }));
+    this.store$.dispatch(clearFilterForFeatureType({ layerId: this.layerId, featureType: this.featureType }));
   }
 
   public onClearAllFilterClick(): void {
@@ -133,6 +137,7 @@ export class AttributeListTabToolbarComponent implements OnInit, OnDestroy {
   public openAttributeTree(): void {
     if (this.popoverRef && this.popoverRef.isOpen) {
       this.popoverRef.close();
+      return;
     }
     const WINDOW_WIDTH = 400;
     this.popoverRef = this.popoverService.open({
@@ -152,7 +157,36 @@ export class AttributeListTabToolbarComponent implements OnInit, OnDestroy {
   }
 
   public openPassportForm(): void {
-    alert('Open Passport Form Dialog - Table component');
+    const features = this.getCheckedRowsAsFeatures();
+    if (features.length === 0) {
+      return;
+    }
+    this.store$.dispatch(setOpenFeatureForm({ features, closeAfterSave: true }));
+  }
+
+  /**
+   * @TODO: check how to make this more generic and not tight to certain data types
+   */
+  private getCheckedRowsAsFeatures(): Feature[] {
+    const feature = {} as Feature;
+    const featuresChecked: Feature[] = [];
+    this.featureTypeData.rows.forEach(row => {
+      if (row._checked) {
+        const { object_guid, related_featuretypes, __fid, _checked, _expanded, _selected, rowId, geometrie, ...rest } = row;
+        if (row.geometrie) {
+          rest.geometrie =  wellknown.parse(row.geometrie);
+        }
+        const appLayer = this.tailorMapService.getApplayerById(+(this.featureTypeData.layerId));
+        const className = LayerUtils.sanitizeLayername(appLayer);
+        feature.children = [];
+        feature.clazz = className;
+        feature.objectGuid = row.object_guid;
+        feature.relatedFeatureTypes = row.related_featuretypes;
+        feature.objecttype = className[0].toUpperCase() + className.substr(1);
+        featuresChecked.push({ ...feature, ...rest });
+      }
+    });
+    return featuresChecked;
   }
 
 }

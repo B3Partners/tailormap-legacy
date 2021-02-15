@@ -2,7 +2,7 @@
   box-shadow: 0 1px 0 0 rgba(0, 0, 0, 0.05), 0 -3px 4px 0 rgba(0, 0, 0, 0.08);
   width: 100%;
   height: 100%;
-  overflow: auto;
+  overflow: hidden;
   display: flex;
   flex-flow: column nowrap;
   font-size: 15px;
@@ -54,4 +54,9 @@
 
 .mat-divider {
   background: #e5e5e5;
+}
+
+.tab-group {
+  flex: 1;
+  overflow: hidden;
 }

@@ -1,7 +1,8 @@
 <div class="container">
   <div class="table-header">{{featureType.foreignFeatureTypeName}}</div>
   <div class="table-container">
-    <mat-table #detailtable [dataSource]="rows$"
+    <mat-table [dataSource]="rows$"
+               [trackBy]="trackById"
                matSort
                (matSortChange)="onSortClick($event)">
 
@@ -10,7 +11,7 @@
         <mat-cell *matCellDef="let currRow;"> {{currRow[col.name]}}</mat-cell>
       </ng-container>
       <mat-header-row *matHeaderRowDef="columnsNames"></mat-header-row>
-      <mat-row *matRowDef="let row; columns: columnsNames;"></mat-row>
+      <mat-row *matRowDef="let row; let dataIndex = index; columns: columnsNames;" [class.even_row]="dataIndex % 2 === 1"></mat-row>
     </mat-table>
   </div>
 </div>

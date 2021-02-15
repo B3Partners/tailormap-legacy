@@ -145,17 +145,20 @@ export class AttributeListDataService {
     });
   }
 
-  private getFilter(
+  public getFilter(
     tab: AttributeListTabModel,
     featureType: number,
     tabFeatureData: AttributeListFeatureTypeData[],
   ): string {
     const filters = new Map<number, string>();
     tabFeatureData.forEach(data => {
-      filters.set(data.featureType, data.filter.map(filter => this.getQueryForFilter(filter)).join(' AND '))
+      const query = data.filter.map(filter => this.getQueryForFilter(filter)).join(' AND ');
+      if (query !== '') {
+        filters.set(data.featureType, query);
+      }
     });
     const isRelatedFeature = tab.featureType !== featureType;
-    const mainFeatureData = tabFeatureData.find(data => featureType === tab.featureType);
+    const mainFeatureData = tabFeatureData.find(data => data.featureType === tab.featureType);
     return this.getQueryForFeatureType(tab, featureType, filters, isRelatedFeature, mainFeatureData);
   }
 
@@ -174,7 +177,7 @@ export class AttributeListDataService {
       if (relationFilter) {
         const filter = `RELATED_FEATURE(${tab.featureType},${relation.foreignFeatureType},(${relationFilter}))`;
         if (isRelatedFeature) {
-          return `RELATED_FEATURE(${featureType},${tab.featureType},(${filter})`;
+          return `RELATED_FEATURE(${featureType},${tab.featureType},(${filter}))`;
         }
         return filter;
       }
@@ -184,9 +187,41 @@ export class AttributeListDataService {
       featureFilter.push(filters.get(featureType));
     }
     if (isRelatedFeature && filters.has(tab.featureType)) {
-      featureFilter.push(`RELATED_FEATURE(${featureType},${tab.featureType},(${filters.get(tab.featureType)})`);
+      featureFilter.push(`RELATED_FEATURE(${featureType},${tab.featureType},(${filters.get(tab.featureType)}))`);
+    }
+    if (isRelatedFeature && mainFeatureData.checkedFeatures.length > 0) {
+      const checkedRowsFilter = this.getQueryForCheckedRows(tab, featureType, mainFeatureData);
+      if (checkedRowsFilter) {
+        featureFilter.push(checkedRowsFilter);
+      }
     }
     return featureFilter.filter(f => !!f).join(' AND ');
+  }
+
+  private getQueryForCheckedRows(
+    tab: AttributeListTabModel,
+    featureType: number,
+    mainFeatureData: AttributeListFeatureTypeData,
+  ) {
+    const currentRelation = tab.relatedFeatures.find(r => r.foreignFeatureType === featureType);
+    const selectedRowsFilter = [];
+    if (currentRelation) {
+      currentRelation.relationKeys.forEach(relation => {
+        const checkedFeatureKeys = new Set<string>();
+        mainFeatureData.checkedFeatures.forEach(checkedFeature => {
+          if (checkedFeature[relation.leftSideName]) {
+            checkedFeatureKeys.add(AttributeTypeHelper.getExpression(`${checkedFeature[relation.leftSideName]}`, AttributeTypeEnum.STRING));
+          }
+        });
+        if (checkedFeatureKeys.size !== 0) {
+          selectedRowsFilter.push(`${relation.rightSideName} IN (${Array.from(checkedFeatureKeys).join(',')})`);
+        }
+      });
+    }
+    if (selectedRowsFilter.length === 0) {
+      return '';
+    }
+    return `(${selectedRowsFilter.join(' AND ')})`;
   }
 
   private getQueryForFilter(filter: AttributeListFilterModel): string {

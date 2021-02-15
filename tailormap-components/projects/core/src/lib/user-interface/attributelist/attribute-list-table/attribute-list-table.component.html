@@ -51,7 +51,9 @@
     <mat-header-row *matHeaderRowDef="columnNames; sticky: true;"></mat-header-row>
 
     <mat-row *matRowDef="let row; let dataIndex = dataIndex; columns: columnNames;"
-             (click)="onRowClick($event, row);" [class.even_row]="dataIndex % 2 === 1"></mat-row>
+             (click)="onRowClick($event, row);"
+             [class.even_row]="dataIndex % 2 === 1"
+             [class.selected_row]="row._selected"></mat-row>
 
     <mat-row *matRowDef="let row; columns: ['expandedDetail']" class="details-row"
              [@detailExpand]="row._expanded ? 'expanded' : 'collapsed'"></mat-row>

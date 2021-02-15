@@ -8,7 +8,7 @@ import { AttributeListTabComponent } from './attribute-list-tab/attribute-list-t
 import { AttributeListTabToolbarComponent } from './attribute-list-tab-toolbar/attribute-list-tab-toolbar.component';
 import { AttributeListDetailsComponent } from './attribute-list-details/attribute-list-details.component';
 import { PanelResizerComponent } from '../panel-resizer/panel-resizer.component';
-import { AttributelistLayernameChooserComponent } from './attributelist-layername-chooser/attributelist-layername-chooser.component';
+import { AttributeListLayernameChooserComponent } from './attribute-list-layername-chooser/attribute-list-layername-chooser.component';
 import { AttributeListComponent } from './attribute-list/attribute-list.component';
 import { AttributeListButtonComponent } from './attribute-list-button/attribute-list-button.component';
 import { StoreModule } from '@ngrx/store';
@@ -35,7 +35,7 @@ import { AttributeListManagerService } from './services/attribute-list-manager.s
     AttributeListTabToolbarComponent,
     AttributeListDetailsComponent,
     PanelResizerComponent,
-    AttributelistLayernameChooserComponent,
+    AttributeListLayernameChooserComponent,
     AttributeListComponent,
     AttributeListButtonComponent,
     AttributeListTableComponent,

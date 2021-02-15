@@ -281,11 +281,21 @@ const onUpdateRowExpanded = (
 const onUpdateRowSelected = (
   state: AttributeListState,
   payload: ReturnType<typeof AttributeListActions.updateRowSelected>,
-): AttributeListState => updateTabRow(state, payload.featureType, payload.rowId, row => ({ ...row, _selected: payload.selected }));
+): AttributeListState => updateFeatureData(state, payload.featureType, featureData => {
+  return {
+    ...featureData,
+    rows: featureData.rows.map(row => {
+      if (row.rowId === payload.rowId) {
+        return { ...row, _selected: payload.selected };
+      }
+      return ({ ...row, _selected: false });
+    }),
+  };
+});
 
 const onSetSelectedFeatureType = (
   state: AttributeListState,
-  payload: ReturnType<typeof AttributeListActions.updateRowSelected>,
+  payload: ReturnType<typeof AttributeListActions.setSelectedFeatureType>,
 ): AttributeListState => updateTab(state, payload.layerId, tab => UpdateAttributeListStateHelper.updateTabForAction(payload, tab));
 
 const onChangeColumnPosition = (
@@ -399,6 +409,24 @@ const onClearAllFilters = (
   };
 };
 
+const onClearCountForFeatureTypes = (
+  state: AttributeListState,
+  payload: ReturnType<typeof AttributeListActions.clearCountForFeatureTypes>,
+): AttributeListState => {
+  return {
+    ...state,
+    featureTypeData: state.featureTypeData.map(data => {
+      if (payload.featureTypes.includes(data.featureType)) {
+        return {
+          ...data,
+          totalCount: null,
+        };
+      }
+      return data;
+    }),
+  };
+};
+
 const attributeListReducerImpl = createReducer(
   initialAttributeListState,
   on(AttributeListActions.setAttributeListVisibility, onSetAttributeListVisibility),
@@ -423,6 +451,7 @@ const attributeListReducerImpl = createReducer(
   on(AttributeListActions.deleteColumnFilter, onDeleteColumnFilter),
   on(AttributeListActions.clearFilterForFeatureType, onClearFilterForFeatureType),
   on(AttributeListActions.clearAllFilters, onClearAllFilters),
+  on(AttributeListActions.clearCountForFeatureTypes, onClearCountForFeatureTypes),
 );
 
 export const attributeListReducer = (state: AttributeListState | undefined, action: Action) => {

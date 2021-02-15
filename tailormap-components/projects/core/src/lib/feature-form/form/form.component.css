@@ -61,7 +61,6 @@ tailormap-tree ::ng-deep .tree-wrapper {
 
 .tree ::ng-deep .tree-node-wrapper--selected {
   font-weight: bold;
-  background-color: rgba(53, 89, 254, 0.2);
   width: 100%;
 }
 

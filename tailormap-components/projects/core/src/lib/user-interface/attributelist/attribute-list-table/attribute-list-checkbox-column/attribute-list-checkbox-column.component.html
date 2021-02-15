@@ -4,7 +4,7 @@
   </mat-header-cell>
 
   <mat-cell class="column_small" *matCellDef="let currRow;">
-    <mat-checkbox [checked]="currRow._checked" (change)="onRowCheckClick(currRow)"></mat-checkbox>
+    <mat-checkbox [checked]="currRow._checked" (change)="onRowCheckClick(currRow)" (click)="$event.stopPropagation()"></mat-checkbox>
   </mat-cell>
 
   <mat-footer-cell class="column_small" *matFooterCellDef>

@@ -114,10 +114,15 @@ export const deleteColumnFilter = createAction(
 
 export const clearFilterForFeatureType = createAction(
   `${attributeListActionsPrefix} Clear Filter For Feature Type`,
-  props<{ featureType: number }>(),
+  props<{ layerId: string, featureType: number }>(),
 );
 
 export const clearAllFilters = createAction(
   `${attributeListActionsPrefix} Clear All Filters`,
   props<{ layerId: string }>(),
+);
+
+export const clearCountForFeatureTypes = createAction(
+  `${attributeListActionsPrefix} Clear Count For Feature Types`,
+  props<{ featureTypes: number[] }>(),
 );

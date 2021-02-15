@@ -3,7 +3,7 @@ import { AttributeService } from '../../shared/attribute-service/attribute.servi
 import { Store } from '@ngrx/store';
 import { ApplicationState } from '../state/application.state';
 import { selectApplicationId } from '../state/application.selectors';
-import { concatMap, map, switchMap, takeUntil, takeWhile, tap } from 'rxjs/operators';
+import { catchError, concatMap, map, switchMap, takeUntil, takeWhile, tap } from 'rxjs/operators';
 import { combineLatest, Observable, of, Subject } from 'rxjs';
 import { AttributeListParameters, AttributeListResponse, AttributeMetadataResponse } from '../../shared/attribute-service/attribute-models';
 import { Attribute as GbiAttribute } from '../../feature-form/form/form-models';
@@ -132,9 +132,16 @@ export class MetadataService implements OnDestroy {
           return this.attributeService.features$({
             ...featureParams,
             filter: query,
-          });
+          }).pipe(
+            catchError(e => of({ total: 0, success: false })),
+          );
         }),
-        map<AttributeListResponse, number>(response => response.total),
+        map<AttributeListResponse, number>(response => {
+          if (response.success) {
+            return response.total;
+          }
+          return 0;
+        }),
       );
   }
 

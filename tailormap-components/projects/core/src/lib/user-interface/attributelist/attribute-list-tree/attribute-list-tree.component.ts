@@ -29,8 +29,8 @@ export class AttributeListTreeComponent implements OnInit, OnDestroy {
     this.store$.select(selectFeatureDataForTab, this.layerId)
       .pipe(takeUntil(this.destroyed))
       .subscribe(featureData => {
-        const hasTotalCounts = featureData.findIndex(data => data.totalCount === null) !== -1;
-        if (hasTotalCounts) {
+        const emptyTotalCount = featureData.findIndex(data => data.totalCount === null) !== -1;
+        if (emptyTotalCount) {
           this.store$.dispatch(loadTotalCountForTab({ layerId: this.layerId }));
         }
       });
