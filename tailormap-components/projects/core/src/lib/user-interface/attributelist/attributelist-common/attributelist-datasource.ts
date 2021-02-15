@@ -8,7 +8,7 @@
 
 import { DataSource } from '@angular/cdk/table';
 import * as wellknown from 'wellknown';
-import { forkJoin, Observable, of } from 'rxjs';
+import { forkJoin, Observable, of, Subject } from 'rxjs';
 
 import { AttributelistTable, RowData } from './attributelist-models';
 import { AttributelistColumnController } from './attributelist-column-controller';
@@ -23,7 +23,7 @@ import { Feature } from '../../../shared/generated';
 import { FormconfigRepositoryService } from '../../../shared/formconfig-repository/formconfig-repository.service';
 import { LayerUtils } from '../../../shared/layer-utils/layer-utils.service';
 import { FormConfiguration } from '../../../feature-form/form/form-models';
-import { map, take } from 'rxjs/operators';
+import { map, take, takeUntil } from 'rxjs/operators';
 import { AttributelistNode, SelectedTreeData } from '../attributelist-tree/attributelist-tree-models';
 import { TailorMapService } from '../../../../../../bridge/src/tailor-map.service';
 import { AttributelistService } from '../attributelist.service';
@@ -33,6 +33,7 @@ import { selectFormConfigForFeatureType, selectFormConfigs } from '../../../feat
 import { Store } from '@ngrx/store';
 import { FormState } from '../../../feature-form/state/form.state';
 import { FormTreeHelpers } from '../../../feature-form/form-tree/form-tree-helpers';
+import { AttributeListState } from '../state/attribute-list.state';
 
 export class AttributeDataSource extends DataSource<any> {
 
@@ -62,12 +63,14 @@ export class AttributeDataSource extends DataSource<any> {
 
   private checkedIds: number[] = [];
 
+  private destroyed = new Subject();
+
   constructor(
     private attributeService: AttributeService,
     private valueService: ValueService,
     private attributelistService: AttributelistService,
     private tailorMapService: TailorMapService,
-    private formconfigRepoService: FormconfigRepositoryService,
+    private store$: Store<AttributeListState>,
   ) {
     super();
   }
