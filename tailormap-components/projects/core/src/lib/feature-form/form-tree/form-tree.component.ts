@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
+import { Component, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, EventEmitter } from '@angular/core';
 import { FeatureNode, FormTreeMetadata } from './form-tree-models';
 import { Feature } from '../../shared/generated';
 import { FormTreeHelpers } from './form-tree-helpers';
@@ -38,6 +38,9 @@ export class FormTreeComponent implements OnInit, OnChanges, OnDestroy {
     this.selectedFeature = feature;
   }
 
+  @Output()
+  public relatedFeatureChecked: EventEmitter<Map<string, boolean>> = new EventEmitter();
+
   @Input()
   public featuresToCopy = [];
 
@@ -72,6 +75,16 @@ export class FormTreeComponent implements OnInit, OnChanges, OnDestroy {
     if (this.features && this.features.length > 0) {
       this.createTree(this.features);
     }
+    this.treeService.checkStateChangedSource$.pipe(takeUntil(this.destroyed)).subscribe( event => {
+      const relIds = new Map<string, boolean>();
+      event.forEach((checked, id) => {
+        const node = this.treeService.getNode(id);
+        if (node.metadata.feature) {
+          relIds.set(node.metadata.feature.objectGuid, checked);
+        }
+      })
+      this.relatedFeatureChecked.emit(relIds);
+    })
   }
 
   public ngOnDestroy() {
@@ -93,29 +106,4 @@ export class FormTreeComponent implements OnInit, OnChanges, OnDestroy {
   public closePanel() {
     this.store$.dispatch(FormActions.setTreeOpen({treeOpen: false}));
   }
-
-  public isFeatureForCopyChecked(featureId: number): boolean {
-    const isIn = false;
-    // tslint:disable-next-line:prefer-for-of
-    for (let i = 0; i < this.featuresToCopy.length; i++) {
-      if (featureId === this.featuresToCopy[i]) {
-        return true;
-      }
-    }
-    return isIn;
-  }
-
-  public addFeatureForCopy(event: any, featureId: number) {
-    if (event.checked) {
-      this.featuresToCopy.push(featureId);
-    }
-     else {
-      for (let i = 0; i < this.featuresToCopy.length; i++) {
-        if (featureId === this.featuresToCopy[i]) {
-          this.featuresToCopy.splice(i, 1);
-        }
-      }
-    }
-  }
-
 }

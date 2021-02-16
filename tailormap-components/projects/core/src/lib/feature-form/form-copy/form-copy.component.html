@@ -11,7 +11,7 @@
             [features]=[this.data.originalFeature]
             [isCopy] = true
             [hasCheckboxes]="true"
-            [featuresToCopy] = relatedFeatures
+            (relatedFeatureChecked) = "relatedFeaturesCheckedChanged($event)"
             [feature]=originalFeature></tailormap-form-tree>
       </mat-expansion-panel>
     </mat-accordion>
