@@ -108,7 +108,7 @@ public class FlamingoCQLTest extends TestUtil{
         // uitkomst moet dus zijn:
         // select * from begroeid_terreinvakonderdeel_bestaand where fid in (select ident from begroeid_terreindeel where fysiek_voork = 'aap')
       //  String input = "RELATED_FEATURE(2,5,(fysiek_voork IN ('aap')))";
-        String input = "RELATED_FEATURE(2,5,(verhardingssoort IN ('ASF','ASR','BDF'))";
+        String input = "RELATED_FEATURE(2,5,(verhardingssoort IN ('ASF','ASR','BDF')))";
         Filter output = cql.toFilter(input, entityManager, false);
         assertEquals(Subselect.class, output.getClass());
         assertEquals("begroeid_terreindeel", ((Subselect)output).getRelatedTable());
