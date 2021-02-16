@@ -16,19 +16,29 @@ export class OverlayRef<R = any, T = any> {
   protected afterClosedSubject$ = new Subject<OverlayCloseEvent<R>>();
   public afterClosed$ = this.afterClosedSubject$.asObservable();
 
+  public isOpen: boolean;
+
   constructor(
     public overlay: CdkOverlayRef,
     public data: T,
     protected refConfig?: OverlayRefConfig,
   ) {
+    this.isOpen = true;
     overlay.backdropClick().subscribe(() => this._close('backdropClick', null));
   }
 
   public close(data?: R) {
+    if (!this.isOpen) {
+      return;
+    }
     this._close('close', data);
   }
 
   protected _close(type: 'backdropClick' | 'close', data: R) {
+    if (!this.isOpen) {
+      return;
+    }
+    this.isOpen = false;
     this.destroy();
     this.overlay.dispose();
     this.afterClosedSubject$.next({

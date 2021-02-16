@@ -1,15 +1,5 @@
-<div class="resize-panel"
-     (mouseenter)="onPanelMouseEnter();"
-     (mouseleave)="onPanelMouseLeave();" >
-
-  <div class="resize-handle" *ngIf="visible">
-    <div class="resize-handle-inner"
-         (mousedown)="onHandleMouseDown($event);">
-    </div>
+<div class="resize-panel">
+  <div class="resize-handle" *ngIf="visible" (mousedown)="onHandleMouseDown($event);">
+    <mat-icon svgIcon="contextual_resize"></mat-icon>
   </div>
-<!--  <div class="resize-handle" #resizehandle>-->
-<!--    <div class="resize-handle-inner"-->
-<!--       (mousedown)="onHandleMouseDown($event);">-->
-<!--    </div>-->
-<!--  </div>-->
 </div>

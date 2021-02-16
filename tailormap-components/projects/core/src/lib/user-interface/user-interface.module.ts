@@ -1,9 +1,8 @@
 import { NgModule } from '@angular/core';
 
-import { MatIconModule } from '@angular/material/icon';
 import { MatPaginatorIntl } from '@angular/material/paginator';
 
-import { AttributelistModule } from './attributelist/attributelist.module';
+import { AttributeListModule } from './attributelist/attribute-list.module';
 import { CommonModule } from '@angular/common';
 import { PaginatorLabels } from './paginator-labels';
 import { SharedModule } from '../shared/shared.module';
@@ -30,16 +29,14 @@ import { LabelFieldComponent } from './generic-components/label-field/label-fiel
   imports: [
     CommonModule,
     SharedModule,
-    MatIconModule,
-    AttributelistModule,
+    AttributeListModule,
   ],
   exports: [
-        MatIconModule,
-        EditBarComponent,
-        GeometryConfirmButtonsComponent,
-        InputFieldComponent,
-        LabelFieldComponent,
-    ],
+    EditBarComponent,
+    GeometryConfirmButtonsComponent,
+    InputFieldComponent,
+    LabelFieldComponent,
+  ],
   entryComponents: [],
   providers: [
     {

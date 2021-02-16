@@ -1,0 +1,4 @@
+<ng-container *ngIf="featureType$ | async as featureType">
+  <tailormap-attribute-list-tab-toolbar [layerId]="layerId" [featureType]="featureType"></tailormap-attribute-list-tab-toolbar>
+  <tailormap-attribute-list-table [layerId]="layerId"></tailormap-attribute-list-table>
+</ng-container>

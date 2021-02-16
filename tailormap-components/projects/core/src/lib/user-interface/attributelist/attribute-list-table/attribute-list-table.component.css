@@ -1,0 +1,114 @@
+.table-container {
+  max-width: 100%;
+  overflow: auto;
+  padding: 0 6px;
+  height: 100%;
+}
+
+mat-table {
+  min-width: min-content;
+}
+
+.column_small {
+  flex: none !important;
+  width: 40px !important;
+}
+
+.iconChar,
+.iconCharNo {
+  font-size: 20px;
+  font-weight: bold;
+  color: #5f35f7;
+}
+
+.iconCharNo {
+  color: lightgray;
+}
+
+.iconChar {
+  cursor: pointer;
+}
+
+.material-icons {
+  font-size: 20px;
+}
+
+.material-icons-set {
+  color: #5f35f7;
+}
+
+.material-icons-unset {
+  color: rgba(0, 0, 0, 0.26);
+}
+
+.mat-icon {
+  padding-top: 4px;
+  padding-left: 4px;
+}
+
+.mat-flat-button {
+  line-height: 26px;
+}
+
+.details-row {
+  overflow: hidden;
+}
+
+.details-container {
+  overflow: hidden;
+  flex: 1;
+  background-color: #e8e8e8;
+}
+
+.mat-row {
+  border-bottom: 0 none;
+}
+
+.mat-header-cell {
+  color: #0c0524;
+  font-weight: bold;
+}
+
+.mat-row:not(.details-row),
+.mat-header-row,
+mat-footer-row {
+  min-height: 45px;
+}
+
+.mat-cell,
+.mat-header-cell,
+mat-footer-cell {
+  overflow-x: hidden;
+  white-space: nowrap;
+  width: 170px;
+  padding-right: 5px !important;
+  margin-right: 5px;
+}
+
+.mat-cell:first-of-type,
+.mat-header-cell:first-of-type,
+.mat-footer-cell:first-of-type {
+  padding-left: 5px;
+  margin-left: 5px;
+}
+
+.details-row .mat-cell {
+  padding: 0;
+  margin: 0;
+}
+
+.even_row {
+  background-color: #f6f5f6;
+}
+
+.selected_row {
+  background-color: rgba(98, 54, 255, 0.1);
+}
+
+.selected_row .mat-cell {
+  color: #6236ff;
+}
+
+.expanded_row {
+  background-color: #e8e8e8;
+}

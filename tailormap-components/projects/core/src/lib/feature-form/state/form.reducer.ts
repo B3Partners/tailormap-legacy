@@ -36,6 +36,7 @@ const onSetTreeOpen = (state: FormState, payload :  ReturnType<typeof FormAction
 
 const onSetFormConfigs = (state: FormState, payload : ReturnType<typeof FormActions.setFormConfigs>): FormState => ({
   ...state,
+  formConfigsLoaded: true,
   formConfigs: payload.formConfigs,
 });
 

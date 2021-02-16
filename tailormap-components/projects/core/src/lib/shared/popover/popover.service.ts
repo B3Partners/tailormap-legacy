@@ -26,7 +26,7 @@ export class PopoverService {
       params.width,
       params.height,
       params.hasBackdrop,
-      this.getOverlayPosition(params.origin, params.position),
+      this.getOverlayPosition(params.origin, params.position, params.positionOffset),
     );
     return this.overlayService.open(
       params.content,
@@ -52,29 +52,67 @@ export class PopoverService {
     });
   }
 
-  private getOverlayPosition(origin: HTMLElement, position?: PopoverPositionEnum): PositionStrategy {
+  private getOverlayPosition(origin: HTMLElement, position?: PopoverPositionEnum, positionOffset?: number): PositionStrategy {
     const positionStrategy = this.overlay.position()
       .flexibleConnectedTo(origin)
-      .withPositions(this.getPositions(position))
+      .withPositions(this.getPositions(position, positionOffset))
       .withPush(false);
 
     return positionStrategy;
   }
 
-  private getPositions(position?: PopoverPositionEnum): ConnectionPositionPair[] {
-    if (position === PopoverPositionEnum.TOP_RIGHT_DOWN) {
+  private getPositions(position?: PopoverPositionEnum, positionOffset?: number): ConnectionPositionPair[] {
+    if (position === PopoverPositionEnum.BOTTOM_RIGHT_DOWN) {
       return [
         {
           originX: 'end',
-          originY: 'top',
+          originY: 'bottom',
           overlayX: 'end',
           overlayY: 'top',
+          offsetY: positionOffset || 0,
         },
         {
           originX: 'end',
           originY: 'top',
           overlayX: 'end',
           overlayY: 'bottom',
+          offsetY: -1 * (positionOffset || 0),
+        },
+      ];
+    }
+    if (position === PopoverPositionEnum.BOTTOM_LEFT_DOWN) {
+      return [
+        {
+          originX: 'start',
+          originY: 'bottom',
+          overlayX: 'start',
+          overlayY: 'top',
+          offsetY: positionOffset || 0,
+        },
+        {
+          originX: 'start',
+          originY: 'top',
+          overlayX: 'start',
+          overlayY: 'bottom',
+          offsetY: -1 * (positionOffset || 0),
+        },
+      ];
+    }
+    if (position === PopoverPositionEnum.TOP_RIGHT_UP) {
+      return [
+        {
+          originX: 'end',
+          originY: 'top',
+          overlayX: 'end',
+          overlayY: 'bottom',
+          offsetY: -1 * (positionOffset || 0),
+        },
+        {
+          originX: 'end',
+          originY: 'bottom',
+          overlayX: 'end',
+          overlayY: 'top',
+          offsetY: positionOffset || 0,
         },
       ];
     }
@@ -85,12 +123,14 @@ export class PopoverService {
         originY: 'top',
         overlayX: 'start',
         overlayY: 'bottom',
+        offsetY: -1 * (positionOffset || 0),
       },
       {
         originX: 'end',
         originY: 'bottom',
         overlayX: 'end',
         overlayY: 'top',
+        offsetY: positionOffset || 0,
       },
     ];
   }

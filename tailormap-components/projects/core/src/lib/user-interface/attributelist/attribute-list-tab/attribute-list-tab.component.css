@@ -1,0 +1,12 @@
+:host {
+  overflow: hidden;
+  height: 100%;
+  display: flex;
+  flex-flow: column nowrap;
+}
+
+tailormap-attribute-list-table {
+  display: block;
+  flex: 1;
+  overflow: hidden;
+}

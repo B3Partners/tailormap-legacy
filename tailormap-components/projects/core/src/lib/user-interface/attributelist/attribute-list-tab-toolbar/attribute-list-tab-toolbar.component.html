@@ -1,0 +1,66 @@
+<mat-toolbar>
+
+  <div class="buttons">
+    <button mat-flat-button color="primary"
+            (click)="onClearFeatureTypeFilterClick();">
+      <span>Reset filter laag</span>
+    </button>
+
+    <button mat-flat-button color="primary"
+            (click)="onClearAllFilterClick();">
+      <span>Reset alle filters</span>
+    </button>
+
+    <button mat-flat-button color="primary"
+            #relationsButton
+            (click)="openAttributeTree()"
+            [disabled]="noRelations$ | async">
+      <span>Relaties</span>
+    </button>
+
+    <button mat-flat-button color="primary" [matMenuTriggerFor]="optiesMenu">
+      <span>Opties</span>
+      <mat-icon svgIcon="contextual_drop_down"></mat-icon>
+    </button>
+
+    <button mat-stroked-button [matMenuTriggerFor]="menu">
+      <span>Exporteren</span>
+      <mat-icon svgIcon="contextual_drop_down"></mat-icon>
+    </button>
+
+    <mat-menu #optiesMenu="matMenu" yPosition="below">
+      <button mat-menu-item  (click)="createUserLayer()">Laag maken</button>
+      <button mat-menu-item  (click)="openPassportForm()">Bewerk geselecteerde objecten</button>
+    </mat-menu>
+
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item
+              (click)="onExportClick('CSV');">
+        CSV
+      </button>
+      <button mat-menu-item
+              (click)="onExportClick('GEOJSON');">
+        GeoJSON
+      </button>
+      <button mat-menu-item
+              (click)="onExportClick('XLS');">
+        Excel
+      </button>
+      <button mat-menu-item
+              (click)="onExportClick('SHP');">
+        Shape
+      </button>
+    </mat-menu>
+
+  </div>
+
+  <div class="paging" *ngIf="featureTypeData">
+    <mat-paginator [pageSize]="featureTypeData.pageSize"
+                   [pageIndex]="featureTypeData.pageIndex"
+                   [length]="featureTypeData.totalCount || 0"
+                   [hidePageSize]="true"
+                   (page)="onPageChange($event)">
+    </mat-paginator>
+  </div>
+
+</mat-toolbar>

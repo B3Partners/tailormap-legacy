@@ -1,0 +1,13 @@
+<ng-container matColumnDef="_checked">
+  <mat-header-cell class="column_small" *matHeaderCellDef>
+    <mat-checkbox [checked]="checkState === 'All'" [indeterminate]="checkState === 'Some'" (change)="onHeaderCheckClick()"></mat-checkbox>
+  </mat-header-cell>
+
+  <mat-cell class="column_small" *matCellDef="let currRow;">
+    <mat-checkbox [checked]="currRow._checked" (change)="onRowCheckClick(currRow)" (click)="$event.stopPropagation()"></mat-checkbox>
+  </mat-cell>
+
+  <mat-footer-cell class="column_small" *matFooterCellDef>
+    <mat-icon (click)="onStatisticsHelp()">functions</mat-icon>
+  </mat-footer-cell>
+</ng-container>

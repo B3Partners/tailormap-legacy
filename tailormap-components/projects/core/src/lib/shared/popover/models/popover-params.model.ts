@@ -10,4 +10,5 @@ export interface PopoverParams<T> {
   closeOnClickOutside?: boolean;
   hasBackdrop?: boolean;
   position?: PopoverPositionEnum;
+  positionOffset?: number;
 }

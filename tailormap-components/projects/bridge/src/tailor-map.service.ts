@@ -33,6 +33,9 @@ export class TailorMapService {
   private applicationConfigSubject$: ReplaySubject<App> = new ReplaySubject<App>(1);
   public applicationConfig$: Observable<App> = this.applicationConfigSubject$.asObservable();
 
+  private layersInitializedSubject$: ReplaySubject<boolean> = new ReplaySubject<boolean>(1);
+  public layersInitialized$ = this.layersInitializedSubject$.asObservable();
+
   private layerVisibilityChangedSubject$: Subject<LayerVisibilityEvent> = new Subject<LayerVisibilityEvent>();
   public layerVisibilityChanged$ = this.layerVisibilityChangedSubject$.asObservable();
 
@@ -79,6 +82,9 @@ export class TailorMapService {
     const vc = this.getViewerController();
     const mc = vc.mapComponent;
     const map = mc.getMap();
+    vc.addListener('ON_LAYERS_INITIALIZED', () => {
+      this.ngZone.run(() => this.layersInitializedSubject$.next(true));
+    });
     map.addListener('ON_LAYER_VISIBILITY_CHANGED', (object, event) => {
       this.ngZone.run(() => this.layerVisibilityChangedSubject$.next(event as LayerVisibilityEvent));
     });

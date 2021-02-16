@@ -57,6 +57,9 @@ import { ColorPickerComponent } from './color-picker/color-picker.component';
 import { IconPickerComponent } from './icon-picker/icon-picker.component';
 import { IconService } from './icons/icon.service';
 import { DomSanitizer } from '@angular/platform-browser';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatTableModule } from '@angular/material/table';
 import { ErrorMessageComponent } from './error-message/error-message.component';
 
 @NgModule({
@@ -105,6 +108,9 @@ import { ErrorMessageComponent } from './error-message/error-message.component';
     MatExpansionModule,
     MatSidenavModule,
     MatSnackBarModule,
+    MatToolbarModule,
+    MatPaginatorModule,
+    MatTableModule,
   ],
   exports: [
     ReactiveFormsModule,
@@ -141,6 +147,9 @@ import { ErrorMessageComponent } from './error-message/error-message.component';
     MatSnackBarModule,
     DragDropModule,
     MatDatepickerModule,
+    MatToolbarModule,
+    MatPaginatorModule,
+    MatTableModule,
     CapitalizeFirstPipe,
     ConfirmDialogComponent,
     ErrorMessageComponent,

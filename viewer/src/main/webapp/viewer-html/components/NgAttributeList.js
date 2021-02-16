@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -47,44 +47,21 @@ Ext.define ("viewer.components.NgAttributeList",{
     markerId: "ng-attributelist-marker",
     constructor: function (conf){
         this.initConfig(conf);
+        this.config.isPopup = false;
 		viewer.components.NgAttributeList.superclass.constructor.call(this, this.config);
-        var me = this;
-        this.renderButton({
-            handler: function() {
-                // var deferred = me.createDeferred();
-                me.div.setAttribute("showwindow","");
-                // return deferred.promise;
-            },
-            text: me.config.title,
-            // text: "Angular AttributeList",
-            // icon: "",
-            tooltip: "Angular Attributen Lijst",
-            // label: ""
-            label: me.config.label
-        });
-        this.map = this.config.viewerController.mapComponent.getMap();
-        this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_LAYERS_INITIALIZED,
-            this.initialize,this);
-        return this;
+        this.addPanel();
+        this.renderAttributelistButton();
     },
-    // Voor het icon.
-    getBaseClass : function() {
-        return "viewercomponentsAttributeList";
+    addPanel: function(){
+        var panel = document.createElement("tailormap-attribute-list");
+        document.body.appendChild(panel);
     },
-    initialize: function(){
-        // Create form div.
-        this.div = document.createElement("tailormap-attributelist-form");
-
-        // Copy needed component config settings.
-        var config = {};
-        config.pageSize = this.config.pageSize;
-        config.zoomToBuffer = this.config.zoomToBuffer;
-        this.div.setAttribute("config", JSON.stringify(config));
-
-        // Add to body.
-        document.body.appendChild(this.div);
-    },
-    getExtComponents: function() {
-        return [ this.container.getId() ];
-    },
+    renderAttributelistButton: function() {
+        var btn = document.createElement('tailormap-attribute-list-button');
+        btn.setAttribute("config", JSON.stringify({
+            pageSize: this.config.pageSize,
+            zoomToBuffer: this.config.zoomToBuffer,
+        }));
+        document.getElementById(this.getContentDiv()).appendChild(btn);
+    }
 });

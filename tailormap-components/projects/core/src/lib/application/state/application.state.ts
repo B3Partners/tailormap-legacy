@@ -1,8 +1,5 @@
-import {
-  AppLayer,
-  Level,
-  SelectedContentItem,
-} from '../../../../../bridge/typings';
+import { Level, SelectedContentItem } from '../../../../../bridge/typings';
+import { TailormapAppLayer } from '../models/tailormap-app-layer.model';
 
 export const applicationStateKey = 'application';
 
@@ -10,7 +7,7 @@ export interface ApplicationState {
   applicationId: number;
   root: SelectedContentItem[];
   levels: Level[];
-  layers: AppLayer[];
+  layers: TailormapAppLayer[];
   selectedAppLayer: string;
 }
 

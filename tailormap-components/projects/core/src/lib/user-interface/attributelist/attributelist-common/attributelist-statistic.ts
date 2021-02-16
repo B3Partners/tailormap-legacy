@@ -1,15 +1,7 @@
-import { AttributeDataSource } from '../attributelist-common/attributelist-datasource';
-import {
-  LayerStatisticValues,
-  StatisticColumns,
-  StatisticTypeInMenu,
-} from '../attributelist-common/attributelist-statistic-models';
+import { LayerStatisticValues, StatisticColumns, StatisticTypeInMenu } from './attributelist-statistic-models';
 import { StatisticService } from '../../../shared/statistic-service/statistic.service';
-import {
-  StatisticParameters,
-  StatisticResponse,
-  StatisticType,
-} from '../../../shared/statistic-service/statistic-models';
+import { StatisticParameters, StatisticResponse, StatisticType } from '../../../shared/statistic-service/statistic-models';
+import { AttributeListColumnModel } from '../models/attribute-list-column-models';
 
 export class AttributelistStatistic {
 
@@ -24,14 +16,18 @@ export class AttributelistStatistic {
     column: '',
     type: StatisticType.NONE,
   }
+  private columns: AttributeListColumnModel[];
 
-  constructor(private statisticsService: StatisticService,
-              private dataSource: AttributeDataSource) {
+  constructor(
+    private statisticsService: StatisticService,
+    private layerId: string,
+  ) {
   }
 
-  public initStatistics(colNames: string[]): void {
-    // Init the statistics structure
-    this.layerStatisticValues.layerId = this.dataSource.params.layerId;
+  public initStatistics(columns: AttributeListColumnModel[]): void {
+    this.columns = columns;
+    const colNames = columns.map(c => c.name);
+    this.layerStatisticValues.layerId = +(this.layerId);
     for (const colName of colNames) {
       let statisticColumn: StatisticColumns;
       statisticColumn = {name: colName, statisticType: StatisticType.NONE, statisticValue: null, processing: false};
@@ -92,7 +88,7 @@ export class AttributelistStatistic {
         // Round the numbers to 0 or 2 decimals
         // NOTE: Some columns with integer values are defined as double, so we will see 2 unexpected fractionDigits
         if (this.layerStatisticValues.columns[colIndex].statisticType === StatisticType.COUNT ||
-          this.dataSource.columnController.getColumnType(colName) === 'integer') {
+          this.getColumnType(colName) === 'integer') {
           result = this.layerStatisticValues.columns[colIndex].statisticValue.toFixed();
         } else {
           result = this.layerStatisticValues.columns[colIndex].statisticValue.toFixed(2);
@@ -113,7 +109,7 @@ export class AttributelistStatistic {
    * Returns numeric when statistic functions like min, max, average are possible
    */
   public getStatisticFunctionColumnType(name: string): string {
-    let type = this.dataSource.columnController.getColumnType(name);
+    let type = this.getColumnType(name);
     if (type === 'integer' || type === 'double' || type === 'number') {
       type = 'numeric';
     }
@@ -127,6 +123,14 @@ export class AttributelistStatistic {
       result = this.layerStatisticValues.columns[colIndex].processing
     }
     return result;
+  }
+
+  private getColumnType(columName: string) {
+    const col = this.columns.find(c => c.name === columName);
+    if (col) {
+      return col.dataType;
+    }
+    return '';
   }
 
 

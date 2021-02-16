@@ -22,6 +22,7 @@ export interface AttributeListResponse {
   features: AttributeListFeature[];
   success: boolean,
   total: number
+  message?: string;
 }
 
 export interface AttributeListFeature {

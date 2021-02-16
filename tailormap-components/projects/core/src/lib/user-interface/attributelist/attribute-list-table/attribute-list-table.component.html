@@ -1,0 +1,69 @@
+<div class="table-container">
+
+  <mat-table [dataSource]="rows$"
+             [trackBy]="trackByRowId"
+             matSort
+             multiTemplateDataRows
+             (matSortChange)="onSortClick($event)">
+
+    <tailormap-attribute-list-checkbox-column *ngIf="showCheckboxColumn$ | async"
+                                              [uncheckedCount]="uncheckedCount"
+                                              [checkedCount]="checkedCount"
+                                              [featureType]="featureType"></tailormap-attribute-list-checkbox-column>
+
+    <tailormap-attribute-list-details-column [featureType]="featureType"></tailormap-attribute-list-details-column>
+
+    <!-- Columns with data -->
+    <ng-container *ngFor="let col of columns" matColumnDef="{{col.name}}">
+      <!-- Header -->
+      <mat-header-cell *matHeaderCellDef mat-sort-header>
+        {{col.alias || col.name}}
+        <mat-icon [ngClass]="(getIsFilterActive(col.name))? 'material-icons-set': 'material-icons-unset'"
+                  (click)="$event.stopPropagation();onFilterClick(col.name)">
+          filter_list
+        </mat-icon>
+      </mat-header-cell>
+
+      <mat-cell *matCellDef="let currRow">{{currRow[col.name]}}</mat-cell>
+
+      <mat-footer-cell *matFooterCellDef (contextmenu)="onStatisticsMenu($event, col.name)">
+        <div *ngIf="isStatisticsProcessing(col.name)">
+          <mat-spinner diameter="20"></mat-spinner>
+        </div>
+        {{getStatisticResult(col.name)}}
+      </mat-footer-cell>
+
+    </ng-container>
+
+    <ng-container matColumnDef="expandedDetail">
+      <mat-cell *matCellDef="let currRow" [attr.colspan]="columnNames.length">
+        <div class="details-container" *ngIf="currRow._expanded">
+          <tailormap-attribute-list-details
+            *ngFor="let featureType of currRow.related_featuretypes"
+            [parentLayerId]="layerId"
+            [featureType]="featureType">
+          </tailormap-attribute-list-details>
+        </div>
+      </mat-cell>
+    </ng-container>
+
+    <!-- Columns with related details data -->
+    <mat-header-row *matHeaderRowDef="columnNames; sticky: true;"></mat-header-row>
+
+    <mat-row *matRowDef="let row; let dataIndex = dataIndex; columns: columnNames;"
+             (click)="onRowClick($event, row);"
+             [class.even_row]="dataIndex % 2 === 1"
+             [class.selected_row]="row._selected"
+             [class.expanded_row]="row._expanded"></mat-row>
+
+    <mat-row *matRowDef="let row; columns: ['expandedDetail']" class="details-row"
+             [@detailExpand]="row._expanded ? 'expanded' : 'collapsed'"></mat-row>
+
+    <mat-footer-row *matFooterRowDef="columnNames; sticky: true;"></mat-footer-row>
+
+  </mat-table>
+
+</div>
+
+<tailormap-attribute-list-statistics-menu [layerId]="layerId"
+                                          [statistic]="statistic"></tailormap-attribute-list-statistics-menu>

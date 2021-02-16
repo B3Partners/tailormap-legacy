@@ -9,13 +9,13 @@ import { FormActionsService } from '../form-actions/form-actions.service';
 import { FeatureInitializerService } from '../../shared/feature-initializer/feature-initializer.service';
 import { LinkedAttributeRegistryService } from '../linked-fields/registry/linked-attribute-registry.service';
 import { FormFieldHelpers } from '../form-field/form-field-helpers';
-import { AttributelistService } from '../../user-interface/attributelist/attributelist.service';
 import { ConfirmDialogService } from '../../shared/confirm-dialog/confirm-dialog.service';
 import { takeUntil } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
 import { FormState } from '../state/form.state';
 import * as FormActions from '../state/form.actions';
 import { WorkflowState } from '../../workflow/state/workflow.state';
+import { loadDataForTab } from '../../user-interface/attributelist/state/attribute-list.actions';
 
 @Component({
   selector: 'tailormap-form-creator',
@@ -29,7 +29,6 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
     private actions: FormActionsService,
     private registry: LinkedAttributeRegistryService,
     private _snackBar: MatSnackBar,
-    private attributeService: AttributelistService,
     private confirmDialogService: ConfirmDialogService) {
   }
 
@@ -154,7 +153,7 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
       },
       () => {
         // Update attributelist after feature is saved
-        this.attributeService.loadTableData(clazzName);
+        this.store$.dispatch(loadDataForTab({ layerId: clazzName }));
       });
   }
 

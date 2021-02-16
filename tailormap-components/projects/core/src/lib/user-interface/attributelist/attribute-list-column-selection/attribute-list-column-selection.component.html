@@ -1,0 +1,28 @@
+<div class="column-selection mat-typography mat-elevation-z2">
+
+  <h3 (click)="closeOverlay()">Tabel opties</h3>
+
+  <div class="list" cdkDropList (cdkDropListDropped)="drop($event)">
+    <div class="row"
+         *ngFor="let column of columns; trackBy: trackByColumnId"
+         cdkDrag
+         [cdkDragData]="column"
+         cdkDragLockAxis="y">
+      <div class="column-placeholder" *cdkDragPlaceholder>
+        {{column.alias || column.name}}
+      </div>
+      <mat-checkbox (change)="toggleCheckbox(column)" [checked]="column.visible"></mat-checkbox>
+      <div class="label">
+        {{column.alias || column.name}}
+      </div>
+      <mat-icon class="drag-handle" svgIcon="contextual_drag" cdkDragHandle></mat-icon>
+    </div>
+  </div>
+
+  <div class="bottom">
+    <button mat-flat-button class="link-button" (click)="toggleShowPassportColumns()">
+      {{showPassportColumnsOnly ? 'Laat alle attributen zien' : 'Laat paspoort attributen zien'}}
+    </button>
+  </div>
+
+</div>
