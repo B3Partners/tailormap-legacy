@@ -31,16 +31,9 @@ updates:
   labels:
   - build infrastructure
   - dependencies
-  - backport v5.4.x
   - backport v5.6.x
   - backport v5.8.x
   ignore:
-  - dependency-name: com.microsoft.sqlserver:mssql-jdbc
-    versions:
-    - "> 8.2.2.jre8, < 8.3"
-  - dependency-name: com.microsoft.sqlserver:mssql-jdbc
-    versions:
-    - ">= 8.3.a, < 8.4"
   - dependency-name: javax.servlet:javax.servlet-api
     versions:
     - ">= 3.1.a, < 3.2"
@@ -119,8 +112,8 @@ updates:
 - package-ecosystem: npm
   directory: "/tailormap-components"
   schedule:
-    interval: weekly
-    day: saturday
+    interval: daily
+    time: "22:00"
     timezone: Europe/Amsterdam
   open-pull-requests-limit: 25
   reviewers:
@@ -131,3 +124,18 @@ updates:
     - mvdstruijk
   labels:
     - dependencies
+
+- package-ecosystem: docker
+  directory: "/docker/src/main/docker"
+  schedule:
+    interval: weekly
+    timezone: Europe/Amsterdam
+    day: "saturday"
+  open-pull-requests-limit: 25
+  reviewers:
+    - mprins
+    - mtoonen
+  assignees:
+    - mprins
+  labels:
+    - build infrastructure
