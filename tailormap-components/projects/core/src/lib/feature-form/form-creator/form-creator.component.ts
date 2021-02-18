@@ -1,7 +1,7 @@
-import { AfterViewInit, Component, EventEmitter, Input, OnChanges, OnDestroy, Output } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Subject, Subscription } from 'rxjs';
+import { Observable, Subject, Subscription } from 'rxjs';
 import { Feature } from '../../shared/generated';
 import { Attribute, FormConfiguration, FormFieldType, IndexedFeatureAttributes, TabbedFields } from '../form/form-models';
 import { FormCreatorHelpers } from './form-creator-helpers';
@@ -16,13 +16,14 @@ import { FormState } from '../state/form.state';
 import * as FormActions from '../state/form.actions';
 import { WorkflowState } from '../../workflow/state/workflow.state';
 import { loadDataForTab } from '../../user-interface/attributelist/state/attribute-list.actions';
+import { selectFormEditting } from '../state/form.selectors';
 
 @Component({
   selector: 'tailormap-form-creator',
   templateUrl: './form-creator.component.html',
   styleUrls: ['./form-creator.component.css'],
 })
-export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit {
+export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit, OnInit {
 
   constructor(
     private store$: Store<FormState | WorkflowState>,
@@ -48,7 +49,7 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
 
   public tabbedConfig: TabbedFields;
 
-  public editting = false;
+  public editting$ : Observable<boolean>;
 
   public formgroep = new FormGroup({});
 
@@ -68,6 +69,10 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
         this.formChanged.emit(true);
       });
     }
+  }
+
+  public ngOnInit(): void {
+    this.editting$ = this.store$.select(selectFormEditting);
   }
 
   public ngOnDestroy() {
@@ -116,7 +121,7 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
   }
 
   public resetForm() : void {
-    this.editting = false;
+    this.store$.dispatch(FormActions.setFormEditting({editting: false}));
     this.createFormControls();
   }
 

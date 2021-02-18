@@ -23,14 +23,14 @@
   </div>
   <div class="bottom-bar">
 
-    <button mat-flat-button *ngIf="!formCreator.editting" color="primary" (click)="formCreator.editting = true">
+    <button mat-flat-button *ngIf="!(formCreator.editting$ | async)" color="primary" (click)="setFormEditting(true)">
       Bewerken
     </button>
 
-    <button mat-flat-button color="primary" (click)="formCreator.resetForm()" *ngIf="formCreator.editting">
+    <button mat-flat-button color="primary" (click)="formCreator.resetForm()" *ngIf="formCreator.editting$ | async">
       Annuleren
     </button>
-    <button [disabled]="!formDirty && !closeAfterSave"  *ngIf="formCreator.editting"
+    <button [disabled]="!formDirty && !closeAfterSave"  *ngIf="formCreator.editting$ | async"
             mat-flat-button color="primary"  (click)="formCreator.beforeSave();">
 
       <span *ngIf="!closeAfterSave" >Opslaan</span>
@@ -42,7 +42,7 @@
       </button>
     </mat-menu>
 
-    <button mat-flat-button color="primary" [matMenuTriggerFor]="optiesMenu" *ngIf="!formCreator.editting">
+    <button mat-flat-button color="primary" [matMenuTriggerFor]="optiesMenu" *ngIf="!(formCreator.editting$ | async)">
       Opties
     </button>
     <mat-menu #optiesMenu="matMenu" yPosition="above" class="tailormap-menu-panel">

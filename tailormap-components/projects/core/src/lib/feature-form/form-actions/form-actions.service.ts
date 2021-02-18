@@ -1,10 +1,8 @@
 import { Injectable } from '@angular/core';
-import { FormHelpers } from '../form/form-helpers';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Feature, FeatureControllerService } from '../../shared/generated';
 import { forkJoin, Observable, of } from 'rxjs';
 import { FeatureInitializerService } from '../../shared/feature-initializer/feature-initializer.service';
-import { FormConfiguration } from '../form/form-models';
 
 
 @Injectable({
@@ -14,7 +12,6 @@ export class FormActionsService {
 
   constructor(
     private service: FeatureControllerService,
-    private featureInitializerService: FeatureInitializerService,
     private _snackBar: MatSnackBar) {
   }
 
@@ -59,29 +56,6 @@ export class FormActionsService {
       });
     }
     return fs;
-  }
-
-  public newItem$( features, type: string, formConfig: FormConfiguration): Observable<any> {
-    const name = 'Nieuwe ' + formConfig.name;
-
-    const parentFeature = features[0];
-    // const relations = formConfig.relation.relation;
-    const objecttype = FormHelpers.capitalize(type);
-
-    const newFeature = this.featureInitializerService.create(objecttype, {
-      id: null,
-      clazz: type,
-      isRelated: true,
-      objecttype,
-      children: null,
-    });
-
-    newFeature[formConfig.treeNodeColumn] = name;
-    parentFeature.children.push(newFeature);
-    const feature = newFeature;
-    features = [...features];
-    console.error('initform!@');
-    return of({features, feature});
   }
 
 }

@@ -2,7 +2,6 @@ import { createFeatureSelector, createSelector } from '@ngrx/store';
 import { FormState, formStateKey } from './form.state';
 import { LayerUtils } from '../../shared/layer-utils/layer-utils.service';
 import { Feature } from '../../shared/generated';
-import { selectFormConfigs } from '../../application/state/application.selectors';
 
 const selectFormState = createFeatureSelector<FormState>(formStateKey);
 
@@ -15,6 +14,8 @@ export const selectFeatureFormOpen = createSelector(selectFormState, state => st
 export const selectFormAlreadyDirty = createSelector(selectFormState, state => state.alreadyDirty);
 
 export const selectCloseAfterSaveFeatureForm = createSelector(selectFormState, state => state.closeAfterSave);
+
+export const selectFormEditting = createSelector(selectFormState, state => state.editting);
 
 export const selectTreeOpen = createSelector(selectFormState, state => state.treeOpen);
 
