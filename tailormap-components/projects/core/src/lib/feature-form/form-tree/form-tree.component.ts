@@ -5,7 +5,7 @@ import { FormTreeHelpers } from './form-tree-helpers';
 import { Store } from '@ngrx/store';
 import { FormState } from '../state/form.state';
 import * as FormActions from '../state/form.actions';
-import { selectCurrentFeature, selectFormConfigs, selectOpenFeatureForm } from '../state/form.selectors';
+import { selectFormConfigs, selectOpenFeatureForm } from '../state/form.selectors';
 import { Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 import { TreeService } from '../../shared/tree/tree.service';

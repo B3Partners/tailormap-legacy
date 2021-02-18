@@ -14,7 +14,6 @@ import { Subject } from 'rxjs';
 import { selectCurrentFeature, selectFormConfigForFeatureType, selectFormConfigs } from '../state/form.selectors';
 import { Store } from '@ngrx/store';
 import { FormState } from '../state/form.state';
-import { setOpenFeatureForm } from '../state/form.actions';
 import * as FormActions from '../state/form.actions';
 
 @Component({
