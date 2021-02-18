@@ -5,7 +5,7 @@ import { FormTreeHelpers } from './form-tree-helpers';
 import { Store } from '@ngrx/store';
 import { FormState } from '../state/form.state';
 import * as FormActions from '../state/form.actions';
-import { selectFormConfigs, selectOpenFeatureForm } from '../state/form.selectors';
+import { selectFormConfigs, selectFeatures } from '../state/form.selectors';
 import { Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 import { TreeService } from '../../shared/tree/tree.service';
@@ -72,7 +72,7 @@ export class FormTreeComponent implements OnInit, OnChanges, OnDestroy {
       this.hasCheckboxes,
     );
 
-    this.store$.select(selectOpenFeatureForm).pipe(takeUntil(this.destroyed)).subscribe((features) => {
+    this.store$.select(selectFeatures).pipe(takeUntil(this.destroyed)).subscribe((features) => {
       this.features = [...features];
       if (this.features && this.features.length > 0) {
         this.createTree(this.features);

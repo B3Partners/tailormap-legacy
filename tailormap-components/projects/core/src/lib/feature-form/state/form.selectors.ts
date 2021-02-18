@@ -5,7 +5,7 @@ import { Feature } from '../../shared/generated';
 
 const selectFormState = createFeatureSelector<FormState>(formStateKey);
 
-export const selectOpenFeatureForm = createSelector(selectFormState, state => state.features);
+export const selectFeatures = createSelector(selectFormState, state => state.features);
 
 export const selectCurrentFeature = createSelector(selectFormState, state => state.feature);
 

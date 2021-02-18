@@ -13,7 +13,7 @@ import * as FormActions from '../state/form.actions';
 import * as WorkflowActions from '../../workflow/state/workflow.actions';
 import {
   selectCloseAfterSaveFeatureForm, selectCurrentFeature, selectFeatureFormOpen, selectFormAlreadyDirty, selectFormConfigForFeatureType,
-  selectFormConfigs, selectOpenFeatureForm, selectTreeOpen,
+  selectFormConfigs, selectFeatures, selectTreeOpen,
 } from '../state/form.selectors';
 import { LayerUtils } from '../../shared/layer-utils/layer-utils.service';
 import { WORKFLOW_ACTION } from '../../workflow/state/workflow-models';
@@ -51,7 +51,7 @@ export class FormComponent implements OnDestroy, OnChanges, OnInit {
 
   public ngOnInit(): void {
     combineLatest([
-      this.store$.select(selectOpenFeatureForm),
+      this.store$.select(selectFeatures),
       this.store$.select(selectCloseAfterSaveFeatureForm),
     ])
       .pipe(takeUntil(this.destroyed))
