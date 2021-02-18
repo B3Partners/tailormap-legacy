@@ -43,7 +43,7 @@
   padding-top: 5px;
 }
 
-.bottom-bar button {
+.bottom-bar button + button {
   float: right;
   margin-right: 15px;
 }
