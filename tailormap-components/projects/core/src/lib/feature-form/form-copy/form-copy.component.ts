@@ -14,6 +14,8 @@ import { Subject } from 'rxjs';
 import { selectCurrentFeature, selectFormConfigForFeatureType, selectFormConfigs } from '../state/form.selectors';
 import { Store } from '@ngrx/store';
 import { FormState } from '../state/form.state';
+import { setOpenFeatureForm } from '../state/form.actions';
+import * as FormActions from '../state/form.actions';
 
 @Component({
   selector: 'tailormap-form-copy',
@@ -59,6 +61,7 @@ export class FormCopyComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroyed)).subscribe(formConfigs => {
       let fieldsToCopy = new Map<string, string>();
       this.originalFeature = this.data.originalFeature;
+      this.store$.dispatch(FormActions.setSetFeatures({ features: [{...this.originalFeature}]}))
       // Kijk of er al een parentFeature is (dit is er op het moment dat er al een keer eerder is gekopieerd)
       if (this.formCopyService.parentFeature != null) {
         // Kijk of het nieuwe geselecteerde feature van het zelfde type is, om vorige geselecteerde velden terug te zetten
