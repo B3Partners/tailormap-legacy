@@ -109,6 +109,7 @@ export class StandardFormWorkflow extends Workflow {
           this.service.featuretypeOnPoint({featureTypes, x, y, scale}).subscribe(
             (features: Feature[]) => {
               if (features && features.length > 0) {
+                this.afterEditting();
                 const feat = features[0];
 
                 const geom = this.featureInitializerService.retrieveGeometry(feat);
