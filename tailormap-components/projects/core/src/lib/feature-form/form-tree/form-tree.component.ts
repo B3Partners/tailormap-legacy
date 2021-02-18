@@ -5,7 +5,7 @@ import { FormTreeHelpers } from './form-tree-helpers';
 import { Store } from '@ngrx/store';
 import { FormState } from '../state/form.state';
 import * as FormActions from '../state/form.actions';
-import { selectFormConfigs } from '../state/form.selectors';
+import { selectCurrentFeature, selectFormConfigs, selectOpenFeatureForm } from '../state/form.selectors';
 import { Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 import { TreeService } from '../../shared/tree/tree.service';
@@ -22,8 +22,7 @@ export class FormTreeComponent implements OnInit, OnChanges, OnDestroy {
 
   private destroyed = new Subject();
 
-  @Input()
-  public features : Feature[];
+  private features : Feature[];
 
   @Input()
   public isCopy = false;
@@ -72,9 +71,14 @@ export class FormTreeComponent implements OnInit, OnChanges, OnDestroy {
       },
       this.hasCheckboxes,
     );
-    if (this.features && this.features.length > 0) {
-      this.createTree(this.features);
-    }
+
+    this.store$.select(selectOpenFeatureForm).pipe(takeUntil(this.destroyed)).subscribe((features) => {
+      this.features = [...features];
+      if (this.features && this.features.length > 0) {
+        this.createTree(this.features);
+      }
+    });
+
     this.treeService.checkStateChangedSource$.pipe(takeUntil(this.destroyed)).subscribe( event => {
       const relIds = new Map<string, boolean>();
       event.forEach((checked, id) => {

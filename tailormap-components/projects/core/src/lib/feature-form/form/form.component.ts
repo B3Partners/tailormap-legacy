@@ -19,6 +19,7 @@ import { LayerUtils } from '../../shared/layer-utils/layer-utils.service';
 import { WORKFLOW_ACTION } from '../../workflow/state/workflow-models';
 import { WorkflowState } from '../../workflow/state/workflow.state';
 import { MatButtonToggleChange } from '@angular/material/button-toggle';
+import { setOpenFeatureForm } from '../state/form.actions';
 
 @Component({
   selector: 'tailormap-form',
