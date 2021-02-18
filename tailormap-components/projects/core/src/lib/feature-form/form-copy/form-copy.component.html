@@ -8,7 +8,6 @@
           </mat-panel-title>
         </mat-expansion-panel-header>
           <tailormap-form-tree
-            [features]=[this.data.originalFeature]
             [isCopy] = true
             [hasCheckboxes]="true"
             (relatedFeatureChecked) = "relatedFeaturesCheckedChanged($event)"
@@ -51,9 +50,9 @@
       </div>
     </div>
     <div class="actions">
-      <button mat-button (click)="settings()">Instellingen</button>
-      <button mat-button (click)="cancel()">Annuleren</button>
-      <button mat-button [disabled]="this.data.destinationFeatures.length < 1" (click)="beforeCopy()"><p matTooltip="Selecteer object(en) om te kopieren">Bevestigen</p></button>
+      <button mat-flat-button color="primary"  (click)="settings()">Instellingen</button>
+      <button mat-flat-button color="primarylight"  (click)="cancel()">Annuleren</button>
+      <button mat-flat-button color="primary"  [disabled]="this.data.destinationFeatures.length < 1" (click)="beforeCopy()" matTooltip="Selecteer object(en) om te kopieren">Bevestigen</button>
     </div>
   </mat-sidenav-content>
 </mat-sidenav-container>
