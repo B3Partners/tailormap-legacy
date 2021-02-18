@@ -13,7 +13,7 @@ export interface AttributeListState {
 }
 
 export const initialAttributeListState: AttributeListState = {
-  visible: true,
+  visible: false,
   config: {
     pageSize: 10,
     zoomToBuffer: 10,
