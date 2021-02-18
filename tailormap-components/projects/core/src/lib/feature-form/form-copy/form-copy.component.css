@@ -32,6 +32,6 @@
   width: 50%;
 }
 
-.actions button + button{
-  margin-right: 8px;
+.actions button + button {
+  margin-left: 8px;
 }
