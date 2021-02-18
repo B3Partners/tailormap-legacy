@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.flamingo-mc</groupId>
@@ -39,7 +39,7 @@
     </licenses>
     <properties>
         <flamingo.version>5.9.0-SNAPSHOT</flamingo.version>
-        <java.version>1.8</java.version>
+        <java.version>11</java.version>
         <node.version>v14.15.5</node.version>
         <project.build.sourceVersion>${java.version}</project.build.sourceVersion>
         <project.build.targetVersion>${java.version}</project.build.targetVersion>
@@ -191,6 +191,21 @@
                 <version>2.12.1</version>
             </dependency>
             <dependency>
+                <groupId>jakarta.xml.bind</groupId>
+                <artifactId>jakarta.xml.bind-api</artifactId>
+                <version>${jaxb.api.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.glassfish.jaxb</groupId>
+                <artifactId>jaxb-runtime</artifactId>
+                <version>${jaxb.impl.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>jakarta.activation</groupId>
+                <artifactId>jakarta.activation-api</artifactId>
+                <version>${activation.api.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.flamingo-mc</groupId>
                 <artifactId>viewer-config-persistence</artifactId>
                 <type>test-jar</type>
@@ -264,14 +279,12 @@
                 <artifactId>lucene-core</artifactId>
                 <version>4.6.0</version>
             </dependency>
-
             <dependency>
                 <artifactId>solr-solrj</artifactId>
                 <groupId>org.apache.solr</groupId>
                 <version>4.6.0</version>
                 <scope>compile</scope>
             </dependency>
-
             <!-- viewer-commons -->
             <dependency>
                 <groupId>junit</groupId>
@@ -358,7 +371,6 @@
                     </exclusion>
                 </exclusions>
             </dependency>
-
             <!-- viewer-config-persistence -->
             <dependency>
                 <groupId>commons-beanutils</groupId>
@@ -375,7 +387,6 @@
                 <artifactId>web-commons</artifactId>
                 <version>${flamingo.version} </version>
             </dependency>
-
             <dependency>
                 <groupId>org.geotools</groupId>
                 <artifactId>gt-wms</artifactId>
@@ -452,7 +463,6 @@
                 <artifactId>jakarta.mail</artifactId>
                 <version>${jakarta.mail.version}</version>
             </dependency>
-
             <!-- Flamingo dependencies -->
             <dependency>
                 <groupId>org.apache.poi</groupId>
@@ -853,7 +863,7 @@
                         <configuration>
                             <rules>
                                 <requireMavenVersion>
-                                    <version>[3.3.9,)</version>
+                                    <version>[3.6.0,)</version>
                                 </requireMavenVersion>
                                 <requireJavaVersion>
                                     <version>${java.version}</version>
@@ -953,36 +963,6 @@
                 <test.persistence.unit>viewer-config-microsoft_sql_server</test.persistence.unit>
                 <test.skip.integrationtests>true</test.skip.integrationtests>
             </properties>
-        </profile>
-        <profile>
-            <id>jdk11+</id>
-            <activation>
-                <jdk>[11,)</jdk>
-            </activation>
-            <properties>
-                <java.version>8</java.version>
-                <!-- project.build.targetVersion>1.8</project.build.targetVersion -->
-                <!-- maven.compiler.target>1.8</maven.compiler.target -->
-            </properties>
-            <dependencyManagement>
-                <dependencies>
-                    <dependency>
-                        <groupId>jakarta.xml.bind</groupId>
-                        <artifactId>jakarta.xml.bind-api</artifactId>
-                        <version>${jaxb.api.version}</version>
-                    </dependency>
-                    <dependency>
-                        <groupId>org.glassfish.jaxb</groupId>
-                        <artifactId>jaxb-runtime</artifactId>
-                        <version>${jaxb.impl.version}</version>
-                    </dependency>
-                    <dependency>
-                        <groupId>jakarta.activation</groupId>
-                        <artifactId>jakarta.activation-api</artifactId>
-                        <version>${activation.api.version}</version>
-                    </dependency>
-                </dependencies>
-            </dependencyManagement>
         </profile>
     </profiles>
     <modules>
