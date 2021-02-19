@@ -18,7 +18,7 @@ export class FormConfigRepositoryService {
     private tailorMap: TailorMapService,
   ) {}
 
-  public loadFormConfiguration(): Observable<Map<string, FormConfiguration>> {
+  public loadFormConfiguration$(): Observable<Map<string, FormConfiguration>> {
     return this.http.get<FormConfigurations>(this.tailorMap.getContextPath() + '/action/form', {
       params: new HttpParams().set('application', '' + this.tailorMap.getApplicationId()),
     })

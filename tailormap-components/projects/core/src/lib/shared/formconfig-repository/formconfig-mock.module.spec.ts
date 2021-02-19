@@ -7,7 +7,7 @@ import { FormConfiguration } from '../../feature-form/form/form-models';
 export const mockConfigsJson = '{"config": {"test": {"tabs": 1,"name": "testFT","featureType": "test","treeNodeColumn" : "colToShow","newPossible": true,"tabConfig": {"1": "test"},"relation":null,"fields": [{ "key": "colToShow","column" : 1,"tab": 1,"type": "textfield"}]}}}';
 
 const featureRepoSpy = createSpyObject(FormConfigRepositoryService, {
-  loadFormConfiguration(): Observable<Map<string, FormConfiguration>> {
+  loadFormConfiguration$(): Observable<Map<string, FormConfiguration>> {
     return of(new Map());
   }
 });

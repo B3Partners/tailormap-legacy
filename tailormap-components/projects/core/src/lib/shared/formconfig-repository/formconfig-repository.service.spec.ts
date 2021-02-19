@@ -46,7 +46,7 @@ describe('FormConfigRepositoryService', () => {
 
   it('should be created', () => {
     const service: FormConfigRepositoryService = TestBed.inject(FormConfigRepositoryService);
-    service.loadFormConfiguration().subscribe();
+    service.loadFormConfiguration$().subscribe();
     expectConfigRequest();
     expect(service).toBeTruthy();
   });

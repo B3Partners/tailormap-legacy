@@ -1,4 +1,4 @@
-import { Component, NgZone, OnDestroy, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnDestroy, OnInit, Output, EventEmitter } from '@angular/core';
 import { TailorMapService } from '../../../../../../bridge/src/tailor-map.service';
 import { MatSelectChange } from '@angular/material/select';
 import { FormConfiguration } from '../../../feature-form/form/form-models';
@@ -29,7 +29,6 @@ export class AddFeatureMenuComponent implements OnInit, OnDestroy {
 
   constructor(
     public tailorMapService: TailorMapService,
-    private ngZone: NgZone,
     private store$: Store<FormState | WorkflowState>,
   ) {}
 
