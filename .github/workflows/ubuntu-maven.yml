@@ -16,7 +16,7 @@ jobs:
     runs-on: [ubuntu-20.04]
     strategy:
       matrix:
-        java: [1.8, 11]
+        java: [11]
 
     steps:
       - uses: actions/checkout@v2
@@ -59,7 +59,6 @@ jobs:
           mvn -e verify -B -Pgh-action -pl '!viewer-admin'
           mvn -e verify -B -Pgh-action -pl 'viewer-admin'
       - name: build javadoc
-        if: ${{ matrix.java == '1.8' }}
         run: |
           mvn javadoc:javadoc
           mvn javadoc:test-javadoc
