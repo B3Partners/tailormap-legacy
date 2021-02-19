@@ -117,7 +117,7 @@ export class AttributeListTabToolbarComponent implements OnInit, OnDestroy {
             const appLayer = this.tailorMapService.getApplayerById(appLayerId);
             this.creatingLayer = true;
             this.createUserLayerName = result;
-            return this.userLayer.createUserLayerFromParams({
+            return this.userLayer.createUserLayerFromParams$({
               appLayerId: `${appLayerId}`,
               title: result,
               query: appLayer.filter.getCQL(),
