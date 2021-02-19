@@ -1,10 +1,32 @@
 .edit-bar {
+  display: block;
   position: absolute;
-  z-index: 10000;
-  background: white;
-  width: 200px;
+  z-index: 15000;
+  top: 45px;
+  left: 12px;
+  padding: 6px;
+  background-color: #fff;
+  transform: translate(var(--left-panel-width), var(--top-panel-height)) !important;
 }
 
-::ng-deep .panelClass > mat-dialog-container {
-  padding: 12px;
+.add-feature-menu {
+  display: block;
+  position: absolute;
+  top: 100%;
+  margin-top: 16px;
+  padding: 6px;
+  background-color: #fff;
+}
+
+.add-feature-menu::after {
+  content: '';
+  display: block;
+  width: 0;
+  height: 0;
+  position: absolute;
+  top: 0;
+  margin-top: -12px;
+  border-style: solid;
+  border-width: 0 11px 12px 11px;
+  border-color: transparent transparent #fff transparent;
 }

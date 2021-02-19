@@ -1,8 +1,6 @@
-import { Component, NgZone, OnDestroy, OnInit } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
+import { Component, NgZone, OnDestroy, OnInit, Output, EventEmitter } from '@angular/core';
 import { LayerUtils } from '../../../shared/layer-utils/layer-utils.service';
 import { TailorMapService } from '../../../../../../bridge/src/tailor-map.service';
-import { FormconfigRepositoryService } from '../../../shared/formconfig-repository/formconfig-repository.service';
 import { MatSelectChange } from '@angular/material/select';
 import { FormConfiguration } from '../../../feature-form/form/form-models';
 import { Store } from '@ngrx/store';
@@ -21,6 +19,9 @@ import * as WorkflowActions from '../../../workflow/state/workflow.actions';
 })
 export class AddFeatureMenuComponent implements OnInit, OnDestroy {
 
+  @Output()
+  public closeMenu = new EventEmitter();
+
   public layer = '-1';
   public layers: string[];
 
@@ -28,11 +29,9 @@ export class AddFeatureMenuComponent implements OnInit, OnDestroy {
   private destroyed = new Subject();
 
   constructor(
-    public dialogRef: MatDialogRef<AddFeatureMenuComponent>,
     public tailorMapService: TailorMapService,
     private ngZone: NgZone,
     private store$: Store<FormState | WorkflowState>,
-    public formConfigRepo: FormconfigRepositoryService,
   ) {
     this.tailorMapService.layerVisibilityChanged$.subscribe(value => {
       this.ngZone.run(() => {
@@ -86,7 +85,7 @@ export class AddFeatureMenuComponent implements OnInit, OnDestroy {
   }
 
   public close(): void {
-    this.dialogRef.close();
+    this.closeMenu.emit();
   }
 
   public draw(type: string): void {
@@ -95,7 +94,7 @@ export class AddFeatureMenuComponent implements OnInit, OnDestroy {
       geometryType: type,
       featureType: this.layer,
     }));
-    this.dialogRef.close();
+    this.closeMenu.emit();
   }
 
   public isPolygon(): boolean {
