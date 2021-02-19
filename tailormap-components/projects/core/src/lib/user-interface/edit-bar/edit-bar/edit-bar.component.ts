@@ -1,6 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { AddFeatureMenuComponent } from '../add-feature-menu/add-feature-menu.component';
 import { TailorMapService } from '../../../../../../bridge/src/tailor-map.service';
 import { MergeComponent, SplitComponent } from '../../../../../../bridge/typings';
 import { WorkflowControllerService } from '../../../workflow/workflow-controller/workflow-controller.service';
@@ -18,7 +16,6 @@ import * as WorkflowActions from '../../../workflow/state/workflow.actions';
 export class EditBarComponent implements OnInit {
 
   public isEditting = false;
-  private dialogRef: MatDialogRef<AddFeatureMenuComponent>;
 
   private mergeComponent: MergeComponent;
   private splitComponent: SplitComponent;
@@ -26,8 +23,7 @@ export class EditBarComponent implements OnInit {
   constructor(
     private tailorMapService: TailorMapService,
     private workflowService: WorkflowControllerService,
-    protected store$: Store<FormState | WorkflowState>,
-    public dialog: MatDialog) {
+    protected store$: Store<FormState | WorkflowState>) {
   }
 
   public ngOnInit(): void {
@@ -50,24 +46,11 @@ export class EditBarComponent implements OnInit {
   }
 
   public onEdit(): void {
-    this.dialogRef = this.dialog.open(AddFeatureMenuComponent, {
-      width: '400px',
-      position: {
-        top: '100px',
-        left: '160px',
-      },
-      height: '77px',
-      disableClose: true,
-      hasBackdrop: false,
-      panelClass: 'panelClass',
-
-    });
     this.isEditting = true;
-    // tslint:disable-next-line: rxjs-no-ignored-subscription
-    this.dialogRef.afterClosed().subscribe(result => {
-      this.isEditting = false;
-    });
+  }
 
+  public onEditClose() {
+    this.isEditting = false;
   }
 
   public hasSplit(): boolean {
