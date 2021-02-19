@@ -56,6 +56,9 @@ export class AttributeListTabToolbarComponent implements OnInit, OnDestroy {
   private popoverRef: OverlayRef;
   public featureTypeData: AttributeListFeatureTypeData;
 
+  public creatingLayer: boolean;
+  public createUserLayerName: string;
+
   constructor(
     private attributeListExportService: AttributeListExportService,
     private userLayer: UserLayerService,
@@ -109,16 +112,22 @@ export class AttributeListTabToolbarComponent implements OnInit, OnDestroy {
               this.tailorMapService.applicationConfig$.pipe(take(1)),
             ]);
           }),
+          switchMap(([ result, attributeMetadata, config ]) => {
+            const appLayerId = +(this.layerId);
+            const appLayer = this.tailorMapService.getApplayerById(appLayerId);
+            this.creatingLayer = true;
+            this.createUserLayerName = result;
+            return this.userLayer.createUserLayerFromParams({
+              appLayerId: `${appLayerId}`,
+              title: result,
+              query: appLayer.filter.getCQL(),
+              source: UserLayerHelper.createUserLayerSourceFromMetadata(attributeMetadata, appLayer),
+            })
+          }),
         )
-        .subscribe(([ result, attributeMetadata, config ]) => {
-          const appLayerId = +(this.layerId);
-          const appLayer = this.tailorMapService.getApplayerById(appLayerId);
-          this.userLayer.createUserLayerFromParams({
-            appLayerId: `${appLayerId}`,
-            title: result,
-            query: appLayer.filter.getCQL(),
-            source: UserLayerHelper.createUserLayerSourceFromMetadata(attributeMetadata, appLayer),
-          });
+        .subscribe(() => {
+          this.creatingLayer = false;
+          this.createUserLayerName = '';
         });
   }
 
