@@ -222,6 +222,7 @@
                     <filesets>
                         <fileset>
                             <directory>${tailormap-components.dist.dir}</directory>
+                            <directory>${tailormap-components.dist.dir}/../node_modules</directory>
                         </fileset>
                     </filesets>
                 </configuration>
@@ -261,8 +262,7 @@
                 <configuration>
                     <workingDirectory>${tailormap-components.source.dir}</workingDirectory>
                     <installDirectory>${project.build.directory}/</installDirectory>
-                    <nodeVersion>v13.8.0</nodeVersion>
-                    <npmVersion>6.14.8</npmVersion>
+                    <nodeVersion>${node.version}</nodeVersion>
                 </configuration>
             </plugin>
             <plugin>
