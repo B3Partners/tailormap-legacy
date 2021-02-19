@@ -70,6 +70,10 @@ timestamps {
                     }
                 }
 
+                stage("check Java runtime version") {
+                    sh " .jenkins/check-java-binary-version.sh"
+                }
+                
                 if (jdkTestName == 'OpenJDK11') {
                     stage("cleanup Java 11 packages") {
                         echo "Removing Java 11 built artifacts from local repository"
