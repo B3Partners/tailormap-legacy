@@ -8,7 +8,7 @@ import { take, takeUntil } from 'rxjs/operators';
 import { WorkflowHelper } from './workflow.helper';
 import * as FormActions from '../../feature-form/state/form.actions';
 import { selectFormClosed } from '../../feature-form/state/form.state-helpers';
-import { selectFormConfigForFeatureType, selectFormFeaturetypes } from '../../feature-form/state/form.selectors';
+import { selectFormConfigForFeatureTypeName, selectFormConfigFeatureTypeNames } from '../../application/state/application.selectors';
 import { selectFeatureType, selectGeometryType } from '../state/workflow.selectors';
 import { combineLatest } from 'rxjs';
 
@@ -34,7 +34,7 @@ export class StandardFormWorkflow extends Workflow {
           if (geometryType) {
             this.vectorLayer.drawFeature(this.convertGeomType(geometryType));
           } else {
-            this.store$.select(selectFormConfigForFeatureType, this.featureType)
+            this.store$.select(selectFormConfigForFeatureTypeName, this.featureType)
               .pipe(takeUntil(this.destroyed))
               .subscribe(formConfig => {
                 const geomtype = formConfig.featuretypeMetadata.geometryType;
@@ -102,7 +102,7 @@ export class StandardFormWorkflow extends Workflow {
       const y = data.y;
       const scale = data.scale;
 
-      this.store$.select(selectFormFeaturetypes)
+      this.store$.select(selectFormConfigFeatureTypeNames)
         .pipe(takeUntil(this.destroyed))
         .subscribe(allFeatureTypes => {
           const featureTypes: string[] = this.layerUtils.getFeatureTypesAllowed(allFeatureTypes);

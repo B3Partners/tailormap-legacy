@@ -34,15 +34,8 @@ const onSetTreeOpen = (state: FormState, payload :  ReturnType<typeof FormAction
   treeOpen: payload.treeOpen,
 });
 
-const onSetFormConfigs = (state: FormState, payload : ReturnType<typeof FormActions.setFormConfigs>): FormState => ({
-  ...state,
-  formConfigsLoaded: true,
-  formConfigs: payload.formConfigs,
-});
-
 const formReducerImpl = createReducer(
   initialFormState,
-  on(FormActions.setFormConfigs, onSetFormConfigs),
   on(FormActions.setTreeOpen, onSetTreeOpen),
   on(FormActions.setSetFeatures, onSetFeatures),
   on(FormActions.setFeature, onSetFeature),

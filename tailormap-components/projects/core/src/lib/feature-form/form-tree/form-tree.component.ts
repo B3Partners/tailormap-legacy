@@ -5,12 +5,13 @@ import { FormTreeHelpers } from './form-tree-helpers';
 import { Store } from '@ngrx/store';
 import { FormState } from '../state/form.state';
 import * as FormActions from '../state/form.actions';
-import { selectFormConfigs, selectFeatures } from '../state/form.selectors';
-import { Subject } from 'rxjs';
+import { selectFeatures } from '../state/form.selectors';
+import { combineLatest, Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 import { TreeService } from '../../shared/tree/tree.service';
 import { TreeModel } from '../../shared/tree/models/tree.model';
 import { TransientTreeHelper } from '../../shared/tree/helpers/transient-tree.helper';
+import { selectFormConfigs } from '../../application/state/application.selectors';
 
 @Component({
   providers: [TreeService],
@@ -21,8 +22,6 @@ import { TransientTreeHelper } from '../../shared/tree/helpers/transient-tree.he
 export class FormTreeComponent implements OnInit, OnChanges, OnDestroy {
 
   private destroyed = new Subject();
-
-  private features : Feature[];
 
   @Input()
   public isCopy = false;
@@ -72,12 +71,18 @@ export class FormTreeComponent implements OnInit, OnChanges, OnDestroy {
       this.hasCheckboxes,
     );
 
-    this.store$.select(selectFeatures).pipe(takeUntil(this.destroyed)).subscribe((features) => {
-      this.features = [...features];
-      if (this.features && this.features.length > 0) {
-        this.createTree(this.features);
-      }
-    });
+    combineLatest([
+      this.store$.select(selectFeatures),
+      this.store$.select(selectFormConfigs),
+    ])
+      .pipe(
+        takeUntil(this.destroyed),
+        filter(([ features, formConfigs]) => !!features && features.length > 0 && !!formConfigs),
+      )
+      .subscribe(([ features, formConfigs]) => {
+        const tree : TreeModel<FormTreeMetadata> [] = FormTreeHelpers.convertFeatureToTreeModel(features, formConfigs);
+        this.transientTreeHelper.createTree(tree);
+      });
 
     this.treeService.checkStateChangedSource$.pipe(takeUntil(this.destroyed)).subscribe( event => {
       const relIds = new Map<string, boolean>();
@@ -98,13 +103,6 @@ export class FormTreeComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   public ngOnChanges(changes: SimpleChanges): void {
-  }
-
-  private createTree(features) {
-    this.store$.select(selectFormConfigs).pipe(takeUntil(this.destroyed)).subscribe(formConfigs => {
-      const tree : TreeModel<FormTreeMetadata> [] = FormTreeHelpers.convertFeatureToTreeModel(features, formConfigs);
-      this.transientTreeHelper.createTree(tree);
-    });
   }
 
   public closePanel() {

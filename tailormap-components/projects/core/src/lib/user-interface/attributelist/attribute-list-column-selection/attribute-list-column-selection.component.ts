@@ -21,6 +21,7 @@ export class AttributeListColumnSelectionComponent implements OnInit, OnDestroy 
   public showPassportColumnsOnly: boolean;
 
   private destroyed = new Subject();
+  public hasPassportColumns: boolean;
 
   constructor(
     private store$: Store<AttributeListState>,
@@ -31,7 +32,10 @@ export class AttributeListColumnSelectionComponent implements OnInit, OnDestroy 
   public ngOnInit(): void {
     this.store$.select(selectSelectedColumnsForFeature, this.data.featureType)
       .pipe(takeUntil(this.destroyed))
-      .subscribe(columns => this.columns = [...columns]);
+      .subscribe(columns => {
+        this.columns = [...columns];
+        this.hasPassportColumns = this.columns.findIndex(c => c.columnType === 'passport') !== -1;
+      });
     this.store$.select(selectShowPassportColumnsOnly, this.data.featureType)
       .pipe(takeUntil(this.destroyed))
       .subscribe(showPassportColumnsOnly => this.showPassportColumnsOnly = showPassportColumnsOnly);

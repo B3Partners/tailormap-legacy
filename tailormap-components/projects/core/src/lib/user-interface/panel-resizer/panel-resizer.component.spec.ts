@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { PanelResizerComponent } from './panel-resizer.component';
+import { SharedModule } from '../../shared/shared.module';
 
 describe('ResizeHandleComponent', () => {
   let component: PanelResizerComponent;
@@ -8,7 +9,8 @@ describe('ResizeHandleComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ PanelResizerComponent ]
+      declarations: [ PanelResizerComponent ],
+      imports: [ SharedModule ],
     })
     .compileComponents();
   }));

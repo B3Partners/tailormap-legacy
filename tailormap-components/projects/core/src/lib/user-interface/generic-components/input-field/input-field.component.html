@@ -1,4 +1,4 @@
-<mat-form-field [formGroup]="groep"  class="form-field">
+<mat-form-field *ngIf="groep" [formGroup]="groep" class="form-field">
   <div>
       <mat-label class="label">{{label}}</mat-label>
       <input

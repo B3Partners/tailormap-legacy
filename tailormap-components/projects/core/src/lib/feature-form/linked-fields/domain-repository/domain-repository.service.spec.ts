@@ -4,9 +4,13 @@ import { DomainRepositoryService } from './domain-repository.service';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { formStateKey, initialFormState } from '../../state/form.state';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
+import { applicationStateKey, initialApplicationState } from '../../../application/state/application.state';
 
 describe('DomainRepositoryService', () => {
-  const initialState = { [formStateKey]: initialFormState };
+  const initialState = {
+    [formStateKey]: initialFormState,
+    [applicationStateKey]: initialApplicationState,
+  };
   let store: MockStore;
 
   beforeEach(() => {

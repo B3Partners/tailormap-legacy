@@ -1,27 +1,20 @@
 import { NgModule } from '@angular/core';
-import { FormconfigRepositoryService } from './formconfig-repository.service';
+import { FormConfigRepositoryService } from './form-config-repository.service';
 import { createSpyObject } from '@ngneat/spectator';
-import { Feature } from '../generated';
-import { of } from 'rxjs';
+import { Observable, of } from 'rxjs';
+import { FormConfiguration } from '../../feature-form/form/form-models';
 
 export const mockConfigsJson = '{"config": {"test": {"tabs": 1,"name": "testFT","featureType": "test","treeNodeColumn" : "colToShow","newPossible": true,"tabConfig": {"1": "test"},"relation":null,"fields": [{ "key": "colToShow","column" : 1,"tab": 1,"type": "textfield"}]}}}';
 
-const featureRepoSpy = createSpyObject(FormconfigRepositoryService, {
-  formConfigs$: of(new Map()),
-  getAllFormConfigs: function(){
-    return new Map();
-  },
-  getFormConfig: function(){
-    return {fields: []};
-  },
-  getFeatureLabel(feature: Feature): string {
-    return '';
+const featureRepoSpy = createSpyObject(FormConfigRepositoryService, {
+  loadFormConfiguration(): Observable<Map<string, FormConfiguration>> {
+    return of(new Map());
   }
 });
 
 @NgModule({
   providers: [{
-    provide: FormconfigRepositoryService,
+    provide: FormConfigRepositoryService,
     useValue: featureRepoSpy,
   }],
 })

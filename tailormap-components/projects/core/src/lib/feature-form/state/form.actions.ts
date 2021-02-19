@@ -28,8 +28,3 @@ export const setFeature = createAction(
   props<{ feature : Feature }>(),
 );
 
-export const setFormConfigs = createAction(
-  `${formActionsPrefix} Set formconfigurations`,
-  props<{ formConfigs : Map<string, FormConfiguration> }>(),
-);
-

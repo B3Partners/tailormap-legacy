@@ -10,6 +10,8 @@ import { filter, map, takeUntil } from 'rxjs/operators';
 import { ApplicationService } from '../../../application/services/application.service';
 import { AttributeListColumnModel } from '../models/attribute-list-column-models';
 
+const DETAILS_LIMIT = 100;
+
 @Component({
   selector: 'tailormap-attribute-list-details',
   templateUrl: './attribute-list-details.component.html',
@@ -66,11 +68,12 @@ export class AttributeListDetailsComponent implements OnInit, OnDestroy {
       appLayer: +(this.parentLayerId),
       featureType: this.featureType.id,
       filter: this.featureType.filter,
-      page: 1,
-      clearTotalCountCache: true,
-      dir: !!sort && !!sort.direction ? sort.direction.toUpperCase() : 'ASC',
-      sort: !!sort ? sort.active : '',
+      limit: DETAILS_LIMIT,
     };
+    if (sort && sort.active && sort.direction) {
+      attrParams.dir = sort.direction.toUpperCase();
+      attrParams.sort = sort.active;
+    }
     this.rows$ = this.attributeService.features$(attrParams)
       .pipe(
         takeUntil(this.destroyed),
