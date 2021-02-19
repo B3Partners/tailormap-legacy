@@ -627,6 +627,11 @@
                 </plugin>
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>animal-sniffer-maven-plugin</artifactId>
+                    <version>1.16</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
                     <artifactId>hibernate3-maven-plugin</artifactId>
                     <version>3.0</version>
                 </plugin>
@@ -863,6 +868,17 @@
                 </executions>
             </plugin>
             <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>animal-sniffer-maven-plugin</artifactId>
+                <configuration>
+                    <signature>
+                        <groupId>org.codehaus.mojo.signature</groupId>
+                        <artifactId>java17</artifactId>
+                        <version>1.0</version>
+                    </signature>
+                </configuration>
+            </plugin>
+            <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <executions>
@@ -958,11 +974,6 @@
             <activation>
                 <jdk>[11,)</jdk>
             </activation>
-            <properties>
-                <java.version>11</java.version>
-                <project.build.targetVersion>1.8</project.build.targetVersion>
-                <maven.compiler.target>1.8</maven.compiler.target>
-            </properties>
             <dependencyManagement>
                 <dependencies>
                     <dependency>
