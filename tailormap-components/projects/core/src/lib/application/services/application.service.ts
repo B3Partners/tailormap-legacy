@@ -49,7 +49,7 @@ export class ApplicationService implements OnDestroy {
         this.store$.dispatch(setSelectedAppLayer({ layerId: `${selectedAppLayer.id}` }));
       });
 
-    this.formConfigRepositoryService.loadFormConfiguration()
+    this.formConfigRepositoryService.loadFormConfiguration$()
       .pipe(takeUntil(this.destroyed))
       .subscribe(formConfigs => {
         this.store$.dispatch(setFormConfigs({ formConfigs }));
