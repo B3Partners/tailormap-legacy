@@ -16,7 +16,6 @@ const onSetFeature = (state: FormState, payload : ReturnType<typeof FormActions.
 });
 
 const onSetNewFeature = (state: FormState, payload: ReturnType<typeof FormActions.setNewFeature>): FormState => {
-
   const idx = state.features.findIndex(feature => feature.objectGuid === payload.parentId);
   if (idx === -1) {
     return state;
@@ -32,7 +31,8 @@ const onSetNewFeature = (state: FormState, payload: ReturnType<typeof FormAction
       },
       ...state.features.slice(idx + 1),
     ],
-    feature: payload.newFeature
+    feature: payload.newFeature,
+    editting: false,
   };
 };
 

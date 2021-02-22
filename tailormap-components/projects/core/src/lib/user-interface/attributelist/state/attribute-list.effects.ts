@@ -50,6 +50,7 @@ export class AttributeListEffects {
         this.store$.select(selectFeatureDataForTab, action.layerId),
       ),
     )),
+    filter(([action, tab, featureData]) => {return !!tab; }),
     tap(([action, tab, featureData]) => {
       const mainFilter = this.attributeListDataService.getFilter(tab, tab.featureType, featureData);
       const viewerController = this.tailorMapService.getViewerController();

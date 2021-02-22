@@ -110,8 +110,8 @@ export class FormComponent implements OnDestroy, OnChanges, OnInit {
     this.formDirty = result;
   }
 
-  public setFormEditting(editting){
-    this.store$.dispatch(FormActions.setFormEditting({editting: editting}));
+  public setFormEditting(editting) {
+    this.store$.dispatch(FormActions.setFormEditting({editting}));
   }
 
   public newItem($event: MouseEvent, featureTypeName: string) {
@@ -132,7 +132,7 @@ export class FormComponent implements OnDestroy, OnChanges, OnInit {
           children: null,
           [formConfig.treeNodeColumn]: `Nieuwe ${formConfig.name}`,
         });
-        this.store$.dispatch(FormActions.setNewFeature({newFeature: newFeature, parentId: features[0].objectGuid}));
+        this.store$.dispatch(FormActions.setNewFeature({newFeature, parentId: features[0].objectGuid}));
         this.store$.dispatch(FormActions.setFormEditting({editting: true}));
       });
   }

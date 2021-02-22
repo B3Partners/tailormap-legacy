@@ -23,7 +23,7 @@
   </div>
   <div class="bottom-bar">
 
-    <button mat-flat-button *ngIf="!(formCreator.editting$ | async)" color="primary" (click)="setFormEditting(true)">
+    <button mat-flat-button *ngIf="(formCreator.editting$ | async) === (false || null || undefined)" color="primary" (click)="setFormEditting(true)">
       Bewerken
     </button>
 
@@ -42,7 +42,7 @@
       </button>
     </mat-menu>
 
-    <button mat-flat-button color="primary" [matMenuTriggerFor]="optiesMenu" *ngIf="!(formCreator.editting$ | async)">
+    <button mat-flat-button color="primary" [matMenuTriggerFor]="optiesMenu" *ngIf="(formCreator.editting$ | async) === (false || null || undefined)">
       Opties
     </button>
     <mat-menu #optiesMenu="matMenu" yPosition="above" class="tailormap-menu-panel">
