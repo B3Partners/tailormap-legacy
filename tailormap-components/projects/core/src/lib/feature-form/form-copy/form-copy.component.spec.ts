@@ -10,9 +10,11 @@ import { mockFeature } from '../../shared/tests/test-data';
 import { CopyDialogData } from './form-copy-models';
 import { getDialogRefMockProvider } from '../../shared/tests/test-mocks';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { formStateKey } from '../state/form.state';
+import { formStateKey, initialFormState } from '../state/form.state';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
-import { mockFormState } from '../state/test-data/form-test-data';
+import { applicationStateKey, initialApplicationState } from '../../application/state/application.state';
+import { testFormConfigs } from '../../application/state/test-data/application-test-data';
+
 
 describe('FormCopyComponent', () => {
   let spectator: Spectator<FormCopyComponent>;
@@ -20,7 +22,16 @@ describe('FormCopyComponent', () => {
     originalFeature: mockFeature(),
     destinationFeatures: [ mockFeature(), mockFeature() ],
   };
-  const initialState = { [formStateKey]: mockFormState };
+  const initialState = {
+    [formStateKey]: {
+      ...initialFormState,
+      feature: mockFeature(),
+    },
+    [applicationStateKey]: {
+      ...initialApplicationState,
+      formConfigs: testFormConfigs,
+    }
+  };
   let store: MockStore;
   const createComponent = createComponentFactory({
     component: FormCopyComponent,

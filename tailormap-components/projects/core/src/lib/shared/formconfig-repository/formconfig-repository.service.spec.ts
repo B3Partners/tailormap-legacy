@@ -2,7 +2,7 @@ import {
   getTestBed,
   TestBed,
 } from '@angular/core/testing';
-import { FormconfigRepositoryService } from './formconfig-repository.service';
+import { FormConfigRepositoryService } from './form-config-repository.service';
 import {
   HttpClientTestingModule,
   HttpTestingController,
@@ -12,14 +12,10 @@ import { getTailorMapServiceMockProvider } from '../../../../../bridge/src/tailo
 import { FeatureControllerService } from '../generated';
 import { createSpyObject } from '@ngneat/spectator';
 import { Observable, of } from 'rxjs';
-import { MockStore, provideMockStore } from '@ngrx/store/testing';
-import { formStateKey, initialFormState } from '../../feature-form/state/form.state';
 
-describe('FormconfigRepositoryService', () => {
+describe('FormConfigRepositoryService', () => {
   let httpMock: HttpTestingController;
   let injector: TestBed;
-  let store: MockStore;
-  const initialState = { [formStateKey]: initialFormState };
   const featureControllerMockService = createSpyObject(FeatureControllerService, {
     featuretypeInformation(): Observable<[]> {
       return of([]);
@@ -31,15 +27,12 @@ describe('FormconfigRepositoryService', () => {
         HttpClientTestingModule,
       ],
       providers: [
-        provideMockStore({ initialState }),
         getTailorMapServiceMockProvider({ getApplicationId() { return 1; }}),
         { provide: FeatureControllerService, useValue: featureControllerMockService },
       ]
     });
     injector = getTestBed();
     httpMock = TestBed.inject(HttpTestingController);
-    store = TestBed.inject(MockStore);
-
   });
 
   const expectConfigRequest = () => {
@@ -52,7 +45,8 @@ describe('FormconfigRepositoryService', () => {
   });
 
   it('should be created', () => {
-    const service: FormconfigRepositoryService = TestBed.inject(FormconfigRepositoryService);
+    const service: FormConfigRepositoryService = TestBed.inject(FormConfigRepositoryService);
+    service.loadFormConfiguration$().subscribe();
     expectConfigRequest();
     expect(service).toBeTruthy();
   });

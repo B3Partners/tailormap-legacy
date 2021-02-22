@@ -17,7 +17,7 @@ import { AttributeMetadataResponse } from '../../../shared/attribute-service/att
 import { AttributeListConfig } from '../models/attribute-list.config';
 import { AttributeListFeatureTypeData } from '../models/attribute-list-feature-type-data.model';
 import { IdService } from '../../../shared/id-service/id.service';
-import { selectFormConfigForFeatureType, selectFormConfigsLoaded } from '../../../feature-form/state/form.selectors';
+import { selectFormConfigForFeatureTypeName, selectFormConfigsLoaded } from '../../../application/state/application.selectors';
 
 interface TabFromLayerResult {
   tab: AttributeListTabModel;
@@ -123,7 +123,7 @@ export class AttributeListManagerService implements OnDestroy {
   ): Observable<TabFromLayerResult> {
     const layerName = LayerUtils.sanitizeLayername(layer.layerName);
     return forkJoin([
-      this.store$.select(selectFormConfigForFeatureType, layerName).pipe(take(1)),
+      this.store$.select(selectFormConfigForFeatureTypeName, layerName).pipe(take(1)),
       this.metadataService.getFeatureTypeMetadata$(layer.id),
     ]).pipe(
       map(([ formConfig, metadata ]): TabFromLayerResult => {
@@ -179,6 +179,7 @@ export class AttributeListManagerService implements OnDestroy {
       featureTypeName,
       parentFeatureType: featureType !== parentFeatureType ? parentFeatureType : undefined,
       columns: this.getColumnsForLayer(metadata, featureType, formConfig),
+      showPassportColumnsOnly: !!formConfig,
       pageSize,
     }
   }

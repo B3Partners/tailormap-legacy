@@ -1,5 +1,6 @@
 import { Level, SelectedContentItem } from '../../../../../bridge/typings';
 import { TailormapAppLayer } from '../models/tailormap-app-layer.model';
+import { FormConfiguration } from '../../feature-form/form/form-models';
 
 export const applicationStateKey = 'application';
 
@@ -9,6 +10,8 @@ export interface ApplicationState {
   levels: Level[];
   layers: TailormapAppLayer[];
   selectedAppLayer: string;
+  formConfigsLoaded: boolean;
+  formConfigs: Map<string, FormConfiguration>;
 }
 
 export const initialApplicationState: ApplicationState = {
@@ -17,4 +20,6 @@ export const initialApplicationState: ApplicationState = {
   levels: [],
   layers: [],
   selectedAppLayer: null,
+  formConfigsLoaded: false,
+  formConfigs: null,
 }

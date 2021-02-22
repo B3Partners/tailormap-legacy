@@ -13,6 +13,7 @@ import {
 } from '../../../../../bridge/typings';
 import { TreeModel } from '../../shared/tree/models/tree.model';
 import { ApplicationTreeHelper } from '../helpers/application-tree.helper';
+import { LayerUtils } from '../../shared/layer-utils/layer-utils.service';
 
 const selectApplicationState = createFeatureSelector<ApplicationState>(applicationStateKey);
 
@@ -109,3 +110,32 @@ export const selectVisibleLayersWithAttributes = createSelector(
   selectLayers,
   (appLayers) => appLayers.filter(layer => layer.visible && layer.attribute),
 );
+
+export const selectFormConfigs = createSelector(selectApplicationState, state => state.formConfigs);
+
+export const selectFormConfigsLoaded = createSelector(selectApplicationState, state => state.formConfigsLoaded);
+
+export const selectFormConfigForFeatureTypeName = createSelector(
+  selectFormConfigs,
+  (formConfigs, featureType : string) => formConfigs.get(LayerUtils.sanitizeLayername(featureType)),
+);
+
+export const selectFormConfigFeatureTypeNames = createSelector(
+  selectFormConfigs,
+  (formConfigs): string[] => formConfigs ? Array.from(formConfigs.keys()) : [],
+);
+
+export const selectVisibleLayersWithFormConfig = createSelector(
+  selectFormConfigFeatureTypeNames,
+  selectVisibleLayers,
+  (formConfigFeatureTypeNames, visibleLayers): string[] => {
+    if (!visibleLayers || visibleLayers.length === 0) {
+      return [];
+    }
+    const formFeatureTypeNamesSet = new Set<string>(formConfigFeatureTypeNames.map(name => name.toLowerCase()))
+    return visibleLayers
+      .filter(layer => formFeatureTypeNamesSet.has(LayerUtils.sanitizeLayername(layer.layerName)))
+      .map(layer => LayerUtils.sanitizeLayername(layer.layerName));
+  },
+)
+

@@ -2,7 +2,7 @@ import { Injectable, OnDestroy } from '@angular/core';
 import { AttributeService } from '../../shared/attribute-service/attribute.service';
 import { Store } from '@ngrx/store';
 import { ApplicationState } from '../state/application.state';
-import { selectApplicationId } from '../state/application.selectors';
+import { selectApplicationId, selectFormConfigForFeatureTypeName } from '../state/application.selectors';
 import { catchError, concatMap, map, switchMap, takeUntil, takeWhile, tap } from 'rxjs/operators';
 import { combineLatest, Observable, of, Subject } from 'rxjs';
 import { AttributeListParameters, AttributeListResponse, AttributeMetadataResponse } from '../../shared/attribute-service/attribute-models';
@@ -11,7 +11,6 @@ import { PassportAttributeModel } from '../models/passport-attribute.model';
 import { UniqueValuesResponse } from '../../shared/value-service/value-models';
 import { ValueService } from '../../shared/value-service/value.service';
 import { FormState } from '../../feature-form/state/form.state';
-import { selectFormConfigForFeatureType } from '../../feature-form/state/form.selectors';
 
 export type UniqueValueCountResponse = { uniqueValue: string, total: number };
 
@@ -63,10 +62,10 @@ export class MetadataService implements OnDestroy {
           const formConfigs$ = [
             ...metadata.relations.map(relation => relation.foreignFeatureTypeName),
             ...metadata.invertedRelations.map(invertedRelation => invertedRelation.featureTypeName),
-          ].map(relation => this.store$.select(selectFormConfigForFeatureType, relation));
+          ].map(relation => this.store$.select(selectFormConfigForFeatureTypeName, relation));
           return combineLatest([
             of(metadata),
-            this.store$.select(selectFormConfigForFeatureType, metadata.featureTypeName),
+            this.store$.select(selectFormConfigForFeatureTypeName, metadata.featureTypeName),
             combineLatest(formConfigs$),
           ]);
         }),

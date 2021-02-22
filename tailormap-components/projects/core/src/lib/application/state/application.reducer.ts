@@ -1,4 +1,3 @@
-
 import { Action, createReducer, on } from '@ngrx/store';
 import * as ApplicationActions from './application.actions';
 import {
@@ -105,6 +104,12 @@ const onSetLayerVisibility = (state: ApplicationState, payload: { visibility: Ma
   })),
 });
 
+const onSetFormConfigs = (state: ApplicationState, payload : ReturnType<typeof ApplicationActions.setFormConfigs>): ApplicationState => ({
+  ...state,
+  formConfigsLoaded: true,
+  formConfigs: payload.formConfigs,
+});
+
 const applicationReducerImpl = createReducer(
   initialApplicationState,
   on(ApplicationActions.setApplicationContent, onSetApplicationContent),
@@ -112,6 +117,7 @@ const applicationReducerImpl = createReducer(
   on(ApplicationActions.removeAppLayer, onRemoveLayer),
   on(ApplicationActions.setSelectedAppLayer, onSetSelectedAppLayer),
   on(ApplicationActions.setLayerVisibility, onSetLayerVisibility),
+  on(ApplicationActions.setFormConfigs, onSetFormConfigs),
 );
 
 export const applicationReducer = (state: ApplicationState | undefined, action: Action) => {

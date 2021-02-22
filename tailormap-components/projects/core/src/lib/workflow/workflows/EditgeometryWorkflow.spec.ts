@@ -1,7 +1,6 @@
 import { WorkflowFactoryService } from '../workflow-factory/workflow-factory.service';
 import { createServiceFactory, createSpyObject, SpectatorService } from '@ngneat/spectator';
 import { EditgeometryWorkflow } from './EditgeometryWorkflow';
-import { FormconfigRepositoryService } from '../../shared/formconfig-repository/formconfig-repository.service';
 import { FeatureControllerService } from '../../shared/generated';
 import { GeometryConfirmService } from '../../user-interface/geometry-confirm-buttons/geometry-confirm.service';
 import { ConfirmDialogService } from '../../shared/confirm-dialog/confirm-dialog.service';
@@ -18,6 +17,7 @@ import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { formStateKey, initialFormState } from '../../feature-form/state/form.state';
 import { WORKFLOW_ACTION } from '../state/workflow-models';
 import { initialWorkflowState, workflowStateKey } from '../state/workflow.state';
+import { applicationStateKey, initialApplicationState } from '../../application/state/application.state';
 
 describe('EditgeometryWorkflow', () => {
   let workflow: EditgeometryWorkflow;
@@ -26,6 +26,7 @@ describe('EditgeometryWorkflow', () => {
   const initialState = {
     [formStateKey]: initialFormState,
     [workflowStateKey]: {...initialWorkflowState, feature: mockBoom()},
+    [applicationStateKey]: initialApplicationState,
   };
   let store: MockStore;
   const vectorLayer = vectorLayerMock({
@@ -42,7 +43,6 @@ describe('EditgeometryWorkflow', () => {
   const createService = createServiceFactory({
     service: WorkflowFactoryService,
     mocks: [
-      FormconfigRepositoryService,
       MatSnackBar,
       FeatureControllerService,
       ConfirmDialogService,

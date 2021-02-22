@@ -5,7 +5,7 @@ import { AttributeControllerService, Attribuut } from '../../../shared/generated
 import { LayerUtils } from '../../../shared/layer-utils/layer-utils.service';
 import { FormState } from '../../state/form.state';
 import { Store } from '@ngrx/store';
-import { selectFormConfigs } from '../../state/form.selectors';
+import { selectFormConfigs } from '../../../application/state/application.selectors';
 import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 

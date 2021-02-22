@@ -16,7 +16,7 @@ import { AttributeTypeHelper } from '../../../application/helpers/attribute-type
 import { AttributeTypeEnum } from '../../../application/models/attribute-type.enum';
 import { Store } from '@ngrx/store';
 import { AttributeListState } from '../state/attribute-list.state';
-import { selectFormConfigForFeatureType } from '../../../feature-form/state/form.selectors';
+import { selectFormConfigForFeatureTypeName } from '../../../application/state/application.selectors';
 import { FormTreeHelpers } from '../../../feature-form/form-tree/form-tree-helpers';
 
 export interface LoadDataResult {
@@ -95,7 +95,7 @@ export class AttributeListDataService {
       this.attributeService.features$(attrParams).pipe(
         catchError(e => of<AttributeListResponse>({ success: false, message: '', features: [], total: 0 })),
       ),
-      this.store$.select(selectFormConfigForFeatureType, tab.layerName).pipe(take(1)),
+      this.store$.select(selectFormConfigForFeatureTypeName, tab.layerName).pipe(take(1)),
     ]).pipe(
       map(([ response, formConfig ]): LoadDataResult => {
         if (!response.success) {

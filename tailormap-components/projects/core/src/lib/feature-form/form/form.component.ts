@@ -12,13 +12,13 @@ import { Store } from '@ngrx/store';
 import * as FormActions from '../state/form.actions';
 import * as WorkflowActions from '../../workflow/state/workflow.actions';
 import {
-  selectCloseAfterSaveFeatureForm, selectCurrentFeature, selectFeatureFormOpen, selectFormAlreadyDirty, selectFormConfigForFeatureType,
-  selectFormConfigs, selectFeatures, selectTreeOpen,
+  selectCloseAfterSaveFeatureForm, selectCurrentFeature, selectFeatureFormOpen, selectFormAlreadyDirty, selectFeatures, selectTreeOpen,
 } from '../state/form.selectors';
 import { LayerUtils } from '../../shared/layer-utils/layer-utils.service';
 import { WORKFLOW_ACTION } from '../../workflow/state/workflow-models';
 import { WorkflowState } from '../../workflow/state/workflow.state';
 import { MatButtonToggleChange } from '@angular/material/button-toggle';
+import { selectFormConfigForFeatureTypeName, selectFormConfigs } from '../../application/state/application.selectors';
 
 @Component({
   selector: 'tailormap-form',
@@ -84,7 +84,7 @@ export class FormComponent implements OnDestroy, OnChanges, OnInit {
   private initForm() {
     this.formDirty = false;
     combineLatest([
-      this.store$.select(selectFormConfigForFeatureType, this.feature.clazz),
+      this.store$.select(selectFormConfigForFeatureTypeName, this.feature.clazz),
       this.store$.select(selectFormConfigs),
     ])
       .pipe(takeUntil(this.destroyed))
@@ -105,9 +105,9 @@ export class FormComponent implements OnDestroy, OnChanges, OnInit {
     this.formDirty = result;
   }
 
-  public newItem(evt) {
-    const type = LayerUtils.sanitizeLayername(evt.srcElement.id);
-    this.store$.select(selectFormConfigForFeatureType, type)
+  public newItem($event: MouseEvent, featureTypeName: string) {
+    const type = LayerUtils.sanitizeLayername(featureTypeName);
+    this.store$.select(selectFormConfigForFeatureTypeName, type)
       .pipe(takeUntil(this.destroyed))
       .subscribe(formConfig => {
         this.actions.newItem$(this.features, type, formConfig).pipe(takeUntil(this.destroyed)).subscribe(features => {
