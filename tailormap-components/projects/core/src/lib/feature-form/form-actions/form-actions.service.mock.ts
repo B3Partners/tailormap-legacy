@@ -4,9 +4,6 @@ import { Observable, of } from 'rxjs';
 
 export const createFormActionsServiceMockProvider = () => {
   return createSpyObject(FormActionsService, {
-    newItem$(evt, features) {
-      return of({});
-    },
     removeFeature$(): Observable<any> {
       return of({});
     },
