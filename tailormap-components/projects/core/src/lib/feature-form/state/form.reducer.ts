@@ -15,17 +15,26 @@ const onSetFeature = (state: FormState, payload : ReturnType<typeof FormActions.
   feature: payload.feature,
 });
 
-const onSetNewFeature = (state: FormState, payload: ReturnType<typeof FormActions.setNewFeature>): FormState => ({
-  ...state,
-  features: [
-    {
-      ...state.features[0],
-      children: [...state.features[0].children, payload.feature],
-    },
-    ...state.features.slice(1),
-  ],
-  feature: payload.feature,
-});
+const onSetNewFeature = (state: FormState, payload: ReturnType<typeof FormActions.setNewFeature>): FormState => {
+
+  const idx = state.features.findIndex(feature => feature.objectGuid === payload.parentId);
+  if (idx === -1) {
+    return state;
+  }
+
+  return {
+    ...state,
+    features: [
+      ...state.features.slice(0, idx),
+      {
+        ...state.features[idx],
+        children: [...state.features[idx].children, payload.newFeature],
+      },
+      ...state.features.slice(idx + 1),
+    ],
+    feature: payload.newFeature
+  };
+};
 
 
 

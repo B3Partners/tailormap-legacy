@@ -115,10 +115,14 @@ export class FormComponent implements OnDestroy, OnChanges, OnInit {
   }
 
   public newItem($event: MouseEvent, featureTypeName: string) {
-    const type = LayerUtils.sanitizeLayername(featureTypeName);
-    this.store$.select(selectFormConfigForFeatureTypeName, type)
-      .pipe(takeUntil(this.destroyed))
-      .subscribe(formConfig => {
+    const type = LayerUtils.sanitizeLayername(evt.srcElement.id);
+
+    combineLatest([
+      this.store$.select(selectFormConfigForFeatureTypeName, type),
+      this.store$.select(selectFeatures),
+    ])
+      .pipe(take(1))
+      .subscribe(([formConfig, features]) => {
         const objecttype = FormHelpers.capitalize(type);
         const newFeature = this.featureInitializerService.create(objecttype, {
           id: null,
@@ -126,9 +130,9 @@ export class FormComponent implements OnDestroy, OnChanges, OnInit {
           isRelated: true,
           objecttype,
           children: null,
+          [formConfig.treeNodeColumn]: `Nieuwe ${formConfig.name}`,
         });
-        newFeature[formConfig.treeNodeColumn] = 'Nieuwe ' + formConfig.name;
-        this.store$.dispatch(FormActions.setNewFeature({feature: newFeature}));
+        this.store$.dispatch(FormActions.setNewFeature({newFeature: newFeature, parentId: features[0].objectGuid}));
         this.store$.dispatch(FormActions.setFormEditting({editting: true}));
       });
   }

@@ -29,7 +29,7 @@ export const setFeature = createAction(
 
 export const setNewFeature = createAction(
   `${formActionsPrefix} Add new feature as child of current feature`,
-  props<{ feature : Feature }>(),
+  props<{ newFeature : Feature, parentId: string }>(),
 );
 
 export const setFormEditting = createAction(
