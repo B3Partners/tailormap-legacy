@@ -9,7 +9,7 @@ timestamps {
                 numToKeepStr: '5']
             ]]);
 
-        final def jdks = ['OpenJDK11','OpenJDK8']
+        final def jdks = ['OpenJDK8']
 
         stage("Prepare") {
              checkout scm
@@ -74,12 +74,6 @@ timestamps {
                     sh " .jenkins/check-java-binary-version.sh"
                 }
                 
-                if (jdkTestName == 'OpenJDK11') {
-                    stage("cleanup Java 11 packages") {
-                        echo "Removing Java 11 built artifacts from local repository"
-                        sh "mvn build-helper:remove-project-artifact"
-                    }
-                }
             }
         }
 
