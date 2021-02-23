@@ -70,7 +70,7 @@
     "ng-packagr": "^11.2.3",
     "protractor": "~7.0.0",
     "rxjs-tslint-rules": "^4.34.7",
-    "stylelint": "^13.9.0",
+    "stylelint": "^13.11.0",
     "stylelint-config-standard": "^20.0.0",
     "ts-node": "~9.1.1",
     "tslint": "~6.1.0",
