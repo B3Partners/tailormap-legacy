@@ -2,6 +2,7 @@ import { createFeatureSelector, createSelector } from '@ngrx/store';
 import { FormState, formStateKey } from './form.state';
 import { LayerUtils } from '../../shared/layer-utils/layer-utils.service';
 import { Feature } from '../../shared/generated';
+import { selectFormConfigs } from '../../application/state/application.selectors';
 
 const selectFormState = createFeatureSelector<FormState>(formStateKey);
 

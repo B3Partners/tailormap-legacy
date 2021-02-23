@@ -12,7 +12,8 @@ import { Store } from '@ngrx/store';
 import * as FormActions from '../state/form.actions';
 import * as WorkflowActions from '../../workflow/state/workflow.actions';
 import {
-  selectCloseAfterSaveFeatureForm, selectCurrentFeature, selectFeatureFormOpen, selectFormAlreadyDirty, selectFeatures, selectTreeOpen,
+  selectCloseAfterSaveFeatureForm, selectCurrentFeature, selectFeatureFormOpen, selectFeatures, selectFormAlreadyDirty, selectFormEditting,
+  selectTreeOpen,
 } from '../state/form.selectors';
 import { LayerUtils } from '../../shared/layer-utils/layer-utils.service';
 import { WORKFLOW_ACTION } from '../../workflow/state/workflow-models';
@@ -115,7 +116,7 @@ export class FormComponent implements OnDestroy, OnChanges, OnInit {
   }
 
   public newItem($event: MouseEvent, featureTypeName: string) {
-    const type = LayerUtils.sanitizeLayername(evt.srcElement.id);
+    const type = LayerUtils.sanitizeLayername(featureTypeName);
 
     combineLatest([
       this.store$.select(selectFormConfigForFeatureTypeName, type),
