@@ -32,11 +32,14 @@ export class UserLayerService {
     private store$: Store<AnalysisState>,
   ) {}
 
-  public createUserLayerFromParams(params: CreateUserLayerParams) {
-    this.saveUserLayer$(params.appLayerId, params.title, params.query, params.style, params.createdAppLayer)
-      .subscribe(([createLayerResult, saveStyleResult]) => {
-        this.handleResult(createLayerResult, saveStyleResult, params.source);
-      });
+  public createUserLayerFromParams$(params: CreateUserLayerParams): Observable<boolean> {
+    return this.saveUserLayer$(params.appLayerId, params.title, params.query, params.style, params.createdAppLayer)
+      .pipe(
+        map(([createLayerResult, saveStyleResult]) => {
+          this.handleResult(createLayerResult, saveStyleResult, params.source);
+          return true;
+        }),
+      );
   }
 
   public createUserLayer() {

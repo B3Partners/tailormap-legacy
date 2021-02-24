@@ -56,3 +56,15 @@
   font-size: 14px;
   margin: 0;
 }
+
+.loading-message {
+  display: flex;
+  font-size: 14px;
+  font-weight: normal;
+  align-items: center;
+  margin-left: 16px;
+}
+
+.loading-message span {
+  margin-left: 16px;
+}
