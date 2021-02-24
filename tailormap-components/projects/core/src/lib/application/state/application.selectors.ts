@@ -14,6 +14,7 @@ import {
 import { TreeModel } from '../../shared/tree/models/tree.model';
 import { ApplicationTreeHelper } from '../helpers/application-tree.helper';
 import { LayerUtils } from '../../shared/layer-utils/layer-utils.service';
+import { TailormapAppLayer } from '../models/tailormap-app-layer.model';
 
 const selectApplicationState = createFeatureSelector<ApplicationState>(applicationStateKey);
 
@@ -136,6 +137,18 @@ export const selectVisibleLayersWithFormConfig = createSelector(
     return visibleLayers
       .filter(layer => formFeatureTypeNamesSet.has(LayerUtils.sanitizeLayername(layer.layerName)))
       .map(layer => LayerUtils.sanitizeLayername(layer.layerName));
+  },
+)
+
+export const selectLayerIdForLayerName = createSelector(
+  selectLayers,
+  (layers: TailormapAppLayer[], layerName: string): string => {
+    const sanitizedLayerName = LayerUtils.sanitizeLayername(layerName);
+    const layer = layers.find(l => LayerUtils.sanitizeLayername(l.layerName) === sanitizedLayerName);
+    if (layer) {
+      return layer.id;
+    }
+    return null;
   },
 )
 

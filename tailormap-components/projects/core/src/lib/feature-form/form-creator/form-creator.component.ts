@@ -9,13 +9,14 @@ import { FormActionsService } from '../form-actions/form-actions.service';
 import { LinkedAttributeRegistryService } from '../linked-fields/registry/linked-attribute-registry.service';
 import { FormFieldHelpers } from '../form-field/form-field-helpers';
 import { ConfirmDialogService } from '../../shared/confirm-dialog/confirm-dialog.service';
-import { takeUntil } from 'rxjs/operators';
+import { filter, take, takeUntil } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
 import { FormState } from '../state/form.state';
 import * as FormActions from '../state/form.actions';
 import { WorkflowState } from '../../workflow/state/workflow.state';
 import { loadDataForTab } from '../../user-interface/attributelist/state/attribute-list.actions';
 import { selectFormEditting } from '../state/form.selectors';
+import { selectLayerIdForLayerName } from '../../application/state/application.selectors';
 
 @Component({
   selector: 'tailormap-form-creator',
@@ -156,8 +157,9 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
         });
       },
       () => {
-        // Update attributelist after feature is saved
-        this.store$.dispatch(loadDataForTab({ layerId: clazzName }));
+        this.store$.select(selectLayerIdForLayerName, clazzName)
+          .pipe(take(1), filter(layerId => layerId !== null))
+          .subscribe(layerId => this.store$.dispatch(loadDataForTab({ layerId })));
       });
   }
 
@@ -165,16 +167,17 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
     if (this.isBulk) {
       for (const key in form) {
         if (this.formgroep.controls[key]?.dirty) {
-          this.features.forEach(feature => {
-            feature[key] = form[key];
-          });
+          this.features = this.features.map(feature => ({
+            ...feature,
+            [key]: form[key],
+          }));
         }
       }
     } else {
       Object.keys(this.feature).forEach(attr => {
         for (const key in form) {
           if (form.hasOwnProperty(key) && key === attr) {
-            this.feature[attr] = form[key];
+            this.feature = { ...this.feature, [attr]: form[key] };
             break;
           }
         }
