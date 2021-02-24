@@ -4,19 +4,23 @@ import { GeoJSONGeometry } from 'wellknown';
 import { Feature } from '../../shared/generated';
 import { MapClickedEvent } from '../../shared/models/event-models';
 import { OLFeature, VectorLayer } from '../../../../../bridge/typings';
-import { take, takeUntil } from 'rxjs/operators';
+import { concatMap, map, take, takeUntil } from 'rxjs/operators';
 import { WorkflowHelper } from './workflow.helper';
 import * as FormActions from '../../feature-form/state/form.actions';
 import { selectFormClosed } from '../../feature-form/state/form.state-helpers';
-import { selectFormConfigForFeatureTypeName, selectFormConfigFeatureTypeNames } from '../../application/state/application.selectors';
+import {
+  selectFormConfigForFeatureTypeName, selectFormConfigFeatureTypeNames, selectFormConfigs,
+} from '../../application/state/application.selectors';
 import { selectFeatureType, selectGeometryType } from '../state/workflow.selectors';
-import { combineLatest } from 'rxjs';
+import { combineLatest, Observable, of } from 'rxjs';
+import { FeatureSelectionComponent } from '../../shared/feature-selection/feature-selection.component';
 
 
 export class StandardFormWorkflow extends Workflow {
 
   private featureType: string;
   private isDrawing = false;
+  private featureSelectionPopupOpen = false;
 
   constructor() {
     super();
@@ -96,37 +100,59 @@ export class StandardFormWorkflow extends Workflow {
   }
 
   public mapClick(data: MapClickedEvent): void {
-    if (!this.isDrawing) {
-
-      const x = data.x;
-      const y = data.y;
-      const scale = data.scale;
-
-      this.store$.select(selectFormConfigFeatureTypeNames)
-        .pipe(takeUntil(this.destroyed))
-        .subscribe(allFeatureTypes => {
-          const featureTypes: string[] = this.layerUtils.getFeatureTypesAllowed(allFeatureTypes);
-          this.service.featuretypeOnPoint({featureTypes, x, y, scale}).subscribe(
-            (features: Feature[]) => {
-              if (features && features.length > 0) {
-                this.afterEditting();
-                const feat = features[0];
-
-                const geom = this.featureInitializerService.retrieveGeometry(feat);
-                if (geom) {
-                  this.highlightLayer.readGeoJSON(geom);
-                }
-                this.openDialog([feat]);
-              }
-            },
-            error => {
-              this.snackBar.open('Fout: Feature niet kunnen ophalen: ' + error, '', {
-                duration: 5000,
-              });
-            },
-          );
-        });
+    if (this.isDrawing) {
+      return;
     }
+
+    const x = data.x;
+    const y = data.y;
+    const scale = data.scale;
+
+    this.store$.select(selectFormConfigFeatureTypeNames)
+      .pipe(
+        takeUntil(this.destroyed),
+        concatMap(allFeatureTypes => {
+          const featureTypes: string[] = this.layerUtils.getFeatureTypesAllowed(allFeatureTypes, true);
+          return this.service.featuretypeOnPoint({featureTypes, x, y, scale})
+        }),
+        concatMap((features: Feature[]) => {
+          if (features && features.length > 1) {
+            return this.featureSelection$(features);
+          }
+          if (features && features.length === 1) {
+            return of(features[0]);
+          }
+          return of(null);
+        }),
+      )
+      .subscribe(feature => {
+        this.featureSelectionPopupOpen = false;
+        if (!feature) {
+          return;
+        }
+        this.afterEditting();
+        const geom = this.featureInitializerService.retrieveGeometry(feature);
+        if (geom) {
+          this.highlightLayer.readGeoJSON(geom);
+        }
+        this.openDialog([feature]);
+      });
+  }
+
+  private featureSelection$(features: Feature[]): Observable<Feature | null> {
+    if (this.featureSelectionPopupOpen) {
+      return;
+    }
+    this.featureSelectionPopupOpen = true;
+    return this.store$.select(selectFormConfigs)
+      .pipe(
+        take(1),
+        concatMap(formConfigs => {
+          return FeatureSelectionComponent.openFeatureSelectionPopup(this.dialog, features, formConfigs)
+            .afterClosed()
+            .pipe(map(selectedFeature => selectedFeature || null));
+        }),
+      );
   }
 
   public afterEditting(): void {
