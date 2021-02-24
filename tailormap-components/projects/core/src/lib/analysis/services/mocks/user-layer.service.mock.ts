@@ -5,7 +5,7 @@ import { CreateUserLayerParams } from '../user-layer-api.service';
 export const createUserLayerServiceMockProvider = () => {
   return createSpyObject(UserLayerService, {
     createUserLayer() {},
-    createUserLayerFromParams(params: CreateUserLayerParams) {},
+    createUserLayerFromParams$(params: CreateUserLayerParams) {},
   })
 };
 

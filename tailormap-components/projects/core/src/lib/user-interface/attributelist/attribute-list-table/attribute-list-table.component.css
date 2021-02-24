@@ -37,6 +37,22 @@ mat-table {
   color: #5f35f7;
 }
 
+.header-cell--with-filter span {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.header-cell--with-filter mat-icon {
+  flex-shrink: 0;
+}
+
+.header-cell--with-filter ::ng-deep .mat-sort-header-container,
+.header-cell--with-filter ::ng-deep .mat-sort-header-content {
+  overflow: hidden;
+}
+
 .material-icons-unset {
   color: rgba(0, 0, 0, 0.26);
 }
