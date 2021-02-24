@@ -10,17 +10,9 @@ export const selectFormClosed = pipe(
   filter(open => !open),
 );
 
-export const removeUnsavedFeatures = (features: Feature[]): Feature[] => {
-  return features
-    .filter(feature => feature.objectGuid !== FeatureInitializerService.STUB_OBJECT_GUID_NEW_OBJECT)
-    .map(feature => ({
-      ...feature,
-      children: feature.children ? removeUnsavedFeatures(feature.children) : null,
-    }));
-}
-
 export const updateFeatureInArray = (features: Feature[], newFeature: Feature): Feature[] => {
-  const idx = features.findIndex(feature => feature.objectGuid === newFeature.objectGuid);
+  const idx = features.findIndex(feature =>
+    feature.objectGuid === newFeature.objectGuid || feature.objectGuid === FeatureInitializerService.STUB_OBJECT_GUID_NEW_OBJECT);
 
   return (idx !== -1 ?
       [...features.slice(0, idx), {...newFeature}, ...features.slice(idx + 1)]
@@ -31,3 +23,16 @@ export const updateFeatureInArray = (features: Feature[], newFeature: Feature): 
       children: feature.children ? updateFeatureInArray(feature.children, newFeature) : null,
     }));
 };
+
+export const addFeatureToParent = (features: Feature[], newFeature: Feature, parentId:string) : Feature[] =>{
+  const idx = features.findIndex(feature => feature.objectGuid === parentId);
+
+  return (idx !== -1 ?
+      [...features.slice(0, idx),{...features[idx],children: [...features[idx].children, newFeature]},...features.slice(idx + 1)]
+      : features
+  )
+    .map(feature => ({
+      ...feature,
+      children: feature.children ? addFeatureToParent(feature.children, newFeature,parentId) : null,
+    }));
+}
