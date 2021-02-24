@@ -32,6 +32,11 @@ export const setNewFeature = createAction(
   props<{ newFeature : Feature, parentId: string }>(),
 );
 
+export const setFeatureRemoved = createAction(
+  `${formActionsPrefix} Removed feature`,
+  props<{ feature : Feature }>(),
+);
+
 export const setFormEditting = createAction(
   `${formActionsPrefix} Set form editting`,
   props<{ editting: boolean }>(),

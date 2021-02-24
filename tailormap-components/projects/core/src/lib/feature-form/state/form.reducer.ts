@@ -1,7 +1,7 @@
 import { Action, createReducer, on } from '@ngrx/store';
 import { FormState, initialFormState } from './form.state';
 import * as FormActions from './form.actions';
-import { addFeatureToParent, updateFeatureInArray } from './form.state-helpers';
+import { addFeatureToParent, removeFeature, updateFeatureInArray } from './form.state-helpers';
 import { FeatureInitializerService } from '../../shared/feature-initializer/feature-initializer.service';
 
 const onCloseFeatureForm  = (state: FormState): FormState => ({
@@ -37,7 +37,6 @@ const onSetNewFeature = (state: FormState, payload: ReturnType<typeof FormAction
 };
 
 
-
 const onSetFeatures = (state: FormState, payload:  ReturnType<typeof FormActions.setSetFeatures>) : FormState => ({
   ...state,
   features: payload.features,
@@ -63,12 +62,24 @@ const onSetFormEditting = (state: FormState, payload :  ReturnType<typeof FormAc
   editting: payload.editting,
 });
 
+const onSetFeatureRemoved = (state: FormState, payload :  ReturnType<typeof FormActions.setFeatureRemoved>): FormState => {
+  const features =  removeFeature([...state.features], payload.feature);
+  return {
+    ...state,
+    features,
+    feature: features.length > 0 ? features[0] : null,
+    formOpen: features.length > 0,
+    treeOpen: features.length > 0,
+  };
+};
+
 const formReducerImpl = createReducer(
   initialFormState,
   on(FormActions.setTreeOpen, onSetTreeOpen),
   on(FormActions.setFormEditting, onSetFormEditting),
   on(FormActions.setSetFeatures, onSetFeatures),
   on(FormActions.setFeature, onSetFeature),
+  on(FormActions.setFeatureRemoved, onSetFeatureRemoved),
   on(FormActions.setNewFeature, onSetNewFeature),
   on(FormActions.setOpenFeatureForm, onSetOpenFeatureForm),
   on(FormActions.setCloseFeatureForm, onCloseFeatureForm),

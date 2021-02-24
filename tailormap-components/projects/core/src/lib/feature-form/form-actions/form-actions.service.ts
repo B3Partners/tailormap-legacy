@@ -36,15 +36,8 @@ export class FormActionsService {
     }
   }
 
-  public removeFeature$(feature: Feature, features: Feature[]): Observable<any> {
-    this.service.delete({featuretype: feature.clazz, objectGuid: feature.objectGuid}).subscribe(a => {
-      console.log('removed: ', a);
-    });
-
-    const fs = this.removeFeatureFromArray(features, feature);
-
-    console.error('to be implemented');
-    return of({piet: 1, features: fs});
+  public removeFeature$(feature: Feature): Observable<any> {
+    return this.service.delete({featuretype: feature.clazz, objectGuid: feature.objectGuid});
   }
 
   private removeFeatureFromArray(features: Feature[], feature: Feature): Feature[] {

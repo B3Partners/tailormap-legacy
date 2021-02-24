@@ -147,9 +147,8 @@ export class FormComponent implements OnDestroy, OnChanges, OnInit {
     this.confirmDialogService.confirm$('Verwijderen',
       message, true)
       .pipe(take(1), filter(remove => remove)).subscribe(() => {
-      this.actions.removeFeature$(this.feature, this.features).subscribe(result => {
-        this.features = result.features;
-        this.feature = result.features[0];
+      this.actions.removeFeature$(this.feature).subscribe(result => {
+        this.store$.dispatch(FormActions.setFeatureRemoved({feature:this.feature}));
         if (!this.feature) {
           this.closeForm();
         }
