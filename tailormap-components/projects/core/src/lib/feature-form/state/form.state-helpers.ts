@@ -18,3 +18,16 @@ export const removeUnsavedFeatures = (features: Feature[]): Feature[] => {
       children: feature.children ? removeUnsavedFeatures(feature.children) : null,
     }));
 }
+
+export const updateFeatureInArray = (features: Feature[], newFeature: Feature): Feature[] => {
+  const idx = features.findIndex(feature => feature.objectGuid === newFeature.objectGuid);
+
+  return (idx !== -1 ?
+      [...features.slice(0, idx), {...newFeature}, ...features.slice(idx + 1)]
+      : features
+  )
+    .map(feature => ({
+      ...feature,
+      children: feature.children ? updateFeatureInArray(feature.children, newFeature) : null,
+    }));
+};
