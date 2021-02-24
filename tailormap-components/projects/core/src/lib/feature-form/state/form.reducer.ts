@@ -1,6 +1,7 @@
 import { Action, createReducer, on } from '@ngrx/store';
 import { FormState, initialFormState } from './form.state';
 import * as FormActions from './form.actions';
+import { removeUnsavedFeatures } from './form.state-helpers';
 
 const onCloseFeatureForm  = (state: FormState): FormState => ({
   ...state,
@@ -20,16 +21,16 @@ const onSetNewFeature = (state: FormState, payload: ReturnType<typeof FormAction
   if (idx === -1) {
     return state;
   }
-
+  let features = removeUnsavedFeatures([...state.features]);
   return {
     ...state,
     features: [
-      ...state.features.slice(0, idx),
+      ...features.slice(0, idx),
       {
-        ...state.features[idx],
-        children: [...state.features[idx].children, payload.newFeature],
+        ...features[idx],
+        children: [...features[idx].children, payload.newFeature],
       },
-      ...state.features.slice(idx + 1),
+      ...features.slice(idx + 1),
     ],
     feature: payload.newFeature,
     editting: false,
