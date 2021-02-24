@@ -392,7 +392,13 @@ const onDeleteColumnFilter = (
 const onClearFilterForFeatureType = (
   state: AttributeListState,
   payload: ReturnType<typeof AttributeListActions.clearFilterForFeatureType>,
-): AttributeListState => updateFeatureData(state, payload.featureType, featureData => ({ ...featureData, filter: [] }));
+): AttributeListState => {
+  return updateFeatureData(
+    state,
+    payload.featureType,
+    featureData => ({ ...featureData, checkedFeatures: [], filter: [] }),
+  );
+}
 
 const onClearAllFilters = (
   state: AttributeListState,
@@ -402,7 +408,11 @@ const onClearAllFilters = (
     ...state,
     featureTypeData: state.featureTypeData.map(featureData => {
       if (featureData.layerId === payload.layerId) {
-        return { ...featureData, filter: [] };
+        return {
+          ...featureData,
+          filter: [],
+          checkedFeatures: [],
+        };
       }
       return featureData;
     }),
