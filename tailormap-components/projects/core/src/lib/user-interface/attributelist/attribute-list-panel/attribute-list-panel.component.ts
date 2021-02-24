@@ -11,9 +11,9 @@ import { MatTabChangeEvent } from '@angular/material/tabs';
 import { Store } from '@ngrx/store';
 import { AttributeListState } from '../state/attribute-list.state';
 import { setAttributeListVisibility, setSelectedTab } from '../state/attribute-list.actions';
-import { takeUntil } from 'rxjs/operators';
-import { Subject } from 'rxjs';
-import { selectAttributeListTabs } from '../state/attribute-list.selectors';
+import { map, takeUntil } from 'rxjs/operators';
+import { Observable, Subject } from 'rxjs';
+import { selectAttributeListConfig, selectAttributeListTabs } from '../state/attribute-list.selectors';
 import { AttributeListTabModel } from '../models/attribute-list-tab.model';
 import { PopoverPositionEnum } from '../../../shared/popover/models/popover-position.enum';
 import { AttributeListColumnSelectionComponent } from '../attribute-list-column-selection/attribute-list-column-selection.component';
@@ -42,6 +42,7 @@ export class AttributeListPanelComponent implements OnInit, AfterViewInit, Layou
   private destroyed = new Subject();
 
   private columnSelectionOverlayRef: OverlayRef;
+  public title$: Observable<string>;
 
   constructor(
     private store$: Store<AttributeListState>,
@@ -57,6 +58,8 @@ export class AttributeListPanelComponent implements OnInit, AfterViewInit, Layou
       .subscribe(tabs => {
         this.tabs = tabs;
       });
+    this.title$ = this.store$.select(selectAttributeListConfig)
+      .pipe(map(config => config.title || 'Attributenlijst'));
   }
 
   public ngAfterViewInit(): void {

@@ -21,7 +21,9 @@
 Ext.define("viewer.components.CustomConfiguration",{
     extend: "viewer.components.SelectionWindowConfig",
     constructor: function (parentId, configObject, configPage) {
-        configObject.showLabelconfig =true;
+        configObject.showLabelconfig = false;
+        configObject.hideIconConfig = true;
+        configObject.title = configObject.title || 'Attributenlijst';
         viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId, configObject, configPage);
         configObject.willLoadLayers = false;
 
