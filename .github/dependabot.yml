@@ -14,6 +14,7 @@ updates:
   - mprins
   labels:
   - build infrastructure
+  - backport v5.8.x
 
 - package-ecosystem: maven
   directory: "/"
@@ -99,6 +100,9 @@ updates:
   - mprins
   labels:
   - dependencies
+  - javascript
+  - build infrastructure
+  - backport v5.8.x
 
 - package-ecosystem: "github-actions"
   directory: "/"
@@ -108,6 +112,7 @@ updates:
     timezone: Europe/Amsterdam
   labels:
   - build infrastructure
+  - backport v5.8.x
 
 - package-ecosystem: npm
   directory: "/tailormap-components"
@@ -117,13 +122,16 @@ updates:
     timezone: Europe/Amsterdam
   open-pull-requests-limit: 25
   reviewers:
-    - mtoonen
-    - mvdstruijk
+  - mtoonen
+  - mvdstruijk
   assignees:
-    - mtoonen
-    - mvdstruijk
+  - mtoonen
+  - mvdstruijk
   labels:
-    - dependencies
+  - dependencies
+  - javascript
+  - build infrastructure
+  - backport v5.8.x
 
 - package-ecosystem: docker
   directory: "/docker/src/main/docker"
@@ -133,9 +141,9 @@ updates:
     day: "saturday"
   open-pull-requests-limit: 25
   reviewers:
-    - mprins
-    - mtoonen
+  - mprins
   assignees:
-    - mprins
+  - mprins
   labels:
-    - build infrastructure
+  - build infrastructure
+  - backport v5.8.x
