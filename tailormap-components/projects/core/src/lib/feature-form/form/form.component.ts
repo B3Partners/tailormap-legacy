@@ -12,13 +12,16 @@ import { Store } from '@ngrx/store';
 import * as FormActions from '../state/form.actions';
 import * as WorkflowActions from '../../workflow/state/workflow.actions';
 import {
-  selectCloseAfterSaveFeatureForm, selectCurrentFeature, selectFeatureFormOpen, selectFormAlreadyDirty, selectFeatures, selectTreeOpen,
+  selectCloseAfterSaveFeatureForm, selectCurrentFeature, selectFeatureFormOpen, selectFeatures, selectFormAlreadyDirty, selectFormEditting,
+  selectTreeOpen,
 } from '../state/form.selectors';
 import { LayerUtils } from '../../shared/layer-utils/layer-utils.service';
 import { WORKFLOW_ACTION } from '../../workflow/state/workflow-models';
 import { WorkflowState } from '../../workflow/state/workflow.state';
 import { MatButtonToggleChange } from '@angular/material/button-toggle';
 import { selectFormConfigForFeatureTypeName, selectFormConfigs } from '../../application/state/application.selectors';
+import { FormHelpers } from './form-helpers';
+import { FeatureInitializerService } from '../../shared/feature-initializer/feature-initializer.service';
 
 @Component({
   selector: 'tailormap-form',
@@ -39,6 +42,7 @@ export class FormComponent implements OnDestroy, OnChanges, OnInit {
 
   public isOpen$: Observable<boolean>;
   public treeOpen$: Observable<boolean>;
+  public editting$ : Observable<boolean>;
 
 
   constructor(
@@ -46,6 +50,7 @@ export class FormComponent implements OnDestroy, OnChanges, OnInit {
               private confirmDialogService: ConfirmDialogService,
               private _snackBar: MatSnackBar,
               private metadataService: MetadataService,
+              private featureInitializerService: FeatureInitializerService,
               public actions: FormActionsService) {
   }
 
@@ -70,6 +75,7 @@ export class FormComponent implements OnDestroy, OnChanges, OnInit {
     });
     this.isOpen$ = this.store$.select(selectFeatureFormOpen);
     this.treeOpen$ = this.store$.select(selectTreeOpen);
+    this.editting$ = this.store$.select(selectFormEditting);
   }
 
   public openTree(event: MatButtonToggleChange): void {
@@ -105,16 +111,30 @@ export class FormComponent implements OnDestroy, OnChanges, OnInit {
     this.formDirty = result;
   }
 
+  public setFormEditting(editting) {
+    this.store$.dispatch(FormActions.setFormEditting({editting}));
+  }
+
   public newItem($event: MouseEvent, featureTypeName: string) {
     const type = LayerUtils.sanitizeLayername(featureTypeName);
-    this.store$.select(selectFormConfigForFeatureTypeName, type)
-      .pipe(takeUntil(this.destroyed))
-      .subscribe(formConfig => {
-        this.actions.newItem$(this.features, type, formConfig).pipe(takeUntil(this.destroyed)).subscribe(features => {
-          this.features = features.features;
-          this.feature = features.feature;
-          this.initForm();
+
+    combineLatest([
+      this.store$.select(selectFormConfigForFeatureTypeName, type),
+      this.store$.select(selectFeatures),
+    ])
+      .pipe(take(1))
+      .subscribe(([formConfig, features]) => {
+        const objecttype = FormHelpers.capitalize(type);
+        const newFeature = this.featureInitializerService.create(objecttype, {
+          id: null,
+          clazz: type,
+          isRelated: true,
+          objecttype,
+          children: null,
+          [formConfig.treeNodeColumn]: `Nieuwe ${formConfig.name}`,
         });
+        this.store$.dispatch(FormActions.setNewFeature({newFeature, parentId: features[0].objectGuid}));
+        this.store$.dispatch(FormActions.setFormEditting({editting: true}));
       });
   }
 
