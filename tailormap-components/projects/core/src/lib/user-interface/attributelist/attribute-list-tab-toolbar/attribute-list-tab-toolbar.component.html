@@ -28,6 +28,11 @@
       <mat-icon svgIcon="contextual_drop_down"></mat-icon>
     </button>
 
+    <div class="loading-message" *ngIf="creatingLayer">
+      <mat-spinner color="primary" diameter="24"></mat-spinner>
+      <span>Bezig met gebruikerslaag {{ createUserLayerName }} aanmaken</span>
+    </div>
+
     <mat-menu #optiesMenu="matMenu" yPosition="below">
       <button mat-menu-item  (click)="createUserLayer()">Laag maken</button>
       <button mat-menu-item  (click)="openPassportForm()">Bewerk geselecteerde objecten</button>

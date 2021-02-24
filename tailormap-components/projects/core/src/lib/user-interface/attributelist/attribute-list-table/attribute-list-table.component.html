@@ -16,8 +16,8 @@
     <!-- Columns with data -->
     <ng-container *ngFor="let col of columns" matColumnDef="{{col.name}}">
       <!-- Header -->
-      <mat-header-cell *matHeaderCellDef mat-sort-header>
-        {{col.alias || col.name}}
+      <mat-header-cell *matHeaderCellDef mat-sort-header class="header-cell--with-filter">
+        <span [matTooltip]="col.alias || col.name">{{col.alias || col.name}}</span>
         <mat-icon [ngClass]="(getIsFilterActive(col.name))? 'material-icons-set': 'material-icons-unset'"
                   (click)="$event.stopPropagation();onFilterClick(col.name)">
           filter_list
