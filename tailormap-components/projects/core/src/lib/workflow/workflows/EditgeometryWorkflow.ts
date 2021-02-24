@@ -41,7 +41,7 @@ export class EditgeometryWorkflow extends Workflow {
       this.vectorLayer.readGeoJSON(geom);
 
       const coord : Coordinate = WorkflowHelper.findTopRight(geom) ;
-      this.geometryConfirmService.open(coord).pipe(takeUntil(this.destroyed)).subscribe(accepted => {
+      this.geometryConfirmService.open$(coord).pipe(takeUntil(this.destroyed)).subscribe(accepted => {
         if (accepted) {
           const wkt = this.vectorLayer.getActiveFeature().config.wktgeom;
           const geoJson = wellknown.parse(wkt);

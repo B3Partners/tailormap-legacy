@@ -45,8 +45,7 @@ export class GeometryConfirmService implements OnDestroy {
     });
   }
 
-  // tslint:disable-next-line:rxjs-finnish
-  public open(coord: Coordinate): Observable<boolean> {
+  public open$(coord: Coordinate): Observable<boolean> {
     this.currentCoordinate = coord;
     const pixel = this.tailorMapService.getMapComponent().getMap().coordinateToPixel(coord.x, coord.y);
     const pos: ScreenCoordinate = {

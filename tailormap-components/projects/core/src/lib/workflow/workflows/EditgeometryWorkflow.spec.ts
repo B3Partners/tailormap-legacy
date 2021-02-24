@@ -36,7 +36,7 @@ describe('EditgeometryWorkflow', () => {
   });
 
   const geometryConfirmService = createSpyObject(GeometryConfirmService, {
-    open(coord: Coordinate): Observable<boolean> {
+    open$(coord: Coordinate): Observable<boolean> {
       return new BehaviorSubject<boolean>(true).asObservable();
     },
   });
