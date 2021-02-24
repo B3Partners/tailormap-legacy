@@ -21,7 +21,7 @@ const onSetNewFeature = (state: FormState, payload: ReturnType<typeof FormAction
   if (idx === -1) {
     return state;
   }
-  let features = removeUnsavedFeatures([...state.features]);
+  const features = removeUnsavedFeatures([...state.features]);
   return {
     ...state,
     features: [
