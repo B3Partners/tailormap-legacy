@@ -36,7 +36,7 @@
     "@angular/platform-browser": "~11.1.1",
     "@angular/platform-browser-dynamic": "~11.1.1",
     "@angular/router": "~11.1.1",
-    "@ngrx/effects": "^10.1.2",
+    "@ngrx/effects": "^11.0.1",
     "@ngrx/store": "^10.1.2",
     "@ngrx/store-devtools": "^11.0.1",
     "@types/wellknown": "^0.5.1",
