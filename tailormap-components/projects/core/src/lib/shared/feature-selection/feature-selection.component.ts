@@ -51,4 +51,8 @@ export class FeatureSelectionComponent {
     this.dialogRef.close(feature);
   }
 
+  public close() {
+    this.dialogRef.close(null);
+  }
+
 }
