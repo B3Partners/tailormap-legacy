@@ -6,10 +6,9 @@ import { selectCurrentFeature } from '../state/form.selectors';
 import { catchError, concatMap, map, take, tap } from 'rxjs/operators';
 import { FeatureInitializerService } from '../../shared/feature-initializer/feature-initializer.service';
 import { WorkflowHelper } from '../../workflow/workflows/workflow.helper';
-import * as wellknown from 'wellknown';
 import { GeometryConfirmService } from '../../user-interface/geometry-confirm-buttons/geometry-confirm.service';
 import { VectorLayer } from '../../../../../bridge/typings';
-import { GeoJSONGeometry } from 'wellknown';
+import { GeoJSONGeometry, parse } from 'wellknown';
 import { Feature, FeatureControllerService, Geometry } from '../../shared/generated';
 import { TailorMapService } from '../../../../../bridge/src/tailor-map.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -70,7 +69,7 @@ export class EditFeatureGeometryService {
             return of(null);
           }
           const wkt = this.drawingVectorLayer.getActiveFeature().config.wktgeom;
-          const updatedGeom = wellknown.parse(wkt);
+          const updatedGeom = parse(wkt);
           const updatedFeature: Feature = {
             ...feature,
             [geomField]: updatedGeom,
