@@ -77,8 +77,7 @@ export class EditFeatureGeometryService {
             ...feature,
             [geomField]: updatedGeom,
           };
-          const parentId = allFeatures[0] ? allFeatures[0].objectGuid : null;
-          return this.featureControllerService.save({ parentId, body: updatedFeature })
+          return this.featureControllerService.update({ objectGuid: updatedFeature.objectGuid, body: updatedFeature })
             .pipe(
               map(() => updatedGeom),
               catchError(() => {
