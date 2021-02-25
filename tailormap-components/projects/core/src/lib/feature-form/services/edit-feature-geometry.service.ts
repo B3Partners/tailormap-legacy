@@ -60,13 +60,11 @@ export class EditFeatureGeometryService {
   }
 
   private saveUpdatedGeometry$(): Observable<GeoJSONGeometry | Geometry | null> {
-    return combineLatest([
-      this.store$.select(selectCurrentFeature),
-      this.store$.select(selectFeatures),
-    ])
+    return
+      this.store$.select(selectCurrentFeature)
       .pipe(
         take(1),
-        concatMap(([ feature, allFeatures ]) => {
+        concatMap(( feature ) => {
           const geomField = this.featureInitializerService.retrieveGeometryField(feature);
           if (!geomField) {
             return of(null);
