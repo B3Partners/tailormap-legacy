@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { FormState } from '../state/form.state';
-import { combineLatest, Observable, of } from 'rxjs';
-import { selectCurrentFeature, selectFeatures } from '../state/form.selectors';
+import {  Observable, of } from 'rxjs';
+import { selectCurrentFeature } from '../state/form.selectors';
 import { catchError, concatMap, map, take, tap } from 'rxjs/operators';
 import { FeatureInitializerService } from '../../shared/feature-initializer/feature-initializer.service';
 import { WorkflowHelper } from '../../workflow/workflows/workflow.helper';
