@@ -1,9 +1,21 @@
 .container {
-  display: flex; /* or inline-flex */
+  display: flex;
   flex-direction: row;
+  align-items: center;
 }
 
-.container button {
-  margin-left: 5px;
-  margin-right: 5px;
+tailormap-menu-button,
+mat-icon,
+.divider {
+  margin-left: 12px;
+}
+
+mat-icon {
+  cursor: pointer;
+}
+
+.divider {
+  height: 20px;
+  width: 1px;
+  background-color: #e1e1e1;
 }
