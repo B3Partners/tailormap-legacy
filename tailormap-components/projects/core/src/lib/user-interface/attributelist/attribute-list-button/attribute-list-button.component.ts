@@ -18,7 +18,7 @@ export class AttributeListButtonComponent implements OnInit {
   @Input()
   public set attributeListConfig(configJsonString: string) {
     const config: AttributeListConfig = JSON.parse(configJsonString);
-    this.store$.dispatch(setAttributeListConfig({ config: { ...config } }));
+    this.store$.dispatch(setAttributeListConfig({ config }));
     if (config.tooltip) {
       this.tooltip = config.tooltip;
     }
