@@ -64,6 +64,7 @@ export class StandardFormWorkflow extends Workflow {
     let geoJson = wellknown.parse(geom);
 
     const coord = WorkflowHelper.findTopRight(geoJson);
+    this.isDrawing = false;
     this.geometryConfirmService.open$(coord).pipe(takeUntil(this.destroyed)).subscribe(accepted => {
       if (accepted) {
         const wkt = this.vectorLayer.getActiveFeature().config.wktgeom;
