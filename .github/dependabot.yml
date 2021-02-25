@@ -117,16 +117,18 @@ updates:
 - package-ecosystem: npm
   directory: "/tailormap-components"
   schedule:
-    interval: daily
+    interval: monthly
     time: "22:00"
     timezone: Europe/Amsterdam
   open-pull-requests-limit: 25
   reviewers:
   - mtoonen
   - mvdstruijk
+  - geertplaisier
   assignees:
   - mtoonen
   - mvdstruijk
+  - geertplaisier
   labels:
   - dependencies
   - javascript
