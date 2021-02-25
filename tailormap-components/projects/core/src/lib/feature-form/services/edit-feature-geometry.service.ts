@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { FormState } from '../state/form.state';
-import { combineLatest, Observable, of } from 'rxjs';
-import { selectCurrentFeature, selectFeatures } from '../state/form.selectors';
+import {  Observable, of } from 'rxjs';
+import { selectCurrentFeature } from '../state/form.selectors';
 import { catchError, concatMap, map, take, tap } from 'rxjs/operators';
 import { FeatureInitializerService } from '../../shared/feature-initializer/feature-initializer.service';
 import { WorkflowHelper } from '../../workflow/workflows/workflow.helper';
@@ -61,9 +61,9 @@ export class EditFeatureGeometryService {
 
   private saveUpdatedGeometry$(): Observable<GeoJSONGeometry | Geometry | null> {
     return
-      this.store$.select(selectCurrentFeature)
+    this.store$.select(selectCurrentFeature)
       .pipe(
-        take(1),
+       take(1),
         concatMap(( feature ) => {
           const geomField = this.featureInitializerService.retrieveGeometryField(feature);
           if (!geomField) {
