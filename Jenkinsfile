@@ -53,7 +53,7 @@ timestamps {
                             stage("Prepare Oracle: ${indexOfJdk}") {
                                 sh ".jenkins/start-oracle.sh"
                                 /* no need for this as we have a pristine oracle container... */
-                                /* sh "sqlplus -l -S JENKINS_FLAMINGO/jenkins_flamingo@192.168.1.26:15211/XE < ./.jenkins/clear-oracle-schema.sql" */
+                                /* sh "sqlplus -l -S JENKINS_FLAMINGO/jenkins_flamingo@127.0.0.1:15211/XE < ./.jenkins/clear-oracle-schema.sql" */
                             }
                             lock('tomcat-tcp9090') {
                                 stage("IntegrationTest: ${jdkTestName}") {
