@@ -31,13 +31,13 @@ export class EditBarComponent implements OnInit {
     const splits = vc.getComponentsByClassNames(['viewer.components.Split']);
     if (splits.length > 0) {
       this.splitComponent = splits[0] as SplitComponent;
-      this.splitComponent.addListener('ON_DEACTIVATE', this.deactivateSplitMerge, this);
+      this.splitComponent.addListener('ON_DEACTIVATE', () => this.deactivateSplitMerge());
     }
 
     const merges = vc.getComponentsByClassNames(['viewer.components.Merge']);
     if (merges.length > 0) {
       this.mergeComponent = merges[0] as MergeComponent;
-      this.mergeComponent.addListener('ON_DEACTIVATE', this.deactivateSplitMerge, this);
+      this.mergeComponent.addListener('ON_DEACTIVATE', () => this.deactivateSplitMerge());
     }
   }
 

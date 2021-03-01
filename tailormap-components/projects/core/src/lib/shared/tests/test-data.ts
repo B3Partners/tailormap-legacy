@@ -128,8 +128,9 @@ export const viewerControllerMock = (overrides?: Partial<ViewerController>): Vie
   isDebug: () => true,
   registerSnappingLayer: () => {},
   setFilterString: () => {},
+  createVectorLayer: (name: string) => vectorLayerMock(),
   ...overrides,
-})
+});
 
 export const getVisibleLayerMocks = (visibleLayers: number[]) => {
   return ((castToStrings?: boolean): number[] | string[] =>

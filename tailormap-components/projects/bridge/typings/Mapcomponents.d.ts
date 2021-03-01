@@ -92,8 +92,8 @@ declare interface MapComponent {
 
 declare interface Layer {
   id: string;
-  addListener: (eventName: string, handler: layerEvent, scope: any) => void;
-  removeListener: (eventName: string, handler: layerEvent, scope: any) => void;
+  addListener: (eventName: string, handler: layerEvent) => void;
+  removeListener: (eventName: string, handler: layerEvent) => void;
 }
 
 declare interface OLFeatureConfig{
