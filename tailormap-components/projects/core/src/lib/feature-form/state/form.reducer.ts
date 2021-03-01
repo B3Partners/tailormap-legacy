@@ -23,9 +23,9 @@ const onSetNewFeature = (state: FormState, payload: ReturnType<typeof FormAction
     return state;
   }
   let features = [...state.features];
-  if(payload.newFeature.objectGuid !== FeatureInitializerService.STUB_OBJECT_GUID_NEW_OBJECT){
+  if (payload.newFeature.objectGuid !== FeatureInitializerService.STUB_OBJECT_GUID_NEW_OBJECT) {
     features = updateFeatureInArray(features, payload.newFeature);
-  }else{
+  }else {
     features = addFeatureToParent(features, payload.newFeature, payload.parentId);
   }
   return {

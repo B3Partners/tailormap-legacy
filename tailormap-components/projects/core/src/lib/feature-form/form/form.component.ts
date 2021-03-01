@@ -148,7 +148,7 @@ export class FormComponent implements OnDestroy, OnChanges, OnInit {
       message, true)
       .pipe(take(1), filter(remove => remove)).subscribe(() => {
       this.actions.removeFeature$(this.feature).subscribe(result => {
-        this.store$.dispatch(FormActions.setFeatureRemoved({feature:this.feature}));
+        this.store$.dispatch(FormActions.setFeatureRemoved({feature: this.feature}));
         if (!this.feature) {
           this.closeForm();
         }

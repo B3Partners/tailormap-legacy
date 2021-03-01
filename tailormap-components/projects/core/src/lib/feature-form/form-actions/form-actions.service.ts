@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Feature, FeatureControllerService } from '../../shared/generated';
-import { forkJoin, Observable, of } from 'rxjs';
+import { forkJoin, Observable } from 'rxjs';
 import { FeatureInitializerService } from '../../shared/feature-initializer/feature-initializer.service';
 
 
@@ -39,16 +39,4 @@ export class FormActionsService {
   public removeFeature$(feature: Feature): Observable<any> {
     return this.service.delete({featuretype: feature.clazz, objectGuid: feature.objectGuid});
   }
-
-  private removeFeatureFromArray(features: Feature[], feature: Feature): Feature[] {
-    let fs = [];
-    if (features) {
-      fs = [...features.filter(f => f !== feature)];
-      fs.forEach(f => {
-        f.children = this.removeFeatureFromArray(f.children, feature);
-      });
-    }
-    return fs;
-  }
-
 }
