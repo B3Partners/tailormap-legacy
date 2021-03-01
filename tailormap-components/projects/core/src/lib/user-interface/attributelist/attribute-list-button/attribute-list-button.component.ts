@@ -13,9 +13,15 @@ import { take } from 'rxjs/operators';
 })
 export class AttributeListButtonComponent implements OnInit {
 
+  public tooltip: string;
+
   @Input()
-  public set attributeListConfig(config: AttributeListConfig) {
-    this.store$.dispatch(setAttributeListConfig({ config: { ...config } }));
+  public set attributeListConfig(configJsonString: string) {
+    const config: AttributeListConfig = JSON.parse(configJsonString);
+    this.store$.dispatch(setAttributeListConfig({ config }));
+    if (config.tooltip) {
+      this.tooltip = config.tooltip;
+    }
   }
 
   constructor(
