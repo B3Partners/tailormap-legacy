@@ -2,7 +2,7 @@
 <div class="container">
 
   <mat-toolbar #captionbar>
-    <span>Attributenlijst</span>
+    <span>{{title$ | async}}</span>
     <span class="spacer"></span>
     <button mat-icon-button>
       <mat-icon (click)="onMinimizeClick();" svgIcon="contextual_minimize"></mat-icon>

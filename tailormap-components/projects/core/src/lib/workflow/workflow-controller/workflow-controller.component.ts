@@ -15,6 +15,7 @@ import { MapClickedEvent } from '../../shared/models/event-models';
   styleUrls: ['./workflow-controller.component.css'],
 })
 export class WorkflowControllerComponent implements OnInit {
+
   private vectorlayerId: string;
 
   constructor(
@@ -38,7 +39,9 @@ export class WorkflowControllerComponent implements OnInit {
     this.factory.vectorLayer = vectorlayer;
     this.factory.highlightLayer = highlightlayer;
 
-    vectorlayer.addListener('ON_FEATURE_ADDED', this.controller.geometryDrawn, this.controller);
+    vectorlayer.addListener('ON_FEATURE_ADDED', (vectorLayer: VectorLayer, feature: any) => {
+      this.controller.geometryDrawn(vectorLayer, feature);
+    });
     this.controller.init();
   }
 

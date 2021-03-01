@@ -12,6 +12,12 @@ const onCloseFeatureForm  = (state: FormState): FormState => ({
   treeOpen: false,
 });
 
+const onSetHideFeatureForm = (state: FormState, payload: ReturnType<typeof FormActions.toggleFeatureFormVisibility>): FormState => ({
+  ...state,
+  formOpen: payload.visible,
+  treeOpen: payload.visible,
+});
+
 const onSetFeature = (state: FormState, payload : ReturnType<typeof FormActions.setFeature>): FormState => ({
   ...state,
   feature: payload.feature,
@@ -35,7 +41,6 @@ const onSetNewFeature = (state: FormState, payload: ReturnType<typeof FormAction
     editting: false,
   };
 };
-
 
 const onSetFeatures = (state: FormState, payload:  ReturnType<typeof FormActions.setSetFeatures>) : FormState => ({
   ...state,
@@ -83,6 +88,7 @@ const formReducerImpl = createReducer(
   on(FormActions.setNewFeature, onSetNewFeature),
   on(FormActions.setOpenFeatureForm, onSetOpenFeatureForm),
   on(FormActions.setCloseFeatureForm, onCloseFeatureForm),
+  on(FormActions.toggleFeatureFormVisibility, onSetHideFeatureForm),
 );
 
 export const formReducer = (state: FormState | undefined, action: Action) => {

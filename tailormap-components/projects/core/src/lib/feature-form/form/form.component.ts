@@ -22,6 +22,8 @@ import { MatButtonToggleChange } from '@angular/material/button-toggle';
 import { selectFormConfigForFeatureTypeName, selectFormConfigs } from '../../application/state/application.selectors';
 import { FormHelpers } from './form-helpers';
 import { FeatureInitializerService } from '../../shared/feature-initializer/feature-initializer.service';
+import { toggleFeatureFormVisibility } from '../state/form.actions';
+import { EditFeatureGeometryService } from '../services/edit-feature-geometry.service';
 
 @Component({
   selector: 'tailormap-form',
@@ -29,6 +31,7 @@ import { FeatureInitializerService } from '../../shared/feature-initializer/feat
   styleUrls: ['./form.component.css'],
 })
 export class FormComponent implements OnDestroy, OnChanges, OnInit {
+
   public features: Feature[];
   public feature: Feature;
   public formConfig: FormConfiguration;
@@ -44,14 +47,15 @@ export class FormComponent implements OnDestroy, OnChanges, OnInit {
   public treeOpen$: Observable<boolean>;
   public editting$ : Observable<boolean>;
 
-
   constructor(
-              private store$: Store<FormState | WorkflowState>,
-              private confirmDialogService: ConfirmDialogService,
-              private _snackBar: MatSnackBar,
-              private metadataService: MetadataService,
-              private featureInitializerService: FeatureInitializerService,
-              public actions: FormActionsService) {
+    private store$: Store<FormState | WorkflowState>,
+    private confirmDialogService: ConfirmDialogService,
+    private _snackBar: MatSnackBar,
+    private metadataService: MetadataService,
+    private featureInitializerService: FeatureInitializerService,
+    public actions: FormActionsService,
+    private editFeatureGeometryService: EditFeatureGeometryService,
+  ) {
   }
 
   public ngOnInit(): void {
@@ -97,6 +101,7 @@ export class FormComponent implements OnDestroy, OnChanges, OnInit {
       .subscribe(([formConfig, configs]) => {
       this.formConfig = formConfig;
       this.metadataService.getFeatureTypeMetadata$(this.feature.clazz);
+      this.formsForNew = [];
       configs.forEach((config, key) => {
         this.formsForNew.push(config);
       });
@@ -165,12 +170,23 @@ export class FormComponent implements OnDestroy, OnChanges, OnInit {
   }
 
   public editGeometry(): void {
-    this.store$.dispatch(WorkflowActions.setFeature({
-      feature: {...this.feature},
-      action: WORKFLOW_ACTION.EDIT_GEOMETRY,
-    }));
-
-    this.closeForm();
+    this.store$.dispatch(toggleFeatureFormVisibility({ visible: false }));
+    this.editFeatureGeometryService.updateCurrentFeatureGeometry$()
+      .pipe(takeUntil(this.destroyed))
+      .subscribe(geometry => {
+        this.store$.dispatch(toggleFeatureFormVisibility({ visible: true }));
+        if (!geometry) {
+          return;
+        }
+        const geomField = this.featureInitializerService.retrieveGeometryField(this.feature);
+        if (!geomField) {
+          return;
+        }
+        this.feature = {
+          ...this.feature,
+          [geomField]: geometry,
+        };
+      })
   }
 
   public closeForm() {
