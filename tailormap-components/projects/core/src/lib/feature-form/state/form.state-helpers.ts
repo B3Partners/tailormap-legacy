@@ -24,15 +24,15 @@ export const updateFeatureInArray = (features: Feature[], newFeature: Feature): 
     }));
 };
 
-export const addFeatureToParent = (features: Feature[], newFeature: Feature, parentId:string) : Feature[] =>{
+export const addFeatureToParent = (features: Feature[], newFeature: Feature, parentId: string) : Feature[] => {
   const idx = features.findIndex(feature => feature.objectGuid === parentId);
 
   return (idx !== -1 ?
-      [...features.slice(0, idx),{...features[idx],children: [...features[idx].children, newFeature]},...features.slice(idx + 1)]
+      [...features.slice(0, idx), {...features[idx], children: [...features[idx].children, newFeature]}, ...features.slice(idx + 1)]
       : features
   )
     .map(feature => ({
       ...feature,
-      children: feature.children ? addFeatureToParent(feature.children, newFeature,parentId) : null,
+      children: feature.children ? addFeatureToParent(feature.children, newFeature, parentId) : null,
     }));
 }
