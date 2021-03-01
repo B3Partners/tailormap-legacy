@@ -101,6 +101,7 @@ export class FormComponent implements OnDestroy, OnChanges, OnInit {
       .subscribe(([formConfig, configs]) => {
       this.formConfig = formConfig;
       this.metadataService.getFeatureTypeMetadata$(this.feature.clazz);
+      this.formsForNew = [];
       configs.forEach((config, key) => {
         this.formsForNew.push(config);
       });
