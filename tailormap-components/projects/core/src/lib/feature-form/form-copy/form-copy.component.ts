@@ -162,7 +162,7 @@ export class FormCopyComponent implements OnInit, OnDestroy {
       const children = feature.children;
       for (let c  = 0; c <= children.length - 1; c++) {
         const child = children[c];
-        this.actionService.removeFeature$(child, [feature]).subscribe(childRemoved => {
+        this.actionService.removeFeature$(child).subscribe(childRemoved => {
           console.log('child removed');
         });
       }
