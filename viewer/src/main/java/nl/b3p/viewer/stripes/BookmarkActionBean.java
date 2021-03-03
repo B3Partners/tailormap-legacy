@@ -16,11 +16,15 @@
  */
 package nl.b3p.viewer.stripes;
 
-import java.io.StringReader;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
-import javax.persistence.EntityManager;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.json.JsonReadFeature;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.json.JsonMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.JsonNodeType;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.controller.LifecycleStage;
 import net.sourceforge.stripes.validation.Validate;
@@ -31,7 +35,12 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.owasp.encoder.Encode;
 import org.stripesstuff.stripersist.Stripersist;
+
+import javax.persistence.EntityManager;
+import java.io.StringReader;
+import java.util.*;
 
 /**
  *
@@ -101,13 +110,19 @@ public class BookmarkActionBean extends LocalizableApplicationActionBean impleme
                 bookmark.setCreatedAt(new Date());
                 bookmark.setApplication(application);
                 bookmark.setCode(code);
-                em.persist(bookmark);
-                em.getTransaction().commit();
+                String cleanedParams = processParams(bookmark.getParams());
+                if(cleanedParams == null){
+                    error = "Cannot clean bookmark input, aborting.";
+                }else {
+                    bookmark.setParams(cleanedParams);
+                    em.persist(bookmark);
+                    em.getTransaction().commit();
 
-                log.debug("Bookmark created with code " + bookmark.getCode() + " and params " + bookmark.getParams());
+                    log.debug("Bookmark created with code " + bookmark.getCode() + " and params " + bookmark.getParams());
 
-                json.put("bookmark", bookmark.getCode());
-                json.put("success", Boolean.TRUE);
+                    json.put("bookmark", bookmark.getCode());
+                    json.put("success", Boolean.TRUE);
+                }
             } catch(Exception e) {
                 log.error("Error creating bookmark", e);
                 error = e.toString();
@@ -122,6 +137,45 @@ public class BookmarkActionBean extends LocalizableApplicationActionBean impleme
         }
         
         return new StreamingResolution("application/json", new StringReader(json.toString()));    
+    }
+
+    private String processParams(String params){
+        ObjectMapper mapper = JsonMapper.builder()
+                .enable(JsonReadFeature.ALLOW_BACKSLASH_ESCAPING_ANY_CHARACTER)
+                .build();
+        try {
+            JsonNode actualObj = mapper.readTree(params);
+            JsonNode cleaned = clean(actualObj);
+            return cleaned.isEmpty() ? null : cleaned.toString();
+        } catch (JsonProcessingException e) {
+            log.error("Cannot clean parameters: ", e);
+            return null;
+        }
+    }
+
+    private JsonNode clean(  JsonNode node) {
+        if(node.isValueNode()) { // Base case - we have a Number, Boolean or String
+            if(JsonNodeType.STRING == node.getNodeType()) {
+                // Escape all String values
+                return JsonNodeFactory.instance.textNode(Encode.forHtml(node.asText()));
+            } else {
+                return node;
+            }
+        } else if(node.isObject()) { // Recursive case - iterate over JSON object entries
+            ObjectNode clean = JsonNodeFactory.instance.objectNode();
+            for (Iterator<Map.Entry<String, JsonNode>> it = node.fields(); it.hasNext(); ) {
+                Map.Entry<String, JsonNode> entry = it.next();
+                // Encode the key right away and encode the value recursively
+                clean.set(Encode.forHtml(entry.getKey()), clean(entry.getValue()));
+            }
+            return clean;
+        }else { //node.isArray()
+            ArrayNode clean = JsonNodeFactory.instance.arrayNode();
+            for (JsonNode jsonNode : node) {
+                clean.add(clean(jsonNode));
+            }
+            return clean;
+        }
     }
 
     @After(on = "load",  stages = LifecycleStage.BindingAndValidation)

@@ -81,7 +81,7 @@ public class ProxyRESTActionBean implements ActionBean, Auditable {
                 final HttpResponse finalResponse = response;
                 final HttpEntity entity = response.getEntity();
 
-                return new StreamingResolution(entity.getContentType().getValue()) {
+                return new StreamingResolution(entity.getContentType() != null ?entity.getContentType().getValue() : "application/json") {
                     @Override
                     protected void stream(HttpServletResponse resp) throws IOException {
                         try {

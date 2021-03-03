@@ -1,12 +1,23 @@
+:host {
+  display: block;
+}
+
 .button {
   margin: 5px;
+  cursor: pointer;
 }
 
 .button-enabled {
-  fill: black;
+  color: rgba(98, 54, 255, 0.1);
+  stroke: #6236ff;
 }
 
 .button-disabled {
   fill: gray;
   opacity: 0.5;
+  cursor: default;
+}
+
+.button-active {
+  background-color: rgba(98, 54, 255, 0.1);
 }

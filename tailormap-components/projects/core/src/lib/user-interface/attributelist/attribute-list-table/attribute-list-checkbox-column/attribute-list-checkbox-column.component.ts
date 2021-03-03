@@ -80,7 +80,7 @@ export class AttributeListCheckboxColumnComponent implements OnInit, OnDestroy {
   }
 
   public onStatisticsHelp(): void {
-    this.snackBar.open('Open contextmenu in de betreffende kolom voor statistiche functies', 'Sluiten', {
+    this.snackBar.open('Klik met de rechter muisknop in de betreffende kolom voor statistiche functies', 'Sluiten', {
       duration: 5000,
     });
     return;

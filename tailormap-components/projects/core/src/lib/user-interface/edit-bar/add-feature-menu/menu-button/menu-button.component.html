@@ -1,5 +1,7 @@
 <mat-icon
-  [ngClass]="enabled ? 'button button-enabled' : 'button button-disabled'"
+  class="button"
+  [class.button-disabled]="!enabled"
+  [class.button-enabled]="enabled"
   [svgIcon]="icon"
   (click)="click()"
 ></mat-icon>

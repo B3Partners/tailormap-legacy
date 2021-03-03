@@ -469,6 +469,25 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         this.setSelectedContent(selectedContent);
     },
 
+    createVectorLayer: function(name) {
+        var layer = this.mapComponent.createVectorLayer({
+            name: name + 'VectorLayer',
+            geometrytypes: ["Polygon", "Point", "LineString"],
+            showmeasures: false,
+            mustCreateVertices: true,
+            allowselection: true,
+            viewerController: this,
+            style: {
+                fillcolor: "FF0000",
+                fillopacity: 50,
+                strokecolor: "FF0000",
+                strokeopacity: 50
+            }
+        });
+        this.mapComponent.getMap().addLayer(layer);
+        return layer;
+    },
+
     counter: 0,
     max: 0,
     /**

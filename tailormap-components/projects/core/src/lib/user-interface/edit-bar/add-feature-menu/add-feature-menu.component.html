@@ -1,10 +1,13 @@
 <div class="container">
+
+  <div class="form-field">
     <mat-form-field>
-      <mat-select [(value)]="this.layer" (selectionChange)="layerSelected($event)">
-        <mat-option [value]="'-1'">Geen</mat-option>
+      <mat-label>Selecteer kaartlaag</mat-label>
+      <mat-select [value]="this.layer" (selectionChange)="layerSelected($event)">
         <mat-option *ngFor="let layer of layers" [value]="layer">{{layer}}</mat-option>
       </mat-select>
     </mat-form-field>
+  </div>
 
   <tailormap-menu-button
     icon="draw_polygon"
@@ -24,7 +27,7 @@
     [enabled]="isPoint()"
   ></tailormap-menu-button>
 
-  <mat-divider [vertical]="true" inset="false"></mat-divider>
+  <div class="divider"></div>
 
   <mat-icon color="warn"  (click)="close()">close</mat-icon>
 </div>

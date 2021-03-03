@@ -74,9 +74,13 @@ export class StyleHelper {
     if (!styles || styles.length === 0) {
       return '';
     }
-    return styles
+    const stylingRules = styles
       .filter(style => style.active)
       .map(style => StyleHelper.createStyle(style, selectedDataSource)).join(' ');
+    if (stylingRules.trim() === '') {
+      return '';
+    }
+    return `@mode "Flat"; ${stylingRules}`;
   }
 
   private static createStyle(style: UserLayerStyleModel, selectedDataSource: AnalysisSourceModel) {
@@ -102,27 +106,22 @@ export class StyleHelper {
         polygonStyles.push(`fill-opacity: ${style.fillOpacity}%;`);
       }
       if (polygonStyles.length > 0) {
-        // title is not put on polygon only style, since polygon also applies line styles and would then have duplicate titles
-        styleRules.push(`${selector}[dimension(${selectedDataSource.geometryAttribute})=2] { ${polygonStyles.join(' ')} }`);
+        const polygonLineRules = StyleHelper.getLineStyles(style).join(' ');
+        styleRules.push([
+          `${titleAnnotation}`,
+          `${selector}`,
+          `[dimension(${selectedDataSource.geometryAttribute})=2] `,
+          `{ ${polygonStyles.join(' ')} ${polygonLineRules} }`,
+        ].join(''));
       }
     }
     if (StyleHelper.showLineSettings(selectedDataSource.geometryType)) {
-      const lineStyles = [];
-      if (style.strokeColor) {
-        lineStyles.push(`stroke: ${rgbToHex(style.strokeColor)};`);
-      }
-      if (style.strokeOpacity) {
-        lineStyles.push(`stroke-opacity: ${style.strokeOpacity}%;`);
-      }
-      if (style.strokeWidth) {
-        lineStyles.push(`stroke-width: ${style.strokeWidth}px;`);
-      }
+      const lineStyles = StyleHelper.getLineStyles(style);
       if (lineStyles.length > 0) {
         styleRules.push([
           `${titleAnnotation}`,
-          `${selector}[dimension(${selectedDataSource.geometryAttribute})=1], `,
-          `${selector}[dimension(${selectedDataSource.geometryAttribute})=2] `,
-          `{ ${lineStyles.join(' ')} }`,
+          `${selector}[dimension(${selectedDataSource.geometryAttribute})=1] { ${lineStyles.join(' ')} }`,
+          ``,
         ].join(''));
       }
     }
@@ -148,6 +147,20 @@ export class StyleHelper {
       }
     }
     return styleRules.join(' ');
+  }
+
+  private static getLineStyles(style: UserLayerStyleModel): string[] {
+    const lineStyles = [];
+    if (style.strokeColor) {
+      lineStyles.push(`stroke: ${rgbToHex(style.strokeColor)};`);
+    }
+    if (style.strokeOpacity) {
+      lineStyles.push(`stroke-opacity: ${style.strokeOpacity}%;`);
+    }
+    if (style.strokeWidth) {
+      lineStyles.push(`stroke-width: ${style.strokeWidth}px;`);
+    }
+    return lineStyles;
   }
 
 }
