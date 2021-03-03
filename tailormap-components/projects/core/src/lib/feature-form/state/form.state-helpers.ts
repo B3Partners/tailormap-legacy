@@ -18,6 +18,7 @@ export const removeFeature = (features: Feature[], removed: Feature): Feature[] 
       children: feature.children ? removeFeature(feature.children, removed) : null,
     }));
 }
+
 export const updateFeatureInArray = (features: Feature[], newFeature: Feature): Feature[] => {
   const idx = features.findIndex(feature =>
     feature.objectGuid === newFeature.objectGuid || feature.objectGuid === FeatureInitializerService.STUB_OBJECT_GUID_NEW_OBJECT);
