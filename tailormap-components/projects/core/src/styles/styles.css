@@ -184,6 +184,30 @@
   box-shadow: none;
 }
 
+.form-field mat-form-field {
+  margin-bottom: -1.25em;
+}
+
+.form-field .mat-form-field-underline {
+  display: none;
+}
+
+.form-field .mat-form-field-infix {
+  padding: 0;
+  border-top: 0 none;
+}
+
+.form-field .mat-form-field-appearance-legacy.mat-form-field-can-float.mat-form-field-should-float .mat-form-field-label,
+.form-field .mat-form-field-appearance-legacy.mat-form-field-can-float .mat-input-server:focus + .mat-form-field-label-wrapper .mat-form-field-label {
+  display: none;
+}
+
+.form-field .mat-form-field-empty.mat-form-field-label {
+  left: 12px;
+  top: 1.4em;
+  display: block;
+}
+
 .mat-autocomplete-panel .mat-option {
   font-size: 14px;
   line-height: 3em;
