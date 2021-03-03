@@ -61,6 +61,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatTableModule } from '@angular/material/table';
 import { ErrorMessageComponent } from './error-message/error-message.component';
+import { FeatureSelectionComponent } from './feature-selection/feature-selection.component';
 
 @NgModule({
   declarations: [
@@ -72,6 +73,7 @@ import { ErrorMessageComponent } from './error-message/error-message.component';
     IconPickerComponent,
     CapitalizeFirstPipe,
     ErrorMessageComponent,
+    FeatureSelectionComponent,
   ],
   imports: [
     ApiModule.forRoot({
