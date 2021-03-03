@@ -1,4 +1,6 @@
 export interface AttributeListConfig {
-    pageSize: number;
-    zoomToBuffer: number;
+  title: string;
+  tooltip: string;
+  pageSize: number;
+  zoomToBuffer: number;
 }

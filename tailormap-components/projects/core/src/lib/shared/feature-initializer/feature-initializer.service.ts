@@ -26,27 +26,41 @@ export class FeatureInitializerService {
 
   public static readonly STUB_OBJECT_GUID_NEW_OBJECT = '-1';
 
+  private static isGeometry(geometry: any): geometry is Geometry {
+    return ((geometry as Geometry).bbox || []).length > 0
+      || ((geometry as Geometry).coordinates || []).length > 0
+      || typeof (geometry as Geometry).crs !== 'undefined';
+  }
+
   constructor() {
   }
 
   public retrieveGeometry(feature: Feature): Geometry {
+    const field = this.retrieveGeometryField(feature);
+    if (feature[field] && FeatureInitializerService.isGeometry(feature[field])) {
+      return feature[field];
+    }
+    return null;
+  }
+
+  public retrieveGeometryField(feature: Feature): string {
     switch (feature.objecttype) {
       case 'Boom':
-        return (feature as Boom).geometrie;
+        return 'geometrie';
       case 'Gras':
-        return (feature as Gras).geometrie;
+        return 'geometrie';
       case 'Haag':
-        return (feature as Haag).geometrie;
+        return 'geometrie';
       case 'Mechleiding':
-        return (feature as MechLeiding).geometrie;
+        return 'geometrie';
       case 'NatBeplanting':
-        return (feature as NatBeplanting).geometrie;
+        return 'geometrie';
       case 'Rioolput':
-        return (feature as Rioolput).geometrie;
+        return 'geometrie';
       case 'Vrijvleiding':
-        return (feature as VrijvLeiding).geometrie;
+        return 'geometrie';
       case 'Wegvakonderdeel':
-        return (feature as Wegvakonderdeel).geometrie;
+        return 'geometrie';
     }
     return null;
   }

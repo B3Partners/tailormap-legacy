@@ -46,8 +46,8 @@ export class AddFeatureMenuComponent implements OnInit, OnDestroy {
   }
 
   public layerSelected(event: MatSelectChange): void {
-    const layer: string = event.value;
-    this.store$.select(selectFormConfigForFeatureTypeName, layer)
+    this.layer = event.value;
+    this.store$.select(selectFormConfigForFeatureTypeName, this.layer)
       .pipe(take(1))
       .subscribe(formConfig => this.selectedConfig = formConfig);
   }

@@ -14,6 +14,7 @@ import { getMetadataServiceMockProvider } from '../../application/services/mocks
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { formStateKey, initialFormState } from '../state/form.state';
 import { applicationStateKey, initialApplicationState } from '../../application/state/application.state';
+import { getEditFeatureGeometryServiceProvider } from '../services/mocks/edit-feature-geometry.service.mock';
 
 describe('FormComponent', () => {
   let spectator: Spectator<FormComponent>;
@@ -52,6 +53,7 @@ describe('FormComponent', () => {
         },
       },
       getMetadataServiceMockProvider(),
+      getEditFeatureGeometryServiceProvider(),
     ]
   });
 
