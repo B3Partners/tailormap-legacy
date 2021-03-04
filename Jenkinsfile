@@ -9,7 +9,7 @@ timestamps {
                 numToKeepStr: '5']
             ]]);
 
-        final def jdks = ['OpenJDK11']
+        final def jdks = ['OpenJDK11','OpenJDK8']
 
         stage("Prepare") {
              checkout scm
@@ -27,6 +27,9 @@ timestamps {
                     try {
                         if (jdkTestName == 'OpenJDK11') {
                             sh "keytool -importcert -file ./EVRootCA.cer -alias EVRootCA -keystore $JAVA_HOME/lib/security/cacerts -storepass 'changeit' -v -noprompt -trustcacerts"
+                        }
+                        if (jdkTestName == 'OpenJDK8') {
+                            sh "keytool -importcert -file ./EVRootCA.cer -alias EVRootCA -keystore $JAVA_HOME/jre/lib/security/cacerts -storepass changeit -v -noprompt -trustcacerts"
                         }
                     } catch (err) {
                         /* possibly already imported cert */
@@ -66,6 +69,17 @@ timestamps {
                         sh "docker stop oracle-flamingo"
                     }
                 }
+
+                stage("check Java runtime version") {
+                    sh " .jenkins/check-java-binary-version.sh"
+                }
+                
+                if (jdkTestName == 'OpenJDK11') {
+                    stage("cleanup Java 11 packages") {
+                        echo "Removing Java 11 built artifacts from local repository"
+                        sh "mvn build-helper:remove-project-artifact"
+                    }
+                }
             }
         }
 
@@ -77,7 +91,7 @@ timestamps {
             sh "curl -s https://codecov.io/bash | bash"
         }
 
-        withEnv(["JAVA_HOME=${ tool 'OpenJDK11' }", "PATH+MAVEN=${tool 'Maven CURRENT'}/bin:${env.JAVA_HOME}/bin"]) {
+        withEnv(["JAVA_HOME=${ tool 'OpenJDK8' }", "PATH+MAVEN=${tool 'Maven CURRENT'}/bin:${env.JAVA_HOME}/bin"]) {
             if (env.BRANCH_NAME == 'master' && env.NODE_NAME == 'master') {
                 stage("Docker image build & push") {
                     echo "Create a docker image of the master branch when running on the master node"
