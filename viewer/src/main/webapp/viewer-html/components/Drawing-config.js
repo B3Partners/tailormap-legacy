@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ Ext.define("viewer.components.CustomConfiguration",{
         }
         configObject.showLabelconfig =true;
         viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId, configObject, configPage);
-        this.form.add({ 
+        this.form.add({
                 xtype: 'colorfield',
                 fieldLabel: i18next.t('drawing_config_0'),
                 name: 'color',
@@ -52,8 +52,8 @@ Ext.define("viewer.components.CustomConfiguration",{
     getDefaultValues: function() {
         return {
             details: {
-                minWidth: 340,
-                minHeight: 500
+                minWidth: 250,
+                minHeight: 170
             }
         };
     }

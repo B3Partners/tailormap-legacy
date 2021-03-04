@@ -53,7 +53,8 @@ Ext.define ("viewer.components.ScreenPopup",{
             changeableSize:true,
             items:null,
             position : 'center',
-            useExtLayout: false
+            useExtLayout: false,
+            usePopupScrolling: true
         }
     },
     component: null,
@@ -77,13 +78,13 @@ Ext.define ("viewer.components.ScreenPopup",{
             layout: 'fit',
             modal: false,
             renderTo: Ext.getBody(),
-            scrollable: true,
+            scrollable: this.config.details.usePopupScrolling,
             constrainHeader: true,
             iconCls: this.config.iconCls || "",
             bodyStyle: {},
-            cls: "screen-popup"
+            cls: "screen-popup",
         };
-        
+
         if(this.config.popupIcon) {
             config.header = {
                 xtype: 'svgpanelheader',
@@ -261,16 +262,16 @@ Ext.define ("viewer.components.ScreenPopup",{
         }
         if (updatedZIndex) {
             this.zIndex = updatedZIndex + 1;
-        }  
+        }
     },
     getPosition:function(){
         return this.popupWin.getPosition();
     },
     getWidth: function(){
-        return this.popupWin.getWidth();        
+        return this.popupWin.getWidth();
     },
     getHeight: function(){
-        return this.popupWin.getHeight();        
+        return this.popupWin.getHeight();
     },
     bringToFront: function(){
         this.computeMaxZIndex();
