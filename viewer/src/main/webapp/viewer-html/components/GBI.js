@@ -125,8 +125,7 @@ Ext.define("viewer.components.GBI", {
         var coords = comp.coord;
         var x = parseInt(coords.x);
         var y = parseInt(coords.y);
-        var scale = this.config.viewerController.mapComponent.getMap().getResolution() * 4;
-
+        var scale = Math.max(this.config.viewerController.mapComponent.getMap().getResolution() * 4, 1.2);
         var json = {
             x: x,
             y: y,
