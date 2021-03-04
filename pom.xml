@@ -62,6 +62,7 @@
         <jaxb.impl.version>2.3.3</jaxb.impl.version>
         <activation.api.version>1.2.2</activation.api.version>
         <slf4j.version>1.7.30</slf4j.version>
+        <jackson2.version>2.12.1</jackson2.version>
         <!-- skip integration tests by default, override this property from commandline
         or as part of a profile, see eg. 'gh-action' profile in viewer -->
         <test.skip.integrationtests>false</test.skip.integrationtests>
@@ -536,6 +537,27 @@
                 <artifactId>tika-core</artifactId>
                 <version>1.25</version>
             </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-core</artifactId>
+                <version>${jackson2.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-annotations</artifactId>
+                <version>${jackson2.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>${jackson2.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.owasp.encoder</groupId>
+                <artifactId>encoder</artifactId>
+                <version>1.2.3</version>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
     <repositories>
