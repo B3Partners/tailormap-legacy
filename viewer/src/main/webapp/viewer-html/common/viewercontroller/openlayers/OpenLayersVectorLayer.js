@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2012-2017 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 /* global Ext */
 
 /**
- * @class 
+ * @class
  * @description A drawable vector layer
  */
 Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
@@ -223,7 +223,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
         this.stopDrawing();
     },
 
-    getActiveFeature : function(){        
+    getActiveFeature : function(){
         var olFeature = this.getFrameworkLayer().features[0];
         if (olFeature){
             var feature = this.fromOpenLayersFeature(olFeature);
@@ -238,7 +238,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
     },
 
     /**
-     * Gets a feature by the id. 
+     * Gets a feature by the id.
      *
      */
     getFeatureById : function (id){
@@ -303,7 +303,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
         // call superclass method to register keydown events
         this.bringToFront();
         this.superclass.drawFeature.call(this, type);
-        
+
         if (type === "Point") {
             this.activeDrawFeatureControl = this.point;
             this.point.activate();
@@ -340,21 +340,30 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
         if (this.point.active){
             this.point.cancel();
             this.point.deactivate();
-        }if (this.line.active){
+        }
+        if (this.line.active){
             this.line.cancel();
             this.line.deactivate();
-        }if (this.polygon.active){
+        }
+        if (this.polygon.active){
             this.polygon.cancel();
             this.polygon.deactivate();
-        }if (this.circle.active){
+        }
+        if (this.circle.active){
             this.circle.cancel();
             this.circle.deactivate();
-        }if (this.box.active){
+        }
+        if (this.box.active){
             this.box.cancel();
             this.box.deactivate();
-        }if (this.freehand.active){
+        }
+        if (this.freehand.active){
             this.freehand.cancel();
             this.freehand.deactivate();
+        }
+        if (this.freehandLine.active){
+            this.freehandLine.cancel();
+            this.freehandLine.deactivate();
         }
         this.activeDrawFeatureControl = null;
     },
@@ -404,7 +413,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
         var feature = this.fromOpenLayersFeature (object.feature);
         this.fireEvent(viewer.viewercontroller.controller.Event.ON_ACTIVE_FEATURE_CHANGED,this,feature);
     },
-    
+
     /**
      * Called when a feature is modified.
      */
@@ -433,7 +442,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
         }
         this.fireEvent(viewer.viewercontroller.controller.Event.ON_FEATURE_ADDED,this,feature);
     },
-    
+
     /**
      * Puts an openlayersfeature in editmode and fires an event: viewer.viewercontroller.controller.Event.ON_ACTIVE_FEATURE_CHANGED
      * TODO: fix the selecting of a newly added point (after adding another geometry first)
@@ -444,7 +453,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
         var featureObject = this.fromOpenLayersFeature (feature);
         this.fireEvent(viewer.viewercontroller.controller.Event.ON_ACTIVE_FEATURE_CHANGED,this,featureObject);
     },
-    
+
     /**
      * Converts this feature to a OpenLayersFeature
      * @return The OpenLayerstype feature
@@ -567,7 +576,7 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersVectorLayer",{
     /**
      * @see viewer.viewercontroller.openlayers.OpenLayersLayer#setVisible
      */
-    getVisible: function(){        
+    getVisible: function(){
        return this.mixins.openLayersLayer.getVisible.call(this);
     },
     /**
