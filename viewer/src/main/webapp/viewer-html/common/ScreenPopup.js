@@ -82,7 +82,7 @@ Ext.define ("viewer.components.ScreenPopup",{
             constrainHeader: true,
             iconCls: this.config.iconCls || "",
             bodyStyle: {},
-            cls: "screen-popup",
+            cls: "screen-popup"
         };
 
         if(this.config.popupIcon) {
