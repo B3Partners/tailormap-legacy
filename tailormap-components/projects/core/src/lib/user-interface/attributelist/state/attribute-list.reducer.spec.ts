@@ -103,4 +103,20 @@ describe('AttributeListReducer', () => {
     expect(updatedState.featureTypeData[0].totalCount).toEqual(100);
   });
 
+  it ('Handles AttributeListActions.loadDataForFeatureTypeSuccess', () => {
+    const state: AttributeListState = { ...initialState, tabs: [ dummyTab ], featureTypeData: [ dummyFeatureData ]};
+    const loadResult = createDummyLoadResult({
+      rows: createDummyRows(20),
+      featureType: dummyFeatureData.featureType,
+      layerId: dummyFeatureData.layerId,
+      totalCount: 200,
+    });
+    const action = AttributeListActions.loadDataForFeatureTypeSuccess({ featureType: dummyFeatureData.featureType, data: loadResult })
+    const updatedState = attributeListReducer(state, action);
+    expect(updatedState.tabs.length).toEqual(1);
+    expect(updatedState.featureTypeData.length).toEqual(1);
+    expect(updatedState.featureTypeData[0].rows.length).toEqual(20);
+    expect(updatedState.featureTypeData[0].totalCount).toEqual(200);
+  });
+
 });
