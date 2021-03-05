@@ -23,6 +23,15 @@
   height: 50%;
 }
 
+.mat-primarylight {
+  background-color: rgba(98, 54, 255, 0.1);
+  color: #6236ff;
+}
+
 .copy-side-panel {
   width: 50%;
+}
+
+.actions button + button {
+  margin-left: 8px;
 }

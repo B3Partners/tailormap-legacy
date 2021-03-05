@@ -1,28 +1,29 @@
-import { AfterViewInit, Component, EventEmitter, Input, OnChanges, OnDestroy, Output } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Subject, Subscription } from 'rxjs';
+import { Observable, Subject, Subscription } from 'rxjs';
 import { Feature } from '../../shared/generated';
 import { Attribute, FormConfiguration, FormFieldType, IndexedFeatureAttributes, TabbedFields } from '../form/form-models';
 import { FormCreatorHelpers } from './form-creator-helpers';
 import { FormActionsService } from '../form-actions/form-actions.service';
-import { FeatureInitializerService } from '../../shared/feature-initializer/feature-initializer.service';
 import { LinkedAttributeRegistryService } from '../linked-fields/registry/linked-attribute-registry.service';
 import { FormFieldHelpers } from '../form-field/form-field-helpers';
 import { ConfirmDialogService } from '../../shared/confirm-dialog/confirm-dialog.service';
-import { takeUntil } from 'rxjs/operators';
+import { filter, take, takeUntil } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
 import { FormState } from '../state/form.state';
 import * as FormActions from '../state/form.actions';
 import { WorkflowState } from '../../workflow/state/workflow.state';
 import { loadDataForTab } from '../../user-interface/attributelist/state/attribute-list.actions';
+import { selectFormEditting } from '../state/form.selectors';
+import { selectLayerIdForLayerName } from '../../application/state/application.selectors';
 
 @Component({
   selector: 'tailormap-form-creator',
   templateUrl: './form-creator.component.html',
   styleUrls: ['./form-creator.component.css'],
 })
-export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit {
+export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit, OnInit {
 
   constructor(
     private store$: Store<FormState | WorkflowState>,
@@ -48,7 +49,7 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
 
   public tabbedConfig: TabbedFields;
 
-  public editting = false;
+  public editting$ : Observable<boolean>;
 
   public formgroep = new FormGroup({});
 
@@ -68,6 +69,10 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
         this.formChanged.emit(true);
       });
     }
+  }
+
+  public ngOnInit(): void {
+    this.editting$ = this.store$.select(selectFormEditting);
   }
 
   public ngOnDestroy() {
@@ -116,7 +121,7 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
   }
 
   public resetForm() : void {
-    this.editting = false;
+    this.store$.dispatch(FormActions.setFormEditting({editting: false}));
     this.createFormControls();
   }
 
@@ -140,10 +145,10 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
     feature.__fid = this.feature.objectGuid;
     const clazzName = this.feature.clazz;
     this.mergeFormToFeature(feature);
+    const parentFeature = this.features[0];
 
-    this.actions.save$(this.isBulk, this.isBulk ? this.features : [this.feature], this.features[0]).subscribe(savedFeature => {
-        const fs = this.updateFeatureInArray(savedFeature, this.features);
-        this.store$.dispatch(FormActions.setSaveFeatures({features: fs}));
+    this.actions.save$(this.isBulk, this.isBulk ? this.features : [this.feature], parentFeature).subscribe(savedFeature => {
+        this.store$.dispatch(FormActions.setNewFeature({newFeature: savedFeature, parentId: parentFeature.objectGuid}));
         this._snackBar.open('Opgeslagen', '', {duration: 5000});
       },
       error => {
@@ -152,47 +157,27 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
         });
       },
       () => {
-        // Update attributelist after feature is saved
-        this.store$.dispatch(loadDataForTab({ layerId: clazzName }));
+        this.store$.select(selectLayerIdForLayerName, clazzName)
+          .pipe(take(1), filter(layerId => layerId !== null))
+          .subscribe(layerId => this.store$.dispatch(loadDataForTab({ layerId })));
       });
-  }
-
-  public updateFeatureInArray(feature: Feature, features: Feature[]): Feature[] {
-    let fs = [];
-    if (!features) {
-      return fs;
-    }
-    const parentIdx = features.findIndex(f =>
-      (f.objectGuid === feature.objectGuid || f.objectGuid === FeatureInitializerService.STUB_OBJECT_GUID_NEW_OBJECT));
-    if (parentIdx !== -1) {
-      fs = [
-        ...features.slice(0, parentIdx),
-        {...feature},
-        ...features.slice(parentIdx + 1),
-      ];
-    } else {
-      features.forEach((feat) => {
-        feat.children = this.updateFeatureInArray(feature, feat.children);
-        fs.push(feat);
-      });
-    }
-    return fs;
   }
 
   private mergeFormToFeature(form) {
     if (this.isBulk) {
       for (const key in form) {
         if (this.formgroep.controls[key]?.dirty) {
-          this.features.forEach(feature => {
-            feature[key] = form[key];
-          });
+          this.features = this.features.map(feature => ({
+            ...feature,
+            [key]: form[key],
+          }));
         }
       }
     } else {
       Object.keys(this.feature).forEach(attr => {
         for (const key in form) {
           if (form.hasOwnProperty(key) && key === attr) {
-            this.feature[attr] = form[key];
+            this.feature = { ...this.feature, [attr]: form[key] };
             break;
           }
         }

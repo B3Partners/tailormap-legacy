@@ -128,7 +128,7 @@ Ext.define ("viewer.components.tools.StreetView",{
      */
     buttonUp: function(button,object){
         this.config.viewerController.mapComponent.setCursor(false);
-        if(this.config.useMarker){
+        if(!this.config.useMarker){
             this.config.viewerController.mapComponent.getMap().removeMarker(this.markerName);
         }
         this.toolMapClick.deactivateTool();

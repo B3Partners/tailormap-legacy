@@ -12,13 +12,18 @@ import { Store } from '@ngrx/store';
 import * as FormActions from '../state/form.actions';
 import * as WorkflowActions from '../../workflow/state/workflow.actions';
 import {
-  selectCloseAfterSaveFeatureForm, selectCurrentFeature, selectFeatureFormOpen, selectFormAlreadyDirty, selectFormConfigForFeatureType,
-  selectFormConfigs, selectOpenFeatureForm, selectTreeOpen,
+  selectCloseAfterSaveFeatureForm, selectCurrentFeature, selectFeatureFormOpen, selectFeatures, selectFormAlreadyDirty, selectFormEditting,
+  selectTreeOpen,
 } from '../state/form.selectors';
 import { LayerUtils } from '../../shared/layer-utils/layer-utils.service';
 import { WORKFLOW_ACTION } from '../../workflow/state/workflow-models';
 import { WorkflowState } from '../../workflow/state/workflow.state';
 import { MatButtonToggleChange } from '@angular/material/button-toggle';
+import { selectFormConfigForFeatureTypeName, selectFormConfigs } from '../../application/state/application.selectors';
+import { FormHelpers } from './form-helpers';
+import { FeatureInitializerService } from '../../shared/feature-initializer/feature-initializer.service';
+import { toggleFeatureFormVisibility } from '../state/form.actions';
+import { EditFeatureGeometryService } from '../services/edit-feature-geometry.service';
 
 @Component({
   selector: 'tailormap-form',
@@ -26,6 +31,7 @@ import { MatButtonToggleChange } from '@angular/material/button-toggle';
   styleUrls: ['./form.component.css'],
 })
 export class FormComponent implements OnDestroy, OnChanges, OnInit {
+
   public features: Feature[];
   public feature: Feature;
   public formConfig: FormConfiguration;
@@ -39,19 +45,22 @@ export class FormComponent implements OnDestroy, OnChanges, OnInit {
 
   public isOpen$: Observable<boolean>;
   public treeOpen$: Observable<boolean>;
-
+  public editting$ : Observable<boolean>;
 
   constructor(
-              private store$: Store<FormState | WorkflowState>,
-              private confirmDialogService: ConfirmDialogService,
-              private _snackBar: MatSnackBar,
-              private metadataService: MetadataService,
-              public actions: FormActionsService) {
+    private store$: Store<FormState | WorkflowState>,
+    private confirmDialogService: ConfirmDialogService,
+    private _snackBar: MatSnackBar,
+    private metadataService: MetadataService,
+    private featureInitializerService: FeatureInitializerService,
+    public actions: FormActionsService,
+    private editFeatureGeometryService: EditFeatureGeometryService,
+  ) {
   }
 
   public ngOnInit(): void {
     combineLatest([
-      this.store$.select(selectOpenFeatureForm),
+      this.store$.select(selectFeatures),
       this.store$.select(selectCloseAfterSaveFeatureForm),
     ])
       .pipe(takeUntil(this.destroyed))
@@ -70,6 +79,7 @@ export class FormComponent implements OnDestroy, OnChanges, OnInit {
     });
     this.isOpen$ = this.store$.select(selectFeatureFormOpen);
     this.treeOpen$ = this.store$.select(selectTreeOpen);
+    this.editting$ = this.store$.select(selectFormEditting);
   }
 
   public openTree(event: MatButtonToggleChange): void {
@@ -84,13 +94,14 @@ export class FormComponent implements OnDestroy, OnChanges, OnInit {
   private initForm() {
     this.formDirty = false;
     combineLatest([
-      this.store$.select(selectFormConfigForFeatureType, this.feature.clazz),
+      this.store$.select(selectFormConfigForFeatureTypeName, this.feature.clazz),
       this.store$.select(selectFormConfigs),
     ])
       .pipe(takeUntil(this.destroyed))
       .subscribe(([formConfig, configs]) => {
       this.formConfig = formConfig;
       this.metadataService.getFeatureTypeMetadata$(this.feature.clazz);
+      this.formsForNew = [];
       configs.forEach((config, key) => {
         this.formsForNew.push(config);
       });
@@ -105,16 +116,30 @@ export class FormComponent implements OnDestroy, OnChanges, OnInit {
     this.formDirty = result;
   }
 
-  public newItem(evt) {
-    const type = LayerUtils.sanitizeLayername(evt.srcElement.id);
-    this.store$.select(selectFormConfigForFeatureType, type)
-      .pipe(takeUntil(this.destroyed))
-      .subscribe(formConfig => {
-        this.actions.newItem$(this.features, type, formConfig).pipe(takeUntil(this.destroyed)).subscribe(features => {
-          this.features = features.features;
-          this.feature = features.feature;
-          this.initForm();
+  public setFormEditting(editting) {
+    this.store$.dispatch(FormActions.setFormEditting({editting}));
+  }
+
+  public newItem($event: MouseEvent, featureTypeName: string) {
+    const type = LayerUtils.sanitizeLayername(featureTypeName);
+
+    combineLatest([
+      this.store$.select(selectFormConfigForFeatureTypeName, type),
+      this.store$.select(selectFeatures),
+    ])
+      .pipe(take(1))
+      .subscribe(([formConfig, features]) => {
+        const objecttype = FormHelpers.capitalize(type);
+        const newFeature = this.featureInitializerService.create(objecttype, {
+          id: null,
+          clazz: type,
+          isRelated: true,
+          objecttype,
+          children: null,
+          [formConfig.treeNodeColumn]: `Nieuwe ${formConfig.name}`,
         });
+        this.store$.dispatch(FormActions.setNewFeature({newFeature, parentId: features[0].objectGuid}));
+        this.store$.dispatch(FormActions.setFormEditting({editting: true}));
       });
   }
 
@@ -127,9 +152,8 @@ export class FormComponent implements OnDestroy, OnChanges, OnInit {
     this.confirmDialogService.confirm$('Verwijderen',
       message, true)
       .pipe(take(1), filter(remove => remove)).subscribe(() => {
-      this.actions.removeFeature$(this.feature, this.features).subscribe(result => {
-        this.features = result.features;
-        this.feature = result.features[0];
+      this.actions.removeFeature$(this.feature).subscribe(result => {
+        this.store$.dispatch(FormActions.setFeatureRemoved({feature: this.feature}));
         if (!this.feature) {
           this.closeForm();
         }
@@ -146,12 +170,23 @@ export class FormComponent implements OnDestroy, OnChanges, OnInit {
   }
 
   public editGeometry(): void {
-    this.store$.dispatch(WorkflowActions.setFeature({
-      feature: {...this.feature},
-      action: WORKFLOW_ACTION.EDIT_GEOMETRY,
-    }));
-
-    this.closeForm();
+    this.store$.dispatch(toggleFeatureFormVisibility({ visible: false }));
+    this.editFeatureGeometryService.updateCurrentFeatureGeometry$()
+      .pipe(takeUntil(this.destroyed))
+      .subscribe(geometry => {
+        this.store$.dispatch(toggleFeatureFormVisibility({ visible: true }));
+        if (!geometry) {
+          return;
+        }
+        const geomField = this.featureInitializerService.retrieveGeometryField(this.feature);
+        if (!geomField) {
+          return;
+        }
+        this.feature = {
+          ...this.feature,
+          [geomField]: geometry,
+        };
+      })
   }
 
   public closeForm() {

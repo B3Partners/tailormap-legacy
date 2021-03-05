@@ -38,10 +38,6 @@ export class AttributeService {
    */
   public features$(params: AttributeListParameters): Observable<AttributeListResponse> {
     let httpParams: HttpParams = new HttpParams();
-    httpParams = httpParams.set('limit', '10');
-    httpParams = httpParams.set('page', '1');
-    httpParams = httpParams.set('start', '1');
-
     Object.entries(params).forEach(([key, value]) => {
       httpParams = httpParams.set(key, value);
     });

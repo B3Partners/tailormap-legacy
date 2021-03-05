@@ -44,6 +44,7 @@ Ext.define ("viewer.components.Drawing",{
     mobileHide: false,
     pointType:"circle",
     defaultProps:null,
+    popupClosed: true,
     updateFormLayoutTimer: null,
     config:{
         title: "",
@@ -54,12 +55,15 @@ Ext.define ("viewer.components.Drawing",{
         label: "",
         details: {
             minWidth: 340,
-            minHeight: 500
+            minHeight: 500,
+            useExtLayout: true,
+            usePopupScrolling: false
         }
     },
     constructor: function (conf){
-        conf.details.useExtLayout = true;
         this.initConfig(conf);
+        this.config.details.minWidth = this.config.dummyUser ? 250 : this.config.details.minWidth;
+        this.config.details.minHeight = this.config.dummyUser ? 170 : this.config.details.minHeight;
 	    viewer.components.Drawing.superclass.constructor.call(this, this.config);
         if(this.config.color === ""){
             this.config.color = "ff0000";
@@ -92,9 +96,7 @@ Ext.define ("viewer.components.Drawing",{
         if (!this.isPopup) {
             this.deActivatedTools = this.config.viewerController.mapComponent.deactivateTools();
         } else {
-            if (this.config.reactivateTools) {
-                this.popup.addListener("hide", this.hideWindow, this);
-            }
+            this.popup.addListener("hide", this.hideWindow, this);
         }
         return this;
     },
@@ -106,15 +108,26 @@ Ext.define ("viewer.components.Drawing",{
         this.mobileHide = false;
         this.popup.show();
         this.vectorLayer.bringToFront();
+        this.popupClosed = false;
+        if (this.config.dummyUser) {
+            this.drawFreeHand();
+        }
     },
     hideWindow: function () {
         if(this.mobileHide) {
             return;
         }
+        this.popupClosed = true;
+        if (this.config.dummyUser) {
+            this.vectorLayer.stopDrawing();
+        }
+        if (!this.config.reactivateTools) {
+            return;
+        }
         for (var i = 0; i < this.deActivatedTools.length; i++) {
             this.deActivatedTools[i].activate();
         }
-        this.deActivatedTools = [];  
+        this.deActivatedTools = [];
     },
     selectedContentChanged : function (){
         if(this.vectorLayer === null){
@@ -154,9 +167,6 @@ Ext.define ("viewer.components.Drawing",{
 
         this.vectorLayer.addListener (viewer.viewercontroller.controller.Event.ON_ACTIVE_FEATURE_CHANGED,this.activeFeatureChanged,this);
         this.vectorLayer.addListener (viewer.viewercontroller.controller.Event.ON_FEATURE_ADDED,this.activeFeatureFinished,this);
-        if(this.config.dummyUser){
-            this.drawFreeHand();
-        }
     },
     /**
      * Create the GUI
@@ -269,7 +279,7 @@ Ext.define ("viewer.components.Drawing",{
                                     fn: function () { this.drawingTypeChanged("triangle", true);}
                                 }
                             }
-                        }                        
+                        }
                     ]
                 })
         },
@@ -377,8 +387,23 @@ Ext.define ("viewer.components.Drawing",{
                         style: {
                             border: 0
                         },
+                        listeners: {
+                            collapse: {
+                                fn: function() {
+                                    this.mainContainer.updateLayout();
+                                },
+                                scope: this
+                            },
+                            expand: {
+                                fn: function() {
+                                    this.mainContainer.updateLayout();
+                                },
+                                scope: this
+                            }
+                        },
                         layout:{
-                            type: 'vbox'
+                            type: 'vbox',
+                            align: 'stretch'
                         },
                         defaults: {
                                 margin: '5 5 0 0'
@@ -433,7 +458,6 @@ Ext.define ("viewer.components.Drawing",{
                                     value: 50,
                                     increment: 10,
                                     min: 0,
-                                    width: "100%",
                                     max: 100,
                                     listeners: {
                                         change: {
@@ -450,7 +474,7 @@ Ext.define ("viewer.components.Drawing",{
                                          //  relative to the label. So 'rb' means the anchorpoint of the label is on the right bottem of the label. Yeah.
                                          // Also: This is not very useful for something other than points, as for lines it uses the first
                                         ['rm', 'Links'],  // point and polygons it's center.
-                                        ['cm', 'Midden'], 
+                                        ['cm', 'Midden'],
                                         ['lm', 'Rechts']],
                                     name: 'labelAlign',
                                     itemId: 'labelAlign',
@@ -754,7 +778,7 @@ Ext.define ("viewer.components.Drawing",{
         if (this.updateFormLayoutTimer) {
             window.clearTimeout(this.updateFormLayoutTimer);
         }
-        if(this.config.dummyUser){
+        if(this.config.dummyUser && !this.popupClosed) {
             this.drawFreeHand();
         }
     },
@@ -766,9 +790,9 @@ Ext.define ("viewer.components.Drawing",{
         var la = this.getContentContainer().query('#labelAlign')[0];
         var fw = this.getContentContainer().query('#fontStyle')[0];
         var pr = this.getContentContainer().query('#pointRadius')[0];
-        
+
         var dashstyle = ds.getValue();
-        var width = lw.getValue();        
+        var width = lw.getValue();
         var color = this.colorPicker.getColor();
         var opacity = fo.getValue()/ 100;
         var fontsize = fs.getValue();
@@ -777,11 +801,11 @@ Ext.define ("viewer.components.Drawing",{
         var pointRadius = pr.getValue();
         var fontWeight = font && font.indexOf("bold") !== -1;
         var fontStyle = font && font.indexOf("italic") !== -1;
-        
+
         var layer = this.vectorLayer;
-        
+
         var featureStyle = Ext.create('viewer.viewercontroller.controller.FeatureStyle', this.defaultProps);// this.defaultStyle;// layer.mapStyleConfigToFeatureStyle();
-        
+
         featureStyle.set('strokeColor', '#' + color);
         featureStyle.set('fillColor', '#' + color);
         featureStyle.set('fillOpacity', opacity);
@@ -792,7 +816,7 @@ Ext.define ("viewer.components.Drawing",{
         featureStyle.set('pointRadius', pointRadius);
         featureStyle.set('fontStyle', fontStyle ? "italic" : "normal");
         featureStyle.set('fontWeight', fontWeight ? "bold" : "normal");
-        
+
         featureStyle.set('graphicWidth',28);
         featureStyle.set('graphicHeight', 28);
         featureStyle.set("graphicName",this.pointType);
@@ -810,19 +834,19 @@ Ext.define ("viewer.components.Drawing",{
         var la = this.getContentContainer().query('#labelAlign')[0];
         var fw = this.getContentContainer().query('#fontStyle')[0];
         var pr = this.getContentContainer().query('#pointRadius')[0];
-        
+
         var color = feature.style.fillColor;
         color = color.substring(1);
         this.colorPicker.setValue(color);
         this.config.color = color;
-        
+
         var fontWeight = featureStyle.getFontWeight();
         fontWeight = fontWeight === "normal" ? null : fontWeight;
         var fontStyle = featureStyle.getFontStyle();
-        
+
         fontStyle = fontStyle === "normal" ? null : fontStyle;
         var font = [fontWeight,fontStyle];
-        
+
         ds.setValue(featureStyle.getStrokeDashstyle());
         lw.setValue(featureStyle.getStrokeWidth());
         pr.setValue(featureStyle.getPointRadius());
@@ -992,14 +1016,14 @@ Ext.define ("viewer.components.Drawing",{
             var feature = features[i];
             var featureObject = Ext.create("viewer.viewercontroller.controller.Feature",feature);
             var featureStyle = this.vectorLayer.frameworkStyleToFeatureStyle({});
-            
+
             featureStyle.set('strokeColor',  featureObject.getStyle().getFillColor());
             featureStyle.set('fillColor', featureObject.getStyle().getStrokeColor());
             this.vectorLayer.setDefaultFeatureStyle(featureStyle);
-            
+
             this.vectorLayer.addFeature(featureObject);
             this.vectorLayer.setLabel(this.activeFeature.getId(),featureObject._label);
-            
+
             this.features[this.activeFeature.getId()].setStyle(featureStyle);
             this.vectorLayer.setFeatureStyle(this.activeFeature.getId(), featureStyle);
         }
@@ -1022,7 +1046,7 @@ Ext.define ("viewer.components.Drawing",{
     },
 
     loadVariables: function (state){
-        state= Ext.decode(state);        
+        state= Ext.decode(state);
         this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_LAYERS_INITIALIZED,this.loadState, this, state);
     },
     loadState: function(state){

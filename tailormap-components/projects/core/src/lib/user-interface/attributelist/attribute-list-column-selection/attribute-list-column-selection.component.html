@@ -19,7 +19,7 @@
     </div>
   </div>
 
-  <div class="bottom">
+  <div class="bottom" *ngIf="hasPassportColumns">
     <button mat-flat-button class="link-button" (click)="toggleShowPassportColumns()">
       {{showPassportColumnsOnly ? 'Laat alle attributen zien' : 'Laat paspoort attributen zien'}}
     </button>

@@ -7,10 +7,14 @@ import { WorkflowFactoryService } from '../workflow-factory/workflow-factory.ser
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { formStateKey, initialFormState } from '../../feature-form/state/form.state';
+import { applicationStateKey, initialApplicationState } from '../../application/state/application.state';
 
 describe('WorkflowControllerComponent', () => {
   let spectator: Spectator<WorkflowControllerComponent>;
-  const initialState = { [formStateKey]: initialFormState };
+  const initialState = {
+    [formStateKey]: initialFormState,
+    [applicationStateKey]: initialApplicationState,
+  };
   let store: MockStore;
 
   const createComponent = createComponentFactory({

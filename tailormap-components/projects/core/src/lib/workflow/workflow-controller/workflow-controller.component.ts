@@ -8,8 +8,6 @@ import { WorkflowFactoryService } from '../workflow-factory/workflow-factory.ser
 import { VectorLayer } from '../../../../../bridge/typings';
 import { TailorMapService } from '../../../../../bridge/src/tailor-map.service';
 import { MapClickedEvent } from '../../shared/models/event-models';
-import { MatDialog } from '@angular/material/dialog';
-import { EditBarComponent } from '../../user-interface/edit-bar/edit-bar/edit-bar.component';
 
 @Component({
   selector: 'tailormap-workflow-controller',
@@ -17,27 +15,14 @@ import { EditBarComponent } from '../../user-interface/edit-bar/edit-bar/edit-ba
   styleUrls: ['./workflow-controller.component.css'],
 })
 export class WorkflowControllerComponent implements OnInit {
+
   private vectorlayerId: string;
 
   constructor(
     private controller: WorkflowControllerService,
     private factory: WorkflowFactoryService,
     private tailorMap: TailorMapService,
-    public dialog: MatDialog,
-  ) {
-    this.dialog.open(EditBarComponent, {
-      width: '150px',
-      position: {
-        top: '12px',
-        left: '160px',
-      },
-      height: '60px',
-      disableClose: true,
-      hasBackdrop: false,
-      panelClass: 'panelClass',
-
-    });
-  }
+  ) {}
 
   @Input()
   public set vectorLayerId(id: string) {
@@ -54,7 +39,9 @@ export class WorkflowControllerComponent implements OnInit {
     this.factory.vectorLayer = vectorlayer;
     this.factory.highlightLayer = highlightlayer;
 
-    vectorlayer.addListener('ON_FEATURE_ADDED', this.controller.geometryDrawn, this.controller);
+    vectorlayer.addListener('ON_FEATURE_ADDED', (vectorLayer: VectorLayer, feature: any) => {
+      this.controller.geometryDrawn(vectorLayer, feature);
+    });
     this.controller.init();
   }
 

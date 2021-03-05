@@ -1,4 +1,3 @@
-/* tslint:disable:no-string-literal */
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Feature } from '../../shared/generated';
@@ -9,11 +8,13 @@ import { CopyDialogData } from './form-copy-models';
 import { FeatureInitializerService } from '../../shared/feature-initializer/feature-initializer.service';
 import { FormCopyService } from './form-copy.service';
 import { ConfirmDialogService } from '../../shared/confirm-dialog/confirm-dialog.service';
-import { takeUntil } from 'rxjs/operators';
-import { Subject } from 'rxjs';
-import { selectCurrentFeature, selectFormConfigForFeatureType, selectFormConfigs } from '../state/form.selectors';
+import { concatMap, take, takeUntil } from 'rxjs/operators';
+import { forkJoin, of, Subject } from 'rxjs';
+import { selectCurrentFeature } from '../state/form.selectors';
 import { Store } from '@ngrx/store';
 import { FormState } from '../state/form.state';
+import * as FormActions from '../state/form.actions';
+import { selectFormConfigForFeatureTypeName, selectFormConfigs } from '../../application/state/application.selectors';
 
 @Component({
   selector: 'tailormap-form-copy',
@@ -53,12 +54,25 @@ export class FormCopyComponent implements OnInit, OnDestroy {
 
   public ngOnInit(): void {
     this.store$.select(selectCurrentFeature)
-      .pipe(takeUntil(this.destroyed)).subscribe(feature => this.openForm(feature));
+      .pipe(
+        takeUntil(this.destroyed),
+        concatMap(feature => forkJoin([
+          of(feature),
+          this.store$.select(selectFormConfigForFeatureTypeName, feature.clazz).pipe(take(1)),
+        ])),
+      )
+      .subscribe(([ feature, formConfig ]) => {
+        if (feature) {
+          this.originalFeature = feature;
+          this.formConfig = formConfig;
+        }
+      });
 
     this.store$.select(selectFormConfigs)
       .pipe(takeUntil(this.destroyed)).subscribe(formConfigs => {
       let fieldsToCopy = new Map<string, string>();
       this.originalFeature = this.data.originalFeature;
+      this.store$.dispatch(FormActions.setSetFeatures({ features: [{...this.originalFeature}]}))
       // Kijk of er al een parentFeature is (dit is er op het moment dat er al een keer eerder is gekopieerd)
       if (this.formCopyService.parentFeature != null) {
         // Kijk of het nieuwe geselecteerde feature van het zelfde type is, om vorige geselecteerde velden terug te zetten
@@ -69,7 +83,7 @@ export class FormCopyComponent implements OnInit, OnDestroy {
       this.formCopyService.parentFeature = this.data.originalFeature;
       this.formConfig = formConfigs.get(this.originalFeature.clazz);
       // zet uiteindelijke fieldstoCopy op de main feature (herstellen van eventuele vorige geselecteerde velden)
-      this.formCopyService.featuresToCopy.set(this.originalFeature['objectGuid'], fieldsToCopy);
+      this.formCopyService.featuresToCopy.set(this.originalFeature.objectGuid, fieldsToCopy);
       if (this.originalFeature.children) {
         for (const child of this.originalFeature.children) {
           const config = formConfigs.get(child.clazz);
@@ -148,7 +162,7 @@ export class FormCopyComponent implements OnInit, OnDestroy {
       const children = feature.children;
       for (let c  = 0; c <= children.length - 1; c++) {
         const child = children[c];
-        this.actionService.removeFeature$(child, [feature]).subscribe(childRemoved => {
+        this.actionService.removeFeature$(child).subscribe(childRemoved => {
           console.log('child removed');
         });
       }
@@ -160,12 +174,12 @@ export class FormCopyComponent implements OnInit, OnDestroy {
   }
 
   public isFieldChecked(event: any) {
-    const fieldsToCopy = this.formCopyService.featuresToCopy.get(this.originalFeature['objectGuid']);
+    const fieldsToCopy = this.formCopyService.featuresToCopy.get(this.originalFeature.objectGuid);
     return fieldsToCopy.has(event);
   }
 
   public isEverythingChecked(tab: string): boolean {
-    const fieldsToCopy = this.formCopyService.featuresToCopy.get(this.originalFeature['objectGuid']);
+    const fieldsToCopy = this.formCopyService.featuresToCopy.get(this.originalFeature.objectGuid);
     for (let i  = 0; i <= this.formConfig.fields.length - 1; i++) {
       const config = this.formConfig.fields[i];
       if (config.tab.toString() === tab) {
@@ -180,7 +194,7 @@ export class FormCopyComponent implements OnInit, OnDestroy {
   // zet alles aan of uit voor de geselecteerde tab
   public toggle(event: any, tab: string) {
     if (!event.checked) {
-      const fieldsToCopy = this.formCopyService.featuresToCopy.get(this.originalFeature['objectGuid']);
+      const fieldsToCopy = this.formCopyService.featuresToCopy.get(this.originalFeature.objectGuid);
       for (let i  = 0; i <= this.formConfig.fields.length - 1; i++) {
         const config = this.formConfig.fields[i];
         if (config.tab.toString() === tab) {
@@ -188,7 +202,7 @@ export class FormCopyComponent implements OnInit, OnDestroy {
         }
       }
     } else {
-      const fieldsToCopy = this.formCopyService.featuresToCopy.get(this.originalFeature['objectGuid']);
+      const fieldsToCopy = this.formCopyService.featuresToCopy.get(this.originalFeature.objectGuid);
       for (let i  = 0; i <= this.formConfig.fields.length - 1; i++) {
         const config = this.formConfig.fields[i];
         if (config.tab.toString() === tab) {
@@ -200,15 +214,15 @@ export class FormCopyComponent implements OnInit, OnDestroy {
 
   public updateFieldToCopy(event: any) {
     if (!event.checked) {
-      if (this.formCopyService.featuresToCopy.has(this.originalFeature['objectGuid'])) {
-        const fieldsToCopy = this.formCopyService.featuresToCopy.get(this.originalFeature['objectGuid']);
+      if (this.formCopyService.featuresToCopy.has(this.originalFeature.objectGuid)) {
+        const fieldsToCopy = this.formCopyService.featuresToCopy.get(this.originalFeature.objectGuid);
         if (fieldsToCopy.has(event.source.id)) {
           fieldsToCopy.delete(event.source.id);
         }
       }
     } else {
-      if (this.formCopyService.featuresToCopy.has(this.originalFeature['objectGuid'])) {
-        const fieldsToCopy = this.formCopyService.featuresToCopy.get(this.originalFeature['objectGuid']);
+      if (this.formCopyService.featuresToCopy.has(this.originalFeature.objectGuid)) {
+        const fieldsToCopy = this.formCopyService.featuresToCopy.get(this.originalFeature.objectGuid);
         fieldsToCopy.set(event.source.id, event.source.name);
       }
     }
@@ -217,7 +231,7 @@ export class FormCopyComponent implements OnInit, OnDestroy {
   // alleen de properties voor main feature
   private getPropertiesToMerge(): any {
     const valuesToCopy = {};
-    const fieldsToCopy = this.formCopyService.featuresToCopy.get(this.formCopyService.parentFeature['objectGuid']);
+    const fieldsToCopy = this.formCopyService.featuresToCopy.get(this.formCopyService.parentFeature.objectGuid);
     fieldsToCopy.forEach((value, key) => {
       valuesToCopy[key] = this.originalFeature[key];
     })
@@ -231,7 +245,7 @@ export class FormCopyComponent implements OnInit, OnDestroy {
     this.formCopyService.featuresToCopy.forEach((fieldsToCopy, key) => {
       if (fieldsToCopy.get('objecttype')) {
         let newChild = {};
-        if (key !== this.formCopyService.parentFeature['objectGuid']) {
+        if (key !== this.formCopyService.parentFeature.objectGuid) {
           const valuesToCopy = {};
           for (let i = 0; i <= parentFeature.children.length - 1; i++) {
             const child = parentFeature.children[i];
@@ -252,17 +266,6 @@ export class FormCopyComponent implements OnInit, OnDestroy {
       }
     });
     return newChilds;
-  }
-
-  public openForm(feature) {
-    if (feature) {
-      this.originalFeature = feature;
-      this.store$.select(selectFormConfigForFeatureType, this.originalFeature.clazz)
-        .pipe(takeUntil(this.destroyed))
-        .subscribe(formConfig => {
-          this.formConfig = formConfig;
-        });
-    }
   }
 
   public setDeleteRelated(event: any) {

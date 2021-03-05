@@ -1,5 +1,5 @@
 <div class="tree overlay-panel mat-elevation-z4" *ngIf="treeOpen$ | async">
-  <tailormap-form-tree [features]=features [isBulk]="isBulk" [feature]=feature></tailormap-form-tree>
+  <tailormap-form-tree [isBulk]="isBulk" [feature]=feature></tailormap-form-tree>
 </div>
 
 <div *ngIf="isOpen$ | async" class="overlay-panel mat-elevation-z4">
@@ -22,34 +22,33 @@
     </div>
   </div>
   <div class="bottom-bar">
-
-    <button mat-flat-button *ngIf="!formCreator.editting" color="primary" (click)="formCreator.editting = true">
+    <button mat-flat-button *ngIf="(formCreator.editting$ | async) === (false)" color="primary" (click)="setFormEditting(true)">
       Bewerken
     </button>
 
-    <button mat-flat-button color="primary" (click)="formCreator.resetForm()" *ngIf="formCreator.editting">
+    <button mat-flat-button color="primary" (click)="formCreator.resetForm()" *ngIf="formCreator.editting$ | async">
       Annuleren
     </button>
-    <button [disabled]="!formDirty && !closeAfterSave"  *ngIf="formCreator.editting"
+    <button [disabled]="!formDirty && !closeAfterSave"  *ngIf="formCreator.editting$ | async"
             mat-flat-button color="primary"  (click)="formCreator.beforeSave();">
 
       <span *ngIf="!closeAfterSave" >Opslaan</span>
       <span *ngIf="closeAfterSave" >Volgende</span>
     </button>
     <mat-menu #menu="matMenu">
-      <button *ngFor="let co of formsForNew" [id]="co.featureType" mat-menu-item (click)="this.newItem($event);">
+      <button *ngFor="let co of formsForNew" [id]="co.featureType" mat-menu-item (click)="newItem($event, co.featureType);">
        {{co.name}}
       </button>
     </mat-menu>
 
-    <button mat-flat-button color="primary" [matMenuTriggerFor]="optiesMenu" *ngIf="!formCreator.editting">
+    <button mat-flat-button color="primary" [matMenuTriggerFor]="optiesMenu" *ngIf="(formCreator.editting$ | async) === (false)">
       Opties
     </button>
     <mat-menu #optiesMenu="matMenu" yPosition="above" class="tailormap-menu-panel">
       <button mat-menu-item [matMenuTriggerFor]="menu">Object toevoegen</button>
-      <button mat-menu-item  (click)="this.copy();">Paspoort gegevens kopiëren</button>
-      <button mat-menu-item  (click)="this.editGeometry();">Bewerk geometrie</button>
-      <button mat-menu-item class="red-item"  (click)="this.remove();"><mat-icon color="warn">delete_forever</mat-icon>Verwijderen</button>
+      <button mat-menu-item  (click)="copy();">Paspoort gegevens kopiëren</button>
+      <button mat-menu-item  (click)="editGeometry();">Bewerk geometrie</button>
+      <button mat-menu-item class="red-item"  (click)="remove();"><mat-icon color="warn">delete_forever</mat-icon>Verwijderen</button>
     </mat-menu>
   </div>
 </div>

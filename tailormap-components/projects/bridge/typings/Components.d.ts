@@ -44,10 +44,12 @@ declare interface ViewerController {
 
   addUserLayer(appLayer: AppLayer, levelId: string, service: GeoService): void;
   removeUserLayer(appLayer: AppLayer): void;
+
+  createVectorLayer(name: string): VectorLayer;
 }
 declare interface TailormapComponent{
   getContentContainer: () => string;
-  addListener: (eventName: string, handler: deactivationEvent, scope: any) => void;
+  addListener: (eventName: string, handler: deactivationEvent) => void;
 }
 
 declare interface ExtPopupWindow {

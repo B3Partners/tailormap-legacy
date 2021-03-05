@@ -6,6 +6,7 @@ import {
   SelectedContentItem,
 } from '../../../../../bridge/typings';
 import { TailormapAppLayer } from '../models/tailormap-app-layer.model';
+import { FormConfiguration } from '../../feature-form/form/form-models';
 
 const applicationActionsPrefix = '[Application]';
 
@@ -32,4 +33,9 @@ export const setSelectedAppLayer = createAction(
 export const setLayerVisibility = createAction(
   `${applicationActionsPrefix} Set Layer Visibility`,
   props<{ visibility: Map<string, boolean> }>(),
+);
+
+export const setFormConfigs = createAction(
+  `${applicationActionsPrefix} Set Form Configurations`,
+  props<{ formConfigs : Map<string, FormConfiguration> }>(),
 );

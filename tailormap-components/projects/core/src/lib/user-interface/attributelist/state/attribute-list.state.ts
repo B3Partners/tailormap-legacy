@@ -13,8 +13,10 @@ export interface AttributeListState {
 }
 
 export const initialAttributeListState: AttributeListState = {
-  visible: true,
+  visible: false,
   config: {
+    title: 'Attributenlijst',
+    tooltip: '',
     pageSize: 10,
     zoomToBuffer: 10,
   },

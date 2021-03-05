@@ -5,7 +5,6 @@ import { TailorMapService } from '../../../../../bridge/src/tailor-map.service';
 import { MatDialog } from '@angular/material/dialog';
 import { FeatureInitializerService } from '../../shared/feature-initializer/feature-initializer.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { FormconfigRepositoryService } from '../../shared/formconfig-repository/formconfig-repository.service';
 import { FeatureControllerService } from '../../shared/generated';
 import { VectorLayer } from '../../../../../bridge/typings';
 import { SewageWorkflow } from '../workflows/SewageWorkflow';
@@ -13,7 +12,6 @@ import { CopyWorkflow } from '../workflows/CopyWorkflow';
 import { ConfirmDialogService } from '../../shared/confirm-dialog/confirm-dialog.service';
 import { NoOpWorkflow } from '../workflows/NoOpWorkflow';
 import { GeometryConfirmService } from '../../user-interface/geometry-confirm-buttons/geometry-confirm.service';
-import { EditgeometryWorkflow } from '../workflows/EditgeometryWorkflow';
 import { LayerUtils } from '../../shared/layer-utils/layer-utils.service';
 import { FormState } from '../../feature-form/state/form.state';
 import { Store } from '@ngrx/store';
@@ -31,7 +29,6 @@ export class WorkflowFactoryService {
   constructor(
     private tailorMap: TailorMapService,
     private dialog: MatDialog,
-    private formConfigRepo: FormconfigRepositoryService,
     private snackBar: MatSnackBar,
     private service: FeatureControllerService,
     private ngZone: NgZone,
@@ -63,9 +60,6 @@ export class WorkflowFactoryService {
       case WORKFLOW_ACTION.SPLIT_MERGE:
         workflow = new NoOpWorkflow();
         break;
-      case WORKFLOW_ACTION.EDIT_GEOMETRY:
-        workflow = new EditgeometryWorkflow();
-        break;
       case WORKFLOW_ACTION.DEFAULT:
         workflow = new StandardFormWorkflow();
         break;
@@ -77,7 +71,7 @@ export class WorkflowFactoryService {
     workflow.highlightLayer = this.highlightLayer;
     workflow.id = this.numWorkflows;
     workflow.init(this.tailorMap, this.dialog, this.featureInitializerService,
-      this.formConfigRepo, this.snackBar, this.service, this.ngZone, this.confirmService,
+      this.snackBar, this.service, this.ngZone, this.confirmService,
       this.geometryConfirmService, this.layerUtils, this.store$);
 
     return workflow;

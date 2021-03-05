@@ -2,9 +2,10 @@ import { Injectable, OnDestroy } from '@angular/core';
 import { TailorMapService } from '../../../../../bridge/src/tailor-map.service';
 import { Store } from '@ngrx/store';
 import { ApplicationState } from '../state/application.state';
-import { setApplicationContent, setLayerVisibility, setSelectedAppLayer } from '../state/application.actions';
-import { take, takeUntil } from 'rxjs/operators';
+import { setApplicationContent, setFormConfigs, setLayerVisibility, setSelectedAppLayer } from '../state/application.actions';
+import { take, takeUntil, tap, throttleTime } from 'rxjs/operators';
 import { Subject } from 'rxjs';
+import { FormConfigRepositoryService } from '../../shared/formconfig-repository/form-config-repository.service';
 
 @Injectable({
   providedIn: 'root',
@@ -14,10 +15,12 @@ export class ApplicationService implements OnDestroy {
   private destroyed = new Subject();
 
   private applicationId: number;
+  private visibilityChangedMap: Map<string, boolean> = new Map();
 
   constructor(
     private tailormapService: TailorMapService,
     private store$: Store<ApplicationState>,
+    private formConfigRepositoryService: FormConfigRepositoryService,
   ) {
     this.tailormapService.applicationConfig$
       .pipe(
@@ -36,9 +39,14 @@ export class ApplicationService implements OnDestroy {
       });
 
     this.tailormapService.layerVisibilityChanged$
-      .pipe(takeUntil(this.destroyed))
+      .pipe(
+        takeUntil(this.destroyed),
+        tap(event => this.visibilityChangedMap.set(`${event.layer.id}`, event.visible)),
+        throttleTime(100),
+      )
       .subscribe(event => {
-        this.store$.dispatch(setLayerVisibility({ visibility: new Map<string, boolean>([[ `${event.layer.id}`, event.visible ]]) }));
+        this.store$.dispatch(setLayerVisibility({ visibility: this.visibilityChangedMap }));
+        this.visibilityChangedMap = new Map();
       });
 
     this.tailormapService.selectedLayerChanged$
@@ -46,6 +54,12 @@ export class ApplicationService implements OnDestroy {
       .subscribe(selectedAppLayer => {
         this.store$.dispatch(setSelectedAppLayer({ layerId: `${selectedAppLayer.id}` }));
       });
+
+    this.formConfigRepositoryService.loadFormConfiguration$()
+      .pipe(takeUntil(this.destroyed))
+      .subscribe(formConfigs => {
+        this.store$.dispatch(setFormConfigs({ formConfigs }));
+      })
   }
 
   public ngOnDestroy() {

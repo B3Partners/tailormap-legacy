@@ -10,10 +10,14 @@ import { SharedModule } from '../../../shared/shared.module';
 import { MenuButtonComponent } from './menu-button/menu-button.component';
 import { formStateKey, initialFormState } from '../../../feature-form/state/form.state';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
+import { applicationStateKey, initialApplicationState } from '../../../application/state/application.state';
 
 describe('AddFeatureMenuComponent', () => {
   let spectator: Spectator<AddFeatureMenuComponent>;
-  const initialState = { [formStateKey]: initialFormState };
+  const initialState = {
+    [formStateKey]: initialFormState,
+    [applicationStateKey]: initialApplicationState,
+  };
   let store: MockStore;
   const createComponent = createComponentFactory({
     component: AddFeatureMenuComponent,
