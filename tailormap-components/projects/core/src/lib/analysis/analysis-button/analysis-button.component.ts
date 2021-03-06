@@ -22,7 +22,7 @@ export class AnalysisButtonComponent {
     ATTRIBUTES: CreateLayerModeEnum.ATTRIBUTES,
     THEMATIC: CreateLayerModeEnum.THEMATIC,
     REGIONAL: CreateLayerModeEnum.REGIONAL,
-  }
+  };
   public selectedAppLayer$: Observable<TailormapAppLayer>;
   public isRemoving = false;
 

@@ -1,4 +1,3 @@
-/* tslint:disable */
 /* eslint-disable */
 import { Domein } from './domein';
 export interface Attribuut {

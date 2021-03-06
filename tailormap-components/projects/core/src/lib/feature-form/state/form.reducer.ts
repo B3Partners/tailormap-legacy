@@ -18,7 +18,7 @@ const onSetHideFeatureForm = (state: FormState, payload: ReturnType<typeof FormA
   treeOpen: payload.visible,
 });
 
-const onSetFeature = (state: FormState, payload : ReturnType<typeof FormActions.setFeature>): FormState => ({
+const onSetFeature = (state: FormState, payload: ReturnType<typeof FormActions.setFeature>): FormState => ({
   ...state,
   feature: payload.feature,
 });
@@ -42,7 +42,7 @@ const onSetNewFeature = (state: FormState, payload: ReturnType<typeof FormAction
   };
 };
 
-const onSetFeatures = (state: FormState, payload:  ReturnType<typeof FormActions.setSetFeatures>) : FormState => ({
+const onSetFeatures = (state: FormState, payload:  ReturnType<typeof FormActions.setSetFeatures>): FormState => ({
   ...state,
   features: payload.features,
 });
@@ -57,17 +57,17 @@ const onSetOpenFeatureForm = (state: FormState, payload:  ReturnType<typeof Form
   editting: false,
 });
 
-const onSetTreeOpen = (state: FormState, payload :  ReturnType<typeof FormActions.setTreeOpen>): FormState => ({
+const onSetTreeOpen = (state: FormState, payload:  ReturnType<typeof FormActions.setTreeOpen>): FormState => ({
   ...state,
   treeOpen: payload.treeOpen,
 });
 
-const onSetFormEditting = (state: FormState, payload :  ReturnType<typeof FormActions.setFormEditting>): FormState => ({
+const onSetFormEditting = (state: FormState, payload:  ReturnType<typeof FormActions.setFormEditting>): FormState => ({
   ...state,
   editting: payload.editting,
 });
 
-const onSetFeatureRemoved = (state: FormState, payload :  ReturnType<typeof FormActions.setFeatureRemoved>): FormState => {
+const onSetFeatureRemoved = (state: FormState, payload:  ReturnType<typeof FormActions.setFeatureRemoved>): FormState => {
   const features =  removeFeature([...state.features], payload.feature);
   return {
     ...state,
@@ -93,4 +93,4 @@ const formReducerImpl = createReducer(
 
 export const formReducer = (state: FormState | undefined, action: Action) => {
   return formReducerImpl(state, action);
-}
+};

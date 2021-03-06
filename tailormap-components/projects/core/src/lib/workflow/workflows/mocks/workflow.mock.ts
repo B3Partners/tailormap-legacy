@@ -13,7 +13,6 @@ export const getNgZoneMockProvider = () => {
 };
 
 export const createMockDialogRef = createSpyObject(MatDialogRef, {
-  // tslint:disable-next-line:rxjs-finnish
   afterClosed(): Observable<any> {
     return new BehaviorSubject<boolean>(true).asObservable();
   },
@@ -24,7 +23,7 @@ export const createMockDialogProvider = createSpyObject(MatDialog, {
   getDialogById(params: number): MatDialogRef<any> {
     return createMockDialogRef;
   },
-  open (params: any) : MatDialogRef<any> {
+  open (params: any): MatDialogRef<any> {
     return createMockDialogRef;
   },
 });

@@ -20,7 +20,7 @@ describe('DomainRepositoryService', () => {
       ],
       providers: [
         provideMockStore({ initialState }),
-      ]
+      ],
     });
     store = TestBed.inject(MockStore);
   });

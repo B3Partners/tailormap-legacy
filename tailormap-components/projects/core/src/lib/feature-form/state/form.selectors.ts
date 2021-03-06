@@ -30,7 +30,7 @@ export const selectFormConfigForFeature = createSelector(
 
 export const selectFeatureLabel = createSelector(
   selectFormConfigs,
-  (formConfigs, feature : Feature) : string => {
+  (formConfigs, feature: Feature): string => {
    return feature[formConfigs.get(LayerUtils.sanitizeLayername(feature.clazz))];
   },
 );

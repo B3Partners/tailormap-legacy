@@ -17,9 +17,9 @@ describe('ErrorMessageComponent', () => {
 
   it('should render error message', () => {
     spectator = createComponent();
-    spectator.setInput("errorMessage", "This is the error!");
-    expect(spectator.query(".form-errors")).not.toBeNull();
-    expect(spectator.query(".form-errors").textContent.trim()).toEqual("This is the error!");
+    spectator.setInput('errorMessage', 'This is the error!');
+    expect(spectator.query('.form-errors')).not.toBeNull();
+    expect(spectator.query('.form-errors').textContent.trim()).toEqual('This is the error!');
   });
 
 });

@@ -30,5 +30,6 @@ export class AppModule {
   constructor(injector: Injector) {
     customElements.define('tailormap-workflow-controller', createCustomElement(WorkflowControllerComponent, {injector}));
   }
+  // eslint-disable-next-line @angular-eslint/use-lifecycle-interface
   public ngDoBootstrap() {}
 }

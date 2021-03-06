@@ -80,7 +80,7 @@ export class FormTreeComponent implements OnInit, OnChanges, OnDestroy {
         filter(([ features, formConfigs]) => !!features && features.length > 0 && !!formConfigs),
       )
       .subscribe(([ features, formConfigs]) => {
-        const tree : TreeModel<FormTreeMetadata> [] = FormTreeHelpers.convertFeatureToTreeModel(features, formConfigs);
+        const tree: TreeModel<FormTreeMetadata> [] = FormTreeHelpers.convertFeatureToTreeModel(features, formConfigs);
         this.transientTreeHelper.createTree(tree);
       });
 
@@ -91,9 +91,9 @@ export class FormTreeComponent implements OnInit, OnChanges, OnDestroy {
         if (node.metadata.feature) {
           relIds.set(node.metadata.feature.objectGuid, checked);
         }
-      })
+      });
       this.relatedFeatureChecked.emit(relIds);
-    })
+    });
   }
 
   public ngOnDestroy() {

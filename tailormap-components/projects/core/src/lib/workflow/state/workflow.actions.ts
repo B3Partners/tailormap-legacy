@@ -5,18 +5,18 @@ import { Feature } from '../../shared/generated';
 
 const formActionsPrefix = '[Workflow]';
 
-export let setAction = createAction(
+export const setAction = createAction(
   `${formActionsPrefix} Set current action`,
-  props<{ action : WORKFLOW_ACTION }>(),
+  props<{ action: WORKFLOW_ACTION }>(),
 );
 
-export let setFeature = createAction(
+export const setFeature = createAction(
   `${formActionsPrefix} Set workflow feature`,
-  props<{ feature : Feature, action : WORKFLOW_ACTION }>(),
+  props<{ feature: Feature; action: WORKFLOW_ACTION }>(),
 );
 
 
-export let setTypes = createAction(
+export const setTypes = createAction(
   `${formActionsPrefix} Set workflow types`,
-  props<{ featureType : string, geometryType: string, action : WORKFLOW_ACTION }>(),
+  props<{ featureType: string; geometryType: string; action: WORKFLOW_ACTION }>(),
 );

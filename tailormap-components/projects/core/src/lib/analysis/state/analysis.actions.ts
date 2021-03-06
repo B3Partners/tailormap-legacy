@@ -80,7 +80,7 @@ export const updateStyle = createAction(
 
 export const updateAllStyles = createAction(
   `${analysisActionsPrefix} Update All Style`,
-  props<{ styleProp: keyof UserLayerStyleModel, value: number | string | boolean }>(),
+  props<{ styleProp: keyof UserLayerStyleModel; value: number | string | boolean }>(),
 );
 
 export const setCreatingLayer = createAction(`${analysisActionsPrefix} Creating Layer`);

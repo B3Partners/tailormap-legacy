@@ -11,13 +11,13 @@ import {
 export class FormFieldHelpers {
 
 
-  public static nonExistingValueValidator(attribute : FeatureAttribute): ValidatorFn {
+  public static nonExistingValueValidator(attribute: FeatureAttribute): ValidatorFn {
     return (control: AbstractControl): {[key: string]: any} | null => {
       return FormFieldHelpers.hasNonValidValue(attribute) ? {invalidValue: {value: control.value}} : null;
     };
   }
 
-  public static hasNonValidValue(attribute : FeatureAttribute): boolean {
+  public static hasNonValidValue(attribute: FeatureAttribute): boolean {
     if (attribute.type !== FormFieldType.DOMAIN && attribute.type !== FormFieldType.SELECT) {
       return false;
     }
@@ -40,7 +40,7 @@ export class FormFieldHelpers {
     return !isNaN(parseFloat(n)) && isFinite(n);
   }
 
-  public static getComparableValue(attribute : FeatureAttribute) : SelectOption {
+  public static getComparableValue(attribute: FeatureAttribute): SelectOption {
     if (attribute.options && attribute.options?.length !== 0 ) {
       const ret = attribute.options.find(value => {
         const attributeValue = attribute.value;

@@ -18,7 +18,7 @@ describe('OverlayComponent', () => {
     providers: [
       { provide: OverlayRef, useValue: overlayRefMock },
       { provide: OverlayContent, useValue: new OverlayContent('') },
-    ]
+    ],
   });
 
   beforeEach(() => {

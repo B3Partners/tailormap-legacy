@@ -10,7 +10,7 @@ const dummyLoadDataResult: LoadDataResult = {
   totalCount: 0,
   layerId: '1',
   relatedFeatures: [],
-}
+};
 
 export const createAttributeListDataServiceMockProvider = (overrides?: Partial<Record<keyof AttributeListDataService, any>>) => {
   return createSpyObject(AttributeListDataService, {
@@ -34,7 +34,7 @@ export const createAttributeListDataServiceMockProvider = (overrides?: Partial<R
       return of([{ featureType: 1, totalCount: 0 }]);
     },
     ...overrides,
-  })
+  });
 };
 
 export const getAttributeListDataServiceMockProvider = (overrides?: Partial<Record<keyof AttributeListDataService, any>>) => {

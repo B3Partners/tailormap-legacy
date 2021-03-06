@@ -40,7 +40,7 @@ export class WorkflowControllerService implements OnDestroy {
   }
 
   public init(): void {
-    this.store$.dispatch(WorkflowActions.setAction({action: WORKFLOW_ACTION.DEFAULT}))
+    this.store$.dispatch(WorkflowActions.setAction({action: WORKFLOW_ACTION.DEFAULT}));
   }
 
   public ngOnDestroy() {

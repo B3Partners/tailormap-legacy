@@ -41,7 +41,7 @@ export class CreateLayerFormComponent implements OnInit, OnDestroy {
 
   public ngOnInit() {
     this.store$.select(selectSelectedDataSource).pipe(takeUntil(this.destroyed)).subscribe(selectedDataSource => {
-      this.selectedDataSource = selectedDataSource
+      this.selectedDataSource = selectedDataSource;
     });
     this.store$.select(selectLayerName).pipe(takeUntil(this.destroyed)).subscribe(layerName => {
       this.layerName.patchValue(layerName, { emitEvent: false });

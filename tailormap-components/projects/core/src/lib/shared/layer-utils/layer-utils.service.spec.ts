@@ -37,25 +37,25 @@ describe('LayerUtilsService', () => {
 
 
   it('should return getfeaturetypesallows', () => {
-    let result = spectator.service.getFeatureTypesAllowed([
+    const result = spectator.service.getFeatureTypesAllowed([
       'aap',
-      'noot'
+      'noot',
     ]);
     expect(result).toEqual(['ul_1']);
   });
 
 
   it('should return correct userlayername', () => {
-    let userLayer : AppLayer = appLayerMock({userlayer : true});
+    const userLayer: AppLayer = appLayerMock({userlayer : true});
 
-    let result = spectator.service.getLayerName(userLayer)
+    const result = spectator.service.getLayerName(userLayer);
     expect(result).toEqual('ul_1');
   });
 
   it('should return correct layername', () => {
-    let normallayer : AppLayer = appLayerMock({userlayer : false, layerName: 'gb_wegvakonderdeel'});
+    const normallayer: AppLayer = appLayerMock({userlayer : false, layerName: 'gb_wegvakonderdeel'});
 
-    let result = spectator.service.getLayerName(normallayer)
+    const result = spectator.service.getLayerName(normallayer);
     expect(result).toEqual('wegvakonderdeel');
   });
 });

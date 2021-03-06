@@ -113,7 +113,7 @@ export class AttributeListManagerService implements OnDestroy {
       return of([]);
     }
     return forkJoin(layersWithoutTab.map<Observable<TabFromLayerResult>>(layer => {
-      return this.createTabFromLayer$(layer, attributeListConfig.pageSize)
+      return this.createTabFromLayer$(layer, attributeListConfig.pageSize);
     }));
   }
 
@@ -181,7 +181,7 @@ export class AttributeListManagerService implements OnDestroy {
       columns: this.getColumnsForLayer(metadata, featureType, formConfig),
       showPassportColumnsOnly: !!formConfig,
       pageSize,
-    }
+    };
   }
 
   private getColumnsForLayer(

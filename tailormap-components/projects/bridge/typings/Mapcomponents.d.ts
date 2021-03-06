@@ -39,30 +39,30 @@ declare interface Level {
 }
 
 declare interface CQLFilter{
-  filters ?: CQLFilter[];
+  filters?: CQLFilter[];
   cql: string;
   id: string;
   operator: string;
   type: 'ATTRIBUTE' | 'GEOMETRY' | 'APPLAYER';
-  getCQL : () => string;
-  getCQLWithoutType : () => string;
-  addFilter : (filter: CQLFilter) => void;
-  removeFilter : (filter: CQLFilter) => void;
-  removeFilterById : (id : string) => void;
-  addOrReplace : (filter: CQLFilter) => void;
+  getCQL: () => string;
+  getCQLWithoutType: () => string;
+  addFilter: (filter: CQLFilter) => void;
+  removeFilter: (filter: CQLFilter) => void;
+  removeFilterById: (id: string) => void;
+  addOrReplace: (filter: CQLFilter) => void;
 }
 
 declare interface AppLayer {
   id: string;
   layerName: string;
   alias: string;
-  filter ?: CQLFilter;
+  filter?: CQLFilter;
 
   attribute: boolean;   // has attribute table???
   featureType: number;
   background: boolean;
   userlayer: boolean;
-  userlayer_original_layername ?: string;
+  userlayer_original_layername?: string;
   layerId: number;
 }
 declare interface Pixel{

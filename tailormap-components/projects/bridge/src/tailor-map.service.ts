@@ -75,7 +75,7 @@ export class TailorMapService {
       .pipe(take(1))
       .subscribe(() => {
         this.initViewerController();
-      })
+      });
   }
 
   private initViewerController() {

@@ -71,5 +71,5 @@ export interface DialogData {
   formFeatures: Feature[];
   isBulk: boolean;
   closeAfterSave?: boolean;
-  alreadyDirty ?: boolean;
+  alreadyDirty?: boolean;
 }

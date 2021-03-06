@@ -12,7 +12,7 @@ export const createMockProvider = (template?: Partial<Record<keyof MetadataServi
       return of([]);
     },
     ...template,
-  })
+  });
 };
 
 export const getMetadataServiceMockProvider = (template?: Partial<Record<keyof MetadataService, any>>) => {

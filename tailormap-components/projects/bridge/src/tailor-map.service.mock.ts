@@ -21,7 +21,7 @@ export const createTailormapServiceMockProvider = (overrides?: Partial<Record<ke
       return viewerControllerMock();
     },
     ...overrides,
-  })
+  });
 };
 
 export const getTailorMapServiceMockProvider = (overrides?: Partial<Record<keyof TailorMapService, any>>) => {

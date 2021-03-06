@@ -28,7 +28,7 @@ export class AttributeTypeHelper {
       case AttributeTypeEnum.BOOLEAN:
         return 'boolean';
       case AttributeTypeEnum.GEOMETRY:
-        return 'punt/lijn/vlak'
+        return 'punt/lijn/vlak';
       case AttributeTypeEnum.GEOMETRY_POINT:
         return 'punt';
       case AttributeTypeEnum.GEOMETRY_LINESTRING:

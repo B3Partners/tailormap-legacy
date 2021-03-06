@@ -5,12 +5,12 @@ import { PassportAttributeModel } from '../../application/models/passport-attrib
 import { UserLayerStyleModel } from './user-layer-style.model';
 
 export interface CreateLayerDataModel {
-  canCreateLayer: boolean,
-  createLayerMode?: CreateLayerModeEnum,
-  selectedDataSource?: AnalysisSourceModel,
-  criteria?: CriteriaModel,
-  thematicAttribute?: PassportAttributeModel,
-  layerName?: string,
-  styles?: UserLayerStyleModel[],
-  createdAppLayer?: string,
+  canCreateLayer: boolean;
+  createLayerMode?: CreateLayerModeEnum;
+  selectedDataSource?: AnalysisSourceModel;
+  criteria?: CriteriaModel;
+  thematicAttribute?: PassportAttributeModel;
+  layerName?: string;
+  styles?: UserLayerStyleModel[];
+  createdAppLayer?: string;
 }

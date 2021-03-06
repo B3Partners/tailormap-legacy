@@ -11,4 +11,4 @@ export const selectOrDefault = <ObjectType, IndexType, ObjectKeyType>(
     return tab[prop] as unknown as ObjectKeyType;
   }
   return defaultValue;
-}
+};

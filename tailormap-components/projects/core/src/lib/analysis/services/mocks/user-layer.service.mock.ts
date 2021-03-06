@@ -6,7 +6,7 @@ export const createUserLayerServiceMockProvider = () => {
   return createSpyObject(UserLayerService, {
     createUserLayer() {},
     createUserLayerFromParams$(params: CreateUserLayerParams) {},
-  })
+  });
 };
 
 export const getUserLayerServiceMockProvider = () => {
