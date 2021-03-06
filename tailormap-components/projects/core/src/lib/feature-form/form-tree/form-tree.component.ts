@@ -1,5 +1,5 @@
 import { Component, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, EventEmitter } from '@angular/core';
-import { FeatureNode, FormTreeMetadata } from './form-tree-models';
+import { FormTreeMetadata } from './form-tree-models';
 import { Feature } from '../../shared/generated';
 import { FormTreeHelpers } from './form-tree-helpers';
 import { Store } from '@ngrx/store';
@@ -47,7 +47,7 @@ export class FormTreeComponent implements OnInit, OnChanges, OnDestroy {
 
   @Input()
   public isBulk = false;
-  private transientTreeHelper: TransientTreeHelper<FeatureNode>;
+  private transientTreeHelper: TransientTreeHelper<FormTreeMetadata>;
 
   constructor(
     private store$: Store<FormState>,
