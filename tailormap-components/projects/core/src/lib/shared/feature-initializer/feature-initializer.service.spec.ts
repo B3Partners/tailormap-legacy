@@ -25,19 +25,21 @@ describe('FeatureInitializerService', () => {
   it('should create wegvakonderdeel and contain the passed params', () => {
     const params = {
       piet: 'jan',
-      smit: "mon"
+      smit: 'mon',
     };
     const wv = component.create('Wegvakonderdeel',params);
     expect(wv).toBeTruthy();
-    for(let param in params){
-      expect(wv[param]).toBeTruthy();
+    for (const param in params) {
+      if (params.hasOwnProperty(param)) {
+        expect(wv[param]).toBeTruthy();
+      }
     }
   });
 
   it('should not create non-existing object and throw error', () => {
     expect(function(){
       component.create('DUMMY', {});
-    }).toThrow(new Error("Featuretype not implemented: DUMMY"));
+    }).toThrow(new Error('Featuretype not implemented: DUMMY'));
 
   });
 });

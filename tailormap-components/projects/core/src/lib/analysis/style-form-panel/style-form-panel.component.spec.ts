@@ -14,7 +14,7 @@ describe('StyleFormPanelComponent', () => {
     imports: [ SharedModule ],
     providers: [
       provideMockStore({ initialState }),
-    ]
+    ],
   });
 
   beforeEach(() => {

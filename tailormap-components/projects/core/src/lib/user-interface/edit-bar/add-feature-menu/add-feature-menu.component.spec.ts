@@ -33,7 +33,7 @@ describe('AddFeatureMenuComponent', () => {
       getDialogRefMockProvider(),
       getTailorMapServiceMockProvider(),
       { provide: WorkflowControllerService, useValue: createSpyObject(WorkflowControllerService) },
-    ]
+    ],
   });
 
   beforeEach((() => {

@@ -10,8 +10,8 @@ export const createFormActionsServiceMockProvider = () => {
     save$(): Observable<any> {
       return of({});
     },
-  })
-}
+  });
+};
 
 export const getFormActionsServiceMockProvider = () => {
   return { provide: FormActionsService, useValue: createFormActionsServiceMockProvider() };

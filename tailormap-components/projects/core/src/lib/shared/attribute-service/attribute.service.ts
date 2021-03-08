@@ -34,6 +34,7 @@ export class AttributeService {
 
   /**
    * Get features for the attributelist
+   *
    * @param params Params for retrieving, sorting and filtering the features
    */
   public features$(params: AttributeListParameters): Observable<AttributeListResponse> {

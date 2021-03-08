@@ -17,7 +17,7 @@ describe('AttributeListFilterComponent', () => {
     columnName: 'col',
     featureType: 1,
     filter: null,
-    layerId: "1",
+    layerId: '1',
   };
 
   const createComponent = createComponentFactory({
@@ -28,13 +28,13 @@ describe('AttributeListFilterComponent', () => {
       { provide: MAT_DIALOG_DATA, useValue: dialogData },
       provideMockStore({ initialState }),
       getMetadataServiceMockProvider(),
-    ]
+    ],
   });
 
   beforeEach(() => {
     spectator = createComponent();
     store = spectator.inject(MockStore);
-  })
+  });
 
   it('should create', () => {
     expect(spectator.component).toBeTruthy();

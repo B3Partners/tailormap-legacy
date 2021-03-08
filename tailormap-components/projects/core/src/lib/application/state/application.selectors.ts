@@ -118,7 +118,7 @@ export const selectFormConfigsLoaded = createSelector(selectApplicationState, st
 
 export const selectFormConfigForFeatureTypeName = createSelector(
   selectFormConfigs,
-  (formConfigs, featureType : string) => formConfigs.get(LayerUtils.sanitizeLayername(featureType)),
+  (formConfigs, featureType: string) => formConfigs.get(LayerUtils.sanitizeLayername(featureType)),
 );
 
 export const selectFormConfigFeatureTypeNames = createSelector(
@@ -133,12 +133,12 @@ export const selectVisibleLayersWithFormConfig = createSelector(
     if (!visibleLayers || visibleLayers.length === 0) {
       return [];
     }
-    const formFeatureTypeNamesSet = new Set<string>(formConfigFeatureTypeNames.map(name => name.toLowerCase()))
+    const formFeatureTypeNamesSet = new Set<string>(formConfigFeatureTypeNames.map(name => name.toLowerCase()));
     return visibleLayers
       .filter(layer => formFeatureTypeNamesSet.has(LayerUtils.sanitizeLayername(layer.layerName)))
       .map(layer => LayerUtils.sanitizeLayername(layer.layerName));
   },
-)
+);
 
 export const selectLayerIdForLayerName = createSelector(
   selectLayers,
@@ -150,5 +150,5 @@ export const selectLayerIdForLayerName = createSelector(
     }
     return null;
   },
-)
+);
 

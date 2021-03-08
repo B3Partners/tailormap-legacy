@@ -10,7 +10,7 @@ describe('HighlightService', () => {
     service: HighlightService,
     providers: [
       getTailorMapServiceMockProvider(),
-    ]
+    ],
   });
 
   beforeEach(() => spectator = createService());

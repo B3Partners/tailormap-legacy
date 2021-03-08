@@ -45,7 +45,7 @@ export class FormComponent implements OnDestroy, OnChanges, OnInit {
 
   public isOpen$: Observable<boolean>;
   public treeOpen$: Observable<boolean>;
-  public editting$ : Observable<boolean>;
+  public editting$: Observable<boolean>;
 
   constructor(
     private store$: Store<FormState | WorkflowState>,
@@ -147,7 +147,7 @@ export class FormComponent implements OnDestroy, OnChanges, OnInit {
     const attribute = Object.keys(this.feature).find(searchAttribute => searchAttribute === this.formConfig.treeNodeColumn);
     let message = 'Wilt u ' + this.formConfig.name + ' - ' + this.feature[attribute] + ' verwijderen?';
     if (this.feature.children && this.feature.children.length > 0) {
-      message += ' Let op! Alle onderliggende objecten worden ook verwijderd.'
+      message += ' Let op! Alle onderliggende objecten worden ook verwijderd.';
     }
     this.confirmDialogService.confirm$('Verwijderen',
       message, true)
@@ -186,7 +186,7 @@ export class FormComponent implements OnDestroy, OnChanges, OnInit {
           ...this.feature,
           [geomField]: geometry,
         };
-      })
+      });
   }
 
   public closeForm() {

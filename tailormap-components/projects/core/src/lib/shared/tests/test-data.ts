@@ -14,6 +14,7 @@ export const mockAttribute = (overrides?: Partial<Attribute>): Attribute => ({
   editable: true,
   featureType: 1,
   filterable: true,
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   folder_label: '',
   id: 1,
   longname: '',
@@ -137,12 +138,12 @@ export const getVisibleLayerMocks = (visibleLayers: number[]) => {
     typeof castToStrings === 'undefined' ? visibleLayers : visibleLayers.map(l => `${l}`)) as {
     (castToStrings?: false): number[];
     (castToStrings: true): string[];
-  }
-}
+  };
+};
 
 export const getFormConfigsMocks = () => {
   const configs = new Map<string, FormConfiguration>();
-  const boomconfig : FormConfiguration = {
+  const boomconfig: FormConfiguration = {
     tabConfig: undefined,
     fields: [
       {
@@ -161,4 +162,4 @@ export const getFormConfigsMocks = () => {
   };
   configs.set('boom', boomconfig);
   return configs;
-}
+};

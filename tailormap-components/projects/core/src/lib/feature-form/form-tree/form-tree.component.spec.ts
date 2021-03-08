@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { FormTreeComponent } from './form-tree.component';
-import {SharedModule} from "../../shared/shared.module";
+import {SharedModule} from '../../shared/shared.module';
 import { FormConfigMockModule } from '../../shared/formconfig-repository/formconfig-mock.module.spec';
 import { formStateKey, initialFormState } from '../state/form.state';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
@@ -23,8 +23,8 @@ describe('FormTreeComponent', () => {
         FormConfigMockModule,
       ],
       providers:[
-        provideMockStore({ initialState }),],
-      declarations: [ FormTreeComponent ]
+        provideMockStore({ initialState })],
+      declarations: [ FormTreeComponent ],
     })
     .compileComponents();
   }));

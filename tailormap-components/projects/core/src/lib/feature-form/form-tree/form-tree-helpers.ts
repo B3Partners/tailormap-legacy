@@ -9,12 +9,12 @@ import { TreeModel } from '../../shared/tree/models/tree.model';
 export class FormTreeHelpers {
 
   public static convertFeatureToTreeModel(features: Feature[],
-                                          formConfigs : Map<string, FormConfiguration>): TreeModel<FormTreeMetadata>[] {
+                                          formConfigs: Map<string, FormConfiguration>): TreeModel<FormTreeMetadata>[] {
     const nodes: TreeModel[] = [];
     const allChildren: TreeModel[] = [];
     features.forEach(feature => {
       if (feature.children) {
-        const fts : Record<string , TreeModel<FormTreeMetadata>> = {};
+        const fts: Record<string , TreeModel<FormTreeMetadata>> = {};
 
         feature.children.forEach((child: Feature) => {
           const featureType = child.clazz;
@@ -27,7 +27,7 @@ export class FormTreeHelpers {
                 metadata: {
                   isFeatureType: true,
                 },
-              }
+              };
               fts[featureType] = featureTypeNode;
             }
             const children = FormTreeHelpers.convertFeatureToTreeModel([child], formConfigs)[0];
@@ -57,8 +57,8 @@ export class FormTreeHelpers {
     return nodes;
   }
 
-  public static getFeatureValueForField(feat: Feature | AttributeListFeature, config : FormConfiguration,
-                                        key : string = config.treeNodeColumn): string {
+  public static getFeatureValueForField(feat: Feature | AttributeListFeature, config: FormConfiguration,
+                                        key: string = config.treeNodeColumn): string {
     const attr: Attribute = config.fields.find(field => field.key === key);
     let value = feat[key];
     if (attr.type === FormFieldType.DOMAIN) {

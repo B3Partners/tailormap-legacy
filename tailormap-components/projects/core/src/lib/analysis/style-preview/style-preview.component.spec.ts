@@ -10,7 +10,7 @@ import { AttributeTypeEnum } from '../../application/models/attribute-type.enum'
 
 const styles = [
   getDummyUserLayerStyle({ label: 'Boom' }),
-  getDummyUserLayerStyle({ label: 'Mooie boom', fillColor: 'rgb(0, 255, 0)', strokeWidth: 20, marker: "arrow", markerSize: 18 }),
+  getDummyUserLayerStyle({ label: 'Mooie boom', fillColor: 'rgb(0, 255, 0)', strokeWidth: 20, marker: 'arrow', markerSize: 18 }),
 ];
 
 describe('StylePreviewComponent', () => {
@@ -35,7 +35,7 @@ describe('StylePreviewComponent', () => {
   beforeEach(() => {
     spectator = createComponent();
     store = spectator.inject(MockStore);
-  })
+  });
 
   it('should create', () => {
     expect(spectator.component).toBeTruthy();

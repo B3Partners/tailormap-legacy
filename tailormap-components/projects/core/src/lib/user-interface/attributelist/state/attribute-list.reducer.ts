@@ -41,7 +41,7 @@ const onChangeAttributeTabs = (
     tabs,
     featureTypeData,
   };
-}
+};
 
 const onSetSelectedTab = (
   state: AttributeListState,
@@ -65,7 +65,7 @@ const updateArrayItemInState = <T>(
     updateFn(list[rowIdx]),
     ...list.slice(rowIdx + 1),
   ];
-}
+};
 
 const updateTab = (
   state: AttributeListState,
@@ -76,7 +76,7 @@ const updateTab = (
     ...state,
     tabs: updateArrayItemInState<AttributeListTabModel>(state.tabs, t => t.layerId === layerId, updateFn),
   };
-}
+};
 
 const updateFeatureData = (
   state: AttributeListState,
@@ -91,7 +91,7 @@ const updateFeatureData = (
       updateFn,
     ),
   };
-}
+};
 
 const updateTabRow = (
   state: AttributeListState,
@@ -105,7 +105,7 @@ const updateTabRow = (
       rows: updateArrayItemInState<AttributeListRowModel>(data.rows, r => r.rowId === rowId, updateFn),
     };
   });
-}
+};
 
 const onLoadDataForTab = (
   state: AttributeListState,
@@ -134,8 +134,8 @@ const onLoadDataForTabSuccess = (
         rows: payload.data.rows,
       };
     }),
-  }
-}
+  };
+};
 
 const onLoadDataForFeatureTypeSuccess = (
   state: AttributeListState,
@@ -155,7 +155,7 @@ const onLoadTotalCountForTabSuccess = (
   return {
     ...state,
     featureTypeData: state.featureTypeData.map(data => ({ ...data, totalCount: dict.get(data.featureType) || data.totalCount })),
-  }
+  };
 };
 
 const onUpdatePage = (
@@ -184,7 +184,7 @@ const getRelationAttributes = (state: AttributeListState, featureType: number): 
     }, []);
   }
   return [];
-}
+};
 
 const getRelatedAttributesForRow = (row: AttributeListRowModel, relationAttributes: string[]) => {
   const relationAttributesForRow = {
@@ -196,7 +196,7 @@ const getRelatedAttributesForRow = (row: AttributeListRowModel, relationAttribut
     }
   });
   return relationAttributesForRow;
-}
+};
 
 const onToggleCheckedAllRows = (
   state: AttributeListState,
@@ -229,7 +229,7 @@ const onToggleCheckedAllRows = (
       ...state.featureTypeData.slice(featureTypeIdx + 1),
     ],
   };
-}
+};
 
 const onUpdateRowChecked = (
   state: AttributeListState,
@@ -270,7 +270,7 @@ const onUpdateRowChecked = (
       },
       ...state.featureTypeData.slice(featureTypeIdx + 1),
     ],
-  }
+  };
 };
 
 const onUpdateRowExpanded = (
@@ -335,14 +335,14 @@ const onToggleColumnVisible = (
       ...data.columns.slice(columnIdx + 1),
     ],
   };
-})
+});
 
 const onToggleShowPassportColumns = (
   state: AttributeListState,
   payload: ReturnType<typeof AttributeListActions.toggleShowPassportColumns>,
 ): AttributeListState => {
   return updateFeatureData(state, payload.featureType, data => ({ ...data, showPassportColumnsOnly: !data.showPassportColumnsOnly }));
-}
+};
 
 const onSetSelectedColumnFilter = (
   state: AttributeListState,
@@ -398,7 +398,7 @@ const onClearFilterForFeatureType = (
     payload.featureType,
     featureData => ({ ...featureData, checkedFeatures: [], filter: [] }),
   );
-}
+};
 
 const onClearAllFilters = (
   state: AttributeListState,
@@ -466,4 +466,4 @@ const attributeListReducerImpl = createReducer(
 
 export const attributeListReducer = (state: AttributeListState | undefined, action: Action) => {
   return attributeListReducerImpl(state, action);
-}
+};

@@ -36,7 +36,7 @@ export class AttributeListStatisticsMenuComponent implements OnInit {
     this.contextMenuPosition.y = y + 'px';
     this.statisticsMenu.menuData = { colName: columnName };
     this.statisticsMenu.menu.focusFirstItem('mouse');
-    this.statisticsMenu.openMenu()
+    this.statisticsMenu.openMenu();
   }
 
   public onStatisticsMenuClick(colName: string, statisticType: StatisticType) {

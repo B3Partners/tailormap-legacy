@@ -57,7 +57,7 @@ export class AttributeListDataService {
     tabFeatureData: AttributeListFeatureTypeData[],
   ): Observable<LoadTotalCountResult[]> {
     const counts$ = [ tab.featureType, ...tabFeatureData.map(data => data.featureType) ]
-      .map(featureType => this.getCountForFeatureType$(tab, featureType, tabFeatureData))
+      .map(featureType => this.getCountForFeatureType$(tab, featureType, tabFeatureData));
     return forkJoin(counts$);
   }
 
@@ -106,7 +106,7 @@ export class AttributeListDataService {
             rows: [],
             relatedFeatures: [],
             errorMessage: response.message || 'Failed loading attributes',
-          }
+          };
         }
         const checkedRows = new Set<string>(featureTypeData.checkedFeatures.map(checkedFeature => checkedFeature.rowId));
         return {
@@ -117,7 +117,7 @@ export class AttributeListDataService {
           relatedFeatures: response.features.length > 0 ? (response.features[0].related_featuretypes || []) : [],
         };
       }),
-    )
+    );
   }
 
   private decorateFeatures(
@@ -133,6 +133,7 @@ export class AttributeListDataService {
         _expanded: false,
         _selected: false,
         rowId,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         related_featuretypes: relatedFeatures,
         ...feature,
       };

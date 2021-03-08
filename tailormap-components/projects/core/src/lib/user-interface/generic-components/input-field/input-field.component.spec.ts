@@ -19,6 +19,6 @@ describe('InputFieldComponent', () => {
     spectator.setInput('groep', new FormGroup({ test: new FormControl('the value') }));
     spectator.detectChanges();
     expect(spectator.component).toBeTruthy();
-    expect(spectator.query<HTMLInputElement>("input").value).toEqual('the value');
+    expect(spectator.query<HTMLInputElement>('input').value).toEqual('the value');
   });
 });

@@ -107,7 +107,7 @@ export class AttributeListTableComponent implements OnInit, OnDestroy {
   }
 
   public trackByRowId(idx: number, row: AttributeListRowModel) {
-    return row.rowId
+    return row.rowId;
   }
 
   public onRowClick($event: MouseEvent, row: AttributeListRowModel): void {

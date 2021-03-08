@@ -12,7 +12,7 @@ export const createExportServiceMockProvider = (overrides?: Partial<Record<keyof
       return of(response);
     },
     ...overrides,
-  })
+  });
 };
 
 export const getExportServiceMockProvider = (overrides?: Partial<Record<keyof ExportService, any>>) => {

@@ -34,7 +34,7 @@ export class ResolutionSelectorComponent implements OnInit {
   @Output()
   public scaleChanged: EventEmitter<number> = new EventEmitter<number>();
 
-  public availableResolutions: Array<{ label: string; scale: number, resolution: number }> = [
+  public availableResolutions: Array<{ label: string; scale: number; resolution: number }> = [
     { label: 'Altijd tonen', scale: -1, resolution: -1 },
     { label: '1 / 1.536.000 (land)', scale: 1536000, resolution: 430.08 },
     { label: '1 / 768.000', scale: 768000, resolution: 215.04 },

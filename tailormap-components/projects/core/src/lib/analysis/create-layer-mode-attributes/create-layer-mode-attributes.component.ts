@@ -33,10 +33,10 @@ export class CreateLayerModeAttributesComponent implements OnInit, OnDestroy {
 
   public ngOnInit(): void {
     this.store$.select(selectSelectedDataSource).pipe(takeUntil(this.destroyed)).subscribe(selectedDataSource => {
-      this.selectedDataSource = selectedDataSource
+      this.selectedDataSource = selectedDataSource;
     });
     this.store$.select(selectCriteria).pipe(takeUntil(this.destroyed)).subscribe(criteria => {
-      this.criteria = criteria
+      this.criteria = criteria;
     });
     this.creatingCriteria$ = this.store$.select(selectIsCreatingCriteria);
     this.hasActiveSidePanel$ = combineLatest([ this.store$.select(selectIsSelectingDataSource), this.creatingCriteria$ ])

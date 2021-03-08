@@ -1,6 +1,6 @@
 import { Feature } from '../../shared/generated';
 
 export interface CopyDialogData {
-  originalFeature: Feature,
+  originalFeature: Feature;
   destinationFeatures: Feature[];
 }

@@ -18,7 +18,7 @@ export class FormActionsService {
   public save$(isBulk: boolean, features: Feature[], parent: Feature): Observable<any> {
 
     if (isBulk) {
-      const reqs : Observable<any>[] = [];
+      const reqs: Observable<any>[] = [];
       features.forEach(feature => {
         const objectGuid = feature.objectGuid;
         reqs.push(this.service.update({objectGuid, body: feature}));

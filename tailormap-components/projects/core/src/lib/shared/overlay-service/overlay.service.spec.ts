@@ -11,7 +11,7 @@ describe('OverlayService', () => {
     providers: [
       Overlay,
       Injector,
-    ]
+    ],
   });
 
   beforeEach(() => spectator = createService());

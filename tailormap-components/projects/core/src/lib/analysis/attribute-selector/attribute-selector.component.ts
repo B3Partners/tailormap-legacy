@@ -40,7 +40,7 @@ export class AttributeSelectorComponent implements OnInit, OnDestroy {
   }
 
   @Output()
-  public attributeSelected = new EventEmitter<{ attribute: PassportAttributeModel, attributeType: AttributeTypeEnum }>();
+  public attributeSelected = new EventEmitter<{ attribute: PassportAttributeModel; attributeType: AttributeTypeEnum }>();
 
   public filteredAttributes$: Observable<PassportAttributeModel[]>;
 

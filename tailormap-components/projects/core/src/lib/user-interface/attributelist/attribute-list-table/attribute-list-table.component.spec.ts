@@ -20,7 +20,7 @@ describe('AttributeListTableComponent', () => {
     providers: [
       provideMockStore({ initialState }),
       getStatisticServiceMockProvider(),
-    ]
+    ],
   });
 
   beforeEach(() => {

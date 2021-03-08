@@ -16,7 +16,7 @@ describe('AttributeListComponent', () => {
     imports: [ SharedModule ],
     providers: [
       provideMockStore({ initialState }),
-    ]
+    ],
   });
 
   beforeEach(() => {

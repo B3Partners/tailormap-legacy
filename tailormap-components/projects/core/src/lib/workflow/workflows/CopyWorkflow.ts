@@ -73,7 +73,7 @@ export class CopyWorkflow extends Workflow {
   }
 
   public openDialog() {
-    const dialogData : CopyDialogData = {
+    const dialogData: CopyDialogData = {
       originalFeature: this.feature,
       destinationFeatures: this.destinationFeatures,
 

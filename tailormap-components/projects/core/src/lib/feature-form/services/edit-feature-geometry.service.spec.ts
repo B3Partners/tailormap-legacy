@@ -20,7 +20,7 @@ describe('EditFeatureGeometryService', () => {
   const featureControllerMockService = createSpyObject(FeatureControllerService, {
     save() {
       return of(null);
-    }
+    },
   });
 
   const createService = createServiceFactory({
@@ -34,7 +34,7 @@ describe('EditFeatureGeometryService', () => {
       { provide: FeatureControllerService, useValue: featureControllerMockService },
       { provide: GeometryConfirmService, useValue: createSpyObject(GeometryConfirmService) },
       getTailorMapServiceMockProvider(),
-    ]
+    ],
   });
 
   beforeEach(() => {

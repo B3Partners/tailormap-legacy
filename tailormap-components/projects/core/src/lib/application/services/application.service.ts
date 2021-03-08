@@ -59,7 +59,7 @@ export class ApplicationService implements OnDestroy {
       .pipe(takeUntil(this.destroyed))
       .subscribe(formConfigs => {
         this.store$.dispatch(setFormConfigs({ formConfigs }));
-      })
+      });
   }
 
   public ngOnDestroy() {

@@ -92,8 +92,8 @@ export class StandardFormWorkflow extends Workflow {
     this.openDialog(features);
   }
 
-  public openDialog(formFeatures ?: Feature[]): void {
-    this.store$.dispatch(FormActions.setOpenFeatureForm({features: formFeatures}))
+  public openDialog(formFeatures?: Feature[]): void {
+    this.store$.dispatch(FormActions.setOpenFeatureForm({features: formFeatures}));
     this.store$.pipe(selectFormClosed)
       .pipe(take(1))
       .subscribe(( close) => {
@@ -115,7 +115,7 @@ export class StandardFormWorkflow extends Workflow {
         takeUntil(this.destroyed),
         concatMap(allFeatureTypes => {
           const featureTypes: string[] = this.layerUtils.getFeatureTypesAllowed(allFeatureTypes, true);
-          return this.service.featuretypeOnPoint({featureTypes, x, y, scale})
+          return this.service.featuretypeOnPoint({featureTypes, x, y, scale});
         }),
         concatMap((features: Feature[]) => {
           if (features && features.length > 1) {

@@ -17,7 +17,7 @@ describe('AnalysisButtonComponent', () => {
     providers: [
       provideMockStore({ initialState }),
       getUserLayerServiceMockProvider(),
-    ]
+    ],
   });
 
   beforeEach(() => {

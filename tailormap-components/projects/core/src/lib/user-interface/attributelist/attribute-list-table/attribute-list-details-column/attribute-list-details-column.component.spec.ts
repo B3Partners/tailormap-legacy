@@ -16,13 +16,13 @@ describe('AttributeListDetailsColumnComponent', () => {
     imports: [ SharedModule ],
     providers: [
       provideMockStore({ initialState }),
-    ]
+    ],
   });
 
   beforeEach(() => {
     spectator = createComponent();
     store = spectator.inject(MockStore);
-  })
+  });
 
   it('should create', () => {
     expect(spectator.component).toBeTruthy();

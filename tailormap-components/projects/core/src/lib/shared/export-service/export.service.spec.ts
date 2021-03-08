@@ -8,7 +8,7 @@ describe('ExportService', () => {
     service: ExportService,
     providers: [
       getTailorMapServiceMockProvider(),
-    ]
+    ],
   });
   beforeEach(() => {
     spectator = createService();

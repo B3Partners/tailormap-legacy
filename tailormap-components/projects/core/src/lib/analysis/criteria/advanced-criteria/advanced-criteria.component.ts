@@ -98,7 +98,7 @@ export class AdvancedCriteriaComponent implements OnDestroy {
         CriteriaHelper.createCriteriaGroup(this.idService, [ CriteriaHelper.createCriteriaCondition(this.idService) ]),
         ...this.criteria.groups,
       ],
-    }
+    };
   }
 
   public removeGroup(group: CriteriaGroupModel) {
@@ -112,7 +112,7 @@ export class AdvancedCriteriaComponent implements OnDestroy {
         if (ok) {
           this.updateRemoveGroup(group.id);
         }
-      })
+      });
   }
 
   private updateRemoveGroup(groupId: string, updatedGroup?: CriteriaGroupModel) {

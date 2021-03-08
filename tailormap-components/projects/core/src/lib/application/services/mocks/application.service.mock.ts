@@ -8,7 +8,7 @@ export const createApplicationServiceMock = (template?: Partial<Record<keyof App
       return 1;
     },
     ...template,
-  })
+  });
 };
 
 export const getApplicationServiceMockProvider = (template?: Partial<Record<keyof ApplicationService, any>>) => {

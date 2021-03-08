@@ -23,7 +23,7 @@ export class AnalysisEffects {
     )),
     filter(([ action, canCreateLayer ]) => canCreateLayer),
     switchMap(() => this.createStyleService.createStyles$() ),
-    map((result: { styles: UserLayerStyleModel[], errorMessage?: string}) => {
+    map((result: { styles: UserLayerStyleModel[]; errorMessage?: string}) => {
       if (result.errorMessage && typeof result.errorMessage === 'string') {
         return AnalysisActions.loadStylesFailed({ error: result.errorMessage });
       }

@@ -38,7 +38,7 @@ describe('FormComponent', () => {
       FormTreeComponent,
       FormfieldComponent,
       FormCreatorComponent,
-      FormComponent
+      FormComponent,
     ],
     providers: [
       provideMockStore({ initialState }),
@@ -49,12 +49,12 @@ describe('FormComponent', () => {
         useValue: {
           formFeatures:[{ clazz:'testFeature' }],
           isBulk: false,
-          lookup: {}
+          lookup: {},
         },
       },
       getMetadataServiceMockProvider(),
       getEditFeatureGeometryServiceProvider(),
-    ]
+    ],
   });
 
   beforeEach(() => {

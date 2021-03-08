@@ -29,7 +29,7 @@ export class LinkedAttributeRegistryService {
           this.valueToParentValue.set(childWaarde.id, domeinWaarde);
         });
       });
-    })
+    });
   }
 
   public registerDomainField(attributeId: number, field: FeatureAttribute) {

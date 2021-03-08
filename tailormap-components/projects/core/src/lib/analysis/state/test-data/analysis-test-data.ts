@@ -88,7 +88,7 @@ export const analysisStateTestDataWithCreatedLayer: AnalysisState = {
   isCreatingLayer: false,
   createLayerErrorMessage: '',
   createdAppLayer: '69',
-}
+};
 
 export const analysisStateTestDataWithThematicSelection: AnalysisState = {
   createLayerMode: CreateLayerModeEnum.THEMATIC,
@@ -106,6 +106,7 @@ export const analysisStateTestDataWithThematicSelection: AnalysisState = {
   selectedThematicAttribute: {
     filterable: false,
     longname: 'gb_wegvakonderdeel.structuurelement',
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     folder_label: '',
     visible: true,
     editable: false,
@@ -122,6 +123,7 @@ export const analysisStateTestDataWithThematicSelection: AnalysisState = {
     featureType: 302,
     editAlias: '',
     id: 1151,
+    passportAlias: 'structuurelement',
   },
   loadingStyles: false,
   loadStylesErrorMessage: '',
@@ -229,4 +231,4 @@ export const analysisStateTestDataWithThematicSelection: AnalysisState = {
       attributeType: 'STRING',
     },
   ] as ScopedUserLayerStyleModel[],
-}
+};

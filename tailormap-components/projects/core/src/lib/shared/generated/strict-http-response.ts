@@ -1,4 +1,3 @@
-/* tslint:disable */
 /* eslint-disable */
 import { HttpResponse } from '@angular/common/http';
 

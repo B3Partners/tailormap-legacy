@@ -21,7 +21,7 @@ describe('AttributeListDataService', () => {
       getAttributeServiceMockProvider(),
       getApplicationServiceMockProvider(),
       getMetadataServiceMockProvider(),
-    ]
+    ],
   });
 
   beforeEach(() => {

@@ -18,7 +18,7 @@ describe('GeometryConfirmButtonsComponent', () => {
       SharedModule,
     ],
     providers: [
-      { provide: GeometryConfirmService, useValue: geometryConfirmServiceMock }
+      { provide: GeometryConfirmService, useValue: geometryConfirmServiceMock },
     ],
   });
 

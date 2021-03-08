@@ -17,7 +17,7 @@ describe('CreateLayerLayerSelectionComponent', () => {
     providers: [
       provideMockStore({ initialState }),
       getMetadataServiceMockProvider(),
-    ]
+    ],
   });
 
   beforeEach(() => {

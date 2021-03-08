@@ -41,7 +41,7 @@ export class EditFeatureGeometryService {
           if (!accepted) {
             return of(null);
           }
-          return this.saveUpdatedGeometry$()
+          return this.saveUpdatedGeometry$();
         }),
         tap(() => {
           this.clearDrawing();
