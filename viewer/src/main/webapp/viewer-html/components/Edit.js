@@ -621,10 +621,6 @@ Ext.define("viewer.components.Edit", {
         this.showMobilePopup();
         this.setFormVisible(true);
         this.toggleGeomToggleForm(false);
-        var firstField = this.inputContainer.down("field");
-        if(firstField) {
-            firstField.focus();
-        }
         this.geomlabel.setHtml("");
         this.untoggleButtons();
     },
