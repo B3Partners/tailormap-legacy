@@ -1,7 +1,7 @@
 import { Component, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ConfirmDialogService } from '../../shared/confirm-dialog/confirm-dialog.service';
-import { filter, take, takeUntil } from 'rxjs/operators';
+import { filter, map, take, takeUntil } from 'rxjs/operators';
 import { combineLatest, Observable, Subject } from 'rxjs';
 import { FormConfiguration } from './form-models';
 import { Feature } from '../../shared/generated';
@@ -46,6 +46,7 @@ export class FormComponent implements OnDestroy, OnChanges, OnInit {
   public isOpen$: Observable<boolean>;
   public treeOpen$: Observable<boolean>;
   public editting$: Observable<boolean>;
+  public isOpenTreeClosed$: Observable<boolean>;
 
   constructor(
     private store$: Store<FormState | WorkflowState>,
@@ -80,10 +81,12 @@ export class FormComponent implements OnDestroy, OnChanges, OnInit {
     this.isOpen$ = this.store$.select(selectFeatureFormOpen);
     this.treeOpen$ = this.store$.select(selectTreeOpen);
     this.editting$ = this.store$.select(selectFormEditting);
+    this.isOpenTreeClosed$ = combineLatest([ this.isOpen$, this.treeOpen$ ])
+      .pipe(map(([ isOpen, treeOpen ]) => isOpen && !treeOpen));
   }
 
-  public openTree(event: MatButtonToggleChange): void {
-    this.store$.dispatch(FormActions.setTreeOpen({treeOpen: event.source.checked}));
+  public openTree(): void {
+    this.store$.dispatch(FormActions.setTreeOpen({treeOpen: true}));
   }
 
   public ngOnDestroy() {

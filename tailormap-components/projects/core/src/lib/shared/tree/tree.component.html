@@ -10,6 +10,7 @@
     <mat-tree-node *matTreeNodeDef="let node"
                    matTreeNodeToggle
                    matTreeNodePadding
+                   matTreeNodePaddingIndent="20"
                    (click)="setNodeSelected(node)">
       <div [className]="getNodeClassName(node)"
            [draggable]="treeDragDropServiceEnabled ? true : null"
@@ -34,6 +35,7 @@
 
     <mat-tree-node *matTreeNodeDef="let node; when: hasChild"
                    matTreeNodePadding
+                   matTreeNodePaddingIndent="20"
                    class="mat-tree-node--folder"
                    (click)="setNodeSelected(node)">
       <div [className]="getNodeClassName(node)"

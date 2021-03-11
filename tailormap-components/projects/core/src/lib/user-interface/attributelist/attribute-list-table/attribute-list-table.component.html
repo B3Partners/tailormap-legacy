@@ -24,7 +24,9 @@
         </mat-icon>
       </mat-header-cell>
 
-      <mat-cell *matCellDef="let currRow">{{currRow[col.name]}}</mat-cell>
+      <mat-cell *matCellDef="let currRow">
+        {{currRow[col.name]}}
+      </mat-cell>
 
       <mat-footer-cell *matFooterCellDef (contextmenu)="onStatisticsMenu($event, col.name)">
         <div *ngIf="isStatisticsProcessing(col.name)">

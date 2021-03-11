@@ -7,6 +7,15 @@ mat-form-field {
   display: block;
 }
 
+.form-field,
+:host ::ng-deep .form-field {
+  padding: 16px 16px 0 16px;
+}
+
 .label {
   font-weight: bold;
+}
+
+.select-field .label {
+  padding-bottom: 5px;
 }

@@ -1,15 +1,13 @@
 .form-field {
-  width: 100%;
-  padding-top: 10px;
-  padding-bottom: 15px;
+  padding: 16px;
 }
 
 .label {
-  height: 40px;
+  line-height: 16px;
+  padding-bottom: 10px;
   font-weight: bold;
 }
 
 .value {
-  height: 40px;
-  margin-left: 10px;
+  line-height: 18px;
 }

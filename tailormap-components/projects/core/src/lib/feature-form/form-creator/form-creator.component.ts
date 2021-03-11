@@ -3,7 +3,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Observable, Subject, Subscription } from 'rxjs';
 import { Feature } from '../../shared/generated';
-import { Attribute, FormConfiguration, FormFieldType, IndexedFeatureAttributes, TabbedFields } from '../form/form-models';
+import { Attribute, FormConfiguration, FormFieldType, IndexedFeatureAttributes, TabbedField } from '../form/form-models';
 import { FormCreatorHelpers } from './form-creator-helpers';
 import { FormActionsService } from '../form-actions/form-actions.service';
 import { LinkedAttributeRegistryService } from '../linked-fields/registry/linked-attribute-registry.service';
@@ -47,9 +47,11 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
   @Output()
   public formChanged = new EventEmitter<boolean>();
 
-  public tabbedConfig: TabbedFields;
+  public tabbedConfig: Array<TabbedField> = [];
 
-  public editting$: Observable<boolean>;
+  public trackByTabId = (idx, tab: TabbedField) => tab.tabId;
+
+  public editing$: Observable<boolean>;
 
   public formgroep = new FormGroup({});
 
@@ -72,7 +74,7 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
   }
 
   public ngOnInit(): void {
-    this.editting$ = this.store$.select(selectFormEditting);
+    this.editing$ = this.store$.select(selectFormEditting);
   }
 
   public ngOnDestroy() {
@@ -81,11 +83,11 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
     this.destroyed.complete();
   }
 
-  private prepareFormConfig(): TabbedFields {
-    const tabbedFields: TabbedFields = {tabs: new Map<number, Attribute[]>()};
+  private prepareFormConfig(): Array<TabbedField> {
+    const tabbedFields = [];
     const attrs = this.formConfig.fields;
     for (let tabNr = 1; tabNr <= this.formConfig.tabs; tabNr++) {
-      tabbedFields.tabs.set(tabNr, attrs.filter(attr => attr.tab === tabNr));
+      tabbedFields.push({ tabId: tabNr, attributes: attrs.filter(attr => attr.tab === tabNr) });
     }
     return tabbedFields;
   }
