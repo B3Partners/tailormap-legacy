@@ -1754,7 +1754,13 @@ Ext.define("viewer.components.Edit", {
             height: 300,
             layout: 'fit',
             title: i18next.t('viewer_components_edit_45'),
-            items: [container]
+            items: [container],
+            listeners: {
+                close: {
+                    scope: me,
+                    fn: me.cancelSelectFeature
+                }
+            }
         });
 
         window.show();
