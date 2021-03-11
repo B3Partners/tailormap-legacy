@@ -270,8 +270,13 @@ public class DownloadFeaturesActionBean extends LocalizableApplicationActionBean
             log.error("Error loading features", e);
 
             json.put("success", false);
-
-            String message = MessageFormat.format(getBundle().getString("viewer.downloadfeaturesactionbean.1"), e.toString() );
+            String message = "";
+            if (type.equalsIgnoreCase("XLS") && e.toString().contains("The maximum length")) {
+                message = MessageFormat.format(getBundle().getString("viewer.downloadfeaturesactionbean.1"),
+                        getBundle().getString("viewer.downloadfeaturesactionbean.2"));
+            } else {
+                message = MessageFormat.format(getBundle().getString("viewer.downloadfeaturesactionbean.1"), e.toString() );
+            }
             Throwable cause = e.getCause();
             while (cause != null) {
                 message += "; " + cause.toString();
