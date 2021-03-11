@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { FormFieldType } from '../../../feature-form/form/form-models';
 
 @Component({
   selector: 'tailormap-base-field',
@@ -25,9 +26,16 @@ export class BaseFieldComponent implements OnInit {
   @Input()
   public hidden: boolean;
 
+  @Input()
+  public fieldType: FormFieldType;
+
   constructor() { }
 
   public ngOnInit(): void {
+  }
+
+  public isHyperlinkField() {
+    return this.fieldType === FormFieldType.HYPERLINK;
   }
 
 }

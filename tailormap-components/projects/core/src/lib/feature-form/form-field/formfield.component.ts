@@ -94,4 +94,6 @@ export class FormfieldComponent implements AfterViewInit, OnDestroy {
   public isSelectAttribute = (attr: Attribute): boolean => attr.type === FormFieldType.SELECT;
   public isHiddenAttribute = (attr: Attribute): boolean => attr.type === FormFieldType.HIDDEN;
   public isDomainAttribute = (attr: Attribute): boolean => attr.type === FormFieldType.DOMAIN;
+  public isHyperlinkAttribute = (attr: Attribute): boolean => attr.type === FormFieldType.HYPERLINK;
+
 }

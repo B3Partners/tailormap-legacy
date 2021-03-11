@@ -40,6 +40,7 @@ export enum FormFieldType {
   SELECT = 'select',
   HIDDEN = 'hidden',
   DOMAIN = 'domain',
+  HYPERLINK = 'hyperlink',
 }
 
 

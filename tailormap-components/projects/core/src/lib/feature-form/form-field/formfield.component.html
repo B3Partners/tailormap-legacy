@@ -2,16 +2,18 @@
   *ngIf="!editting"
   [value]="humanReadableValue$() | async"
   [label]="attribute.label"
+  [fieldType]="attribute.type"
 ></tailormap-label-field>
 
 <tailormap-input-field
-  *ngIf="editting && (isHiddenAttribute(attribute) || isTextAttribute(attribute))"
+  *ngIf="editting && (isHiddenAttribute(attribute) || isTextAttribute(attribute) || isHyperlinkAttribute(attribute))"
   [id]="attribute.key"
   [value]="!isBulk ? value : ''"
   [groep]="groep"
   [label]="attribute.label"
   [placeholder]="attribute.key"
   [hidden]="isHiddenAttribute(attribute)"
+  [fieldType]="attribute.type"
 ></tailormap-input-field>
 
 <div class="form-field" *ngIf="editting && (isSelectAttribute(attribute) || isDomainAttribute(attribute))">
