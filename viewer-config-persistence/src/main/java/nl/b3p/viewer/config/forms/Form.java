@@ -6,6 +6,8 @@ import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.hibernate.annotations.Type;
+
 @Entity
 public class Form {
 
@@ -23,7 +25,7 @@ public class Form {
     private Set<String> readers = new HashSet<>();
 
     @Lob
-    @org.hibernate.annotations.Type(type="org.hibernate.type.StringClobType")
+    @Type(type = "org.hibernate.type.TextType")
     private String json;
 
     public Long getId() {
