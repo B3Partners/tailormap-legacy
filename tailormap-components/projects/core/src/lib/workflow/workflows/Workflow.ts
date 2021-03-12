@@ -77,7 +77,7 @@ export abstract class Workflow {
 
   public abstract mapClick(data: MapClickedEvent): void;
 
-  public abstract afterEditting(): void;
+  public abstract afterEditing(): void;
 
   public endWorkflow(): void {
     this.close$.next(true);

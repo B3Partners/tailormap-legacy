@@ -42,7 +42,7 @@ export const setFeatureRemoved = createAction(
   props<{ feature: Feature }>(),
 );
 
-export const setFormEditting = createAction(
-  `${formActionsPrefix} Set form editting`,
-  props<{ editting: boolean }>(),
+export const setFormEditing = createAction(
+  `${formActionsPrefix} Set form editing`,
+  props<{ editing: boolean }>(),
 );

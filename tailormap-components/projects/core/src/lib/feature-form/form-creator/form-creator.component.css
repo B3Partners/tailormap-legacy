@@ -21,6 +21,6 @@ mat-tab-group {
   border-top: 0 none;
 }
 
-.tab-group ::ng-deep .mat-tab-header {
+.tab-group ::ng-deep .mat-tab-header-pagination-controls-enabled {
   padding: 0;
 }

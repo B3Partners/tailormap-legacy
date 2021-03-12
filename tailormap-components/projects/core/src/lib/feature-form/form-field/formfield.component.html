@@ -1,12 +1,12 @@
 <tailormap-label-field
-  *ngIf="!editting"
+  *ngIf="!editing"
   [value]="humanReadableValue$() | async"
   [label]="attribute.label"
   [fieldType]="attribute.type"
 ></tailormap-label-field>
 
 <tailormap-input-field
-  *ngIf="editting && (isHiddenAttribute(attribute) || isTextAttribute(attribute) || isHyperlinkAttribute(attribute))"
+  *ngIf="editing && (isHiddenAttribute(attribute) || isTextAttribute(attribute) || isHyperlinkAttribute(attribute))"
   [id]="attribute.key"
   [value]="!isBulk ? value : ''"
   [groep]="groep"
@@ -16,7 +16,7 @@
   [fieldType]="attribute.type"
 ></tailormap-input-field>
 
-<div class="select-field" *ngIf="editting && (isSelectAttribute(attribute) || isDomainAttribute(attribute))">
+<div class="select-field" *ngIf="editing && (isSelectAttribute(attribute) || isDomainAttribute(attribute))">
   <div [formGroup]="groep" [hidden]="isHiddenAttribute(attribute)" class="form-field">
     <div class="label">{{attribute.label}}</div>
     <mat-select

@@ -21,7 +21,7 @@ export class FormfieldComponent implements AfterViewInit, OnDestroy {
   public attribute: FeatureAttribute;
 
   @Input()
-  public editting = false;
+  public editing = false;
 
   @Input()
   public value: string;

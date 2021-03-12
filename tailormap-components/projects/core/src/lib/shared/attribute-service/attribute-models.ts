@@ -10,7 +10,7 @@ export interface AttributeListParameters {
   sort?: string; // name of property to be sorted
   // true (default) to get indexed results (c0:value,c1:value,... array), false to get normal response (attr_name:attr_value,...)
   arrays?: boolean;
-  edit?: boolean;  // true for editting, false for not editting
+  edit?: boolean;  // true for editing, false for not editing
   clearTotalCountCache?: boolean;
   filter?: string; // cql filter
   aliases?: boolean; // true (default) get attributes with their aliases instead of names
