@@ -4,7 +4,7 @@ import { Store } from '@ngrx/store';
 import { ApplicationState } from '../state/application.state';
 import { setApplicationContent, setFormConfigs, setLayerVisibility, setSelectedAppLayer } from '../state/application.actions';
 import { concatMap, take, takeUntil, tap, throttleTime } from 'rxjs/operators';
-import { combineLatest, Subject } from 'rxjs';
+import { Subject } from 'rxjs';
 import { FormConfigRepositoryService } from '../../shared/formconfig-repository/form-config-repository.service';
 import { DomainRepositoryService } from '../../feature-form/linked-fields/domain-repository/domain-repository.service';
 
