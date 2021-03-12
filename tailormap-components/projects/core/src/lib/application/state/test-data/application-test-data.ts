@@ -17,4 +17,4 @@ const formConfig: FormConfiguration = {
   treeNodeColumn: '',
 };
 
-export const testFormConfigs = new Map<string, FormConfiguration>([[ 'test', formConfig ]]);
+export const testFormConfigs = [ formConfig ];
