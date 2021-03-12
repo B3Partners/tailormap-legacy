@@ -3,10 +3,6 @@
   z-index: calc(var(--overlay-panel-z-index) - 1);
 }
 
-.overlay-panel-toggle {
-
-}
-
 .sub-title {
   padding: 0 14px;
 }
