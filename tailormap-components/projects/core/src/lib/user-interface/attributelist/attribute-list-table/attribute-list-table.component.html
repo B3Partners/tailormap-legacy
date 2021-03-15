@@ -26,9 +26,12 @@
 
       <mat-cell *matCellDef="let currRow">{{currRow[col.name]}}</mat-cell>
 
-      <mat-footer-cell *matFooterCellDef (contextmenu)="onStatisticsMenu($event, col.name)">
+      <mat-footer-cell *matFooterCellDef class="statistics-footer-cell" (click)="onStatisticsMenu($event, col.name)">
         <div *ngIf="isStatisticsProcessing(col.name)">
           <mat-spinner diameter="20"></mat-spinner>
+        </div>
+        <div *ngIf="getStatisticResult(col.name) === ''" class="statistics-placeholder">
+          <mat-icon>functions</mat-icon>
         </div>
         {{getStatisticResult(col.name)}}
       </mat-footer-cell>
