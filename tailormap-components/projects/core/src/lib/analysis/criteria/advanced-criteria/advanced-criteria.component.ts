@@ -104,7 +104,7 @@ export class AdvancedCriteriaComponent implements OnDestroy {
   public removeGroup(group: CriteriaGroupModel) {
     this.confirmService.confirm$(
       'Groep verwijderen?',
-      'Wilt u deze criterium groep verwijderen? Alle criteria in deze groep zullen verwijderd worden.',
+      'Wilt u deze criteria groep verwijderen? Alle criteria in deze groep zullen verwijderd worden.',
       true,
     )
       .pipe(takeUntil(this.destroyed))
