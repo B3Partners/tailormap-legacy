@@ -128,3 +128,23 @@ mat-footer-cell {
 .expanded_row {
   background-color: #e8e8e8;
 }
+
+.statistics-placeholder {
+  border: 1px dashed #6236ff;
+  margin: 3px;
+  flex: 1;
+  align-self: stretch;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  border-radius: 3px;
+}
+
+.statistics-footer-cell:hover .statistics-placeholder {
+  display: flex;
+}
+
+.statistics-placeholder mat-icon {
+  color: #6236ff;
+}
