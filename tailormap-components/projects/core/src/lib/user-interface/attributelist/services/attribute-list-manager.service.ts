@@ -121,7 +121,7 @@ export class AttributeListManagerService implements OnDestroy {
     layer: TailormapAppLayer,
     pageSize = 10,
   ): Observable<TabFromLayerResult> {
-    const layerName = LayerUtils.sanitizeLayername(layer.layerName);
+    const layerName = LayerUtils.sanitizeLayername(layer);
     return forkJoin([
       this.store$.select(selectFormConfigForFeatureTypeName, layerName).pipe(take(1)),
       this.metadataService.getFeatureTypeMetadata$(layer.id),
