@@ -120,7 +120,9 @@ Ext.define ("viewer.components.tools.StreetView",{
      */
     buttonDown : function(button,object){        
         this.toolMapClick.activateTool();
-        
+        if(this.config.useMarker) {
+            this.config.viewerController.mapComponent.getMap().removeMarker(this.markerName);
+        }
         this.config.viewerController.mapComponent.setCursor(true, "crosshair");
     },
     /**
