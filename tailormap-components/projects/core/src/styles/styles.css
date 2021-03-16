@@ -257,6 +257,11 @@
   text-align: center;
 }
 
+.mat-flat-button.mat-accent {
+  background-color: rgba(98, 54, 255, 0.4);
+  color: #6236ff;
+}
+
 .centered {
   display: flex;
   justify-content: center;
