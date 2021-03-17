@@ -89,11 +89,11 @@ export class StandardFormWorkflow extends Workflow {
       {geometrie: geoJson, clazz: this.featureType, children: []});
 
     const features: Feature[] = [feat];
-    this.openDialog(features);
+    this.openDialog(features, true);
   }
 
-  public openDialog(formFeatures?: Feature[]): void {
-    this.store$.dispatch(FormActions.setOpenFeatureForm({features: formFeatures}));
+  public openDialog(formFeatures?: Feature[], editMode: boolean = false): void {
+    this.store$.dispatch(FormActions.setOpenFeatureForm({features: formFeatures, editMode}));
     this.store$.pipe(selectFormClosed)
       .pipe(take(1))
       .subscribe(( close) => {

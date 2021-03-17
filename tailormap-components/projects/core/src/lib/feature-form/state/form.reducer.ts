@@ -54,7 +54,7 @@ const onSetOpenFeatureForm = (state: FormState, payload:  ReturnType<typeof Form
   treeOpen: true,
   closeAfterSave: payload.closeAfterSave || false,
   alreadyDirty: payload.alreadyDirty || false,
-  editting: false,
+  editting: payload.editMode || false,
 });
 
 const onSetTreeOpen = (state: FormState, payload:  ReturnType<typeof FormActions.setTreeOpen>): FormState => ({
