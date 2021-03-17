@@ -19,7 +19,7 @@ import { LayerUtils } from '../../shared/layer-utils/layer-utils.service';
 import { WORKFLOW_ACTION } from '../../workflow/state/workflow-models';
 import { WorkflowState } from '../../workflow/state/workflow.state';
 import { MatButtonToggleChange } from '@angular/material/button-toggle';
-import { selectFormConfigForFeatureTypeName, selectFormConfigs } from '../../application/state/application.selectors';
+import { selectFormConfigForFeatureTypeName, selectFormConfigs, selectVisibleLayers } from '../../application/state/application.selectors';
 import { FormHelpers } from './form-helpers';
 import { FeatureInitializerService } from '../../shared/feature-initializer/feature-initializer.service';
 import { toggleFeatureFormVisibility } from '../state/form.actions';
@@ -96,16 +96,25 @@ export class FormComponent implements OnDestroy, OnChanges, OnInit {
     combineLatest([
       this.store$.select(selectFormConfigForFeatureTypeName, this.feature.clazz),
       this.store$.select(selectFormConfigs),
+      this.store$.select(selectVisibleLayers),
     ])
       .pipe(takeUntil(this.destroyed))
-      .subscribe(([formConfig, configs]) => {
+      .subscribe(([formConfig, configs, appLayers]) => {
       this.formConfig = formConfig;
-      this.metadataService.getFeatureTypeMetadata$(this.feature.clazz);
-      this.formsForNew = [];
-      configs.forEach((config, key) => {
-        this.formsForNew.push(config);
+      const layer = appLayers.filter(appLayer => LayerUtils.sanitizeLayername(appLayer.layerName) === this.features[0].clazz)[0];
+      this.metadataService.getFeatureTypeMetadata$(layer.id).pipe(take(1)).subscribe((response) => {
+        const relNames: string[] = [];
+        response.relations.forEach(rel => {
+          relNames.push(LayerUtils.sanitizeLayername(rel.foreignFeatureTypeName));
+        });
+        this.formsForNew = [];
+        configs.forEach((config, key) => {
+          if (relNames.indexOf(key) !== -1) {
+            this.formsForNew.push(config);
+          }
+        });
       });
-      });
+    });
   }
 
   public ngOnChanges(changes: SimpleChanges): void {
