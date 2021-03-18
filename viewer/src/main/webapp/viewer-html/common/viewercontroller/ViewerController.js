@@ -74,6 +74,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         this.callParent([{ listeners: listeners }]);
         this.dataSelectionChecker = Ext.create("viewer.components.DataSelectionChecker", { viewerController: this });
         this.app = app;
+        this.checkAppLayersForServiceLayer();
         this.projection = this.app.projectionCode.substring(0,this.app.projectionCode.lastIndexOf('['));
         this.projectionString = this.app.projectionCode.substring(this.app.projectionCode.lastIndexOf('[')+1,this.app.projectionCode.lastIndexOf(']'));
 
@@ -2379,5 +2380,21 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             }
         }
         delete this.components;
+    },
+
+    checkAppLayersForServiceLayer: function () {
+        var found = false;
+        for (var appLayer in this.app.appLayers) {
+            found = false;
+            for (var serviceId in this.app.services){
+                if (this.app.appLayers[appLayer].serviceId === this.app.services[serviceId].id) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                delete this.app.appLayers[appLayer];
+            }
+        }
     }
 });
