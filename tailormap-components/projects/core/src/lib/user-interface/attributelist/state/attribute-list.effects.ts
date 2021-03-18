@@ -168,7 +168,7 @@ export class AttributeListEffects {
   ));
 
   public refreshStatistics$ = createEffect(() => this.actions$.pipe(
-    ofType(AttributeListActions.loadStatisticsForColumn),
+    ofType(AttributeListActions.refreshStatisticsForTab),
     concatMap(action => of(action).pipe(
       withLatestFrom(
         this.store$.select(selectTabForFeatureType, action.featureType),
@@ -180,9 +180,9 @@ export class AttributeListEffects {
       const statQueries$: Array<Observable<{ value: number; column: string }>> = featureData.statistics.map(s => this.statisticsService.statisticValue$({
         appLayer: +(action.layerId),
         application: this.tailorMapService.getApplicationId(),
-        column: action.column,
+        column: s.name,
         featureType: action.featureType,
-        type: action.statisticType,
+        type: s.statisticType,
         filter: AttributeListFilterHelper.getFilter(tab, action.featureType, tabFeatureData),
       }).pipe(map(result => ({ value: result.result, column: s.name }))));
       return forkJoin([ of(action), forkJoin(statQueries$) ]);
