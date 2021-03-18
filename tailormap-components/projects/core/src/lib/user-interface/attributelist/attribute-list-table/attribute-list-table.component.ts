@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import {
   selectActiveColumnsForTab, selectFeatureTypeDataForTab, selectTabAndFeatureTypeDataForTab,
 } from '../state/attribute-list.selectors';
@@ -7,16 +7,17 @@ import { combineLatest, Observable, Subject } from 'rxjs';
 import { AttributeListRowModel } from '../models/attribute-list-row.model';
 import { Store } from '@ngrx/store';
 import { AttributeListState } from '../state/attribute-list.state';
-import { AttributelistStatistic } from '../attributelist-common/attributelist-statistic';
 import { StatisticService } from '../../../shared/statistic-service/statistic.service';
 import { updateRowSelected, updateSort } from '../state/attribute-list.actions';
 import { Sort } from '@angular/material/sort';
 import { animate, state, style, transition, trigger } from '@angular/animations';
-import { AttributeListStatisticsMenuComponent } from './attribute-list-statistics-menu/attribute-list-statistics-menu.component';
 import { AttributeListColumnModel } from '../models/attribute-list-column-models';
 import { AttributeListFilterComponent } from '../attribute-list-filter/attribute-list-filter.component';
 import { MatDialog } from '@angular/material/dialog';
 import { AttributeListFilterModel } from '../models/attribute-list-filter-models';
+import { StatisticColumn } from '../models/attributelist-statistic-models';
+import { StatisticsHelper } from '../helpers/statistics-helper';
+import { StatisticType } from '../../../shared/statistic-service/statistic-models';
 
 @Component({
   selector: 'tailormap-attribute-list-table',
@@ -37,14 +38,9 @@ export class AttributeListTableComponent implements OnInit, OnDestroy {
 
   public featureType: number;
 
-  @ViewChild(AttributeListStatisticsMenuComponent)
-  public statisticsMenuComponent: AttributeListStatisticsMenuComponent;
-
   private destroyed = new Subject();
 
   public rows$: Observable<AttributeListRowModel[]>;
-
-  public statistic: AttributelistStatistic;
 
   public columns: AttributeListColumnModel[];
   public columnNames: string[];
@@ -54,6 +50,9 @@ export class AttributeListTableComponent implements OnInit, OnDestroy {
   private filters: AttributeListFilterModel[];
   public showCheckboxColumn$: Observable<boolean>;
 
+  public statisticTypes = StatisticsHelper.getStatisticOptions();
+  private statistics: Map<string, StatisticColumn> = new Map();
+
   constructor(
     private store$: Store<AttributeListState>,
     private statisticsService: StatisticService,
@@ -61,7 +60,6 @@ export class AttributeListTableComponent implements OnInit, OnDestroy {
   ) { }
 
   public ngOnInit(): void {
-    this.statistic = new AttributelistStatistic(this.statisticsService, this.layerId);
 
     const featureTypeData$ = this.store$.select(selectFeatureTypeDataForTab, this.layerId);
 
@@ -75,6 +73,7 @@ export class AttributeListTableComponent implements OnInit, OnDestroy {
         this.checkedCount = featureData.rows.filter(row => row._checked).length;
         this.featureType = featureData.featureType;
         this.filters = featureData.filter;
+        this.statistics = new Map(featureData.statistics.map(s => [s.name, s]));
       });
 
     this.showCheckboxColumn$ = this.store$.select(selectTabAndFeatureTypeDataForTab, this.layerId)
@@ -91,7 +90,6 @@ export class AttributeListTableComponent implements OnInit, OnDestroy {
       .subscribe(([ columns, showCheckboxColumn ]) => {
         this.columns = columns;
         this.columnNames = this.getColumnNames(columns, showCheckboxColumn);
-        this.statistic.initStatistics(columns);
       });
 
     this.rows$ = featureTypeData$.pipe(
@@ -141,17 +139,35 @@ export class AttributeListTableComponent implements OnInit, OnDestroy {
     return !!filterModel;
   }
 
-  public onStatisticsMenu(event: MouseEvent, colName: string) {
-    event.preventDefault();
-    this.statisticsMenuComponent.open(colName, event.clientX, event.clientY);
+  public hasStatisticResult(col: AttributeListColumnModel): boolean {
+    const column = this.statistics.get(col.name);
+    return !!column && !column.processing &&  StatisticsHelper.getStatisticValue(col.dataType, column) !== null;
   }
 
-  public getStatisticResult(colName: string): string {
-    return this.statistic.getStatisticResult(colName);
+  public getStatisticResult(col: AttributeListColumnModel): string {
+    const column = this.statistics.get(col.name);
+    const value = StatisticsHelper.getStatisticValue(col.dataType, column);
+    if (column && value) {
+      return `${StatisticsHelper.getLabelForStatisticType(column.statisticType)} = ${column.statisticValue}`;
+    }
+    return '';
   }
 
   public isStatisticsProcessing(colName: string): boolean {
-    return this.statistic.isStatisticsProcessing(colName);
+    return this.statistics.get(colName)?.processing;
+  }
+
+  public isStatisticsTypeAvailable(type: StatisticType, col: AttributeListColumnModel) {
+    return StatisticsHelper.isStatisticTypeAvailable(type, col.dataType);
+  }
+
+  public isStatisticsTypeSelected(type: StatisticType, col: AttributeListColumnModel) {
+    const statisticColumn = this.statistics.get(col.name);
+    return !!statisticColumn && statisticColumn.statisticType === type;
+  }
+
+  public loadStatistic(type: StatisticType, col: AttributeListColumnModel) {
+    // dispatch action
   }
 
   public getColumnNames(columns: AttributeListColumnModel[], showCheckboxColumn: boolean): string[] {

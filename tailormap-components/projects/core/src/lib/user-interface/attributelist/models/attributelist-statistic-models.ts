@@ -2,12 +2,13 @@ import { StatisticType } from '../../../shared/statistic-service/statistic-model
 
 export interface LayerStatisticValues {
   layerId: number;
-  columns: StatisticColumns[];
+  columns: StatisticColumn[];
 }
 
-export interface StatisticColumns {
+export interface StatisticColumn {
   name: string;
   statisticType: StatisticType;
+  columnDataType: string;
   statisticValue: number;
   processing: boolean;
 }

@@ -4,6 +4,7 @@ import { AttributeListTabModel } from '../models/attribute-list-tab.model';
 import { AttributeListFeatureTypeData } from '../models/attribute-list-feature-type-data.model';
 import { LoadDataResult, LoadTotalCountResult } from '../services/attribute-list-data.service';
 import { FilterType } from '../models/attribute-list-filter-models';
+import { StatisticType } from '../../../shared/statistic-service/statistic-models';
 
 const attributeListActionsPrefix = '[Attributelist]';
 
@@ -125,4 +126,9 @@ export const clearAllFilters = createAction(
 export const clearCountForFeatureTypes = createAction(
   `${attributeListActionsPrefix} Clear Count For Feature Types`,
   props<{ featureTypes: number[] }>(),
+);
+
+export const loadStatisticsForColumn = createAction(
+  `${attributeListActionsPrefix} Load Statistics For Column`,
+  props<{ layerId: string, featureType: number, column: string, statisticType: StatisticType }>(),
 );
