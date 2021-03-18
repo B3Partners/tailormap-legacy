@@ -9,10 +9,12 @@ import {
   selectAttributeListConfig, selectFeatureDataAndRelatedFeatureDataForFeatureType, selectFeatureDataForTab, selectTab,
   selectTabForFeatureType,
 } from './attribute-list.selectors';
-import { of } from 'rxjs';
+import { forkJoin, Observable, of } from 'rxjs';
 import { AttributeListDataService, LoadDataResult } from '../services/attribute-list-data.service';
 import { UpdateAttributeListStateHelper } from '../helpers/update-attribute-list-state.helper';
 import { TailorMapService } from '../../../../../../bridge/src/tailor-map.service';
+import { StatisticService } from '../../../shared/statistic-service/statistic.service';
+import { AttributeListFilterHelper } from '../helpers/attribute-list-filter.helper';
 
 @Injectable()
 export class AttributeListEffects {
@@ -52,7 +54,7 @@ export class AttributeListEffects {
     )),
     filter(([action, tab, featureData]) => {return !!tab; }),
     tap(([action, tab, featureData]) => {
-      const mainFilter = this.attributeListDataService.getFilter(tab, tab.featureType, featureData);
+      const mainFilter = AttributeListFilterHelper.getFilter(tab, tab.featureType, featureData);
       const viewerController = this.tailorMapService.getViewerController();
       const appLayer = viewerController.getAppLayerById(+(action.layerId));
       viewerController.setFilterString(mainFilter, appLayer, 'ngattributelist');
@@ -113,9 +115,15 @@ export class AttributeListEffects {
       AttributeListActions.clearAllFilters,
       AttributeListActions.clearFilterForFeatureType,
     ),
-    concatMap( action => [
+    concatMap(action => of(action).pipe(
+      withLatestFrom(
+        this.store$.select(selectTab, action.layerId),
+      ),
+    )),
+    concatMap( ([ action, tab ]) => [
       AttributeListActions.loadDataForTab({layerId: action.layerId}),
       AttributeListActions.loadTotalCountForTab({layerId: action.layerId}),
+      AttributeListActions.refreshStatisticsForTab({layerId: action.layerId, featureType: tab.selectedRelatedFeatureType || tab.featureType }),
     ]),
   ));
 
@@ -132,12 +140,69 @@ export class AttributeListEffects {
     }),
   ));
 
+  public loadStatistics$ = createEffect(() => this.actions$.pipe(
+    ofType(AttributeListActions.loadStatisticsForColumn),
+    concatMap(action => of(action).pipe(
+      withLatestFrom(
+        this.store$.select(selectTabForFeatureType, action.featureType),
+        this.store$.select(selectFeatureDataAndRelatedFeatureDataForFeatureType, action.featureType),
+      ),
+    )),
+    concatMap(([ action, tab, tabFeatureData ]) => {
+      return this.statisticsService.statisticValue$({
+        appLayer: +(action.layerId),
+        application: this.tailorMapService.getApplicationId(),
+        column: action.column,
+        featureType: action.featureType,
+        type: action.statisticType,
+        filter: AttributeListFilterHelper.getFilter(tab, action.featureType, tabFeatureData),
+      }).pipe(map(result => {
+        return AttributeListActions.statisticsForColumnLoaded({
+          column: action.column,
+          featureType: action.featureType,
+          layerId: action.layerId,
+          value: result.result,
+        });
+      }));
+    }),
+  ));
+
+  public refreshStatistics$ = createEffect(() => this.actions$.pipe(
+    ofType(AttributeListActions.loadStatisticsForColumn),
+    concatMap(action => of(action).pipe(
+      withLatestFrom(
+        this.store$.select(selectTabForFeatureType, action.featureType),
+        this.store$.select(selectFeatureDataAndRelatedFeatureDataForFeatureType, action.featureType),
+      ),
+    )),
+    concatMap(([ action, tab, tabFeatureData ]) => {
+      const featureData = tabFeatureData.find(data => data.featureType === action.featureType);
+      const statQueries$: Array<Observable<{ value: number; column: string }>> = featureData.statistics.map(s => this.statisticsService.statisticValue$({
+        appLayer: +(action.layerId),
+        application: this.tailorMapService.getApplicationId(),
+        column: action.column,
+        featureType: action.featureType,
+        type: action.statisticType,
+        filter: AttributeListFilterHelper.getFilter(tab, action.featureType, tabFeatureData),
+      }).pipe(map(result => ({ value: result.result, column: s.name }))));
+      return forkJoin([ of(action), forkJoin(statQueries$) ]);
+    }),
+    map(([ action, results ]) => {
+      return AttributeListActions.statisticsForTabRefreshed({
+        layerId: action.layerId,
+        featureType: action.featureType,
+        results,
+      });
+    }),
+  ));
+
   constructor(
     private actions$: Actions,
     private store$: Store<AttributeListState>,
     private attributeListDataService: AttributeListDataService,
     private highlightService: HighlightService,
     private tailorMapService: TailorMapService,
+    private statisticsService: StatisticService,
   ) {
   }
 

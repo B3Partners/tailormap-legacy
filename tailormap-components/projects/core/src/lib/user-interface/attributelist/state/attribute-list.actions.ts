@@ -130,5 +130,20 @@ export const clearCountForFeatureTypes = createAction(
 
 export const loadStatisticsForColumn = createAction(
   `${attributeListActionsPrefix} Load Statistics For Column`,
-  props<{ layerId: string, featureType: number, column: string, statisticType: StatisticType }>(),
+  props<{ layerId: string; featureType: number; column: string; statisticType: StatisticType }>(),
+);
+
+export const statisticsForColumnLoaded = createAction(
+  `${attributeListActionsPrefix} Statistics For Column Loaded`,
+  props<{ layerId: string; featureType: number; column: string; value: number }>(),
+);
+
+export const refreshStatisticsForTab = createAction(
+  `${attributeListActionsPrefix} Refresh Statistics For Tab`,
+  props<{ layerId: string; featureType: number }>(),
+);
+
+export const statisticsForTabRefreshed = createAction(
+  `${attributeListActionsPrefix} Statistics For Tab Refreshed`,
+  props<{ layerId: string; featureType: number; results: Array<{ column: string; value: number }> }>(),
 );

@@ -8,7 +8,7 @@ import { AttributeListRowModel } from '../models/attribute-list-row.model';
 import { Store } from '@ngrx/store';
 import { AttributeListState } from '../state/attribute-list.state';
 import { StatisticService } from '../../../shared/statistic-service/statistic.service';
-import { updateRowSelected, updateSort } from '../state/attribute-list.actions';
+import { loadStatisticsForColumn, updateRowSelected, updateSort } from '../state/attribute-list.actions';
 import { Sort } from '@angular/material/sort';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { AttributeListColumnModel } from '../models/attribute-list-column-models';
@@ -148,7 +148,7 @@ export class AttributeListTableComponent implements OnInit, OnDestroy {
     const column = this.statistics.get(col.name);
     const value = StatisticsHelper.getStatisticValue(col.dataType, column);
     if (column && value) {
-      return `${StatisticsHelper.getLabelForStatisticType(column.statisticType)} = ${column.statisticValue}`;
+      return `${StatisticsHelper.getLabelForStatisticType(column.statisticType)} = ${value}`;
     }
     return '';
   }
@@ -167,7 +167,12 @@ export class AttributeListTableComponent implements OnInit, OnDestroy {
   }
 
   public loadStatistic(type: StatisticType, col: AttributeListColumnModel) {
-    // dispatch action
+    this.store$.dispatch(loadStatisticsForColumn({
+      layerId: this.layerId,
+      featureType: this.featureType,
+      column: col.name,
+      statisticType: type,
+    }));
   }
 
   public getColumnNames(columns: AttributeListColumnModel[], showCheckboxColumn: boolean): string[] {

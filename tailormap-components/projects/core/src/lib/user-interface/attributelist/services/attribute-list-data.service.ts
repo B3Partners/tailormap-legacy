@@ -18,6 +18,7 @@ import { Store } from '@ngrx/store';
 import { AttributeListState } from '../state/attribute-list.state';
 import { selectFormConfigForFeatureTypeName } from '../../../application/state/application.selectors';
 import { FormTreeHelpers } from '../../../feature-form/form-tree/form-tree-helpers';
+import { AttributeListFilterHelper } from '../helpers/attribute-list-filter.helper';
 
 export interface LoadDataResult {
   layerId: string;
@@ -68,7 +69,7 @@ export class AttributeListDataService {
   ): Observable<LoadTotalCountResult> {
     return this.metadataService.getTotalFeaturesForQuery$(
       +(tab.layerId),
-      this.getFilter(tab, featureType, tabFeatureData),
+      AttributeListFilterHelper.getFilter(tab, featureType, tabFeatureData),
       featureType,
     ).pipe(map(count => ({ featureType, totalCount: count })));
   }
@@ -83,7 +84,7 @@ export class AttributeListDataService {
       application: this.applicationService.getId(),
       appLayer: +(tab.layerId),
       featureType,
-      filter: this.getFilter(tab, featureType, tabFeatureData),
+      filter: AttributeListFilterHelper.getFilter(tab, featureType, tabFeatureData),
       limit: featureTypeData.pageSize,
       page: 1,
       start: featureTypeData.pageIndex * featureTypeData.pageSize,
@@ -144,105 +145,6 @@ export class AttributeListDataService {
       }
       return decoratedFeature;
     });
-  }
-
-  public getFilter(
-    tab: AttributeListTabModel,
-    featureType: number,
-    tabFeatureData: AttributeListFeatureTypeData[],
-  ): string {
-    const filters = new Map<number, string>();
-    tabFeatureData.forEach(data => {
-      const query = data.filter.map(filter => this.getQueryForFilter(filter)).join(' AND ');
-      if (query !== '') {
-        filters.set(data.featureType, query);
-      }
-    });
-    const isRelatedFeature = tab.featureType !== featureType;
-    const mainFeatureData = tabFeatureData.find(data => data.featureType === tab.featureType);
-    return this.getQueryForFeatureType(tab, featureType, filters, isRelatedFeature, mainFeatureData);
-  }
-
-  private getQueryForFeatureType(
-    tab: AttributeListTabModel,
-    featureType: number,
-    filters: Map<number, string>,
-    isRelatedFeature: boolean,
-    mainFeatureData: AttributeListFeatureTypeData,
-  ) {
-    const featureFilter: string[] = tab.relatedFeatures.map<string>(relation => {
-      if (relation.foreignFeatureType === featureType) {
-        return '';
-      }
-      const relationFilter = filters.get(relation.foreignFeatureType);
-      if (relationFilter) {
-        const filter = `RELATED_FEATURE(${tab.featureType},${relation.foreignFeatureType},(${relationFilter}))`;
-        if (isRelatedFeature) {
-          return `RELATED_FEATURE(${featureType},${tab.featureType},(${filter}))`;
-        }
-        return filter;
-      }
-      return '';
-    });
-    if (filters.has(featureType)) {
-      featureFilter.push(filters.get(featureType));
-    }
-    if (isRelatedFeature && filters.has(tab.featureType)) {
-      featureFilter.push(`RELATED_FEATURE(${featureType},${tab.featureType},(${filters.get(tab.featureType)}))`);
-    }
-    if (isRelatedFeature && mainFeatureData.checkedFeatures.length > 0) {
-      const checkedRowsFilter = this.getQueryForCheckedRows(tab, featureType, mainFeatureData);
-      if (checkedRowsFilter) {
-        featureFilter.push(checkedRowsFilter);
-      }
-    }
-    return featureFilter.filter(f => !!f).join(' AND ');
-  }
-
-  private getQueryForCheckedRows(
-    tab: AttributeListTabModel,
-    featureType: number,
-    mainFeatureData: AttributeListFeatureTypeData,
-  ) {
-    const currentRelation = tab.relatedFeatures.find(r => r.foreignFeatureType === featureType);
-    const selectedRowsFilter = [];
-    if (currentRelation) {
-      currentRelation.relationKeys.forEach(relation => {
-        const checkedFeatureKeys = new Set<string>();
-        mainFeatureData.checkedFeatures.forEach(checkedFeature => {
-          if (checkedFeature[relation.leftSideName]) {
-            checkedFeatureKeys.add(AttributeTypeHelper.getExpression(`${checkedFeature[relation.leftSideName]}`, AttributeTypeEnum.STRING));
-          }
-        });
-        if (checkedFeatureKeys.size !== 0) {
-          selectedRowsFilter.push(`${relation.rightSideName} IN (${Array.from(checkedFeatureKeys).join(',')})`);
-        }
-      });
-    }
-    if (selectedRowsFilter.length === 0) {
-      return '';
-    }
-    return `(${selectedRowsFilter.join(' AND ')})`;
-  }
-
-  private getQueryForFilter(filter: AttributeListFilterModel): string {
-    if (filter.type === FilterType.NOT_LIKE) {
-      return `${filter.name} NOT ILIKE ${this.buildValueFilterString(filter.type, filter.value)}`;
-    }
-    if (filter.type === FilterType.UNIQUE_VALUES) {
-      return `${filter.name} IN (${this.buildValueFilterString(filter.type, filter.value)})`;
-    }
-    return `${filter.name} ILIKE ${this.buildValueFilterString(filter.type, filter.value)}`;
-  }
-
-  private buildValueFilterString(type: FilterType, values: string[]): string {
-    if (values.length === 1) {
-      if (type === FilterType.LIKE || type === FilterType.NOT_LIKE) {
-        return AttributeTypeHelper.getExpression(`%${values[0]}%`, AttributeTypeEnum.STRING);
-      }
-      return AttributeTypeHelper.getExpression(`${values[0]}`, AttributeTypeEnum.STRING);
-    }
-    return values.map(value => AttributeTypeHelper.getExpression(`${value}`, AttributeTypeEnum.STRING)).join(',');
   }
 
 }

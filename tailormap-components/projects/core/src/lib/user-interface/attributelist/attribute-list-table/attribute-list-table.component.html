@@ -41,18 +41,18 @@
 
       <mat-cell *matCellDef="let currRow">{{currRow[col.name]}}</mat-cell>
 
-      <mat-footer-cell *matFooterCellDef class="statistics-footer-cell">
-        <button class="statistics-btn" [matMenuTriggerFor]="statsMenu" [matMenuTriggerData]="{column: col}">
-          <ng-container *ngIf="isStatisticsProcessing(col.name)">
-            <mat-spinner diameter="20"></mat-spinner>
-          </ng-container>
-          <ng-container *ngIf="!hasStatisticResult(col)" class="statistics-placeholder">
-            <mat-icon>functions</mat-icon>
-          </ng-container>
-          <ng-container *ngIf="hasStatisticResult(col)">
-            {{getStatisticResult(col)}}
-          </ng-container>
-        </button>
+      <mat-footer-cell *matFooterCellDef class="statistics-footer-cell"
+                       [matMenuTriggerFor]="statsMenu"
+                       [matMenuTriggerData]="{column: col}">
+        <div *ngIf="isStatisticsProcessing(col.name)">
+          <mat-spinner diameter="20"></mat-spinner>
+        </div>
+        <div *ngIf="!hasStatisticResult(col)" class="statistics-placeholder">
+          <mat-icon>functions</mat-icon>
+        </div>
+        <div *ngIf="hasStatisticResult(col)">
+          {{getStatisticResult(col)}}
+        </div>
       </mat-footer-cell>
 
     </ng-container>
