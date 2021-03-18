@@ -2383,9 +2383,8 @@ Ext.define("viewer.viewercontroller.ViewerController", {
     },
 
     checkAppLayersForServiceLayer: function () {
-        var found = false;
         for (var appLayer in this.app.appLayers) {
-            found = false;
+            var found = false;
             for (var serviceId in this.app.services){
                 if (this.app.appLayers[appLayer].serviceId === this.app.services[serviceId].id) {
                     found = true;
@@ -2393,6 +2392,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                 }
             }
             if (!found) {
+                console.log("No service layer found for: " + this.app.appLayers[appLayer].layerName)
                 delete this.app.appLayers[appLayer];
             }
         }
