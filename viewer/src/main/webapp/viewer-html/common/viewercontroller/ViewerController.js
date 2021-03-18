@@ -2021,6 +2021,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
 
         if(layersLoaded && !bookmark){
             this.app.appLayers = appLayers;
+            this.checkAppLayersForServiceLayer();
             // set all applayers of the loaded levels to removed = false, so the layers will be added to the map (and not an empty level is visible in the toc)
             for(var i = 0 ; i < levelsLoaded.length ;i++){
                 if(!this.app.levels[levelsLoaded[i]] || !this.app.levels[levelsLoaded[i]].layers){
