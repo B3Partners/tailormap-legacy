@@ -98,12 +98,19 @@ export class ResolutionSelectorComponent implements OnInit {
       if (option.scale === -1) {
         return true;
       }
-      return (
-        (this.optionsFilter.maxResolution && option.resolution < this.optionsFilter.maxResolution) ||
-        (this.optionsFilter.minResolution && option.resolution > this.optionsFilter.minResolution) ||
-        (this.optionsFilter.maxScale && option.scale < this.optionsFilter.maxScale) ||
-        (this.optionsFilter.minScale && option.scale > this.optionsFilter.minScale)
-      );
+      if (this.optionsFilter.maxResolution && option.resolution > this.optionsFilter.maxResolution) {
+        return false;
+      }
+      if (this.optionsFilter.minResolution && option.resolution < this.optionsFilter.minResolution) {
+        return false;
+      }
+      if (this.optionsFilter.maxScale && option.scale > this.optionsFilter.maxScale) {
+        return false;
+      }
+      if (this.optionsFilter.minScale && option.scale < this.optionsFilter.minScale) {
+        return false;
+      }
+      return true;
     }));
 
     const currentValue = this.resolutionControl.value;
