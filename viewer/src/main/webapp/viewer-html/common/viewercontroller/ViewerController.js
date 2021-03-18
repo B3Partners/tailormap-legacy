@@ -74,6 +74,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         this.callParent([{ listeners: listeners }]);
         this.dataSelectionChecker = Ext.create("viewer.components.DataSelectionChecker", { viewerController: this });
         this.app = app;
+        this.checkAppLayersForServiceLayer();
         this.projection = this.app.projectionCode.substring(0,this.app.projectionCode.lastIndexOf('['));
         this.projectionString = this.app.projectionCode.substring(this.app.projectionCode.lastIndexOf('[')+1,this.app.projectionCode.lastIndexOf(']'));
 
@@ -1933,6 +1934,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
 
         if(layersLoaded && !bookmark){
             this.app.appLayers = appLayers;
+            this.checkAppLayersForServiceLayer();
             // set all applayers of the loaded levels to removed = false, so the layers will be added to the map (and not an empty level is visible in the toc)
             for(var i = 0 ; i < levelsLoaded.length ;i++){
                 if(!this.app.levels[levelsLoaded[i]] || !this.app.levels[levelsLoaded[i]].layers){
@@ -2292,5 +2294,20 @@ Ext.define("viewer.viewercontroller.ViewerController", {
             }
         }
         delete this.components;
+    },
+
+    checkAppLayersForServiceLayer: function () {
+        for (var appLayer in this.app.appLayers) {
+            var found = false;
+            for (var serviceId in this.app.services){
+                if (this.app.appLayers[appLayer].serviceId === this.app.services[serviceId].id) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                delete this.app.appLayers[appLayer];
+            }
+        }
     }
 });
