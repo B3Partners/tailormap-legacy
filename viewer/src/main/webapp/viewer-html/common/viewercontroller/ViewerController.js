@@ -2393,7 +2393,6 @@ Ext.define("viewer.viewercontroller.ViewerController", {
                 }
             }
             if (!found) {
-                console.log("No service layer found for: " + this.app.appLayers[appLayer].layerName)
                 delete this.app.appLayers[appLayer];
             }
         }
