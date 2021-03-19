@@ -62,10 +62,10 @@ export class UserLayerService {
         }),
       ).subscribe(([createLayerResult, saveStyleResult]) => {
       this.handleResult(createLayerResult, saveStyleResult);
-    })
+    });
   }
 
-  public removeLayer$(layer: AppLayer): Observable<{ success: boolean, message?: string }> {
+  public removeLayer$(layer: AppLayer): Observable<{ success: boolean; message?: string }> {
     if (!layer.userlayer) {
       return of({ success: true });
     }
@@ -109,7 +109,7 @@ export class UserLayerService {
             !style ? of(null) : this.userLayerApiService.saveUserLayerStyle({ appId, userAppLayerId: appLayer, style }),
           ]);
         }),
-      )
+      );
   }
   private handleResult(
     createLayerResult: UserLayerResponseType,

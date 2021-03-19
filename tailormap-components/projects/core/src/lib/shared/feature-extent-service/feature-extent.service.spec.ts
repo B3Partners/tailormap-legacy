@@ -9,7 +9,7 @@ describe('FeatureExtentService', () => {
     providers: [
       getTailorMapServiceMockProvider(),
     ],
-  })
+  });
 
   beforeEach(() => {
     spectator = createService();

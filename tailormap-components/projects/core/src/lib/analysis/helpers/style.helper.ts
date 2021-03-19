@@ -8,7 +8,7 @@ import { AttributeTypeHelper } from '../../application/helpers/attribute-type.he
 
 export class StyleHelper {
 
-  public static getAvailableMarkers(): Array<{ value: MakerType, icon: string }> {
+  public static getAvailableMarkers(): Array<{ value: MakerType; icon: string }> {
     return [
       { value: 'circle', icon: 'markers_circle' },
       { value: 'square', icon: 'markers_square' },
@@ -92,10 +92,10 @@ export class StyleHelper {
       selector = `[${style.attribute}=${AttributeTypeHelper.getExpression(style.value, style.attributeType)}] `;
     }
     if (style.maxScale && style.maxScale > 0) {
-      selector = `${selector}[@sd <= ${style.maxScale}] `
+      selector = `${selector}[@sd <= ${style.maxScale}] `;
     }
     if (style.minScale && style.minScale > 0) {
-      selector = `${selector}[@sd > ${style.minScale}] `
+      selector = `${selector}[@sd > ${style.minScale}] `;
     }
     if (StyleHelper.showPolygonSettings(selectedDataSource.geometryType)) {
       const polygonStyles = [];

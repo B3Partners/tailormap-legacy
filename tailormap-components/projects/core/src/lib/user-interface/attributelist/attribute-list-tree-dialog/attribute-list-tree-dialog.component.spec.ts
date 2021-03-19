@@ -9,7 +9,7 @@ describe('AttributeListTreeDialogComponent', () => {
   const createComponent = createComponentFactory({
     component: AttributeListTreeDialogComponent,
     providers: [
-      { provide: OVERLAY_DATA, useValue: { layerId: "1" }},
+      { provide: OVERLAY_DATA, useValue: { layerId: '1' }},
     ],
     schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
   });

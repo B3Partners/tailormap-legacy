@@ -52,14 +52,14 @@ export class ApplicationService implements OnDestroy {
     this.tailormapService.selectedLayerChanged$
       .pipe(takeUntil(this.destroyed))
       .subscribe(selectedAppLayer => {
-        this.store$.dispatch(setSelectedAppLayer({ layerId: `${selectedAppLayer.id}` }));
+        this.store$.dispatch(setSelectedAppLayer({ layerId: !!selectedAppLayer ? `${selectedAppLayer.id}` : null }));
       });
 
     this.formConfigRepositoryService.loadFormConfiguration$()
       .pipe(takeUntil(this.destroyed))
       .subscribe(formConfigs => {
         this.store$.dispatch(setFormConfigs({ formConfigs }));
-      })
+      });
   }
 
   public ngOnDestroy() {

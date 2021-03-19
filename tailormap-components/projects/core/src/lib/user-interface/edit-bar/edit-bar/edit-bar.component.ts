@@ -62,12 +62,12 @@ export class EditBarComponent implements OnInit {
   }
 
   public onSplit(): void {
-    this.store$.dispatch(WorkflowActions.setAction({action: WORKFLOW_ACTION.SPLIT_MERGE}))
+    this.store$.dispatch(WorkflowActions.setAction({action: WORKFLOW_ACTION.SPLIT_MERGE}));
     this.splitComponent.showWindow();
   }
 
   public onMerge(): void {
-    this.store$.dispatch(WorkflowActions.setAction({action: WORKFLOW_ACTION.SPLIT_MERGE}))
+    this.store$.dispatch(WorkflowActions.setAction({action: WORKFLOW_ACTION.SPLIT_MERGE}));
     this.mergeComponent.showWindow();
   }
 

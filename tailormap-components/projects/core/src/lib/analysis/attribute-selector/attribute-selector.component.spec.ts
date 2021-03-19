@@ -12,7 +12,7 @@ const setInputs = (spectator: Spectator<AttributeSelectorComponent>) => {
   spectator.setInput('featureType', 1);
   spectator.setInput('selectedAttribute', '');
   spectator.detectChanges();
-}
+};
 
 describe('AttributeSelectorComponent', () => {
 
@@ -46,7 +46,7 @@ describe('AttributeSelectorComponent', () => {
   it('should render autocomplete with options', async () => {
     setInputs(spectator);
     let selectedAttribute: string;
-    spectator.output('attributeSelected').subscribe(($event: { attribute: PassportAttributeModel, attributeType: AttributeTypeEnum }) => {
+    spectator.output('attributeSelected').subscribe(($event: { attribute: PassportAttributeModel; attributeType: AttributeTypeEnum }) => {
       selectedAttribute = $event.attribute.name;
     });
     spectator.triggerEventHandler('input', 'focusin', {});
@@ -63,7 +63,7 @@ describe('AttributeSelectorComponent', () => {
   it('should trigger attribute selected when entering valid attribute name', async () => {
     setInputs(spectator);
     let selectedAttribute: string;
-    spectator.output('attributeSelected').subscribe(($event: { attribute: PassportAttributeModel, attributeType: AttributeTypeEnum }) => {
+    spectator.output('attributeSelected').subscribe(($event: { attribute: PassportAttributeModel; attributeType: AttributeTypeEnum }) => {
       selectedAttribute = $event.attribute.name;
     });
     spectator.detectChanges();
@@ -81,7 +81,7 @@ describe('AttributeSelectorComponent', () => {
   it('should not trigger selected attribute for unknown atribute', async () => {
     setInputs(spectator);
     let selectedAttribute: string;
-    spectator.output('attributeSelected').subscribe(($event: { attribute: PassportAttributeModel, attributeType: AttributeTypeEnum }) => {
+    spectator.output('attributeSelected').subscribe(($event: { attribute: PassportAttributeModel; attributeType: AttributeTypeEnum }) => {
       selectedAttribute = $event.attribute.name;
     });
     spectator.detectChanges();

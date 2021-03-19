@@ -113,7 +113,7 @@
             <dependency>
                 <groupId>org.json</groupId>
                 <artifactId>json</artifactId>
-                <version>20201115</version>
+                <version>20210307</version>
             </dependency>
             <!-- Stripes -->
             <dependency>
@@ -237,7 +237,7 @@
             <dependency>
                 <groupId>com.google.javascript</groupId>
                 <artifactId>closure-compiler</artifactId>
-                <version>v20210202</version>
+                <version>v20210302</version>
             </dependency>
             <dependency>
                 <groupId>javax.servlet</groupId>
@@ -673,7 +673,7 @@
                 <plugin>
                     <groupId>pl.project13.maven</groupId>
                     <artifactId>git-commit-id-plugin</artifactId>
-                    <version>4.0.3</version>
+                    <version>4.0.4</version>
                 </plugin>
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
@@ -702,7 +702,7 @@
                 <plugin>
                     <groupId>org.owasp</groupId>
                     <artifactId>dependency-check-maven</artifactId>
-                    <version>6.1.1</version>
+                    <version>6.1.2</version>
                     <configuration>
                         <skipSystemScope>true</skipSystemScope>
                         <format>ALL</format>

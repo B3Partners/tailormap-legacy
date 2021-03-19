@@ -115,14 +115,14 @@ const onUpdateStyle = (state: AnalysisState, payload: { style: UserLayerStyleMod
 
 const onUpdateAllStyles = (
   state: AnalysisState,
-  payload: { styleProp: keyof UserLayerStyleModel, value: string | number | boolean },
+  payload: { styleProp: keyof UserLayerStyleModel; value: string | number | boolean },
 ): AnalysisState => ({
   ...state,
   styles: state.styles.map<UserLayerStyleModel>(s => ({
     ...s,
     [payload.styleProp]: payload.value,
   })),
-})
+});
 
 const onCreatingLayer = (state: AnalysisState): AnalysisState => ({
   ...state,
@@ -172,4 +172,4 @@ const analysisReducerImpl = createReducer(
 
 export const analysisReducer = (state: AnalysisState | undefined, action: Action) => {
   return analysisReducerImpl(state, action);
-}
+};

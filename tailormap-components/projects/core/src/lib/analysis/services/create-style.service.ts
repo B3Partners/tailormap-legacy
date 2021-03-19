@@ -16,7 +16,7 @@ import { CriteriaHelper } from '../criteria/helpers/criteria.helper';
 import { ScopedUserLayerStyleModel } from '../models/scoped-user-layer-style.model';
 import { AttributeTypeHelper } from '../../application/helpers/attribute-type.helper';
 
-export type CreateStyleResult = { styles: UserLayerStyleModel[], errorMessage?: string };
+export type CreateStyleResult = { styles: UserLayerStyleModel[]; errorMessage?: string };
 type CachedStylesResult = [ string, CreateStyleResult ];
 
 @Injectable({

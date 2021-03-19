@@ -34,7 +34,7 @@ export class LayerUtils {
     return FormHelpers.snakecaseToCamel(layername).toLowerCase();
   }
 
-  public getFeatureTypesAllowed(allFeatureTypes: string[], ignoreSelected : boolean = false): string[] {
+  public getFeatureTypesAllowed(allFeatureTypes: string[], ignoreSelected: boolean = false): string[] {
     let allowedFeaturesTypes = [];
     const sl = this.tailorMap.selectedLayer;
     if (sl && !ignoreSelected) {
@@ -43,7 +43,7 @@ export class LayerUtils {
       allowedFeaturesTypes = allFeatureTypes;
     }
     const visibleLayers = this.getVisibleLayers(false);
-    let newAr = allowedFeaturesTypes.filter(value => visibleLayers.includes(value))
+    let newAr = allowedFeaturesTypes.filter(value => visibleLayers.includes(value));
     const visibleUserLayers = this.getVisibleLayers(true);
 
     newAr = [...newAr, ...visibleUserLayers];

@@ -16,7 +16,7 @@ interface AttributeListUniqueFilterValueSettings {
 
 export interface FilterDialogData {
   columnName: string;
-  featureType: number
+  featureType: number;
   layerId: string;
   filter: AttributeListFilterModel | null;
 }
@@ -31,7 +31,7 @@ export class AttributeListFilterComponent implements OnInit {
   public filterTypeSelected: FilterType;
   public criteriaValue = new FormControl();
   public uniqueValues: AttributeListUniqueFilterValueSettings[] = [];
-  public allOn: boolean
+  public allOn: boolean;
   public someOn: boolean;
   public isLoadingUniqueValuesData: boolean;
 

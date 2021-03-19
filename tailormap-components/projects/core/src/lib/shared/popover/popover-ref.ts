@@ -9,6 +9,8 @@ interface PopoverRefConfig extends OverlayRefConfig {
   closeOnClickOutside?: boolean;
 }
 
+// R is used in OverlayRef which is the superclass for this class
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export class PopoverRef<R = any, T = any> extends OverlayRef {
 
   private readonly clickOutsideListener: () => void;

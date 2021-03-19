@@ -72,7 +72,7 @@ export class FormCopyComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroyed)).subscribe(formConfigs => {
       let fieldsToCopy = new Map<string, string>();
       this.originalFeature = this.data.originalFeature;
-      this.store$.dispatch(FormActions.setSetFeatures({ features: [{...this.originalFeature}]}))
+      this.store$.dispatch(FormActions.setSetFeatures({ features: [{...this.originalFeature}]}));
       // Kijk of er al een parentFeature is (dit is er op het moment dat er al een keer eerder is gekopieerd)
       if (this.formCopyService.parentFeature != null) {
         // Kijk of het nieuwe geselecteerde feature van het zelfde type is, om vorige geselecteerde velden terug te zetten
@@ -88,16 +88,15 @@ export class FormCopyComponent implements OnInit, OnDestroy {
         for (const child of this.originalFeature.children) {
           const config = formConfigs.get(child.clazz);
           if (config) {
-            // tslint:disable-next-line:no-shadowed-variable
-            let fieldsToCopy = new Map<string, string>();
+            let childFieldsToCopy = new Map<string, string>();
             // zet velden terug die hiervoor geselecteerd waren.
             this.formCopyService.featuresToCopy.forEach((oldfieldsToCopy, key) => {
               if (oldfieldsToCopy.get('objecttype') === child.objecttype) {
-                fieldsToCopy = oldfieldsToCopy;
+                childFieldsToCopy = oldfieldsToCopy;
               }
             });
-            fieldsToCopy.set('objecttype', child.objecttype);
-            this.formCopyService.featuresToCopy.set(child.objectGuid, fieldsToCopy);
+            childFieldsToCopy.set('objecttype', child.objecttype);
+            this.formCopyService.featuresToCopy.set(child.objectGuid, childFieldsToCopy);
           }
         }
       }
@@ -115,7 +114,7 @@ export class FormCopyComponent implements OnInit, OnDestroy {
         if (result) {
           this.copy();
         }
-      })
+      });
   }
 
   public copy() {
@@ -132,7 +131,7 @@ export class FormCopyComponent implements OnInit, OnDestroy {
         for (let n = 0; n <= childsToCopy.length - 1; n++) {
           this.actionService.save$(false, [childsToCopy[n]], destinationFeatures[i]).subscribe(childSaved => {
             console.log('child saved');
-          })
+          });
         }
         this.actionService.save$(false, [destinationFeatures[i]], destinationFeatures[i]).subscribe(savedFeature => {
             successCopied++;
@@ -188,7 +187,7 @@ export class FormCopyComponent implements OnInit, OnDestroy {
         }
       }
     }
-    return true
+    return true;
   }
 
   // zet alles aan of uit voor de geselecteerde tab
@@ -234,7 +233,7 @@ export class FormCopyComponent implements OnInit, OnDestroy {
     const fieldsToCopy = this.formCopyService.featuresToCopy.get(this.formCopyService.parentFeature.objectGuid);
     fieldsToCopy.forEach((value, key) => {
       valuesToCopy[key] = this.originalFeature[key];
-    })
+    });
     return valuesToCopy;
   }
 
@@ -252,11 +251,11 @@ export class FormCopyComponent implements OnInit, OnDestroy {
             if (child.objectGuid === key) {
               fieldsToCopy.forEach((value, key1) => {
                 valuesToCopy[key1] = child[key1];
-              })
+              });
             }
           }
           newChild = this.featureInitializer.create(fieldsToCopy.get('objecttype'), valuesToCopy);
-          // tslint:disable-next-line:prefer-for-of
+          // eslint-disable-next-line @typescript-eslint/prefer-for-of
           for (let i = 0; i < relatedFeatures.length; i++) {
             if (relatedFeatures[i] === key) {
               newChilds.push(newChild);
@@ -274,11 +273,11 @@ export class FormCopyComponent implements OnInit, OnDestroy {
 
   public setCopyAllRelatedFeatures(event: any) {
     if (this.formCopyService.parentFeature.children) {
-       this.relatedFeatures = [];
-      // tslint:disable-next-line:prefer-for-of
-       for (let i = 0; i < this.formCopyService.parentFeature.children.length; i++) {
-         this.relatedFeatures.push(this.formCopyService.parentFeature.children[i].objectGuid);
-       }
+      this.relatedFeatures = [];
+      // eslint-disable-next-line @typescript-eslint/prefer-for-of
+      for (let i = 0; i < this.formCopyService.parentFeature.children.length; i++) {
+        this.relatedFeatures.push(this.formCopyService.parentFeature.children[i].objectGuid);
+      }
     }
   }
 
@@ -313,6 +312,6 @@ export class FormCopyComponent implements OnInit, OnDestroy {
           }
         }
       }
-    })
+    });
   }
 }

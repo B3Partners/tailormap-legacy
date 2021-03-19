@@ -621,10 +621,6 @@ Ext.define("viewer.components.Edit", {
         this.showMobilePopup();
         this.setFormVisible(true);
         this.toggleGeomToggleForm(false);
-        var firstField = this.inputContainer.down("field");
-        if(firstField) {
-            firstField.focus();
-        }
         this.geomlabel.setHtml("");
         this.untoggleButtons();
     },
@@ -1797,7 +1793,13 @@ Ext.define("viewer.components.Edit", {
             height: 300,
             layout: 'fit',
             title: i18next.t('viewer_components_edit_45'),
-            items: [container]
+            items: [container],
+            listeners: {
+                close: {
+                    scope: me,
+                    fn: me.cancelSelectFeature
+                }
+            }
         });
 
         window.show();

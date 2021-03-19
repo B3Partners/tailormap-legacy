@@ -14,7 +14,7 @@ describe('CriteriaDescriptionComponent', () => {
     imports: [ SharedModule ],
     providers: [
       provideMockStore({ initialState }),
-    ]
+    ],
   });
 
   beforeEach(() => {

@@ -123,7 +123,7 @@ export class StyleFormComponent implements OnInit {
     let style = { ...this.style };
     this.updatedProps.forEach((value, key) => {
       style = { ...style, [key]: value };
-    })
+    });
     this.styleUpdated.emit(style);
     this.updatedProps.clear();
   }

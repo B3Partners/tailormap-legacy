@@ -14,7 +14,7 @@ describe('ChooseTypesComponent', () => {
     providers: [
       getDialogRefMockProvider(),
       { provide: MAT_DIALOG_DATA, useValue: dialogData },
-    ]
+    ],
   });
 
   beforeEach(() => {

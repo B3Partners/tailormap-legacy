@@ -49,7 +49,7 @@ export class CriteriaComponent implements OnInit, OnDestroy {
     value: [''],
   });
 
-  public formData: Omit<CriteriaConditionModel, 'id'> = {}
+  public formData: Omit<CriteriaConditionModel, 'id'> = {};
   public selectedDataSource: AnalysisSourceModel;
 
   constructor(
@@ -89,7 +89,7 @@ export class CriteriaComponent implements OnInit, OnDestroy {
         takeUntil(this.destroyed),
         filter(selectedDataSource => !!selectedDataSource),
         concatMap(selectedDataSource => {
-          return forkJoin([ of(selectedDataSource), this.metadataService.getFeatureTypeMetadata$(selectedDataSource.layerId) ])
+          return forkJoin([ of(selectedDataSource), this.metadataService.getFeatureTypeMetadata$(selectedDataSource.layerId) ]);
         }),
       )
       .subscribe(([ selectedDataSource, layerMetadata ]) => {

@@ -11,10 +11,10 @@ export class WorkflowHelper {
       switch (geojson.type) {
         case 'MultiPolygon':
         case 'Polygon':
-          return WorkflowHelper.findUpperRightCoordinate(geojson.coordinates[0] as number[][])
+          return WorkflowHelper.findUpperRightCoordinate(geojson.coordinates[0] as number[][]);
         case 'LineString':
         case 'MultiLineString':
-          return WorkflowHelper.findUpperRightCoordinate(geojson.coordinates as number[][])
+          return WorkflowHelper.findUpperRightCoordinate(geojson.coordinates as number[][]);
         case 'MultiPoint':
         case 'Point':
           return {

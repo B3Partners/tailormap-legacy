@@ -5,7 +5,7 @@ export const createAttributeListExportServiceMockProvider = (overrides?: Partial
   return createSpyObject(AttributeListExportService, {
     createAttributeListExport(format: ExportType, layerId: string, featureType: number): void {},
     ...overrides,
-  })
+  });
 };
 
 export const getAttributeListExportServiceMockProvider = (overrides?: Partial<Record<keyof AttributeListExportService, any>>) => {

@@ -11,7 +11,7 @@ export const createOverlayRefProvider = (overrides?: Partial<Record<keyof Overla
     isOpen: true,
     overlay: null,
     ...overrides,
-  })
+  });
 };
 
 export const getOverlayRefProvider = (overrides?: Partial<Record<keyof OverlayRef, any>>) => {

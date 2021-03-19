@@ -1,5 +1,5 @@
 import { analysisReducer } from './analysis.reducer';
-import * as AnalysisActions from "./analysis.actions";
+import * as AnalysisActions from './analysis.actions';
 import { initialAnalysisState } from './analysis.state';
 import { StyleHelper } from '../helpers/style.helper';
 import { IdService } from '../../shared/id-service/id.service';
@@ -17,9 +17,9 @@ describe('AnalysisReducer', () => {
         { ...StyleHelper.getDefaultStyle(idService), fillColor: 'rgb(0, 0, 0)' },
         { ...StyleHelper.getDefaultStyle(idService), fillColor: 'rgb(0, 0, 0)' },
       ],
-    }
+    };
     const updatedState = analysisReducer(state, action);
     const updatedFillColors = updatedState.styles.map(s => s.fillColor);
     expect(updatedFillColors).toEqual([ 'rgb(255, 255, 255)', 'rgb(255, 255, 255)', 'rgb(255, 255, 255)', 'rgb(255, 255, 255)' ]);
-  })
-})
+  });
+});

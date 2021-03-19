@@ -9,7 +9,7 @@ export interface RootStateModel {
   [analysisStateKey]: AnalysisState;
   [applicationStateKey]: ApplicationState;
   [formStateKey]: FormState;
-  [attributeListStateKey]: AttributeListState,
+  [attributeListStateKey]: AttributeListState;
 }
 
 export const defaultRootState: RootStateModel = {

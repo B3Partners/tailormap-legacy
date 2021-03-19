@@ -1,4 +1,3 @@
-/* tslint:disable */
 /* eslint-disable */
 import { Feature } from './feature';
 export interface Wegvakonderdeelplanning extends Feature {

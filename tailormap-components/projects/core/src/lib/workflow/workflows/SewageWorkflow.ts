@@ -1,3 +1,5 @@
+/* eslint @typescript-eslint/naming-convention: [ "error", { "selector": ["objectLiteralProperty","classProperty"], "format": ["camelCase", "UPPER_CASE", "snake_case"] } ] */
+
 import { Workflow } from './Workflow';
 import * as wellknown from 'wellknown';
 import { GeoJSONPoint } from 'wellknown';
@@ -68,10 +70,10 @@ export class SewageWorkflow extends Workflow {
     if (this.currentStep === Step.WELL1 || this.currentStep === Step.WELL2) {
       const coords = (geoJson as GeoJSONPoint).coordinates;
       if (this.currentStep === Step.WELL1) {
-        this.well1 = coords
+        this.well1 = coords;
       }
       if (this.currentStep === Step.WELL2) {
-        this.well2 = coords
+        this.well2 = coords;
       }
       this.retrieveFeatures$(coords)
         .pipe(takeUntil(this.destroyed))
@@ -139,7 +141,7 @@ export class SewageWorkflow extends Workflow {
         featureType,
       },
     });
-    // tslint:disable-next-line: rxjs-no-ignored-subscription
+
     dialogRef.afterClosed().subscribe(result => {
       const choice = (result as Choice);
       if (choice.cancelled) {
@@ -152,7 +154,7 @@ export class SewageWorkflow extends Workflow {
     });
   }
 
-  public openDialog(feature ?: Feature): void {
+  public openDialog(feature?: Feature): void {
     this.store$.dispatch(setOpenFeatureForm({features: [feature], closeAfterSave: true}));
 
     combineLatest([
@@ -187,12 +189,12 @@ export class SewageWorkflow extends Workflow {
       case Step.WELL1:
         this.well1Feature = result;
         this.currentStep = Step.WELL2;
-        this.afterInit()
+        this.afterInit();
         break;
       case Step.WELL2:
         this.well2Feature = result;
         this.currentStep = Step.DUCT;
-        this.afterInit()
+        this.afterInit();
         break;
       case Step.DUCT:
         this.vectorLayer.removeAllFeatures();

@@ -22,4 +22,4 @@ export const initialApplicationState: ApplicationState = {
   selectedAppLayer: null,
   formConfigsLoaded: false,
   formConfigs: null,
-}
+};

@@ -19,7 +19,7 @@ describe('FormConfigRepositoryService', () => {
   const featureControllerMockService = createSpyObject(FeatureControllerService, {
     featuretypeInformation(): Observable<[]> {
       return of([]);
-    }
+    },
   });
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -29,7 +29,7 @@ describe('FormConfigRepositoryService', () => {
       providers: [
         getTailorMapServiceMockProvider({ getApplicationId() { return 1; }}),
         { provide: FeatureControllerService, useValue: featureControllerMockService },
-      ]
+      ],
     });
     injector = getTestBed();
     httpMock = TestBed.inject(HttpTestingController);

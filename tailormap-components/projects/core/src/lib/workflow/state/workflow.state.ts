@@ -4,10 +4,10 @@ import { Feature } from '../../shared/generated';
 export const workflowStateKey = 'workflow';
 
 export interface WorkflowState {
-  action: WORKFLOW_ACTION,
-  featureType: string,
-  geometryType: string,
-  feature: Feature,
+  action: WORKFLOW_ACTION;
+  featureType: string;
+  geometryType: string;
+  feature: Feature;
 }
 
 export const initialWorkflowState: WorkflowState = {
@@ -15,6 +15,6 @@ export const initialWorkflowState: WorkflowState = {
   featureType: null,
   geometryType: null,
   feature: null,
-}
+};
 
 // deze verder uitwerken

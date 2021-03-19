@@ -38,7 +38,7 @@ export class ChooseTypesComponent implements OnInit {
       well1: ['rioolput', [Validators.required]],
       well2: ['rioolput', [Validators.required]],
       duct: [this.data.featureType, [Validators.required]],
-    })
+    });
   }
 
   public cancel() {

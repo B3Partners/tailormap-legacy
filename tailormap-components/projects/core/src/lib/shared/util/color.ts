@@ -5,7 +5,7 @@ const shorthandHexRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
 const hexRegex = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i;
 const defaultRgb = { r: 30, b: 30, g: 30 }; // @TODO: Select default color?
 
-export const getRgbForColor = (color: string): { r: number, g: number, b: number } => {
+export const getRgbForColor = (color: string): { r: number; g: number; b: number } => {
   if (!color) {
     return defaultRgb;
   }
@@ -25,23 +25,23 @@ export const getRgbForColor = (color: string): { r: number, g: number, b: number
     };
   }
   return defaultRgb;
-}
+};
 
 export const getRgbStyleForColor = (color: string): string => {
   const rgb = getRgbForColor(color);
   return `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`;
-}
+};
 
 export const isValidColor = (color: string, allowEmpty?: boolean): boolean => {
   if (allowEmpty && isValidEmptyColor(color)) {
     return true;
   }
   return rgbRegex.test(color) || shorthandHexRegex.test(color) || hexRegex.test(color);
-}
+};
 
 export const isValidEmptyColor = (color: string | undefined) => {
   return (typeof color === 'undefined' || color === '' || color === 'transparent' );
-}
+};
 
 export const colorValidator = (allowEmpty?: boolean) => (control: AbstractControl) => {
   if (allowEmpty && isValidEmptyColor(control.value)) {
@@ -55,7 +55,7 @@ export const colorValidator = (allowEmpty?: boolean) => (control: AbstractContro
 const componentToHex = (c: number) => {
   const hex = c.toString(16);
   return hex.length === 1 ? '0' + hex : hex;
-}
+};
 
 export const rgbToHex = (color: string) => {
   const rgbResult = rgbRegex.exec(color);
@@ -68,4 +68,4 @@ export const rgbToHex = (color: string) => {
     ].join('');
   }
   return color;
-}
+};

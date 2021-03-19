@@ -32,7 +32,7 @@ export class FeatureExtentService {
       buffer,
       filter,
       appLayer: appLayerId.toString(10),
-    }
+    };
     let httpParams: HttpParams = new HttpParams();
     Object.entries(featureExtentParams).forEach(([key, value]) => {
       httpParams = httpParams.set(key, String(value));
@@ -58,13 +58,11 @@ export class FeatureExtentService {
                                buffer: number): Observable<Extent> {
     let fids: string;
     if (Array.isArray(featureFIds)) {
-      // tslint:disable-next-line: quotemark
-      fids = featureFIds.join("','");
+      fids = featureFIds.join('\',\'');
     } else {
       fids = featureFIds;
     }
-    // tslint:disable-next-line: quotemark
-    const filter = ["IN ('", fids, "')"].join("");
+    const filter = ['IN (\'', fids, '\')'].join('');
     return this.doRequest$(filter, appLayerId, buffer);
   }
 

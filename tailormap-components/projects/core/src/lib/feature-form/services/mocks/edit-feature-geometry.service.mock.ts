@@ -7,8 +7,8 @@ export const createEditFeatureGeometryServiceProvider = () => {
     updateCurrentFeatureGeometry$() {
       return of(null);
     },
-  })
-}
+  });
+};
 
 export const getEditFeatureGeometryServiceProvider = () => {
   return { provide: EditFeatureGeometryService, useValue: createEditFeatureGeometryServiceProvider() };

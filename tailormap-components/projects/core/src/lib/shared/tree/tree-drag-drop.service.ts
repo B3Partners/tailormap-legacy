@@ -69,7 +69,7 @@ export class TreeDragDropService implements OnDestroy {
 
   private static loopNodes(treeElement: HTMLDivElement, callback: (treeNode: HTMLDivElement) => void) {
     const nodes = treeElement.querySelectorAll(`.${treeNodeBaseClass}`);
-    // tslint:disable-next-line:prefer-for-of
+    // eslint-disable-next-line @typescript-eslint/prefer-for-of
     for (let i = 0; i < nodes.length; i++) {
       callback(nodes[i] as HTMLDivElement);
     }
@@ -128,7 +128,7 @@ export class TreeDragDropService implements OnDestroy {
       && Math.ceil(scrollContainer.scrollHeight - scrollContainer.scrollTop) > Math.ceil(scrollContainerRect.height)) {
       scrollContainer.scrollTop += 5;
     }
-  }
+  };
 
   private handleDragOver = (e: DragEvent) => {
     e.preventDefault();
@@ -200,7 +200,7 @@ export class TreeDragDropService implements OnDestroy {
       element.classList.add(this.insideCls);
     }
     removeCls.forEach(c => element.classList.remove(c));
-  }
+  };
 
   private handleDrop = (e) => {
     e.preventDefault();
@@ -227,7 +227,7 @@ export class TreeDragDropService implements OnDestroy {
       dropZone.nodePositionChanged(eventData);
     }
     this.handleDragEnd();
-  }
+  };
 
   private handleDragLeave = (e: DragEvent) => {
     e.preventDefault();
@@ -238,7 +238,7 @@ export class TreeDragDropService implements OnDestroy {
     element.classList.remove(this.beforeCls);
     element.classList.remove(this.afterCls);
     element.classList.remove(this.insideCls);
-  }
+  };
 
   private handleDragEnd = () => {
     if (!this.dropZones) {
@@ -262,6 +262,6 @@ export class TreeDragDropService implements OnDestroy {
         treeNode.classList.remove(this.insideCls);
       });
     });
-  }
+  };
 
 }

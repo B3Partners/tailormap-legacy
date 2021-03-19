@@ -17,7 +17,7 @@ export const removeFeature = (features: Feature[], removed: Feature): Feature[] 
       ...feature,
       children: feature.children ? removeFeature(feature.children, removed) : null,
     }));
-}
+};
 
 export const updateFeatureInArray = (features: Feature[], newFeature: Feature): Feature[] => {
   const idx = features.findIndex(feature =>
@@ -33,7 +33,7 @@ export const updateFeatureInArray = (features: Feature[], newFeature: Feature): 
     }));
 };
 
-export const addFeatureToParent = (features: Feature[], newFeature: Feature, parentId: string) : Feature[] => {
+export const addFeatureToParent = (features: Feature[], newFeature: Feature, parentId: string): Feature[] => {
   const idx = features.findIndex(feature => feature.objectGuid === parentId);
 
   return (idx !== -1 ?
@@ -44,4 +44,4 @@ export const addFeatureToParent = (features: Feature[], newFeature: Feature, par
       ...feature,
       children: feature.children ? addFeatureToParent(feature.children, newFeature, parentId) : null,
     }));
-}
+};

@@ -82,7 +82,7 @@ export class CriteriaDescriptionComponent {
   }
 
   private static convertCondition(condition: string) {
-    return CriteriaHelper.getConditionTypes().find(c => c.value === condition).readable_label;
+    return CriteriaHelper.getConditionTypes().find(c => c.value === condition).readableLabel;
   }
 
 }

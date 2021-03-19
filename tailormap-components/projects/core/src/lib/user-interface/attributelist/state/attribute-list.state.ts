@@ -23,4 +23,4 @@ export const initialAttributeListState: AttributeListState = {
   tabs: [],
   featureTypeData: [],
   selectedTabLayerId: null,
-}
+};

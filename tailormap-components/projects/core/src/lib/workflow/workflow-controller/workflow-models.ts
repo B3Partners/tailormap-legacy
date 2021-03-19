@@ -6,5 +6,5 @@ export class WorkflowActionEvent {
   public feature?: Feature;
   public geometryType? : string;
   public featureType? : string;
-  public action : WORKFLOW_ACTION;
+  public action: WORKFLOW_ACTION;
 }

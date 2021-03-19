@@ -1,4 +1,3 @@
-/* tslint:disable */
 /* eslint-disable */
 import { Crs } from './crs';
 export interface Geometry {

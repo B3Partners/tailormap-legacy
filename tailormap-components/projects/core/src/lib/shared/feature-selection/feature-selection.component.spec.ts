@@ -9,14 +9,14 @@ describe('FeatureSelectionComponent', () => {
   const dialogData: FeatureSelectionComponentData = {
     formConfigs: new Map(),
     features: [],
-  }
+  };
 
   const createComponent = createComponentFactory({
     component: FeatureSelectionComponent,
     providers: [
       { provide: MAT_DIALOG_DATA, useValue: dialogData },
       { provide: MatDialogRef, useValue: createSpyObject(MatDialogRef) },
-    ]
+    ],
   });
 
   it('should create', () => {

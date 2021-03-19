@@ -18,7 +18,7 @@ describe('AttributeListColumnSelectionComponent', () => {
       provideMockStore({ initialState }),
       getOverlayRefProvider(),
       { provide: OVERLAY_DATA, useValue: { featureType: 1} },
-    ]
+    ],
   });
 
   beforeEach(() => {
