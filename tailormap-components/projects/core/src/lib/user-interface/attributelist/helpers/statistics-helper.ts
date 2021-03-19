@@ -1,4 +1,4 @@
-import { StatisticColumn } from '../models/attributelist-statistic-models';
+import { AttributeListStatisticColumnModel } from '../models/attribute-list-statistic-column.model';
 import { StatisticType } from '../../../shared/statistic-service/statistic-models';
 
 const statisticOptions = [
@@ -34,7 +34,7 @@ export class StatisticsHelper {
     return statisticNumberTypes.has(type) && isNumberDataType;
   }
 
-  public static getStatisticValue(columnDataType?: string, column?: StatisticColumn): string {
+  public static getStatisticValue(columnDataType?: string, column?: AttributeListStatisticColumnModel): string {
     if (!column || column.statisticType === StatisticType.NONE) {
       return null;
     }

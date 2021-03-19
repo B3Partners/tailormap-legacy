@@ -6,7 +6,7 @@ import { AttributeListRowModel } from '../models/attribute-list-row.model';
 import { UpdateAttributeListStateHelper } from '../helpers/update-attribute-list-state.helper';
 import { AttributeListFeatureTypeData, CheckedFeature } from '../models/attribute-list-feature-type-data.model';
 import { AttributeListFilterModel } from '../models/attribute-list-filter-models';
-import { StatisticColumn } from '../models/attributelist-statistic-models';
+import { AttributeListStatisticColumnModel } from '../models/attribute-list-statistic-column.model';
 
 const onSetAttributeListVisibility = (
   state: AttributeListState,
@@ -449,7 +449,7 @@ const onLoadStatisticsForColumn = (
 ): AttributeListState => updateFeatureData(state, payload.featureType, tab => {
   return {
     ...tab,
-    statistics: addOrUpdateArrayItemInState<StatisticColumn>(
+    statistics: addOrUpdateArrayItemInState<AttributeListStatisticColumnModel>(
       tab.statistics,
       (s => s.name === payload.column),
       (s => ({...s, processing: true, statisticType: payload.statisticType})),
@@ -474,7 +474,7 @@ const onStatisticsForColumnLoaded = (
 ): AttributeListState => updateFeatureData(state, payload.featureType, tab => {
   return {
     ...tab,
-    statistics: updateArrayItemInState<StatisticColumn>(
+    statistics: updateArrayItemInState<AttributeListStatisticColumnModel>(
       tab.statistics,
       (s => s.name === payload.column),
       (s => ({...s, processing: false, statisticValue: payload.value})),

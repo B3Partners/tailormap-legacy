@@ -15,7 +15,7 @@ import { AttributeListColumnModel } from '../models/attribute-list-column-models
 import { AttributeListFilterComponent } from '../attribute-list-filter/attribute-list-filter.component';
 import { MatDialog } from '@angular/material/dialog';
 import { AttributeListFilterModel } from '../models/attribute-list-filter-models';
-import { StatisticColumn } from '../models/attributelist-statistic-models';
+import { AttributeListStatisticColumnModel } from '../models/attribute-list-statistic-column.model';
 import { StatisticsHelper } from '../helpers/statistics-helper';
 import { StatisticType } from '../../../shared/statistic-service/statistic-models';
 
@@ -51,7 +51,7 @@ export class AttributeListTableComponent implements OnInit, OnDestroy {
   public showCheckboxColumn$: Observable<boolean>;
 
   public statisticTypes = StatisticsHelper.getStatisticOptions();
-  private statistics: Map<string, StatisticColumn> = new Map();
+  private statistics: Map<string, AttributeListStatisticColumnModel> = new Map();
 
   constructor(
     private store$: Store<AttributeListState>,
