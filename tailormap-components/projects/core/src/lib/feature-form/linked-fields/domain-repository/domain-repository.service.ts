@@ -3,8 +3,6 @@ import { FormConfiguration, FormFieldType, SelectOption } from '../../form/form-
 import { LinkedAttributeRegistryService } from '../registry/linked-attribute-registry.service';
 import { AttributeControllerService, Attribuut } from '../../../shared/generated';
 import { LayerUtils } from '../../../shared/layer-utils/layer-utils.service';
-import { FormState } from '../../state/form.state';
-import { Store } from '@ngrx/store';
 import { Observable, of, Subject } from 'rxjs';
 import { map, takeUntil, tap } from 'rxjs/operators';
 
@@ -17,7 +15,6 @@ export class DomainRepositoryService implements OnDestroy {
 
   constructor(
     private repo: AttributeControllerService,
-    private store$: Store<FormState>,
     private registry: LinkedAttributeRegistryService) {
   }
 
