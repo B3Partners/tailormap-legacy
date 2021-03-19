@@ -107,7 +107,7 @@ const onSetLayerVisibility = (state: ApplicationState, payload: { visibility: Ma
 const onSetFormConfigs = (state: ApplicationState, payload: ReturnType<typeof ApplicationActions.setFormConfigs>): ApplicationState => ({
   ...state,
   formConfigsLoaded: true,
-  formConfigs: payload.formConfigs,
+  formConfigs: Array.from(payload.formConfigs.values()),
 });
 
 const applicationReducerImpl = createReducer(

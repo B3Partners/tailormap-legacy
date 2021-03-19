@@ -178,13 +178,7 @@ Ext.define ("viewer.components.TOC",{
                 select: {
                     scope: this,
                     toc: this,
-                    fn: function(thisObj, record) {
-                        var node = record.raw;
-                        if(node ===undefined){
-                            node = record.data;
-                        }
-                        this.config.viewerController.layerSelected(node.layerObj);
-                    }
+                    fn: this.itemSelected
                 },
 
 
@@ -807,7 +801,9 @@ Ext.define ("viewer.components.TOC",{
 
     /*************************  Event handlers ***********************************************************/
 
-    checkboxClicked : function(nodeObj,checked,toc) {
+    checkboxClicked : function(nodeObj, checked, toc) {
+        this.preventSelection = true;
+
         if (this.isStylesRadioNode(nodeObj)) {
             this.updateStylesForLayer(nodeObj);
             return;
@@ -820,6 +816,27 @@ Ext.define ("viewer.components.TOC",{
 
         this.checkScaleLayer(nodeObj,scale);
     },
+
+    itemSelected: function(tree, record) {
+        var node = record.raw;
+        if(node === undefined){
+            node = record.data;
+        }
+        if (this.preventSelection || this.currentSelection === node.layerObj.nodeId) {
+            tree.view.setSelection(); // clears current selection
+            tree.view.setSelection(null); // clears current selection
+            this.config.viewerController.layerSelected(null);
+            this.preventSelection = false;
+            this.preventDeselection = false;
+            this.currentSelection = null;
+            return false;
+        }
+        this.preventDeselection = true;
+        this.preventSelection = false;
+        this.currentSelection = node.layerObj.nodeId;
+        this.config.viewerController.layerSelected(node.layerObj);
+    },
+
     // Open the popup with the metadata/info of the level/applayer
     itemClicked: function(thisObj, record, item, index, e, eOpts){
         if(e.target.nodeName.toUpperCase() === "INPUT" ||
@@ -831,6 +848,13 @@ Ext.define ("viewer.components.TOC",{
         if(node ===undefined){
             node = record.data;
         }
+        if (!this.preventDeselection && this.currentSelection === node.layerObj.nodeId) {
+            this.panel.view.setSelection(); // clears current selection
+            this.panel.view.setSelection(null); // clears current selection
+            this.config.viewerController.layerSelected(null);
+            this.currentSelection = null;
+        }
+        this.preventDeselection = false;
         this.config.viewerController.layerClicked(node.layerObj);
     },
     // Entrypoint for when the selected content is changed: destroy the current tree and rebuild it.

@@ -71,9 +71,6 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
       this.indexedAttributes = FormCreatorHelpers.convertFeatureToIndexed(this.feature, this.formConfig);
       this.createFormControls();
       this.registry.resetLinkedAttributes();
-      this.formgroep.valueChanges.subscribe(s => {
-        this.formChanged.emit(true);
-      });
     }
   }
 
@@ -108,7 +105,7 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
         this.registry.registerDomainField(attr.linkedList, featureAttribute);
         if (featureAttribute.value && featureAttribute.value !== '-1') {
           this.domainValues.set(attr, featureAttribute.value);
-          value = parseInt('' + value, 10);
+          value = FormFieldHelpers.getComparableValue(featureAttribute).val;
         }
       }
       formControls[attr.key] = new FormControl(value, [FormFieldHelpers.nonExistingValueValidator(featureAttribute)]);
@@ -116,6 +113,9 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
     }
     this.formgroep = new FormGroup(formControls);
     this.formgroep.markAllAsTouched();
+    this.formgroep.valueChanges.subscribe(s => {
+      this.formChanged.emit(true);
+    });
   }
 
   public ngAfterViewInit() {
@@ -128,6 +128,7 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
 
   public resetForm(): void {
     this.store$.dispatch(FormActions.setFormEditing({editing: false}));
+    this.formChanged.emit(false);
     this.createFormControls();
   }
 
