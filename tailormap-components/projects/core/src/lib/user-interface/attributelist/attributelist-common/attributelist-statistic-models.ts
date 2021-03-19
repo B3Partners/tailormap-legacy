@@ -13,10 +13,10 @@ export interface StatisticColumns {
 }
 
 export enum StatisticTypeInMenu {
-  SUM = 'Sum',
+  SUM = 'Som',
   MIN = 'Min',
   MAX = 'Max',
-  AVERAGE = 'Gem',
+  AVERAGE = 'Gem.',
   COUNT = 'Aantal',
   NONE = 'Geen',
 }

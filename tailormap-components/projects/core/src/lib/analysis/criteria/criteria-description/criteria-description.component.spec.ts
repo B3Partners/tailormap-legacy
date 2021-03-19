@@ -16,7 +16,7 @@ describe('CriteriaDescriptionComponent', () => {
     providers: [
       provideMockStore({ initialState }),
       getMetadataServiceMockProvider(),
-    ]
+    ],
   });
 
   beforeEach(() => {

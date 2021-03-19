@@ -3,7 +3,7 @@ import { Feature } from '../../shared/generated';
 export const formStateKey = 'form';
 
 export interface FormState {
-  features : Feature[];
+  features: Feature[];
   feature: Feature;
   closeAfterSave: boolean;
   alreadyDirty: boolean;
@@ -20,4 +20,4 @@ export const initialFormState: FormState = {
   alreadyDirty: false,
   treeOpen: false,
   editting: false,
-}
+};

@@ -8,7 +8,7 @@ describe('GeometryConfirmService', () => {
     service: GeometryConfirmService,
     providers: [
       getTailorMapServiceMockProvider(),
-    ]
+    ],
   });
 
   beforeEach(() => {

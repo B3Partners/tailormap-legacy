@@ -1,3 +1,5 @@
+/* eslint @typescript-eslint/naming-convention: [ "error", { "selector": ["objectLiteralProperty","classProperty"], "format": ["camelCase", "UPPER_CASE", "snake_case"] } ] */
+
 import { Injectable } from '@angular/core';
 import {
   Boom,
@@ -22,7 +24,7 @@ import { FormHelpers } from '../../feature-form/form/form-helpers';
 })
 export class FeatureInitializerService {
 
-  public static enum
+  public static enum;
 
   public static readonly STUB_OBJECT_GUID_NEW_OBJECT = '-1';
 

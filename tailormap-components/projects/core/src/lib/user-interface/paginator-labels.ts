@@ -19,8 +19,7 @@ export class PaginatorLabels extends MatPaginatorIntl {
   public firstPageLabel = 'begin';
   public lastPageLabel = 'eind';
 
-  // tslint:disable-next-line:only-arrow-functions
-  public getRangeLabel = function(page, pageSize, length) {
+  public getRangeLabel = (page, pageSize, length) => {
     if (length === 0 || pageSize === 0) {
       return '0 van ' + length;
     }

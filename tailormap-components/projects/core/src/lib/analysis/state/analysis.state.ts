@@ -30,4 +30,4 @@ export interface AnalysisState {
 
 export const initialAnalysisState: AnalysisState = {
   createLayerMode: null,
-}
+};

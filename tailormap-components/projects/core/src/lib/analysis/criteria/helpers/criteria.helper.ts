@@ -27,21 +27,21 @@ export class CriteriaHelper {
 
   public static getConditionTypes(): CriteriaConditionTypeModel[] {
     return [
-      { value: '=', label: 'Gelijk aan', readable_label: 'gelijk is aan', attributeType: AttributeTypeEnum.NUMBER },
-      { value: '>', label: 'Groter dan', readable_label: 'groter is dan', attributeType: AttributeTypeEnum.NUMBER },
-      { value: '<', label: 'Kleiner dan', readable_label: 'kleiner is dan', attributeType: AttributeTypeEnum.NUMBER },
-      { value: '>=', label: 'Groter of gelijk aan', readable_label: 'groter is of gelijk aan', attributeType: AttributeTypeEnum.NUMBER },
-      { value: '<=', label: 'Kleiner of gelijk aan', readable_label: 'kleiner is of gelijk aan', attributeType: AttributeTypeEnum.NUMBER },
-      { value: 'EQUALS', label: 'Gelijk aan', readable_label: 'gelijk is aan', attributeType: AttributeTypeEnum.STRING },
-      { value: 'LIKE', label: 'Bevat', readable_label: 'bevat', attributeType: AttributeTypeEnum.STRING },
-      { value: 'NOT_LIKE', label: 'Bevat niet', readable_label: 'bevat niet', attributeType: AttributeTypeEnum.STRING },
-      { value: 'STARTS_WITH', label: 'Begint met', readable_label: 'begint met', attributeType: AttributeTypeEnum.STRING },
-      { value: 'ENDS_WITH', label: 'Eindigt op', readable_label: 'eindigt op', attributeType: AttributeTypeEnum.STRING },
-      { value: 'ON', label: 'Gelijk aan', readable_label: 'gelijk is aan', attributeType: AttributeTypeEnum.DATE },
-      { value: 'AFTER', label: 'Na', readable_label: 'na', attributeType: AttributeTypeEnum.DATE },
-      { value: 'BEFORE', label: 'Voor', readable_label: 'voor', attributeType: AttributeTypeEnum.DATE },
-      { value: 'TRUE', label: 'Is waar', readable_label: 'waar is', attributeType: AttributeTypeEnum.BOOLEAN },
-      { value: 'FALSE', label: 'Is niet waar', readable_label: 'niet waar is', attributeType: AttributeTypeEnum.BOOLEAN },
+      { value: '=', label: 'Gelijk aan', readableLabel: 'gelijk is aan', attributeType: AttributeTypeEnum.NUMBER },
+      { value: '>', label: 'Groter dan', readableLabel: 'groter is dan', attributeType: AttributeTypeEnum.NUMBER },
+      { value: '<', label: 'Kleiner dan', readableLabel: 'kleiner is dan', attributeType: AttributeTypeEnum.NUMBER },
+      { value: '>=', label: 'Groter of gelijk aan', readableLabel: 'groter is of gelijk aan', attributeType: AttributeTypeEnum.NUMBER },
+      { value: '<=', label: 'Kleiner of gelijk aan', readableLabel: 'kleiner is of gelijk aan', attributeType: AttributeTypeEnum.NUMBER },
+      { value: 'EQUALS', label: 'Gelijk aan', readableLabel: 'gelijk is aan', attributeType: AttributeTypeEnum.STRING },
+      { value: 'LIKE', label: 'Bevat', readableLabel: 'bevat', attributeType: AttributeTypeEnum.STRING },
+      { value: 'NOT_LIKE', label: 'Bevat niet', readableLabel: 'bevat niet', attributeType: AttributeTypeEnum.STRING },
+      { value: 'STARTS_WITH', label: 'Begint met', readableLabel: 'begint met', attributeType: AttributeTypeEnum.STRING },
+      { value: 'ENDS_WITH', label: 'Eindigt op', readableLabel: 'eindigt op', attributeType: AttributeTypeEnum.STRING },
+      { value: 'ON', label: 'Gelijk aan', readableLabel: 'gelijk is aan', attributeType: AttributeTypeEnum.DATE },
+      { value: 'AFTER', label: 'Na', readableLabel: 'na', attributeType: AttributeTypeEnum.DATE },
+      { value: 'BEFORE', label: 'Voor', readableLabel: 'voor', attributeType: AttributeTypeEnum.DATE },
+      { value: 'TRUE', label: 'Is waar', readableLabel: 'waar is', attributeType: AttributeTypeEnum.BOOLEAN },
+      { value: 'FALSE', label: 'Is niet waar', readableLabel: 'niet waar is', attributeType: AttributeTypeEnum.BOOLEAN },
     ];
   }
 
@@ -114,7 +114,7 @@ export class CriteriaHelper {
       cql = `${condition.attribute} = ${condition.condition === 'TRUE' ? 'true' : 'false'}`;
     }
     if (condition.relatedTo) {
-      return `RELATED_LAYER(${condition.relatedTo},${condition.source},${cql})`
+      return `RELATED_LAYER(${condition.relatedTo},${condition.source},${cql})`;
     }
     return `(${cql})`;
   }

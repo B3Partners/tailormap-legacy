@@ -8,7 +8,7 @@ import { environment } from '../../../../../bridge/src/environments/environment'
 })
 export class IconService {
 
-  public icons: Array<string | { folder: string, icons: string[] }> = [
+  public icons: Array<string | { folder: string; icons: string[] }> = [
     'draw_polygon', 'draw_line', 'draw_point', 'split', 'new_object', 'merge',
     'contextual_drag', 'contextual_resize', 'contextual_chevron_bottom', 'contextual_chevron_left', 'contextual_chevron_right', 'contextual_chevron_top',
     'contextual_close', 'contextual_minimize', 'contextual_drop_down', 'contextual_drop_top',
@@ -42,7 +42,7 @@ export class IconService {
         iconName,
         domSanitizer.bypassSecurityTrustResourceUrl(this.getUrlForIcon(iconFile, folder)),
       );
-    }
+    };
     this.icons.forEach(value => {
       if (typeof value === 'string') {
         addIcon(value, value);

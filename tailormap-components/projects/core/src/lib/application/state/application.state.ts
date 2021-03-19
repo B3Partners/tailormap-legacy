@@ -11,7 +11,7 @@ export interface ApplicationState {
   layers: TailormapAppLayer[];
   selectedAppLayer: string;
   formConfigsLoaded: boolean;
-  formConfigs: Map<string, FormConfiguration>;
+  formConfigs: FormConfiguration[];
 }
 
 export const initialApplicationState: ApplicationState = {
@@ -21,5 +21,5 @@ export const initialApplicationState: ApplicationState = {
   layers: [],
   selectedAppLayer: null,
   formConfigsLoaded: false,
-  formConfigs: null,
-}
+  formConfigs: [],
+};

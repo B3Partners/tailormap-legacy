@@ -60,7 +60,7 @@ export class CriteriaGroupComponent implements OnInit, OnDestroy {
         };
         this.criteriaGroup = updatedGroup;
         this.criteriaGroupUpdated.emit(updatedGroup);
-      })
+      });
   }
 
   public ngOnDestroy() {

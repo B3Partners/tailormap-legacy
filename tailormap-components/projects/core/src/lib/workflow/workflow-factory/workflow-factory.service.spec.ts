@@ -30,7 +30,7 @@ describe('WorkflowFactoryService', () => {
       { provide: ConfirmDialogService, useValue: createSpyObject(ConfirmDialogService) },
       { provide: FeatureInitializerService, useValue: createSpyObject(FeatureInitializerService) },
     ],
-  })
+  });
 
   beforeEach(() => {
     spectator = createService();

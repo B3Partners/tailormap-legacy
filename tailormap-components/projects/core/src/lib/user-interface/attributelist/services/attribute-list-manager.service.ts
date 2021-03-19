@@ -113,7 +113,7 @@ export class AttributeListManagerService implements OnDestroy {
       return of([]);
     }
     return forkJoin(layersWithoutTab.map<Observable<TabFromLayerResult>>(layer => {
-      return this.createTabFromLayer$(layer, attributeListConfig.pageSize)
+      return this.createTabFromLayer$(layer, attributeListConfig.pageSize);
     }));
   }
 
@@ -121,7 +121,7 @@ export class AttributeListManagerService implements OnDestroy {
     layer: TailormapAppLayer,
     pageSize = 10,
   ): Observable<TabFromLayerResult> {
-    const layerName = LayerUtils.sanitizeLayername(layer.layerName);
+    const layerName = LayerUtils.sanitizeLayername(layer);
     return forkJoin([
       this.store$.select(selectFormConfigForFeatureTypeName, layerName).pipe(take(1)),
       this.metadataService.getFeatureTypeMetadata$(layer.id),
@@ -181,7 +181,7 @@ export class AttributeListManagerService implements OnDestroy {
       columns: this.getColumnsForLayer(metadata, featureType, formConfig),
       showPassportColumnsOnly: !!formConfig,
       pageSize,
-    }
+    };
   }
 
   private getColumnsForLayer(

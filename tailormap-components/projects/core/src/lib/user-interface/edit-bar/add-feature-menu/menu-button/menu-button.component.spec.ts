@@ -9,7 +9,7 @@ describe('MenuButtonComponent', () => {
   const createComponent = createComponentFactory({
     component: MenuButtonComponent,
     imports: [ SharedModule ],
-  })
+  });
   beforeEach(() => {
     spectator = createComponent();
   });

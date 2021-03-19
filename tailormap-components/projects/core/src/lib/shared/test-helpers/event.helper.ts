@@ -6,6 +6,7 @@ const isIE = /MSIE|Trident/.test(ua);
 
 type EventConstructor<T extends Event> = new (...args: any[]) => T;
 
+// eslint-disable-next-line @typescript-eslint/ban-types
 export const createEvent = <T extends Event, I extends EventInit = {}>(
   eventConstructor: EventConstructor<T>,
   eventName: string,

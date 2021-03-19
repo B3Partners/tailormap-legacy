@@ -3,9 +3,10 @@ import { TailorMapService } from '../../../../../bridge/src/tailor-map.service';
 import { Store } from '@ngrx/store';
 import { ApplicationState } from '../state/application.state';
 import { setApplicationContent, setFormConfigs, setLayerVisibility, setSelectedAppLayer } from '../state/application.actions';
-import { take, takeUntil, tap, throttleTime } from 'rxjs/operators';
+import { concatMap, take, takeUntil, tap, throttleTime } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { FormConfigRepositoryService } from '../../shared/formconfig-repository/form-config-repository.service';
+import { DomainRepositoryService } from '../../feature-form/linked-fields/domain-repository/domain-repository.service';
 
 @Injectable({
   providedIn: 'root',
@@ -21,6 +22,7 @@ export class ApplicationService implements OnDestroy {
     private tailormapService: TailorMapService,
     private store$: Store<ApplicationState>,
     private formConfigRepositoryService: FormConfigRepositoryService,
+    private domainRepositoryService: DomainRepositoryService,
   ) {
     this.tailormapService.applicationConfig$
       .pipe(
@@ -52,14 +54,17 @@ export class ApplicationService implements OnDestroy {
     this.tailormapService.selectedLayerChanged$
       .pipe(takeUntil(this.destroyed))
       .subscribe(selectedAppLayer => {
-        this.store$.dispatch(setSelectedAppLayer({ layerId: `${selectedAppLayer.id}` }));
+        this.store$.dispatch(setSelectedAppLayer({ layerId: !!selectedAppLayer ? `${selectedAppLayer.id}` : null }));
       });
 
     this.formConfigRepositoryService.loadFormConfiguration$()
-      .pipe(takeUntil(this.destroyed))
+      .pipe(
+        takeUntil(this.destroyed),
+        concatMap(formConfigs => this.domainRepositoryService.initFormConfig$(formConfigs)),
+      )
       .subscribe(formConfigs => {
         this.store$.dispatch(setFormConfigs({ formConfigs }));
-      })
+      });
   }
 
   public ngOnDestroy() {

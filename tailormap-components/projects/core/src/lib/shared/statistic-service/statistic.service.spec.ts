@@ -9,7 +9,7 @@ describe('StatisticService', () => {
     providers: [
       getTailorMapServiceMockProvider(),
     ],
-  })
+  });
 
   beforeEach(() => {
     spectator = createService();

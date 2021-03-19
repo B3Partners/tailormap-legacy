@@ -1,5 +1,5 @@
 import { Component, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, EventEmitter } from '@angular/core';
-import { FeatureNode, FormTreeMetadata } from './form-tree-models';
+import { FormTreeMetadata } from './form-tree-models';
 import { Feature } from '../../shared/generated';
 import { FormTreeHelpers } from './form-tree-helpers';
 import { Store } from '@ngrx/store';
@@ -47,7 +47,7 @@ export class FormTreeComponent implements OnInit, OnChanges, OnDestroy {
 
   @Input()
   public isBulk = false;
-  private transientTreeHelper: TransientTreeHelper<FeatureNode>;
+  private transientTreeHelper: TransientTreeHelper<FormTreeMetadata>;
 
   constructor(
     private store$: Store<FormState>,
@@ -80,7 +80,7 @@ export class FormTreeComponent implements OnInit, OnChanges, OnDestroy {
         filter(([ features, formConfigs]) => !!features && features.length > 0 && !!formConfigs),
       )
       .subscribe(([ features, formConfigs]) => {
-        const tree : TreeModel<FormTreeMetadata> [] = FormTreeHelpers.convertFeatureToTreeModel(features, formConfigs);
+        const tree: TreeModel<FormTreeMetadata> [] = FormTreeHelpers.convertFeatureToTreeModel(features, formConfigs);
         this.transientTreeHelper.createTree(tree);
       });
 
@@ -91,9 +91,9 @@ export class FormTreeComponent implements OnInit, OnChanges, OnDestroy {
         if (node.metadata.feature) {
           relIds.set(node.metadata.feature.objectGuid, checked);
         }
-      })
+      });
       this.relatedFeatureChecked.emit(relIds);
-    })
+    });
   }
 
   public ngOnDestroy() {

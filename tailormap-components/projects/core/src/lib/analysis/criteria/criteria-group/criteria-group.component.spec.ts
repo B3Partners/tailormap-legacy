@@ -11,7 +11,7 @@ describe('CriteriaGroupComponent', () => {
     imports: [ SharedModule ],
     providers: [
       IdService,
-    ]
+    ],
   });
 
   beforeEach(() => {

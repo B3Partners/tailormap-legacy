@@ -122,7 +122,7 @@ export class AttributeListTabToolbarComponent implements OnInit, OnDestroy {
               title: result,
               query: appLayer.filter.getCQL(),
               source: UserLayerHelper.createUserLayerSourceFromMetadata(attributeMetadata, appLayer),
-            })
+            });
           }),
         )
         .subscribe(() => {
@@ -181,6 +181,7 @@ export class AttributeListTabToolbarComponent implements OnInit, OnDestroy {
     const featuresChecked: Feature[] = [];
     this.featureTypeData.rows.forEach(row => {
       if (row._checked) {
+        // eslint-disable-next-line @typescript-eslint/naming-convention,@typescript-eslint/no-unused-vars
         const { object_guid, related_featuretypes, __fid, _checked, _expanded, _selected, rowId, geometrie, ...rest } = row;
         if (row.geometrie) {
           rest.geometrie =  wellknown.parse(row.geometrie);

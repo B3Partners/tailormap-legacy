@@ -8,14 +8,14 @@ export class AttributelistStatistic {
   public layerStatisticValues: LayerStatisticValues = {
     layerId: 0,
     columns: [],
-  }
+  };
 
   public statisticParams: StatisticParameters = {
     application: 0,
     appLayer: 0,
     column: '',
     type: StatisticType.NONE,
-  }
+  };
   private columns: AttributeListColumnModel[];
 
   constructor(
@@ -29,8 +29,7 @@ export class AttributelistStatistic {
     const colNames = columns.map(c => c.name);
     this.layerStatisticValues.layerId = +(this.layerId);
     for (const colName of colNames) {
-      let statisticColumn: StatisticColumns;
-      statisticColumn = {name: colName, statisticType: StatisticType.NONE, statisticValue: null, processing: false};
+      const statisticColumn: StatisticColumns = {name: colName, statisticType: StatisticType.NONE, statisticValue: null, processing: false};
       this.layerStatisticValues.columns.push(statisticColumn);
     }
   }
@@ -52,7 +51,7 @@ export class AttributelistStatistic {
           this.layerStatisticValues.columns[colIndex].statisticType = statisticType;
           this.layerStatisticValues.columns[colIndex].statisticValue = data.result;
         }
-      })
+      });
     }
   }
 
@@ -61,14 +60,14 @@ export class AttributelistStatistic {
       if (col.statisticType !== StatisticType.NONE) {
         this.setStatistics(col.name, col.statisticType, layerId, valueFilter);
       }
-    })
+    });
   }
 
   private isStatisticViewable (colIndex: number): boolean {
     // const colIndex = this.layerStatisticValues.columns.findIndex(obj => obj.name === colName);
     return  (this.layerStatisticValues.columns[colIndex].statisticType !== StatisticType.NONE &&
       this.layerStatisticValues.columns[colIndex].statisticValue !== null &&
-      typeof (this.layerStatisticValues.columns[colIndex].statisticValue) === 'number')
+      typeof (this.layerStatisticValues.columns[colIndex].statisticValue) === 'number');
   }
 
   public getStatisticTypeInMenu(colName: string): string {
@@ -120,7 +119,7 @@ export class AttributelistStatistic {
     const colIndex = this.layerStatisticValues.columns.findIndex(obj => obj.name === colName);
     let result = false;
     if (colIndex >= 0) {
-      result = this.layerStatisticValues.columns[colIndex].processing
+      result = this.layerStatisticValues.columns[colIndex].processing;
     }
     return result;
   }

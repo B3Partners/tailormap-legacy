@@ -22,6 +22,7 @@ const geomAttribute: Attribute = {
   editHeight: '',
   editable: false,
   filterable: false,
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   folder_label: '',
   id: 0,
   longname: 'geometry',
@@ -31,7 +32,7 @@ const geomAttribute: Attribute = {
   featureType: 1,
   name: 'geom',
   type: 'geometry',
-}
+};
 
 const mockAttributeMetadataResponse: AttributeMetadataResponse = {
   featureType: 1,
@@ -42,18 +43,18 @@ const mockAttributeMetadataResponse: AttributeMetadataResponse = {
   geometryAttribute: 'geom',
   geometryAttributeIndex: 0,
   success: true,
-}
+};
 
 export const createAttributeServiceMock = (template?: Partial<Record<keyof AttributeService, any>>) => {
   return createSpyObject(AttributeService, {
     features$(params: AttributeListParameters): Observable<AttributeListResponse> {
-      return of(mockedAttributeListResponse)
+      return of(mockedAttributeListResponse);
     },
     featureTypeMetadata$(params: AttributeMetadataParameters): Observable<AttributeMetadataResponse> {
       return of(mockAttributeMetadataResponse);
     },
     ...template,
-  })
+  });
 };
 
 export const getAttributeServiceMockProvider = (template?: Partial<Record<keyof AttributeService, any>>) => {

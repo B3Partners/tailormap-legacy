@@ -15,6 +15,7 @@ import { TreeModel } from '../../shared/tree/models/tree.model';
 import { ApplicationTreeHelper } from '../helpers/application-tree.helper';
 import { LayerUtils } from '../../shared/layer-utils/layer-utils.service';
 import { TailormapAppLayer } from '../models/tailormap-app-layer.model';
+import { FormConfiguration } from '../../feature-form/form/form-models';
 
 const selectApplicationState = createFeatureSelector<ApplicationState>(applicationStateKey);
 
@@ -112,18 +113,22 @@ export const selectVisibleLayersWithAttributes = createSelector(
   (appLayers) => appLayers.filter(layer => layer.visible && layer.attribute),
 );
 
-export const selectFormConfigs = createSelector(selectApplicationState, state => state.formConfigs);
+export const selectFormConfigsArray = createSelector(selectApplicationState, state => state.formConfigs);
+
+export const selectFormConfigs = createSelector(selectFormConfigsArray, formConfigs => {
+  return new Map<string, FormConfiguration>(formConfigs.map(f => [ f.featureType, f ]));
+});
 
 export const selectFormConfigsLoaded = createSelector(selectApplicationState, state => state.formConfigsLoaded);
 
 export const selectFormConfigForFeatureTypeName = createSelector(
   selectFormConfigs,
-  (formConfigs, featureType : string) => formConfigs.get(LayerUtils.sanitizeLayername(featureType)),
+  (formConfigs, featureType: string) => formConfigs.get(LayerUtils.sanitizeLayername(featureType)),
 );
 
 export const selectFormConfigFeatureTypeNames = createSelector(
-  selectFormConfigs,
-  (formConfigs): string[] => formConfigs ? Array.from(formConfigs.keys()) : [],
+  selectFormConfigsArray,
+  (formConfigs): string[] => formConfigs ? formConfigs.map(f => f.featureType) : [],
 );
 
 export const selectVisibleLayersWithFormConfig = createSelector(
@@ -133,12 +138,12 @@ export const selectVisibleLayersWithFormConfig = createSelector(
     if (!visibleLayers || visibleLayers.length === 0) {
       return [];
     }
-    const formFeatureTypeNamesSet = new Set<string>(formConfigFeatureTypeNames.map(name => name.toLowerCase()))
+    const formFeatureTypeNamesSet = new Set<string>(formConfigFeatureTypeNames.map(name => name.toLowerCase()));
     return visibleLayers
       .filter(layer => formFeatureTypeNamesSet.has(LayerUtils.sanitizeLayername(layer.layerName)))
       .map(layer => LayerUtils.sanitizeLayername(layer.layerName));
   },
-)
+);
 
 export const selectLayerIdForLayerName = createSelector(
   selectLayers,
@@ -150,5 +155,5 @@ export const selectLayerIdForLayerName = createSelector(
     }
     return null;
   },
-)
+);
 

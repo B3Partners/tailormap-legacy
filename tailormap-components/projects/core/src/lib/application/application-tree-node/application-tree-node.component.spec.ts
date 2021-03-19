@@ -12,7 +12,7 @@ describe('ApplicationTreeNodeComponent', () => {
 
   beforeEach(() => {
     spectator = createComponent();
-    spectator.setInput("node", {
+    spectator.setInput('node', {
       id: 'node-1',
       label: 'Node',
       metadata: {} as any,

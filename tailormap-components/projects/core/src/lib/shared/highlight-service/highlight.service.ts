@@ -46,7 +46,7 @@ export class HighlightService {
         strokeopacity: 100,
       },
     });
-    vc.registerSnappingLayer(this.vectorLayer)
+    vc.registerSnappingLayer(this.vectorLayer);
     mapComponent.getMap().addLayer(this.vectorLayer);
   }
 
@@ -74,7 +74,7 @@ export class HighlightService {
     const hightlightParams: HighlightParams = {
       application: applicationId,
       featureId: featureFId,
-    }
+    };
     if (appLayerId) {
       hightlightParams.appLayer = appLayerId.toString(10);
     }
@@ -105,7 +105,7 @@ export class HighlightService {
           const map = this.tailorMap.getMapComponent().getMap();
           map.zoomToExtent(extent);
         }
-      })
+      });
   }
 
 }

@@ -4,11 +4,11 @@ import { DebugElement } from '@angular/core';
 
 export const queryByClass = (fixture: ComponentFixture<any>, cssSelector: string) => {
   return fixture.debugElement.query(By.css(cssSelector));
-}
+};
 
 export const queryAllByClass = (fixture: ComponentFixture<any>, cssSelector: string) => {
   return fixture.debugElement.queryAll(By.css(cssSelector));
-}
+};
 
 export const assertCssQueries = (debugEl: DebugElement, queries: { [q: string]: boolean }) => {
   Object.keys(queries).forEach(q => {
@@ -21,7 +21,7 @@ export const assertCssQueries = (debugEl: DebugElement, queries: { [q: string]: 
       expect(el).toBeNull(`Expected ${q} to not exist, but it does exist`);
     }
   });
-}
+};
 
 export const queryTextContent = (fixture: ComponentFixture<any>, cssSelector: string): string => {
   const el = fixture.debugElement.query(By.css(cssSelector));
@@ -29,4 +29,4 @@ export const queryTextContent = (fixture: ComponentFixture<any>, cssSelector: st
     return (el.nativeElement as Element).textContent;
   }
   return null;
-}
+};

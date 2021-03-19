@@ -5,7 +5,7 @@ export interface StatisticParameters {
   appLayer: number;
   column: string;
   type: StatisticType;
-  featureType?: number
+  featureType?: number;
   filter?: string;
 }
 

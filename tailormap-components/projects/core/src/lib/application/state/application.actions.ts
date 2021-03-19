@@ -12,12 +12,12 @@ const applicationActionsPrefix = '[Application]';
 
 export const setApplicationContent = createAction(
   `${applicationActionsPrefix} Set Application Content`,
-  props<{ id: number, root: SelectedContentItem[], levels: Level[], layers: AppLayer[] }>(),
+  props<{ id: number; root: SelectedContentItem[]; levels: Level[]; layers: AppLayer[] }>(),
 );
 
 export const addAppLayer = createAction(
   `${applicationActionsPrefix} Add App Layer`,
-  props<{ layer: TailormapAppLayer, service: GeoService, levelId: string }>(),
+  props<{ layer: TailormapAppLayer; service: GeoService; levelId: string }>(),
 );
 
 export const removeAppLayer = createAction(
@@ -37,5 +37,5 @@ export const setLayerVisibility = createAction(
 
 export const setFormConfigs = createAction(
   `${applicationActionsPrefix} Set Form Configurations`,
-  props<{ formConfigs : Map<string, FormConfiguration> }>(),
+  props<{ formConfigs: Map<string, FormConfiguration> }>(),
 );

@@ -30,7 +30,7 @@ describe('FormCopyComponent', () => {
     [applicationStateKey]: {
       ...initialApplicationState,
       formConfigs: testFormConfigs,
-    }
+    },
   };
   let store: MockStore;
   const createComponent = createComponentFactory({

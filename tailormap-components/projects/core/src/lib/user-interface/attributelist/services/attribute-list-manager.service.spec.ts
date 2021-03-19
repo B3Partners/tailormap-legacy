@@ -25,7 +25,7 @@ describe('AttributeListManagerService', () => {
       provideMockStore({ initialState }),
       getMetadataServiceMockProvider(),
       IdService,
-    ]
+    ],
   });
 
   beforeEach(() => {

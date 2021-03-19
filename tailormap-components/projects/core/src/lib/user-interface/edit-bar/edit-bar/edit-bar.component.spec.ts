@@ -22,7 +22,7 @@ describe('EditBarComponent', () => {
       provideMockStore({ initialState }),
       getTailorMapServiceMockProvider(),
       { provide: WorkflowControllerService, useValue: createSpyObject(WorkflowControllerService) },
-    ]
+    ],
   });
 
   beforeEach(() => {

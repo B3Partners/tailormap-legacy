@@ -14,7 +14,7 @@ export class FormHelpers {
     });
   }
 
-  public static copyFeature(feature: Feature) : Feature {
+  public static copyFeature(feature: Feature): Feature {
     const copy = {...feature};
 
     if (copy.children) {
@@ -23,7 +23,7 @@ export class FormHelpers {
     return copy;
   }
 
-  public static copyFeatures(feature: Feature[]) : Feature[] {
+  public static copyFeatures(feature: Feature[]): Feature[] {
     return [...feature].map(child => FormHelpers.copyFeature(child));
   }
 }

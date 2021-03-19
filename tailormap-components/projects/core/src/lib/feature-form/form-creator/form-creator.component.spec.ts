@@ -6,14 +6,14 @@ import {
   Wegvakonderdeel,
   Wegvakonderdeelplanning,
 } from '../../shared/generated';
-import {FormsModule, ReactiveFormsModule} from "@angular/forms";
-import {SharedModule} from "../../shared/shared.module";
-import { FormConfiguration} from "../form/form-models";
-import {FormfieldComponent} from "../form-field/formfield.component";
-import {FormComponent} from "../form/form.component";
-import {FormTreeComponent} from "../form-tree/form-tree.component";
-import {MatSnackBarModule} from "@angular/material/snack-bar";
-import {FeatureInitializerService} from "../../shared/feature-initializer/feature-initializer.service";
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {SharedModule} from '../../shared/shared.module';
+import { FormConfiguration} from '../form/form-models';
+import {FormfieldComponent} from '../form-field/formfield.component';
+import {FormComponent} from '../form/form.component';
+import {FormTreeComponent} from '../form-tree/form-tree.component';
+import {MatSnackBarModule} from '@angular/material/snack-bar';
+import {FeatureInitializerService} from '../../shared/feature-initializer/feature-initializer.service';
 import { FormConfigMockModule } from '../../shared/formconfig-repository/formconfig-mock.module.spec';
 import { mockFeature, mockWegvakonderdeel, mockWegvakonderdeelplanning } from '../../shared/tests/test-data';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
@@ -44,7 +44,7 @@ describe('FormCreatorComponent', () => {
         FormComponent,
         FormTreeComponent,
         FormfieldComponent,
-        FormCreatorComponent,]
+        FormCreatorComponent],
     })
     .compileComponents();
   }));
@@ -52,13 +52,13 @@ describe('FormCreatorComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(FormCreatorComponent);
     component = fixture.componentInstance;
-    let formConfig : FormConfiguration = {
-      featureType: "",
+    const formConfig: FormConfiguration = {
+      featureType: '',
       tabConfig: undefined,
       fields: [],
       tabs: 0,
       name: 'pietje',
-      treeNodeColumn:'wer'
+      treeNodeColumn:'wer',
     };
     store = TestBed.inject(MockStore);
     component.formConfig = formConfig;

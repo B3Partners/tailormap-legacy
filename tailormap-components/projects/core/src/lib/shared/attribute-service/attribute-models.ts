@@ -20,8 +20,8 @@ export interface AttributeListParameters {
 
 export interface AttributeListResponse {
   features: AttributeListFeature[];
-  success: boolean,
-  total: number
+  success: boolean;
+  total: number;
   message?: string;
 }
 

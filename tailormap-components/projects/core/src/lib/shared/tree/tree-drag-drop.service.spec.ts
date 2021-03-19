@@ -98,7 +98,7 @@ describe('Tree Drag Drop Service', () => {
         fromParent: null,
         position: 'after',
         sibling: 'node-3',
-      }
+      },
     ]);
     expect(treeEl.classList).not.toContain('mat-tree--drag-active');
   }));

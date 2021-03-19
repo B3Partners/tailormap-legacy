@@ -34,7 +34,7 @@ describe('AttributeListButtonComponent', () => {
         done();
       }
     });
-    spectator.click("button");
+    spectator.click('button');
   });
 
   it('should hide attribute list if visible', (done) => {
@@ -45,7 +45,7 @@ describe('AttributeListButtonComponent', () => {
       }
     });
     store.overrideSelector(selectAttributeListVisible, true);
-    spectator.click("button");
+    spectator.click('button');
   });
 
 });

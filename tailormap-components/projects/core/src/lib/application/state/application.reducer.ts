@@ -13,7 +13,7 @@ import { TailormapAppLayer } from '../models/tailormap-app-layer.model';
 
 const onSetApplicationContent = (
   state: ApplicationState,
-  payload: { id: number, root: SelectedContentItem[], levels: Level[], layers: AppLayer[] },
+  payload: { id: number; root: SelectedContentItem[]; levels: Level[]; layers: AppLayer[] },
 ): ApplicationState => ({
   ...state,
   applicationId: payload.id,
@@ -22,7 +22,7 @@ const onSetApplicationContent = (
   levels: payload.levels.map(l => ({...l, id: `${l.id}`})),
 });
 
-const onAddAppLayer = (state: ApplicationState, payload: { layer: TailormapAppLayer, levelId?: string }): ApplicationState => {
+const onAddAppLayer = (state: ApplicationState, payload: { layer: TailormapAppLayer; levelId?: string }): ApplicationState => {
   const levelIdx = state.levels.findIndex(l => l.id === payload.levelId);
   if (levelIdx === -1) {
     return {
@@ -104,10 +104,10 @@ const onSetLayerVisibility = (state: ApplicationState, payload: { visibility: Ma
   })),
 });
 
-const onSetFormConfigs = (state: ApplicationState, payload : ReturnType<typeof ApplicationActions.setFormConfigs>): ApplicationState => ({
+const onSetFormConfigs = (state: ApplicationState, payload: ReturnType<typeof ApplicationActions.setFormConfigs>): ApplicationState => ({
   ...state,
   formConfigsLoaded: true,
-  formConfigs: payload.formConfigs,
+  formConfigs: Array.from(payload.formConfigs.values()),
 });
 
 const applicationReducerImpl = createReducer(
@@ -122,4 +122,4 @@ const applicationReducerImpl = createReducer(
 
 export const applicationReducer = (state: ApplicationState | undefined, action: Action) => {
   return applicationReducerImpl(state, action);
-}
+};

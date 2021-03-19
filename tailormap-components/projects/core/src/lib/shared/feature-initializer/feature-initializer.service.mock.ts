@@ -12,7 +12,7 @@ export const createFeatureInitializerServiceMockProvider = () => {
     retrieveGeometry(feature: Feature): Geometry {
       return mockGeometry();
     },
-  })
+  });
 };
 
 export const getFeatureInitializerServiceMockProvider = () => {

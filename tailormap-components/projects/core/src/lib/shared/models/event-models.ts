@@ -6,7 +6,7 @@ export interface LayerVisibilityEvent {
 }
 
 export interface LayerVisibilityLayer {
-  id: number
+  id: number;
 }
 
 export interface MapClickedEvent {

@@ -50,7 +50,7 @@ export class AttributeListDetailsComponent implements OnInit, OnDestroy {
     ).subscribe(featureData => {
       this.columns = featureData.columns;
       this.columnsNames = featureData.columns.map(column => column.name);
-    })
+    });
     this.updateTable();
   }
 

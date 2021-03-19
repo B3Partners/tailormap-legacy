@@ -6,13 +6,13 @@ import { selectApplicationId, selectFormConfigForFeatureTypeName } from '../stat
 import { catchError, concatMap, map, switchMap, takeUntil, takeWhile, tap } from 'rxjs/operators';
 import { combineLatest, Observable, of, Subject } from 'rxjs';
 import { AttributeListParameters, AttributeListResponse, AttributeMetadataResponse } from '../../shared/attribute-service/attribute-models';
-import { Attribute as GbiAttribute } from '../../feature-form/form/form-models';
+import { Attribute as GbiAttribute, FormConfiguration } from '../../feature-form/form/form-models';
 import { PassportAttributeModel } from '../models/passport-attribute.model';
 import { UniqueValuesResponse } from '../../shared/value-service/value-models';
 import { ValueService } from '../../shared/value-service/value.service';
 import { FormState } from '../../feature-form/state/form.state';
 
-export type UniqueValueCountResponse = { uniqueValue: string, total: number };
+export type UniqueValueCountResponse = { uniqueValue: string; total: number };
 
 @Injectable({
   providedIn: 'root',
@@ -50,9 +50,9 @@ export class MetadataService implements OnDestroy {
             if (result.success) {
               this.attributeCache.set(`${layerId}`, result);
             }
-          }))
+          }));
         }),
-      )
+      );
   }
 
   public getPassportFieldsForLayer$(layerId: string | number): Observable<PassportAttributeModel[]> {
@@ -66,10 +66,10 @@ export class MetadataService implements OnDestroy {
           return combineLatest([
             of(metadata),
             this.store$.select(selectFormConfigForFeatureTypeName, metadata.featureTypeName),
-            combineLatest(formConfigs$),
+            formConfigs$.length ? combineLatest(formConfigs$) : of([]),
           ]);
         }),
-        map(([ metadata, formConfig, relationFormConfigs ]) => {
+        map(([ metadata, formConfig, relationFormConfigs ]: [ AttributeMetadataResponse, FormConfiguration, FormConfiguration[] ]) => {
           if (!formConfig.fields) {
             return [];
           }
@@ -109,7 +109,7 @@ export class MetadataService implements OnDestroy {
                 map<number, UniqueValueCountResponse>(total => ({ uniqueValue: value, total })),
               );
           });
-          return combineLatest(featureInfoRequests$)
+          return combineLatest(featureInfoRequests$);
         }),
       );
   }

@@ -5,20 +5,22 @@
 The project supports the last 2 stable releases (built from the specific version branch) and 
 the last(latest) community release (cut from the `master` branch).
 
-At the time of writing (Jan 2020) the support matrix looks as follows:
+At the time of writing (March 2021) the support matrix looks as follows:
 
 | Version | Supported          | Stable / Community release? |
 | ------- | ------------------ | --------------------------- |
-| 5.7.x   | :white_check_mark: | Community                   |
+| 5.9.x   | :white_check_mark: | Community                   |
+| 5.8.x   | :white_check_mark: | Stable                      |
+| 5.7.x   | :x:                | Community                   |
 | 5.6.x   | :white_check_mark: | Stable                      |
 | 5.5.x   | :x:                | Community                   |
-| 5.4.x   | :white_check_mark: | Stable                      |
-| 5.2.x   | :x:                | Stable                      |
-| 5.0.x   | :x:                | Stable                      |
+| 5.4.x   | :x:                | Old stable                  |
+| 5.2.x   | :x:                | Old stable                  |
+| 5.0.x   | :x:                | Old stable                  |
 | 4.x     | :x:                | Community                   |
 | < 4.x   | :x:                | Community                   |
 
-More about the versioning schema can be found in the wiki: [releases and contributions](https://github.com/flamingo-geocms/flamingo/wiki/releasesAndContributions)
+More about the versioning scheme can be found in the wiki: [releases and contributions](https://github.com/flamingo-geocms/flamingo/wiki/releasesAndContributions)
 
 ## Reporting a Vulnerability
 

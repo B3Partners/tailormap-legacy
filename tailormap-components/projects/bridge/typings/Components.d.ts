@@ -2,19 +2,15 @@ import {
   App,
   AppLayer,
   GeoService,
-  GeoServiceLayer,
-  MapEvent,
   MapComponent,
-  SelectedContentItem,
   VectorLayer,
 } from './Mapcomponents';
-import { LayerVisibilityEvent } from '../../core/src/lib/shared/models/event-models';
 
 declare interface LayerSelectedEvent{
   appLayer: AppLayer;
   layerName: string;
   nodeId: string;
-  service: number
+  service: number;
 }
 
 type deactivationEvent = ( ) => void;
@@ -30,15 +26,15 @@ declare interface ViewerController {
   getService: (serviceId: number) => GeoService;
   getAppLayerById: (appLayerId: number) => AppLayer;
   getAppLayer: (serviceId: number, layerName: string) => AppLayer;
-  setFilterString: (filter: string, appLayer : AppLayer, name: string) => void;
+  setFilterString: (filter: string, appLayer: AppLayer, name: string) => void;
 
   addListener: (eventName: string, handler: layerEventHandler) => void;
-  getComponentsByClassNames: (classNames : string[]) => TailormapComponent[];
+  getComponentsByClassNames: (classNames: string[]) => TailormapComponent[];
 
   registerSnappingLayer: (vectorLayer: VectorLayer) => void;
 
   getVisibleLayers(): number[];
-  // tslint:disable-next-line:unified-signatures
+  // eslint-disable-next-line @typescript-eslint/unified-signatures
   getVisibleLayers(castToStrings: false): number[];
   getVisibleLayers(castToStrings: true): string[];
 
@@ -64,6 +60,6 @@ declare interface SplitComponent extends TailormapComponent{
 
 declare interface MergeComponent extends TailormapComponent{
   showWindow: () => void;
-  mode : string;
+  mode: string;
   popup: ExtPopupWindow;
 }

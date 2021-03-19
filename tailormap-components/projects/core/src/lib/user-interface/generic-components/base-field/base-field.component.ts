@@ -8,16 +8,16 @@ import { FormGroup } from '@angular/forms';
 })
 export class BaseFieldComponent implements OnInit {
   @Input()
-  public id : string;
+  public id: string;
 
   @Input()
-  public label : string;
+  public label: string;
 
   @Input()
-  public placeholder : string;
+  public placeholder: string;
 
   @Input()
-  public value : string;
+  public value: string;
 
   @Input()
   public groep: FormGroup;
