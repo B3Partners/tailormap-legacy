@@ -7,7 +7,6 @@ import {
   Boom, Boominspectie, Boomplanning, CultBeplanting, Feature, Gras, Haag, MechLeiding, NatBeplanting, Rioolput, VrijvLeiding, Weginspectie,
   Wegvakonderdeel, Wegvakonderdeelplanning,
 } from '../../shared/generated';
-import { MapClickedEvent } from '../../shared/models/event-models';
 import { VectorLayer } from '../../../../../bridge/typings';
 import { ChooseTypesComponent } from '../../user-interface/sewage/choose-types/choose-types.component';
 import { combineLatest, Observable } from 'rxjs';
@@ -162,12 +161,12 @@ export class SewageWorkflow extends Workflow {
       this.store$.pipe(selectFormClosed),
     ])
       .pipe(take(1))
-      .subscribe(([currentFeature, close]) => {
+      .subscribe(([currentFeature, _close]) => {
         this.afterEditting(currentFeature);
       });
   }
 
-  public mapClick(data: MapClickedEvent): void {
+  public mapClick(): void {
 
   }
 
@@ -203,9 +202,6 @@ export class SewageWorkflow extends Workflow {
         break;
     }
     this.tailorMap.getViewerController().mapComponent.getMap().update();
-  }
-
-  public setCopyMode(feature: Feature): void {
   }
 
   public getDestinationFeatures(): Feature[] {

@@ -20,14 +20,14 @@ export class AttributeListEffects {
   public hideAttributeList$ = createEffect(() => this.actions$.pipe(
     ofType(AttributeListActions.setAttributeListVisibility),
     filter((action) => !action.visible),
-    tap(action => {
+    tap(() => {
       this.highlightService.clearHighlight();
     })), {dispatch: false},
   );
 
   public changeAttributeListTab$ = createEffect(() => this.actions$.pipe(
     ofType(AttributeListActions.setSelectedTab),
-    tap(action => {
+    tap(() => {
       this.highlightService.clearHighlight();
     })), {dispatch: false},
   );
@@ -50,7 +50,7 @@ export class AttributeListEffects {
         this.store$.select(selectFeatureDataForTab, action.layerId),
       ),
     )),
-    filter(([action, tab, featureData]) => {return !!tab; }),
+    filter(([_action, tab, _featureData]) => {return !!tab; }),
     tap(([action, tab, featureData]) => {
       const mainFilter = this.attributeListDataService.getFilter(tab, tab.featureType, featureData);
       const viewerController = this.tailorMapService.getViewerController();
@@ -72,7 +72,7 @@ export class AttributeListEffects {
         this.store$.select(selectFeatureDataAndRelatedFeatureDataForFeatureType, action.featureType),
       ),
     )),
-    filter(([action, tab, data]) => !!tab),
+    filter(([_action, tab, _data]) => !!tab),
     concatMap(([action, tab, featureData]) => {
       const updatedFeatureData = featureData.map(data => {
         if (data.featureType === action.featureType) {

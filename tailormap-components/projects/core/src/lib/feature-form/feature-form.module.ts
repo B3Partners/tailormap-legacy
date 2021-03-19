@@ -13,7 +13,6 @@ import { formStateKey } from './state/form.state';
 import { formReducer } from './state/form.reducer';
 import { EffectsModule } from '@ngrx/effects';
 import { FormEffects } from './state/form.effects';
-import { DomainRepositoryService } from './linked-fields/domain-repository/domain-repository.service';
 import { ApplicationModule } from '../application/application.module';
 import { FormNodeComponent } from './form-tree/form-node/form-node.component';
 
@@ -41,8 +40,5 @@ import { FormNodeComponent } from './form-tree/form-node/form-node.component';
   entryComponents: [
   ],
 })
-export class FeatureFormModule {
-  constructor(domainRepo: DomainRepositoryService) {
-  }
-}
+export class FeatureFormModule {}
 

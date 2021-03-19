@@ -107,7 +107,7 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
     }
     this.formgroep = new FormGroup(formControls);
     this.formgroep.markAllAsTouched();
-    this.formgroep.valueChanges.subscribe(s => {
+    this.formgroep.valueChanges.subscribe(() => {
       this.formChanged.emit(true);
     });
   }

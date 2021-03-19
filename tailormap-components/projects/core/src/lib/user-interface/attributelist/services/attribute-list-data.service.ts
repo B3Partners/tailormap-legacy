@@ -93,7 +93,7 @@ export class AttributeListDataService {
     };
     return forkJoin([
       this.attributeService.features$(attrParams).pipe(
-        catchError(e => of<AttributeListResponse>({ success: false, message: '', features: [], total: 0 })),
+        catchError(() => of<AttributeListResponse>({ success: false, message: '', features: [], total: 0 })),
       ),
       this.store$.select(selectFormConfigForFeatureTypeName, tab.layerName).pipe(take(1)),
     ]).pipe(

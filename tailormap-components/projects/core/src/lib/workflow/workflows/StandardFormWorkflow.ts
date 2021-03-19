@@ -96,7 +96,7 @@ export class StandardFormWorkflow extends Workflow {
     this.store$.dispatch(FormActions.setOpenFeatureForm({features: formFeatures, editMode}));
     this.store$.pipe(selectFormClosed)
       .pipe(take(1))
-      .subscribe(( close) => {
+      .subscribe(() => {
         this.afterEditting();
       });
   }

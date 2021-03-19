@@ -16,10 +16,10 @@ export class FormEffects {
     concatMap(action => of(action).pipe(
       withLatestFrom(this.store$.select(selectCloseAfterSaveFeatureForm)),
     )),
-    filter(([formAction, closeAfterSave]) => {
+    filter(([_formAction, closeAfterSave]) => {
       return closeAfterSave;
     }),
-    map(([formAction, closeAfterSave]) => {
+    map(() => {
       return FormActions.setCloseFeatureForm();
     }),
   ));

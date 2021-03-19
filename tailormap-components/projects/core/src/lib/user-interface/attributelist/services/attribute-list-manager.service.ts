@@ -67,8 +67,8 @@ export class AttributeListManagerService implements OnDestroy {
     ])
       .pipe(
         takeUntil(this.destroyed),
-        filter(([ layers, formConfigLoaded ]) => !!formConfigLoaded),
-        map(([ layers, formConfigLoaded ]) => layers),
+        filter(([ _layers, formConfigLoaded ]) => !!formConfigLoaded),
+        map(([ layers, _formConfigLoaded ]) => layers),
         withLatestFrom(this.store$.select(selectAttributeListTabs), this.store$.select(selectAttributeListConfig)),
         concatMap(([ layers, tabs, config ]) => {
           const closedTabs = this.getClosedTabs(layers, tabs);

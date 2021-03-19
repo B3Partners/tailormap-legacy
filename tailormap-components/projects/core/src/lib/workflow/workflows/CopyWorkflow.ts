@@ -1,5 +1,4 @@
 import { Workflow } from './Workflow';
-import { VectorLayer } from '../../../../../bridge/typings';
 import { MapClickedEvent } from '../../shared/models/event-models';
 import { Feature } from '../../shared/generated';
 import { FormCopyComponent } from '../../feature-form/form-copy/form-copy.component';
@@ -26,7 +25,7 @@ export class CopyWorkflow extends Workflow {
   public afterEditting(): void {
   }
 
-  public geometryDrawn(vectorLayer: VectorLayer, feature: any): void {
+  public geometryDrawn(): void {
   }
 
   public mapClick(data: MapClickedEvent): void {
@@ -87,8 +86,7 @@ export class CopyWorkflow extends Workflow {
       hasBackdrop: false,
     });
 
-    dialogRef.afterClosed().subscribe(result => {
-      console.log('copy dialog gesloten');
+    dialogRef.afterClosed().subscribe(() => {
       this.highlightLayer.removeAllFeatures();
       this.destinationFeatures = [];
       this.endWorkflow();

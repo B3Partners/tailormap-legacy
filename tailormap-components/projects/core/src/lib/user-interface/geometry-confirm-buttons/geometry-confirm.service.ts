@@ -33,7 +33,7 @@ export class GeometryConfirmService implements OnDestroy {
   constructor(
     private tailorMapService: TailorMapService) {
 
-    this.tailorMapService.extentChanged$.pipe(takeUntil(this.destroyed)).subscribe(event => {
+    this.tailorMapService.extentChanged$.pipe(takeUntil(this.destroyed)).subscribe(() => {
       if (this.currentCoordinate) {
         const pixel = this.tailorMapService.getMapComponent().getMap()
           .coordinateToPixel(this.currentCoordinate.x, this.currentCoordinate.y);
