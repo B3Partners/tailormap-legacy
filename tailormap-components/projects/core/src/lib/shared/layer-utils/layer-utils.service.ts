@@ -34,10 +34,10 @@ export class LayerUtils {
     return FormHelpers.snakecaseToCamel(layername).toLowerCase();
   }
 
-  public getFeatureTypesAllowed(allFeatureTypes: string[], ignoreSelected: boolean = false): string[] {
+  public getFeatureTypesAllowed(allFeatureTypes: string[], useSelectedLayerFilter: boolean = true): string[] {
     let allowedFeaturesTypes = [];
     const sl = this.tailorMap.selectedLayer;
-    if (sl && !ignoreSelected) {
+    if (sl && useSelectedLayerFilter) {
       allowedFeaturesTypes.push( this.getLayerName(sl));
     } else {
       allowedFeaturesTypes = allFeatureTypes;

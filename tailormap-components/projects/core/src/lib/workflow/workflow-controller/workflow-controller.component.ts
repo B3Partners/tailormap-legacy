@@ -8,6 +8,9 @@ import { WorkflowFactoryService } from '../workflow-factory/workflow-factory.ser
 import { VectorLayer } from '../../../../../bridge/typings';
 import { TailorMapService } from '../../../../../bridge/src/tailor-map.service';
 import { MapClickedEvent } from '../../shared/models/event-models';
+import { Store } from '@ngrx/store';
+import { WorkflowState } from '../state/workflow.state';
+import { updateConfig } from '../state/workflow.actions';
 
 @Component({
   selector: 'tailormap-workflow-controller',
@@ -22,6 +25,7 @@ export class WorkflowControllerComponent implements OnInit {
     private controller: WorkflowControllerService,
     private factory: WorkflowFactoryService,
     private tailorMap: TailorMapService,
+    private store$: Store<WorkflowState>,
   ) {}
 
   @Input()
@@ -45,6 +49,10 @@ export class WorkflowControllerComponent implements OnInit {
     this.controller.init();
   }
 
+  @Input()
+  public set useSelectedLayerFilter(useSelectedLayerFilter: string) {
+    this.store$.dispatch(updateConfig({ config: { useSelectedLayerFilter: useSelectedLayerFilter !== 'false' }}));
+  }
 
   @Input()
   public set mapClicked(data: string) {

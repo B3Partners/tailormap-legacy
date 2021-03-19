@@ -1,6 +1,7 @@
 import { createAction, props } from '@ngrx/store';
 import { WORKFLOW_ACTION } from './workflow-models';
 import { Feature } from '../../shared/generated';
+import { WorkflowStateConfig } from './workflow.state';
 
 
 const formActionsPrefix = '[Workflow]';
@@ -15,8 +16,12 @@ export const setFeature = createAction(
   props<{ feature: Feature; action: WORKFLOW_ACTION }>(),
 );
 
-
 export const setTypes = createAction(
   `${formActionsPrefix} Set workflow types`,
   props<{ featureType: string; geometryType: string; action: WORKFLOW_ACTION }>(),
+);
+
+export const updateConfig = createAction(
+  `${formActionsPrefix} Update workflow config`,
+  props<{ config: Partial<WorkflowStateConfig> }>(),
 );
