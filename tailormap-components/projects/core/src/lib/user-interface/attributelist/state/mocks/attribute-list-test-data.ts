@@ -33,7 +33,9 @@ export const createDummyRow = (
   overrides?: Partial<AttributeListRowModel>,
 ): AttributeListRowModel => ({
   rowId: '1',
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   __fid: '1',
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   related_featuretypes: [],
   _selected: false,
   _checked: false,
@@ -49,6 +51,7 @@ export const createDummyRows = (
   for (let i = 0; i < count; i++) {
     const override: Partial<AttributeListRowModel> = {
       rowId: `row-${i}`,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       __fid: `row-${i}`,
       ...(rowOverride ? rowOverride(i) : {}),
     };

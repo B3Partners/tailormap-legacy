@@ -94,7 +94,7 @@ describe('AttributeListReducer', () => {
       layerId: dummyFeatureData.layerId,
       totalCount: 100,
     });
-    const action = AttributeListActions.loadDataForTabSuccess({ layerId: TEST_LAYER_ID, data: loadResult })
+    const action = AttributeListActions.loadDataForTabSuccess({ layerId: TEST_LAYER_ID, data: loadResult });
     const updatedState = attributeListReducer(state, action);
     expect(updatedState.tabs.length).toEqual(1);
     expect(updatedState.tabs[0].loadingData).toEqual(false);
@@ -111,7 +111,7 @@ describe('AttributeListReducer', () => {
       layerId: dummyFeatureData.layerId,
       totalCount: 200,
     });
-    const action = AttributeListActions.loadDataForFeatureTypeSuccess({ featureType: dummyFeatureData.featureType, data: loadResult })
+    const action = AttributeListActions.loadDataForFeatureTypeSuccess({ featureType: dummyFeatureData.featureType, data: loadResult });
     const updatedState = attributeListReducer(state, action);
     expect(updatedState.tabs.length).toEqual(1);
     expect(updatedState.featureTypeData.length).toEqual(1);
