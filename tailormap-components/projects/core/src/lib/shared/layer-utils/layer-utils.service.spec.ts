@@ -33,6 +33,7 @@ describe('LayerUtilsService', () => {
   beforeEach(() => {
     spectator = createService();
     tailorMapSpy = spectator.inject(TailorMapService);
+    tailorMapSpy.getViewerController = () => vcMock;
   });
 
   it('should be created', () => {
