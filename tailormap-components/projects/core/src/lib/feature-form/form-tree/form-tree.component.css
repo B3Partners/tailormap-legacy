@@ -3,7 +3,7 @@
   width: 350px;
 }
 
-tailormap-tree ::ng-deep .tree-wrapper {
+.tailormap-tree ::ng-deep .tree-wrapper {
   padding: 0 16px;
 }
 

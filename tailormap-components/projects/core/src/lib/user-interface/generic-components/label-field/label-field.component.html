@@ -2,6 +2,6 @@
   <div class="label"><mat-label>{{label}}</mat-label></div>
   <div class="value">
     <div *ngIf="!isHyperlinkField()">{{value}}</div>
-    <a href="{{value}}" target="_blank" *ngIf="isHyperlinkField()">{{value}}</a>
+    <a href="{{value}}" target="_blank" rel="noopener" *ngIf="isHyperlinkField()">{{value}}</a>
   </div>
 </div>
