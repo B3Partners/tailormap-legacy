@@ -84,6 +84,7 @@ export interface Relation {
   featureTypeName: string;
   foreignFeatureTypeName: string;
   relationKeys: RelationKey[];
+  relations ?: Relation[];
 }
 
 export interface RelationKey{
