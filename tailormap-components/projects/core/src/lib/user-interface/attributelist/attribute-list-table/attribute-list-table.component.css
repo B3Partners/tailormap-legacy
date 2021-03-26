@@ -5,6 +5,10 @@
   height: 100%;
 }
 
+mat-spinner {
+  margin: 16px;
+}
+
 mat-table {
   min-width: min-content;
 }

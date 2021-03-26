@@ -55,7 +55,9 @@ export class AttributeListTableComponent implements OnInit, OnDestroy {
   public showCheckboxColumn$: Observable<boolean>;
   public sort: { column: string; direction: string };
   public rowLength: number;
+
   public loadingData$: Observable<boolean>;
+  public notLoadingData$: Observable<boolean>;
 
   constructor(
     private store$: Store<AttributeListState>,
@@ -106,6 +108,7 @@ export class AttributeListTableComponent implements OnInit, OnDestroy {
     );
 
     this.loadingData$ = this.store$.select(selectLoadingDataForTab, this.layerId);
+    this.notLoadingData$ = this.store$.select(selectLoadingDataForTab, this.layerId).pipe(map(loading => !loading));
   }
 
   public ngOnDestroy(): void {

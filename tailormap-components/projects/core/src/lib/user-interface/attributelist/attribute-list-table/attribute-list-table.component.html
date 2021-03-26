@@ -1,10 +1,10 @@
 <div class="table-container">
 
   <div *ngIf="rowLength === 0 && loadingData$ | async">
-    <mat-spinner></mat-spinner>
+    <mat-spinner diameter="20" mode="indeterminate" color="primary"></mat-spinner>
   </div>
 
-  <div *ngIf="rowLength === 0 && !(loadingData$ | async)">
+  <div *ngIf="rowLength === 0 && notLoadingData$ | async">
     Geen rijen gevonden
   </div>
 
