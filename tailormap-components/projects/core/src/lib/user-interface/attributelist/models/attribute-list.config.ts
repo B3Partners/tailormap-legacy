@@ -3,4 +3,5 @@ export interface AttributeListConfig {
   tooltip: string;
   pageSize: number;
   zoomToBuffer: number;
+  downloadParams?: string;
 }
