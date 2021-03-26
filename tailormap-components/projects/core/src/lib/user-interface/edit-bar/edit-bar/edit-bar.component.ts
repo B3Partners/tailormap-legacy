@@ -15,7 +15,7 @@ import * as WorkflowActions from '../../../workflow/state/workflow.actions';
 })
 export class EditBarComponent implements OnInit {
 
-  public isEditting = false;
+  public isEditing = false;
 
   private mergeComponent: MergeComponent;
   private splitComponent: SplitComponent;
@@ -46,11 +46,11 @@ export class EditBarComponent implements OnInit {
   }
 
   public onEdit(): void {
-    this.isEditting = true;
+    this.isEditing = true;
   }
 
   public onEditClose() {
-    this.isEditting = false;
+    this.isEditing = false;
   }
 
   public hasSplit(): boolean {

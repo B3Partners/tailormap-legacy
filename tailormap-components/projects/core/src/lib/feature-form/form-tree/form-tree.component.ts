@@ -82,6 +82,9 @@ export class FormTreeComponent implements OnInit, OnChanges, OnDestroy {
       .subscribe(([ features, formConfigs]) => {
         const tree: TreeModel<FormTreeMetadata> [] = FormTreeHelpers.convertFeatureToTreeModel(features, formConfigs);
         this.transientTreeHelper.createTree(tree);
+        if (this.selectedFeature) {
+          this.transientTreeHelper.selectNode(this.selectedFeature.objectGuid);
+        }
       });
 
     this.treeService.checkStateChangedSource$.pipe(takeUntil(this.destroyed)).subscribe( event => {

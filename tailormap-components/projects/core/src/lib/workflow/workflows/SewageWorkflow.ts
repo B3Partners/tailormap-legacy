@@ -163,7 +163,7 @@ export class SewageWorkflow extends Workflow {
     ])
       .pipe(take(1))
       .subscribe(([currentFeature, close]) => {
-        this.afterEditting(currentFeature);
+        this.afterEditing(currentFeature);
       });
   }
 
@@ -184,7 +184,7 @@ export class SewageWorkflow extends Workflow {
   }
 
 
-  public afterEditting(result?: any): void {
+  public afterEditing(result?: any): void {
     switch (this.currentStep) {
       case Step.WELL1:
         this.well1Feature = result;

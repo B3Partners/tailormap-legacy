@@ -3,7 +3,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Observable, Subject, Subscription } from 'rxjs';
 import { Feature } from '../../shared/generated';
-import { Attribute, FormConfiguration, FormFieldType, IndexedFeatureAttributes, TabbedFields } from '../form/form-models';
+import { Attribute, FormConfiguration, FormFieldType, IndexedFeatureAttributes, TabbedField } from '../form/form-models';
 import { FormCreatorHelpers } from './form-creator-helpers';
 import { FormActionsService } from '../form-actions/form-actions.service';
 import { LinkedAttributeRegistryService } from '../linked-fields/registry/linked-attribute-registry.service';
@@ -15,7 +15,7 @@ import { FormState } from '../state/form.state';
 import * as FormActions from '../state/form.actions';
 import { WorkflowState } from '../../workflow/state/workflow.state';
 import { loadDataForTab } from '../../user-interface/attributelist/state/attribute-list.actions';
-import { selectFormEditting } from '../state/form.selectors';
+import { selectFormEditing } from '../state/form.selectors';
 import { selectLayerIdForLayerName } from '../../application/state/application.selectors';
 
 @Component({
@@ -35,21 +35,27 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
 
   @Input()
   public formConfig: FormConfiguration;
+
   @Input()
   public feature: Feature;
+
   @Input()
   public features: Feature[];
+
   @Input()
   public indexedAttributes: IndexedFeatureAttributes;
 
   @Input()
   public isBulk = false;
+
   @Output()
   public formChanged = new EventEmitter<boolean>();
 
-  public tabbedConfig: TabbedFields;
+  public tabbedConfig: Array<TabbedField> = [];
 
-  public editting$: Observable<boolean>;
+  public trackByTabId = (idx, tab: TabbedField) => tab.tabId;
+
+  public editing$: Observable<boolean>;
 
   public formgroep = new FormGroup({});
 
@@ -69,7 +75,7 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
   }
 
   public ngOnInit(): void {
-    this.editting$ = this.store$.select(selectFormEditting);
+    this.editing$ = this.store$.select(selectFormEditing);
   }
 
   public ngOnDestroy() {
@@ -78,11 +84,11 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
     this.destroyed.complete();
   }
 
-  private prepareFormConfig(): TabbedFields {
-    const tabbedFields: TabbedFields = {tabs: new Map<number, Attribute[]>()};
+  private prepareFormConfig(): Array<TabbedField> {
+    const tabbedFields = [];
     const attrs = this.formConfig.fields;
     for (let tabNr = 1; tabNr <= this.formConfig.tabs; tabNr++) {
-      tabbedFields.tabs.set(tabNr, attrs.filter(attr => attr.tab === tabNr));
+      tabbedFields.push({ tabId: tabNr, attributes: attrs.filter(attr => attr.tab === tabNr) });
     }
     return tabbedFields;
   }
@@ -121,7 +127,7 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
   }
 
   public resetForm(): void {
-    this.store$.dispatch(FormActions.setFormEditting({editting: false}));
+    this.store$.dispatch(FormActions.setFormEditing({editing: false}));
     this.formChanged.emit(false);
     this.createFormControls();
   }

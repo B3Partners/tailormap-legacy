@@ -22,7 +22,7 @@ export class FormfieldComponent implements AfterViewInit, OnDestroy {
   public attribute: FeatureAttribute;
 
   @Input()
-  public editting = false;
+  public editing = false;
 
   @Input()
   public value: string;
@@ -96,4 +96,6 @@ export class FormfieldComponent implements AfterViewInit, OnDestroy {
   public isSelectAttribute = (attr: Attribute): boolean => attr.type === FormFieldType.SELECT;
   public isHiddenAttribute = (attr: Attribute): boolean => attr.type === FormFieldType.HIDDEN;
   public isDomainAttribute = (attr: Attribute): boolean => attr.type === FormFieldType.DOMAIN;
+  public isHyperlinkAttribute = (attr: Attribute): boolean => attr.type === FormFieldType.HYPERLINK;
+
 }

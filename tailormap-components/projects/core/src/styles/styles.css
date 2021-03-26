@@ -36,6 +36,16 @@
   margin: 0;
 }
 
+[ng-version] a,
+.overlay-panel a {
+  color: #1a8fea;
+}
+
+[ng-version] a:hover,
+.overlay-panel a:hover {
+  color: #6236ff;
+}
+
 .overlay-panel h1 {
   padding: 14px 14px 2px;
 }
@@ -60,6 +70,24 @@
   padding-top: 30px;
   display: flex;
   flex-direction: column;
+}
+
+.overlay-panel-toggle {
+  position: absolute;
+  right: 310px;
+  top: 10px;
+  width: 35px;
+  height: 62px;
+  background-color: #fff;
+  z-index: var(--overlay-panel-z-index);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.overlay-panel-toggle mat-icon {
+  height: 18px;
 }
 
 .tab-group .mat-tab-label {

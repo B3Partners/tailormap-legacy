@@ -2,6 +2,7 @@ import { Spectator, createComponentFactory, createSpyObject } from '@ngneat/spec
 
 import { FeatureSelectionComponent, FeatureSelectionComponentData } from './feature-selection.component';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { SharedModule } from '../shared.module';
 
 describe('FeatureSelectionComponent', () => {
   let spectator: Spectator<FeatureSelectionComponent>;
@@ -13,6 +14,7 @@ describe('FeatureSelectionComponent', () => {
 
   const createComponent = createComponentFactory({
     component: FeatureSelectionComponent,
+    imports: [ SharedModule ],
     providers: [
       { provide: MAT_DIALOG_DATA, useValue: dialogData },
       { provide: MatDialogRef, useValue: createSpyObject(MatDialogRef) },

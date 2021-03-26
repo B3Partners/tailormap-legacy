@@ -1,13 +1,11 @@
-<mat-form-field *ngIf="groep" [formGroup]="groep" class="form-field">
-  <div>
-      <mat-label class="label">{{label}}</mat-label>
-      <input
-        [placeholder]="placeholder"
-        [formControlName]="id"
-        type="textfield"
-        matInput
-        [name]="id"
-        [value]="value"
-      />
-  </div>
-</mat-form-field>
+<div *ngIf="groep" [formGroup]="groep" class="form-field">
+    <mat-label class="label">{{label}}</mat-label>
+    <mat-icon *ngIf="isHyperlinkField()">http</mat-icon>
+    <input
+      [placeholder]="placeholder"
+      [formControlName]="id"
+      [type]="getInputType()"
+      [name]="id"
+      [value]="value"
+    />
+</div>
