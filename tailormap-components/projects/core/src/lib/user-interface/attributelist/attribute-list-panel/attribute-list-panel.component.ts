@@ -94,8 +94,8 @@ export class AttributeListPanelComponent implements OnInit, AfterViewInit, Layou
     this.store$.dispatch(setSelectedTab({ layerId: this.tabs[$event.index].layerId }));
   }
 
-  public trackByLayerId(layer) {
-    return layer.id;
+  public trackByLayerId(idx: number, layer: AttributeListTabModel) {
+    return layer.layerId;
   }
 
   public openColumnSelection($event: MouseEvent, tab: AttributeListTabModel) {
