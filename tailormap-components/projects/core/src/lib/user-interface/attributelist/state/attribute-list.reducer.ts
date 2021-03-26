@@ -140,12 +140,24 @@ const onLoadDataForTabSuccess = (
 const onLoadDataForFeatureTypeSuccess = (
   state: AttributeListState,
   payload: ReturnType<typeof AttributeListActions.loadDataForFeatureTypeSuccess>,
-): AttributeListState => updateFeatureData(state, payload.featureType, data => ({
-  ...data,
-  errorMessage: payload.data.errorMessage,
-  totalCount: payload.data.totalCount,
-  rows: payload.data.rows,
-}));
+): AttributeListState => ({
+  ...state,
+  tabs: updateArrayItemInState<AttributeListTabModel>(
+    state.tabs,
+    (t => t.layerId === payload.layerId),
+    (tab => ({ ...tab, loadingData: false })),
+  ),
+  featureTypeData: updateArrayItemInState<AttributeListFeatureTypeData>(
+    state.featureTypeData,
+    d => d.featureType === payload.featureType,
+    data => ({
+      ...data,
+      errorMessage: payload.data.errorMessage,
+      totalCount: payload.data.totalCount,
+      rows: payload.data.rows,
+    }),
+  ),
+});
 
 const onLoadTotalCountForTabSuccess = (
   state: AttributeListState,
@@ -158,23 +170,22 @@ const onLoadTotalCountForTabSuccess = (
   };
 };
 
-const onUpdatePage = (
+const onUpdatePageOrSort = (
   state: AttributeListState,
-  payload: ReturnType<typeof AttributeListActions.updatePage>,
-): AttributeListState => updateFeatureData(
-  state,
-  payload.featureType,
-  data => UpdateAttributeListStateHelper.updateDataForAction(payload, data),
-);
-
-const onUpdateSort = (
-  state: AttributeListState,
-  payload: ReturnType<typeof AttributeListActions.updateSort>,
-): AttributeListState => updateFeatureData(
-  state,
-  payload.featureType,
-  data => UpdateAttributeListStateHelper.updateDataForAction(payload, data),
-);
+  payload: ReturnType<typeof AttributeListActions.updatePage | typeof AttributeListActions.updateSort>,
+): AttributeListState => ({
+  ...state,
+  tabs: updateArrayItemInState<AttributeListTabModel>(
+    state.tabs,
+    (t => t.layerId === payload.layerId),
+    (tab => ({ ...tab, loadingData: true })),
+  ),
+  featureTypeData: updateArrayItemInState<AttributeListFeatureTypeData>(
+    state.featureTypeData,
+    d => d.featureType === payload.featureType,
+    data => UpdateAttributeListStateHelper.updateDataForAction(payload, data),
+  ),
+});
 
 const getRelationAttributes = (state: AttributeListState, featureType: number): string[] => {
   const tabForFeature = state.tabs.find(t => t.featureType === featureType);
@@ -296,7 +307,10 @@ const onUpdateRowSelected = (
 const onSetSelectedFeatureType = (
   state: AttributeListState,
   payload: ReturnType<typeof AttributeListActions.setSelectedFeatureType>,
-): AttributeListState => updateTab(state, payload.layerId, tab => UpdateAttributeListStateHelper.updateTabForAction(payload, tab));
+): AttributeListState => updateTab(state, payload.layerId, tab => ({
+  ...UpdateAttributeListStateHelper.updateTabForAction(payload, tab),
+  loadingData: true,
+}));
 
 const onChangeColumnPosition = (
   state: AttributeListState,
@@ -446,8 +460,8 @@ const attributeListReducerImpl = createReducer(
   on(AttributeListActions.loadDataForTab, onLoadDataForTab),
   on(AttributeListActions.loadDataForTabSuccess, onLoadDataForTabSuccess),
   on(AttributeListActions.loadDataForFeatureTypeSuccess, onLoadDataForFeatureTypeSuccess),
-  on(AttributeListActions.updatePage, onUpdatePage),
-  on(AttributeListActions.updateSort, onUpdateSort),
+  on(AttributeListActions.updatePage, onUpdatePageOrSort),
+  on(AttributeListActions.updateSort, onUpdatePageOrSort),
   on(AttributeListActions.toggleCheckedAllRows, onToggleCheckedAllRows),
   on(AttributeListActions.updateRowChecked, onUpdateRowChecked),
   on(AttributeListActions.updateRowExpanded, onUpdateRowExpanded),

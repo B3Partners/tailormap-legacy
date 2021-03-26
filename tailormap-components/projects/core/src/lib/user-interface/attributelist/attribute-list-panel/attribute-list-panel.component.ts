@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 
 import { MatToolbar } from '@angular/material/toolbar';
 import { LayoutService } from '../../layout.service';
@@ -24,6 +24,7 @@ import { OverlayRef } from '../../../shared/overlay-service/overlay-ref';
   selector: 'tailormap-attribute-list-panel',
   templateUrl: './attribute-list-panel.component.html',
   styleUrls: ['./attribute-list-panel.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AttributeListPanelComponent implements OnInit, AfterViewInit, LayoutComponent {
 

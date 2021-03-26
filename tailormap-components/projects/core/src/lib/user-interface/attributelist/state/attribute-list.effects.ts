@@ -87,7 +87,7 @@ export class AttributeListEffects {
       this.highlightService.clearHighlight();
     }),
     map((result: LoadDataResult) => {
-      return AttributeListActions.loadDataForFeatureTypeSuccess({featureType: result.featureType, data: result});
+      return AttributeListActions.loadDataForFeatureTypeSuccess({layerId: result.layerId, featureType: result.featureType, data: result});
     }),
   ));
 

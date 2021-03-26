@@ -10,3 +10,7 @@ tailormap-attribute-list-table {
   flex: 1;
   overflow: hidden;
 }
+
+mat-spinner {
+  margin: 16px;
+}

@@ -1,6 +1,6 @@
-import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import {
-  selectActiveColumnsForTab, selectFeatureTypeDataForTab, selectTabAndFeatureTypeDataForTab,
+  selectActiveColumnsForTab, selectFeatureTypeDataForTab, selectLoadingDataForTab, selectTabAndFeatureTypeDataForTab,
 } from '../state/attribute-list.selectors';
 import { filter, map, takeUntil } from 'rxjs/operators';
 import { combineLatest, Observable, Subject } from 'rxjs';
@@ -10,7 +10,6 @@ import { AttributeListState } from '../state/attribute-list.state';
 import { AttributelistStatistic } from '../attributelist-common/attributelist-statistic';
 import { StatisticService } from '../../../shared/statistic-service/statistic.service';
 import { updateRowSelected, updateSort } from '../state/attribute-list.actions';
-import { Sort } from '@angular/material/sort';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { AttributeListStatisticsMenuComponent } from './attribute-list-statistics-menu/attribute-list-statistics-menu.component';
 import { AttributeListColumnModel } from '../models/attribute-list-column-models';
@@ -29,6 +28,7 @@ import { AttributeListFilterModel } from '../models/attribute-list-filter-models
       transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
     ]),
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AttributeListTableComponent implements OnInit, OnDestroy {
 
@@ -53,6 +53,9 @@ export class AttributeListTableComponent implements OnInit, OnDestroy {
   public checkedCount: number;
   private filters: AttributeListFilterModel[];
   public showCheckboxColumn$: Observable<boolean>;
+  public sort: { column: string; direction: string };
+  public rowLength: number;
+  public loadingData$: Observable<boolean>;
 
   constructor(
     private store$: Store<AttributeListState>,
@@ -74,7 +77,9 @@ export class AttributeListTableComponent implements OnInit, OnDestroy {
         this.uncheckedCount = featureData.rows.filter(row => !row._checked).length;
         this.checkedCount = featureData.rows.filter(row => row._checked).length;
         this.featureType = featureData.featureType;
+        this.sort = { column: featureData.sortedColumn, direction: featureData.sortDirection.toLowerCase() };
         this.filters = featureData.filter;
+        this.rowLength = featureData.rows.length;
       });
 
     this.showCheckboxColumn$ = this.store$.select(selectTabAndFeatureTypeDataForTab, this.layerId)
@@ -99,6 +104,8 @@ export class AttributeListTableComponent implements OnInit, OnDestroy {
       filter(data => !!data),
       map(data => data.rows),
     );
+
+    this.loadingData$ = this.store$.select(selectLoadingDataForTab, this.layerId);
   }
 
   public ngOnDestroy(): void {
@@ -120,8 +127,12 @@ export class AttributeListTableComponent implements OnInit, OnDestroy {
     }));
   }
 
-  public onSortClick(sort: Sort): void {
-    this.store$.dispatch(updateSort({ featureType: this.featureType, column: sort.active, direction: sort.direction }));
+  public onSortClick(columnName: string): void {
+    let direction: 'asc' | 'desc' | '' = 'asc';
+    if (this.sort.column === columnName) {
+      direction = this.sort.direction === 'asc' ? 'desc' : '';
+    }
+    this.store$.dispatch(updateSort({ layerId: this.layerId, featureType: this.featureType, column: columnName, direction }));
   }
 
   public onFilterClick(columnName: string): void {
