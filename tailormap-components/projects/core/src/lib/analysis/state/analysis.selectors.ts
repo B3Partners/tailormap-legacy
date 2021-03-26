@@ -2,7 +2,7 @@ import { createFeatureSelector, createSelector } from '@ngrx/store';
 import { AnalysisState, analysisStateKey } from './analysis.state';
 import { CriteriaHelper } from '../criteria/helpers/criteria.helper';
 import { CreateLayerModeEnum } from '../models/create-layer-mode.enum';
-import { PassportAttributeModel } from '../../application/models/passport-attribute.model';
+import { ExtendedAttributeModel } from '../../application/models/extended-attribute.model';
 import { AnalysisSourceModel } from '../models/analysis-source.model';
 import { CriteriaModel } from '../models/criteria.model';
 import { UserLayerStyleModel } from '../models/user-layer-style.model';
@@ -115,7 +115,7 @@ export const selectCreateLayerData = createSelector(
     createLayerMode: CreateLayerModeEnum,
     selectedDataSource: AnalysisSourceModel,
     criteria: CriteriaModel,
-    thematicAttribute: PassportAttributeModel,
+    thematicAttribute: ExtendedAttributeModel,
     layerName: string,
     styles: UserLayerStyleModel[],
     canCreateLayer: boolean,

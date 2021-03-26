@@ -13,7 +13,7 @@ import { AnalysisSourceModel } from '../models/analysis-source.model';
 import { CriteriaTypeEnum } from '../models/criteria-type.enum';
 import { CriteriaModel } from '../models/criteria.model';
 import { UserLayerStyleModel } from '../models/user-layer-style.model';
-import { PassportAttributeModel } from '../../application/models/passport-attribute.model';
+import { ExtendedAttributeModel } from '../../application/models/extended-attribute.model';
 
 const clearAnalysisState = (state: AnalysisState): AnalysisState => ({
   ...state,
@@ -69,7 +69,7 @@ const onRemoveCriteria = (state: AnalysisState): AnalysisState => ({
   createCriteriaMode: null,
 });
 
-const onSetSelectedThematicAttribute = (state: AnalysisState, payload: { attribute: PassportAttributeModel }): AnalysisState => ({
+const onSetSelectedThematicAttribute = (state: AnalysisState, payload: { attribute: ExtendedAttributeModel }): AnalysisState => ({
   ...state,
   selectedThematicAttribute: payload.attribute,
 });
