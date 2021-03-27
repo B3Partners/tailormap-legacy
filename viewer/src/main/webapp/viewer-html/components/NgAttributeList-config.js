@@ -36,23 +36,14 @@ Ext.define("viewer.components.CustomConfiguration",{
             labelWidth: this.labelWidth,
         });
 
-        // this.form.add({
-        //     xtype: 'combobox',
-        //     //store: [[ "CSV", i18next.t('attributelist_config_0') ], [ "Json", i18next.t('attributelist_config_3') ]],
-        //     store: [[ "CSV", "CSV" ], [ "Json", "GeoJson" ]],
-        //     itemId: 'defaultDownload',
-        //     name: 'defaultDownload',
-        //     labelWidth: this.labelWidth,
-        //     fieldLabel: i18next.t('attributelist_config_3'),
-        //     value: this.configObject.defaultDownload || "CSV"
-        // });
-        // this.form.add({
-        //     xtype: 'numberfield',
-        //     fieldLabel: i18next.t('attributelist_config_maxFeatures'),
-        //     value: this.configObject.maxFeatures || 1000,
-        //     name: 'maxFeatures',
-        //     labelWidth: this.labelWidth,
-        // });
+        this.form.add({
+            xtype: 'numberfield',
+            fieldLabel: i18next.t('attributelist_config_maxFeatures'),
+            value: this.configObject.maxFeatures || 1000,
+            name: 'maxFeatures',
+            labelWidth: this.labelWidth,
+        });
+
         // this.form.add({
         //     xtype: 'checkbox',
         //     fieldLabel: i18next.t('attributelist_config_4'),
@@ -62,14 +53,14 @@ Ext.define("viewer.components.CustomConfiguration",{
         //     labelWidth: this.labelWidth
         // });
         //
-        // this.form.add({
-        //     xtype: 'textfield',
-        //     fieldLabel: i18next.t('attributelist_config_5'),
-        //     name: 'downloadParams',
-        //     value: this.configObject.downloadParams,
-        //     labelWidth: this.labelWidth,
-        //     width: 700
-        // });
+        this.form.add({
+            xtype: 'textfield',
+            fieldLabel: i18next.t('attributelist_config_5'),
+            name: 'downloadParams',
+            value: this.configObject.downloadParams,
+            labelWidth: this.labelWidth,
+            width: 700
+        });
         //
         // this.form.add({
         //     xtype: 'container',
