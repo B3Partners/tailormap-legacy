@@ -170,7 +170,7 @@ export class AttributeListTabToolbarComponent implements OnInit, OnDestroy {
     if (features.length === 0) {
       return;
     }
-    this.store$.dispatch(setOpenFeatureForm({ features, closeAfterSave: true }));
+    this.store$.dispatch(setOpenFeatureForm({ features, closeAfterSave: true, editMode: true }));
   }
 
   /**
