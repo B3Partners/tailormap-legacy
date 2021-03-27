@@ -1,14 +1,15 @@
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { AttributeListState } from '../state/attribute-list.state';
-import { selectActiveColumnsForFeature } from '../state/attribute-list.selectors';
+import { selectActiveColumnsForFeature, selectAttributeListConfig } from '../state/attribute-list.selectors';
 import { catchError, concatMap, map, take } from 'rxjs/operators';
 import { AttributeListColumnModel } from '../models/attribute-list-column-models';
 import { ExportFeaturesParameters } from '../../../shared/export-service/export-models';
-import { of } from 'rxjs';
+import { combineLatest, of } from 'rxjs';
 import { TailorMapService } from '../../../../../../bridge/src/tailor-map.service';
 import { ExportService } from '../../../shared/export-service/export.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { AttributeListConfig } from '../models/attribute-list.config';
 
 export type ExportType = 'CSV' | 'GEOJSON' | 'XLS' | 'SHP';
 
@@ -25,15 +26,19 @@ export class AttributeListExportService {
   ) {}
 
   public createAttributeListExport(format: ExportType, layerId: string, featureType: number) {
-    this.store$.select(selectActiveColumnsForFeature, featureType)
+    combineLatest([
+      this.store$.select(selectActiveColumnsForFeature, featureType),
+      this.store$.select(selectAttributeListConfig),
+    ])
       .pipe(
         take(1),
-        map<AttributeListColumnModel[], ExportFeaturesParameters>(columns => ({
+        map<[ AttributeListColumnModel[], AttributeListConfig ], ExportFeaturesParameters>(([ columns, config ]) => ({
           application: this.tailorMapService.getApplicationId(),
           appLayer: +(layerId),
           featureType,
           type: format,
           columns: columns.map(c => c.name),
+          params: config.downloadParams,
         })),
         concatMap(exportParams => {
           return this.exportService.exportFeatures$(exportParams).pipe(
