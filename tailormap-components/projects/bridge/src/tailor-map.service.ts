@@ -94,7 +94,7 @@ export class TailorMapService {
     vc.addListener('ON_LAYER_SELECTED', (event) => {
       const appLayer = (!event || !event.appLayer) ? null : event.appLayer;
       this.selectedLayer = appLayer;
-      this.selectedLayerSubject$.next(appLayer);
+      this.ngZone.run(() => this.selectedLayerSubject$.next(appLayer));
     });
     this.applicationConfigSubject$.next(this.getAppLoader().getApplicationConfig());
   }
