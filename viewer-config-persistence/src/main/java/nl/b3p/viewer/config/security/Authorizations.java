@@ -16,29 +16,26 @@
  */
 package nl.b3p.viewer.config.security;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
-import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
-import javax.servlet.http.HttpServletRequest;
-
-import net.sourceforge.stripes.action.ActionBeanContext;
-import net.sourceforge.stripes.action.ForwardResolution;
-import net.sourceforge.stripes.validation.SimpleError;
-import nl.b3p.i18n.ResourceBundleProvider;
+import nl.b3p.viewer.config.app.Application;
+import nl.b3p.viewer.config.app.ApplicationLayer;
+import nl.b3p.viewer.config.app.ConfiguredComponent;
+import nl.b3p.viewer.config.app.Level;
 import nl.b3p.viewer.config.forms.Form;
-import nl.b3p.viewer.config.services.*;
-import nl.b3p.viewer.config.app.*;
+import nl.b3p.viewer.config.services.Layer;
 import nl.b3p.viewer.util.DB;
-import nl.b3p.viewer.util.databaseupdate.ScriptRunner;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.stripesstuff.stripersist.Stripersist;
+
+import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import javax.servlet.http.HttpServletRequest;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * Utility class for authorization checking. Because of the inheritence of 
@@ -535,7 +532,7 @@ public class Authorizations {
         }
     }
 
-    public static boolean isUserExpired(User u, ActionBeanContext context) {
+    public static boolean isUserExpired(User u) {
         if(u == null){
             return false;
         }

@@ -408,7 +408,7 @@ public class ApplicationActionBean extends LocalizableApplicationActionBean impl
             }
         }
 
-        if(Authorizations.isUserExpired(u, context)){
+        if(Authorizations.isUserExpired(u)){
             ResourceBundle bundle = ResourceBundleProvider.getResourceBundle(determineLocaleForBundle(context, application));
             String msg = bundle.getString("viewer.applicationactionbean.expired");
             context.getValidationErrors().addGlobalError(new SimpleError(msg));
