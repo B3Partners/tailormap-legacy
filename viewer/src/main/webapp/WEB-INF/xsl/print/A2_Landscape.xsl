@@ -179,7 +179,7 @@
     </xsl:template>
     <xsl:template name="logo-block">
         <fo:block>
-            <fo:external-graphic src="url('logo.png')" content-height="55px" content-width="scale-to-fit" scaling="uniform"/>
+            <fo:external-graphic src="url('TailormapLogo.png')" content-height="55px" content-width="scale-to-fit" scaling="uniform"/>
         </fo:block>
     </xsl:template>
 	<xsl:template name="table-related">
