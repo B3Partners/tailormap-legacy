@@ -12,3 +12,7 @@
 .criteria-description__total-count mat-spinner {
   margin: 0 10px;
 }
+
+.criteria-description__total-count > span {
+  margin: 0 5px;
+}

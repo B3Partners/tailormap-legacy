@@ -193,7 +193,7 @@ export class AttributeListManagerService implements OnDestroy {
     const passportFields: Map<string, Attribute> = formConfig && formConfig.fields
       ? new Map(formConfig.fields.map(attr => [ attr.key, attr ]))
       : new Map();
-    const attributes = metadata.attributes.filter(a => a.featureType === featureType);
+    const attributes = metadata.attributes.filter(a => a.visible && a.featureType === featureType);
     return attributes.map<AttributeListColumnModel>(a => {
       const isPassportAttribute = passportFields.has(a.name);
       return {

@@ -7,7 +7,7 @@ import { AnalysisSourceModel } from '../models/analysis-source.model';
 import { AttributeTypeEnum } from '../../application/models/attribute-type.enum';
 import { map, takeUntil } from 'rxjs/operators';
 import { setSelectedThematicAttribute } from '../state/analysis.actions';
-import { PassportAttributeModel } from '../../application/models/passport-attribute.model';
+import { ExtendedAttributeModel } from '../../application/models/extended-attribute.model';
 
 @Component({
   selector: 'tailormap-create-layer-mode-thematic',
@@ -45,7 +45,7 @@ export class CreateLayerModeThematicComponent implements OnInit, OnDestroy {
     this.destroyed.complete();
   }
 
-  public attributeSelected($event: { attribute: PassportAttributeModel; attributeType: AttributeTypeEnum }) {
+  public attributeSelected($event: { attribute: ExtendedAttributeModel; attributeType: AttributeTypeEnum }) {
     if (this.selectedAttribute === $event.attribute.name) {
       return;
     }

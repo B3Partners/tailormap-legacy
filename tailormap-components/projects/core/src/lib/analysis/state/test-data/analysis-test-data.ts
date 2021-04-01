@@ -123,7 +123,7 @@ export const analysisStateTestDataWithThematicSelection: AnalysisState = {
     featureType: 302,
     editAlias: '',
     id: 1151,
-    passportAlias: 'structuurelement',
+    alias: 'structuurelement',
   },
   loadingStyles: false,
   loadStylesErrorMessage: '',
