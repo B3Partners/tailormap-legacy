@@ -51,7 +51,6 @@ const onSetOpenFeatureForm = (state: FormState, payload:  ReturnType<typeof Form
   ...state,
   features: payload.features,
   formOpen: true,
-  treeOpen: true,
   closeAfterSave: payload.closeAfterSave || false,
   alreadyDirty: payload.alreadyDirty || false,
   editing: payload.editMode || false,
