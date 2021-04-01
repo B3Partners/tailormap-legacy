@@ -20,7 +20,7 @@ At the time of writing (March 2021) the support matrix looks as follows:
 | 4.x     | :x:                | Community                   |
 | < 4.x   | :x:                | Community                   |
 
-More about the versioning scheme can be found in the wiki: [releases and contributions](https://github.com/flamingo-geocms/flamingo/wiki/releasesAndContributions)
+More about the versioning scheme can be found in the wiki: [releases and contributions](https://github.com/B3Partners/tailormap/wiki/releasesAndContributions)
 
 ## Reporting a Vulnerability
 

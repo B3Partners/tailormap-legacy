@@ -2,7 +2,7 @@
   <tailormap-menu-button
     icon="new_object"
     (clicked)="onEdit()"
-    [enabled]="!isEditting"
+    [enabled]="!isEditing"
   ></tailormap-menu-button>
 
   <tailormap-menu-button
@@ -16,7 +16,7 @@
     [enabled]="hasMerge()"
   ></tailormap-menu-button>
 
-  <tailormap-add-feature-menu *ngIf="isEditting"
+  <tailormap-add-feature-menu *ngIf="isEditing"
                               class="add-feature-menu mat-elevation-z1"
                               (closeMenu)="onEditClose()"></tailormap-add-feature-menu>
 </div>

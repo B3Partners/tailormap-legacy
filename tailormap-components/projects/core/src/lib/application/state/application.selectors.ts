@@ -15,6 +15,7 @@ import { TreeModel } from '../../shared/tree/models/tree.model';
 import { ApplicationTreeHelper } from '../helpers/application-tree.helper';
 import { LayerUtils } from '../../shared/layer-utils/layer-utils.service';
 import { TailormapAppLayer } from '../models/tailormap-app-layer.model';
+import { FormConfiguration } from '../../feature-form/form/form-models';
 
 const selectApplicationState = createFeatureSelector<ApplicationState>(applicationStateKey);
 
@@ -112,7 +113,11 @@ export const selectVisibleLayersWithAttributes = createSelector(
   (appLayers) => appLayers.filter(layer => layer.visible && layer.attribute),
 );
 
-export const selectFormConfigs = createSelector(selectApplicationState, state => state.formConfigs);
+export const selectFormConfigsArray = createSelector(selectApplicationState, state => state.formConfigs);
+
+export const selectFormConfigs = createSelector(selectFormConfigsArray, formConfigs => {
+  return new Map<string, FormConfiguration>(formConfigs.map(f => [ f.featureType, f ]));
+});
 
 export const selectFormConfigsLoaded = createSelector(selectApplicationState, state => state.formConfigsLoaded);
 
@@ -122,8 +127,8 @@ export const selectFormConfigForFeatureTypeName = createSelector(
 );
 
 export const selectFormConfigFeatureTypeNames = createSelector(
-  selectFormConfigs,
-  (formConfigs): string[] => formConfigs ? Array.from(formConfigs.keys()) : [],
+  selectFormConfigsArray,
+  (formConfigs): string[] => formConfigs ? formConfigs.map(f => f.featureType) : [],
 );
 
 export const selectVisibleLayersWithFormConfig = createSelector(

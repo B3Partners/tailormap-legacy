@@ -119,7 +119,7 @@ export class CreateLayerStylingComponent implements OnInit, OnDestroy {
   public getStyleLabel(style: UserLayerStyleModel) {
     const label = [ StyleHelper.getStyleLabel(style) ];
     if (style.featureCount) {
-      label.push(`(${style.featureCount} objecten)`);
+      label.push(`(${style.featureCount})`);
     }
     return label.join(' ');
   }

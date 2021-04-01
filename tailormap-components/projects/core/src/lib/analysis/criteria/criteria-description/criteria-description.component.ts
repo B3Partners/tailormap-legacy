@@ -15,13 +15,14 @@ import {
 import { AnalysisSourceModel } from '../../models/analysis-source.model';
 import { CriteriaOperatorEnum } from '../../models/criteria-operator.enum';
 import { CriteriaHelper } from '../helpers/criteria.helper';
-import { map } from 'rxjs/operators';
+import { map, take } from 'rxjs/operators';
 import {
   DomSanitizer,
   SafeHtml,
 } from '@angular/platform-browser';
 import { AttributeTypeEnum } from '../../../application/models/attribute-type.enum';
 import * as moment from 'moment';
+import { MetadataService } from '../../../application/services/metadata.service';
 
 @Component({
   selector: 'tailormap-criteria-description',
@@ -32,9 +33,13 @@ export class CriteriaDescriptionComponent {
 
   public description$: Observable<SafeHtml>;
 
+  public loadingTotalCount: boolean;
+  public totalCount: number;
+
   constructor(
     private store$: Store<AnalysisState>,
     private sanitizer: DomSanitizer,
+    private metadataService: MetadataService,
   ) {
     this.description$ = combineLatest([
       this.store$.select(selectSelectedDataSource),
@@ -44,6 +49,7 @@ export class CriteriaDescriptionComponent {
         if (!selectedSource || !criteria || !CriteriaHelper.validGroups(criteria.groups)) {
           return null;
         }
+        this.updateTotalCount(selectedSource, criteria);
         return this.sanitizer.bypassSecurityTrustHtml(CriteriaDescriptionComponent.convertCriteriaToQuery(selectedSource, criteria));
       }),
     );
@@ -83,6 +89,17 @@ export class CriteriaDescriptionComponent {
 
   private static convertCondition(condition: string) {
     return CriteriaHelper.getConditionTypes().find(c => c.value === condition).readableLabel;
+  }
+
+  private updateTotalCount(selectedDataSource: AnalysisSourceModel, criteria: CriteriaModel) {
+    const query = CriteriaHelper.convertCriteriaToQuery(criteria);
+    this.loadingTotalCount = true;
+    this.metadataService.getTotalFeaturesForQuery$(selectedDataSource.layerId, query)
+      .pipe(take(1))
+      .subscribe(total => {
+        this.loadingTotalCount = false;
+        this.totalCount = total;
+      });
   }
 
 }

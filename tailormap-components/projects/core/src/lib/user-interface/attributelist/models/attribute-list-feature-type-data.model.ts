@@ -1,6 +1,7 @@
 import { AttributeListColumnModel } from './attribute-list-column-models';
 import { AttributeListRowModel } from './attribute-list-row.model';
 import { AttributeListFilterModel } from './attribute-list-filter-models';
+import { AttributeListStatisticColumnModel } from './attribute-list-statistic-column.model';
 
 export interface CheckedFeature extends Record<string, string> {
   rowId: string;
@@ -21,5 +22,6 @@ export interface AttributeListFeatureTypeData {
   totalCount: number;
   sortedColumn?: string;
   sortDirection: 'ASC' | 'DESC';
+  statistics: AttributeListStatisticColumnModel[];
 }
 

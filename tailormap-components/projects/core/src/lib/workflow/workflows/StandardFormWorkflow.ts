@@ -97,7 +97,7 @@ export class StandardFormWorkflow extends Workflow {
     this.store$.pipe(selectFormClosed)
       .pipe(take(1))
       .subscribe(( close) => {
-        this.afterEditting();
+        this.afterEditing();
       });
   }
 
@@ -135,7 +135,7 @@ export class StandardFormWorkflow extends Workflow {
         if (!feature) {
           return;
         }
-        this.afterEditting();
+        this.afterEditing();
         const geom = this.featureInitializerService.retrieveGeometry(feature);
         if (geom) {
           this.highlightLayer.readGeoJSON(geom);
@@ -160,7 +160,7 @@ export class StandardFormWorkflow extends Workflow {
       );
   }
 
-  public afterEditting(): void {
+  public afterEditing(): void {
     this.ngZone.runOutsideAngular(() => {
       this.vectorLayer.removeAllFeatures();
       this.highlightLayer.removeAllFeatures();

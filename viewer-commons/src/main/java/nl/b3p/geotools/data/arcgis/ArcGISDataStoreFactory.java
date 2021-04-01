@@ -16,13 +16,12 @@
  */
 package nl.b3p.geotools.data.arcgis;
 
-import java.io.IOException;
-import java.io.Serializable;
-import java.net.URL;
-import java.util.Map;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFactorySpi;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import java.io.IOException;
+import java.net.URL;
+import java.util.Map;
 
 /**
  *
@@ -42,12 +41,12 @@ public class ArcGISDataStoreFactory implements DataStoreFactorySpi {
     // TODO: add CURRENT_VERSION param
     
     @Override
-    public DataStore createDataStore(Map<String, Serializable> params) throws IOException {
+    public DataStore createDataStore(Map<String, ?> params) throws IOException {
         return createNewDataStore(params);
     }
 
     @Override
-    public DataStore createNewDataStore(Map<String, Serializable> params) throws IOException {
+    public DataStore createNewDataStore(Map<String, ?> params) throws IOException {
         return new ArcGISDataStore(
                 (URL)params.get(URL.key), 
                 (String)params.get(USER.key),

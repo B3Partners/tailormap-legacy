@@ -45,7 +45,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <link rel="stylesheet" type="text/css" href="${tailorMapComponentsPath}/styles.css">
         <script src="${tailorMapComponentsPath}/runtime.js" type="module"></script>
         <script src="${tailorMapComponentsPath}/polyfills.js" type="module"></script>
-        <script src="${tailorMapComponentsPath}/styles.js" type="module"></script>
         <script src="${tailorMapComponentsPath}/scripts.js" defer></script>
         <script src="${tailorMapComponentsPath}/vendor.js" type="module"></script>
         <script src="${tailorMapComponentsPath}/main.js" type="module"></script>
