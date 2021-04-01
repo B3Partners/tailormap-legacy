@@ -57,7 +57,7 @@
     "@angular-eslint/eslint-plugin-template": "1.2.0",
     "@angular-eslint/schematics": "1.2.0",
     "@angular-eslint/template-parser": "1.2.0",
-    "@angular/cli": "~11.2.2",
+    "@angular/cli": "~11.2.6",
     "@angular/compiler-cli": "~11.2.3",
     "@angular/language-service": "~11.2.3",
     "@ngneat/spectator": "^7.0.0",
