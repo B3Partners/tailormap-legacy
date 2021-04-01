@@ -77,7 +77,7 @@ public class TileService extends GeoService {
 
     private String tilingProtocol;
 
-    @Override
+    //@Override
     public GeoService loadFromUrl(String url, Map params, WaitPageStatus status, EntityManager em) {
         status.setCurrentAction("Bezig met aanmaken tile service");
         try{
@@ -527,7 +527,7 @@ public class TileService extends GeoService {
         this.tilingProtocol = tilingProtocol;
     }
 
-    @Override
+    //@Override
     public void checkOnline(EntityManager em) throws Exception {
     }
     

@@ -25,7 +25,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.opengis.filter.Filter;
-import org.stripesstuff.stripersist.Stripersist;
 
 /**
  *
@@ -257,18 +256,6 @@ public class SimpleFeatureType {
             }            
         }
         return changed;
-    }
-    
-    public static void clearReferences(Collection<SimpleFeatureType> typesToRemove) {
-        // Clear references
-        int removed = Stripersist.getEntityManager().createQuery("update Layer set featureType = null where featureType in (:types)")
-                .setParameter("types", typesToRemove)
-                .executeUpdate();
-        if(removed > 0) {
-            log.warn("Cleared " + removed + " references to " + typesToRemove.size() + " type names which are to be removed");
-        }
-        
-        // Ignore Layar references
     }
     
     public AttributeDescriptor getAttribute(String attributeName) {

@@ -28,9 +28,12 @@ import net.sourceforge.stripes.action.StreamingResolution;
 import net.sourceforge.stripes.action.StrictBinding;
 import net.sourceforge.stripes.action.UrlBinding;
 import net.sourceforge.stripes.validation.Validate;
+import nl.b3p.viewer.ArcGISServiceHelper;
+import nl.b3p.viewer.WMSServiceHelper;
 import nl.b3p.viewer.config.services.ArcGISService;
 import nl.b3p.viewer.config.services.GeoService;
 import nl.b3p.viewer.config.services.WMSService;
+import nl.b3p.web.WaitPageStatus;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.stripesstuff.stripersist.Stripersist;
@@ -103,9 +106,9 @@ public class ServiceActionBean extends LocalizableActionBean implements ActionBe
             try {
                 if(protocol.equals(WMSService.PROTOCOL)) {
                     //params.put(WMSService.PARAM_OVERRIDE_URL, overrideUrl);
-                    service = new WMSService().loadFromUrl(url, params, em);
+                    service = WMSServiceHelper.loadFromUrl(url, params, new WaitPageStatus(), em);
                 } else if(protocol.equals(ArcGISService.PROTOCOL)) {
-                    service = new ArcGISService().loadFromUrl(url, params, em);
+                    service = ArcGISServiceHelper.loadFromUrl(url, params, new WaitPageStatus(), em);
                 } else {
                     error = getBundle().getString("viewer.serviceactionbean.2");
                 }            

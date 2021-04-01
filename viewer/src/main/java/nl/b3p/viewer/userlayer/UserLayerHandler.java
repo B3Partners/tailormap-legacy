@@ -1,6 +1,7 @@
 package nl.b3p.viewer.userlayer;
 
 
+import nl.b3p.viewer.WMSServiceHelper;
 import nl.b3p.viewer.audit.AuditMessageObject;
 import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.ApplicationLayer;
@@ -288,7 +289,7 @@ public class UserLayerHandler {
             params.put(WMSService.PARAM_SKIP_DISCOVER_WFS, true);
             String url = this.baseUrl + this.geoserverWorkspace + "/wms";
             WaitPageStatus status = new WaitPageStatus();
-            userlayerService = new WMSService().loadFromUrl(url, params, status, entityManager);
+            userlayerService = WMSServiceHelper.loadFromUrl(url, params, status, entityManager);
             ((WMSService) userlayerService).setException_type(WMSExceptionType.Inimage);
 
             userlayerService.setName(USERLAYER_NAME);

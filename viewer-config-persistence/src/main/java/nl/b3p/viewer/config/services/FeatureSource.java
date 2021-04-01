@@ -29,7 +29,6 @@ import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory2;
 import org.opengis.filter.expression.Function;
-import org.stripesstuff.stripersist.Stripersist;
 
 /**
  *
@@ -261,11 +260,6 @@ public abstract class FeatureSource {
         getFeatureTypes().add(newType);
         
         return newType; 
-    }
-    
-    public void removeFeatureType(SimpleFeatureType featureType) {
-        Stripersist.getEntityManager().remove(featureType);
-        getFeatureTypes().remove(featureType);
     }
 
     public JSONObject toJSONObject() throws JSONException {

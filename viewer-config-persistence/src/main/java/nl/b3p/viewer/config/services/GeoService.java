@@ -16,21 +16,20 @@
  */
 package nl.b3p.viewer.config.services;
 
-import java.io.Serializable;
-import java.util.*;
-import javax.persistence.*;
 import nl.b3p.viewer.config.ClobElement;
 import nl.b3p.viewer.config.security.Authorizations;
 import nl.b3p.viewer.config.security.Authorizations.ReadWrite;
 import nl.b3p.viewer.util.DB;
 import nl.b3p.viewer.util.SelectedContentCache;
-import nl.b3p.web.WaitPageStatus;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.mutable.MutableObject;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.stripesstuff.stripersist.Stripersist;
+
+import javax.persistence.*;
+import java.io.Serializable;
+import java.util.*;
 
 /**
  *
@@ -243,7 +242,7 @@ public abstract class GeoService implements Serializable {
         this.version = version;
     }
     //</editor-fold>
-      
+      /*
     @PreRemove
     public void removeAllLayers() {
         EntityManager em = Stripersist.getEntityManager();
@@ -256,75 +255,8 @@ public abstract class GeoService implements Serializable {
             em.remove(l);
         }
     }
-    
-    public void initLayerCollectionsForUpdate() {
-        EntityManager em = Stripersist.getEntityManager();
-        // Use separate query instead of one combined one: may lead to lots of
-        // duplicate fields depending on the size of each collection
-        em.createQuery("from Layer l left join fetch l.crsList where l.service = :this").setParameter("this", this).getResultList();
-        em.createQuery("from Layer l left join fetch l.boundingBoxes where l.service = :this").setParameter("this", this).getResultList();
-        em.createQuery("from Layer l left join fetch l.keywords where l.service = :this").setParameter("this", this).getResultList();
-        em.createQuery("from Layer l left join fetch l.details where l.service = :this").setParameter("this", this).getResultList();
-        em.createQuery("from Layer l left join fetch l.children where l.service = :this").setParameter("this", this).getResultList();
-    }
-    
-    public GeoService loadFromUrl(String url, Map params, EntityManager em) throws Exception {
-        return loadFromUrl(url, params, new WaitPageStatus(),em);
-    }
+*/
 
-    public abstract GeoService loadFromUrl(String url, Map params, WaitPageStatus waitStatus, EntityManager em) throws Exception;
-    
-    protected static void setAllChildrenDetail(Layer layer, EntityManager em) {
-        
-        layer.accept(new Layer.Visitor() {
-
-            @Override
-            public boolean visit(final Layer l, EntityManager em) {
-                
-                if(!l.getChildren().isEmpty()) {
-                    final MutableObject<List<String>> layerNames = new MutableObject<List<String>>(new ArrayList());
-                    l.accept(new Layer.Visitor() {
-
-                        @Override
-                        public boolean visit(Layer child, EntityManager em) {
-                            if(child != l && child.getChildren().isEmpty() && !child.isVirtual()) {
-                                layerNames.getValue().add(child.getName());
-                            }
-                            return true;
-                        }
-                    },em);
-                    
-                    if(!layerNames.getValue().isEmpty()) {
-                        l.getDetails().put(Layer.DETAIL_ALL_CHILDREN, new ClobElement(StringUtils.join(layerNames.getValue(), ",")));
-                        l.setVirtual(false);
-                    }
-                }
-                
-                return true;
-            }
-        },em);
-    }
-    
-    public void checkOnline(EntityManager em) throws Exception {
-        Map params = new HashMap();
-        params.put(PARAM_ONLINE_CHECK_ONLY, Boolean.TRUE);
-        params.put(PARAM_USERNAME, this.getUsername());
-        params.put(PARAM_PASSWORD, this.getPassword());
-        loadFromUrl(getUrl(), params, new WaitPageStatus() {
-            @Override
-            public void setCurrentAction(String currentAction) {
-                // no debug logging
-                super.currentAction.set(currentAction);
-            }          
-
-            @Override
-            public void addLog(String message) {
-                // no debug logging
-                logs.add(message);
-            }            
-        },em);
-    }
-    
     public String getProtocol() {
         return getClass().getAnnotation(DiscriminatorValue.class).value();
     }
