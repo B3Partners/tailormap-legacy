@@ -9,6 +9,7 @@ export class FormCreatorHelpers {
       m.set(field.key, {
         ...field,
         value: feat[field.key] ? feat[field.key] : '',
+        options: field.options ? [ ...field.options.map(opt => ({ ...opt })) ] : undefined,
       });
     }
     return {attrs: m};
