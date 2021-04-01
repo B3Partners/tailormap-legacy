@@ -10,6 +10,7 @@ import {
   SelectedContentItem,
 } from '../../../../../bridge/typings';
 import { TailormapAppLayer } from '../models/tailormap-app-layer.model';
+import { ExtendedFormConfigurationModel } from '../models/extended-form-configuration.model';
 
 const onSetApplicationContent = (
   state: ApplicationState,
@@ -104,11 +105,20 @@ const onSetLayerVisibility = (state: ApplicationState, payload: { visibility: Ma
   })),
 });
 
-const onSetFormConfigs = (state: ApplicationState, payload: ReturnType<typeof ApplicationActions.setFormConfigs>): ApplicationState => ({
-  ...state,
-  formConfigsLoaded: true,
-  formConfigs: Array.from(payload.formConfigs.values()),
-});
+const onSetFormConfigs = (state: ApplicationState, payload: ReturnType<typeof ApplicationActions.setFormConfigs>): ApplicationState => {
+  const formConfigs: ExtendedFormConfigurationModel[] = [];
+  payload.formConfigs.forEach((config, tableName) => {
+    formConfigs.push({
+      ...config,
+      tableName,
+    });
+  });
+  return {
+    ...state,
+    formConfigsLoaded: true,
+    formConfigs,
+  };
+};
 
 const applicationReducerImpl = createReducer(
   initialApplicationState,
