@@ -24,6 +24,14 @@ const onSetAttributeListConfig = (
   config: { ...state.config, ...payload.config },
 });
 
+const onUpdateAttributeListHeight = (
+  state: AttributeListState,
+  payload: ReturnType<typeof AttributeListActions.updateAttributeListHeight>,
+): AttributeListState => ({
+  ...state,
+  height: payload.height,
+});
+
 const onChangeAttributeTabs = (
   state: AttributeListState,
   payload: ReturnType<typeof AttributeListActions.changeAttributeListTabs>,
@@ -511,6 +519,7 @@ const attributeListReducerImpl = createReducer(
   initialAttributeListState,
   on(AttributeListActions.setAttributeListVisibility, onSetAttributeListVisibility),
   on(AttributeListActions.setAttributeListConfig, onSetAttributeListConfig),
+  on(AttributeListActions.updateAttributeListHeight, onUpdateAttributeListHeight),
   on(AttributeListActions.changeAttributeListTabs, onChangeAttributeTabs),
   on(AttributeListActions.setSelectedTab, onSetSelectedTab),
   on(AttributeListActions.loadDataForTab, onLoadDataForTab),

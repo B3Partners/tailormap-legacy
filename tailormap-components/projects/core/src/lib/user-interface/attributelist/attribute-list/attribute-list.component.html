@@ -1,3 +1,36 @@
 <div class="container" *ngIf="isVisible$ | async">
-  <tailormap-attribute-list-panel></tailormap-attribute-list-panel>
+  <tailormap-panel-resize (positionChanged)="sizeChanged($event)"></tailormap-panel-resize>
+
+  <div class="panel"
+       [ngStyle]="{ 'height.px': height }"
+       [class.panel--minimized]="minimized"
+       [class.panel--maximized]="maximized">
+
+    <mat-toolbar>
+      <span>{{title$ | async}}</span>
+      <span class="spacer"></span>
+      <button mat-icon-button>
+        <mat-icon (click)="onMinimizeClick();" svgIcon="contextual_minimize"></mat-icon>
+      </button>
+      <button mat-icon-button class="maximize-btn">
+        <mat-icon (click)="onMaximizeClick();" svgIcon="contextual_chevron_top"></mat-icon>
+      </button>
+      <button mat-icon-button>
+        <mat-icon (click)="onCloseClick();" svgIcon="contextual_close"></mat-icon>
+      </button>
+    </mat-toolbar>
+
+    <span class="panel-content no-tabs" *ngIf="tabs.length === 0">Geen geldige kaartlagen aanwezig.</span>
+
+    <mat-tab-group class="panel-content tab-group" *ngIf="tabs.length > 0" animationDuration="0ms" (selectedTabChange)="onSelectedTabChange($event);">
+      <mat-tab *ngFor="let tab of tabs; let index = index; trackBy: trackByLayerId" [label]="tab.layerName">
+        <ng-template mat-tab-label>
+          {{tab.layerAlias === "" ? tab.layerName : tab.layerAlias}}
+          <mat-icon svgIcon="contextual_drop_down" (click)="openColumnSelection($event, tab)">keyboard_arrow_down</mat-icon>
+        </ng-template>
+        <tailormap-attribute-list-tab [layerId]="tab.layerId"
+                                      [featureType]="tab.selectedRelatedFeatureType || tab.featureType"></tailormap-attribute-list-tab>
+      </mat-tab>
+    </mat-tab-group>
+  </div>
 </div>

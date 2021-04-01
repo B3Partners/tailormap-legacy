@@ -18,6 +18,11 @@ export const setAttributeListConfig = createAction(
   props<{ config: Partial<AttributeListConfig> }>(),
 );
 
+export const updateAttributeListHeight = createAction(
+  `${attributeListActionsPrefix} Update AttributeList Height`,
+  props<{ height: number }>(),
+);
+
 export const changeAttributeListTabs = createAction(
   `${attributeListActionsPrefix} Change AttributeList Tabs`,
   props<{ newTabs: AttributeListTabModel[]; newFeatureData: AttributeListFeatureTypeData[]; closedTabs: number[] }>(),

@@ -10,6 +10,7 @@ export interface AttributeListState {
   tabs: AttributeListTabModel[];
   featureTypeData: AttributeListFeatureTypeData[];
   selectedTabLayerId: string;
+  height: number;
 }
 
 export const initialAttributeListState: AttributeListState = {
@@ -23,4 +24,5 @@ export const initialAttributeListState: AttributeListState = {
   tabs: [],
   featureTypeData: [],
   selectedTabLayerId: null,
+  height: 350,
 };

@@ -29,6 +29,8 @@ export const selectAttributeListFeatureDataDictionary = createSelector(
   },
 );
 
+export const selectAttributeListHeight = createSelector(selectAttributeListState, state => state.height);
+
 export const selectAttributeListConfig = createSelector(selectAttributeListState, state => state.config);
 
 export const selectTab = createSelector(
