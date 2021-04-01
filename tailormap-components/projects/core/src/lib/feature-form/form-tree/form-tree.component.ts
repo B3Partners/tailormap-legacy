@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, EventEmitter } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, Output, EventEmitter } from '@angular/core';
 import { FormTreeMetadata } from './form-tree-models';
 import { Feature } from '../../shared/generated';
 import { FormTreeHelpers } from './form-tree-helpers';
@@ -19,7 +19,7 @@ import { selectFormConfigs } from '../../application/state/application.selectors
   templateUrl: './form-tree.component.html',
   styleUrls: ['./form-tree.component.css'],
 })
-export class FormTreeComponent implements OnInit, OnChanges, OnDestroy {
+export class FormTreeComponent implements OnInit, OnDestroy {
 
   private destroyed = new Subject();
 
@@ -103,9 +103,6 @@ export class FormTreeComponent implements OnInit, OnChanges, OnDestroy {
     this.transientTreeHelper.destroy();
     this.destroyed.next();
     this.destroyed.complete();
-  }
-
-  public ngOnChanges(changes: SimpleChanges): void {
   }
 
   public closePanel() {

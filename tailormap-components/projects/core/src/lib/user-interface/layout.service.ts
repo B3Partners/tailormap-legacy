@@ -63,9 +63,7 @@ export class LayoutService implements OnDestroy {
     return this.screenHeight - comp.layoutConfig.initialHeight;
   }
 
-  public close(comp: LayoutComponent): void {
-    // TODO: Update the docked components.
-  }
+  public close(): void {}
 
   private getComponentByResizer(resizer: PanelResizerComponent): LayoutComponent {
     for (const comp of this.components) {

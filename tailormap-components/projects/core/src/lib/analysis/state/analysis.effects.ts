@@ -21,7 +21,7 @@ export class AnalysisEffects {
     concatMap(action => of(action).pipe(
       withLatestFrom(this.store$.select(selectCanCreateLayer)),
     )),
-    filter(([ action, canCreateLayer ]) => canCreateLayer),
+    filter(([ _action, canCreateLayer ]) => canCreateLayer),
     switchMap(() => this.createStyleService.createStyles$() ),
     map((result: { styles: UserLayerStyleModel[]; errorMessage?: string}) => {
       if (result.errorMessage && typeof result.errorMessage === 'string') {

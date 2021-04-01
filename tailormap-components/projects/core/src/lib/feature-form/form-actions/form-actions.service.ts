@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { Feature, FeatureControllerService } from '../../shared/generated';
 import { forkJoin, Observable } from 'rxjs';
 import { FeatureInitializerService } from '../../shared/feature-initializer/feature-initializer.service';
@@ -12,7 +11,7 @@ export class FormActionsService {
 
   constructor(
     private service: FeatureControllerService,
-    private _snackBar: MatSnackBar) {
+  ) {
   }
 
   public save$(isBulk: boolean, features: Feature[], parent: Feature): Observable<any> {

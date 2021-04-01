@@ -5,7 +5,7 @@ import { TailorMapService } from '../../../../../../bridge/src/tailor-map.servic
 import { UserLayerService } from '../../../analysis/services/user-layer.service';
 import { MetadataService } from '../../../application/services/metadata.service';
 import { forkJoin, Observable, of, Subject } from 'rxjs';
-import { filter, map, switchMap, take, takeUntil } from 'rxjs/operators';
+import { filter, map, switchMap, takeUntil } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
 import { AttributeListLayernameChooserComponent } from '../attribute-list-layername-chooser/attribute-list-layername-chooser.component';
 import { UserLayerHelper } from '../../../analysis/helpers/user-layer.helper';
@@ -109,10 +109,9 @@ export class AttributeListTabToolbarComponent implements OnInit, OnDestroy {
             return forkJoin([
               of(result),
               this.metadataService.getFeatureTypeMetadata$(this.layerId),
-              this.tailorMapService.applicationConfig$.pipe(take(1)),
             ]);
           }),
-          switchMap(([ result, attributeMetadata, config ]) => {
+          switchMap(([ result, attributeMetadata ]) => {
             const appLayerId = +(this.layerId);
             const appLayer = this.tailorMapService.getApplayerById(appLayerId);
             this.creatingLayer = true;

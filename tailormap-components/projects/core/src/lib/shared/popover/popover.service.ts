@@ -32,7 +32,7 @@ export class PopoverService {
       params.content,
       params.data,
       overlayConfig,
-      (overlay, data) => {
+      (overlay) => {
         return new PopoverRef<R, T>(overlay, params.data, {
           origin: params.origin,
           closeOnClickOutside: params.closeOnClickOutside,

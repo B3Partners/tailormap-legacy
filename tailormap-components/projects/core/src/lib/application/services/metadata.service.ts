@@ -30,7 +30,7 @@ export class MetadataService implements OnDestroy {
   ) {
     this.store$.select(selectApplicationId)
       .pipe(takeUntil(this.destroy))
-      .subscribe(appId => {
+      .subscribe(() => {
         this.attributeCache = new Map();
       });
   }
@@ -134,7 +134,7 @@ export class MetadataService implements OnDestroy {
             ...featureParams,
             filter: query,
           }).pipe(
-            catchError(e => of({ total: 0, success: false })),
+            catchError(() => of({ total: 0, success: false })),
           );
         }),
         map<AttributeListResponse, number>(response => {

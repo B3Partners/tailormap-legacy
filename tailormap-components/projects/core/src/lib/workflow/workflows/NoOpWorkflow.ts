@@ -1,6 +1,4 @@
 import { Workflow } from './Workflow';
-import { VectorLayer } from '../../../../../bridge/typings';
-import { MapClickedEvent } from '../../shared/models/event-models';
 import { Feature } from '../../shared/generated';
 
 export class NoOpWorkflow extends Workflow {
@@ -8,14 +6,14 @@ export class NoOpWorkflow extends Workflow {
   public afterEditing(): void {
   }
 
-  public geometryDrawn(vectorLayer: VectorLayer, feature: any): void {
+  public geometryDrawn(): void {
   }
 
   public getDestinationFeatures(): Feature[] {
     return [];
   }
 
-  public mapClick(data: MapClickedEvent): void {
+  public mapClick(): void {
   }
 
 }

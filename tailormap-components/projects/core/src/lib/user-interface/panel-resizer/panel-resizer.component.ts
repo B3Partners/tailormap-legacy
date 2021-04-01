@@ -31,7 +31,7 @@ export class PanelResizerComponent {
   }
 
   @HostListener('window:mouseup', ['$event'])
-  public onWindowMouseUp(event: MouseEvent): void {
+  public onWindowMouseUp(): void {
     this.isMouseDown = false;
   }
 
