@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import {
   selectActiveColumnsForTab, selectFeatureTypeDataForTab, selectLoadingDataForTab, selectTabAndFeatureTypeDataForTab,
 } from '../state/attribute-list.selectors';
@@ -7,7 +7,6 @@ import { combineLatest, Observable, Subject } from 'rxjs';
 import { AttributeListRowModel } from '../models/attribute-list-row.model';
 import { Store } from '@ngrx/store';
 import { AttributeListState } from '../state/attribute-list.state';
-import { StatisticService } from '../../../shared/statistic-service/statistic.service';
 import { loadStatisticsForColumn, updateRowSelected, updateSort } from '../state/attribute-list.actions';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { AttributeListColumnModel } from '../models/attribute-list-column-models';
@@ -60,7 +59,6 @@ export class AttributeListTableComponent implements OnInit, OnDestroy {
 
   constructor(
     private store$: Store<AttributeListState>,
-    private statisticsService: StatisticService,
     private dialog: MatDialog,
   ) { }
 
