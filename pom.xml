@@ -138,6 +138,11 @@
             </dependency>
             <dependency>
                 <groupId>org.flamingo-mc</groupId>
+                <artifactId>viewer-config-persistence-helpers</artifactId>
+                <version>${flamingo.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.flamingo-mc</groupId>
                 <artifactId>solr-commons</artifactId>
                 <version>${flamingo.version}</version>
             </dependency>
@@ -978,6 +983,7 @@
         <module>viewer-audit-noplogger</module>
         <module>viewer-commons</module>
         <module>viewer-config-persistence</module>
+        <module>viewer-config-persistence-helpers</module>
         <module>solr-commons</module>
         <module>form</module>
         <module>viewer</module>

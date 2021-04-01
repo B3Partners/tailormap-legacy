@@ -41,7 +41,7 @@ public abstract class UpdatableFeatureSource extends FeatureSource{
      * @return the result of the update
      * @throws java.lang.Exception if any
      */
-    public FeatureSourceUpdateResult update(EntityManager em) throws Exception{
+  /* TODO  public FeatureSourceUpdateResult update(EntityManager em) throws Exception{
         final FeatureSourceUpdateResult result = new FeatureSourceUpdateResult(this);         
         try{
             List<SimpleFeatureType> newFeatureTypes = this.createFeatureTypes(result.getWaitPageStatus().subtask("",80));
@@ -112,7 +112,7 @@ public abstract class UpdatableFeatureSource extends FeatureSource{
             result.failedWithException(e);        
         }
         return result;
-    }
+    }*/
     
     /**
      * return a list of featuretypes that are currently present in the

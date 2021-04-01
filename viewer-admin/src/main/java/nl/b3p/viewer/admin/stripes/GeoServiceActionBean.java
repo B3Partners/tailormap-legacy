@@ -18,6 +18,9 @@ package nl.b3p.viewer.admin.stripes;
 
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.*;
+import nl.b3p.viewer.ArcGISServiceHelper;
+import nl.b3p.viewer.GeoserviceFactoryHelper;
+import nl.b3p.viewer.WMSServiceHelper;
 import nl.b3p.viewer.config.ClobElement;
 import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.ApplicationLayer;
@@ -728,7 +731,7 @@ public class GeoServiceActionBean extends LocalizableActionBean {
             return new ForwardResolution(JSP);
         }
         EntityManager em = Stripersist.getEntityManager();
-        UpdateResult result = ((Updatable)service).update(em);
+        UpdateResult result = GeoserviceFactoryHelper.update(em, service);
 
         if(result.getStatus() == UpdateResult.Status.FAILED) {
             getContext().getValidationErrors().addGlobalError(new SimpleError(result.getMessage()));
@@ -826,12 +829,12 @@ public class GeoServiceActionBean extends LocalizableActionBean {
         if (protocol.equals(WMSService.PROTOCOL)) {
             params.put(WMSService.PARAM_OVERRIDE_URL, overrideUrl);
             params.put(WMSService.PARAM_SKIP_DISCOVER_WFS, skipDiscoverWFS);
-            service = new WMSService().loadFromUrl(url, params, status, em);
+            service = WMSServiceHelper.loadFromUrl(url, params, status, em);
             ((WMSService) service).setException_type(exception_type);
             service.getDetails().put(GeoService.DETAIL_USE_PROXY, new ClobElement("" + useProxy));
         } else if (protocol.equals(ArcGISService.PROTOCOL)) {
             params.put(ArcGISService.PARAM_ASSUME_VERSION, agsVersion);
-            service = new ArcGISService().loadFromUrl(url, params, status, em);
+            service = ArcGISServiceHelper.loadFromUrl(url, params, status, em);
         } else if (protocol.equals(TileService.PROTOCOL)) {
             params.put(TileService.PARAM_SERVICENAME, serviceName);
             params.put(TileService.PARAM_RESOLUTIONS, resolutions);

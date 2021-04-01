@@ -20,6 +20,8 @@ import nl.b3p.mail.Mailer;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import javax.persistence.EntityManager;
+
+import nl.b3p.viewer.GeoserviceFactoryHelper;
 import nl.b3p.viewer.config.security.Group;
 import nl.b3p.viewer.config.security.User;
 import nl.b3p.viewer.config.services.GeoService;
@@ -71,8 +73,8 @@ public class MonitorJob implements Job, InterruptableJob {
                         log.info("Interrupted, ending monitoring job");
                         return;
                     }
-                    
-                    gs.checkOnline(em);
+
+                    GeoserviceFactoryHelper.checkServiceOnline(em, gs);
                     online++;
                     gs.setMonitoringStatusOK(true);
                     log.debug("ONLINE: " + debugMsg);

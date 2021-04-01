@@ -104,6 +104,10 @@
         </dependency>
         <dependency>
             <groupId>org.flamingo-mc</groupId>
+            <artifactId>viewer-config-persistence-helpers</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.flamingo-mc</groupId>
             <artifactId>solr-commons</artifactId>
         </dependency>
         <dependency>
@@ -236,7 +240,7 @@
                     </filesets>
                 </configuration>
             </plugin>
-            <plugin>
+            <!--plugin>
                 <groupId>com.github.eirslett</groupId>
                 <artifactId>frontend-maven-plugin</artifactId>
                 <executions>
@@ -273,7 +277,7 @@
                     <installDirectory>${project.build.directory}/</installDirectory>
                     <nodeVersion>${node.version}</nodeVersion>
                 </configuration>
-            </plugin>
+            </plugin-->
             <plugin>
                 <artifactId>maven-resources-plugin</artifactId>
                 <executions>

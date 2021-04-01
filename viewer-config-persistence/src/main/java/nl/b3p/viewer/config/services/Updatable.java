@@ -24,5 +24,5 @@ import javax.persistence.EntityManager;
  */
 public interface Updatable {
     
-    public UpdateResult update(EntityManager em);
+    public void update(EntityManager em);
 }

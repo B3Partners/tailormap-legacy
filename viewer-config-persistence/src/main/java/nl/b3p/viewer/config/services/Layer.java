@@ -303,11 +303,11 @@ public class Layer implements Cloneable, Serializable {
         }
     }
 
-    protected void update(Layer update) {
+    public void update(Layer update) {
         update(update, null);
     }
 
-    protected void update(Layer update, Set<String> additionalUpdatableDetails) {
+    public void update(Layer update, Set<String> additionalUpdatableDetails) {
         if(!getName().equals(update.getName())) {
             throw new IllegalArgumentException("Cannot update layer with properties from layer with different name!");
         }
@@ -359,7 +359,7 @@ public class Layer implements Cloneable, Serializable {
      *
      * @param other the source of properties to copy
      */
-    protected void copyUserModifiedProperties(Layer other) {
+    public void copyUserModifiedProperties(Layer other) {
         setTitleAlias(other.getTitleAlias());
         getReaders().clear();
         getReaders().addAll(other.getReaders());

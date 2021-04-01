@@ -1,6 +1,7 @@
 package nl.b3p.viewer.userlayer;
 
-import net.sourceforge.stripes.action.ActionBeanContext;
+import nl.b3p.viewer.GeoserviceFactoryHelper;
+import nl.b3p.viewer.WMSServiceHelper;
 import nl.b3p.viewer.audit.AuditMessageObject;
 import nl.b3p.viewer.config.ClobElement;
 import nl.b3p.viewer.config.app.Application;
@@ -13,8 +14,6 @@ import nl.b3p.web.WaitPageStatus;
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.geotools.jdbc.JDBCDataStore;
-import org.opengis.feature.simple.SimpleFeature;
 
 import javax.persistence.EntityManager;
 import java.text.DateFormat;
@@ -104,7 +103,8 @@ public class TailormapDBManager {
         MutablePair<Layer, UpdateResult.Status> pair = null;
         try {
             // update service
-            UpdateResult result = ((Updatable) gs).update(entityManager);
+
+            UpdateResult result =  GeoserviceFactoryHelper.update(entityManager, gs);
             gs.setName(USERLAYER_NAME);
             entityManager.persist(gs);
             if (result.getStatus() == UpdateResult.Status.FAILED) {
@@ -136,7 +136,7 @@ public class TailormapDBManager {
             JDBCFeatureSource fs = (JDBCFeatureSource)this.layer.getFeatureType().getFeatureSource();
             try {
                 Date start = new Date();
-                fs.update(entityManager);
+                // TODO fs.update(entityManager);
                 Date end = new Date();
                 LOG.error("time: " + (end.getTime() - start.getTime()));
                 SimpleFeatureType newFt = fs.getFeatureType(viewName);
@@ -210,7 +210,7 @@ public class TailormapDBManager {
             params.put(WMSService.PARAM_SKIP_DISCOVER_WFS, true);
             String url = this.baseUrl + this.geoserverWorkspace + "/wms";
             WaitPageStatus status = new WaitPageStatus();
-            userlayerService = new WMSService().loadFromUrl(url, params, status, entityManager);
+            userlayerService = WMSServiceHelper.loadFromUrl(url, params, status, entityManager);
             ((WMSService) userlayerService).setException_type(WMSExceptionType.Inimage);
 
             userlayerService.setName(USERLAYER_NAME);
