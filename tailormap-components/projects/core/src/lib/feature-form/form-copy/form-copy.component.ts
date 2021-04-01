@@ -90,7 +90,7 @@ export class FormCopyComponent implements OnInit, OnDestroy {
           if (config) {
             let childFieldsToCopy = new Map<string, string>();
             // zet velden terug die hiervoor geselecteerd waren.
-            this.formCopyService.featuresToCopy.forEach((oldfieldsToCopy, key) => {
+            this.formCopyService.featuresToCopy.forEach((oldfieldsToCopy) => {
               if (oldfieldsToCopy.get('objecttype') === child.objecttype) {
                 childFieldsToCopy = oldfieldsToCopy;
               }
@@ -129,11 +129,11 @@ export class FormCopyComponent implements OnInit, OnDestroy {
       for (let i  = 0; i <= destinationFeatures.length - 1; i++) {
         destinationFeatures[i] = {...destinationFeatures[i], ...valuesToCopy};
         for (let n = 0; n <= childsToCopy.length - 1; n++) {
-          this.actionService.save$(false, [childsToCopy[n]], destinationFeatures[i]).subscribe(childSaved => {
+          this.actionService.save$(false, [childsToCopy[n]], destinationFeatures[i]).subscribe(() => {
             console.log('child saved');
           });
         }
-        this.actionService.save$(false, [destinationFeatures[i]], destinationFeatures[i]).subscribe(savedFeature => {
+        this.actionService.save$(false, [destinationFeatures[i]], destinationFeatures[i]).subscribe(() => {
             successCopied++;
             if (successCopied === destinationFeatures.length) {
               this._snackBar.open('Er zijn ' + successCopied + ' features gekopieerd', '', {
@@ -161,7 +161,7 @@ export class FormCopyComponent implements OnInit, OnDestroy {
       const children = feature.children;
       for (let c  = 0; c <= children.length - 1; c++) {
         const child = children[c];
-        this.actionService.removeFeature$(child).subscribe(childRemoved => {
+        this.actionService.removeFeature$(child).subscribe(() => {
           console.log('child removed');
         });
       }
@@ -177,11 +177,11 @@ export class FormCopyComponent implements OnInit, OnDestroy {
     return fieldsToCopy.has(event);
   }
 
-  public isEverythingChecked(tab: string): boolean {
+  public isEverythingChecked(tab: number): boolean {
     const fieldsToCopy = this.formCopyService.featuresToCopy.get(this.originalFeature.objectGuid);
     for (let i  = 0; i <= this.formConfig.fields.length - 1; i++) {
       const config = this.formConfig.fields[i];
-      if (config.tab.toString() === tab) {
+      if (config.tab === tab) {
         if (!fieldsToCopy.has(config.key)) {
             return false;
         }
@@ -191,12 +191,12 @@ export class FormCopyComponent implements OnInit, OnDestroy {
   }
 
   // zet alles aan of uit voor de geselecteerde tab
-  public toggle(event: any, tab: string) {
+  public toggle(event: any, tab: number) {
     if (!event.checked) {
       const fieldsToCopy = this.formCopyService.featuresToCopy.get(this.originalFeature.objectGuid);
       for (let i  = 0; i <= this.formConfig.fields.length - 1; i++) {
         const config = this.formConfig.fields[i];
-        if (config.tab.toString() === tab) {
+        if (config.tab === tab) {
           fieldsToCopy.delete(config.key);
         }
       }
@@ -204,7 +204,7 @@ export class FormCopyComponent implements OnInit, OnDestroy {
       const fieldsToCopy = this.formCopyService.featuresToCopy.get(this.originalFeature.objectGuid);
       for (let i  = 0; i <= this.formConfig.fields.length - 1; i++) {
         const config = this.formConfig.fields[i];
-        if (config.tab.toString() === tab) {
+        if (config.tab === tab) {
           fieldsToCopy.set(config.key, config.label);
         }
       }
@@ -267,11 +267,11 @@ export class FormCopyComponent implements OnInit, OnDestroy {
     return newChilds;
   }
 
-  public setDeleteRelated(event: any) {
+  public setDeleteRelated() {
     this.deleteRelated = !this.deleteRelated;
   }
 
-  public setCopyAllRelatedFeatures(event: any) {
+  public setCopyAllRelatedFeatures() {
     if (this.formCopyService.parentFeature.children) {
       this.relatedFeatures = [];
       // eslint-disable-next-line @typescript-eslint/prefer-for-of

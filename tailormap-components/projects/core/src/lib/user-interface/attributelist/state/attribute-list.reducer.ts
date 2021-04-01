@@ -6,6 +6,7 @@ import { AttributeListRowModel } from '../models/attribute-list-row.model';
 import { UpdateAttributeListStateHelper } from '../helpers/update-attribute-list-state.helper';
 import { AttributeListFeatureTypeData, CheckedFeature } from '../models/attribute-list-feature-type-data.model';
 import { AttributeListFilterModel } from '../models/attribute-list-filter-models';
+import { AttributeListStatisticColumnModel } from '../models/attribute-list-statistic-column.model';
 
 const onSetAttributeListVisibility = (
   state: AttributeListState,
@@ -52,10 +53,10 @@ const onSetSelectedTab = (
 });
 
 const updateArrayItemInState = <T>(
-  list: Array<T>,
+  list: T[],
   findIndex: (item: T) => boolean,
   updateFn: (item: T) => T,
-) => {
+): T[] => {
   const rowIdx = list.findIndex(findIndex);
   if (rowIdx === -1) {
     return list;
@@ -65,6 +66,19 @@ const updateArrayItemInState = <T>(
     updateFn(list[rowIdx]),
     ...list.slice(rowIdx + 1),
   ];
+};
+
+const addOrUpdateArrayItemInState = <T>(
+  list: T[],
+  findIndex: (item: T) => boolean,
+  updateFn: (item: T) => T,
+  newItem: T,
+): T[] => {
+  const rowIdx = list.findIndex(findIndex);
+  if (rowIdx === -1) {
+    return [ ...list, newItem ];
+  }
+  return updateArrayItemInState(list, findIndex, updateFn);
 };
 
 const updateTab = (
@@ -362,27 +376,19 @@ const onSetSelectedColumnFilter = (
   state: AttributeListState,
   payload: ReturnType<typeof AttributeListActions.setColumnFilter>,
 ): AttributeListState => updateFeatureData(state, payload.featureType, tab => {
-  const index = tab.filter.findIndex(filter => filter.name === payload.colName);
-  if (index >= 0) {
-    return {
-      ...tab,
-      filter: updateArrayItemInState<AttributeListFilterModel>(
-        tab.filter,
-        (f => f.name === payload.colName),
-        (filter => ({...filter, name: payload.colName, value: payload.value, type: payload.filterType})),
-      ),
-    };
-  }
+  const newFilter: AttributeListFilterModel = {
+    name: payload.colName,
+    value: payload.value,
+    type: payload.filterType,
+  };
   return {
     ...tab,
-    filter: [
-      ...tab.filter,
-      {
-        name: payload.colName,
-        value: payload.value,
-        type: payload.filterType,
-      },
-    ],
+    filter: addOrUpdateArrayItemInState<AttributeListFilterModel>(
+      tab.filter,
+      (f => f.name === payload.colName),
+      (filter => ({...filter, ...newFilter})),
+      newFilter,
+    ),
   };
 });
 
@@ -451,6 +457,56 @@ const onClearCountForFeatureTypes = (
   };
 };
 
+const onLoadStatisticsForColumn = (
+  state: AttributeListState,
+  payload: ReturnType<typeof AttributeListActions.loadStatisticsForColumn>,
+): AttributeListState => updateFeatureData(state, payload.featureType, tab => {
+  return {
+    ...tab,
+    statistics: addOrUpdateArrayItemInState<AttributeListStatisticColumnModel>(
+      tab.statistics,
+      (s => s.name === payload.column),
+      (s => ({...s, processing: true, statisticType: payload.statisticType})),
+      { name: payload.column, statisticType: payload.statisticType, processing: true, statisticValue: null },
+    ),
+  };
+});
+
+const onRefreshStatisticsForTab = (
+  state: AttributeListState,
+  payload: ReturnType<typeof AttributeListActions.refreshStatisticsForTab>,
+): AttributeListState => updateFeatureData(state, payload.featureType, tab => {
+  return {
+    ...tab,
+    statistics: tab.statistics.map(s => ({ ...s, processing: true })),
+  };
+});
+
+const onStatisticsForColumnLoaded = (
+  state: AttributeListState,
+  payload: ReturnType<typeof AttributeListActions.statisticsForColumnLoaded>,
+): AttributeListState => updateFeatureData(state, payload.featureType, tab => {
+  return {
+    ...tab,
+    statistics: updateArrayItemInState<AttributeListStatisticColumnModel>(
+      tab.statistics,
+      (s => s.name === payload.column),
+      (s => ({...s, processing: false, statisticValue: payload.value})),
+    ),
+  };
+});
+
+const onStatisticsForTabRefreshed = (
+  state: AttributeListState,
+  payload: ReturnType<typeof AttributeListActions.statisticsForTabRefreshed>,
+): AttributeListState => updateFeatureData(state, payload.featureType, tab => {
+  const updateMap: Map<string, number> = new Map(payload.results.map(r => [ r.column, r.value ]));
+  return {
+    ...tab,
+    statistics: tab.statistics.map(s => ({ ...s, processing: false, statisticValue: updateMap.get(s.name) || s.statisticValue })),
+  };
+});
+
 const attributeListReducerImpl = createReducer(
   initialAttributeListState,
   on(AttributeListActions.setAttributeListVisibility, onSetAttributeListVisibility),
@@ -476,6 +532,10 @@ const attributeListReducerImpl = createReducer(
   on(AttributeListActions.clearFilterForFeatureType, onClearFilterForFeatureType),
   on(AttributeListActions.clearAllFilters, onClearAllFilters),
   on(AttributeListActions.clearCountForFeatureTypes, onClearCountForFeatureTypes),
+  on(AttributeListActions.loadStatisticsForColumn, onLoadStatisticsForColumn),
+  on(AttributeListActions.statisticsForColumnLoaded, onStatisticsForColumnLoaded),
+  on(AttributeListActions.refreshStatisticsForTab, onRefreshStatisticsForTab),
+  on(AttributeListActions.statisticsForTabRefreshed, onStatisticsForTabRefreshed),
 );
 
 export const attributeListReducer = (state: AttributeListState | undefined, action: Action) => {

@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2020 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -96,7 +96,11 @@ Ext.define("viewer.components.GBI", {
         this.config.viewerController.mapComponent.getMap().addLayer(this.highlightLayer);
     },
     initializeForm: function () {
+        var useSelectedLayerFilter = typeof this.config.useSelectedLayerFilter !== 'undefined'
+            ? this.config.useSelectedLayerFilter
+            : true;
         this.divController = document.createElement("tailormap-workflow-controller");
+        this.divController.setAttribute("use-selected-layer-filter", useSelectedLayerFilter);
         this.divController.setAttribute("vector-layer-id", this.vectorLayer.getId());
         this.divController.setAttribute("highlight-layer-id", this.highlightLayer.getId());
         this.divController.addEventListener('wanneerPopupClosed', this.popupClosed.bind(this));
@@ -110,11 +114,11 @@ Ext.define("viewer.components.GBI", {
     startDrawingGeometry: function (event) {
         this.vectorLayer.drawFeature(event.type);
     },
-  
+
     addFeatureToLayer: function(event){
         this.vectorLayer.readGeoJSON(event.geometrie);
     },
-    
+
     highlight: function (event) {
         var geojson = event.detail.geojson;
         if (geojson) {

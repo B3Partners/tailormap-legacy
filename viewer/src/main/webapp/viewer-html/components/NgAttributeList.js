@@ -63,6 +63,7 @@ Ext.define ("viewer.components.NgAttributeList",{
             zoomToBuffer: this.config.zoomToBuffer,
             title: this.config.title,
             tooltip: this.config.tooltip,
+            downloadParams: this.config.downloadParams,
         }));
         document.getElementById(this.getContentDiv()).appendChild(btn);
     }

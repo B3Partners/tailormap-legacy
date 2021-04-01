@@ -43,7 +43,7 @@ export class AnalysisButtonComponent {
     }
     this.isRemoving = true;
     this.userLayerService.removeLayer$(selectedAppLayer)
-      .subscribe(result => {
+      .subscribe(() => {
         this.store$.dispatch(removeAppLayer({ layer: selectedAppLayer }));
         setTimeout(() => this.isRemoving = false, 250);
       });

@@ -46,7 +46,7 @@ export class ApplicationService implements OnDestroy {
         tap(event => this.visibilityChangedMap.set(`${event.layer.id}`, event.visible)),
         throttleTime(100),
       )
-      .subscribe(event => {
+      .subscribe(() => {
         this.store$.dispatch(setLayerVisibility({ visibility: this.visibilityChangedMap }));
         this.visibilityChangedMap = new Map();
       });

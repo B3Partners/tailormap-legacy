@@ -50,7 +50,8 @@
           "error",
           {
             "caughtErrors": "none",
-            "args": "none"
+            "args": "after-used",
+            "argsIgnorePattern": "^_"
           }
         ],
         "arrow-parens": [

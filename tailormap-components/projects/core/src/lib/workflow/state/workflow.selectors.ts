@@ -11,3 +11,4 @@ export const selectFeatureType = createSelector( selectWorkflowState, state => s
 
 export const selectGeometryType = createSelector( selectWorkflowState, state => state.geometryType);
 
+export const selectWorkflowConfig = createSelector(selectWorkflowState, state => state.config);

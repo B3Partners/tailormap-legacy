@@ -61,7 +61,7 @@ export class WorkflowControllerService implements OnDestroy {
       this.currentWorkflow.destroy();
     }
     const wf = this.workflowFactory.getWorkflow(event, featureType);
-    wf.close$.pipe(takeUntil(this.destroyed)).subscribe(value => this.init());
+    wf.close$.pipe(takeUntil(this.destroyed)).subscribe(() => this.init());
     return wf;
   }
 

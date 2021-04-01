@@ -28,6 +28,7 @@ import { AnalysisEffects } from './state/analysis.effects';
 import { StyleFormPanelComponent } from './style-form-panel/style-form-panel.component';
 import { ResolutionSelectorComponent } from './resolution-selector/resolution-selector.component';
 import { StylePreviewComponent } from './style-preview/style-preview.component';
+import { ResolutionRangeSelectorComponent } from './resolution-range-selector/resolution-range-selector.component';
 
 
 @NgModule({
@@ -49,6 +50,7 @@ import { StylePreviewComponent } from './style-preview/style-preview.component';
     StyleFormPanelComponent,
     ResolutionSelectorComponent,
     StylePreviewComponent,
+    ResolutionRangeSelectorComponent,
   ],
   imports: [
     CommonModule,

@@ -26,12 +26,20 @@ const onSetTypes = (state: WorkflowState, payload: {
   action: payload.action,
 });
 
+const onUpdateConfig = (state: WorkflowState, payload: ReturnType<typeof WorkflowActions.updateConfig>): WorkflowState => ({
+  ...state,
+  config: {
+    ...state.config,
+    ...payload.config,
+  },
+});
 
 const workflowReducerImpl = createReducer(
   initialWorkflowState,
   on(WorkflowActions.setTypes, onSetTypes),
   on(WorkflowActions.setFeature, onSetFeature),
   on(WorkflowActions.setAction, onSetAction),
+  on(WorkflowActions.updateConfig, onUpdateConfig),
 );
 
 export const workflowReducer = (state: WorkflowState | undefined, action: Action) => {

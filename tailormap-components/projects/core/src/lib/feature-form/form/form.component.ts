@@ -1,5 +1,4 @@
-import { Component, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ConfirmDialogService } from '../../shared/confirm-dialog/confirm-dialog.service';
 import { filter, map, take, takeUntil } from 'rxjs/operators';
 import { combineLatest, Observable, Subject } from 'rxjs';
@@ -29,7 +28,7 @@ import { EditFeatureGeometryService } from '../services/edit-feature-geometry.se
   templateUrl: './form.component.html',
   styleUrls: ['./form.component.css'],
 })
-export class FormComponent implements OnDestroy, OnChanges, OnInit {
+export class FormComponent implements OnDestroy, OnInit {
 
   public features: Feature[];
   public feature: Feature;
@@ -50,7 +49,6 @@ export class FormComponent implements OnDestroy, OnChanges, OnInit {
   constructor(
     private store$: Store<FormState | WorkflowState>,
     private confirmDialogService: ConfirmDialogService,
-    private _snackBar: MatSnackBar,
     private metadataService: MetadataService,
     private featureInitializerService: FeatureInitializerService,
     public actions: FormActionsService,
@@ -119,10 +117,6 @@ export class FormComponent implements OnDestroy, OnChanges, OnInit {
     });
   }
 
-  public ngOnChanges(changes: SimpleChanges): void {
-    throw new Error('Method not implemented.');
-  }
-
   public formChanged(result: boolean) {
     this.formDirty = result;
   }
@@ -163,7 +157,7 @@ export class FormComponent implements OnDestroy, OnChanges, OnInit {
     this.confirmDialogService.confirm$('Verwijderen',
       message, true)
       .pipe(take(1), filter(remove => remove)).subscribe(() => {
-      this.actions.removeFeature$(this.feature).subscribe(result => {
+      this.actions.removeFeature$(this.feature).subscribe(() => {
         this.store$.dispatch(FormActions.setFeatureRemoved({feature: this.feature}));
         if (!this.feature) {
           this.closeForm();

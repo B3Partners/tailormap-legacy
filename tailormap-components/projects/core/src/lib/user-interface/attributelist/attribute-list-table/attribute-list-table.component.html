@@ -1,5 +1,20 @@
 <div class="table-container">
 
+  <mat-menu #statsMenu="matMenu">
+    <ng-template matMenuContent let-column="column">
+      <ng-container *ngFor="let option of statisticTypes">
+        <button *ngIf="isStatisticsTypeAvailable(option.type, column)"
+                mat-menu-item
+                (click)="loadStatistic(option.type, column)">
+          <mat-icon *ngIf="isStatisticsTypeSelected(option.type, column)">
+            check
+          </mat-icon>
+          {{option.label}}
+        </button>
+      </ng-container>
+    </ng-template>
+  </mat-menu>
+
   <div *ngIf="rowLength === 0 && loadingData$ | async">
     <mat-spinner diameter="20" mode="indeterminate" color="primary"></mat-spinner>
   </div>
@@ -38,14 +53,18 @@
         {{currRow[col.name]}}
       </mat-cell>
 
-      <mat-footer-cell *matFooterCellDef class="statistics-footer-cell" (click)="onStatisticsMenu($event, col.name)">
+      <mat-footer-cell *matFooterCellDef class="statistics-footer-cell"
+                       [matMenuTriggerFor]="statsMenu"
+                       [matMenuTriggerData]="{column: col}">
         <div *ngIf="isStatisticsProcessing(col.name)">
           <mat-spinner diameter="20"></mat-spinner>
         </div>
-        <div *ngIf="getStatisticResult(col.name) === ''" class="statistics-placeholder">
+        <div *ngIf="!hasStatisticResult(col)" class="statistics-placeholder">
           <mat-icon>functions</mat-icon>
         </div>
-        {{getStatisticResult(col.name)}}
+        <div *ngIf="hasStatisticResult(col)">
+          {{getStatisticResult(col)}}
+        </div>
       </mat-footer-cell>
 
     </ng-container>
@@ -79,6 +98,3 @@
   </mat-table>
 
 </div>
-
-<tailormap-attribute-list-statistics-menu [layerId]="layerId"
-                                          [statistic]="statistic"></tailormap-attribute-list-statistics-menu>

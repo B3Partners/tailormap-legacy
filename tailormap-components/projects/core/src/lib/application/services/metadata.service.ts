@@ -7,7 +7,7 @@ import { catchError, concatMap, map, switchMap, takeUntil, takeWhile, tap } from
 import { combineLatest, Observable, of, Subject } from 'rxjs';
 import { AttributeListParameters, AttributeListResponse, AttributeMetadataResponse } from '../../shared/attribute-service/attribute-models';
 import { Attribute as GbiAttribute, FormConfiguration } from '../../feature-form/form/form-models';
-import { PassportAttributeModel } from '../models/passport-attribute.model';
+import { ExtendedAttributeModel } from '../models/extended-attribute.model';
 import { UniqueValuesResponse } from '../../shared/value-service/value-models';
 import { ValueService } from '../../shared/value-service/value.service';
 import { FormState } from '../../feature-form/state/form.state';
@@ -30,7 +30,7 @@ export class MetadataService implements OnDestroy {
   ) {
     this.store$.select(selectApplicationId)
       .pipe(takeUntil(this.destroy))
-      .subscribe(appId => {
+      .subscribe(() => {
         this.attributeCache = new Map();
       });
   }
@@ -55,7 +55,7 @@ export class MetadataService implements OnDestroy {
       );
   }
 
-  public getPassportFieldsForLayer$(layerId: string | number): Observable<PassportAttributeModel[]> {
+  public getVisibleExtendedAttributesForLayer$(layerId: string | number): Observable<ExtendedAttributeModel[]> {
     return this.getFeatureTypeMetadata$(layerId)
       .pipe(
         switchMap(metadata => {
@@ -70,8 +70,10 @@ export class MetadataService implements OnDestroy {
           ]);
         }),
         map(([ metadata, formConfig, relationFormConfigs ]: [ AttributeMetadataResponse, FormConfiguration, FormConfiguration[] ]) => {
-          if (!formConfig.fields) {
-            return [];
+          if (!formConfig || !formConfig.fields) {
+            return metadata.attributes
+              .filter(a => a.visible)
+              .map<ExtendedAttributeModel>(attribute => ({ ...attribute, alias: attribute.name }));
           }
           const availableFields = new Map<string, GbiAttribute>();
           formConfig.fields.forEach(f => availableFields.set(f.key, f));
@@ -82,28 +84,28 @@ export class MetadataService implements OnDestroy {
             config.fields.forEach(f => availableFields.set(f.key, f));
           });
           return metadata.attributes
-            .filter(attribute => availableFields.has(attribute.name))
-            .map<PassportAttributeModel>(attribute => ({ ...attribute, passportAlias: availableFields.get(attribute.name).label }));
+            .filter(attribute => availableFields.has(attribute.name) && attribute.visible)
+            .map<ExtendedAttributeModel>(attribute => ({ ...attribute, alias: availableFields.get(attribute.name).label }));
         }),
       );
   }
 
   public getUniqueValuesAndTotalForAttribute$(
     appLayerId: number,
-    passportAttribute: PassportAttributeModel,
+    attribute: ExtendedAttributeModel,
   ): Observable<UniqueValueCountResponse[]> {
-    const attribute: PassportAttributeModel = { ...passportAttribute };
+    const attributeModel: ExtendedAttributeModel = { ...attribute };
     const appLayer = appLayerId;
-    return this.valueService.uniqueValues$({ applicationLayer: appLayerId, attributes: [ passportAttribute.name ] })
+    return this.valueService.uniqueValues$({ applicationLayer: appLayerId, attributes: [ attributeModel.name ] })
       .pipe(
         switchMap((uniqueValuesResponse: UniqueValuesResponse) => {
           if (!uniqueValuesResponse.uniqueValues
-            || !uniqueValuesResponse.uniqueValues.hasOwnProperty(attribute.name)
-            || !Array.isArray(uniqueValuesResponse.uniqueValues[attribute.name])) {
+            || !uniqueValuesResponse.uniqueValues.hasOwnProperty(attributeModel.name)
+            || !Array.isArray(uniqueValuesResponse.uniqueValues[attributeModel.name])) {
             return of([]);
           }
-          const featureInfoRequests$ = uniqueValuesResponse.uniqueValues[attribute.name].map(value => {
-            return this.getTotalFeaturesForQuery$(appLayer, `${attribute.name} = '${value}'`)
+          const featureInfoRequests$ = uniqueValuesResponse.uniqueValues[attributeModel.name].map(value => {
+            return this.getTotalFeaturesForQuery$(appLayer, `${attributeModel.name} = '${value}'`)
               .pipe(
                 // Merge both total and unique value into 1 result
                 map<number, UniqueValueCountResponse>(total => ({ uniqueValue: value, total })),
@@ -132,7 +134,7 @@ export class MetadataService implements OnDestroy {
             ...featureParams,
             filter: query,
           }).pipe(
-            catchError(e => of({ total: 0, success: false })),
+            catchError(() => of({ total: 0, success: false })),
           );
         }),
         map<AttributeListResponse, number>(response => {

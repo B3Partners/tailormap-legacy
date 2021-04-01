@@ -7,7 +7,7 @@ import { selectCreateLayerData } from '../state/analysis.selectors';
 import { catchError, map, switchMap, take, tap } from 'rxjs/operators';
 import { CreateLayerModeEnum } from '../models/create-layer-mode.enum';
 import { MetadataService, UniqueValueCountResponse } from '../../application/services/metadata.service';
-import { PassportAttributeModel } from '../../application/models/passport-attribute.model';
+import { ExtendedAttributeModel } from '../../application/models/extended-attribute.model';
 import { CriteriaModel } from '../models/criteria.model';
 import { StyleHelper } from '../helpers/style.helper';
 import { IdService } from '../../shared/id-service/id.service';
@@ -100,7 +100,7 @@ export class CreateStyleService {
       );
   }
 
-  private createThematicStyles$(appLayer?: number, attribute?: PassportAttributeModel): Observable<CreateStyleResult> {
+  private createThematicStyles$(appLayer?: number, attribute?: ExtendedAttributeModel): Observable<CreateStyleResult> {
     if (!appLayer || !attribute) {
       return of(CreateStyleService.INCOMPLETE_DATA_RESULT);
     }

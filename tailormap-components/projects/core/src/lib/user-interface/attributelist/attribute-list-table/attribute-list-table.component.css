@@ -145,6 +145,10 @@ mat-footer-cell {
   background-color: #e8e8e8;
 }
 
+.statistics-footer-cell {
+  cursor: pointer;
+}
+
 .statistics-placeholder {
   border: 1px dashed #6236ff;
   margin: 3px;
@@ -153,7 +157,6 @@ mat-footer-cell {
   display: none;
   justify-content: center;
   align-items: center;
-  cursor: pointer;
   border-radius: 3px;
 }
 

@@ -85,7 +85,7 @@ export class TailorMapService {
     vc.addListener('ON_LAYERS_INITIALIZED', () => {
       this.ngZone.run(() => this.layersInitializedSubject$.next(true));
     });
-    map.addListener('ON_LAYER_VISIBILITY_CHANGED', (object, event) => {
+    map.addListener('ON_LAYER_VISIBILITY_CHANGED', (_object, event) => {
       this.ngZone.run(() => this.layerVisibilityChangedSubject$.next(event as LayerVisibilityEvent));
     });
     map.addListener('ON_FINISHED_CHANGE_EXTENT', (object, event) => {
@@ -94,7 +94,7 @@ export class TailorMapService {
     vc.addListener('ON_LAYER_SELECTED', (event) => {
       const appLayer = (!event || !event.appLayer) ? null : event.appLayer;
       this.selectedLayer = appLayer;
-      this.selectedLayerSubject$.next(appLayer);
+      this.ngZone.run(() => this.selectedLayerSubject$.next(appLayer));
     });
     this.applicationConfigSubject$.next(this.getAppLoader().getApplicationConfig());
   }

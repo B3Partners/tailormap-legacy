@@ -52,6 +52,7 @@ export class AttributeListManagerService implements OnDestroy {
     pageSize: 10,
     totalCount: null,
     sortDirection: 'ASC',
+    statistics: [],
   };
 
   private destroyed = new Subject();
@@ -67,8 +68,8 @@ export class AttributeListManagerService implements OnDestroy {
     ])
       .pipe(
         takeUntil(this.destroyed),
-        filter(([ layers, formConfigLoaded ]) => !!formConfigLoaded),
-        map(([ layers, formConfigLoaded ]) => layers),
+        filter(([ _layers, formConfigLoaded ]) => !!formConfigLoaded),
+        map(([ layers, _formConfigLoaded ]) => layers),
         withLatestFrom(this.store$.select(selectAttributeListTabs), this.store$.select(selectAttributeListConfig)),
         concatMap(([ layers, tabs, config ]) => {
           const closedTabs = this.getClosedTabs(layers, tabs);
@@ -192,7 +193,7 @@ export class AttributeListManagerService implements OnDestroy {
     const passportFields: Map<string, Attribute> = formConfig && formConfig.fields
       ? new Map(formConfig.fields.map(attr => [ attr.key, attr ]))
       : new Map();
-    const attributes = metadata.attributes.filter(a => a.featureType === featureType);
+    const attributes = metadata.attributes.filter(a => a.visible && a.featureType === featureType);
     return attributes.map<AttributeListColumnModel>(a => {
       const isPassportAttribute = passportFields.has(a.name);
       return {
