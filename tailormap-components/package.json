@@ -38,7 +38,7 @@
     "@angular/router": "~11.2.3",
     "@ngrx/effects": "^11.0.1",
     "@ngrx/store": "^11.0.1",
-    "@ngrx/store-devtools": "^11.0.1",
+    "@ngrx/store-devtools": "^11.1.0",
     "@types/wellknown": "^0.5.1",
     "document-register-element": "^1.14.10",
     "dpdm": "^3.6.0",
