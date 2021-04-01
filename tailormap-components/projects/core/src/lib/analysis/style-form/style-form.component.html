@@ -102,16 +102,10 @@
 
   </div>
 
-  <div class="form-field" *ngIf="style">
-    <label>Tonen vanaf schaalniveau</label>
-    <tailormap-resolution-selector (scaleChanged)="maxScaleChanged($event)"
-                                   [selectedScale]="style.maxScale"></tailormap-resolution-selector>
-  </div>
-
-  <div class="form-field" *ngIf="style">
-    <label>Tonen tot schaalniveau</label>
-    <tailormap-resolution-selector (scaleChanged)="minScaleChanged($event)"
-                                   [selectedScale]="style.minScale"></tailormap-resolution-selector>
-  </div>
+  <tailormap-resolution-range-selector *ngIf="style"
+                                       (maxScaleChanged)="maxScaleChanged($event)"
+                                       (minScaleChanged)="minScaleChanged($event)"
+                                       [selectedMaxScale]="style.maxScale"
+                                       [selectedMinScale]="style.minScale"></tailormap-resolution-range-selector>
 
 </div>

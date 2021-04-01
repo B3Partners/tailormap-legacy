@@ -8,7 +8,7 @@ export const createMockProvider = (template?: Partial<Record<keyof MetadataServi
     getFeatureTypeMetadata$(layerId: string | number): Observable<AttributeMetadataResponse> {
       return of(null);
     },
-    getPassportFieldsForLayer$(layerId: string | number): Observable<Attribute[]> {
+    getVisibleExtendedAttributesForLayer$(layerId: string | number): Observable<Attribute[]> {
       return of([]);
     },
     ...template,

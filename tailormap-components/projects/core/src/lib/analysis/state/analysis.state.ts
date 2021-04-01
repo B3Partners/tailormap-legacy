@@ -3,7 +3,7 @@ import { AnalysisSourceModel } from '../models/analysis-source.model';
 import { CriteriaTypeEnum } from '../models/criteria-type.enum';
 import { CriteriaModel } from '../models/criteria.model';
 import { UserLayerStyleModel } from '../models/user-layer-style.model';
-import { PassportAttributeModel } from '../../application/models/passport-attribute.model';
+import { ExtendedAttributeModel } from '../../application/models/extended-attribute.model';
 
 export const analysisStateKey = 'analysis';
 
@@ -25,7 +25,7 @@ export interface AnalysisState {
   criteria?: CriteriaModel;
 
   // Thematic Mode
-  selectedThematicAttribute?: PassportAttributeModel;
+  selectedThematicAttribute?: ExtendedAttributeModel;
 }
 
 export const initialAnalysisState: AnalysisState = {

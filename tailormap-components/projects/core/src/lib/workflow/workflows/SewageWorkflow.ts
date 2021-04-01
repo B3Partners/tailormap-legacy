@@ -183,7 +183,7 @@ export class SewageWorkflow extends Workflow {
   }
 
 
-  public afterEditting(result?: any): void {
+  public afterEditing(result?: any): void {
     switch (this.currentStep) {
       case Step.WELL1:
         this.well1Feature = result;

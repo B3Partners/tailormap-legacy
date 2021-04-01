@@ -38,7 +38,7 @@ const onSetNewFeature = (state: FormState, payload: ReturnType<typeof FormAction
     ...state,
     features,
     feature: payload.newFeature,
-    editting: false,
+    editing: false,
   };
 };
 
@@ -54,7 +54,7 @@ const onSetOpenFeatureForm = (state: FormState, payload:  ReturnType<typeof Form
   treeOpen: true,
   closeAfterSave: payload.closeAfterSave || false,
   alreadyDirty: payload.alreadyDirty || false,
-  editting: payload.editMode || false,
+  editing: payload.editMode || false,
 });
 
 const onSetTreeOpen = (state: FormState, payload:  ReturnType<typeof FormActions.setTreeOpen>): FormState => ({
@@ -62,9 +62,9 @@ const onSetTreeOpen = (state: FormState, payload:  ReturnType<typeof FormActions
   treeOpen: payload.treeOpen,
 });
 
-const onSetFormEditting = (state: FormState, payload:  ReturnType<typeof FormActions.setFormEditting>): FormState => ({
+const onSetFormEditing = (state: FormState, payload:  ReturnType<typeof FormActions.setFormEditing>): FormState => ({
   ...state,
-  editting: payload.editting,
+  editing: payload.editing,
 });
 
 const onSetFeatureRemoved = (state: FormState, payload:  ReturnType<typeof FormActions.setFeatureRemoved>): FormState => {
@@ -81,7 +81,7 @@ const onSetFeatureRemoved = (state: FormState, payload:  ReturnType<typeof FormA
 const formReducerImpl = createReducer(
   initialFormState,
   on(FormActions.setTreeOpen, onSetTreeOpen),
-  on(FormActions.setFormEditting, onSetFormEditting),
+  on(FormActions.setFormEditing, onSetFormEditing),
   on(FormActions.setSetFeatures, onSetFeatures),
   on(FormActions.setFeature, onSetFeature),
   on(FormActions.setFeatureRemoved, onSetFeatureRemoved),

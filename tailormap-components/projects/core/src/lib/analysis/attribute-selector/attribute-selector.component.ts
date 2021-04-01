@@ -5,7 +5,7 @@ import { MetadataService } from '../../application/services/metadata.service';
 import { FormControl } from '@angular/forms';
 import { AttributeTypeHelper } from '../../application/helpers/attribute-type.helper';
 import { AttributeTypeEnum } from '../../application/models/attribute-type.enum';
-import { PassportAttributeModel } from '../../application/models/passport-attribute.model';
+import { ExtendedAttributeModel } from '../../application/models/extended-attribute.model';
 
 @Component({
   selector: 'tailormap-attribute-selector',
@@ -40,17 +40,17 @@ export class AttributeSelectorComponent implements OnInit, OnDestroy {
   }
 
   @Output()
-  public attributeSelected = new EventEmitter<{ attribute: PassportAttributeModel; attributeType: AttributeTypeEnum }>();
+  public attributeSelected = new EventEmitter<{ attribute: ExtendedAttributeModel; attributeType: AttributeTypeEnum }>();
 
-  public filteredAttributes$: Observable<PassportAttributeModel[]>;
+  public filteredAttributes$: Observable<ExtendedAttributeModel[]>;
 
   private _featureType: number;
   private _selectedAttribute: string;
   private _appLayerId: string;
 
-  private allAttributes: PassportAttributeModel[] = [];
-  private allAttributesLookup: Map<string, PassportAttributeModel>;
-  private availableAttributesSubject$ = new BehaviorSubject<PassportAttributeModel[]>([]);
+  private allAttributes: ExtendedAttributeModel[] = [];
+  private allAttributesLookup: Map<string, ExtendedAttributeModel>;
+  private availableAttributesSubject$ = new BehaviorSubject<ExtendedAttributeModel[]>([]);
   private destroyed = new Subject();
 
   public attributeControl = new FormControl('');
@@ -63,7 +63,7 @@ export class AttributeSelectorComponent implements OnInit, OnDestroy {
     if (!att) {
       return attribute;
     }
-    return att.passportAlias;
+    return att.alias;
   };
 
   constructor(
@@ -97,13 +97,13 @@ export class AttributeSelectorComponent implements OnInit, OnDestroy {
     if (!this._appLayerId) {
       return;
     }
-    this.metadataService.getPassportFieldsForLayer$(this._appLayerId).pipe(takeUntil(this.destroyed))
+    this.metadataService.getVisibleExtendedAttributesForLayer$(this._appLayerId).pipe(takeUntil(this.destroyed))
       .subscribe(attributes => {
         if (!attributes) {
           return;
         }
         this.allAttributes = attributes;
-        this.allAttributesLookup = new Map<string, PassportAttributeModel>(attributes.map(a => [ a.name, a ]));
+        this.allAttributesLookup = new Map<string, ExtendedAttributeModel>(attributes.map(a => [ a.name, a ]));
         if (this._featureType) {
           this.filterAttributesForFeatureType(this._featureType);
         }

@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ConfirmDialogService } from '../../shared/confirm-dialog/confirm-dialog.service';
-import { filter, take, takeUntil } from 'rxjs/operators';
+import { filter, map, take, takeUntil } from 'rxjs/operators';
 import { combineLatest, Observable, Subject } from 'rxjs';
 import { FormConfiguration } from './form-models';
 import { Feature } from '../../shared/generated';
@@ -11,13 +11,12 @@ import { Store } from '@ngrx/store';
 import * as FormActions from '../state/form.actions';
 import * as WorkflowActions from '../../workflow/state/workflow.actions';
 import {
-  selectCloseAfterSaveFeatureForm, selectCurrentFeature, selectFeatureFormOpen, selectFeatures, selectFormAlreadyDirty, selectFormEditting,
+  selectCloseAfterSaveFeatureForm, selectCurrentFeature, selectFeatureFormOpen, selectFeatures, selectFormAlreadyDirty, selectFormEditing,
   selectTreeOpen,
 } from '../state/form.selectors';
 import { LayerUtils } from '../../shared/layer-utils/layer-utils.service';
 import { WORKFLOW_ACTION } from '../../workflow/state/workflow-models';
 import { WorkflowState } from '../../workflow/state/workflow.state';
-import { MatButtonToggleChange } from '@angular/material/button-toggle';
 import { selectFormConfigForFeatureTypeName, selectFormConfigs, selectVisibleLayers } from '../../application/state/application.selectors';
 import { FormHelpers } from './form-helpers';
 import { FeatureInitializerService } from '../../shared/feature-initializer/feature-initializer.service';
@@ -44,7 +43,8 @@ export class FormComponent implements OnDestroy, OnInit {
 
   public isOpen$: Observable<boolean>;
   public treeOpen$: Observable<boolean>;
-  public editting$: Observable<boolean>;
+  public editing$: Observable<boolean>;
+  public isOpenTreeClosed$: Observable<boolean>;
 
   constructor(
     private store$: Store<FormState | WorkflowState>,
@@ -77,11 +77,13 @@ export class FormComponent implements OnDestroy, OnInit {
     });
     this.isOpen$ = this.store$.select(selectFeatureFormOpen);
     this.treeOpen$ = this.store$.select(selectTreeOpen);
-    this.editting$ = this.store$.select(selectFormEditting);
+    this.editing$ = this.store$.select(selectFormEditing);
+    this.isOpenTreeClosed$ = combineLatest([ this.isOpen$, this.treeOpen$ ])
+      .pipe(map(([ isOpen, treeOpen ]) => isOpen && !treeOpen));
   }
 
-  public openTree(event: MatButtonToggleChange): void {
-    this.store$.dispatch(FormActions.setTreeOpen({treeOpen: event.source.checked}));
+  public openTree(): void {
+    this.store$.dispatch(FormActions.setTreeOpen({treeOpen: true}));
   }
 
   public ngOnDestroy() {
@@ -119,8 +121,8 @@ export class FormComponent implements OnDestroy, OnInit {
     this.formDirty = result;
   }
 
-  public setFormEditting(editting) {
-    this.store$.dispatch(FormActions.setFormEditting({editting}));
+  public setFormEditing(editing) {
+    this.store$.dispatch(FormActions.setFormEditing({ editing }));
   }
 
   public newItem($event: MouseEvent, featureTypeName: string) {
@@ -142,7 +144,7 @@ export class FormComponent implements OnDestroy, OnInit {
           [formConfig.treeNodeColumn]: `Nieuwe ${formConfig.name}`,
         });
         this.store$.dispatch(FormActions.setNewFeature({newFeature, parentId: features[0].objectGuid}));
-        this.store$.dispatch(FormActions.setFormEditting({editting: true}));
+        this.store$.dispatch(FormActions.setFormEditing({editing: true}));
       });
   }
 

@@ -22,7 +22,7 @@ export class CopyWorkflow extends Workflow {
 
   }
 
-  public afterEditting(): void {
+  public afterEditing(): void {
   }
 
   public geometryDrawn(): void {

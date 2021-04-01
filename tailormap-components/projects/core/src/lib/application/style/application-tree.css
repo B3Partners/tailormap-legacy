@@ -21,6 +21,5 @@ tailormap-tree ::ng-deep .mat-tree-node--folder + .mat-tree-node--folder {
 }
 
 tailormap-tree ::ng-deep .tree-node-wrapper--leaf {
-  padding-left: 0;
   margin-left: -10px;
 }

@@ -23,7 +23,16 @@ Ext.define("viewer.components.CustomConfiguration",{
     constructor: function (parentId, configObject, configPage) {
         configObject.showLabelconfig =true;
         viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId, configObject, configPage);
-
+        this.form.add({
+            xtype: 'checkbox',
+            fieldLabel: i18next.t('gbi_config_0'),
+            inputValue: true,
+            name: 'useSelectedLayerFilter',
+            checked: typeof this.configObject.useSelectedLayerFilter !== 'undefined'
+                ? this.configObject.useSelectedLayerFilter
+                : true,
+            labelWidth: this.labelWidth
+        });
     },
     getDefaultValues: function() {
         return {

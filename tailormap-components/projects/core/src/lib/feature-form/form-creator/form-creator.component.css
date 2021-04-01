@@ -4,8 +4,23 @@ mat-tab-group {
   height: 100%;
 }
 
+.is-editing .tab {
+  padding-bottom: 16px;
+}
+
 .column {
   display: flex;
   flex-direction: column;
-  margin: 5px;
+}
+
+.column + .column {
+  border-top: 1px solid rgba(216, 216, 216, 0.62);
+}
+
+.is-editing .column + .column {
+  border-top: 0 none;
+}
+
+.tab-group ::ng-deep .mat-tab-header-pagination-controls-enabled {
+  padding: 0;
 }

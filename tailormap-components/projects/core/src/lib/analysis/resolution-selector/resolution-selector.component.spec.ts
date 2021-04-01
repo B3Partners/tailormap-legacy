@@ -34,4 +34,42 @@ describe('ResolutionSelectorComponent', () => {
     expect(changedScale).toEqual(750);
   });
 
+  it('should filter options based on min scale', () => {
+    spectator.setInput('minScale', 384000);
+    spectator.click('.mat-select-trigger');
+    spectator.detectChanges();
+    expect(spectator.queryAll('mat-option').length).toEqual(4);
+    const optionLabels = [
+      spectator.queryAll('mat-option')[0].textContent,
+      spectator.queryAll('mat-option')[1].textContent,
+      spectator.queryAll('mat-option')[2].textContent,
+      spectator.queryAll('mat-option')[3].textContent,
+    ];
+    expect(optionLabels).toEqual([
+      'Altijd tonen',
+      '1 / 1.536.000 (land)',
+      '1 / 768.000',
+      '1 / 384.000',
+    ]);
+  });
+
+  it('should filter options based on max scale', () => {
+    spectator.setInput('maxScale', 1500);
+    spectator.click('.mat-select-trigger');
+    spectator.detectChanges();
+    expect(spectator.queryAll('mat-option').length).toEqual(4);
+    const optionLabels = [
+      spectator.queryAll('mat-option')[0].textContent,
+      spectator.queryAll('mat-option')[1].textContent,
+      spectator.queryAll('mat-option')[2].textContent,
+      spectator.queryAll('mat-option')[3].textContent,
+    ];
+    expect(optionLabels).toEqual([
+      'Altijd tonen',
+      '1 / 1.500',
+      '1 / 750 (straat)',
+      '1 / 375',
+    ]);
+  });
+
 });

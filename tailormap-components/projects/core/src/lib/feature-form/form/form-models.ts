@@ -40,6 +40,7 @@ export enum FormFieldType {
   SELECT = 'select',
   HIDDEN = 'hidden',
   DOMAIN = 'domain',
+  HYPERLINK = 'hyperlink',
 }
 
 
@@ -63,8 +64,9 @@ export interface IndexedFeatureAttributes {
   attrs: Map<string, FeatureAttribute>;
 }
 
-export interface TabbedFields {
-  tabs: Map<number, Attribute[]>;
+export interface TabbedField {
+  tabId: number;
+  attributes: Attribute[];
 }
 
 export interface DialogData {

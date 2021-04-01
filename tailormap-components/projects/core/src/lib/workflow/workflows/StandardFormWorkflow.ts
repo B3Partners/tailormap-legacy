@@ -11,7 +11,7 @@ import { selectFormClosed } from '../../feature-form/state/form.state-helpers';
 import {
   selectFormConfigForFeatureTypeName, selectFormConfigFeatureTypeNames, selectFormConfigs,
 } from '../../application/state/application.selectors';
-import { selectFeatureType, selectGeometryType } from '../state/workflow.selectors';
+import { selectFeatureType, selectGeometryType, selectWorkflowConfig } from '../state/workflow.selectors';
 import { combineLatest, Observable, of } from 'rxjs';
 import { FeatureSelectionComponent } from '../../shared/feature-selection/feature-selection.component';
 
@@ -110,11 +110,14 @@ export class StandardFormWorkflow extends Workflow {
     const y = data.y;
     const scale = data.scale;
 
-    this.store$.select(selectFormConfigFeatureTypeNames)
+    combineLatest([
+      this.store$.select(selectFormConfigFeatureTypeNames),
+      this.store$.select(selectWorkflowConfig),
+    ])
       .pipe(
         takeUntil(this.destroyed),
-        concatMap(allFeatureTypes => {
-          const featureTypes: string[] = this.layerUtils.getFeatureTypesAllowed(allFeatureTypes);
+        concatMap(([ allFeatureTypes, workflowConfig ]) => {
+          const featureTypes: string[] = this.layerUtils.getFeatureTypesAllowed(allFeatureTypes, workflowConfig.useSelectedLayerFilter);
           return this.service.featuretypeOnPoint({featureTypes, x, y, scale});
         }),
         concatMap((features: Feature[]) => {
@@ -132,7 +135,7 @@ export class StandardFormWorkflow extends Workflow {
         if (!feature) {
           return;
         }
-        this.afterEditting();
+        this.afterEditing();
         const geom = this.featureInitializerService.retrieveGeometry(feature);
         if (geom) {
           this.highlightLayer.readGeoJSON(geom);
@@ -157,7 +160,7 @@ export class StandardFormWorkflow extends Workflow {
       );
   }
 
-  public afterEditting(): void {
+  public afterEditing(): void {
     this.ngZone.runOutsideAngular(() => {
       this.vectorLayer.removeAllFeatures();
       this.highlightLayer.removeAllFeatures();

@@ -3,7 +3,7 @@ import { Feature } from '../../shared/generated';
 
 export class NoOpWorkflow extends Workflow {
 
-  public afterEditting(): void {
+  public afterEditing(): void {
   }
 
   public geometryDrawn(): void {
