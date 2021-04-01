@@ -97,7 +97,7 @@ export class StandardFormWorkflow extends Workflow {
     this.store$.pipe(selectFormClosed)
       .pipe(take(1))
       .subscribe(() => {
-        this.afterEditting();
+        this.afterEditing();
       });
   }
 

@@ -57,6 +57,8 @@
       </button>
     </mat-menu>
 
+    <mat-spinner *ngIf="loadingData$ | async" color="primary" mode="indeterminate" diameter="20"></mat-spinner>
+
   </div>
 
   <div class="paging" *ngIf="featureTypeData">

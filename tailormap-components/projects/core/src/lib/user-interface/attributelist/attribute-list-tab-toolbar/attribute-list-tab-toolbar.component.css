@@ -11,9 +11,14 @@
 
 .buttons {
   display: flex;
+  align-items: center;
 }
 
 .buttons button + button {
+  margin-left: 8px;
+}
+
+.buttons mat-spinner {
   margin-left: 8px;
 }
 

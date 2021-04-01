@@ -23,7 +23,8 @@
         {{tab.layerAlias === "" ? tab.layerName : tab.layerAlias}}
         <mat-icon svgIcon="contextual_drop_down" (click)="openColumnSelection($event, tab)">keyboard_arrow_down</mat-icon>
       </ng-template>
-      <tailormap-attribute-list-tab [layerId]="tab.layerId"></tailormap-attribute-list-tab>
+      <tailormap-attribute-list-tab [layerId]="tab.layerId"
+                                    [featureType]="tab.selectedRelatedFeatureType || tab.featureType"></tailormap-attribute-list-tab>
     </mat-tab>
   </mat-tab-group>
 

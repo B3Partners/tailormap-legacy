@@ -5,6 +5,10 @@
   height: 100%;
 }
 
+mat-spinner {
+  margin: 16px;
+}
+
 mat-table {
   min-width: min-content;
 }
@@ -14,27 +18,23 @@ mat-table {
   width: 40px !important;
 }
 
-.iconChar,
-.iconCharNo {
+.expand-enabled,
+.expand-disabled {
   font-size: 20px;
   font-weight: bold;
   color: #6236ff;
 }
 
-.iconCharNo {
+.expand-disabled {
   color: lightgray;
 }
 
-.iconChar {
+.expand-enabled {
   cursor: pointer;
 }
 
 .material-icons {
   font-size: 20px;
-}
-
-.material-icons-set {
-  color: #6236ff;
 }
 
 .header-cell--with-filter span {
@@ -46,15 +46,31 @@ mat-table {
 
 .header-cell--with-filter mat-icon {
   flex-shrink: 0;
+  color: rgba(0, 0, 0, 0.26);
+}
+
+.header-cell--with-filter .filter-active {
+  color: #6236ff;
+}
+
+.header-cell--with-sort .sort {
+  visibility: hidden;
+  color: rgba(0, 0, 0, 0.26);
+  transform: scale(1.5) translateY(-1px);
+}
+
+.header-cell--with-sort:hover .sort {
+  visibility: visible;
+}
+
+.header-cell--with-sort .sort-active {
+  visibility: visible;
+  color: #6236ff;
 }
 
 .header-cell--with-filter ::ng-deep .mat-sort-header-container,
 .header-cell--with-filter ::ng-deep .mat-sort-header-content {
   overflow: hidden;
-}
-
-.material-icons-unset {
-  color: rgba(0, 0, 0, 0.26);
 }
 
 .mat-icon {

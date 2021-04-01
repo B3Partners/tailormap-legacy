@@ -52,6 +52,17 @@ export const selectSelectedFeatureTypeForTab = createSelector(
   },
 );
 
+export const selectLoadingDataForTab = createSelector(
+  selectAttributeListTabDictionary,
+  (tabs, layerId: string): boolean => {
+    const tab = tabs.get(layerId);
+    if (!tab) {
+      return false;
+    }
+    return tab.loadingData;
+  },
+);
+
 export const selectFeatureTypeDataForTab = createSelector(
   selectAttributeListFeatureDataDictionary,
   selectSelectedFeatureTypeForTab,

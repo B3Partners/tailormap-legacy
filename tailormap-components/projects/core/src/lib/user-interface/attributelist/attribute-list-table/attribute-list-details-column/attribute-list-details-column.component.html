@@ -1,9 +1,9 @@
 <ng-container matColumnDef="_details">
   <mat-header-cell class="column_small" *matHeaderCellDef></mat-header-cell>
   <mat-cell class="column_small" *matCellDef="let currRow;">
-    <mat-icon *ngIf="currRow.related_featuretypes.length === 0" class="iconCharNo" svgIcon="contextual_expand_open"></mat-icon>
+    <mat-icon *ngIf="currRow.related_featuretypes.length === 0" class="expand-disabled" svgIcon="contextual_expand_open"></mat-icon>
     <mat-icon *ngIf="currRow.related_featuretypes.length > 0"
-          class="iconChar"
+          class="expand-enabled"
           [svgIcon]="currRow._expanded ? 'contextual_expand_close' : 'contextual_expand_open'"
           (click)="onRowExpandClick($event, currRow);"></mat-icon>
   </mat-cell>

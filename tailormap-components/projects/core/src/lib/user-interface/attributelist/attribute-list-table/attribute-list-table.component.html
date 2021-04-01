@@ -15,11 +15,18 @@
     </ng-template>
   </mat-menu>
 
-  <mat-table [dataSource]="rows$"
+  <div *ngIf="rowLength === 0 && loadingData$ | async">
+    <mat-spinner diameter="20" mode="indeterminate" color="primary"></mat-spinner>
+  </div>
+
+  <div *ngIf="rowLength === 0 && notLoadingData$ | async">
+    Geen rijen gevonden
+  </div>
+
+  <mat-table *ngIf="rowLength > 0"
+             [dataSource]="rows$"
              [trackBy]="trackByRowId"
-             matSort
-             multiTemplateDataRows
-             (matSortChange)="onSortClick($event)">
+             multiTemplateDataRows>
 
     <tailormap-attribute-list-checkbox-column *ngIf="showCheckboxColumn$ | async"
                                               [uncheckedCount]="uncheckedCount"
@@ -31,12 +38,15 @@
     <!-- Columns with data -->
     <ng-container *ngFor="let col of columns" matColumnDef="{{col.name}}">
       <!-- Header -->
-      <mat-header-cell *matHeaderCellDef mat-sort-header class="header-cell--with-filter">
-        <span [matTooltip]="col.alias || col.name">{{col.alias || col.name}}</span>
-        <mat-icon [ngClass]="(getIsFilterActive(col.name))? 'material-icons-set': 'material-icons-unset'"
-                  (click)="$event.stopPropagation();onFilterClick(col.name)">
+      <mat-header-cell *matHeaderCellDef class="header-cell--with-filter header-cell--with-sort" (click)="onSortClick(col.name)">
+        <span [title]="col.alias || col.name">{{col.alias || col.name}}</span>
+        <mat-icon [class.filter-active]="getIsFilterActive(col.name)"
+                  (click)="$event.stopPropagation(); onFilterClick(col.name)">
           filter_list
         </mat-icon>
+        <mat-icon class="sort"
+                  [class.sort-active]="sort.column === col.name"
+                  [svgIcon]="sort.direction === 'asc' ? 'contextual_drop_down' : 'contextual_drop_top'"></mat-icon>
       </mat-header-cell>
 
       <mat-cell *matCellDef="let currRow">

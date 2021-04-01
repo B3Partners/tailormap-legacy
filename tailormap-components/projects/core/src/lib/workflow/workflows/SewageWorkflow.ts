@@ -162,7 +162,7 @@ export class SewageWorkflow extends Workflow {
     ])
       .pipe(take(1))
       .subscribe(([currentFeature, _close]) => {
-        this.afterEditting(currentFeature);
+        this.afterEditing(currentFeature);
       });
   }
 

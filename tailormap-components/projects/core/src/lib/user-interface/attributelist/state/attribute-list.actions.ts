@@ -45,7 +45,7 @@ export const loadTotalCountForTabSuccess = createAction(
 
 export const loadDataForFeatureTypeSuccess = createAction(
   `${attributeListActionsPrefix} Load Data For Feature Type Success`,
-  props<{ featureType: number; data: LoadDataResult }>(),
+  props<{ layerId: string; featureType: number; data: LoadDataResult }>(),
 );
 
 export const setSelectedTab = createAction(
@@ -55,12 +55,12 @@ export const setSelectedTab = createAction(
 
 export const updatePage = createAction(
   `${attributeListActionsPrefix} Update Page`,
-  props<{ featureType: number; page: number }>(),
+  props<{ layerId: string; featureType: number; page: number }>(),
 );
 
 export const updateSort = createAction(
   `${attributeListActionsPrefix} Update Sort`,
-  props<{ featureType: number; column: string; direction: 'asc' | 'desc' | '' }>(),
+  props<{ layerId: string; featureType: number; column: string; direction: 'asc' | 'desc' | '' }>(),
 );
 
 export const toggleCheckedAllRows = createAction(

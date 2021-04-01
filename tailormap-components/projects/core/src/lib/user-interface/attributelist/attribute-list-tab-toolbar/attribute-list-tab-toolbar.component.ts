@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { AttributeListColumnModel } from '../models/attribute-list-column-models';
 import { ExportFeaturesParameters } from '../../../shared/export-service/export-models';
 import { TailorMapService } from '../../../../../../bridge/src/tailor-map.service';
@@ -11,7 +11,7 @@ import { AttributeListLayernameChooserComponent } from '../attribute-list-layern
 import { UserLayerHelper } from '../../../analysis/helpers/user-layer.helper';
 import { Store } from '@ngrx/store';
 import { AttributeListState } from '../state/attribute-list.state';
-import { selectFeatureTypeDataForTab, selectRelatedFeaturesForTab } from '../state/attribute-list.selectors';
+import { selectFeatureTypeDataForTab, selectLoadingDataForTab, selectRelatedFeaturesForTab } from '../state/attribute-list.selectors';
 import { AttributeListExportService, ExportType } from '../services/attribute-list-export.service';
 import { PopoverService } from '../../../shared/popover/popover.service';
 import { OverlayRef } from '../../../shared/overlay-service/overlay-ref';
@@ -29,6 +29,7 @@ import { setOpenFeatureForm } from '../../../feature-form/state/form.actions';
   selector: 'tailormap-attribute-list-tab-toolbar',
   templateUrl: './attribute-list-tab-toolbar.component.html',
   styleUrls: ['./attribute-list-tab-toolbar.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AttributeListTabToolbarComponent implements OnInit, OnDestroy {
 
@@ -58,6 +59,7 @@ export class AttributeListTabToolbarComponent implements OnInit, OnDestroy {
 
   public creatingLayer: boolean;
   public createUserLayerName: string;
+  public loadingData$: Observable<boolean>;
 
   constructor(
     private attributeListExportService: AttributeListExportService,
@@ -67,6 +69,7 @@ export class AttributeListTabToolbarComponent implements OnInit, OnDestroy {
     private metadataService: MetadataService,
     private store$: Store<AttributeListState>,
     private popoverService: PopoverService,
+    private changeDetectorRef: ChangeDetectorRef,
   ) {
   }
 
@@ -78,7 +81,10 @@ export class AttributeListTabToolbarComponent implements OnInit, OnDestroy {
       )
       .subscribe(featureData => {
         this.featureTypeData = featureData;
+        this.changeDetectorRef.detectChanges();
       });
+
+    this.loadingData$ = this.store$.select(selectLoadingDataForTab, this.layerId);
 
     this.exportParams.application = this.tailorMapService.getApplicationId();
     this.noRelations$ = this.store$.select(selectRelatedFeaturesForTab, this.layerId)
@@ -138,10 +144,6 @@ export class AttributeListTabToolbarComponent implements OnInit, OnDestroy {
     this.store$.dispatch(clearAllFilters({ layerId: this.layerId }));
   }
 
-  public onSearchClick(): void {
-    alert('Not yet implemented.');
-  }
-
   public openAttributeTree(): void {
     if (this.popoverRef && this.popoverRef.isOpen) {
       this.popoverRef.close();
@@ -161,7 +163,7 @@ export class AttributeListTabToolbarComponent implements OnInit, OnDestroy {
   }
 
   public onPageChange($event: PageEvent): void {
-    this.store$.dispatch(updatePage({ featureType: this.featureTypeData.featureType, page: $event.pageIndex }));
+    this.store$.dispatch(updatePage({ layerId: this.layerId, featureType: this.featureTypeData.featureType, page: $event.pageIndex }));
   }
 
   public openPassportForm(): void {
