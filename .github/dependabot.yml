@@ -114,27 +114,6 @@ updates:
   - build infrastructure
   - backport v5.8.x
 
-- package-ecosystem: npm
-  directory: "/tailormap-components"
-  schedule:
-    interval: monthly
-    time: "22:00"
-    timezone: Europe/Amsterdam
-  open-pull-requests-limit: 25
-  reviewers:
-  - mtoonen
-  - mvdstruijk
-  - geertplaisier
-  assignees:
-  - mtoonen
-  - mvdstruijk
-  - geertplaisier
-  labels:
-  - dependencies
-  - javascript
-  - build infrastructure
-  - backport v5.8.x
-
 - package-ecosystem: docker
   directory: "/docker/src/main/docker"
   schedule:
