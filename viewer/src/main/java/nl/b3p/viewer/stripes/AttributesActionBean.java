@@ -34,6 +34,8 @@ import nl.b3p.viewer.config.app.ApplicationLayer;
 import nl.b3p.viewer.config.app.ConfiguredAttribute;
 import nl.b3p.viewer.config.security.Authorizations;
 import nl.b3p.viewer.config.services.*;
+import nl.b3p.viewer.helpers.featuresources.SourceFactoryHelper;
+import nl.b3p.viewer.helpers.featuresources.WFSSourceHelper;
 import nl.b3p.viewer.util.ChangeMatchCase;
 import nl.b3p.viewer.util.FeatureToJson;
 import nl.b3p.viewer.util.FlamingoCQL;
@@ -499,7 +501,7 @@ public class AttributesActionBean extends LocalizableApplicationActionBean imple
                 if(isDebug() && ft.getFeatureSource() instanceof WFSFeatureSource) {
                     Map extraDataStoreParams = new HashMap();
                     extraDataStoreParams.put(WFSDataStoreFactory.TRY_GZIP.key, Boolean.FALSE);
-                    fs = ((WFSFeatureSource)ft.getFeatureSource()).openGeoToolsFeatureSource(ft, extraDataStoreParams);
+                    fs = WFSSourceHelper.openGeoToolsFSFeatureSource(ft, extraDataStoreParams, (WFSFeatureSource) ft.getFeatureSource());
                 } /*else if(ft.getFeatureSource() instanceof ArcGISFeatureSource) {
                     Map extraDataStoreParams = new HashMap();
                     if(isDebug()) {
@@ -511,7 +513,7 @@ public class AttributesActionBean extends LocalizableApplicationActionBean imple
                     fs = ((ArcGISFeatureSource)ft.getFeatureSource()).openGeoToolsFeatureSource(layer.getFeatureType(), extraDataStoreParams);
                 }*/ else {
 
-                    fs = ft.openGeoToolsFeatureSource();
+                    fs = SourceFactoryHelper.openGeoToolsFeatureSource(ft);
                 }
 
                 boolean startIndexSupported = fs.getQueryCapabilities().isOffsetSupported();

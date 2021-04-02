@@ -42,5 +42,9 @@
             <groupId>org.flamingo-mc</groupId>
             <artifactId>viewer-config-persistence</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.flamingo-mc</groupId>
+            <artifactId>viewer-config-persistence-helpers</artifactId>
+        </dependency>
     </dependencies>
 </project>

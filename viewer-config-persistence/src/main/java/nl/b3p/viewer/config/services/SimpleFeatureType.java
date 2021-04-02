@@ -35,9 +35,6 @@ import org.opengis.filter.Filter;
 @org.hibernate.annotations.Entity(dynamicUpdate = true)
 public class SimpleFeatureType {
     private static final Log log = LogFactory.getLog(SimpleFeatureType.class);
-    
-    public static final int MAX_FEATURES_DEFAULT = 250;
-    public static final int MAX_FEATURES_UNBOUNDED = -1;
 
     @Id
     private Long id;
@@ -126,51 +123,7 @@ public class SimpleFeatureType {
         this.relations = relations;
     }
     //</editor-fold>
-    
-    public Object getMaxValue ( String attributeName, Filter f )throws Exception {
-        return featureSource.getMaxValue(this, attributeName, MAX_FEATURES_DEFAULT, f);
-    }
-    
-    public Object getMaxValue ( String attributeName, int maxFeatures )throws Exception {
-        return featureSource.getMaxValue(this, attributeName, maxFeatures,null);
-    }
-    
-    public Object getMinValue ( String attributeName, Filter f )throws Exception {
-        return featureSource.getMinValue(this, attributeName, MAX_FEATURES_DEFAULT, f);
-    }
-    
-    public Object getMinValue ( String attributeName, int maxFeatures )throws Exception {
-        return featureSource.getMinValue(this, attributeName, maxFeatures, null);
-    }
-    
-    public List<String> calculateUniqueValues(String attributeName) throws Exception {
-        return featureSource.calculateUniqueValues(this, attributeName, MAX_FEATURES_DEFAULT,null);
-    }    
-    
-    public List<String> calculateUniqueValues(String attributeName, int maxFeatures) throws Exception {
-        return featureSource.calculateUniqueValues(this, attributeName, maxFeatures, null);
-    }
-    
-    public List<String> calculateUniqueValues(String attributeName, int maxFeatures, Filter filter) throws Exception {
-        return featureSource.calculateUniqueValues(this, attributeName, maxFeatures, filter);
-    }
 
-    public Map<String, String> getKeysValues(String key, String label, int maxFeatures) throws Exception {
-        return featureSource.getKeyValuePairs(this, key, label, maxFeatures);
-    }
-
-    public Map<String, String> getKeysValues(String key, String label) throws Exception {
-        return featureSource.getKeyValuePairs(this, key, label, MAX_FEATURES_DEFAULT);
-    }
-    
-    public org.geotools.data.FeatureSource openGeoToolsFeatureSource() throws Exception {
-        return featureSource.openGeoToolsFeatureSource(this);
-    }
-
-    public org.geotools.data.FeatureSource openGeoToolsFeatureSource(int timeout) throws Exception {
-        return featureSource.openGeoToolsFeatureSource(this, timeout);
-    }    
-    
     public boolean update(SimpleFeatureType update) {
         if(!getTypeName().equals(update.getTypeName())) {
             throw new IllegalArgumentException("Cannot update feature type with properties from feature type with different type name!");

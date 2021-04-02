@@ -18,9 +18,9 @@ package nl.b3p.viewer.admin.stripes;
 
 import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.*;
-import nl.b3p.viewer.ArcGISServiceHelper;
-import nl.b3p.viewer.GeoserviceFactoryHelper;
-import nl.b3p.viewer.WMSServiceHelper;
+import nl.b3p.viewer.helpers.services.ArcGISServiceHelper;
+import nl.b3p.viewer.helpers.services.GeoserviceFactoryHelper;
+import nl.b3p.viewer.helpers.services.WMSServiceHelper;
 import nl.b3p.viewer.config.ClobElement;
 import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.ApplicationLayer;

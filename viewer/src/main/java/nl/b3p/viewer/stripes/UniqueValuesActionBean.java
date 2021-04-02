@@ -32,6 +32,7 @@ import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.viewer.config.app.ApplicationLayer;
 import nl.b3p.viewer.config.services.Layer;
 import nl.b3p.viewer.config.services.SimpleFeatureType;
+import nl.b3p.viewer.helpers.featuresources.FeatureSourceHelper;
 import nl.b3p.viewer.util.FlamingoCQL;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -141,7 +142,7 @@ public class UniqueValuesActionBean extends LocalizableActionBean implements Act
             for (int i = 0; i < attributes.length; i++) {
                 String attribute = attributes[i];
                 Filter  f = filter != null ? FlamingoCQL.toFilter(filter,Stripersist.getEntityManager()) : null;
-                List<String> beh = this.featureType.calculateUniqueValues(attribute,maxFeatures,f);
+                List<String> beh = FeatureSourceHelper.calculateUniqueValues(this.featureType, attribute, maxFeatures, f);
 
                 uniqueValues.put(attribute, new JSONArray(beh));
                 json.put("success", Boolean.TRUE);
@@ -175,7 +176,7 @@ public class UniqueValuesActionBean extends LocalizableActionBean implements Act
                     this.featureType = layer.getFeatureType();
                 }
             }
-            Map<String, String> pairs = this.featureType.getKeysValues(attributes[0], attributes[1],maxFeatures);
+            Map<String, String> pairs = FeatureSourceHelper.getKeyValuePairs(this.featureType, attributes[0], attributes[1], maxFeatures);
             json.put("valuePairs", pairs);
             json.put("success", Boolean.TRUE);
         } catch (IllegalArgumentException e) {
@@ -199,9 +200,9 @@ public class UniqueValuesActionBean extends LocalizableActionBean implements Act
                 Filter  f = filter != null ? FlamingoCQL.toFilter(filter,Stripersist.getEntityManager()) : null;
                 Object value;
                 if(operator.equals("#MAX#")) {
-                    value = sft.getMaxValue(attribute, f);
+                    value = FeatureSourceHelper.getMaxValue(sft, attribute, maxFeatures, f);
                 } else {
-                    value = sft.getMinValue(attribute, f);
+                    value = FeatureSourceHelper.getMinValue(sft, attribute, maxFeatures, f);
                 }
 
                 json.put("value", value.toString());

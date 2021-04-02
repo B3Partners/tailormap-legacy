@@ -1,4 +1,4 @@
-package nl.b3p.viewer;
+package nl.b3p.viewer.helpers.services;
 
 import nl.b3p.viewer.config.services.GeoService;
 import nl.b3p.viewer.config.services.UpdateResult;

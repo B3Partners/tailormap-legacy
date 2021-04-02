@@ -38,6 +38,7 @@ import nl.b3p.viewer.config.services.FeatureSource;
 import nl.b3p.viewer.config.services.GeoService;
 import nl.b3p.viewer.config.services.Layer;
 import nl.b3p.viewer.config.services.SimpleFeatureType;
+import nl.b3p.viewer.helpers.featuresources.SourceFactoryHelper;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.geotools.feature.FeatureCollection;
@@ -195,7 +196,7 @@ public class DataStoreSpinupActionBean implements ActionBean {
 
                             org.geotools.data.FeatureSource gtfs = null;
                             try {
-                                gtfs = sft.openGeoToolsFeatureSource();
+                                gtfs = SourceFactoryHelper.openGeoToolsFeatureSource(sft);
                                 FeatureCollection fc = gtfs.getFeatures(q);
                                 long time = System.currentTimeMillis() - startTime;
                                 log.debug(String.format("Type name \"%s\": request took %dms (feature count: %d)",

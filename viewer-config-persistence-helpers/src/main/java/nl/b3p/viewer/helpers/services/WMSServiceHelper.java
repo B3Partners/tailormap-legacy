@@ -1,8 +1,10 @@
-package nl.b3p.viewer;
+package nl.b3p.viewer.helpers.services;
 
+import nl.b3p.viewer.helpers.featuresources.SimpleFeatureTypeHelper;
 import nl.b3p.viewer.config.ClobElement;
 import nl.b3p.viewer.config.services.Layer;
 import nl.b3p.viewer.config.services.*;
+import nl.b3p.viewer.helpers.featuresources.WFSSourceHelper;
 import nl.b3p.web.WaitPageStatus;
 import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -296,7 +298,7 @@ public class WMSServiceHelper implements ServiceHelper{
 
         try {
             WFSFeatureSource wfsFs = new WFSFeatureSource(p);
-            wfsFs.loadFeatureTypes();
+            WFSSourceHelper.loadFeatureTypes(wfsFs);
 
             boolean used = false;
             for(LayerDescription ld: layerDescriptions) {

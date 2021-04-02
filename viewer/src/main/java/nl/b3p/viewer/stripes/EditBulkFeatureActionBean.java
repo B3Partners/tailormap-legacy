@@ -10,6 +10,7 @@ import nl.b3p.viewer.config.app.ApplicationLayer;
 import nl.b3p.viewer.config.app.ConfiguredAttribute;
 import nl.b3p.viewer.config.security.Authorizations;
 import nl.b3p.viewer.config.services.Layer;
+import nl.b3p.viewer.helpers.featuresources.SourceFactoryHelper;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -246,7 +247,7 @@ public class EditBulkFeatureActionBean extends LocalizableApplicationActionBean 
         }
 
         try {
-            featureSource = layer.getFeatureType().openGeoToolsFeatureSource();
+            featureSource = SourceFactoryHelper.openGeoToolsFeatureSource(layer.getFeatureType());
         } catch (Exception e) {
             throw new CannotGetFeatureSourceException(e);
         }

@@ -12,6 +12,9 @@ import nl.b3p.viewer.config.metadata.Metadata;
 import nl.b3p.viewer.config.security.Group;
 import nl.b3p.viewer.config.services.FeatureSource;
 import nl.b3p.viewer.config.services.JDBCFeatureSource;
+import nl.b3p.viewer.config.services.SimpleFeatureType;
+import nl.b3p.viewer.helpers.featuresources.FeatureSourceHelper;
+import nl.b3p.viewer.helpers.featuresources.SourceFactoryHelper;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.geotools.data.DataStore;
@@ -310,7 +313,9 @@ public class FormActionBean extends LocalizableActionBean {
             SimpleFeatureSource sfs = null;
             if(fs != null && fs instanceof JDBCFeatureSource){
                 try {
-                    ds = ((DataStore) fs.getFeatureTypes().get(0).openGeoToolsFeatureSource().getDataStore());
+                    SimpleFeatureType sft=fs.getFeatureTypes().get(0);
+
+                    ds = ((DataStore) SourceFactoryHelper.openGeoToolsFeatureSource(sft).getDataStore());
                     sfs = ds.getFeatureSource("attribuut");
                     SimpleFeatureCollection sfc = sfs.getFeatures();
                     for (SimpleFeatureIterator i = sfc.features(); i.hasNext(); ) {

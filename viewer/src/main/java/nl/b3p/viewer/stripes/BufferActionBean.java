@@ -16,6 +16,8 @@
  */
 package nl.b3p.viewer.stripes;
 
+import nl.b3p.viewer.config.services.SimpleFeatureType;
+import nl.b3p.viewer.helpers.featuresources.SourceFactoryHelper;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Polygon;
@@ -258,7 +260,8 @@ public class BufferActionBean implements ActionBean {
             throw new Exception("Layer has no feature type");
         }
 
-        FeatureSource fs = l.getFeatureType().openGeoToolsFeatureSource();
+        SimpleFeatureType sft = l.getFeatureType();
+        FeatureSource fs = SourceFactoryHelper.openGeoToolsFeatureSource(sft.getFeatureSource(),sft);
         
         String geomAttribute = fs.getSchema().getGeometryDescriptor().getLocalName();
 

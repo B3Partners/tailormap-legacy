@@ -48,7 +48,7 @@ public class MailerTest {
     @Test
     public void testSendMail(){
         try{
-            
+            assert (true);
        //     Mailer.sendMail(null, null, null, null, null, null);
         }catch(Exception e) {
            // Assert.fail("Exception occured: " + e.getLocalizedMessage());
