@@ -13,6 +13,7 @@ import nl.b3p.viewer.config.services.AttributeDescriptor;
 import nl.b3p.viewer.config.services.Layer;
 import nl.b3p.viewer.config.services.SimpleFeatureType;
 import nl.b3p.viewer.config.services.WFSFeatureSource;
+import nl.b3p.viewer.helpers.featuresources.SourceFactoryHelper;
 import nl.b3p.viewer.util.ChangeMatchCase;
 import nl.b3p.viewer.util.FeatureToJson;
 import nl.b3p.viewer.util.FlamingoCQL;
@@ -172,7 +173,7 @@ public class StatisticAnalysisActionBean extends LocalizableApplicationActionBea
                     ft = layer.getFeatureType();
                 }
 
-                fs = ft.openGeoToolsFeatureSource();
+                fs = SourceFactoryHelper.openGeoToolsFeatureSource(ft);
 
 
                 final Query q = new Query(fs.getName().toString());

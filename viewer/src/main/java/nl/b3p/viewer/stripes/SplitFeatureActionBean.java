@@ -16,6 +16,7 @@
  */
 package nl.b3p.viewer.stripes;
 
+import nl.b3p.viewer.helpers.featuresources.SourceFactoryHelper;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.LineString;
@@ -149,7 +150,7 @@ public class SplitFeatureActionBean extends LocalizableApplicationActionBean imp
                     throw new IllegalArgumentException(getBundle().getString("viewer.splitfeatureactionbean.2"));
                 }
 
-                fs = this.layer.getFeatureType().openGeoToolsFeatureSource();
+                fs = SourceFactoryHelper.openGeoToolsFeatureSource(this.layer.getFeatureType());
                 if (!(fs instanceof SimpleFeatureStore)) {
                     throw new IllegalArgumentException(getBundle().getString("viewer.splitfeatureactionbean.3"));
                 }

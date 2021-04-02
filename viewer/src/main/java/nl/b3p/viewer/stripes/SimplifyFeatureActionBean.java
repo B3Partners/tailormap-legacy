@@ -37,6 +37,7 @@ import nl.b3p.viewer.config.security.Authorizations;
 import nl.b3p.viewer.config.services.Layer;
 import nl.b3p.viewer.config.services.SimpleFeatureType;
 import nl.b3p.viewer.config.services.SolrConf;
+import nl.b3p.viewer.helpers.featuresources.SourceFactoryHelper;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.geotools.data.FeatureSource;
@@ -176,10 +177,11 @@ public class SimplifyFeatureActionBean extends LocalizableApplicationActionBean 
                         throw new Exception(getBundle().getString("viewer.simplifyfeatureactionbean.5"));
                     }
 
-                    fs = layer.getFeatureType().openGeoToolsFeatureSource();
-                } else {
-                    fs = sft.openGeoToolsFeatureSource();
+                    sft = layer.getFeatureType();
                 }
+
+                fs = SourceFactoryHelper.openGeoToolsFeatureSource(sft);
+
 
                 FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2();
 

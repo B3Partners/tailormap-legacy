@@ -21,7 +21,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import javax.persistence.EntityManager;
 
-import nl.b3p.viewer.GeoserviceFactoryHelper;
+import nl.b3p.viewer.helpers.services.GeoserviceFactoryHelper;
 import nl.b3p.viewer.config.security.Group;
 import nl.b3p.viewer.config.security.User;
 import nl.b3p.viewer.config.services.GeoService;

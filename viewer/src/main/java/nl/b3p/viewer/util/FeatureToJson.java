@@ -34,6 +34,7 @@ import nl.b3p.viewer.config.services.FeatureTypeRelationKey;
 import nl.b3p.viewer.config.services.SimpleFeatureType;
 import static nl.b3p.viewer.stripes.FeatureInfoActionBean.FID;
 
+import nl.b3p.viewer.helpers.featuresources.SourceFactoryHelper;
 import nl.b3p.viewer.stripes.FileUploadActionBean;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
@@ -300,7 +301,7 @@ public class FeatureToJson {
             for (FeatureTypeRelation rel :ft.getRelations()){
                 boolean isJoin=rel.getType().equals(FeatureTypeRelation.JOIN);
                 if (isJoin){
-                    FeatureSource foreignFs = rel.getForeignFeatureType().openGeoToolsFeatureSource(TIMEOUT);
+                    FeatureSource foreignFs = SourceFactoryHelper.openGeoToolsFeatureSource(rel.getForeignFeatureType(), TIMEOUT);
                     FeatureIterator<SimpleFeature> foreignIt=null;
                     try{
                         Query foreignQ = new Query(foreignFs.getName().toString());

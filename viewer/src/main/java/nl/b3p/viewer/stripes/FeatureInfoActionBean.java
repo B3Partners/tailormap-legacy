@@ -17,6 +17,7 @@
 package nl.b3p.viewer.stripes;
 
 import net.sourceforge.stripes.controller.LifecycleStage;
+import nl.b3p.viewer.helpers.featuresources.SourceFactoryHelper;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
@@ -296,7 +297,7 @@ public class FeatureInfoActionBean extends LocalizableApplicationActionBean impl
                     }
                     String filter = query.optString("filter", null);
 
-                    fs = layer.getFeatureType().openGeoToolsFeatureSource(TIMEOUT);
+                    fs = SourceFactoryHelper.openGeoToolsFeatureSource(layer.getFeatureType(), TIMEOUT);
                     Query q = new Query(fs.getName().toString());
 
                     String geomAttribute = fs.getSchema().getGeometryDescriptor().getLocalName();
@@ -427,7 +428,7 @@ public class FeatureInfoActionBean extends LocalizableApplicationActionBean impl
                     }
 
                     String filter = query.optString("filter", null);
-                    fs = layer.getFeatureType().openGeoToolsFeatureSource(TIMEOUT);
+                    fs = SourceFactoryHelper.openGeoToolsFeatureSource(layer.getFeatureType(), TIMEOUT);
                     Query q = new Query(fs.getName().toString());
                     String geomAttribute = fs.getSchema().getGeometryDescriptor().getLocalName();
 
@@ -528,7 +529,7 @@ public class FeatureInfoActionBean extends LocalizableApplicationActionBean impl
                         q.setMaxFeatures(10 + 1);
                         q.setHandle("FeatureReportActionBean_related_attributes");
 
-                        fs = fType.openGeoToolsFeatureSource(TIMEOUT);
+                        fs = SourceFactoryHelper.openGeoToolsFeatureSource(fType, TIMEOUT);
                         JSONArray features = ftjson.getJSONFeatures(al, fType, fs, q,em,application, context.getRequest());
 
                         JSONArray jsonFeats = new JSONArray();

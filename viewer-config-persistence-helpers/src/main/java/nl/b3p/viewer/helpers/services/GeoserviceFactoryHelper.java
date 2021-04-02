@@ -1,4 +1,4 @@
-package nl.b3p.viewer;
+package nl.b3p.viewer.helpers.services;
 
 import nl.b3p.viewer.config.services.ArcGISService;
 import nl.b3p.viewer.config.services.GeoService;
@@ -6,7 +6,6 @@ import nl.b3p.viewer.config.services.UpdateResult;
 import nl.b3p.viewer.config.services.WMSService;
 import nl.b3p.web.WaitPageStatus;
 
-import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import java.util.HashMap;
 import java.util.Map;

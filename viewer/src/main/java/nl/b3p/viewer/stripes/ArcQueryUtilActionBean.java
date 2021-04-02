@@ -30,6 +30,7 @@ import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.ApplicationLayer;
 import nl.b3p.viewer.config.security.Authorizations;
 import nl.b3p.viewer.config.services.Layer;
+import nl.b3p.viewer.helpers.featuresources.SourceFactoryHelper;
 import nl.b3p.viewer.util.FlamingoCQL;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -137,7 +138,7 @@ public class ArcQueryUtilActionBean extends LocalizableApplicationActionBean imp
                 FeatureSource fs;
 
                 if (layer.getFeatureType().getFeatureSource() instanceof nl.b3p.viewer.config.services.ArcGISFeatureSource) {
-                    fs = layer.getFeatureType().openGeoToolsFeatureSource();
+                    fs = SourceFactoryHelper.openGeoToolsFeatureSource(layer.getFeatureType());
                     final Query q = new Query(fs.getName().toString());
                     setFilter(q, Stripersist.getEntityManager());
                     ArcGISFeatureReader agfr = new ArcGISFeatureReader((ArcGISFeatureSource) fs, q);

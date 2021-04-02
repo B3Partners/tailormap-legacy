@@ -17,6 +17,7 @@
 package nl.b3p.viewer.stripes;
 
 import nl.b3p.i18n.LocalizableActionBean;
+import nl.b3p.viewer.helpers.featuresources.SourceFactoryHelper;
 import org.locationtech.jts.geom.Geometry;
 import java.io.IOException;
 import java.io.StringReader;
@@ -121,7 +122,7 @@ public class FeatureExtentActionBean extends LocalizableActionBean implements Ac
         } else {
             FeatureSource fs = null;
             try {
-                fs = this.layer.getFeatureType().openGeoToolsFeatureSource();
+                fs = SourceFactoryHelper.openGeoToolsFeatureSource(this.layer.getFeatureType());
                 BoundingBox extent = this.getExtent(fs, Stripersist.getEntityManager());
                 JSONObject e = new JSONObject();
                 e.put("minx", extent.getMinX());

@@ -1,5 +1,6 @@
-package nl.b3p.viewer;
+package nl.b3p.viewer.helpers.services;
 
+import nl.b3p.viewer.helpers.featuresources.FeatureSourceHelper;
 import nl.b3p.viewer.config.ClobElement;
 import nl.b3p.viewer.config.services.*;
 import nl.b3p.web.WaitPageStatus;
@@ -19,7 +20,6 @@ import org.stripesstuff.stripersist.Stripersist;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
-import javax.persistence.Transient;
 import java.net.URL;
 import java.util.*;
 

@@ -27,6 +27,8 @@ import nl.b3p.viewer.config.ClobElement;
 import nl.b3p.viewer.config.app.*;
 import nl.b3p.viewer.config.security.Group;
 import nl.b3p.viewer.config.services.*;
+import nl.b3p.viewer.helpers.featuresources.FeatureSourceHelper;
+import nl.b3p.viewer.helpers.featuresources.SourceFactoryHelper;
 import nl.b3p.viewer.util.SelectedContentCache;
 import org.apache.commons.lang3.StringUtils;
 import org.json.*;
@@ -242,7 +244,7 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
             Layer layer = applicationLayer.getService().getSingleLayer(applicationLayer.getLayerName(), Stripersist.getEntityManager());
             if(layer != null && layer.getFeatureType() != null) {
                 SimpleFeatureType sft = layer.getFeatureType();
-                List<String> beh = sft.calculateUniqueValues(attribute);
+                List<String> beh = FeatureSourceHelper.calculateUniqueValues(sft, attribute, null);
                 json.put("uniqueValues", new JSONArray(beh));
                 json.put("success", Boolean.TRUE);
             }
