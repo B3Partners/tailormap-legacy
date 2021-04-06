@@ -16,21 +16,21 @@
  */
 package nl.b3p.viewer.config.services;
 
-import java.io.Serializable;
-import java.util.*;
-import javax.persistence.*;
 import nl.b3p.viewer.config.ClobElement;
-import static nl.b3p.viewer.config.RemoveEmptyMapValuesUtil.removeEmptyMapValues;
 import nl.b3p.viewer.config.app.ApplicationLayer;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.geotools.ows.wms.CRSEnvelope;
-import org.geotools.ows.wms.StyleImpl;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.stripesstuff.stripersist.Stripersist;
+
+import javax.persistence.*;
+import java.io.Serializable;
+import java.util.*;
+
+import static nl.b3p.viewer.config.RemoveEmptyMapValuesUtil.removeEmptyMapValues;
 
 /**
  *
@@ -83,10 +83,6 @@ public class Layer implements Cloneable, Serializable {
         EXTRA_KEY_METADATA_URL,
         DETAIL_ALL_CHILDREN,
         DETAIL_WMS_STYLES
-    }));
-    
-    private static Set<String> allowedSrsList = new HashSet<>(Arrays.asList(new String[] {
-        "EPSG:28992" // RD
     }));
 
     @Id
@@ -171,136 +167,6 @@ public class Layer implements Cloneable, Serializable {
     private List<TileMatrixSet> matrixSets = new ArrayList<>();
     
     public Layer() {
-    }
-
-    public Layer(org.geotools.ows.wms.Layer l, GeoService service) {
-        name = l.getName();
-        if (name != null && name.length() > 254) {
-            log.warn("Layer name longer than 254 char will be truncated, was: " + name);
-            // fix issue#1078
-            name = name.substring(0, 252) + "...";
-            log.warn("Truncated layer name is: " + name);
-        }
-        virtual = name == null;
-        title = l.getTitle();
-        if (title != null && title.length() > 254) {
-            log.warn("Layer title longer than 254 char will be truncated, was: " + title);
-            // fix issue#1078
-            title = title.substring(0, 252) + "...";
-            log.warn("Truncated layer title is: " + title);
-        }
-        minScale = l.getScaleDenominatorMin();
-        this.service = service;
-        if(Double.isNaN(minScale)) {
-            if(!Double.isNaN( l.getScaleDenominatorMin())){
-                minScale = l.getScaleDenominatorMin();
-            }else{
-                minScale = null;
-            }
-        }
-        maxScale = l.getScaleDenominatorMax();
-        if(Double.isNaN(maxScale)) {
-            if(!Double.isNaN(l.getScaleDenominatorMax())){
-                maxScale = l.getScaleDenominatorMax();
-            }else{
-                maxScale = null;
-            }
-        }
-        /* if min and max -scale are null, get them from the ScaleHint
-         * Not quite as save as Scale Denominator, because the implementation
-         * various for implementing service products.
-         * Scalehint indicates the diagonal size of a pixel in map units, to calculate
-         * the scale use Pythagorean theorem
-         */
-        if (minScale==null && maxScale ==null){
-            minScale = l.getScaleDenominatorMin();
-            maxScale = l.getScaleDenominatorMax();
-            if (Double.isNaN(minScale)){
-                minScale=null;
-            }
-            if (Double.isNaN(maxScale)){
-                maxScale=null;
-            }
-            if (minScale!=null && maxScale!=null){
-                /*
-                 * In GeoServer 2.2.3 > the scalehint is not the resolution(in units per pixel) but is the
-                 * scaledenominator. So no need to calculate the pixel width/height from the diagonal.
-                 * Dirty fix... Check if minScale < 750(large resolution) or maxScale < 5000 (very large resolution)
-                 */
-                if (minScale < 750 && maxScale < 5000){
-                    /*
-                     * Scalehint indicates the diagonal size of a pixel in map units, to calculate
-                     * the scale use Pythagorean theorem
-                     */
-                    minScale = Math.sqrt(minScale*minScale/2);
-                    maxScale = Math.sqrt(maxScale*maxScale/2);
-                }
-            }
-        }
-
-        for(CRSEnvelope e: l.getLayerBoundingBoxes()) {
-            BoundingBox b = new BoundingBox(e);
-            boundingBoxes.put(b.getCrs(), b);
-        }
-        
-        l.getSrs().retainAll(allowedSrsList);
-        for(String s: l.getSrs()) {
-            crsList.add(new CoordinateReferenceSystem(s));
-        }
-        queryable = l.isQueryable();
-        if(l.getKeywords() != null) {
-            keywords.addAll(Arrays.asList(l.getKeywords()));
-        }
-
-        if(!l.getMetadataURL().isEmpty()) {
-            details.put(EXTRA_KEY_METADATA_URL, new ClobElement(l.getMetadataURL().get(0).getUrl().toString()));
-        }
-
-        if(!l.getStyles().isEmpty()) {
-            try {
-                JSONArray styles = new JSONArray();
-                for(StyleImpl style: l.getStyles()) {
-                    JSONObject jstyle = new JSONObject();
-                    styles.put(jstyle);
-                    jstyle.put("name", style.getName());
-                    if(style.getTitle() != null) { // is actually required in XSD
-                        jstyle.put("title", style.getTitle().toString());
-                    }
-                    if(style.getAbstract() != null) {
-                        jstyle.put("abstract", style.getAbstract().toString());
-                    }
-                    JSONArray legendUrls = new JSONArray();
-                    jstyle.put("legendURLs", legendUrls);
-                    for (String url : (List<String>) style.getLegendURLs()) {
-                        // HACK append &SERVICE=WMS if not present, see #628
-                        if (!StringUtils.containsIgnoreCase(url, "SERVICE=WMS")) {
-                            url = url.concat("&SERVICE=WMS");
-                        }
-                        legendUrls.put(url);
-                    }
-                }
-                if(styles.length() > 0) {
-                    details.put(DETAIL_WMS_STYLES, new ClobElement(styles.toString()));
-                }
-            } catch(JSONException e) {
-                log.error("Error creating styles JSON", e);
-            }
-        }
-
-        if(l.getStyles().size() > 0 && l.getStyles().get(0).getLegendURLs().size() > 0) {
-            String legendUrl = (String) l.getStyles().get(0).getLegendURLs().get(0);
-            // HACK append &SERVICE=WMS if not present, see #628
-            if (!StringUtils.containsIgnoreCase(legendUrl, "SERVICE=WMS")) {
-                legendUrl = legendUrl.concat("&SERVICE=WMS");
-            }
-            legendImageUrl = legendUrl;
-        }
-
-        for(org.geotools.ows.wms.Layer child: l.getLayerChildren()) {
-            Layer childLayer = new Layer(child, service);
-            childLayer.setParent(this);
-            children.add(childLayer);
-        }
     }
 
     public void update(Layer update) {

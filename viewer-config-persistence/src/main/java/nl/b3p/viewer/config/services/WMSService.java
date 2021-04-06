@@ -16,28 +16,13 @@
  */
 package nl.b3p.viewer.config.services;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.*;
-import javax.persistence.*;
-import nl.b3p.viewer.config.ClobElement;
-import org.apache.commons.lang3.mutable.MutableBoolean;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.MutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.geotools.data.ServiceInfo;
-import org.geotools.data.ows.HTTPClient;
-import org.geotools.ows.wms.LayerDescription;
-import org.geotools.data.ows.SimpleHttpClient;
-import org.geotools.data.ows.Specification;
-import org.geotools.data.wfs.WFSDataStoreFactory;
-import org.geotools.ows.wms.*;
-import org.geotools.ows.wms.request.DescribeLayerRequest;
-import org.geotools.ows.wms.response.DescribeLayerResponse;
-import org.geotools.ows.ServiceException;
+
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 
 /**
  * Entity for saving WMS service metadata. Enables the administration module to
