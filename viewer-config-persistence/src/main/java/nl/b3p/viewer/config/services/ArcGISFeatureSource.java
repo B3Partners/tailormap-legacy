@@ -16,17 +16,8 @@
  */
 package nl.b3p.viewer.config.services;
 
-import java.net.URL;
-import java.util.*;
-import javax.persistence.*;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import nl.b3p.geotools.data.arcgis.ArcGISDataStoreFactory;
-import nl.b3p.viewer.config.ClobElement;
-import org.geotools.data.DataStore;
-import org.geotools.feature.FeatureCollection;
-import org.geotools.referencing.CRS;
-import org.opengis.filter.Filter;
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
 
 /**
  *

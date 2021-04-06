@@ -24,6 +24,7 @@ import java.util.List;
 import nl.b3p.viewer.config.services.TileMatrix;
 import nl.b3p.viewer.config.services.TileMatrixSet;
 import nl.b3p.viewer.config.services.TileService;
+import nl.b3p.viewer.helpers.services.TilingServiceHelper;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.json.JSONObject;
@@ -115,7 +116,7 @@ public class CombineWMTSUrl extends CombineTileImageUrl {
         double bBoxMaxX = imbbox.getBbox().getMaxx();
         double bBoxMaxY = imbbox.getBbox().getMaxy();
 
-        double pixelSpan = Double.valueOf(tm.getScaleDenominator()) * 0.00028 / TileService.metersPerUnit(tm.getMatrixSet().getCrs());
+        double pixelSpan = Double.valueOf(tm.getScaleDenominator()) * 0.00028 / TilingServiceHelper.metersPerUnit(tm.getMatrixSet().getCrs());
         double tileSpanX = tm.getTileWidth() * pixelSpan;
         double tileSpanY = tm.getTileHeight() * pixelSpan;
 

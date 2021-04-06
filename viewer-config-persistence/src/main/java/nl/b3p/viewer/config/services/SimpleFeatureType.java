@@ -16,15 +16,15 @@
  */
 package nl.b3p.viewer.config.services;
 
-import java.util.*;
-import javax.persistence.*;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.opengis.filter.Filter;
+
+import javax.persistence.*;
+import java.util.*;
 
 /**
  *

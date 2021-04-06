@@ -50,6 +50,12 @@
         </dependency>
         <dependency>
             <groupId>org.flamingo-mc</groupId>
+            <artifactId>viewer-config-persistence</artifactId>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.flamingo-mc</groupId>
             <artifactId>web-commons</artifactId>
         </dependency>
         <dependency>

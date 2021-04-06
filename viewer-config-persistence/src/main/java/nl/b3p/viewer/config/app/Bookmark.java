@@ -16,10 +16,10 @@
  */
 package nl.b3p.viewer.config.app;
 
-import java.util.Date;
-import javax.persistence.*;
 import net.sourceforge.stripes.action.ActionBeanContext;
-import org.hibernate.annotations.GenericGenerator;
+
+import javax.persistence.*;
+import java.util.Date;
 
 /**
  *
