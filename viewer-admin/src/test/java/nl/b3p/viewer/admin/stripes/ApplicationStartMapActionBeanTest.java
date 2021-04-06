@@ -12,6 +12,7 @@ import nl.b3p.viewer.config.app.ApplicationLayer;
 import nl.b3p.viewer.config.app.Level;
 import nl.b3p.viewer.config.app.StartLayer;
 import nl.b3p.viewer.config.app.StartLevel;
+import nl.b3p.viewer.helpers.app.ApplicationHelper;
 import nl.b3p.viewer.util.SelectedContentCache;
 import nl.b3p.viewer.util.TestUtil;
 import org.apache.commons.logging.Log;
@@ -52,7 +53,7 @@ public class ApplicationStartMapActionBeanTest extends TestUtil{
 
             ApplicationLayer al2 = entityManager.find(ApplicationLayer.class, testAppLayer.getId());
             
-            Application mashup = application.createMashup("mashup", entityManager,false);
+            Application mashup = ApplicationHelper.createMashup(application, "mashup", entityManager,false);
             entityManager.persist(mashup);
 
             entityManager.getTransaction().commit();
@@ -100,7 +101,7 @@ public class ApplicationStartMapActionBeanTest extends TestUtil{
             int expectedStartLevelSize = application.getStartLevels().size();
             int expectedRootStartLevelSize = application.getRoot().getStartLevels().size() * 2;
 
-            Application mashup = application.createMashup("mashup", entityManager,false);
+            Application mashup = ApplicationHelper.createMashup(application, "mashup", entityManager,false);
             entityManager.persist(mashup);
 
             entityManager.getTransaction().commit();

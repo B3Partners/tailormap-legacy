@@ -18,6 +18,7 @@ package nl.b3p.viewer.admin.stripes;
 
 import net.sourceforge.stripes.action.ActionBeanContext;
 import nl.b3p.viewer.config.app.Application;
+import nl.b3p.viewer.helpers.app.ApplicationHelper;
 import nl.b3p.viewer.util.TestUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -49,7 +50,7 @@ public class ApplicationSettingsActionBeanTest extends TestUtil {
         try {
             initData(false);
             instance.setApplication(app);
-            Application mashup = app.createMashup("mashup", entityManager, false);
+            Application mashup = ApplicationHelper.createMashup(app, "mashup", entityManager, false);
             entityManager.persist(mashup);
             
             instance.setApplication(mashup);
@@ -95,7 +96,7 @@ public class ApplicationSettingsActionBeanTest extends TestUtil {
             app.setVersion(null);
             entityManager.persist(app);
 
-            Application mashup = app.createMashup("mashup", entityManager, true);
+            Application mashup = ApplicationHelper.createMashup(app,"mashup", entityManager, true);
             entityManager.persist(mashup);
             entityManager.getTransaction().commit();
             entityManager.getTransaction().begin();

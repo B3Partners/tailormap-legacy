@@ -7,6 +7,7 @@ package nl.b3p.viewer.admin.stripes;
 
 import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.ConfiguredComponent;
+import nl.b3p.viewer.helpers.app.ApplicationHelper;
 import nl.b3p.viewer.util.TestUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -24,7 +25,7 @@ public class LayoutManagerActionBeanTest extends TestUtil{
     @Test
     public void testUpdateComponentsInMotherApplication() throws Exception {
         initData(true);
-        Application mashup = app.createMashup("mashup", entityManager, true);
+        Application mashup = ApplicationHelper.createMashup(app, "mashup", entityManager, true);
         
         LayoutManagerActionBean lmab = new LayoutManagerActionBean();
         entityManager.persist(mashup);
@@ -59,7 +60,7 @@ public class LayoutManagerActionBeanTest extends TestUtil{
             
             app.getComponents().add(cc);
 
-            Application mashup = app.createMashup("mashup", entityManager, true);
+            Application mashup = ApplicationHelper.createMashup(app, "mashup", entityManager, true);
             entityManager.persist(mashup);
 
             String newConfig = "{value: 'different'}";

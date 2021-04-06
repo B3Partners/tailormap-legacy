@@ -11,6 +11,7 @@ import nl.b3p.viewer.config.app.ApplicationLayer;
 import nl.b3p.viewer.config.app.Level;
 import nl.b3p.viewer.config.app.StartLayer;
 import nl.b3p.viewer.config.app.StartLevel;
+import nl.b3p.viewer.helpers.app.ApplicationHelper;
 import nl.b3p.viewer.util.TestUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -66,7 +67,7 @@ public class ApplicationTreeLevelActionBeanTest extends TestUtil {
     public void testRemoveAppLayerUsedInMashup() throws Exception {
         initData(true);
         instance.setApplication(app);
-        Application mashup = app.createMashup("mashup", entityManager, false);
+        Application mashup = ApplicationHelper.createMashup(app, "mashup", entityManager, false);
         entityManager.persist(mashup);
         String selectedLayer = "";
 
@@ -84,7 +85,7 @@ public class ApplicationTreeLevelActionBeanTest extends TestUtil {
         initData(false);
         instance.setApplication(app);
         Long id = testLevel.getId();
-        Application mashup = app.createMashup("mashup", entityManager, false);
+        Application mashup = ApplicationHelper.createMashup(app, "mashup", entityManager, false);
         entityManager.persist(mashup);
         
         String error = instance.deleteLevel(entityManager, testLevel);
@@ -133,7 +134,7 @@ public class ApplicationTreeLevelActionBeanTest extends TestUtil {
         */
         initData(true);
         
-        Application mashup = app.createMashup("mashup", entityManager, false);
+        Application mashup = ApplicationHelper.createMashup(app, "mashup", entityManager, false);
         entityManager.persist(mashup);
      
         
@@ -170,7 +171,7 @@ public class ApplicationTreeLevelActionBeanTest extends TestUtil {
         */
         initData(true);
         
-        Application mashup = app.createMashup("mashup", entityManager, false);
+        Application mashup = ApplicationHelper.createMashup(app, "mashup", entityManager, false);
         entityManager.persist(mashup);
      
         

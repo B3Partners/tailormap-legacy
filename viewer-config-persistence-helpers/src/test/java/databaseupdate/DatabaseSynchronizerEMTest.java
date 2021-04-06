@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package nl.b3p.viewer.util.databaseupdate;
+package databaseupdate;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -30,7 +30,10 @@ import nl.b3p.viewer.config.app.Level;
 import nl.b3p.viewer.config.app.StartLayer;
 import nl.b3p.viewer.config.app.StartLevel;
 import nl.b3p.viewer.config.services.Layer;
+import nl.b3p.viewer.helpers.app.ApplicationHelper;
 import nl.b3p.viewer.util.SelectedContentCache;
+import nl.b3p.viewer.util.databaseupdate.DatabaseSynchronizer;
+import nl.b3p.viewer.util.databaseupdate.DatabaseSynchronizerEM;
 import org.json.JSONException;
 import org.json.JSONObject;
 import static org.junit.Assert.assertEquals;
@@ -86,7 +89,7 @@ public class DatabaseSynchronizerEMTest extends DatabaseSynchronizerTestInterfac
         TreeCache tcOld = app.loadTreeCache(entityManager);
         List<Level> oldLevels = tcOld.getLevels();
 
-        Application copy = app.deepCopy();
+        Application copy = ApplicationHelper.deepCopy(app);
         copy.setVersion("" + 14);
         entityManager.detach(app);
         entityManager.persist(copy);
@@ -110,7 +113,7 @@ public class DatabaseSynchronizerEMTest extends DatabaseSynchronizerTestInterfac
         TreeCache tcOld = app.loadTreeCache(entityManager);
         List<ApplicationLayer> oldAppLayers = tcOld.getApplicationLayers();
 
-        Application copy = app.deepCopy();
+        Application copy = ApplicationHelper.deepCopy(app);
         copy.setVersion("" + 14);
         entityManager.detach(app);
         entityManager.persist(copy);

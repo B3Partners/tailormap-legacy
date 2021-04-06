@@ -56,7 +56,7 @@ public class DatabaseSynchronizerEM {
         }
     }
    
-    void updateAttributeOrder(ApplicationLayer applicationLayer, final SimpleFeatureType layerSft, EntityManager em) {
+    public void updateAttributeOrder(ApplicationLayer applicationLayer, final SimpleFeatureType layerSft, EntityManager em) {
         List<ConfiguredAttribute> cas = applicationLayer.getAttributes();
         log.info("Sorting layer " + applicationLayer.getLayerName());
         //Sort the attributes, by featuretype: neccessary for related featuretypes
