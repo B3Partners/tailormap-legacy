@@ -24,7 +24,6 @@ import org.apache.commons.logging.LogFactory;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.stripesstuff.stripersist.Stripersist;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -38,7 +37,7 @@ import static nl.b3p.viewer.config.RemoveEmptyMapValuesUtil.removeEmptyMapValues
  */
 @Entity
 @org.hibernate.annotations.Entity(dynamicUpdate = true)
-public class Layer implements Cloneable, Serializable {
+public class Layer implements Serializable {
     private static final Log log = LogFactory.getLog(Layer.class);
 
     public static final String EXTRA_KEY_METADATA_URL = "metadata.url";
@@ -169,6 +168,9 @@ public class Layer implements Cloneable, Serializable {
     public Layer() {
     }
 
+    public Layer clone() throws CloneNotSupportedException {
+        return (Layer)super.clone();
+    }
     public void update(Layer update) {
         update(update, null);
     }
@@ -233,27 +235,6 @@ public class Layer implements Cloneable, Serializable {
         getWriters().addAll(other.getWriters());
     }
 
-    /**
-     * Clone this layer and remove it from the tree of the GeoService this Layer
-     * is part of. Used for updating service, call only on non-persistent objects.
-     * @return a clone of this Layer with its parent and service set to null and
-     * children set to a new, empty list.
-     */
-    public Layer pluckCopy() {
-        if(Stripersist.getEntityManager().contains(this)) {
-            throw new IllegalStateException();
-        }
-        try {
-            Layer clone = (Layer)super.clone();
-            clone.setParent(null);
-            clone.setChildren(new ArrayList());
-            clone.setService(null);
-
-            return clone;
-        } catch(CloneNotSupportedException e) {
-            return null;
-        }
-    }
 
     /**
      * Checks if the layer is bufferable.

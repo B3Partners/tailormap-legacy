@@ -2,6 +2,7 @@ package nl.b3p.viewer.userlayer;
 
 import nl.b3p.viewer.helpers.featuresources.FeatureSourceHelper;
 import nl.b3p.viewer.helpers.featuresources.JDBCSourceHelper;
+import nl.b3p.viewer.helpers.featuresources.SimpleFeatureTypeHelper;
 import nl.b3p.viewer.helpers.featuresources.SourceFactoryHelper;
 import nl.b3p.viewer.helpers.services.GeoserviceFactoryHelper;
 import nl.b3p.viewer.helpers.services.WMSServiceHelper;
@@ -179,7 +180,7 @@ public class TailormapDBManager {
             SelectedContentCache.setApplicationCacheDirty(application, Boolean.TRUE, true, entityManager);
             entityManager.getTransaction().commit();
             entityManager.getTransaction().begin();
-            newAppLayer.synchronizeFeaturetype(entityManager, null, null, null, true);
+            SimpleFeatureTypeHelper.synchronizeFeaturetype(newAppLayer, entityManager, null, null, null, true);
             entityManager.persist(newAppLayer);
             entityManager.getTransaction().commit();
             return newAppLayer;

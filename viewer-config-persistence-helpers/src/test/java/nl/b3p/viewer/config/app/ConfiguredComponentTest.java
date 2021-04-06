@@ -17,6 +17,8 @@
 package nl.b3p.viewer.config.app;
 
 import java.util.HashSet;
+
+import nl.b3p.viewer.helpers.app.ApplicationHelper;
 import nl.b3p.viewer.util.TestUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -55,7 +57,7 @@ public class ConfiguredComponentTest extends TestUtil {
     public void deleteLinkedConfiguredComponent() {
         initData(true);
         try {
-            Application mashup = app.createMashup("mashup", entityManager, true);
+            Application mashup = ApplicationHelper.createMashup(app, "mashup", entityManager, true);
 
             entityManager.persist(mashup);
 
@@ -84,7 +86,7 @@ public class ConfiguredComponentTest extends TestUtil {
     public void deleteMotherConfiguredComponent() {
         initData(true);
         try {
-            Application mashup = app.createMashup("mashup", entityManager, true);
+            Application mashup = ApplicationHelper.createMashup(app,"mashup", entityManager, true);
 
             entityManager.persist(mashup);
 

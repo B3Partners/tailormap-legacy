@@ -148,7 +148,7 @@ public class ConfiguredComponent implements Comparable<ConfiguredComponent> {
     static {
         classesExcludedFromPushing.add("viewer.components.HTML");
     }
-    
+
     /**
      * Retrieve the metadata from the component registry for the class of this
      * component.
@@ -210,7 +210,7 @@ public class ConfiguredComponent implements Comparable<ConfiguredComponent> {
         return className.compareTo(rhs.getClassName());
     }
 
-    ConfiguredComponent deepCopy(Application app) throws Exception {
+    public ConfiguredComponent deepCopy(Application app) throws Exception {
         ConfiguredComponent copy = (ConfiguredComponent) BeanUtils.cloneBean(this);
         copy.setId(null);
         copy.setDetails(new HashMap<>(details));

@@ -28,6 +28,7 @@ import nl.b3p.viewer.config.app.*;
 import nl.b3p.viewer.config.security.Group;
 import nl.b3p.viewer.config.services.*;
 import nl.b3p.viewer.helpers.featuresources.FeatureSourceHelper;
+import nl.b3p.viewer.helpers.featuresources.SimpleFeatureTypeHelper;
 import nl.b3p.viewer.helpers.featuresources.SourceFactoryHelper;
 import nl.b3p.viewer.util.SelectedContentCache;
 import org.apache.commons.lang3.StringUtils;
@@ -156,7 +157,7 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
 
     @Before
     public void synchronizeFeatureType() throws JSONException {
-        applicationLayer.synchronizeFeaturetype(Stripersist.getEntityManager(),context, getBundle(),attributeAliases, false);
+        SimpleFeatureTypeHelper.synchronizeFeaturetype(applicationLayer, Stripersist.getEntityManager(),context, getBundle(),attributeAliases, false);
         Layer layer = applicationLayer.getService().getSingleLayer(applicationLayer.getLayerName(), Stripersist.getEntityManager());
         // Synchronize configured attributes with layer feature type
         if (layer != null) {

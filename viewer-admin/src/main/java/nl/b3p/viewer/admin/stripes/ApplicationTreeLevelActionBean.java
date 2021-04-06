@@ -26,6 +26,7 @@ import nl.b3p.viewer.config.services.AttributeDescriptor;
 import nl.b3p.viewer.config.services.Document;
 import nl.b3p.viewer.config.services.Layer;
 import nl.b3p.viewer.config.services.SimpleFeatureType;
+import nl.b3p.viewer.helpers.app.ApplicationHelper;
 import nl.b3p.viewer.util.SelectedContentCache;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -190,7 +191,7 @@ public class ApplicationTreeLevelActionBean extends ApplicationActionBean {
             try {
                 Level parent = level.getParent();
                 parent.getChildren().remove(level);
-                List<Application> mashups = application.getMashups(em);
+                List<Application> mashups = ApplicationHelper.getMashups(application, em);
                 mashups.add(application);
                 for (Application mashup : mashups) {
                     List<StartLevel> startlevels = mashup.getStartLevels();
@@ -255,7 +256,7 @@ public class ApplicationTreeLevelActionBean extends ApplicationActionBean {
         em.persist(level);
 
 
-        List<Application> mashups = application.getMashups(em);
+        List<Application> mashups = ApplicationHelper.getMashups(application, em);
         mashups.add(application);
         for (Application app : mashups) {
 
@@ -269,7 +270,7 @@ public class ApplicationTreeLevelActionBean extends ApplicationActionBean {
      protected void updateApplayersInLevel(String selectedLayers, Level level, EntityManager em){
         List<ApplicationLayer> layersToBeRemoved = new ArrayList(level.getLayers());
         
-        List<Application> apps = application.getMashups(em);
+        List<Application> apps = ApplicationHelper.getMashups(application, em);
         apps.add(application);
         
         level.getLayers().clear();

@@ -29,6 +29,7 @@ import nl.b3p.viewer.config.app.*;
 import nl.b3p.viewer.config.security.Group;
 import nl.b3p.viewer.config.security.User;
 import nl.b3p.viewer.config.services.BoundingBox;
+import nl.b3p.viewer.helpers.app.ApplicationHelper;
 import nl.b3p.viewer.util.SelectedContentCache;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
@@ -449,12 +450,12 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
         Application copy = null;
         // When the selected application is a mashup, don't use the copy routine, but make another mashup of it. This prevents some detached entity exceptions.
         if(application.isMashup()){
-            copy = application.createMashup(name, em, false);
+            copy = ApplicationHelper.createMashup(application, name, em, false);
             SelectedContentCache.setApplicationCacheDirty(copy, Boolean.TRUE, true, em);
         }else{
             bindAppProperties();
 
-            copy = application.deepCopy();
+            copy = ApplicationHelper.deepCopy(application);
             // don't save changes to original app
             em.detach(application);
 
@@ -472,7 +473,7 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
         ValidationErrors errors = context.getValidationErrors();
         try {
             EntityManager em = Stripersist.getEntityManager();
-            Application mashup = application.createMashup(mashupName, em,mustUpdateComponents);
+            Application mashup = ApplicationHelper.createMashup(application, mashupName, em,mustUpdateComponents);
             em.persist(mashup);
             em.getTransaction().commit();
 
@@ -506,11 +507,11 @@ public class ApplicationSettingsActionBean extends ApplicationActionBean {
             oldPublished.setVersion(uniqueVersion);
             em.persist(oldPublished);
             if(mashupMustPointToPublishedVersion){
-                for (Application mashup: oldPublished.getMashups(em)) {
+                for (Application mashup: ApplicationHelper.getMashups(oldPublished, em)) {
                     mashup.setRoot(application.getRoot());//nog iets doen met veranderde layerids uit cofniguratie
                     SelectedContentCache.setApplicationCacheDirty(mashup,true, false,em);
-                    mashup.transferMashupLevels(oldPublished,em);
-                    mashup.transferMashupComponents(application,em);
+                    ApplicationHelper.transferMashupLevels(mashup, oldPublished,em);
+                    ApplicationHelper.transferMashupComponents(mashup, application);
                     em.persist(mashup);
                 }
             }

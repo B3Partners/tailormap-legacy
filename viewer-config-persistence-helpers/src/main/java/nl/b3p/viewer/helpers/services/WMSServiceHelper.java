@@ -1,5 +1,6 @@
 package nl.b3p.viewer.helpers.services;
 
+import nl.b3p.viewer.helpers.app.LayerHelper;
 import nl.b3p.viewer.helpers.featuresources.SimpleFeatureTypeHelper;
 import nl.b3p.viewer.config.ClobElement;
 import nl.b3p.viewer.config.services.Layer;
@@ -525,7 +526,7 @@ public class WMSServiceHelper implements ServiceHelper{
                     // and parent will be set on this instance later on and we
                     // need the original children to traverse the updated service
                     // tree while doing that
-                    l = l.pluckCopy();
+                    l = LayerHelper.pluckCopy(l);
                     result.getLayerStatus().put(l.getName(), new MutablePair(l, UpdateResult.Status.NEW));
 
                     if(l.getFeatureType() != null) {
@@ -602,7 +603,7 @@ public class WMSServiceHelper implements ServiceHelper{
         String topLayerName = update.getTopLayer().getName();
         if(topLayerName == null) {
             // Start with a new no name topLayer
-            newTopLayer = update.getTopLayer().pluckCopy();
+            newTopLayer = LayerHelper.pluckCopy(update.getTopLayer());
         } else {
             // Old persistent top layer or new plucked copy from updated service
             newTopLayer = result.getLayerStatus().get(topLayerName).getLeft();
@@ -647,7 +648,7 @@ public class WMSServiceHelper implements ServiceHelper{
                 // 'New' no name layer - we can't possibly guess if it is
                 // the same as an already existing no name layer so always
                 // new entity
-                thisLayer = updateLayer.pluckCopy();
+                thisLayer = LayerHelper.pluckCopy(updateLayer);
             } else {
 
                 if(visitedLayerNames.contains(layerName)) {
