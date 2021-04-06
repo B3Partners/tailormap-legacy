@@ -27,6 +27,7 @@ import nl.b3p.viewer.config.services.GeoService;
 import nl.b3p.viewer.config.services.Layer;
 import nl.b3p.viewer.config.services.SimpleFeatureType;
 import nl.b3p.viewer.config.services.WFSFeatureSource;
+import nl.b3p.viewer.helpers.featuresources.SourceFactoryHelper;
 import nl.b3p.viewer.util.TestUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -162,7 +163,7 @@ public class WFSTypeNamingTest extends TestUtil {
                     log.debug("Inspecting layer, name: " + lyr.getName() + ", featuretype: " + lyr.getFeatureType().getDescription());
                     assertTrue("Attribute type name does contain a colon", lyr.getFeatureType().getTypeName().contains(":"));
                     try {
-                        FeatureSource fs2 = lyr.getFeatureType().openGeoToolsFeatureSource();
+                        FeatureSource fs2 = SourceFactoryHelper.openGeoToolsFeatureSource(lyr.getFeatureType());
                         assertThat("No exception was thrown and featuresource not null", fs2, not(nullValue()));
                     } catch (Exception ex) {
                         log.error("Opening featuresource failed.", ex);
@@ -196,7 +197,7 @@ public class WFSTypeNamingTest extends TestUtil {
                 log.debug("Testing type: " + type.getTypeName());
                 assertTrue("Type name does contain a colon", type.getTypeName().contains(":"));
                 try {
-                    FeatureSource fs2 = type.openGeoToolsFeatureSource();
+                    FeatureSource fs2 = SourceFactoryHelper.openGeoToolsFeatureSource(type);
                     assertThat("No exception was thrown and featuresource not null", fs2, not(nullValue()));
                     
                     Query q = new Query(fs2.getName().toString());

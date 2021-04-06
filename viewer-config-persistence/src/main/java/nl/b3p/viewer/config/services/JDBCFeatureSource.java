@@ -16,22 +16,13 @@
  */
 package nl.b3p.viewer.config.services;
 
-import java.util.*;
-import javax.persistence.*;
-import nl.b3p.web.WaitPageStatus;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.geotools.data.DataStore;
-import org.geotools.data.DataStoreFinder;
-import org.geotools.data.simple.SimpleFeatureSource;
-import org.geotools.data.sqlserver.SQLServerDataStoreFactory;
-import org.geotools.feature.FeatureCollection;
-import org.geotools.jdbc.JDBCDataStoreFactory;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.opengis.feature.type.AttributeType;
-import org.opengis.feature.type.GeometryType;
-import org.opengis.filter.Filter;
+
+import javax.persistence.Column;
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
+import java.util.Map;
 
 /**
  *

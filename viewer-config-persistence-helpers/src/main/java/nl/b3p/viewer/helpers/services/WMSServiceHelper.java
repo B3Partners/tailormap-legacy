@@ -127,7 +127,6 @@ public class WMSServiceHelper implements ServiceHelper{
         } else {
             service.setUrl(serviceUrl);
         }
-
         service.getKeywords().addAll(si.getKeywords());
 
         status.setCurrentAction("Inladen layers...");
@@ -137,7 +136,7 @@ public class WMSServiceHelper implements ServiceHelper{
         status.setProgress(40);
 
         org.geotools.ows.wms.Layer rl = wms.getCapabilities().getLayer();
-        service.setTopLayer(new Layer(rl, service));
+        service.setTopLayer(GeoserviceHelper.loadLayer(rl, service));
 
         if (service.getSkipDiscoverWFS()) {
             status.setProgress(80);

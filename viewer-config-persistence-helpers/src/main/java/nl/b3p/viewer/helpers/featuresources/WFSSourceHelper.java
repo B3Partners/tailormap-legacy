@@ -159,7 +159,7 @@ public class WFSSourceHelper implements SourceHelper{
 
 
     public static DataStore createDataStore( WFSFeatureSource fs) throws Exception {
-        return createDataStore(fs);
+        return createDataStore(null, fs);
     }
 
     public static DataStore createDataStore(Map extraDataStoreParams, WFSFeatureSource fs) throws Exception {

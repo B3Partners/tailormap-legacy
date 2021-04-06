@@ -16,10 +16,10 @@
  */
 package nl.b3p.viewer.config.services;
 
-import javax.persistence.Embeddable;
-import org.geotools.ows.wms.CRSEnvelope;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import javax.persistence.Embeddable;
 
 /**
  *
@@ -33,13 +33,6 @@ public class BoundingBox implements Cloneable {
     public BoundingBox() {
     }
 
-    public BoundingBox(CRSEnvelope e) {
-        crs = new CoordinateReferenceSystem(e.getSRSName());
-        minx = e.getMinX();
-        miny = e.getMinY();
-        maxx = e.getMaxX();
-        maxy = e.getMaxY();
-    }
 
     //<editor-fold defaultstate="collapsed" desc="getters and setters">
     public CoordinateReferenceSystem getCrs() {
