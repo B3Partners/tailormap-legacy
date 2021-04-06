@@ -9,6 +9,7 @@ import java.util.List;
 import net.sourceforge.stripes.action.ActionBeanContext;
 import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.StartLayer;
+import nl.b3p.viewer.helpers.app.ApplicationHelper;
 import nl.b3p.viewer.util.TestActionBeanContext;
 import nl.b3p.viewer.util.TestUtil;
 import org.apache.commons.logging.Log;
@@ -56,7 +57,7 @@ public class ChooseApplicationActionBeanTest extends TestUtil {
             int startLevelsMotherApp = app.getStartLevels().size();
             int startLayersMotherApp = app.getStartLayers().size();
 
-            Application mashup = app.createMashup("mashup", entityManager, true);
+            Application mashup = ApplicationHelper.createMashup(app, "mashup", entityManager, true);
             entityManager.persist(mashup);
             entityManager.getTransaction().commit();
             entityManager.getTransaction().begin();
@@ -93,7 +94,7 @@ public class ChooseApplicationActionBeanTest extends TestUtil {
 
             app.setVersion(null);
             entityManager.persist(app);
-            Application mashup = app.createMashup("mashup", entityManager, true);
+            Application mashup = ApplicationHelper.createMashup(app, "mashup", entityManager, true);
             entityManager.persist(mashup);
             entityManager.getTransaction().commit();
             entityManager.getTransaction().begin();
@@ -145,7 +146,7 @@ public class ChooseApplicationActionBeanTest extends TestUtil {
 
             app.setVersion(null);
             entityManager.persist(app);
-            Application mashup = app.createMashup("mashup", entityManager, true);
+            Application mashup = ApplicationHelper.createMashup(app, "mashup", entityManager, true);
             entityManager.persist(mashup);
             entityManager.getTransaction().commit();
             entityManager.getTransaction().begin();
@@ -194,7 +195,7 @@ public class ChooseApplicationActionBeanTest extends TestUtil {
             ActionBeanContext context = new ActionBeanContext();
             caab.setContext(context);
 
-            Application mashup = app.createMashup("mashup", entityManager, true);
+            Application mashup = ApplicationHelper.createMashup(app, "mashup", entityManager, true);
             entityManager.persist(mashup);
             entityManager.getTransaction().commit();
             entityManager.getTransaction().begin();
@@ -243,7 +244,7 @@ public class ChooseApplicationActionBeanTest extends TestUtil {
             Long oldRootId = app.getRoot().getId();
             List origAppStartLayers = entityManager.createQuery("FROM StartLayer WHERE application = :app" , StartLayer.class).setParameter("app", app).getResultList();
             
-            Application mashup = app.createMashup("mashup", entityManager, true);
+            Application mashup = ApplicationHelper.createMashup(app, "mashup", entityManager, true);
             entityManager.persist(mashup);
             entityManager.getTransaction().commit();
             entityManager.getTransaction().begin();
@@ -296,7 +297,7 @@ public class ChooseApplicationActionBeanTest extends TestUtil {
             entityManager.getTransaction().commit();
             entityManager.getTransaction().begin();
 
-            Application mashup = app.createMashup("mashup", entityManager, true);
+            Application mashup = ApplicationHelper.createMashup(app, "mashup", entityManager, true);
             
             
             entityManager.persist(mashup);

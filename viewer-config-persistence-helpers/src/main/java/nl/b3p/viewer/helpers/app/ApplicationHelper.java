@@ -119,12 +119,12 @@ public class ApplicationHelper {
 
     // <editor-fold desc="mashups" default-state="collapsed">
     public static Application createMashup(Application app, String mashupName, EntityManager em, boolean linkComponents) throws Exception {
-        Application source = app;
+         Application source = app;
 
         if (!em.contains(source)) {
             source = em.merge(source);
         }
-        Application mashup = deepCopyAllButLevels(linkComponents, app);
+        Application mashup = deepCopyAllButLevels(linkComponents, source);
         mashup.setName(mashup.getName() + "_" + mashupName);
         em.persist(mashup);
         if (mashup.getRoot() != null) {

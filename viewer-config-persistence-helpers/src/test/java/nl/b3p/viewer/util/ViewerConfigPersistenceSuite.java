@@ -16,11 +16,11 @@
  */
 package nl.b3p.viewer.util;
 
+import databaseupdate.DatabaseSynchronizerEMTest;
+import databaseupdate.DatabaseSynchronizerTest;
 import nl.b3p.viewer.config.app.BookmarkTest;
 import nl.b3p.viewer.config.app.StartLayerTest;
 import nl.b3p.viewer.config.app.StartLevelTest;
-import nl.b3p.viewer.util.databaseupdate.DatabaseSynchronizerEMTest;
-import nl.b3p.viewer.util.databaseupdate.DatabaseSynchronizerTest;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;

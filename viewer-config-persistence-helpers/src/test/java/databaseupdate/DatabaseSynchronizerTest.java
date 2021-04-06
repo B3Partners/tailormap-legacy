@@ -14,16 +14,19 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package nl.b3p.viewer.util.databaseupdate;
+package databaseupdate;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import nl.b3p.viewer.config.metadata.Metadata;
-import nl.b3p.viewer.config.services.AttributeDescriptor;
 import nl.b3p.viewer.config.services.SolrConf;
 import static org.junit.Assert.*;
+
+import nl.b3p.viewer.util.databaseupdate.DatabaseSynchronizer;
+import nl.b3p.viewer.util.databaseupdate.DatabaseSynchronizerEM;
+import nl.b3p.viewer.util.databaseupdate.UpdateElement;
 import org.junit.Test;
 
 /**
