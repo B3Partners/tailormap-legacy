@@ -18,6 +18,7 @@ package nl.b3p.viewer.config.app;
 
 import java.util.List;
 import nl.b3p.viewer.config.app.Application.TreeCache;
+import nl.b3p.viewer.helpers.app.ApplicationHelper;
 import nl.b3p.viewer.util.TestUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -41,7 +42,7 @@ public class ApplicationTest extends TestUtil {
         int expectedStartLayerSize = app.getStartLayers().size();
         int expectedStartLevelSize = app.getStartLevels().size();
 
-        Application copy = app.deepCopy();
+        Application copy = ApplicationHelper.deepCopy(app);
         copy.setVersion("" + 666);
         entityManager.detach(app);
         entityManager.persist(copy);
@@ -66,7 +67,7 @@ public class ApplicationTest extends TestUtil {
     @Test
     public void testDeepCopyReaders() throws Exception{
        initData(true);
-       Application copy = app.deepCopy();
+       Application copy = ApplicationHelper.deepCopy(app);
        assertEquals(2, copy.getReaders().size());
         for (String reader : app.getReaders()) {
             assertTrue(copy.getReaders().contains(reader));
@@ -77,7 +78,7 @@ public class ApplicationTest extends TestUtil {
     public void testDeleteApplications() throws Exception {
         initData(true);
         Application application = entityManager.find(Application.class, app.getId());
-        Application copy = application.deepCopy();
+        Application copy = ApplicationHelper.deepCopy(application);
         entityManager.detach(application);
         copy.setVersion("123");
         entityManager.persist(copy);
@@ -93,7 +94,7 @@ public class ApplicationTest extends TestUtil {
             int expectedStartLevelSize = app.getStartLevels().size();
             int expectedRootStartLevelSize = app.getRoot().getStartLevels().size() * 2;
 
-            Application mashup = app.createMashup("mashup", entityManager,true);
+            Application mashup = ApplicationHelper.createMashup(app, "mashup", entityManager,true);
             entityManager.persist(mashup);
 
             entityManager.getTransaction().commit();
@@ -139,10 +140,10 @@ public class ApplicationTest extends TestUtil {
             int expectedStartLayerSize = app.getStartLayers().size();
             
 
-            Application mashup = app.createMashup("mashup", entityManager,false);
+            Application mashup = ApplicationHelper.createMashup(app, "mashup", entityManager,false);
             entityManager.persist(mashup);
 
-            Application secondMashup = app.createMashup("mashup2", entityManager,false);
+            Application secondMashup = ApplicationHelper.createMashup(app, "mashup2", entityManager,false);
             entityManager.persist(secondMashup);
 
             entityManager.getTransaction().commit();
@@ -189,10 +190,10 @@ public class ApplicationTest extends TestUtil {
             int expectedRootStartLevelSize = app.getRoot().getStartLevels().size() * 2;
             
 
-            Application mashup = app.createMashup("mashup", entityManager,false);
+            Application mashup = ApplicationHelper.createMashup(app, "mashup", entityManager,false);
             entityManager.persist(mashup);
 
-            Application secondMashup = app.createMashup("mashup2", entityManager,false);
+            Application secondMashup = ApplicationHelper.createMashup(app, "mashup2", entityManager,false);
             entityManager.persist(secondMashup);
 
             entityManager.getTransaction().commit();
@@ -234,7 +235,7 @@ public class ApplicationTest extends TestUtil {
             int expectedStartLevelSize = app.getStartLevels().size();
             int expectedRootStartLevelSize = app.getRoot().getStartLevels().size() * 2;
 
-            Application mashup = app.createMashup("mashup", entityManager,false);
+            Application mashup = ApplicationHelper.createMashup(app, "mashup", entityManager,false);
             entityManager.persist(mashup);
 
             entityManager.getTransaction().commit();
@@ -281,14 +282,14 @@ public class ApplicationTest extends TestUtil {
             int expectedStartLevelSize = app.getStartLevels().size();
             int expectedRootStartLevelSize = app.getRoot().getStartLevels().size() * 3;
 
-            Application mashup1 = app.createMashup("mashup", entityManager,false);
+            Application mashup1 = ApplicationHelper.createMashup(app, "mashup", entityManager,false);
             entityManager.persist(mashup1);
 
             entityManager.getTransaction().commit();
             entityManager.getTransaction().begin();
 
 
-            Application mashup = app.createMashup("mashup2", entityManager,false);
+            Application mashup = ApplicationHelper.createMashup(app, "mashup2", entityManager,false);
             entityManager.persist(mashup);
 
             entityManager.getTransaction().commit();

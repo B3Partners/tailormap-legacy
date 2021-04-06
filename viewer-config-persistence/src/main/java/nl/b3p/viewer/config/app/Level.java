@@ -337,7 +337,7 @@ public class Level implements Comparable{
         }
     }
 
-    Level deepCopy(Level parent, Map originalToCopy, Application app, boolean processStartMap) throws Exception {
+    public Level deepCopy(Level parent, Map originalToCopy, Application app, boolean processStartMap) throws Exception {
         Level copy = (Level)BeanUtils.cloneBean(this);
         originalToCopy.put(this, copy);
         copy.setId(null);

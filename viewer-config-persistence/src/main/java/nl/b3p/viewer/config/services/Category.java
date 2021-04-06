@@ -16,8 +16,6 @@
  */
 package nl.b3p.viewer.config.services;
 
-import org.stripesstuff.stripersist.Stripersist;
-
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -43,7 +41,7 @@ import java.util.Set;
             @UniqueConstraint(columnNames={"parent", "name"})
 )
 public class Category {
-    private static final Long ROOT_CATEGORY_ID = 0L;
+    public static final Long ROOT_CATEGORY_ID = 0L;
     
     @Id
     private Long id;
@@ -130,7 +128,4 @@ public class Category {
     }
     //</editor-fold>
 
-    public static Category getRootCategory() {
-        return Stripersist.getEntityManager().find(Category.class, ROOT_CATEGORY_ID);
-    }
 }

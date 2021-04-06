@@ -31,6 +31,7 @@ import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.ConfiguredComponent;
 import nl.b3p.viewer.config.metadata.Metadata;
 import nl.b3p.viewer.config.security.Group;
+import nl.b3p.viewer.helpers.app.ApplicationHelper;
 import nl.b3p.viewer.util.SelectedContentCache;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -241,7 +242,7 @@ public class ChooseApplicationActionBean extends ApplicationActionBean {
             applicationToDelete.setVersion(uniqueVersion);
             em.getTransaction().commit();
         } else {
-            List<Application> mashups = applicationToDelete.getMashups(em);
+            List<Application> mashups = ApplicationHelper.getMashups(applicationToDelete, em);
             if (!mashups.isEmpty()) {
                 List<String> list = new ArrayList();
                 for (Application mashup : mashups) {
@@ -430,7 +431,7 @@ public class ChooseApplicationActionBean extends ApplicationActionBean {
 
     Application createWorkversion(Application base, EntityManager em, String version) throws Exception {
         if (base.isMashup()) {
-            Application mashup = base.createMashup(version, em, true);
+            Application mashup = ApplicationHelper.createMashup(base, version, em, true);
             String appName = mashup.getName();
             appName = appName.substring(0, appName.lastIndexOf("_" + version));
             mashup.setName(appName);
@@ -439,7 +440,7 @@ public class ChooseApplicationActionBean extends ApplicationActionBean {
             em.getTransaction().commit();
             return mashup;
         } else {
-            Application copy = base.createWorkVersion(em,version, context);
+            Application copy = ApplicationHelper.createWorkVersion(base, em,version, context);
             return copy;
         }
     }

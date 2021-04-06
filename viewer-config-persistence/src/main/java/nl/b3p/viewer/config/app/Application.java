@@ -48,7 +48,6 @@ import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 import javax.servlet.http.HttpServletRequest;
-import net.sourceforge.stripes.action.ActionBeanContext;
 import nl.b3p.viewer.config.ClobElement;
 import nl.b3p.viewer.config.security.Authorizations;
 import nl.b3p.viewer.config.security.User;
@@ -154,7 +153,7 @@ public class Application implements Comparable<Application>{
      * the references in component JSON config using id's in postPersist().
      */
     @Transient
-    Map originalToCopy;
+    public Map originalToCopy;
 
     @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "application")
     private List<Bookmark> bookmarks = new ArrayList<>();
@@ -623,7 +622,7 @@ public class Application implements Comparable<Application>{
      * keep a cached copy of our mashup status.
      */
     @Transient
-    private Boolean isMashup_cached;
+    public Boolean isMashup_cached;
 
     /**
      * slow method -especially on Oracle- because it will need all keys and
@@ -665,216 +664,8 @@ public class Application implements Comparable<Application>{
         return this.isMashup_cached;
     }
 
-    public Application createMashup(String mashupName, EntityManager em, boolean linkComponents) throws Exception {
-        Application source = this;
 
-        if (!em.contains(source)) {
-            source = em.merge(source);
-        }
-        Application mashup = source.deepCopyAllButLevels(linkComponents);
-        mashup.setName(mashup.getName() + "_" + mashupName);
-        em.persist(mashup);
-        if (mashup.getRoot() != null) {
-            mashup.getRoot().processForMashup(mashup, source);
-        }
-
-        this.isMashup_cached = Boolean.TRUE;
-        mashup.getDetails().put(Application.DETAIL_IS_MASHUP, new ClobElement(this.isMashup_cached + ""));
-        return mashup;
-    }
-    
-    public Application createWorkVersion(EntityManager em, String version, ActionBeanContext context) throws Exception {
-        Application base = this;
-        Application copy = deepCopyAllButLevels(false);
-        copy.setVersion(version);
-        copy.setRoot(null);
-        // save application, so it will have an id
-        em.persist(copy);
-        em.getTransaction().commit();
-        em.getTransaction().begin();
-        
-        copy.originalToCopy = new HashMap();
-        if (root != null) {
-            copy.setRoot(root.deepCopy(null, copy.originalToCopy, copy, false));
-            // reverse originalToCopy
-            Map reverse = reverse(copy.originalToCopy);
-            
-            copy.originalToCopy = reverse;
-
-            copy.getRoot().processForWorkversion(copy, base);
-        }
-
-        Set<Application> apps = base.getRoot().findApplications(em);
-        for (Application app : apps) {
-            em.detach(app);
-        }
-        // don't save changes to original app and it's mashups
-        
-        em.persist(copy);
-        em.flush();
-        Application prev = em.createQuery("FROM Application where id = :id", Application.class).setParameter("id", base.getId()).getSingleResult();
-        copy.processBookmarks(prev, context, em);
-        SelectedContentCache.setApplicationCacheDirty(copy, Boolean.TRUE, false, em);
-        em.getTransaction().commit();
-        return copy;
-    }
-    
-    private Map reverse(Map orig) {
-        Map reverse = new HashMap();
-
-        Set keys = orig.keySet();
-        for (Object key : keys) {
-            Object value = orig.get(key);
-            reverse.put(value, key);
-        }
-        return reverse;
-    }
-
-    public List<Application> getMashups(EntityManager em) {
-        return em.createQuery(
-                "from Application where root = :level and id <> :oldId")
-                .setParameter("level", getRoot()).setParameter("oldId", getId()).getResultList();
-    }
-
-    public Application deepCopy() throws Exception {
-        Application copy = deepCopyAllButLevels(false);
-
-        copy.originalToCopy = new HashMap();
-        if (root != null) {
-            copy.setRoot(root.deepCopy(null, copy.originalToCopy, copy,true));
-        }
-
-        return copy;
-    }
-
-    private Application deepCopyAllButLevels(boolean linkComponents) throws Exception {
-        Application copy = (Application) BeanUtils.cloneBean(this);
-        copy.setId(null);
-        copy.setBookmarks(null);
-        copy.setTreeCache(null);
-        copy.setStartLayers(new ArrayList<>());
-        copy.setStartLevels(new ArrayList<>());
-        copy.setReaders(new HashSet<>());
-        // user reference is not deep copied, of course
-
-        copy.setDetails(new HashMap<>(details));
-        if (startExtent != null) {
-            copy.setStartExtent(startExtent.clone());
-        }
-        if (maxExtent != null) {
-            copy.setMaxExtent(maxExtent.clone());
-        }
-
-        copy.setComponents(new HashSet<>());
-        for (ConfiguredComponent cc : components) {
-            ConfiguredComponent componentCopy = cc.deepCopy(copy);
-            copy.getComponents().add(componentCopy);
-            if (linkComponents) {
-                componentCopy.setMotherComponent(cc);
-                cc.getLinkedComponents().add(componentCopy);
-            }
-        }
-
-        for (String reader : readers) {
-            copy.getReaders().add(reader);
-        }
-        return copy;
-    }
-
-    /**
-     * When a workversion of an application is published, sometimes (determined
-     * by the user) the mashups should "follow" the published version: the
-     * mashup should always point to the published version. When this occurs,
-     * the mashup should update the layerIds in the components (because
-     * otherwise the layerIds point to the previous published version). In this
-     * method an Map is created in the same way as deepCopy creates. This Map is
-     * used for converting the layerIds in the component configuration.
-     *
-     * @param old The Application to which the layerIds should be matched.
-     * @param em the entity manager to use
-     */
-    public void transferMashupLevels(Application old, EntityManager em) {
-        originalToCopy = new HashMap();
-        loadTreeCache(em);
-        visitLevelForMashuptransfer(old.getRoot(), originalToCopy);
-        Map reverse = reverse(originalToCopy);
-        List<StartLayer> startlayersAdded = new ArrayList<>();
-        List<StartLevel> startlevelsAdded = new ArrayList<>();
-        replaceLevel(root,reverse, startlayersAdded, startlevelsAdded);
-        getStartLevels().retainAll(startlevelsAdded);
-        getStartLayers().retainAll(startLayers);
-        processCopyMap();
-        // Loop alle levels af van de oude applicatie
-        // Per level alle children
-        // Per level,
-        //zoek voor elke appLayer (uit oude applicatie) de bijbehorende NIEUWE applayer
-        // sla in originalToCopy de ids op van de appLayer
-        //zoek voor elke level (uit oude applicatie) de bijbehorende NIEUWE level
-        // sla in originalToCopy de ids op van de level
-        // Roep postPersist aan.
-    }
-    
-    public void transferMashupComponents(Application newApp, EntityManager em) {
-        for (ConfiguredComponent component : components) {
-            if(component.getMotherComponent() != null){
-                for (ConfiguredComponent newAppComp : newApp.getComponents()) {
-                    if(component.getName().equals(newAppComp.getName())){
-                        component.setMotherComponent(newAppComp);
-                    }
-                }
-            }
-        }
-    }
-    
-    
-    private void replaceLevel(Level l,  Map reverse, List<StartLayer> startlayersAdded, List<StartLevel> startlevelsAdded) {
-        for (Level level : l.getChildren()) {
-            replaceLevel(level, reverse,startlayersAdded, startlevelsAdded);
-        }
-        
-        for (ApplicationLayer layer : l.getLayers()) {
-            replaceLayer(layer,reverse, startlayersAdded);
-        }
-        Object o = reverse.get(l);
-        if (o != null) {
-            StartLevel sl = ((Level) o).getStartLevels().get(this);
-            if (sl != null) {
-                sl.setLevel(l);
-                startlevelsAdded.add(sl);
-            }
-        }
-    }
-    
-    private void replaceLayer(ApplicationLayer al,Map reverse, List<StartLayer> startlayersAdded){
-        Object o = reverse.get(al);
-        if (o != null) {
-            StartLayer sl = ((ApplicationLayer) o).getStartLayers().get(this);
-            if (sl != null) {
-                sl.setApplicationLayer(al);
-                startlayersAdded.add(sl);
-            }
-        }
-    }
-
-    private void visitLevelForMashuptransfer(Level oldLevel, Map originalToCopy) {
-        Level newLevel = findLevel(oldLevel);
-        if (newLevel != null) {
-            originalToCopy.put(oldLevel, newLevel);
-        }
-
-        for (ApplicationLayer oldLayer : oldLevel.getLayers()) {
-            ApplicationLayer newLayer = findLayer(oldLayer);
-            if (newLayer != null) {
-                originalToCopy.put(oldLayer, newLayer);
-            }
-        }
-
-        for (Level oldChild : oldLevel.getChildren()) {
-            visitLevelForMashuptransfer(oldChild, originalToCopy);
-        }
-    }
-
-    private ApplicationLayer findLayer(ApplicationLayer oldLayer) {
+    public ApplicationLayer findLayer(ApplicationLayer oldLayer) {
         List<ApplicationLayer> appLayers = treeCache.applicationLayers;
         for (ApplicationLayer appLayer : appLayers) {
             if (appLayer.getService().equals(oldLayer.getService()) && appLayer.getLayerName().equals(oldLayer.getLayerName())) {
@@ -884,7 +675,7 @@ public class Application implements Comparable<Application>{
         return null;
     }
 
-    private Level findLevel(Level oldLevel) {
+    public Level findLevel(Level oldLevel) {
         List<Level> levels = treeCache.levels;
         for (Level level : levels) {
             if (level.getName().equals(oldLevel.getName())) {
@@ -906,7 +697,7 @@ public class Application implements Comparable<Application>{
     @Transient
     public Map<String, Long> idMap;
 
-    private void processCopyMap() {
+    public void processCopyMap() {
         if (originalToCopy == null) {
             log.debug("postPersist(): not a copy");
             return;
@@ -989,93 +780,6 @@ public class Application implements Comparable<Application>{
         return idMap;
     }
 
-    public void processBookmarks(Application previousApplication, ActionBeanContext context, EntityManager em) {
-        // bookmark krijgt een appId kolom
-        // bij maken werkversie
-        // check of bookmarkcomponent de configuratie: followsApplication
-        // zo ja
-        //haal alle bookmarks voor vorige applicatie op
-        // maak clone
-        // Zet referentie naar vorige bookmark
-        // vervang layer ids
-        // vervang level ids
-        // vervang ids in selectedcontent
-        // set id van nieuwe applicatie in bookmark
-        // set id van oude applicatie als referentie in bookmark
-        // persist bookmark
-        // zo nee, doe niks
-        // Bij ophalen bookmark
-        // Gebruik ook applicatienaam en versienummer om bookmark op te halen
-
-        List<ConfiguredComponent> bookmarkComponents = em.createQuery("FROM ConfiguredComponent where application.id = :app and className = :className", ConfiguredComponent.class)
-                .setParameter("app", previousApplication.getId()).setParameter("className", "viewer.components.Bookmark").getResultList();
-
-        for (ConfiguredComponent comp : bookmarkComponents) {
-            String config = comp.getConfig();
-            if (config != null && !config.isEmpty()) {
-                try {
-                    JSONObject conf = new JSONObject(config);
-                    if (conf.optBoolean("copyBookmarkForWorkversion", false)) {
-                        List<Bookmark> bookmarks = em.createQuery("FROM Bookmark where application = :app", Bookmark.class).setParameter("app", previousApplication).getResultList();
-                        for (Bookmark bookmark : bookmarks) {
-                            Bookmark clone = bookmark.clone();
-                            clone.setCreatedBy(clone.createCreatedBy(context));
-                            clone.setApplication(this);
-                            processBookmark(clone, idMap);
-                            em.persist(clone);
-                            clone.setCode(bookmark.getCode());
-                            em.persist(clone);
-                        }
-                    }
-                } catch (JSONException ex) {
-                    log.error("Cannot convert bookmarks.", ex);
-                }
-            }
-        }
-        previousApplication = null;
-    }
-
-    private void processBookmark(Bookmark bookmark, Map<String, Long> idMap) throws JSONException {
-        JSONObject bm = new JSONObject(bookmark.getParams());
-        JSONArray params = bm.getJSONArray("params");
-        JSONArray newParams = new JSONArray();
-        for (int i = 0; i < params.length(); i++) {
-            JSONObject param = params.getJSONObject(i);
-            JSONArray value = param.optJSONArray("value");
-            if (param.getString("name").equals("layers")) {
-                JSONArray newLayers = new JSONArray();
-                for (int j = 0; j < value.length(); j++) {
-                    Integer layerId = value.getInt(j);
-                    Long newId = idMap.get(ApplicationLayer.class + "_" + layerId);
-                    newLayers.put(newId);
-                }
-                param.put("value", newLayers);
-            } else if (param.getString("name").equals("levelOrder")) {
-                JSONArray newLevels = new JSONArray();
-                for (int j = 0; j < value.length(); j++) {
-                    Integer levelId = value.getInt(j);
-                    Long newId = idMap.get(Level.class + "_" + levelId);
-                    newLevels.put(newId);
-                }
-                param.put("value", newLevels);
-            } else if (param.getString("name").equals("selectedContent")) {
-                for (int j = 0; j < value.length(); j++) {
-                    JSONObject content = value.getJSONObject(j);
-                    if (content.optString("type", "level").equals("level")) {
-                        Long newId = idMap.get(Level.class + "_" + content.getString("id"));
-                        content.put("id", newId);
-                    }
-                }
-            }
-            newParams.put(param);
-        }
-        JSONObject newBm = new JSONObject();
-        newBm.put("params", newParams);
-        bookmark.setParams(newBm.toString());
-        //layers
-        //levelorder
-        //selectedcontent
-    }
 
     public void removeOldProperties() {
         // In previous versions maxHeight and maxWidth where assigned to details directly

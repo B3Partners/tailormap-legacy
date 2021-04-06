@@ -40,6 +40,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.stripesstuff.stripersist.Stripersist;
 
+import static nl.b3p.viewer.config.services.Category.ROOT_CATEGORY_ID;
+
 /**
  *
  * @author Matthijs Laan
@@ -97,7 +99,7 @@ public class GeoServiceRegistryActionBean extends LocalizableActionBean {
         
     @DefaultHandler
     public Resolution view() {
-        category = Category.getRootCategory();
+        category = Stripersist.getEntityManager().find(Category.class, ROOT_CATEGORY_ID);
                 
         return new ForwardResolution(JSP);
     }
