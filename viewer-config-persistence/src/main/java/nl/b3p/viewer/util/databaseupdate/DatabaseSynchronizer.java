@@ -16,6 +16,17 @@
  */
 package nl.b3p.viewer.util.databaseupdate;
 
+import nl.b3p.viewer.config.metadata.Metadata;
+import nl.b3p.viewer.config.stripersist.DynamicStripersistInitializer;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+import org.hibernate.jdbc.Work;
+import org.stripesstuff.stripersist.Stripersist;
+
+import javax.persistence.EntityManager;
+import javax.servlet.*;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,20 +39,6 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map.Entry;
-import javax.persistence.EntityManager;
-import javax.servlet.Servlet;
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import nl.b3p.viewer.config.metadata.Metadata;
-import nl.b3p.viewer.config.stripersist.DynamicStripersistInitializer;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
-import org.hibernate.jdbc.Work;
-import org.stripesstuff.stripersist.Stripersist;
 
 /**
  * Class for Synchronizing the database with the application entitymodel.

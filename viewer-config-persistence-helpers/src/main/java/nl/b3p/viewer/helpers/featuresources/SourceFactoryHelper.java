@@ -7,6 +7,10 @@ import java.util.List;
 
 public class SourceFactoryHelper {
 
+    public static Boolean isUpdatable(FeatureSource fs){
+        return fs instanceof WFSFeatureSource || fs instanceof JDBCFeatureSource;
+    }
+
     public static org.geotools.data.FeatureSource openGeoToolsFeatureSource(SimpleFeatureType sft, int timeout) throws Exception {
         return SourceFactoryHelper.openGeoToolsFeatureSource(sft.getFeatureSource(), sft, timeout);
     }

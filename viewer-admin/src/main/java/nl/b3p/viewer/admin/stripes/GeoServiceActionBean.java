@@ -20,6 +20,7 @@ import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.*;
 import nl.b3p.viewer.helpers.services.ArcGISServiceHelper;
 import nl.b3p.viewer.helpers.services.GeoserviceFactoryHelper;
+import nl.b3p.viewer.helpers.services.TilingServiceHelper;
 import nl.b3p.viewer.helpers.services.WMSServiceHelper;
 import nl.b3p.viewer.config.ClobElement;
 import nl.b3p.viewer.config.app.Application;
@@ -724,7 +725,7 @@ public class GeoServiceActionBean extends LocalizableActionBean {
         }
     }
 
-    public Resolution update() throws JSONException {
+    public Resolution update() throws Exception {
         if(!isUpdatable()) {
             getContext().getMessages().add(new SimpleMessage(getBundle().getString("viewer_admin.geoserviceactionbean.srvnotupd"),
                     service.getProtocol()));
@@ -843,7 +844,7 @@ public class GeoServiceActionBean extends LocalizableActionBean {
             params.put(TileService.PARAM_IMAGEEXTENSION, imageExtension);
             params.put(TileService.PARAM_TILESIZE, tileSize);
             params.put(TileService.PARAM_TILINGPROTOCOL, tilingProtocol);
-            service = new TileService().loadFromUrl(url, params, status, em);
+            service = TilingServiceHelper.loadFromURL(url, params, status, em);
         } else {
             getContext().getValidationErrors().add("protocol", new SimpleError("Ongeldig"));
         }

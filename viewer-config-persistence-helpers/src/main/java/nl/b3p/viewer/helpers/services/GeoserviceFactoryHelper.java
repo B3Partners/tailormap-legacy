@@ -11,8 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class GeoserviceFactoryHelper {
-
-    public static UpdateResult update(EntityManager em, GeoService gs){
+    public static UpdateResult update(EntityManager em, GeoService gs) throws Exception {
         ServiceHelper helper = GeoserviceFactoryHelper.getServiceHelper(gs);
         return helper.updateService(em, gs);
     }

@@ -16,20 +16,21 @@
  */
 package nl.b3p.viewer.config.stripersist;
 
-import java.net.URL;
-import java.sql.Connection;
-import java.util.Arrays;
-import java.util.List;
-import java.util.SortedMap;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.stripesstuff.stripersist.InitializeSettings;
+import org.w3c.dom.Node;
+
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.servlet.ServletContext;
 import javax.sql.DataSource;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.stripesstuff.stripersist.InitializeSettings;
-import org.w3c.dom.Node;
+import java.net.URL;
+import java.sql.Connection;
+import java.util.Arrays;
+import java.util.List;
+import java.util.SortedMap;
 
 /**
  *

@@ -16,9 +16,6 @@
  */
 package nl.b3p.viewer.config.app;
 
-import javax.persistence.*;
-import java.util.*;
-
 import net.sourceforge.stripes.action.ActionBeanContext;
 import net.sourceforge.stripes.action.SimpleMessage;
 import nl.b3p.viewer.config.ClobElement;
@@ -28,6 +25,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import javax.persistence.*;
+import java.util.*;
 
 /**
  *

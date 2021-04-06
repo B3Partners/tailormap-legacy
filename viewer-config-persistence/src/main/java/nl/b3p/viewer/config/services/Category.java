@@ -16,9 +16,13 @@
  */
 package nl.b3p.viewer.config.services;
 
-import java.util.*;
-import javax.persistence.*;
 import org.stripesstuff.stripersist.Stripersist;
+
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Entity to categorize geo services in a tree structure. A Category is like a

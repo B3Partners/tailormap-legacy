@@ -16,10 +16,15 @@
  */
 package nl.b3p.viewer.config.services;
 
+import nl.b3p.viewer.helpers.services.GeoserviceFactoryHelper;
+import nl.b3p.viewer.helpers.services.GeoserviceHelper;
+import nl.b3p.viewer.helpers.services.ServiceHelper;
+import nl.b3p.viewer.helpers.services.TilingServiceHelper;
 import nl.b3p.viewer.util.TestUtil;
 import nl.b3p.web.WaitPageStatus;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.xml.sax.SAXException;
 
@@ -37,13 +42,12 @@ import java.util.List;
 import java.util.Map;
 
 import static org.junit.Assert.*;
-import org.junit.Ignore;
 
 /**
  *
  * @author Meine Toonen meinetoonen@b3partners.nl
  */
-public class TileServiceTest extends TestUtil{
+public class TileServiceTest extends TestUtil {
     
     private TileService instance = new TileService();
 
@@ -64,7 +68,7 @@ public class TileServiceTest extends TestUtil{
      * Test of loadFromUrl method, of class TileService.
      */
     @Test
-    public void testLoadFromUrl() {
+    public void testLoadFromUrl() throws Exception {
         String url = "http://www.openbasiskaart.nl/mapcache/tms/1.0.0/osm-nb@rd";
         Map params = new HashMap();
         params.put(TileService.PARAM_SERVICENAME, "osm");
@@ -76,7 +80,7 @@ public class TileServiceTest extends TestUtil{
         params.put(TileService.PARAM_TILINGPROTOCOL, "TMS");
         WaitPageStatus status = new WaitPageStatus();
         
-        GeoService result = instance.loadFromUrl(url, params, status, entityManager);
+        GeoService result = TilingServiceHelper.loadFromURL(url, params, status, entityManager);
         assertEquals("tiled", result.getProtocol());
         assertEquals(url, result.getUrl());
         
@@ -100,7 +104,7 @@ public class TileServiceTest extends TestUtil{
 
     
     @Test
-    public void testLoadBRTWMTSFromURL() throws MalformedURLException {
+    public void testLoadBRTWMTSFromURL() throws Exception {
         URL u = new URL(PDOK_WMTS);
         String url = u.toString();
         Map params = new HashMap();
@@ -108,7 +112,7 @@ public class TileServiceTest extends TestUtil{
         params.put(TileService.PARAM_SERVICENAME, "Web Map Tile Service - GeoWebCache");
         WaitPageStatus status = new WaitPageStatus();
         
-        GeoService result = instance.loadFromUrl(url, params, status, entityManager);
+        GeoService result = TilingServiceHelper.loadFromURL(url, params, status, entityManager);
         assertEquals("https://geodata.nationaalgeoregister.nl/tiles/service/wmts?",result.getUrl());
         Layer topLayer = result.getTopLayer();
         assertEquals(PDOK_WMTS_LAYERCOUNT, topLayer.getChildren().size());
@@ -141,7 +145,7 @@ public class TileServiceTest extends TestUtil{
     }
     
     @Test
-    public void testLoadArcGisWMTSFromURL() throws MalformedURLException {
+    public void testLoadArcGisWMTSFromURL() throws Exception {
         URL u = new URL("https://tiles.arcgis.com/tiles/nSZVuSZjHpEZZbRo/arcgis/rest/services/Historische_tijdreis_1950/MapServer/WMTS?request=getcapabilities");
         String url = u.toString();
         Map params = new HashMap();
@@ -149,7 +153,7 @@ public class TileServiceTest extends TestUtil{
         
         WaitPageStatus status = new WaitPageStatus();
         
-        GeoService result = instance.loadFromUrl(url, params, status, entityManager);
+        GeoService result = TilingServiceHelper.loadFromURL(url, params, status, entityManager);
         assertEquals("https://tiles.arcgis.com/tiles/nSZVuSZjHpEZZbRo/arcgis/rest/services/Historische_tijdreis_1950/MapServer/WMTS?",result.getUrl());
         Layer topLayer = result.getTopLayer();
         assertEquals(1, topLayer.getChildren().size());
@@ -182,7 +186,7 @@ public class TileServiceTest extends TestUtil{
     }
     
     @Test
-    public void testLoadTopoWMTSFromURL() throws MalformedURLException {
+    public void testLoadTopoWMTSFromURL() throws Exception {
         URL u = new URL(PDOK_WMTS);
         String url = u.toString();
         Map params = new HashMap();
@@ -190,7 +194,7 @@ public class TileServiceTest extends TestUtil{
         params.put(TileService.PARAM_SERVICENAME, "Web Map Tile Service - GeoWebCache");
         WaitPageStatus status = new WaitPageStatus();
         
-        GeoService result = instance.loadFromUrl(url, params, status, entityManager);
+        GeoService result = TilingServiceHelper.loadFromURL(url, params, status, entityManager);
         Layer topLayer = result.getTopLayer();
         assertEquals(PDOK_WMTS_LAYERCOUNT, topLayer.getChildren().size());
         assertEquals("https://geodata.nationaalgeoregister.nl/tiles/service/wmts?", result.getUrl());
@@ -222,7 +226,7 @@ public class TileServiceTest extends TestUtil{
 
     @Test
     @Ignore("Meine knows why..")
-    public void testLoadLufoWMTSFromURL() throws MalformedURLException {
+    public void testLoadLufoWMTSFromURL() throws Exception {
         URL u = new URL("http://webservices.gbo-provincies.nl/lufo/services/wmts?request=GetCapabilities");
         String url = u.toString();
         Map params = new HashMap();
@@ -230,7 +234,7 @@ public class TileServiceTest extends TestUtil{
         params.put(TileService.PARAM_SERVICENAME, "luchtfoto");
         WaitPageStatus status = new WaitPageStatus();
         
-        GeoService result = instance.loadFromUrl(url, params, status, entityManager);
+        GeoService result = TilingServiceHelper.loadFromURL(url, params, status, entityManager);
         Layer topLayer = result.getTopLayer();
         assertEquals(12, topLayer.getChildren().size());
         assertEquals("http://webservices.gbo-provincies.nl/lufo/services/wmts?", result.getUrl());
@@ -306,7 +310,7 @@ public class TileServiceTest extends TestUtil{
         String url = u.toString();        
         org.w3c.dom.Document doc = builder.parse(url);
         
-        List<TileMatrixSet> sets = instance.parseMatrixSets(xpath, doc);
+        List<TileMatrixSet> sets = TilingServiceHelper.parseMatrixSets(xpath, doc);
         assertNotNull(sets);
         assertEquals(6, sets.size());
     }
@@ -318,7 +322,7 @@ public class TileServiceTest extends TestUtil{
         String url = u.toString();
         org.w3c.dom.Document doc = builder.parse(url);
         
-        TileMatrixSet tms = instance.parseTileMatrixSet(xpath, doc.getChildNodes().item(0));
+        TileMatrixSet tms = TilingServiceHelper.parseTileMatrixSet(xpath, doc.getChildNodes().item(0));
         assertNotNull(tms);
         assertEquals("GlobalCRS84Pixel", tms.getIdentifier());
         assertEquals("urn:ogc:def:crs:EPSG::4326", tms.getCrs());

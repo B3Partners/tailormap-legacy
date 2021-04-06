@@ -16,11 +16,13 @@
  */
 package nl.b3p.viewer.config.app;
 
+import org.apache.commons.io.IOUtils;
+
+import javax.persistence.*;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
-import javax.persistence.*;
 
 /**
  *
@@ -90,7 +92,7 @@ public class Resource {
     
     public void setDataContent(InputStream data, long size) throws IOException {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        org.apache.commons.io.IOUtils.copy(data, bos);
+        IOUtils.copy(data, bos);
         this.data = bos.toByteArray();
     }
 }

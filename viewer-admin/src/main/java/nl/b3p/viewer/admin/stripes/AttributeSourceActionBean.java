@@ -429,7 +429,7 @@ public class AttributeSourceActionBean extends LocalizableActionBean {
     
     @Before
     public void setUpdatable() {
-        updatable = featureSource instanceof UpdatableFeatureSource;
+        updatable = SourceFactoryHelper.isUpdatable(featureSource);
     }       
 
     //<editor-fold defaultstate="collapsed" desc="getters & setters">

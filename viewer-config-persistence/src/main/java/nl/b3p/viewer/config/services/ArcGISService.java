@@ -16,23 +16,15 @@
  */
 package nl.b3p.viewer.config.services;
 
-import java.net.URL;
-import java.util.*;
-import javax.persistence.*;
 import nl.b3p.viewer.config.ClobElement;
-import nl.b3p.web.WaitPageStatus;
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.tuple.MutablePair;
-import org.apache.commons.lang3.tuple.Pair;
-import org.geotools.data.ows.HTTPClient;
-import org.geotools.data.ows.SimpleHttpClient;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.stripesstuff.stripersist.Stripersist;
-import static nl.b3p.viewer.config.RemoveEmptyMapValuesUtil.removeEmptyMapValues;
-import org.apache.commons.lang3.mutable.MutableBoolean;
+
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
+import javax.persistence.EntityManager;
+import javax.persistence.Transient;
+import java.util.*;
 
 /**
  *

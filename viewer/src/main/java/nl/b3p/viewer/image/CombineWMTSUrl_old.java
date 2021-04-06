@@ -24,6 +24,7 @@ import java.util.List;
 import nl.b3p.viewer.config.services.TileMatrix;
 import nl.b3p.viewer.config.services.TileMatrixSet;
 import nl.b3p.viewer.config.services.TileService;
+import nl.b3p.viewer.helpers.services.TilingServiceHelper;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.json.JSONObject;
@@ -53,7 +54,7 @@ public class CombineWMTSUrl_old extends CombineTileImageUrl {
         // haal huidige tilematrix op
         int tilematrixindex = getClosestZoomlevel(requestBbox);
         TileMatrix tm = set.getMatrices().get(tilematrixindex);
-        Double pixelSpan = Double.valueOf(tm.getScaleDenominator()) * 0.00028 / TileService.metersPerUnit(tm.getMatrixSet().getCrs());
+        Double pixelSpan = Double.valueOf(tm.getScaleDenominator()) * 0.00028 / TilingServiceHelper.metersPerUnit(tm.getMatrixSet().getCrs());
 
         double tileWidthInMeters = tm.getTileWidth() * pixelSpan;
         double tileHeightInMeters = tm.getTileHeight()* pixelSpan;

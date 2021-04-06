@@ -16,19 +16,13 @@
  */
 package nl.b3p.viewer.config.services;
 
-import java.util.*;
-import javax.persistence.*;
 import org.apache.commons.lang3.mutable.MutableBoolean;
-import org.geotools.data.simple.SimpleFeatureSource;
-import org.geotools.data.simple.SimpleFeatureIterator;
-import org.geotools.factory.CommonFactoryFinder;
-import org.geotools.feature.FeatureCollection;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.opengis.feature.simple.SimpleFeature;
-import org.opengis.filter.Filter;
-import org.opengis.filter.FilterFactory2;
-import org.opengis.filter.expression.Function;
+
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
