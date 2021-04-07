@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2012-2013 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -18,8 +18,8 @@
 /* global Ext */
 
 /**
- * A 
- * 
+ * A
+ *
  */
 
 Ext.define( "viewer.components.CQLFilterWrapper",{
@@ -51,6 +51,32 @@ Ext.define( "viewer.components.CQLFilterWrapper",{
         }
         return val;
     },
+    getCQLWithoutIds: function (ids){
+        var val = this.getInternalCQLWithoutIds(ids);
+        for (var i = 0 ; i < this.logicOperators.length;i++){
+            val = Ext.String.trim(val);
+            var op = this.logicOperators[i];
+            if(val.indexOf(op) === 0){
+                val = val.substr(op.length);
+            }
+        }
+        return val;
+    },
+    getInternalCQLWithoutIds: function (ids) {
+        var returnValue = "";
+        if(!Ext.Array.contains(ids, this.config.id)) {
+            if(this.config.cql !== ""){
+                returnValue = " " + this.config.operator + " " + this.config.cql;
+            }
+        }
+        for(var i = 0 ; i < this.filters.length;i++){
+            var f = this.filters[i];
+            if(!Ext.Array.contains(ids, f.id)){
+                returnValue += f.getInternalCQLWithoutIds(ids);
+            }
+        }
+        return returnValue;
+    },
     getCQLWithoutType : function (type){
         var val = this.getInternalCQLWithoutType(type);
         for (var i = 0 ; i < this.logicOperators.length;i++){
@@ -79,7 +105,7 @@ Ext.define( "viewer.components.CQLFilterWrapper",{
     },
     getInternalCQL : function (){
         var returnValue = "";
-            
+
         if(this.config.cql !== ""){
             returnValue = " " + this.config.operator + " " + this.config.cql;
         }

@@ -12,6 +12,25 @@ import {
 import { TailormapAppLayer } from '../models/tailormap-app-layer.model';
 import { ExtendedFormConfigurationModel } from '../models/extended-form-configuration.model';
 
+const updateLayer = (
+  state: ApplicationState,
+  layerId: string,
+  updateLayerCallback: (layer: TailormapAppLayer) => TailormapAppLayer,
+): ApplicationState => {
+  const idx = state.layers.findIndex(l => l.id === layerId);
+  if (idx === -1) {
+    return state;
+  }
+  return {
+    ...state,
+    layers: [
+      ...state.layers.slice(0, idx),
+      updateLayerCallback(state.layers[idx]),
+      ...state.layers.slice(idx + 1),
+    ],
+  };
+};
+
 const onSetApplicationContent = (
   state: ApplicationState,
   payload: { id: number; root: SelectedContentItem[]; levels: Level[]; layers: AppLayer[] },
@@ -105,6 +124,13 @@ const onSetLayerVisibility = (state: ApplicationState, payload: { visibility: Ma
   })),
 });
 
+const onUpdateLayerFilter = (
+  state: ApplicationState,
+  payload: ReturnType<typeof ApplicationActions.updateLayerFilter>,
+): ApplicationState => {
+  return updateLayer(state, payload.layerId, layer => ({...layer, cqlFilter: payload.filter}));
+};
+
 const onSetFormConfigs = (state: ApplicationState, payload: ReturnType<typeof ApplicationActions.setFormConfigs>): ApplicationState => {
   const formConfigs: ExtendedFormConfigurationModel[] = [];
   payload.formConfigs.forEach((config, tableName) => {
@@ -126,6 +152,7 @@ const applicationReducerImpl = createReducer(
   on(ApplicationActions.addAppLayer, onAddAppLayer),
   on(ApplicationActions.removeAppLayer, onRemoveLayer),
   on(ApplicationActions.setSelectedAppLayer, onSetSelectedAppLayer),
+  on(ApplicationActions.updateLayerFilter, onUpdateLayerFilter),
   on(ApplicationActions.setLayerVisibility, onSetLayerVisibility),
   on(ApplicationActions.setFormConfigs, onSetFormConfigs),
 );

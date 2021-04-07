@@ -13,8 +13,16 @@ declare interface LayerSelectedEvent{
   service: number;
 }
 
+declare interface CQLFilterWrapper {
+  getCQL: () => string;
+}
+
+declare interface FilterActivatedEvent {
+  appLayer: AppLayer;
+  filter: CQLFilterWrapper;
+}
+
 type deactivationEvent = ( ) => void;
-type layerEventHandler = ( payload: LayerSelectedEvent) => void;
 
 declare interface ViewerController {
 
@@ -26,9 +34,11 @@ declare interface ViewerController {
   getService: (serviceId: number) => GeoService;
   getAppLayerById: (appLayerId: number) => AppLayer;
   getAppLayer: (serviceId: number, layerName: string) => AppLayer;
+
+  getFilterName: (name: string) => string;
   setFilterString: (filter: string, appLayer: AppLayer, name: string) => void;
 
-  addListener: (eventName: string, handler: layerEventHandler) => void;
+  addListener: <T>(eventName: string, handler: (event: T) => void) => void;
   getComponentsByClassNames: (classNames: string[]) => TailormapComponent[];
 
   registerSnappingLayer: (vectorLayer: VectorLayer) => void;

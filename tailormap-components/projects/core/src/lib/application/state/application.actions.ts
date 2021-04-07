@@ -30,6 +30,11 @@ export const setSelectedAppLayer = createAction(
   props<{ layerId: string }>(),
 );
 
+export const updateLayerFilter = createAction(
+  `${applicationActionsPrefix} Update App Layer Filter`,
+  props<{ layerId: string; filter?: string | null }>(),
+);
+
 export const setLayerVisibility = createAction(
   `${applicationActionsPrefix} Set Layer Visibility`,
   props<{ visibility: Map<string, boolean> }>(),
