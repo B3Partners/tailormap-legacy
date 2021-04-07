@@ -26,10 +26,9 @@ import net.sourceforge.stripes.validation.*;
 import nl.b3p.i18n.LocalizableActionBean;
 import nl.b3p.viewer.config.security.Group;
 import nl.b3p.viewer.config.services.*;
-import nl.b3p.viewer.helpers.featuresources.FeatureSourceHelper;
-import nl.b3p.viewer.helpers.featuresources.JDBCSourceHelper;
-import nl.b3p.viewer.helpers.featuresources.SourceFactoryHelper;
-import nl.b3p.viewer.helpers.featuresources.WFSSourceHelper;
+import nl.b3p.viewer.helpers.featuresources.JDBCFeatureSourceHelper;
+import nl.b3p.viewer.helpers.featuresources.FeatureSourceFactoryHelper;
+import nl.b3p.viewer.helpers.featuresources.WFSFeatureSourceHelper;
 import nl.b3p.viewer.solr.SolrInitializer;
 import nl.b3p.web.WaitPageStatus;
 import org.apache.commons.logging.Log;
@@ -185,7 +184,7 @@ public class AttributeSourceActionBean extends LocalizableActionBean {
 
             JDBCFeatureSource fs = new JDBCFeatureSource(params);
             fs.setName(name);
-            JDBCSourceHelper.loadFeatureTypes(fs, status);
+            JDBCFeatureSourceHelper.loadFeatureTypes(fs, status);
 
             em.persist(fs);
             em.getTransaction().commit();
@@ -200,7 +199,7 @@ public class AttributeSourceActionBean extends LocalizableActionBean {
             params.put(WFSDataStoreFactory.PASSWORD.key, password);
             WFSFeatureSource fs = new WFSFeatureSource(params);
             fs.setName(name);
-            WFSSourceHelper.loadFeatureTypes(fs, status);
+            WFSFeatureSourceHelper.loadFeatureTypes(fs, status);
             em.persist(fs);
             em.getTransaction().commit();
 
@@ -239,7 +238,7 @@ public class AttributeSourceActionBean extends LocalizableActionBean {
             return new ForwardResolution(EDITJSP);
         }
         EntityManager em = Stripersist.getEntityManager();
-        FeatureSourceUpdateResult result =  FeatureSourceHelper.update(em, featureSource);
+        FeatureSourceUpdateResult result =  FeatureSourceFactoryHelper.update(em, featureSource);
 
         if(result.getStatus() == UpdateResult.Status.FAILED) {
             getContext().getValidationErrors().addGlobalError(new SimpleError(result.getMessage()));
@@ -429,7 +428,7 @@ public class AttributeSourceActionBean extends LocalizableActionBean {
     
     @Before
     public void setUpdatable() {
-        updatable = SourceFactoryHelper.isUpdatable(featureSource);
+        updatable = FeatureSourceFactoryHelper.isUpdatable(featureSource);
     }       
 
     //<editor-fold defaultstate="collapsed" desc="getters & setters">

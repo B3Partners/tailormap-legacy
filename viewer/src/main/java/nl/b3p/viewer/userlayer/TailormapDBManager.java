@@ -1,9 +1,7 @@
 package nl.b3p.viewer.userlayer;
 
-import nl.b3p.viewer.helpers.featuresources.FeatureSourceHelper;
-import nl.b3p.viewer.helpers.featuresources.JDBCSourceHelper;
 import nl.b3p.viewer.helpers.featuresources.SimpleFeatureTypeHelper;
-import nl.b3p.viewer.helpers.featuresources.SourceFactoryHelper;
+import nl.b3p.viewer.helpers.featuresources.FeatureSourceFactoryHelper;
 import nl.b3p.viewer.helpers.services.GeoserviceFactoryHelper;
 import nl.b3p.viewer.helpers.services.WMSServiceHelper;
 import nl.b3p.viewer.audit.AuditMessageObject;
@@ -140,7 +138,7 @@ public class TailormapDBManager {
             JDBCFeatureSource fs = (JDBCFeatureSource)this.layer.getFeatureType().getFeatureSource();
             try {
                 Date start = new Date();
-                FeatureSourceHelper.update(entityManager,fs);
+                FeatureSourceFactoryHelper.update(entityManager,fs);
                 Date end = new Date();
                 LOG.error("time: " + (end.getTime() - start.getTime()));
                 SimpleFeatureType newFt = fs.getFeatureType(viewName);

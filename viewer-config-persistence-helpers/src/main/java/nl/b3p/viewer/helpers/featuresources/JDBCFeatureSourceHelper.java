@@ -23,28 +23,23 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class JDBCSourceHelper implements SourceHelper{
+public class JDBCFeatureSourceHelper implements FeatureSourceHelper {
 
-    private static final Log log = LogFactory.getLog(JDBCSourceHelper.class);
-
-    @Override
-    public List<SimpleFeatureType> createFeatureTypes(FeatureSource fs) throws Exception {
-        return createFeatureTypes(fs, new WaitPageStatus());
-    }
+    private static final Log log = LogFactory.getLog(JDBCFeatureSourceHelper.class);
 
     @Override
     public List<SimpleFeatureType> createFeatureTypes(FeatureSource fs, WaitPageStatus status) throws Exception {
-        return JDBCSourceHelper.createFSFeatureTypes((JDBCFeatureSource)fs, status);
+        return JDBCFeatureSourceHelper.createFSFeatureTypes((JDBCFeatureSource)fs, status);
     }
 
     @Override
     public org.geotools.data.FeatureSource openGeoToolsFeatureSource(FeatureSource fs, SimpleFeatureType sft) throws Exception {
-        return JDBCSourceHelper.openGeoToolsFSFeatureSource((JDBCFeatureSource) fs, sft);
+        return JDBCFeatureSourceHelper.openGeoToolsFSFeatureSource((JDBCFeatureSource) fs, sft);
     }
 
     @Override
     public org.geotools.data.FeatureSource openGeoToolsFeatureSource(FeatureSource fs, SimpleFeatureType sft, int timeout) throws Exception {
-        return JDBCSourceHelper.openGeoToolsFSFeatureSource((JDBCFeatureSource) fs, sft);
+        return JDBCFeatureSourceHelper.openGeoToolsFSFeatureSource((JDBCFeatureSource) fs, sft);
     }
 
     public static List<SimpleFeatureType> createFSFeatureTypes(JDBCFeatureSource fs, WaitPageStatus status) throws Exception {
@@ -52,7 +47,7 @@ public class JDBCSourceHelper implements SourceHelper{
         List<SimpleFeatureType> createdFeatureTypes = new ArrayList<SimpleFeatureType>();
         DataStore store = null;
         try {
-            store = JDBCSourceHelper.createDataStore(fs);
+            store = JDBCFeatureSourceHelper.createDataStore(fs);
             status.setProgress(10);
             status.setCurrentAction("Lijst van tabellen met geo-informatie ophalen...");
             String[] typeNames = store.getTypeNames();
@@ -191,19 +186,19 @@ public class JDBCSourceHelper implements SourceHelper{
     static FeatureCollection getFeatures(JDBCFeatureSource fs, SimpleFeatureType sft, Filter f, int maxFeatures) throws Exception {
         FeatureCollection fc = null;
         if(f != null){
-            fc = JDBCSourceHelper.openGeoToolsFSFeatureSource(fs,sft).getFeatures(f);
+            fc = JDBCFeatureSourceHelper.openGeoToolsFSFeatureSource(fs,sft).getFeatures(f);
         }else{
-            fc = JDBCSourceHelper.openGeoToolsFSFeatureSource(fs,sft).getFeatures();
+            fc = JDBCFeatureSourceHelper.openGeoToolsFSFeatureSource(fs,sft).getFeatures();
         }
         return fc;
     }
 
 
     public static void loadFeatureTypes(JDBCFeatureSource fs) throws Exception {
-        JDBCSourceHelper.loadFeatureTypes(fs, new WaitPageStatus());
+        JDBCFeatureSourceHelper.loadFeatureTypes(fs, new WaitPageStatus());
     }
 
     public static void loadFeatureTypes(JDBCFeatureSource fs,WaitPageStatus status) throws Exception {
-        fs.getFeatureTypes().addAll(JDBCSourceHelper.createFSFeatureTypes(fs, status));
+        fs.getFeatureTypes().addAll(JDBCFeatureSourceHelper.createFSFeatureTypes(fs, status));
     }
 }

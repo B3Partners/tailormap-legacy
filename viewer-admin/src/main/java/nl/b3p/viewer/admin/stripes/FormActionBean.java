@@ -13,8 +13,7 @@ import nl.b3p.viewer.config.security.Group;
 import nl.b3p.viewer.config.services.FeatureSource;
 import nl.b3p.viewer.config.services.JDBCFeatureSource;
 import nl.b3p.viewer.config.services.SimpleFeatureType;
-import nl.b3p.viewer.helpers.featuresources.FeatureSourceHelper;
-import nl.b3p.viewer.helpers.featuresources.SourceFactoryHelper;
+import nl.b3p.viewer.helpers.featuresources.FeatureSourceFactoryHelper;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.geotools.data.DataStore;
@@ -37,11 +36,9 @@ import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicReference;
 
 @UrlBinding("/action/form/{$event}")
 @StrictBinding
@@ -315,7 +312,7 @@ public class FormActionBean extends LocalizableActionBean {
                 try {
                     SimpleFeatureType sft=fs.getFeatureTypes().get(0);
 
-                    ds = ((DataStore) SourceFactoryHelper.openGeoToolsFeatureSource(sft).getDataStore());
+                    ds = ((DataStore) FeatureSourceFactoryHelper.openGeoToolsFeatureSource(sft).getDataStore());
                     sfs = ds.getFeatureSource("attribuut");
                     SimpleFeatureCollection sfc = sfs.getFeatures();
                     for (SimpleFeatureIterator i = sfc.features(); i.hasNext(); ) {

@@ -1,11 +1,10 @@
 package nl.b3p.viewer.helpers.services;
 
-import nl.b3p.viewer.helpers.app.LayerHelper;
 import nl.b3p.viewer.helpers.featuresources.SimpleFeatureTypeHelper;
 import nl.b3p.viewer.config.ClobElement;
 import nl.b3p.viewer.config.services.Layer;
 import nl.b3p.viewer.config.services.*;
-import nl.b3p.viewer.helpers.featuresources.WFSSourceHelper;
+import nl.b3p.viewer.helpers.featuresources.WFSFeatureSourceHelper;
 import nl.b3p.web.WaitPageStatus;
 import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -35,7 +34,7 @@ import static nl.b3p.viewer.config.services.GeoService.PARAM_USERNAME;
 import static nl.b3p.viewer.config.services.WMSService.PARAM_OVERRIDE_URL;
 import static nl.b3p.viewer.config.services.WMSService.PARAM_SKIP_DISCOVER_WFS;
 
-public class WMSServiceHelper implements ServiceHelper{
+public class WMSServiceHelper implements GeoServiceHelper {
 
     private static final Log log = LogFactory.getLog(WMSServiceHelper.class);
 
@@ -137,7 +136,7 @@ public class WMSServiceHelper implements ServiceHelper{
         status.setProgress(40);
 
         org.geotools.ows.wms.Layer rl = wms.getCapabilities().getLayer();
-        service.setTopLayer(GeoserviceHelper.loadLayer(rl, service));
+        service.setTopLayer(LayerHelper.loadLayer(rl, service));
 
         if (service.getSkipDiscoverWFS()) {
             status.setProgress(80);
@@ -298,7 +297,7 @@ public class WMSServiceHelper implements ServiceHelper{
 
         try {
             WFSFeatureSource wfsFs = new WFSFeatureSource(p);
-            WFSSourceHelper.loadFeatureTypes(wfsFs);
+            WFSFeatureSourceHelper.loadFeatureTypes(wfsFs);
 
             boolean used = false;
             for(LayerDescription ld: layerDescriptions) {
@@ -345,7 +344,7 @@ public class WMSServiceHelper implements ServiceHelper{
      */
     public static UpdateResult update(EntityManager em, WMSService service) {
 
-        GeoserviceHelper.initLayerCollectionsForUpdate(service);
+        LayerHelper.initLayerCollectionsForUpdate(service);
         final UpdateResult result = new UpdateResult(service, em);
 
         try {

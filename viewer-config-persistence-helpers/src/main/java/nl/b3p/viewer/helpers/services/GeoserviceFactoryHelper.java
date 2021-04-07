@@ -16,7 +16,7 @@ public class GeoserviceFactoryHelper {
     }
 
     public static UpdateResult update(EntityManager em, GeoService gs) throws Exception {
-        ServiceHelper helper = GeoserviceFactoryHelper.getServiceHelper(gs);
+        GeoServiceHelper helper = GeoserviceFactoryHelper.getServiceHelper(gs);
         return helper.updateService(em, gs);
     }
 
@@ -25,7 +25,7 @@ public class GeoserviceFactoryHelper {
         params.put(s.PARAM_ONLINE_CHECK_ONLY, Boolean.TRUE);
         params.put(s.PARAM_USERNAME, s.getUsername());
         params.put(s.PARAM_PASSWORD, s.getPassword());
-        ServiceHelper helper = getServiceHelper(s);
+        GeoServiceHelper helper = getServiceHelper(s);
         helper.loadServiceFromURL(s.getUrl(), params, new WaitPageStatus() {
             @Override
             public void setCurrentAction(String currentAction) {
@@ -41,7 +41,7 @@ public class GeoserviceFactoryHelper {
         },em);
     }
 
-    public static ServiceHelper getServiceHelper(GeoService gs){
+    public static GeoServiceHelper getServiceHelper(GeoService gs){
         if(gs instanceof WMSService){
             return new WMSServiceHelper();
         }else if(gs instanceof ArcGISService){

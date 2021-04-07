@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 import net.sourceforge.stripes.action.ActionBean;
 import net.sourceforge.stripes.action.ActionBeanContext;
-import net.sourceforge.stripes.action.Before;
 import net.sourceforge.stripes.action.DefaultHandler;
 import net.sourceforge.stripes.action.Resolution;
 import net.sourceforge.stripes.action.StreamingResolution;
@@ -32,7 +31,7 @@ import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.viewer.config.app.ApplicationLayer;
 import nl.b3p.viewer.config.services.Layer;
 import nl.b3p.viewer.config.services.SimpleFeatureType;
-import nl.b3p.viewer.helpers.featuresources.FeatureSourceHelper;
+import nl.b3p.viewer.helpers.featuresources.FeatureSourceFactoryHelper;
 import nl.b3p.viewer.util.FlamingoCQL;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -142,7 +141,7 @@ public class UniqueValuesActionBean extends LocalizableActionBean implements Act
             for (int i = 0; i < attributes.length; i++) {
                 String attribute = attributes[i];
                 Filter  f = filter != null ? FlamingoCQL.toFilter(filter,Stripersist.getEntityManager()) : null;
-                List<String> beh = FeatureSourceHelper.calculateUniqueValues(this.featureType, attribute, maxFeatures, f);
+                List<String> beh = FeatureSourceFactoryHelper.calculateUniqueValues(this.featureType, attribute, maxFeatures, f);
 
                 uniqueValues.put(attribute, new JSONArray(beh));
                 json.put("success", Boolean.TRUE);
@@ -176,7 +175,7 @@ public class UniqueValuesActionBean extends LocalizableActionBean implements Act
                     this.featureType = layer.getFeatureType();
                 }
             }
-            Map<String, String> pairs = FeatureSourceHelper.getKeyValuePairs(this.featureType, attributes[0], attributes[1], maxFeatures);
+            Map<String, String> pairs = FeatureSourceFactoryHelper.getKeyValuePairs(this.featureType, attributes[0], attributes[1], maxFeatures);
             json.put("valuePairs", pairs);
             json.put("success", Boolean.TRUE);
         } catch (IllegalArgumentException e) {
@@ -200,9 +199,9 @@ public class UniqueValuesActionBean extends LocalizableActionBean implements Act
                 Filter  f = filter != null ? FlamingoCQL.toFilter(filter,Stripersist.getEntityManager()) : null;
                 Object value;
                 if(operator.equals("#MAX#")) {
-                    value = FeatureSourceHelper.getMaxValue(sft, attribute, maxFeatures, f);
+                    value = FeatureSourceFactoryHelper.getMaxValue(sft, attribute, maxFeatures, f);
                 } else {
-                    value = FeatureSourceHelper.getMinValue(sft, attribute, maxFeatures, f);
+                    value = FeatureSourceFactoryHelper.getMinValue(sft, attribute, maxFeatures, f);
                 }
 
                 json.put("value", value.toString());

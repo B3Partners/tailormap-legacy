@@ -27,7 +27,7 @@ import nl.b3p.viewer.config.services.FeatureTypeRelation;
 import nl.b3p.viewer.config.services.FeatureTypeRelationKey;
 import nl.b3p.viewer.config.services.Layer;
 import nl.b3p.viewer.config.services.SimpleFeatureType;
-import nl.b3p.viewer.helpers.featuresources.SourceFactoryHelper;
+import nl.b3p.viewer.helpers.featuresources.FeatureSourceFactoryHelper;
 import nl.b3p.viewer.print.*;
 import nl.b3p.viewer.util.FeaturePropertiesArrayHelper;
 import nl.b3p.viewer.util.FeatureToJson;
@@ -398,7 +398,7 @@ public class PrintActionBean extends LocalizableActionBean implements ActionBean
 
     private JSONArray getFeatures(ApplicationLayer appLayer, Layer layer, String f, EntityManager em, JSONObject params, Application application, HttpServletRequest request) throws Exception {
         FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2();
-        FeatureSource fs = SourceFactoryHelper.openGeoToolsFeatureSource(layer.getFeatureType(), TIMEOUT);
+        FeatureSource fs = FeatureSourceFactoryHelper.openGeoToolsFeatureSource(layer.getFeatureType(), TIMEOUT);
         List<Long> attributesToInclude = new ArrayList<>();
         List<ConfiguredAttribute> attrs = appLayer.getAttributes(layer.getFeatureType(), true);
         String geomAttribute = fs.getSchema().getGeometryDescriptor().getLocalName();
@@ -459,7 +459,7 @@ public class PrintActionBean extends LocalizableActionBean implements ActionBean
                             q.setHandle("FeatureReportActionBean_related_attributes");
                             log.debug("Related features query: " + q);
 
-                            fs = SourceFactoryHelper.openGeoToolsFeatureSource(fType, TIMEOUT);
+                            fs = FeatureSourceFactoryHelper.openGeoToolsFeatureSource(fType, TIMEOUT);
                             JSONArray relatedFeatures = ftjson.getJSONFeatures(appLayer, fType, fs, q, em, application, request);
 
                             JSONArray jsonFeats = new JSONArray();

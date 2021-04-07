@@ -17,7 +17,7 @@
 package nl.b3p.viewer.stripes;
 
 import nl.b3p.viewer.config.services.SimpleFeatureType;
-import nl.b3p.viewer.helpers.featuresources.SourceFactoryHelper;
+import nl.b3p.viewer.helpers.featuresources.FeatureSourceFactoryHelper;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Polygon;
@@ -47,7 +47,6 @@ import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.feature.FeatureIterator;
-import org.geotools.filter.text.cql2.CQL;
 import org.opengis.filter.Filter;
 import org.geotools.geometry.jts.WKTReader2;
 import org.json.JSONArray;
@@ -261,7 +260,7 @@ public class BufferActionBean implements ActionBean {
         }
 
         SimpleFeatureType sft = l.getFeatureType();
-        FeatureSource fs = SourceFactoryHelper.openGeoToolsFeatureSource(sft.getFeatureSource(),sft);
+        FeatureSource fs = FeatureSourceFactoryHelper.openGeoToolsFeatureSource(sft.getFeatureSource(),sft);
         
         String geomAttribute = fs.getSchema().getGeometryDescriptor().getLocalName();
 

@@ -16,7 +16,7 @@
  */
 package nl.b3p.viewer.stripes;
 
-import nl.b3p.viewer.helpers.featuresources.SourceFactoryHelper;
+import nl.b3p.viewer.helpers.featuresources.FeatureSourceFactoryHelper;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.simplify.TopologyPreservingSimplifier;
 import net.sourceforge.stripes.action.*;
@@ -138,7 +138,7 @@ public class FeatureReportActionBean extends LocalizableApplicationActionBean im
             JSONObject params = new JSONObject(printparams);
 
             FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2();
-            FeatureSource fs = SourceFactoryHelper.openGeoToolsFeatureSource(layer.getFeatureType(), TIMEOUT);
+            FeatureSource fs = FeatureSourceFactoryHelper.openGeoToolsFeatureSource(layer.getFeatureType(), TIMEOUT);
             String geomAttribute = fs.getSchema().getGeometryDescriptor().getLocalName();
             Filter fidFilter = ff.id(new FeatureIdImpl(this.fid));
 
@@ -241,7 +241,7 @@ public class FeatureReportActionBean extends LocalizableApplicationActionBean im
                             q.setHandle("FeatureReportActionBean_related_attributes");
                             LOG.debug("Related features query: " + q);
 
-                            fs = SourceFactoryHelper.openGeoToolsFeatureSource(fType, TIMEOUT);
+                            fs = FeatureSourceFactoryHelper.openGeoToolsFeatureSource(fType, TIMEOUT);
                             features = ftjson.getJSONFeatures(appLayer, fType, fs, q, em, application, context.getRequest());
 
                             JSONArray jsonFeats = new JSONArray();

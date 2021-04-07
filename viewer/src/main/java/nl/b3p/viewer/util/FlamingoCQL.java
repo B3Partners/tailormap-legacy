@@ -17,7 +17,7 @@
 package nl.b3p.viewer.util;
 
 import nl.b3p.viewer.config.services.*;
-import nl.b3p.viewer.helpers.featuresources.SourceFactoryHelper;
+import nl.b3p.viewer.helpers.featuresources.FeatureSourceFactoryHelper;
 import org.apache.commons.lang.StringUtils;
 import org.geotools.factory.CommonFactoryFinder;
 import org.locationtech.jts.geom.Geometry;
@@ -332,7 +332,7 @@ public class FlamingoCQL {
     private static List<Object> getFIDSFromRelatedFeatures(SimpleFeatureType sft, String filter, String column, EntityManager em) {
         List<Object> fids = new ArrayList<>();
         try {
-            FeatureSource fs = SourceFactoryHelper.openGeoToolsFeatureSource(sft);
+            FeatureSource fs = FeatureSourceFactoryHelper.openGeoToolsFeatureSource(sft);
 
             Query q = new Query(fs.getName().toString());
             if (filter != null && !filter.isEmpty()) {
@@ -435,7 +435,7 @@ public class FlamingoCQL {
                 throw new Exception("Layer has no feature type");
             }
 
-            FeatureSource fs = SourceFactoryHelper.openGeoToolsFeatureSource(l.getFeatureType());
+            FeatureSource fs = FeatureSourceFactoryHelper.openGeoToolsFeatureSource(l.getFeatureType());
             GeometryFactory gf = new GeometryFactory(new PrecisionModel(), 28992);
 
             Query q = new Query(fs.getName().toString());

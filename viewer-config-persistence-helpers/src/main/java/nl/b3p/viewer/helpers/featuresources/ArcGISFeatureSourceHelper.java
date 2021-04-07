@@ -19,13 +19,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ArcGISSourceHelper implements SourceHelper {
-    private static final Log log = LogFactory.getLog(ArcGISSourceHelper.class);
-
-    @Override
-    public List<SimpleFeatureType> createFeatureTypes(FeatureSource fs) throws Exception {
-        return createFeatureTypes(fs, new WaitPageStatus());
-    }
+public class ArcGISFeatureSourceHelper implements FeatureSourceHelper {
+    private static final Log log = LogFactory.getLog(ArcGISFeatureSourceHelper.class);
 
     @Override
     public List<SimpleFeatureType> createFeatureTypes(FeatureSource fs, WaitPageStatus status) throws Exception {
@@ -39,7 +34,7 @@ public class ArcGISSourceHelper implements SourceHelper {
 
     @Override
     public org.geotools.data.FeatureSource openGeoToolsFeatureSource(FeatureSource fs, SimpleFeatureType sft, int timeout) throws Exception {
-        return ArcGISSourceHelper.openGeoToolsFSFeatureSource((ArcGISFeatureSource) fs, sft, timeout);
+        return ArcGISFeatureSourceHelper.openGeoToolsFSFeatureSource((ArcGISFeatureSource) fs, sft, timeout);
     }
 
 
@@ -106,14 +101,14 @@ public class ArcGISSourceHelper implements SourceHelper {
     }
 
     static org.geotools.data.FeatureSource openGeoToolsFSFeatureSource(ArcGISFeatureSource fs, SimpleFeatureType sft) throws Exception {
-        return ArcGISSourceHelper.openGeoToolsFSFeatureSource(fs, sft, 30);
+        return ArcGISFeatureSourceHelper.openGeoToolsFSFeatureSource(fs, sft, 30);
     }
 
     static org.geotools.data.FeatureSource openGeoToolsFSFeatureSource(ArcGISFeatureSource fs, SimpleFeatureType sft, int timeout) throws Exception {
         Map extraParams = new HashMap();
         extraParams.put(ArcGISDataStoreFactory.TIMEOUT.key, timeout);
 
-        return ArcGISSourceHelper.openGeoToolsFSFeatureSource(fs, sft, extraParams);
+        return ArcGISFeatureSourceHelper.openGeoToolsFSFeatureSource(fs, sft, extraParams);
     }
 
     public static org.geotools.data.FeatureSource openGeoToolsFSFeatureSource(ArcGISFeatureSource fs, SimpleFeatureType sft, Map extraDataStoreParams) throws Exception {
@@ -131,7 +126,7 @@ public class ArcGISSourceHelper implements SourceHelper {
         }
 
         q.setMaxFeatures(maxFeatures);
-        org.geotools.data.FeatureSource dfs = ArcGISSourceHelper.openGeoToolsFSFeatureSource(fs, sft);
+        org.geotools.data.FeatureSource dfs = ArcGISFeatureSourceHelper.openGeoToolsFSFeatureSource(fs, sft);
         FeatureCollection fc = dfs.getFeatures(q);
         return fc;
     }

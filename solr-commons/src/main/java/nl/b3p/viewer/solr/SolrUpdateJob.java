@@ -16,7 +16,7 @@
  */
 package nl.b3p.viewer.solr;
 
-import nl.b3p.viewer.helpers.featuresources.SourceFactoryHelper;
+import nl.b3p.viewer.helpers.featuresources.FeatureSourceFactoryHelper;
 import org.locationtech.jts.geom.Envelope;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.Point;
@@ -136,7 +136,7 @@ public class SolrUpdateJob implements Job {
             List<String> resultAttributesConfig = config.getResultAttributes();
             
             SimpleFeatureType sft = config.getSimpleFeatureType();
-            fs = SourceFactoryHelper.openGeoToolsFeatureSource(sft);
+            fs = FeatureSourceFactoryHelper.openGeoToolsFeatureSource(sft);
 
             Query q = new Query();
             if(filter != null){

@@ -4,7 +4,6 @@ import nl.b3p.viewer.config.services.AttributeDescriptor;
 import nl.b3p.viewer.config.services.FeatureSource;
 import nl.b3p.viewer.config.services.SimpleFeatureType;
 import nl.b3p.viewer.config.services.WFSFeatureSource;
-import nl.b3p.viewer.helpers.services.WMSServiceHelper;
 import nl.b3p.web.WaitPageStatus;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
@@ -14,7 +13,6 @@ import org.geotools.data.DataStoreFinder;
 import org.geotools.data.simple.SimpleFeatureSource;
 import org.geotools.data.wfs.WFSDataStoreFactory;
 import org.geotools.feature.FeatureCollection;
-import org.opengis.feature.Feature;
 import org.opengis.feature.type.AttributeType;
 import org.opengis.feature.type.GeometryType;
 import org.opengis.filter.Filter;
@@ -24,19 +22,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class WFSSourceHelper implements SourceHelper{
-    private static final Log log = LogFactory.getLog(WFSSourceHelper.class);
+public class WFSFeatureSourceHelper implements FeatureSourceHelper {
+    private static final Log log = LogFactory.getLog(WFSFeatureSourceHelper.class);
     public static final Integer TIMEOUT = 60000;
 
 
     @Override
-    public List<SimpleFeatureType> createFeatureTypes(FeatureSource fs) throws Exception {
-        return this.createFeatureTypes(fs, new WaitPageStatus());
-    }
-
-    @Override
     public List<SimpleFeatureType> createFeatureTypes(FeatureSource fs, WaitPageStatus status) throws Exception {
-        return WFSSourceHelper.createFSFeatureTypes((WFSFeatureSource)fs, status);
+        return WFSFeatureSourceHelper.createFSFeatureTypes((WFSFeatureSource)fs, status);
     }
 
     @Override
@@ -46,7 +39,7 @@ public class WFSSourceHelper implements SourceHelper{
 
     @Override
     public org.geotools.data.FeatureSource openGeoToolsFeatureSource(FeatureSource fs, SimpleFeatureType sft, int timeout) throws Exception {
-        return WFSSourceHelper.openGeoToolsFSFeatureSource(sft, timeout, (WFSFeatureSource) fs);
+        return WFSFeatureSourceHelper.openGeoToolsFSFeatureSource(sft, timeout, (WFSFeatureSource) fs);
     }
 
     public static List<SimpleFeatureType> createFSFeatureTypes(WFSFeatureSource fs, WaitPageStatus status) throws Exception {
@@ -212,7 +205,7 @@ public class WFSSourceHelper implements SourceHelper{
     public static org.geotools.data.FeatureSource openGeoToolsFSFeatureSource(SimpleFeatureType sft, int timeout, WFSFeatureSource fs) throws Exception {
         Map extraParams = new HashMap();
         extraParams.put(WFSDataStoreFactory.TIMEOUT.key, timeout);
-        DataStore ds = WFSSourceHelper.createDataStore(extraParams, fs);
+        DataStore ds = WFSFeatureSourceHelper.createDataStore(extraParams, fs);
 
         return ds.getFeatureSource(sft.getTypeName());
     }
@@ -233,7 +226,7 @@ public class WFSSourceHelper implements SourceHelper{
             q = new org.geotools.data.Query(sft.getTypeName());
         }
         q.setMaxFeatures(maxFeatures);
-        FeatureCollection fc = WFSSourceHelper.openGeoToolsFSFeatureSource(sft, (WFSFeatureSource) sft.getFeatureSource()).getFeatures(q);
+        FeatureCollection fc = WFSFeatureSourceHelper.openGeoToolsFSFeatureSource(sft, (WFSFeatureSource) sft.getFeatureSource()).getFeatures(q);
         return fc;
     }
 
@@ -243,7 +236,7 @@ public class WFSSourceHelper implements SourceHelper{
     }
 
     public static void loadFeatureTypes(WFSFeatureSource fs, WaitPageStatus status) throws Exception {
-        fs.getFeatureTypes().addAll(WFSSourceHelper.createFSFeatureTypes(fs, status));
+        fs.getFeatureTypes().addAll(WFSFeatureSourceHelper.createFSFeatureTypes(fs, status));
     }
 
 }
