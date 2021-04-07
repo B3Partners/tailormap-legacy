@@ -72,11 +72,9 @@ public class ApplicationHelper {
 
     private static Map reverse(Map orig) {
         Map reverse = new HashMap();
-
-        Set keys = orig.keySet();
-        for (Object key : keys) {
-            Object value = orig.get(key);
-            reverse.put(value, key);
+        Set<Map.Entry> entries = orig.entrySet();
+        for (Map.Entry entry: entries) {
+            reverse.put(entry.getValue(), entry.getKey());
         }
         return reverse;
     }
