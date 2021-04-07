@@ -14,6 +14,7 @@ import { formStateKey, initialFormState } from '../state/form.state';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { applicationStateKey, initialApplicationState } from '../../application/state/application.state';
 import { testFormConfigs } from '../../application/state/test-data/application-test-data';
+import { ExtendedFormConfigurationModel } from '../../application/models/extended-form-configuration.model';
 
 
 describe('FormCopyComponent', () => {
@@ -22,14 +23,15 @@ describe('FormCopyComponent', () => {
     originalFeature: mockFeature(),
     destinationFeatures: [ mockFeature(), mockFeature() ],
   };
+  const selectedFeature = mockFeature();
   const initialState = {
     [formStateKey]: {
       ...initialFormState,
-      feature: mockFeature(),
+      feature: selectedFeature,
     },
     [applicationStateKey]: {
       ...initialApplicationState,
-      formConfigs: testFormConfigs,
+      formConfigs: testFormConfigs.map<ExtendedFormConfigurationModel>(c => ({ ...c, tableName: selectedFeature.clazz })),
     },
   };
   let store: MockStore;

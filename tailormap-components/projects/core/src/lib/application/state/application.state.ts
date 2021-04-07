@@ -1,6 +1,6 @@
 import { Level, SelectedContentItem } from '../../../../../bridge/typings';
 import { TailormapAppLayer } from '../models/tailormap-app-layer.model';
-import { FormConfiguration } from '../../feature-form/form/form-models';
+import { ExtendedFormConfigurationModel } from '../models/extended-form-configuration.model';
 
 export const applicationStateKey = 'application';
 
@@ -11,7 +11,7 @@ export interface ApplicationState {
   layers: TailormapAppLayer[];
   selectedAppLayer: string;
   formConfigsLoaded: boolean;
-  formConfigs: FormConfiguration[];
+  formConfigs: ExtendedFormConfigurationModel[];
 }
 
 export const initialApplicationState: ApplicationState = {
