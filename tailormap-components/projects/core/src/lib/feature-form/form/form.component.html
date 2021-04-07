@@ -52,8 +52,10 @@
             color="primary"
             (click)="formCreator.beforeSave();">
       <span *ngIf="!closeAfterSave">Opslaan</span>
-      <span *ngIf="closeAfterSave">Volgende</span>
+      <span *ngIf="isMultiFormWorkflow$ | async; else saveLabel">Volgende</span>
     </button>
 
   </div>
 </div>
+
+<ng-template #saveLabel><span>Opslaan</span></ng-template>

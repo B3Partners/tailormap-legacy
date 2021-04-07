@@ -4,12 +4,13 @@ import * as FormActions from './form.actions';
 import { addFeatureToParent, removeFeature, updateFeatureInArray } from './form.state-helpers';
 import { FeatureInitializerService } from '../../shared/feature-initializer/feature-initializer.service';
 
-const onCloseFeatureForm  = (state: FormState): FormState => ({
+const onCloseFeatureForm = (state: FormState): FormState => ({
   ...state,
   features: [],
   feature: null,
   formOpen: false,
   treeOpen: false,
+  multiFormWorkflow: false,
 });
 
 const onSetHideFeatureForm = (state: FormState, payload: ReturnType<typeof FormActions.toggleFeatureFormVisibility>): FormState => ({
@@ -42,32 +43,33 @@ const onSetNewFeature = (state: FormState, payload: ReturnType<typeof FormAction
   };
 };
 
-const onSetFeatures = (state: FormState, payload:  ReturnType<typeof FormActions.setSetFeatures>): FormState => ({
+const onSetFeatures = (state: FormState, payload: ReturnType<typeof FormActions.setSetFeatures>): FormState => ({
   ...state,
   features: payload.features,
 });
 
-const onSetOpenFeatureForm = (state: FormState, payload:  ReturnType<typeof FormActions.setOpenFeatureForm>): FormState => ({
+const onSetOpenFeatureForm = (state: FormState, payload: ReturnType<typeof FormActions.setOpenFeatureForm>): FormState => ({
   ...state,
   features: payload.features,
   formOpen: true,
-  closeAfterSave: payload.closeAfterSave || false,
-  alreadyDirty: payload.alreadyDirty || false,
-  editing: payload.editMode || false,
+  closeAfterSave: typeof payload.closeAfterSave !== 'undefined' ? payload.closeAfterSave : false,
+  alreadyDirty: typeof payload.alreadyDirty !== 'undefined' ? payload.alreadyDirty : false,
+  editing: typeof payload.editMode !== 'undefined' ? payload.editMode : false,
+  multiFormWorkflow: typeof payload.multiFormWorkflow !== 'undefined' ? payload.multiFormWorkflow : false,
 });
 
-const onSetTreeOpen = (state: FormState, payload:  ReturnType<typeof FormActions.setTreeOpen>): FormState => ({
+const onSetTreeOpen = (state: FormState, payload: ReturnType<typeof FormActions.setTreeOpen>): FormState => ({
   ...state,
   treeOpen: payload.treeOpen,
 });
 
-const onSetFormEditing = (state: FormState, payload:  ReturnType<typeof FormActions.setFormEditing>): FormState => ({
+const onSetFormEditing = (state: FormState, payload: ReturnType<typeof FormActions.setFormEditing>): FormState => ({
   ...state,
   editing: payload.editing,
 });
 
-const onSetFeatureRemoved = (state: FormState, payload:  ReturnType<typeof FormActions.setFeatureRemoved>): FormState => {
-  const features =  removeFeature([...state.features], payload.feature);
+const onSetFeatureRemoved = (state: FormState, payload: ReturnType<typeof FormActions.setFeatureRemoved>): FormState => {
+  const features = removeFeature([...state.features], payload.feature);
   return {
     ...state,
     features,

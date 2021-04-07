@@ -154,7 +154,7 @@ export class SewageWorkflow extends Workflow {
   }
 
   public openDialog(feature?: Feature): void {
-    this.store$.dispatch(setOpenFeatureForm({features: [feature], closeAfterSave: true}));
+    this.store$.dispatch(setOpenFeatureForm({features: [feature], closeAfterSave: true, multiFormWorkflow: true}));
 
     combineLatest([
       this.store$.select(selectCurrentFeature),
