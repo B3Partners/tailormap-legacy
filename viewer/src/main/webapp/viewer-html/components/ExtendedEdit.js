@@ -245,7 +245,7 @@ Ext.define ("viewer.components.ExtendedEdit",{
         this.createPagination();
     },
     showAndFocusForm: function() {
-        if(this.mode !== null) {
+        if(this.mode !== null && !this.config.allowTranslate) {
             this.buttonPanel.setVisible(false);
         }
         this.maincontainer.down('#removeMessage').setVisible(false);
