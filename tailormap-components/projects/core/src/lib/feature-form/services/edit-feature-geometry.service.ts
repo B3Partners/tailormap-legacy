@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, NgZone } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { FormState } from '../state/form.state';
 import {  Observable, of } from 'rxjs';
@@ -18,7 +18,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 })
 export class EditFeatureGeometryService {
 
-  private readonly drawingVectorLayer: VectorLayer;
+  private drawingVectorLayer: VectorLayer;
 
   constructor(
     private store$: Store<FormState>,
@@ -27,8 +27,11 @@ export class EditFeatureGeometryService {
     private geometryConfirmService: GeometryConfirmService,
     private tailorMapService: TailorMapService,
     private snackbar: MatSnackBar,
+    private ngZone: NgZone,
   ) {
-    this.drawingVectorLayer = this.tailorMapService.getViewerController().createVectorLayer('EditFeatureGeometryService');
+    this.ngZone.runOutsideAngular(() => {
+      this.drawingVectorLayer = this.tailorMapService.getViewerController().createVectorLayer('EditFeatureGeometryService');
+    });
   }
 
   public updateCurrentFeatureGeometry$(): Observable<GeoJSONGeometry | Geometry | null> {

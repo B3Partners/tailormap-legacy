@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, NgZone } from '@angular/core';
 import { TailorMapService } from '../../../../../bridge/src/tailor-map.service';
 import {
   VectorLayer,
@@ -22,7 +22,9 @@ export class HighlightService {
 
   constructor(private tailorMap: TailorMapService,
               private featureExtentService: FeatureExtentService,
-              private http: HttpClient) {
+              private http: HttpClient,
+              private ngZone: NgZone,
+              ) {
     // Set action url.
     this.actionUrl = this.tailorMap.getContextPath() + '/action/simplify';
   }
@@ -30,24 +32,26 @@ export class HighlightService {
   private createVectorLayer(): void {
     const vc = this.tailorMap.getViewerController();
     const mapComponent = this.tailorMap.getMapComponent();
-    this.vectorLayer = mapComponent.createVectorLayer({
-      name: 'HighlightVectorLayer',
-      geometrytypes: ['Circle', 'Polygon', 'MultiPolygon', 'Point', 'LineString'],
-      mustCreateVertices: false,
-      allowselection: false,
-      showmeasures: false,
-      editable: false,
-      viewerController: vc,
-      style: {
-        fillcolor: 'FF0000',
-        fillopacity: 50,
-        strokecolor: '0000FF',
-        strokewidth: 4,
-        strokeopacity: 100,
-      },
+    this.ngZone.runOutsideAngular(() => {
+      this.vectorLayer = mapComponent.createVectorLayer({
+        name: 'HighlightVectorLayer',
+        geometrytypes: ['Circle', 'Polygon', 'MultiPolygon', 'Point', 'LineString'],
+        mustCreateVertices: false,
+        allowselection: false,
+        showmeasures: false,
+        editable: false,
+        viewerController: vc,
+        style: {
+          fillcolor: 'FF0000',
+          fillopacity: 50,
+          strokecolor: '0000FF',
+          strokewidth: 4,
+          strokeopacity: 100,
+        },
+      });
+      vc.registerSnappingLayer(this.vectorLayer);
+      mapComponent.getMap().addLayer(this.vectorLayer);
     });
-    vc.registerSnappingLayer(this.vectorLayer);
-    mapComponent.getMap().addLayer(this.vectorLayer);
   }
 
   public clearHighlight(): void {
