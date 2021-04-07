@@ -36,7 +36,13 @@ Ext.define("viewer.components.SearchConfiguration",{
         if (configObject === null){
             configObject = {};
         }
-        configObject.willLoadLayers = true;
+        if(configObject.searchconfigs) {
+            if(configObject.searchconfigs.length > 0) {
+                if (configObject.searchconfigs[0].type === 'solr') {
+                    configObject.willLoadLayers = true;
+                }
+            }
+        }
         viewer.components.SearchConfiguration.superclass.constructor.call(this, parentId, configObject, configPage);
         if (!this.hideRemovePinConfig) {
             this.form.add({
