@@ -849,6 +849,9 @@ public class GeoServiceActionBean extends LocalizableActionBean {
             getContext().getValidationErrors().add("protocol", new SimpleError("Ongeldig"));
         }
 
+        if(service ==null){
+            throw new IllegalArgumentException("check URL");
+        }
 
         if (name != null) {
             service.setName(name);
