@@ -2,8 +2,4 @@
   <tailormap-form-node [node]="node"></tailormap-form-node>
 </ng-template>
 
-<div class="tree overlay-panel mat-elevation-z4">
-  <tailormap-dialog-close-button (closeDialog)="closePanel()" icon="chevron_left"></tailormap-dialog-close-button>
-  <h1>Objectrelaties</h1>
-  <tailormap-tree class="tailormap-tree" [treeNodeTemplate]="treeNode" [expandOnGroupClick]="false"></tailormap-tree>
-</div>
+<tailormap-tree class="tailormap-tree" [treeNodeTemplate]="treeNode" [expandOnGroupClick]="false"></tailormap-tree>

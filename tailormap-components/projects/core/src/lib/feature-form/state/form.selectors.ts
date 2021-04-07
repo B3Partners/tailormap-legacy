@@ -36,3 +36,6 @@ export const selectFeatureLabel = createSelector(
    return feature[formConfigs.get(LayerUtils.sanitizeLayername(feature.clazz))];
   },
 );
+
+export const selectCopyFormOpen = createSelector(selectFormState, state => state.copyFormOpen);
+export const selectCopyFormOptionsOpen = createSelector(selectFormState, state => state.copyOptionsOpen);

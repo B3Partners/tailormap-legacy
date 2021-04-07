@@ -1,31 +1,23 @@
+<div class="tree overlay-panel mat-elevation-z4" *ngIf="optionsOpen$ | async">
+  <tailormap-dialog-close-button (closeDialog)="closeTree()" icon="chevron_left"></tailormap-dialog-close-button>
+  <h1>Objectrelaties</h1>
+  <div class="tree-container">
+    <tailormap-form-tree
+      [isCopy]="true"
+      [hasCheckboxes]="false"
+      [feature]="originalFeature"></tailormap-form-tree>
+  </div>
+  <div class="tree-options">
+    <p><mat-checkbox name="deleteRelated" id="deleteRelated" [checked]="this.deleteRelated" (change)="setDeleteRelated()">Verwijder alle gerelateerde objecten van alle <br> geselecteerde doelobjecten</mat-checkbox></p>
+    <p><mat-checkbox name="copyAllRelatedFeatures" id="copyAllRelatedFeatures" [checked]="isAllRelatedFeaturesSet()" (change)="setCopyAllRelatedFeatures()">Kopieer alle gerelateerde objecten</mat-checkbox></p>
+  </div>
+</div>
+
+<div *ngIf="optionsClosed$ | async" class="overlay-panel-toggle mat-elevation-z2" (click)="openOptions()">
+  <mat-icon svgIcon="contextual_chevron_left"></mat-icon>
+</div>
+
 <mat-sidenav-container class="example-container">
-  <mat-sidenav class="copy-side-panel" mode="side" opened="{{this.showSidePanel}}">
-    <mat-accordion>
-      <mat-expansion-panel>
-        <mat-expansion-panel-header>
-          <mat-panel-title>
-            Gerelateerde objecten
-          </mat-panel-title>
-        </mat-expansion-panel-header>
-          <tailormap-form-tree
-            [isCopy] = true
-            [hasCheckboxes]="true"
-            (relatedFeatureChecked) = "relatedFeaturesCheckedChanged($event)"
-            [feature]=originalFeature></tailormap-form-tree>
-      </mat-expansion-panel>
-    </mat-accordion>
-    <mat-accordion>
-      <mat-expansion-panel>
-        <mat-expansion-panel-header>
-          <mat-panel-title>
-            Opties
-          </mat-panel-title>
-        </mat-expansion-panel-header>
-        <p><mat-checkbox name="deleteRelated" id="deleteRelated" [checked]="false" (change)="setDeleteRelated()">Verwijder alle gerelateerde objecten van alle <br> geselecteerde doelobjecten</mat-checkbox></p>
-        <p><mat-checkbox name="copyAllRelatedFeatures" id="copyAllRelatedFeatures" [checked]="isAllRelatedFeaturesSet()" (change)="setCopyAllRelatedFeatures()">Kopieer alle gerelateerde objecten</mat-checkbox></p>
-      </mat-expansion-panel>
-    </mat-accordion>
-  </mat-sidenav>
   <mat-sidenav-content>
     <h1 mat-dialog-title cdkDrag cdkDragRootElement=".cdk-overlay-pane">Kopiëren van {{originalFeature.clazz}}</h1>
 
@@ -50,7 +42,6 @@
       </div>
     </div>
     <div class="actions">
-      <button mat-flat-button color="primary"  (click)="settings()">Instellingen</button>
       <button mat-flat-button color="primarylight"  (click)="cancel()">Annuleren</button>
       <button mat-flat-button color="primary"  [disabled]="this.data.destinationFeatures.length < 1" (click)="beforeCopy()" matTooltip="Selecteer object(en) om te kopieren">Bevestigen</button>
     </div>

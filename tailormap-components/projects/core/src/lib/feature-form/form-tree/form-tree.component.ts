@@ -51,7 +51,8 @@ export class FormTreeComponent implements OnInit, OnDestroy {
 
   constructor(
     private store$: Store<FormState>,
-    private treeService: TreeService) {
+    private treeService: TreeService,
+  ) {
     this.treeService.selectionStateChangedSource$.pipe(
       takeUntil(this.destroyed),
       map(nodeId => this.treeService.getNode(nodeId)),
@@ -105,7 +106,4 @@ export class FormTreeComponent implements OnInit, OnDestroy {
     this.destroyed.complete();
   }
 
-  public closePanel() {
-    this.store$.dispatch(FormActions.setTreeOpen({treeOpen: false}));
-  }
 }

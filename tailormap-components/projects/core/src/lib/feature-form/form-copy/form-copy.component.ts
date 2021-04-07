@@ -8,13 +8,14 @@ import { CopyDialogData } from './form-copy-models';
 import { FeatureInitializerService } from '../../shared/feature-initializer/feature-initializer.service';
 import { FormCopyService } from './form-copy.service';
 import { ConfirmDialogService } from '../../shared/confirm-dialog/confirm-dialog.service';
-import { concatMap, take, takeUntil } from 'rxjs/operators';
-import { forkJoin, of, Subject } from 'rxjs';
-import { selectCurrentFeature } from '../state/form.selectors';
+import { concatMap, map, take, takeUntil } from 'rxjs/operators';
+import { forkJoin, Observable, of, Subject } from 'rxjs';
+import { selectCopyFormOptionsOpen, selectCurrentFeature } from '../state/form.selectors';
 import { Store } from '@ngrx/store';
 import { FormState } from '../state/form.state';
 import * as FormActions from '../state/form.actions';
 import { selectFormConfigForFeatureTypeName, selectFormConfigs } from '../../application/state/application.selectors';
+import { setCopyOptionsOpen } from '../state/form.actions';
 
 @Component({
   selector: 'tailormap-form-copy',
@@ -22,6 +23,9 @@ import { selectFormConfigForFeatureTypeName, selectFormConfigs } from '../../app
   styleUrls: ['./form-copy.component.css'],
 })
 export class FormCopyComponent implements OnInit, OnDestroy {
+
+  public optionsOpen$: Observable<boolean>;
+  public optionsClosed$: Observable<boolean>;
 
   private width = '400px';
 
@@ -53,6 +57,9 @@ export class FormCopyComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
+    this.optionsOpen$ = this.store$.select(selectCopyFormOptionsOpen);
+    this.optionsClosed$ = this.store$.select(selectCopyFormOptionsOpen).pipe(map(open => !open));
+
     this.store$.select(selectCurrentFeature)
       .pipe(
         takeUntil(this.destroyed),
@@ -314,4 +321,13 @@ export class FormCopyComponent implements OnInit, OnDestroy {
       }
     });
   }
+
+  public closeTree() {
+    this.store$.dispatch(setCopyOptionsOpen({ open: false }));
+  }
+
+  public openOptions() {
+    this.store$.dispatch(setCopyOptionsOpen({ open: true }));
+  }
+
 }

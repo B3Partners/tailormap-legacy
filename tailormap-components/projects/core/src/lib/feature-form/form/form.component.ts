@@ -89,6 +89,10 @@ export class FormComponent implements OnDestroy, OnInit {
     this.store$.dispatch(FormActions.setTreeOpen({treeOpen: true}));
   }
 
+  public closeTree() {
+    this.store$.dispatch(FormActions.setTreeOpen({treeOpen: false}));
+  }
+
   public ngOnDestroy() {
     this.destroyed.next();
     this.destroyed.complete();
@@ -100,8 +104,12 @@ export class FormComponent implements OnDestroy, OnInit {
       this.store$.select(selectFormConfigForFeatureTypeName, this.feature.clazz),
       this.store$.select(selectFormConfigs),
       this.store$.select(selectVisibleLayers),
+      this.store$.select(selectFeatureFormOpen),
     ])
-      .pipe(takeUntil(this.destroyed))
+      .pipe(
+        takeUntil(this.destroyed),
+        filter(([_formConfig, _configs, _appLayers, formOpen]) => formOpen),
+      )
       .subscribe(([formConfig, configs, appLayers]) => {
       this.formConfig = formConfig;
       const layer = appLayers.filter(appLayer => LayerUtils.sanitizeLayername(appLayer.layerName) === this.features[0].clazz)[0];
