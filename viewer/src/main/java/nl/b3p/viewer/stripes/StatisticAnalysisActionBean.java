@@ -8,12 +8,9 @@ import nl.b3p.viewer.audit.AuditMessageObject;
 import nl.b3p.viewer.audit.Auditable;
 import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.ApplicationLayer;
-import nl.b3p.viewer.config.app.ConfiguredAttribute;
-import nl.b3p.viewer.config.services.AttributeDescriptor;
 import nl.b3p.viewer.config.services.Layer;
 import nl.b3p.viewer.config.services.SimpleFeatureType;
-import nl.b3p.viewer.config.services.WFSFeatureSource;
-import nl.b3p.viewer.helpers.featuresources.SourceFactoryHelper;
+import nl.b3p.viewer.helpers.featuresources.FeatureSourceFactoryHelper;
 import nl.b3p.viewer.util.ChangeMatchCase;
 import nl.b3p.viewer.util.FeatureToJson;
 import nl.b3p.viewer.util.FlamingoCQL;
@@ -22,7 +19,6 @@ import org.apache.commons.logging.LogFactory;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
 import org.geotools.data.simple.SimpleFeatureCollection;
-import org.geotools.data.wfs.WFSDataStoreFactory;
 import org.geotools.factory.CommonFactoryFinder;
 import org.json.JSONObject;
 import org.opengis.filter.Filter;
@@ -33,9 +29,6 @@ import org.stripesstuff.stripersist.Stripersist;
 import javax.persistence.EntityManager;
 import java.io.StringReader;
 import java.text.MessageFormat;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @UrlBinding("/action/statisticanalysis")
 @StrictBinding
@@ -173,7 +166,7 @@ public class StatisticAnalysisActionBean extends LocalizableApplicationActionBea
                     ft = layer.getFeatureType();
                 }
 
-                fs = SourceFactoryHelper.openGeoToolsFeatureSource(ft);
+                fs = FeatureSourceFactoryHelper.openGeoToolsFeatureSource(ft);
 
 
                 final Query q = new Query(fs.getName().toString());

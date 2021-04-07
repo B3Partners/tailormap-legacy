@@ -22,11 +22,11 @@ import nl.b3p.viewer.config.app.ApplicationLayer;
 import nl.b3p.viewer.config.services.FeatureSource;
 import nl.b3p.viewer.config.services.SimpleFeatureType;
 import nl.b3p.viewer.config.services.WFSFeatureSource;
-import nl.b3p.viewer.helpers.featuresources.SourceFactoryHelper;
+import nl.b3p.viewer.helpers.featuresources.FeatureSourceFactoryHelper;
 import org.geotools.data.Query;
 import org.json.JSONArray;
 import org.junit.Before;
-import org.junit.Test;
+
 import static org.junit.Assert.*;
 
 /**
@@ -63,7 +63,7 @@ public class FeatureToJsonTest {
      */
     //@Test
     public void testGetJSONFeaturesFirstPage() throws Exception {
-        org.geotools.data.FeatureSource gtFS = SourceFactoryHelper.openGeoToolsFeatureSource(ft);
+        org.geotools.data.FeatureSource gtFS = FeatureSourceFactoryHelper.openGeoToolsFeatureSource(ft);
         assertNotNull(gtFS);
         
         Query q = new Query();
@@ -82,7 +82,7 @@ public class FeatureToJsonTest {
     
     //@Test
     public void testGetJSONFeaturesSecondPage() throws Exception {
-        org.geotools.data.FeatureSource gtFS = SourceFactoryHelper.openGeoToolsFeatureSource(ft);
+        org.geotools.data.FeatureSource gtFS = FeatureSourceFactoryHelper.openGeoToolsFeatureSource(ft);
         assertNotNull(gtFS);
         
         Query q = new Query();

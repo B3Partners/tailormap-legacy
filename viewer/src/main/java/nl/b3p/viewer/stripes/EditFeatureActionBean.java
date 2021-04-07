@@ -17,7 +17,7 @@
 package nl.b3p.viewer.stripes;
 
 import net.sourceforge.stripes.controller.LifecycleStage;
-import nl.b3p.viewer.helpers.featuresources.SourceFactoryHelper;
+import nl.b3p.viewer.helpers.featuresources.FeatureSourceFactoryHelper;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.io.WKTReader;
 import java.io.IOException;
@@ -49,7 +49,6 @@ import org.geotools.data.Transaction;
 import org.geotools.data.simple.SimpleFeatureStore;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.filter.identity.FeatureIdImpl;
-import org.geotools.filter.text.cql2.CQL;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.opengis.feature.simple.SimpleFeature;
@@ -190,7 +189,7 @@ public class EditFeatureActionBean extends LocalizableApplicationActionBean impl
                     break;
                 }
 
-                fs = SourceFactoryHelper.openGeoToolsFeatureSource(layer.getFeatureType());
+                fs = FeatureSourceFactoryHelper.openGeoToolsFeatureSource(layer.getFeatureType());
 
                 if(!(fs instanceof SimpleFeatureStore)) {
                     error = getBundle().getString("viewer.editfeatureactionbean.5");
@@ -270,7 +269,7 @@ public class EditFeatureActionBean extends LocalizableApplicationActionBean impl
                         SimpleFeatureType fType = rel.getForeignFeatureType();
                         label = fType.getDescription() == null ? fType.getTypeName() : fType.getDescription();
 
-                        fs = SourceFactoryHelper.openGeoToolsFeatureSource(fType,5000);
+                        fs = FeatureSourceFactoryHelper.openGeoToolsFeatureSource(fType,5000);
                         store = (SimpleFeatureStore) fs;
                         jsonFeature = new JSONObject(feature);
                         String fid = jsonFeature.optString(FID, null);
@@ -374,7 +373,7 @@ public class EditFeatureActionBean extends LocalizableApplicationActionBean impl
                     break;
                 }
 
-                fs = SourceFactoryHelper.openGeoToolsFeatureSource(layer.getFeatureType());
+                fs = FeatureSourceFactoryHelper.openGeoToolsFeatureSource(layer.getFeatureType());
 
                 if(!(fs instanceof SimpleFeatureStore)) {
                     error = getBundle().getString("viewer.editfeatureactionbean.13");
@@ -445,7 +444,7 @@ public class EditFeatureActionBean extends LocalizableApplicationActionBean impl
                 if (rel.getType().equals(FeatureTypeRelation.RELATE)) {
                     SimpleFeatureType fType = rel.getForeignFeatureType();
                     label = fType.getDescription() == null ? fType.getTypeName() : fType.getDescription();
-                    fs = SourceFactoryHelper.openGeoToolsFeatureSource(fType,5000);
+                    fs = FeatureSourceFactoryHelper.openGeoToolsFeatureSource(fType,5000);
                     store = (SimpleFeatureStore) fs;
                     jsonFeature = new JSONObject(feature);
                     String fid = jsonFeature.optString(FID, null);

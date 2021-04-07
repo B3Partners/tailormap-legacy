@@ -25,7 +25,7 @@ import nl.b3p.viewer.config.services.AttributeDescriptor;
 import nl.b3p.viewer.config.services.FeatureTypeRelation;
 import nl.b3p.viewer.config.services.FeatureTypeRelationKey;
 import nl.b3p.viewer.config.services.SimpleFeatureType;
-import nl.b3p.viewer.helpers.featuresources.SourceFactoryHelper;
+import nl.b3p.viewer.helpers.featuresources.FeatureSourceFactoryHelper;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.geotools.data.FeatureSource;
@@ -33,7 +33,6 @@ import org.geotools.data.Query;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
-import org.geotools.filter.text.cql2.CQL;
 import org.geotools.filter.text.ecql.ECQL;
 import org.geotools.filter.visitor.DuplicatingFilterVisitor;
 import org.opengis.feature.simple.SimpleFeature;
@@ -188,7 +187,7 @@ public class ValidFilterExtractor extends DuplicatingFilterVisitor {
         if (found) {
             try {
                 FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2();
-                FeatureSource fs = SourceFactoryHelper.openGeoToolsFeatureSource(featureType);
+                FeatureSource fs = FeatureSourceFactoryHelper.openGeoToolsFeatureSource(featureType);
                 Query q = new Query(fs.getName().toString());
                 q.setFilter(filter);
 

@@ -26,7 +26,6 @@ import org.w3c.dom.NodeList;
 
 import javax.naming.OperationNotSupportedException;
 import javax.persistence.EntityManager;
-import javax.persistence.Transient;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -39,7 +38,7 @@ import java.util.Map;
 
 import static nl.b3p.viewer.config.services.TileService.*;
 
-public class TilingServiceHelper implements ServiceHelper{
+public class TilingServiceHelper implements GeoServiceHelper {
 
     private static final Log log = LogFactory.getLog(TilingServiceHelper.class);
     private static final DefaultGeographicCRS wgs84 = DefaultGeographicCRS.WGS84;

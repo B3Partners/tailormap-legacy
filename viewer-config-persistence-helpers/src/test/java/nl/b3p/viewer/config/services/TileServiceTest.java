@@ -16,9 +16,6 @@
  */
 package nl.b3p.viewer.config.services;
 
-import nl.b3p.viewer.helpers.services.GeoserviceFactoryHelper;
-import nl.b3p.viewer.helpers.services.GeoserviceHelper;
-import nl.b3p.viewer.helpers.services.ServiceHelper;
 import nl.b3p.viewer.helpers.services.TilingServiceHelper;
 import nl.b3p.viewer.util.TestUtil;
 import nl.b3p.web.WaitPageStatus;
@@ -35,7 +32,6 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.List;

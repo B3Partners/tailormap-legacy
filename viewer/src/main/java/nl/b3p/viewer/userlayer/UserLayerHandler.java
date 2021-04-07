@@ -1,8 +1,7 @@
 package nl.b3p.viewer.userlayer;
 
 
-import nl.b3p.viewer.helpers.featuresources.JDBCSourceHelper;
-import nl.b3p.viewer.helpers.featuresources.SourceFactoryHelper;
+import nl.b3p.viewer.helpers.featuresources.FeatureSourceFactoryHelper;
 import nl.b3p.viewer.helpers.services.WMSServiceHelper;
 import nl.b3p.viewer.audit.AuditMessageObject;
 import nl.b3p.viewer.config.app.Application;
@@ -70,7 +69,7 @@ public class UserLayerHandler {
             this.service = this.appLayer.getService();
             this.layer = this.service.getLayer(this.appLayer.getLayerName(), this.entityManager);
             this.tableName = this.layer.getFeatureType().getTypeName();
-            this.dataStore = (JDBCDataStore) SourceFactoryHelper.openGeoToolsFeatureSource(layer.getFeatureType()).getDataStore();
+            this.dataStore = (JDBCDataStore) FeatureSourceFactoryHelper.openGeoToolsFeatureSource(layer.getFeatureType()).getDataStore();
             this.dataBase = DataBaseFactory.getDataBase(dataStore);
         } catch (Exception e) {
             LOG.fatal("Problem opening datastore. " + e.getLocalizedMessage());

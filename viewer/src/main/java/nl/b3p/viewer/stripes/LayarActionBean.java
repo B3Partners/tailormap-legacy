@@ -17,7 +17,7 @@
 
 package nl.b3p.viewer.stripes;
 
-import nl.b3p.viewer.helpers.featuresources.SourceFactoryHelper;
+import nl.b3p.viewer.helpers.featuresources.FeatureSourceFactoryHelper;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
@@ -33,7 +33,6 @@ import net.sourceforge.stripes.action.StreamingResolution;
 import net.sourceforge.stripes.action.StrictBinding;
 import net.sourceforge.stripes.action.UrlBinding;
 import net.sourceforge.stripes.validation.Validate;
-import nl.b3p.csw.jaxb.gml.MultiGeometry;
 import nl.b3p.viewer.config.ClobElement;
 import nl.b3p.viewer.config.services.LayarService;
 import nl.b3p.viewer.config.services.LayarSource;
@@ -142,7 +141,7 @@ public class LayarActionBean implements ActionBean {
                 FeatureIterator<SimpleFeature> it=null;
                 if(layarSource.getFeatureType()!=null){
                     try{
-                        fs = SourceFactoryHelper.openGeoToolsFeatureSource(layarSource.getFeatureType(), TIMEOUT);
+                        fs = FeatureSourceFactoryHelper.openGeoToolsFeatureSource(layarSource.getFeatureType(), TIMEOUT);
                         CoordinateReferenceSystem featureCrs = getCRS(fs);
                         //create filter
                         Filter filter = createFilter(fs,featureCrs);

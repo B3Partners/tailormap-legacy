@@ -17,7 +17,7 @@
 package nl.b3p.viewer.stripes;
 
 import nl.b3p.viewer.config.services.SimpleFeatureType;
-import nl.b3p.viewer.helpers.featuresources.SourceFactoryHelper;
+import nl.b3p.viewer.helpers.featuresources.FeatureSourceFactoryHelper;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.PrecisionModel;
@@ -148,7 +148,7 @@ public class MergeFeaturesActionBean extends LocalizableApplicationActionBean im
                 }
 
                 SimpleFeatureType sft = this.layer.getFeatureType();
-                fs = SourceFactoryHelper.openGeoToolsFeatureSource(sft);
+                fs = FeatureSourceFactoryHelper.openGeoToolsFeatureSource(sft);
                 if (!(fs instanceof SimpleFeatureStore)) {
                     throw new IllegalArgumentException(getBundle().getString("viewer.mergefeaturesactionbean.5"));
                 }

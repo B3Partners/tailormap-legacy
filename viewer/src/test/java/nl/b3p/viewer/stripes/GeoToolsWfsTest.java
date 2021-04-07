@@ -21,7 +21,7 @@ import java.io.FileInputStream;
 
 import java.util.Properties;
 import nl.b3p.viewer.config.services.WFSFeatureSource;
-import nl.b3p.viewer.helpers.featuresources.WFSSourceHelper;
+import nl.b3p.viewer.helpers.featuresources.WFSFeatureSourceHelper;
 import nl.b3p.viewer.util.TestUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -86,7 +86,7 @@ public class GeoToolsWfsTest extends TestUtil {
         ffs.setUrl(url);
         ffs.setUsername(username);
         ffs.setPassword(password);
-        DataStore ds = WFSSourceHelper.createDataStore(ffs);
+        DataStore ds = WFSFeatureSourceHelper.createDataStore(ffs);
         FeatureIterator<SimpleFeature> it = null;
         try {
             org.geotools.data.FeatureSource fs = ds.getFeatureSource(typeName);

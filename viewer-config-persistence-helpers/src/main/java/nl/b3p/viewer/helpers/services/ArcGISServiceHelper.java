@@ -1,8 +1,8 @@
 package nl.b3p.viewer.helpers.services;
 
-import nl.b3p.viewer.helpers.featuresources.FeatureSourceHelper;
 import nl.b3p.viewer.config.ClobElement;
 import nl.b3p.viewer.config.services.*;
+import nl.b3p.viewer.helpers.featuresources.FeatureSourceFactoryHelper;
 import nl.b3p.web.WaitPageStatus;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -28,7 +28,7 @@ import static nl.b3p.viewer.config.services.ArcGISService.*;
 import static nl.b3p.viewer.config.services.GeoService.PARAM_PASSWORD;
 import static nl.b3p.viewer.config.services.GeoService.PARAM_USERNAME;
 
-public class ArcGISServiceHelper implements ServiceHelper {
+public class ArcGISServiceHelper implements GeoServiceHelper {
     private static final Log log = LogFactory.getLog(ArcGISServiceHelper.class);
 
 
@@ -180,7 +180,7 @@ public class ArcGISServiceHelper implements ServiceHelper {
         }
 
         setLayerTree(s.getTopLayer(), s.layersById, s.childrenByLayerId, em);
-        GeoserviceHelper.setAllChildrenDetail(s.getTopLayer(), em);
+        LayerHelper.setAllChildrenDetail(s.getTopLayer(), em);
 
         // FeatureSource is navigable via Layer.featureType CascadeType.PERSIST relation
         if(!fs.getFeatureTypes().isEmpty()) {
@@ -341,7 +341,7 @@ public class ArcGISServiceHelper implements ServiceHelper {
     //<editor-fold desc="Updating">
     public static UpdateResult update(EntityManager em, ArcGISService s) {
 
-        GeoserviceHelper.initLayerCollectionsForUpdate(s);
+        LayerHelper.initLayerCollectionsForUpdate(s);
 
         final UpdateResult result = new UpdateResult(s, em);
 
@@ -527,7 +527,7 @@ public class ArcGISServiceHelper implements ServiceHelper {
                     .setParameter("ft", ft)
                     .executeUpdate();
 
-            FeatureSourceHelper.removeFeatureType(removed.getFeatureType().getFeatureSource(), removed.getFeatureType());
+            FeatureSourceFactoryHelper.removeFeatureType(removed.getFeatureType().getFeatureSource(), removed.getFeatureType());
         }
     }
     //</editor-fold>

@@ -28,7 +28,7 @@ import net.sourceforge.stripes.action.Message;
 import nl.b3p.viewer.config.services.Category;
 import nl.b3p.viewer.config.services.GeoService;
 import nl.b3p.viewer.config.services.Layer;
-import nl.b3p.viewer.helpers.featuresources.SourceFactoryHelper;
+import nl.b3p.viewer.helpers.featuresources.FeatureSourceFactoryHelper;
 import nl.b3p.viewer.util.TestUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -42,8 +42,6 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
 /**
@@ -166,7 +164,7 @@ public class WMSGeoServiceABTest extends TestUtil {
                     assertEquals("Attribute service protocol should be as expected", attrServiceProtocol, lyr.getFeatureType().getFeatureSource().getProtocol());
                     try {
 
-                        FeatureSource fs2 = SourceFactoryHelper.openGeoToolsFeatureSource(lyr.getFeatureType());
+                        FeatureSource fs2 = FeatureSourceFactoryHelper.openGeoToolsFeatureSource(lyr.getFeatureType());
                         assertThat("No exception was thrown and featuresource is not null", fs2, not(nullValue()));
                     } catch (Exception ex) {
                         log.error("Opening featuresource failed.", ex);

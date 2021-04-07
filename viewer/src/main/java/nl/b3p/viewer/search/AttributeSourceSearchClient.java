@@ -5,7 +5,7 @@
  */
 package nl.b3p.viewer.search;
 
-import nl.b3p.viewer.helpers.featuresources.SourceFactoryHelper;
+import nl.b3p.viewer.helpers.featuresources.FeatureSourceFactoryHelper;
 import org.locationtech.jts.geom.Envelope;
 import org.locationtech.jts.geom.Geometry;
 import java.util.ArrayList;
@@ -75,7 +75,7 @@ public class AttributeSourceSearchClient extends SearchClient {
 
             SimpleFeatureType ft = conf.getSimpleFeatureType();
 
-            org.geotools.data.FeatureSource gtFS = SourceFactoryHelper.openGeoToolsFeatureSource(ft);
+            org.geotools.data.FeatureSource gtFS = FeatureSourceFactoryHelper.openGeoToolsFeatureSource(ft);
 
             FeatureToJson ftoj = new FeatureToJson(false, false, false, true, null);
             Query q = createQuery(queryAttributes, gtFS, query);

@@ -5,6 +5,7 @@ import nl.b3p.viewer.config.services.BoundingBox;
 import nl.b3p.viewer.config.services.CoordinateReferenceSystem;
 import nl.b3p.viewer.config.services.GeoService;
 import nl.b3p.viewer.config.services.Layer;
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.mutable.MutableObject;
 import org.apache.commons.logging.Log;
@@ -22,13 +23,34 @@ import java.util.*;
 import static nl.b3p.viewer.config.services.Layer.DETAIL_WMS_STYLES;
 import static nl.b3p.viewer.config.services.Layer.EXTRA_KEY_METADATA_URL;
 
-
-public class GeoserviceHelper {
-    private static final Log log = LogFactory.getLog(GeoserviceHelper.class);
-
+public class LayerHelper {
+    private static final Log log = LogFactory.getLog(LayerHelper.class);
     private static Set<String> allowedSrsList = new HashSet<>(Arrays.asList(new String[] {
             "EPSG:28992" // RD
     }));
+
+    /**
+     * Clone this layer and remove it from the tree of the GeoService this Layer
+     * is part of. Used for updating service, call only on non-persistent objects.
+     * @return a clone of this Layer with its parent and service set to null and
+     * children set to a new, empty list.
+     */
+    public static Layer pluckCopy(Layer l) {
+        if(Stripersist.getEntityManager().contains(l)) {
+            throw new IllegalStateException();
+        }
+        try {
+            Layer clone = (Layer) BeanUtils.cloneBean(l);
+            clone.setParent(null);
+            clone.setChildren(new ArrayList());
+            clone.setService(null);
+
+            return clone;
+        } catch (Exception e) {
+            log.error("Cannot clone layer");
+            return null;
+        }
+    }
 
     public static Layer loadLayer(org.geotools.ows.wms.Layer gtLayer, GeoService service) {
 
@@ -99,7 +121,7 @@ public class GeoserviceHelper {
         }
 
         for (CRSEnvelope e : gtLayer.getLayerBoundingBoxes()) {
-            BoundingBox b = GeoserviceHelper.createBoundingbox(e);
+            BoundingBox b = BoundingBoxHelper.createBoundingbox(e);
             l.getBoundingBoxes().put(b.getCrs(), b);
         }
 
@@ -157,22 +179,12 @@ public class GeoserviceHelper {
         }
 
         for (org.geotools.ows.wms.Layer child : gtLayer.getLayerChildren()) {
-            Layer childLayer = GeoserviceHelper.loadLayer(child, service);
+            Layer childLayer = loadLayer(child, service);
             childLayer.setParent(l);
             l.getChildren().add(childLayer);
         }
 
         return l;
-    }
-
-    public static BoundingBox createBoundingbox(CRSEnvelope e) {
-        BoundingBox bb = new BoundingBox();
-        bb.setCrs(new CoordinateReferenceSystem(e.getSRSName()));
-        bb.setMinx(e.getMinX());
-        bb.setMiny(e.getMinY());
-        bb.setMaxx(e.getMaxX());
-        bb.setMaxy(e.getMaxY());
-        return bb;
     }
 
     public static void initLayerCollectionsForUpdate(GeoService service) {
@@ -215,5 +227,4 @@ public class GeoserviceHelper {
             }
         },em);
     }
-
 }

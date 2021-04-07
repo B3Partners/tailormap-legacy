@@ -55,8 +55,8 @@ import nl.b3p.viewer.features.ExcelDownloader;
 import nl.b3p.viewer.features.FeatureDownloader;
 import nl.b3p.viewer.features.GeoJSONDownloader;
 import nl.b3p.viewer.features.ShapeDownloader;
-import nl.b3p.viewer.helpers.featuresources.SourceFactoryHelper;
-import nl.b3p.viewer.helpers.featuresources.WFSSourceHelper;
+import nl.b3p.viewer.helpers.featuresources.FeatureSourceFactoryHelper;
+import nl.b3p.viewer.helpers.featuresources.WFSFeatureSourceHelper;
 import nl.b3p.viewer.util.ChangeMatchCase;
 import nl.b3p.viewer.util.FeatureToJson;
 import nl.b3p.viewer.util.FlamingoCQL;
@@ -246,9 +246,9 @@ public class DownloadFeaturesActionBean extends LocalizableApplicationActionBean
                     Map extraDataStoreParams = new HashMap();
                     extraDataStoreParams.put(WFSDataStoreFactory.TRY_GZIP.key, Boolean.FALSE);
                     SimpleFeatureType sft = layer.getFeatureType();
-                    fs = WFSSourceHelper.openGeoToolsFSFeatureSource(sft, extraDataStoreParams, (WFSFeatureSource) sft.getFeatureSource());
+                    fs = WFSFeatureSourceHelper.openGeoToolsFSFeatureSource(sft, extraDataStoreParams, (WFSFeatureSource) sft.getFeatureSource());
                 } else {
-                    fs = SourceFactoryHelper.openGeoToolsFeatureSource(ft.getFeatureSource(), ft);
+                    fs = FeatureSourceFactoryHelper.openGeoToolsFeatureSource(ft.getFeatureSource(), ft);
                 }
 
                 final Query q = new Query(fs.getName().toString());
