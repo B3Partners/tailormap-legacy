@@ -713,7 +713,7 @@ public class GeoServiceActionBean extends LocalizableActionBean {
     @Before
     public void setUpdatable() {
         EntityManager em = Stripersist.getEntityManager();
-        updatable = service instanceof Updatable;
+        updatable = GeoserviceFactoryHelper.isUpdatable(service);
     }
     
     @After

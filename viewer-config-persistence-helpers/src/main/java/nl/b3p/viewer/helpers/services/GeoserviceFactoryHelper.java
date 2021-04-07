@@ -11,6 +11,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class GeoserviceFactoryHelper {
+    public static boolean isUpdatable(GeoService gs){
+        return gs instanceof ArcGISService || gs instanceof WMSService;
+    }
+
     public static UpdateResult update(EntityManager em, GeoService gs) throws Exception {
         ServiceHelper helper = GeoserviceFactoryHelper.getServiceHelper(gs);
         return helper.updateService(em, gs);
