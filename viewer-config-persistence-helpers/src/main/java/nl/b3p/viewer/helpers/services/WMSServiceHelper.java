@@ -660,8 +660,13 @@ public class WMSServiceHelper implements GeoServiceHelper {
                 } else {
                     // Find possibly already persistent updated layer
                     // (depth first) - if new already a pluckCopy()
-                    thisLayer = result.getLayerStatus().get(layerName).getLeft();
-                    visitedLayerNames.add(layerName);
+                    MutablePair<Layer, UpdateResult.Status> res = result.getLayerStatus().get(topLayerName);
+                    if(res == null){
+                        thisLayer = null;
+                    }else {
+                        thisLayer = res.getLeft();
+                        visitedLayerNames.add(layerName);
+                    }
                 }
             }
 
