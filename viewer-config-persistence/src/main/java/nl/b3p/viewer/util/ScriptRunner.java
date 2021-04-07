@@ -18,7 +18,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package nl.b3p.viewer.util.databaseupdate;
+package nl.b3p.viewer.util;
 import java.io.IOException;
 import java.io.LineNumberReader;
 import java.io.Reader;

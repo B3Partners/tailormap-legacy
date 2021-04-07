@@ -19,7 +19,6 @@ package nl.b3p.viewer.util;
 import nl.b3p.viewer.config.app.*;
 import nl.b3p.viewer.config.metadata.Metadata;
 import nl.b3p.viewer.config.services.*;
-import nl.b3p.viewer.util.databaseupdate.ScriptRunner;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

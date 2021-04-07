@@ -211,6 +211,14 @@
             <type>test-jar</type>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>org.flamingo-mc</groupId>
+            <artifactId>viewer-config-persistence-helpers</artifactId>
+            <type>test-jar</type>
+            <scope>test</scope>
+            <version>${flamingo.version}</version>
+        </dependency>
         <dependency>
             <groupId>org.powermock</groupId>
             <artifactId>powermock-module-junit4</artifactId>

@@ -25,12 +25,14 @@ import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.i18n.ResourceBundleProvider;
 import nl.b3p.viewer.components.ComponentRegistry;
 import nl.b3p.viewer.components.ComponentRegistryInitializer;
+import nl.b3p.viewer.components.ViewerComponent;
 import nl.b3p.viewer.config.ClobElement;
 import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.ConfiguredComponent;
 import nl.b3p.viewer.config.metadata.Metadata;
 import nl.b3p.viewer.config.security.Authorizations;
 import nl.b3p.viewer.config.security.User;
+import nl.b3p.viewer.helpers.app.ComponentHelper;
 import nl.b3p.viewer.util.SelectedContentCache;
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONException;
@@ -515,9 +517,10 @@ public class ApplicationActionBean extends LocalizableApplicationActionBean impl
                 }
                 if(!classNamesDone.contains(cc.getClassName())) {
                     classNamesDone.add(cc.getClassName());
+                    ViewerComponent vc = ComponentHelper.getViewerComponent(cc.getClassName());
 
-                    if(cc.getViewerComponent() != null && cc.getViewerComponent().getSources() != null) {
-                        for(File f: cc.getViewerComponent().getSources()) {
+                    if(vc!= null && vc.getSources() != null) {
+                        for(File f: vc.getSources()) {
                             String url = new ForwardResolution(ComponentActionBean.class, "source")
                                     .addParameter("app", name)
                                     .addParameter("version", version)

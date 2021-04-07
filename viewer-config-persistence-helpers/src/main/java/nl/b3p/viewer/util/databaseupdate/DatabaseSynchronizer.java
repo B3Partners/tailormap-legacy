@@ -18,6 +18,7 @@ package nl.b3p.viewer.util.databaseupdate;
 
 import nl.b3p.viewer.config.metadata.Metadata;
 import nl.b3p.viewer.config.stripersist.DynamicStripersistInitializer;
+import nl.b3p.viewer.util.ScriptRunner;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;

@@ -130,6 +130,13 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>org.flamingo-mc</groupId>
+            <artifactId>viewer-config-persistence-helpers</artifactId>
+            <type>test-jar</type>
+            <scope>test</scope>
+            <version>${flamingo.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
         </dependency>

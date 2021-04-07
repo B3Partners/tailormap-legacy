@@ -174,7 +174,7 @@ public class ApplicationHelper {
                         List<Bookmark> bookmarks = em.createQuery("FROM Bookmark where application = :app", Bookmark.class).setParameter("app", previousApplication).getResultList();
                         for (Bookmark bookmark : bookmarks) {
                             Bookmark clone = bookmark.clone();
-                            clone.setCreatedBy(clone.createCreatedBy(context));
+                            clone.setCreatedBy(createCreatedBy(context));
                             clone.setApplication(app);
                             processBookmark(clone, app.idMap);
                             em.persist(clone);
@@ -230,6 +230,17 @@ public class ApplicationHelper {
         //layers
         //levelorder
         //selectedcontent
+    }
+
+    public static String createCreatedBy(ActionBeanContext context){
+        String createdBy = "IP: " + context.getRequest().getRemoteAddr();
+        if (context.getRequest().getHeader("x-forwarded-for") != null) {
+            createdBy = "IP: " + context.getRequest().getHeader("x-forwarded-for") + "(proxy " + createdBy + ")";
+        }
+        if (context.getRequest().getRemoteUser() != null) {
+            createdBy += ", user: " + context.getRequest().getRemoteUser();
+        }
+        return createdBy;
     }
 
     /**

@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package databaseupdate;
+package nl.b3p.viewer.util.databaseupdate;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -32,8 +32,6 @@ import nl.b3p.viewer.config.app.StartLevel;
 import nl.b3p.viewer.config.services.Layer;
 import nl.b3p.viewer.helpers.app.ApplicationHelper;
 import nl.b3p.viewer.util.SelectedContentCache;
-import nl.b3p.viewer.util.databaseupdate.DatabaseSynchronizer;
-import nl.b3p.viewer.util.databaseupdate.DatabaseSynchronizerEM;
 import org.json.JSONException;
 import org.json.JSONObject;
 import static org.junit.Assert.assertEquals;

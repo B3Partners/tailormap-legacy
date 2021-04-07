@@ -14,15 +14,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package databaseupdate;
+package nl.b3p.viewer.util.databaseupdate;
 
 import nl.b3p.viewer.config.metadata.Metadata;
 import nl.b3p.viewer.util.TestUtil;
-import static nl.b3p.viewer.util.TestUtil.originalVersion;
 
-import nl.b3p.viewer.util.databaseupdate.DatabaseSynchronizer;
 import org.junit.After;
-import org.junit.Before;
 
 /**
  *
