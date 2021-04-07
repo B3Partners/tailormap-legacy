@@ -25,7 +25,7 @@ Ext.define("viewer.components.Snapping", {
     /** the "snap" controller. */
     snapCtl: null,
     /** any configured snappable layers. */
-    layerList: null,
+    layerList: [],
     /**
      * a set of checkboxes.
      * @private
@@ -61,7 +61,17 @@ Ext.define("viewer.components.Snapping", {
         this.initConfig(conf);
         viewer.components.Snapping.superclass.constructor.call(this, this.config);
         var me = this;
-        this.layerList = this.config.viewerController.getAppLayersWithAttributes("bufferable", this.config.layers);
+        this.config.viewerController.traverseSelectedContent(function(){}, function(layer) {
+            if (layer.bufferable) {
+                if (me.config.layers.length > 0 ) {
+                    if (me.config.layers.includes(layer.id)) {
+                        me.layerList.push(layer);
+                    }
+                } else {
+                    me.layerList.push(layer);
+                }
+            }
+        });
         this.initWindow();
         this.renderButton({
             handler: function () {
