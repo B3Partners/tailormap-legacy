@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package databaseupdate;
+package nl.b3p.viewer.util.databaseupdate;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
@@ -24,9 +24,6 @@ import nl.b3p.viewer.config.metadata.Metadata;
 import nl.b3p.viewer.config.services.SolrConf;
 import static org.junit.Assert.*;
 
-import nl.b3p.viewer.util.databaseupdate.DatabaseSynchronizer;
-import nl.b3p.viewer.util.databaseupdate.DatabaseSynchronizerEM;
-import nl.b3p.viewer.util.databaseupdate.UpdateElement;
 import org.junit.Test;
 
 /**

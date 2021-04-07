@@ -31,6 +31,7 @@ import net.sourceforge.stripes.validation.Validate;
 import net.sourceforge.stripes.validation.ValidateNestedProperties;
 import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.Bookmark;
+import nl.b3p.viewer.helpers.app.ApplicationHelper;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.json.JSONException;
@@ -102,7 +103,7 @@ public class BookmarkActionBean extends LocalizableApplicationActionBean impleme
             error = getBundle().getString("viewer.bookmarkactionbean.2");
         } else {
             try {
-                String createdBy =bookmark.createCreatedBy(context);
+                String createdBy = ApplicationHelper.createCreatedBy(context);
                 UUID uuid =UUID.randomUUID();
                 String code = uuid.toString();
                 code = code.replaceAll("-", "");

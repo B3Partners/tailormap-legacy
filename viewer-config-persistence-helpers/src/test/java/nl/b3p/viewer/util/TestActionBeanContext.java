@@ -7,11 +7,6 @@ package nl.b3p.viewer.util;
  */
 
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import javax.servlet.http.HttpServletRequest;
 import net.sourceforge.stripes.action.ActionBeanContext;
 import net.sourceforge.stripes.action.Message;
 import net.sourceforge.stripes.mock.MockHttpServletRequest;
@@ -19,6 +14,12 @@ import net.sourceforge.stripes.mock.MockHttpSession;
 import net.sourceforge.stripes.mock.MockServletContext;
 import nl.b3p.viewer.config.security.Group;
 import nl.b3p.viewer.config.security.User;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  *

@@ -20,13 +20,9 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import javax.persistence.EntityManager;
-import nl.b3p.viewer.config.app.Application;
-import nl.b3p.viewer.config.app.Application.TreeCache;
+
 import nl.b3p.viewer.config.app.ApplicationLayer;
 import nl.b3p.viewer.config.app.ConfiguredAttribute;
-import nl.b3p.viewer.config.app.Level;
-import nl.b3p.viewer.config.app.StartLayer;
-import nl.b3p.viewer.config.app.StartLevel;
 import nl.b3p.viewer.config.services.FeatureTypeRelation;
 import nl.b3p.viewer.config.services.Layer;
 import nl.b3p.viewer.config.services.SimpleFeatureType;

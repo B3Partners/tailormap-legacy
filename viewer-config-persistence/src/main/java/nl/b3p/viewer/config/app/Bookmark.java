@@ -16,7 +16,6 @@
  */
 package nl.b3p.viewer.config.app;
 
-import net.sourceforge.stripes.action.ActionBeanContext;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -108,16 +107,5 @@ public class Bookmark {
         clone.setCreatedAt(new Date());
         clone.setParams(params);
         return clone;
-    }
-
-    public static String createCreatedBy(ActionBeanContext context){
-        String createdBy = "IP: " + context.getRequest().getRemoteAddr();
-        if (context.getRequest().getHeader("x-forwarded-for") != null) {
-            createdBy = "IP: " + context.getRequest().getHeader("x-forwarded-for") + "(proxy " + createdBy + ")";
-        }
-        if (context.getRequest().getRemoteUser() != null) {
-            createdBy += ", user: " + context.getRequest().getRemoteUser();
-        }
-        return createdBy;
     }
 }

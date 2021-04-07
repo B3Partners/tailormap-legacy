@@ -16,8 +16,6 @@
  */
 package nl.b3p.viewer.config.app;
 
-import nl.b3p.viewer.components.ComponentRegistry;
-import nl.b3p.viewer.components.ViewerComponent;
 import org.apache.commons.beanutils.BeanUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -147,16 +145,6 @@ public class ConfiguredComponent implements Comparable<ConfiguredComponent> {
     public final static List<String> classesExcludedFromPushing = new ArrayList<>();
     static {
         classesExcludedFromPushing.add("viewer.components.HTML");
-    }
-
-    /**
-     * Retrieve the metadata from the component registry for the class of this
-     * component.
-     *
-     * @return the configured ViewerComponent for this component
-     */
-    public ViewerComponent getViewerComponent() {
-        return ComponentRegistry.getInstance().getViewerComponent(className);
     }
 
     /**

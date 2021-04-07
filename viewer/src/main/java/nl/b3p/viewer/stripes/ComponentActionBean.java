@@ -26,6 +26,7 @@ import nl.b3p.viewer.components.ViewerComponent;
 import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.ConfiguredComponent;
 import nl.b3p.viewer.config.security.Authorizations;
+import nl.b3p.viewer.helpers.app.ComponentHelper;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -152,9 +153,9 @@ public class ComponentActionBean implements ActionBean {
                 }
                 if(!classNamesDone.contains(cc.getClassName())) {
                     classNamesDone.add(cc.getClassName());
-
-                    if(cc.getViewerComponent() != null && cc.getViewerComponent().getSources() != null) {
-                        fileList.addAll(Arrays.asList(cc.getViewerComponent().getSources()));
+                    ViewerComponent vc = ComponentHelper.getViewerComponent(cc.getClassName());
+                    if( vc != null && vc.getSources() != null) {
+                        fileList.addAll(Arrays.asList(vc.getSources()));
                     }
                 }
             }
