@@ -128,6 +128,7 @@ public class TilingServiceHelper implements ServiceHelper{
         TileService s = null;
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
             DocumentBuilder builder = factory.newDocumentBuilder();
 
             String username = null;
