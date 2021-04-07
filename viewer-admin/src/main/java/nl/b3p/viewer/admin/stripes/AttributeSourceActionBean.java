@@ -239,8 +239,8 @@ public class AttributeSourceActionBean extends LocalizableActionBean {
             return new ForwardResolution(EDITJSP);
         }
         EntityManager em = Stripersist.getEntityManager();
-        FeatureSourceUpdateResult result =  null;//((UpdatableFeatureSource)featureSource).update(em);
-        
+        FeatureSourceUpdateResult result =  FeatureSourceHelper.update(em, featureSource);
+
         if(result.getStatus() == UpdateResult.Status.FAILED) {
             getContext().getValidationErrors().addGlobalError(new SimpleError(result.getMessage()));
             em.getTransaction().rollback();
