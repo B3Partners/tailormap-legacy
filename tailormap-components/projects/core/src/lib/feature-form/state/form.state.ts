@@ -10,6 +10,7 @@ export interface FormState {
   formOpen: boolean;
   treeOpen: boolean;
   editing: boolean;
+  multiFormWorkflow: boolean;
 }
 
 export const initialFormState: FormState = {
@@ -20,4 +21,5 @@ export const initialFormState: FormState = {
   alreadyDirty: false,
   treeOpen: false,
   editing: false,
+  multiFormWorkflow: false,
 };

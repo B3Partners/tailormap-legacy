@@ -12,7 +12,7 @@ export class FormEffects {
 
 
   public closePanelAfterSave$ = createEffect(() => this.actions$.pipe(
-    ofType(FormActions.setSetFeatures),
+    ofType(FormActions.setSetFeatures, FormActions.setNewFeature),
     concatMap(action => of(action).pipe(
       withLatestFrom(this.store$.select(selectCloseAfterSaveFeatureForm)),
     )),
