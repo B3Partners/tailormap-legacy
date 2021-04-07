@@ -604,6 +604,9 @@ public class WMSServiceHelper implements GeoServiceHelper {
             // Start with a new no name topLayer
             newTopLayer = LayerHelper.pluckCopy(update.getTopLayer());
         } else {
+            if(result.getLayerStatus().get(topLayerName) == null){
+                throw new IllegalStateException("Not toplayer found... exiting updating layers");
+            }
             // Old persistent top layer or new plucked copy from updated service
             newTopLayer = result.getLayerStatus().get(topLayerName).getLeft();
         }
