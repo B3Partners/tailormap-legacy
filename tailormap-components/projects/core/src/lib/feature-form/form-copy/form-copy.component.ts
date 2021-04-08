@@ -1,21 +1,19 @@
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Feature } from '../../shared/generated';
 import { FormConfiguration } from '../form/form-models';
 import { FormActionsService } from '../form-actions/form-actions.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { CopyDialogData } from './form-copy-models';
 import { FeatureInitializerService } from '../../shared/feature-initializer/feature-initializer.service';
 import { FormCopyService } from './form-copy.service';
 import { ConfirmDialogService } from '../../shared/confirm-dialog/confirm-dialog.service';
 import { concatMap, map, take, takeUntil } from 'rxjs/operators';
 import { forkJoin, Observable, of, Subject } from 'rxjs';
-import { selectCopyFormOptionsOpen, selectCurrentFeature } from '../state/form.selectors';
+import { selectCopyDestinationFeatures, selectCopyFormOptionsOpen, selectCurrentCopyFeature } from '../state/form.selectors';
 import { Store } from '@ngrx/store';
 import { FormState } from '../state/form.state';
 import * as FormActions from '../state/form.actions';
 import { selectFormConfigForFeatureTypeName, selectFormConfigs } from '../../application/state/application.selectors';
-import { setCopyOptionsOpen } from '../state/form.actions';
+import { closeCopyForm, setCopyOptionsOpen } from '../state/form.actions';
 
 @Component({
   selector: 'tailormap-form-copy',
@@ -27,13 +25,9 @@ export class FormCopyComponent implements OnInit, OnDestroy {
   public optionsOpen$: Observable<boolean>;
   public optionsClosed$: Observable<boolean>;
 
-  private width = '400px';
-
   private destroyed = new Subject();
 
   public originalFeature: Feature;
-
-  public showSidePanel = 'false';
 
   public deleteRelated = false;
 
@@ -41,9 +35,9 @@ export class FormCopyComponent implements OnInit, OnDestroy {
 
   public relatedFeatures = [];
 
-  constructor(public dialogRef: MatDialogRef<FormCopyComponent>,
-              @Inject(MAT_DIALOG_DATA) public data: CopyDialogData,
-              private actionService: FormActionsService,
+  public destinationFeatures: Feature[] = [];
+
+  constructor(private actionService: FormActionsService,
               private _snackBar: MatSnackBar,
               private featureInitializer: FeatureInitializerService,
               private formCopyService: FormCopyService,
@@ -60,7 +54,11 @@ export class FormCopyComponent implements OnInit, OnDestroy {
     this.optionsOpen$ = this.store$.select(selectCopyFormOptionsOpen);
     this.optionsClosed$ = this.store$.select(selectCopyFormOptionsOpen).pipe(map(open => !open));
 
-    this.store$.select(selectCurrentFeature)
+    this.store$.select(selectCopyDestinationFeatures)
+      .pipe(takeUntil(this.destroyed))
+      .subscribe(destinationFeatures => this.destinationFeatures = destinationFeatures);
+
+    this.store$.select(selectCurrentCopyFeature)
       .pipe(
         takeUntil(this.destroyed),
         concatMap(feature => forkJoin([
@@ -78,16 +76,15 @@ export class FormCopyComponent implements OnInit, OnDestroy {
     this.store$.select(selectFormConfigs)
       .pipe(takeUntil(this.destroyed)).subscribe(formConfigs => {
       let fieldsToCopy = new Map<string, string>();
-      this.originalFeature = this.data.originalFeature;
       this.store$.dispatch(FormActions.setSetFeatures({ features: [{...this.originalFeature}]}));
       // Kijk of er al een parentFeature is (dit is er op het moment dat er al een keer eerder is gekopieerd)
       if (this.formCopyService.parentFeature != null) {
         // Kijk of het nieuwe geselecteerde feature van het zelfde type is, om vorige geselecteerde velden terug te zetten
-        if (this.formCopyService.parentFeature.objecttype === this.data.originalFeature.objecttype) {
+        if (this.formCopyService.parentFeature.objecttype === this.originalFeature.objecttype) {
           fieldsToCopy = this.formCopyService.featuresToCopy.get(this.formCopyService.parentFeature.objectGuid);
         }
       }
-      this.formCopyService.parentFeature = this.data.originalFeature;
+      this.formCopyService.parentFeature = this.originalFeature;
       this.formConfig = formConfigs.get(this.originalFeature.clazz);
       // zet uiteindelijke fieldstoCopy op de main feature (herstellen van eventuele vorige geselecteerde velden)
       this.formCopyService.featuresToCopy.set(this.originalFeature.objectGuid, fieldsToCopy);
@@ -111,7 +108,7 @@ export class FormCopyComponent implements OnInit, OnDestroy {
   }
 
   public cancel() {
-    this.dialogRef.close();
+    this.store$.dispatch(closeCopyForm());
   }
 
   public beforeCopy(): void {
@@ -126,7 +123,7 @@ export class FormCopyComponent implements OnInit, OnDestroy {
 
   public copy() {
     let successCopied = 0;
-    const destinationFeatures = this.data.destinationFeatures;
+    const destinationFeatures = this.destinationFeatures;
     if (destinationFeatures.length > 0) {
       if (this.deleteRelated) {
         this.deleteRelatedFeatures();
@@ -146,7 +143,7 @@ export class FormCopyComponent implements OnInit, OnDestroy {
               this._snackBar.open('Er zijn ' + successCopied + ' features gekopieerd', '', {
                 duration: 5000,
               });
-              this.dialogRef.close();
+              this.cancel();
             }
           },
           error => {
@@ -163,8 +160,8 @@ export class FormCopyComponent implements OnInit, OnDestroy {
   }
 
   public deleteRelatedFeatures() {
-    for (let i  = 0; i <= this.data.destinationFeatures.length - 1; i++) {
-      const feature = this.data.destinationFeatures[i];
+    for (let i  = 0; i <= this.destinationFeatures.length - 1; i++) {
+      const feature = this.destinationFeatures[i];
       const children = feature.children;
       for (let c  = 0; c <= children.length - 1; c++) {
         const child = children[c];
@@ -296,18 +293,6 @@ export class FormCopyComponent implements OnInit, OnDestroy {
     }
   }
 
-  public settings() {
-    if (this.width === '400px') {
-      this.width = '800px';
-      this.dialogRef.updateSize(this.width);
-      this.showSidePanel = 'true';
-    } else {
-      this.width = '400px';
-      this.dialogRef.updateSize(this.width);
-      this.showSidePanel = 'false';
-    }
-  }
-
   public relatedFeaturesCheckedChanged(relFeatures: Map<string, boolean>) {
     relFeatures.forEach((checked, id) => {
       if (checked) {
@@ -328,6 +313,10 @@ export class FormCopyComponent implements OnInit, OnDestroy {
 
   public openOptions() {
     this.store$.dispatch(setCopyOptionsOpen({ open: true }));
+  }
+
+  public isSelectedTab(tab: number, key: number) {
+    return `${tab}` === `${key}`;
   }
 
 }

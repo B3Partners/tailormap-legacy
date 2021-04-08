@@ -39,3 +39,5 @@ export const selectFeatureLabel = createSelector(
 
 export const selectCopyFormOpen = createSelector(selectFormState, state => state.copyFormOpen);
 export const selectCopyFormOptionsOpen = createSelector(selectFormState, state => state.copyOptionsOpen);
+export const selectCurrentCopyFeature = createSelector(selectFormState, state => state.copyFeature);
+export const selectCopyDestinationFeatures = createSelector(selectFormState, state => state.copyDestinationFeatures);

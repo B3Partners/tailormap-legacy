@@ -11,7 +11,7 @@ import { MapClickedEvent } from '../../shared/models/event-models';
 import { Store } from '@ngrx/store';
 import { WorkflowState } from '../state/workflow.state';
 import { updateConfig } from '../state/workflow.actions';
-import { selectFeatureFormOpen } from '../../feature-form/state/form.selectors';
+import { selectCopyFormOpen, selectFeatureFormOpen } from '../../feature-form/state/form.selectors';
 import { Observable } from 'rxjs';
 
 @Component({
@@ -23,6 +23,7 @@ export class WorkflowControllerComponent implements OnInit {
 
   private vectorlayerId: string;
   public formComponentOpen$: Observable<boolean>;
+  public formCopyComponentOpen$: Observable<boolean>;
 
   constructor(
     private controller: WorkflowControllerService,
@@ -31,6 +32,7 @@ export class WorkflowControllerComponent implements OnInit {
     private store$: Store<WorkflowState>,
   ) {
     this.formComponentOpen$ = this.store$.select(selectFeatureFormOpen);
+    this.formCopyComponentOpen$ = this.store$.select(selectCopyFormOpen);
   }
 
   @Input()

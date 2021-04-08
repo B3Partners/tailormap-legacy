@@ -1,10 +1,9 @@
 import { Workflow } from './Workflow';
 import { MapClickedEvent } from '../../shared/models/event-models';
 import { Feature } from '../../shared/generated';
-import { FormCopyComponent } from '../../feature-form/form-copy/form-copy.component';
-import { CopyDialogData } from '../../feature-form/form-copy/form-copy-models';
 import { selectFeature } from '../state/workflow.selectors';
 import { takeUntil } from 'rxjs/operators';
+import { openCopyForm } from '../../feature-form/state/form.actions';
 
 export class CopyWorkflow extends Workflow {
   private feature: Feature;
@@ -72,25 +71,26 @@ export class CopyWorkflow extends Workflow {
   }
 
   public openDialog() {
-    const dialogData: CopyDialogData = {
-      originalFeature: this.feature,
-      destinationFeatures: this.destinationFeatures,
-
-    };
-    const dialogRef = this.dialog.open(FormCopyComponent, {
-      width: '400px',
-      data: dialogData,
-      position: {
-        right: '50px',
-      },
-      hasBackdrop: false,
-    });
-
-    dialogRef.afterClosed().subscribe(() => {
-      this.highlightLayer.removeAllFeatures();
-      this.destinationFeatures = [];
-      this.endWorkflow();
-    });
+    this.store$.dispatch(openCopyForm({ feature: this.feature }));
+    // const dialogData: CopyDialogData = {
+    //   originalFeature: this.feature,
+    //   destinationFeatures: this.destinationFeatures,
+    //
+    // };
+    // const dialogRef = this.dialog.open(FormCopyComponent, {
+    //   width: '400px',
+    //   data: dialogData,
+    //   position: {
+    //     right: '50px',
+    //   },
+    //   hasBackdrop: false,
+    // });
+    //
+    // dialogRef.afterClosed().subscribe(() => {
+    //   this.highlightLayer.removeAllFeatures();
+    //   this.destinationFeatures = [];
+    //   this.endWorkflow();
+    // });
   }
 
   public getDestinationFeatures(): Feature[] {

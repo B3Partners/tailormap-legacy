@@ -36,7 +36,7 @@ export const initialFormState: FormState = {
   multiFormWorkflow: false,
 
   copyFeature: null,
-  copyDestinationFeatures: null,
+  copyDestinationFeatures: [],
   copySelectedAttributes: [],
   copySelectedFeature: null,
   copyFormOpen: false,
