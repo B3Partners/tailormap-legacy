@@ -127,15 +127,16 @@ export class CriteriaComponent implements OnInit, OnDestroy {
       };
     }
 
-    this.attributeFilter = {
-      ...this.attributeFilter,
-      value: initialCriteria.value,
-      condition: initialCriteria.value,
-    };
-
     this.criteriaForm.patchValue({
       ...initialCriteria,
     });
+
+    this.attributeFilter = {
+      ...this.attributeFilter,
+      value: initialCriteria.value,
+      condition: initialCriteria.condition,
+    };
+
   }
 
   public updateAttributeFilter(attributeFilter: { condition: string; value: string }) {
