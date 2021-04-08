@@ -33,7 +33,6 @@ import java.util.*;
 @Entity
 @DiscriminatorValue(ArcGISService.PROTOCOL)
 public class ArcGISService extends GeoService{
-    private static final org.apache.commons.logging.Log log = org.apache.commons.logging.LogFactory.getLog(ArcGISService.class);
 
     public static final String PROTOCOL = "arcgis";
 
