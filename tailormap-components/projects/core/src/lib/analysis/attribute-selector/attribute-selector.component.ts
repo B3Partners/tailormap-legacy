@@ -118,7 +118,7 @@ export class AttributeSelectorComponent implements OnInit, OnDestroy {
     this.availableAttributesSubject$.next(filteredAttributes);
 
     if (this._selectedAttribute) {
-      this.attributeValueChanged(this._selectedAttribute);
+      setTimeout(() => this.attributeControl.patchValue(this._selectedAttribute), 0);
     }
   }
 
