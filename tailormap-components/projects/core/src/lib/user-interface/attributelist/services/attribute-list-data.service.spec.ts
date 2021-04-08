@@ -6,6 +6,7 @@ import { getApplicationServiceMockProvider } from '../../../application/services
 import { getAttributeServiceMockProvider } from '../../../shared/attribute-service/mocks/attribute.service.mock';
 import { attributeListStateKey, initialAttributeListState } from '../state/attribute-list.state';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
+import { getTailorMapServiceMockProvider } from '../../../../../../bridge/src/tailor-map.service.mock';
 
 describe('AttributeListDataService', () => {
 
@@ -21,6 +22,7 @@ describe('AttributeListDataService', () => {
       getAttributeServiceMockProvider(),
       getApplicationServiceMockProvider(),
       getMetadataServiceMockProvider(),
+      getTailorMapServiceMockProvider(),
     ],
   });
 
