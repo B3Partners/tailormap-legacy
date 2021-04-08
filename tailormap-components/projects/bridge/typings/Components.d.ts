@@ -13,15 +13,6 @@ declare interface LayerSelectedEvent{
   service: number;
 }
 
-declare interface CQLFilterWrapper {
-  getCQL: () => string;
-}
-
-declare interface FilterActivatedEvent {
-  appLayer: AppLayer;
-  filter: CQLFilterWrapper;
-}
-
 type deactivationEvent = ( ) => void;
 
 declare interface ViewerController {
@@ -38,7 +29,7 @@ declare interface ViewerController {
   getFilterName: (name: string) => string;
   setFilterString: (filter: string, appLayer: AppLayer, name: string) => void;
 
-  addListener: <T>(eventName: string, handler: (event: T) => void) => void;
+  addListener: <T1, T2 = undefined>(eventName: string, handler: (event: T1, arg1: T2) => void) => void;
   getComponentsByClassNames: (classNames: string[]) => TailormapComponent[];
 
   registerSnappingLayer: (vectorLayer: VectorLayer) => void;

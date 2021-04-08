@@ -125,7 +125,7 @@ export class AttributeListTabToolbarComponent implements OnInit, OnDestroy {
             return this.userLayer.createUserLayerFromParams$({
               appLayerId: `${appLayerId}`,
               title: result,
-              query: appLayer.filter.getCQL(),
+              query: this.tailorMapService.getFilterString(appLayerId, false),
               source: UserLayerHelper.createUserLayerSourceFromMetadata(attributeMetadata, appLayer),
             });
           }),

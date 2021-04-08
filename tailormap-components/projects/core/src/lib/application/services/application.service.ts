@@ -3,7 +3,7 @@ import { TailorMapService } from '../../../../../bridge/src/tailor-map.service';
 import { Store } from '@ngrx/store';
 import { ApplicationState } from '../state/application.state';
 import {
-  setApplicationContent, setFormConfigs, setLayerVisibility, setSelectedAppLayer, updateLayerFilter,
+  setApplicationContent, setFormConfigs, setLayerVisibility, setSelectedAppLayer,
 } from '../state/application.actions';
 import { concatMap, take, takeUntil, tap, throttleTime } from 'rxjs/operators';
 import { Subject } from 'rxjs';
@@ -57,12 +57,6 @@ export class ApplicationService implements OnDestroy {
       .pipe(takeUntil(this.destroyed))
       .subscribe(selectedAppLayer => {
         this.store$.dispatch(setSelectedAppLayer({ layerId: !!selectedAppLayer ? `${selectedAppLayer.id}` : null }));
-      });
-
-    this.tailormapService.layerFilterChangedChanged$
-      .pipe(takeUntil(this.destroyed))
-      .subscribe(({ appLayer, filter }) => {
-        this.store$.dispatch(updateLayerFilter({ layerId: `${appLayer.id}`, filter }));
       });
 
     this.formConfigRepositoryService.loadFormConfiguration$()

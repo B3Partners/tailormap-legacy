@@ -10,6 +10,7 @@ export class AttributeListFilterHelper {
     tab: AttributeListTabModel,
     featureType: number,
     tabFeatureData: AttributeListFeatureTypeData[],
+    extraLayerFilters?: string,
   ): string {
     const filters = new Map<number, string>();
     tabFeatureData.forEach(data => {
@@ -20,7 +21,14 @@ export class AttributeListFilterHelper {
     });
     const isRelatedFeature = tab.featureType !== featureType;
     const mainFeatureData = tabFeatureData.find(data => data.featureType === tab.featureType);
-    return AttributeListFilterHelper.getQueryForFeatureType(tab, featureType, filters, isRelatedFeature, mainFeatureData);
+    return AttributeListFilterHelper.getQueryForFeatureType(
+      tab,
+      featureType,
+      filters,
+      isRelatedFeature,
+      mainFeatureData,
+      extraLayerFilters,
+    );
   }
 
   private static getQueryForFeatureType(
@@ -29,6 +37,7 @@ export class AttributeListFilterHelper {
     filters: Map<number, string>,
     isRelatedFeature: boolean,
     mainFeatureData: AttributeListFeatureTypeData,
+    extraLayerFilters?: string,
   ) {
     const featureFilter: string[] = tab.relatedFeatures.map<string>(relation => {
       if (relation.foreignFeatureType === featureType) {
@@ -49,6 +58,12 @@ export class AttributeListFilterHelper {
     }
     if (isRelatedFeature && filters.has(tab.featureType)) {
       featureFilter.push(`RELATED_FEATURE(${featureType},${tab.featureType},(${filters.get(tab.featureType)}))`);
+    }
+    if (isRelatedFeature && extraLayerFilters) {
+      featureFilter.push(`RELATED_FEATURE(${featureType},${tab.featureType},(${extraLayerFilters})`);
+    }
+    if (!isRelatedFeature && extraLayerFilters) {
+      featureFilter.push(extraLayerFilters);
     }
     if (isRelatedFeature && mainFeatureData.checkedFeatures.length > 0) {
       const checkedRowsFilter = AttributeListFilterHelper.getQueryForCheckedRows(tab, featureType, mainFeatureData);

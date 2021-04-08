@@ -1,7 +1,3 @@
-import {
-  ExtentChangedEvent,
-  LayerVisibilityEvent,
-} from '../../core/src/lib/shared/models/event-models';
 import { Geometry } from '../../core/src/lib/shared/generated';
 
 declare interface App {
