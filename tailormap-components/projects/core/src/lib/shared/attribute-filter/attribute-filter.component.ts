@@ -66,6 +66,7 @@ export class AttributeFilterComponent implements OnInit, OnDestroy {
   public filteredConditions$ = this.filteredConditionsSubject$.asObservable();
 
   private formValues: FilterData = {};
+  public trackByIndex = (idx: number) => idx;
 
   constructor(
     private fb: FormBuilder,
@@ -85,7 +86,7 @@ export class AttributeFilterComponent implements OnInit, OnDestroy {
             this.initUniqueValues();
           }
           if (formValues.condition === CriteriaHelper.UNIQUE_VALUES_KEY) {
-            value = formValues.values || [];
+            value = (formValues.values || []).map((selected, i) => selected ? this.uniqueValues[i] : null).filter(val => val !== null);
           }
           return { condition: formValues.condition, value };
         }),
@@ -104,11 +105,12 @@ export class AttributeFilterComponent implements OnInit, OnDestroy {
   private initUniqueValues() {
     this.loadingUniqueValues = true;
     this.uniqueValuesLoader$.pipe(take(1)).subscribe(uniqueValues => {
-      const selectedItems = this.filter.value && Array.isArray(this.filter.value) ? new Set(this.filter.value) : new Set();
+      const selectedItems = this.filter && this.filter.value && Array.isArray(this.filter.value) ? new Set(this.filter.value) : new Set();
       const valuesForm = this.values;
       this.uniqueValues = uniqueValues;
+      valuesForm.clear();
       uniqueValues.forEach(value => {
-        valuesForm.push(this.fb.control(selectedItems.has(value) ? value : ''));
+        valuesForm.push(this.fb.control(selectedItems.has(value)));
       });
       this.loadingUniqueValues = false;
     });
@@ -119,11 +121,11 @@ export class AttributeFilterComponent implements OnInit, OnDestroy {
   }
 
   public showValueInput() {
-    return this._attributeType === AttributeTypeEnum.STRING || this._attributeType === AttributeTypeEnum.NUMBER;
+    return !this.showUniqueValuesInput() && (this._attributeType === AttributeTypeEnum.STRING || this._attributeType === AttributeTypeEnum.NUMBER);
   }
 
   public showDateInput() {
-    return this._attributeType === AttributeTypeEnum.DATE;
+    return !this.showUniqueValuesInput() && this._attributeType === AttributeTypeEnum.DATE;
   }
 
   public showUniqueValuesInput() {

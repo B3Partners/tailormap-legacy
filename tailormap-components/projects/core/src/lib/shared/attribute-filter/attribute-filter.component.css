@@ -1,0 +1,12 @@
+.unique-values-list {
+  max-height: 300px;
+  overflow: auto;
+}
+
+.unique-values-list mat-checkbox {
+  display: block;
+}
+
+.unique-values-list mat-checkbox + mat-checkbox {
+  margin-top: 3px;
+}

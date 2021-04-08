@@ -21,11 +21,11 @@
     <mat-datepicker #dp></mat-datepicker>
   </div>
 
-  <div class="form-field" *ngIf="showUniqueValuesInput()">
+  <div class="unique-values-list" *ngIf="showUniqueValuesInput()">
     <mat-spinner mode="indeterminate" diameter="20" *ngIf="loadingUniqueValues"></mat-spinner>
-    <div *ngFor="let uniqueValue of values.controls; let i=index">
-      <input type="checkbox" formControlName="values"/> {{uniqueValue[i]}}
-    </div>
+    <ng-container *ngFor="let valueControl of values.controls; let i=index; trackBy: trackByIndex">
+      <mat-checkbox [formControl]="valueControl">{{uniqueValues[i]}}</mat-checkbox>
+    </ng-container>
   </div>
 
 </ng-container>
