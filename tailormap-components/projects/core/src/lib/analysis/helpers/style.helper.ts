@@ -1,4 +1,4 @@
-import { AttributeTypeEnum } from '../../application/models/attribute-type.enum';
+import { AttributeTypeEnum } from '../../shared/models/attribute-type.enum';
 import { AnalysisSourceModel } from '../models/analysis-source.model';
 import { MakerType, UserLayerStyleModel } from '../models/user-layer-style.model';
 import { rgbToHex } from '../../shared/util/color';

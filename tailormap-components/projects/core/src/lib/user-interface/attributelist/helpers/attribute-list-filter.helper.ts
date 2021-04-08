@@ -1,7 +1,7 @@
 import { AttributeListTabModel } from '../models/attribute-list-tab.model';
 import { AttributeListFeatureTypeData } from '../models/attribute-list-feature-type-data.model';
 import { AttributeTypeHelper } from '../../../application/helpers/attribute-type.helper';
-import { AttributeTypeEnum } from '../../../application/models/attribute-type.enum';
+import { AttributeTypeEnum } from '../../../shared/models/attribute-type.enum';
 import { AttributeListFilterModel, FilterType } from '../models/attribute-list-filter-models';
 
 export class AttributeListFilterHelper {

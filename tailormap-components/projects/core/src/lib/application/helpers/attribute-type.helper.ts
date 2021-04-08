@@ -1,5 +1,5 @@
 import { Attribute } from '../../shared/attribute-service/attribute-models';
-import { AttributeTypeEnum } from '../models/attribute-type.enum';
+import { AttributeTypeEnum } from '../../shared/models/attribute-type.enum';
 
 export class AttributeTypeHelper {
 

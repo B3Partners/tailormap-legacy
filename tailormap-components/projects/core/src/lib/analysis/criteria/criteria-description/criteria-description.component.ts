@@ -20,7 +20,7 @@ import {
   DomSanitizer,
   SafeHtml,
 } from '@angular/platform-browser';
-import { AttributeTypeEnum } from '../../../application/models/attribute-type.enum';
+import { AttributeTypeEnum } from '../../../shared/models/attribute-type.enum';
 import * as moment from 'moment';
 import { MetadataService } from '../../../application/services/metadata.service';
 

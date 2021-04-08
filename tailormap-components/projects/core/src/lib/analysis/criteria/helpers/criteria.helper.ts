@@ -4,8 +4,8 @@ import { CriteriaGroupModel } from '../../models/criteria-group.model';
 import { CriteriaTypeEnum } from '../../models/criteria-type.enum';
 import { IdService } from '../../../shared/id-service/id.service';
 import { CriteriaOperatorEnum } from '../../models/criteria-operator.enum';
-import { CriteriaConditionTypeModel } from '../../models/criteria-condition-type.model';
-import { AttributeTypeEnum } from '../../../application/models/attribute-type.enum';
+import { AttributeFilterTypeModel } from '../../../shared/models/attribute-filter-type.model';
+import { AttributeTypeEnum } from '../../../shared/models/attribute-type.enum';
 import { UserLayerStyleModel } from '../../models/user-layer-style.model';
 import { StyleHelper } from '../../helpers/style.helper';
 import { ScopedUserLayerStyleModel } from '../../models/scoped-user-layer-style.model';
@@ -25,7 +25,7 @@ export class CriteriaHelper {
       && criteria.attributeType === AttributeTypeEnum.BOOLEAN || (typeof criteria.value !== 'undefined' && criteria.value !== '');
   }
 
-  public static getConditionTypes(): CriteriaConditionTypeModel[] {
+  public static getConditionTypes(): AttributeFilterTypeModel[] {
     return [
       { value: '=', label: 'Gelijk aan', readableLabel: 'gelijk is aan', attributeType: AttributeTypeEnum.NUMBER },
       { value: '>', label: 'Groter dan', readableLabel: 'groter is dan', attributeType: AttributeTypeEnum.NUMBER },

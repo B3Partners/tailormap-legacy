@@ -4,7 +4,7 @@ import { map, startWith, takeUntil } from 'rxjs/operators';
 import { MetadataService } from '../../application/services/metadata.service';
 import { FormControl } from '@angular/forms';
 import { AttributeTypeHelper } from '../../application/helpers/attribute-type.helper';
-import { AttributeTypeEnum } from '../../application/models/attribute-type.enum';
+import { AttributeTypeEnum } from '../../shared/models/attribute-type.enum';
 import { ExtendedAttributeModel } from '../../application/models/extended-attribute.model';
 
 @Component({

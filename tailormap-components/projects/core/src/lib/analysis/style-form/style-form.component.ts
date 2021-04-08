@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { UserLayerStyleModel } from '../models/user-layer-style.model';
 import { StyleHelper } from '../helpers/style.helper';
 import { MatSliderChange } from '@angular/material/slider';
-import { AttributeTypeEnum } from '../../application/models/attribute-type.enum';
+import { AttributeTypeEnum } from '../../shared/models/attribute-type.enum';
 
 @Component({
   selector: 'tailormap-style-form',
