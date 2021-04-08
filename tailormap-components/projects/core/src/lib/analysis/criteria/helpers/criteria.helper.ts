@@ -13,6 +13,8 @@ import { AttributeTypeHelper } from '../../../application/helpers/attribute-type
 
 export class CriteriaHelper {
 
+  public static UNIQUE_VALUES_KEY = 'UNIQUE_VALUES';
+
   public static validGroups(criteriaGroups: CriteriaGroupModel[]) {
     return criteriaGroups.every(group => group.criteria.length >= 1 && group.criteria.every(CriteriaHelper.isValidCriteriaCondition));
   }
@@ -25,8 +27,8 @@ export class CriteriaHelper {
       && criteria.attributeType === AttributeTypeEnum.BOOLEAN || (typeof criteria.value !== 'undefined' && criteria.value !== '');
   }
 
-  public static getConditionTypes(): AttributeFilterTypeModel[] {
-    return [
+  public static getConditionTypes(includeUniqueValues: boolean = false): AttributeFilterTypeModel[] {
+    const types: AttributeFilterTypeModel[] = [
       { value: '=', label: 'Gelijk aan', readableLabel: 'gelijk is aan', attributeType: AttributeTypeEnum.NUMBER },
       { value: '>', label: 'Groter dan', readableLabel: 'groter is dan', attributeType: AttributeTypeEnum.NUMBER },
       { value: '<', label: 'Kleiner dan', readableLabel: 'kleiner is dan', attributeType: AttributeTypeEnum.NUMBER },
@@ -43,6 +45,10 @@ export class CriteriaHelper {
       { value: 'TRUE', label: 'Is waar', readableLabel: 'waar is', attributeType: AttributeTypeEnum.BOOLEAN },
       { value: 'FALSE', label: 'Is niet waar', readableLabel: 'niet waar is', attributeType: AttributeTypeEnum.BOOLEAN },
     ];
+    if (includeUniqueValues) {
+      types.push({ value: CriteriaHelper.UNIQUE_VALUES_KEY, label: 'Bevat 1 van de waardes', readableLabel: 'bevat 1 van de waardes' });
+    }
+    return types;
   }
 
   public static createCriteria(type: CriteriaTypeEnum, groups: CriteriaGroupModel[]): CriteriaModel {

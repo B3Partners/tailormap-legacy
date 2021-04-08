@@ -1,24 +1,20 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { FormControl } from '@angular/forms';
 import { deleteColumnFilter, setColumnFilter } from '../state/attribute-list.actions';
 import { Store } from '@ngrx/store';
 import { AttributeListState } from '../state/attribute-list.state';
 import { MetadataService } from '../../../application/services/metadata.service';
-import { AttributeListFilterModel, FilterType } from '../models/attribute-list-filter-models';
-
-interface AttributeListUniqueFilterValueSettings {
-  // value in column.
-  value: string;
-  // value in filter selected
-  select: boolean;
-}
+import { AttributeListFilterModel } from '../models/attribute-list-filter-models';
+import { AttributeTypeEnum } from '../../../shared/models/attribute-type.enum';
+import { map } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 
 export interface FilterDialogData {
   columnName: string;
   featureType: number;
   layerId: string;
   filter: AttributeListFilterModel | null;
+  columnType: AttributeTypeEnum;
 }
 
 @Component({
@@ -28,12 +24,8 @@ export interface FilterDialogData {
 })
 export class AttributeListFilterComponent implements OnInit {
 
-  public filterTypeSelected: FilterType;
-  public criteriaValue = new FormControl();
-  public uniqueValues: AttributeListUniqueFilterValueSettings[] = [];
-  public allOn: boolean;
-  public someOn: boolean;
-  public isLoadingUniqueValuesData: boolean;
+  public uniqueValues$: Observable<string[]>;
+  public filter: { condition?: string; value?: string | string[] } = {};
 
   constructor(public dialogRef: MatDialogRef<AttributeListFilterComponent>,
               @Inject(MAT_DIALOG_DATA) public data: FilterDialogData,
@@ -41,33 +33,20 @@ export class AttributeListFilterComponent implements OnInit {
               private metadataService: MetadataService) { }
 
   public ngOnInit(): void {
-    if (this.data.filter) {
-      this.filterTypeSelected = this.data.filter.type;
-      if (this.filterTypeSelected === FilterType.UNIQUE_VALUES) {
-        this.loadUniqueValues();
-      } else {
-        this.criteriaValue.setValue(this.data.filter.value);
-      }
+    this.uniqueValues$ = this.getUniqueValues$();
+    if (!this.data.filter) {
+      return;
     }
-    this.updateCheckState();
-  }
-
-  private getFilterValue(): string[] {
-    if (this.filterTypeSelected !== FilterType.UNIQUE_VALUES) {
-      return [this.criteriaValue.value];
-    } else {
-      return this.getSelectedUniqueValues();
-    }
-  }
-
-  private getSelectedUniqueValues(): string[] {
-    return this.uniqueValues.filter(v => v.select).map(v => v.value);
+    this.filter = {
+      condition: this.data.filter.name,
+      value: this.data.filter.value,
+    };
   }
 
   public onOk() {
     this.store$.dispatch(setColumnFilter({
-      filterType: this.filterTypeSelected,
-      value: this.getFilterValue(),
+      filterType: this.filter.condition,
+      value: typeof this.filter.value === 'string' ? [ this.filter.value ] : this.filter.value,
       featureType: this.data.featureType,
       colName: this.data.columnName,
       layerId: this.data.layerId,
@@ -90,59 +69,20 @@ export class AttributeListFilterComponent implements OnInit {
     this.dialogRef.close();
   }
 
-  public setAll (select: boolean) {
-    this.allOn = select;
-    if (this.uniqueValues === null) {
-      return;
-    }
-    this.uniqueValues.forEach(v => v.select = select);
+  public getUniqueValues$(): Observable<string[]> {
+    return this.metadataService.getUniqueValuesForAttribute$(this.data.layerId, this.data.columnName, this.data.featureType)
+      .pipe(
+        map(response => {
+          if (response.success) {
+            return response.uniqueValues[this.data.columnName];
+          }
+          return [];
+        }),
+      );
   }
 
-  public someSelected(): boolean {
-    if (this.uniqueValues === null) {
-      return false;
-    }
-    return this.uniqueValues.filter(v => v.select).length > 0 && !this.allOn;
+  public updateFilter(filter: { condition: string; value: string | string[] }) {
+    this.filter = filter;
   }
 
-  public updateSelected(value: AttributeListUniqueFilterValueSettings) {
-    value.select = !value.select;
-    this.updateCheckState();
-  }
-
-  public updateCheckState() {
-    this.allOn = this.uniqueValues != null && this.uniqueValues.every(v => v.select);
-    this.someOn = this.someSelected();
-  }
-
-  public trackByValue(index: number, value: AttributeListUniqueFilterValueSettings): string {
-    return value.value;
-  }
-
-  public loadUniqueValues(): void {
-    if (this.uniqueValues.length > 0) {
-      return;
-    }
-    this.isLoadingUniqueValuesData = true;
-    const hasFilterValues = !!this.data.filter && this.data.filter.value.length > 0;
-    const filterSet = new Set<string>(this.data.filter?.value || []);
-    this.metadataService.getUniqueValuesForAttribute$(this.data.layerId, this.data.columnName, this.data.featureType)
-      .subscribe(response => {
-        if (response.success) {
-          response.uniqueValues[this.data.columnName].forEach(value => {
-            this.uniqueValues.push({
-              value,
-              select: !hasFilterValues || filterSet.has(value),
-            });
-          });
-        }
-      },
-      () => {
-        this.isLoadingUniqueValuesData = false;
-      },
-      () => {
-        this.isLoadingUniqueValuesData = false;
-        this.updateCheckState();
-      });
-  }
 }

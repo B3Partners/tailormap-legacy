@@ -2,47 +2,11 @@
   Filter op {{data.columnName}}
 </h3>
 <div>
-<mat-radio-group color="primary" label="Filterwijze:" [(ngModel)]="filterTypeSelected">
-  <mat-radio-button value="LIKE">Waarde bevat</mat-radio-button><br/>
-  <div *ngIf="filterTypeSelected === 'LIKE'">
-    <mat-form-field appearance="standard">
-      <input matInput type="text" [formControl]="criteriaValue" />
-    </mat-form-field>
-  </div>
-  <mat-radio-button value="NOT_LIKE">Waarde bevat niet</mat-radio-button><br/>
-  <div *ngIf="filterTypeSelected === 'NOT_LIKE'">
-    <mat-form-field appearance="standard">
-      <input matInput type="text" [formControl]="criteriaValue" />
-    </mat-form-field>
-  </div>
-  <mat-radio-button (click)="loadUniqueValues()" value="UNIQUE_VALUES">Waarden</mat-radio-button><br/>
-  <div  *ngIf="filterTypeSelected === 'UNIQUE_VALUES' && !isLoadingUniqueValuesData">
-    <div class="row">
-      <mat-checkbox color="primary"
-                    [checked]="allOn"
-                    [indeterminate]="someOn"
-                    (change)="setAll($event.checked)">
-        Selecteer alles
-      </mat-checkbox>
-    </div>
 
-    <mat-divider></mat-divider>
-
-    <mat-dialog-content class="mat-typography">
-      <div class="row"  *ngFor="let value of this.uniqueValues; trackBy: trackByValue">
-        <mat-checkbox class="icon-checkbox" color="primary"
-                      [checked]="value.select"
-                      (change)="updateSelected(value)">
-          {{value.value}}
-        </mat-checkbox>
-
-      </div>
-    </mat-dialog-content>
-
-  </div>
-</mat-radio-group>
-
-  <mat-divider></mat-divider>
+  <tailormap-attribute-filter [attributeType]="data.columnType"
+                              [filter]="filter"
+                              [uniqueValues$]="uniqueValues$"
+                              (filterChanged)="updateFilter($event)"></tailormap-attribute-filter>
 
   <mat-dialog-actions>
     <button mat-raised-button color="primary"
@@ -58,4 +22,5 @@
       Cancel
     </button>
   </mat-dialog-actions>
+
 </div>

@@ -136,12 +136,14 @@ export class AttributeListTableComponent implements OnInit, OnDestroy {
 
   public onFilterClick(columnName: string): void {
     const filterModel = this.filters.find(f => f.name === columnName);
+    const column = this.columns.find(c => c.name === columnName);
     this.dialog.open(AttributeListFilterComponent, {
       data: {
         columnName,
         featureType: this.featureType,
         layerId: this.layerId,
         filter: filterModel,
+        columnType: column.attributeType,
       },
     });
   }

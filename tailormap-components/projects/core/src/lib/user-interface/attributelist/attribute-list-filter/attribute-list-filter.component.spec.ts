@@ -1,10 +1,11 @@
-import { Spectator, createComponentFactory, createSpyObject } from '@ngneat/spectator';
+import { createComponentFactory, createSpyObject, Spectator } from '@ngneat/spectator';
 import { AttributeListFilterComponent, FilterDialogData } from './attribute-list-filter.component';
 import { SharedModule } from '../../../shared/shared.module';
 import { attributeListStateKey, initialAttributeListState } from '../state/attribute-list.state';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { getMetadataServiceMockProvider } from '../../../application/services/mocks/metadata.service.mock';
+import { AttributeTypeEnum } from '../../../shared/models/attribute-type.enum';
 
 describe('AttributeListFilterComponent', () => {
 
@@ -18,6 +19,7 @@ describe('AttributeListFilterComponent', () => {
     featureType: 1,
     filter: null,
     layerId: '1',
+    columnType: AttributeTypeEnum.STRING,
   };
 
   const createComponent = createComponentFactory({
