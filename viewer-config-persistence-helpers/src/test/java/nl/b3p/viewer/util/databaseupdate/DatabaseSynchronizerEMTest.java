@@ -87,11 +87,13 @@ public class DatabaseSynchronizerEMTest extends DatabaseSynchronizerTestInterfac
         TreeCache tcOld = app.loadTreeCache(entityManager);
         List<Level> oldLevels = tcOld.getLevels();
 
+        Long origRootId = app.getRoot().getId();
         Application copy = ApplicationHelper.deepCopy(app);
         copy.setVersion("" + 14);
         entityManager.detach(app);
         entityManager.persist(copy);
 
+        Long copyRootId = copy.getRoot().getId();
         TreeCache tcCopy = copy.loadTreeCache(entityManager);
         List<Level> levelsCopy = tcCopy.getLevels();
 

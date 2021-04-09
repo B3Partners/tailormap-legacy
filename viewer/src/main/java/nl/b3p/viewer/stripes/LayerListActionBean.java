@@ -26,6 +26,7 @@ import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.ApplicationLayer;
 import nl.b3p.viewer.config.security.Authorizations;
+import nl.b3p.viewer.helpers.app.ApplicationLayerHelper;
 import nl.b3p.viewer.util.LayerListHelper;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -171,7 +172,7 @@ public class LayerListActionBean implements ActionBean {
             for (ApplicationLayer layer : filteredLayers) {
                 if (Authorizations.isAppLayerReadAuthorized(app, layer, request, em)) {
                     try {
-                        jsonArray.put(layer.toJSONObject(em));
+                        jsonArray.put(ApplicationLayerHelper.toJSONObject(layer, em));
                     } catch (JSONException je) {
                         log.error("Error while getting JSONObject of Layer with id: " + layer.getId(), je);
                     }
