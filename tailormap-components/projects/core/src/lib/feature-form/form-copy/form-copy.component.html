@@ -1,22 +1,9 @@
-<div class="tree overlay-panel mat-elevation-z4" *ngIf="optionsOpen$ | async">
-  <tailormap-dialog-close-button (closeDialog)="closeTree()" icon="chevron_left"></tailormap-dialog-close-button>
-  <h1>Objectrelaties</h1>
-  <div class="tree-container">
-    <tailormap-form-tree
-      class="tailormap-tree"
-      [isCopy]="true"
-      [hasCheckboxes]="false"
-      [feature]="currentFeature"></tailormap-form-tree>
-  </div>
+<tailormap-form-tree [isCopy]="true" [hasCheckboxes]="false" [feature]="currentFeature">
   <div class="tree-options">
     <p><mat-checkbox name="deleteRelated" id="deleteRelated" [checked]="this.deleteRelated" (change)="setDeleteRelated()">Verwijder alle gerelateerde objecten van alle <br> geselecteerde doelobjecten</mat-checkbox></p>
     <p><mat-checkbox name="copyAllRelatedFeatures" id="copyAllRelatedFeatures" [checked]="isAllRelatedFeaturesSet()" (change)="setCopyAllRelatedFeatures()">Kopieer alle gerelateerde objecten</mat-checkbox></p>
   </div>
-</div>
-
-<div *ngIf="optionsClosed$ | async" class="overlay-panel-toggle mat-elevation-z2" (click)="openOptions()">
-  <mat-icon svgIcon="contextual_chevron_left"></mat-icon>
-</div>
+</tailormap-form-tree>
 
 <div class="overlay-panel mat-elevation-z4">
   <h1>Kopiëren van {{currentFeature.clazz}}</h1>

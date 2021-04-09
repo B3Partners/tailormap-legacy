@@ -6,15 +6,15 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { FeatureInitializerService } from '../../shared/feature-initializer/feature-initializer.service';
 import { FormCopyService } from './form-copy.service';
 import { ConfirmDialogService } from '../../shared/confirm-dialog/confirm-dialog.service';
-import { filter, map, switchMap, takeUntil } from 'rxjs/operators';
-import { combineLatest, Observable, of, Subject } from 'rxjs';
+import { filter, switchMap, takeUntil } from 'rxjs/operators';
+import { combineLatest, of, Subject } from 'rxjs';
 import {
-  selectCopyDestinationFeatures, selectCopyFormOptionsOpen, selectCurrentSelectedCopyFeature, selectParentCopyFeature,
+  selectCopyDestinationFeatures, selectCurrentSelectedCopyFeature, selectParentCopyFeature,
 } from '../state/form.selectors';
 import { Store } from '@ngrx/store';
 import { FormState } from '../state/form.state';
 import { selectFormConfigForFeatureTypeName, selectFormConfigs } from '../../application/state/application.selectors';
-import { closeCopyForm, setCopyOptionsOpen } from '../state/form.actions';
+import { closeCopyForm } from '../state/form.actions';
 import { ExtendedFormConfigurationModel } from '../../application/models/extended-form-configuration.model';
 
 @Component({
@@ -23,9 +23,6 @@ import { ExtendedFormConfigurationModel } from '../../application/models/extende
   styleUrls: ['./form-copy.component.css'],
 })
 export class FormCopyComponent implements OnInit, OnDestroy {
-
-  public optionsOpen$: Observable<boolean>;
-  public optionsClosed$: Observable<boolean>;
 
   private destroyed = new Subject();
 
@@ -53,9 +50,6 @@ export class FormCopyComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
-    this.optionsOpen$ = this.store$.select(selectCopyFormOptionsOpen);
-    this.optionsClosed$ = this.store$.select(selectCopyFormOptionsOpen).pipe(map(open => !open));
-
     this.store$.select(selectCurrentSelectedCopyFeature)
       .pipe(
         takeUntil(this.destroyed),
@@ -301,14 +295,6 @@ export class FormCopyComponent implements OnInit, OnDestroy {
         }
       }
     });
-  }
-
-  public closeTree() {
-    this.store$.dispatch(setCopyOptionsOpen({ open: false }));
-  }
-
-  public openOptions() {
-    this.store$.dispatch(setCopyOptionsOpen({ open: true }));
   }
 
   public isSelectedTab(tab: number, key: number) {

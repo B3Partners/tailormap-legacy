@@ -5,8 +5,8 @@ import { FormTreeHelpers } from './form-tree-helpers';
 import { Store } from '@ngrx/store';
 import { FormState } from '../state/form.state';
 import * as FormActions from '../state/form.actions';
-import { selectParentCopyFeature, selectFeatures } from '../state/form.selectors';
-import { combineLatest, Subject } from 'rxjs';
+import { selectParentCopyFeature, selectFeatures, selectCopyFormOptionsOpen, selectTreeOpen } from '../state/form.selectors';
+import { combineLatest, Observable, Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 import { TreeService } from '../../shared/tree/tree.service';
 import { TreeModel } from '../../shared/tree/models/tree.model';
@@ -27,6 +27,9 @@ export class FormTreeComponent implements OnInit, OnDestroy {
   public isCopy = false;
 
   private selectedFeature: Feature;
+
+  public treeOpen$: Observable<boolean>;
+  public treeClosed$: Observable<boolean>;
 
   @Input()
   public set feature (feature: Feature) {
@@ -76,6 +79,9 @@ export class FormTreeComponent implements OnInit, OnDestroy {
       this.hasCheckboxes,
     );
 
+    this.treeOpen$ = this.isCopy ? this.store$.select(selectCopyFormOptionsOpen) : this.store$.select(selectTreeOpen);
+    this.treeClosed$ = this.treeOpen$.pipe(map(open => !open));
+
     const selectFeatures$ = this.isCopy
       ? this.store$.select(selectParentCopyFeature).pipe(map(feature => [feature]))
       : this.store$.select(selectFeatures);
@@ -111,6 +117,20 @@ export class FormTreeComponent implements OnInit, OnDestroy {
     this.transientTreeHelper.destroy();
     this.destroyed.next();
     this.destroyed.complete();
+  }
+
+  public closeTree() {
+    const action = this.isCopy
+      ? FormActions.setCopyOptionsOpen({ open: false })
+      : FormActions.setTreeOpen({treeOpen: false});
+    this.store$.dispatch(action);
+  }
+
+  public openTree() {
+    const action = this.isCopy
+      ? FormActions.setCopyOptionsOpen({ open: true })
+      : FormActions.setTreeOpen({treeOpen: true});
+    this.store$.dispatch(action);
   }
 
 }

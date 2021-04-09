@@ -13,7 +13,6 @@ import * as WorkflowActions from '../../workflow/state/workflow.actions';
 import {
   selectCloseAfterSaveFeatureForm, selectCurrentFeature, selectFeatureFormOpen, selectFeatures, selectFormAlreadyDirty, selectFormEditing,
   selectIsMultiFormWorkflow,
-  selectTreeOpen,
 } from '../state/form.selectors';
 import { LayerUtils } from '../../shared/layer-utils/layer-utils.service';
 import { WORKFLOW_ACTION } from '../../workflow/state/workflow-models';
@@ -45,9 +44,7 @@ export class FormComponent implements OnDestroy, OnInit {
   public closeAfterSave = false;
 
   public isOpen$: Observable<boolean>;
-  public treeOpen$: Observable<boolean>;
   public editing$: Observable<boolean>;
-  public isOpenTreeClosed$: Observable<boolean>;
   public isMultiFormWorkflow$: Observable<boolean>;
 
   constructor(
@@ -90,11 +87,8 @@ export class FormComponent implements OnDestroy, OnInit {
       });
 
     this.isOpen$ = this.store$.select(selectFeatureFormOpen);
-    this.treeOpen$ = this.store$.select(selectTreeOpen);
     this.editing$ = this.store$.select(selectFormEditing);
     this.isMultiFormWorkflow$ = this.store$.select(selectIsMultiFormWorkflow);
-    this.isOpenTreeClosed$ = combineLatest([ this.isOpen$, this.treeOpen$ ])
-      .pipe(map(([ isOpen, treeOpen ]) => isOpen && !treeOpen));
   }
 
   private initForm(
@@ -119,14 +113,6 @@ export class FormComponent implements OnDestroy, OnInit {
         this.formsForNew.push(allFormConfigs.get(relationName));
       }
     });
-  }
-
-  public openTree(): void {
-    this.store$.dispatch(FormActions.setTreeOpen({treeOpen: true}));
-  }
-
-  public closeTree() {
-    this.store$.dispatch(FormActions.setTreeOpen({treeOpen: false}));
   }
 
   public ngOnDestroy() {
