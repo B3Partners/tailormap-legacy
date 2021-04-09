@@ -7,8 +7,7 @@
 <div *ngIf="isOpenTreeClosed$ | async" class="overlay-panel-toggle mat-elevation-z2" (click)="openTree()">
   <mat-icon svgIcon="contextual_chevron_left"></mat-icon>
 </div>
-
-<div *ngIf="isOpen$ | async" class="overlay-panel mat-elevation-z4">
+<div *ngIf="formConfig" class="overlay-panel mat-elevation-z4">
   <tailormap-dialog-close-button (closeDialog)="closeForm()"></tailormap-dialog-close-button>
   <h1>{{formConfig.name}} {{formDirty ? '*' : ''}}</h1>
   <div class="form-container">
@@ -55,7 +54,6 @@
             mat-flat-button
             color="primary"
             (click)="formCreator.beforeSave();">
-      <span *ngIf="!closeAfterSave">Opslaan</span>
       <span *ngIf="isMultiFormWorkflow$ | async; else saveLabel">Volgende</span>
     </button>
 

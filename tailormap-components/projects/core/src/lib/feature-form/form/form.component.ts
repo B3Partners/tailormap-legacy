@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ConfirmDialogService } from '../../shared/confirm-dialog/confirm-dialog.service';
-import { filter, map, take, takeUntil } from 'rxjs/operators';
-import { combineLatest, Observable, Subject } from 'rxjs';
+import { filter, map, switchMap, take, takeUntil } from 'rxjs/operators';
+import { combineLatest, Observable, of, Subject } from 'rxjs';
 import { FormConfiguration } from './form-models';
 import { Feature } from '../../shared/generated';
 import { FormActionsService } from '../form-actions/form-actions.service';
@@ -23,6 +23,8 @@ import { FormHelpers } from './form-helpers';
 import { FeatureInitializerService } from '../../shared/feature-initializer/feature-initializer.service';
 import { toggleFeatureFormVisibility } from '../state/form.actions';
 import { EditFeatureGeometryService } from '../services/edit-feature-geometry.service';
+import { AttributeMetadataResponse } from '../../shared/attribute-service/attribute-models';
+import { ExtendedFormConfigurationModel } from '../../application/models/extended-form-configuration.model';
 
 @Component({
   selector: 'tailormap-form',
@@ -59,30 +61,64 @@ export class FormComponent implements OnDestroy, OnInit {
   }
 
   public ngOnInit(): void {
-    combineLatest([
-      this.store$.select(selectFeatures),
-      this.store$.select(selectCloseAfterSaveFeatureForm),
-    ])
-      .pipe(takeUntil(this.destroyed))
-      .subscribe(([features, closeAfterSave]) => {
-        this.features = [...features];
-        this.isBulk = features.length > 1;
-        this.closeAfterSave = closeAfterSave;
-    });
+    this.store$.select(selectCurrentFeature)
+      .pipe(
+        takeUntil(this.destroyed),
+        switchMap(feature => combineLatest([
+          of(feature),
+          this.store$.select(selectFeatures),
+          this.store$.select(selectFeatureFormOpen),
+        ])),
+        filter(([ feature, _features, formOpen ]) => formOpen && !!feature.clazz),
+        switchMap(([ feature, features ]) => combineLatest([
+          of(feature),
+          of(features),
+          this.store$.select(selectCloseAfterSaveFeatureForm),
+          this.store$.select(selectFormAlreadyDirty),
+          this.store$.select(selectFormConfigForFeatureTypeName, feature.clazz),
+          this.store$.select(selectFormConfigs),
+          this.store$.select(selectVisibleLayers).pipe(
+            map(appLayers => {
+              return appLayers.filter(appLayer => LayerUtils.sanitizeLayername(appLayer.layerName) === features[0].clazz)[0];
+            }),
+            switchMap(layer => this.metadataService.getFeatureTypeMetadata$(layer.id).pipe(take(1))),
+          ),
+        ])),
+      )
+      .subscribe(([ feature, features, closeAfterSave, formAlreadyDirty, formConfig, allFormConfigs, metaDataResponse ]) => {
+        this.initForm(feature, features, closeAfterSave, formAlreadyDirty, formConfig, allFormConfigs, metaDataResponse);
+      });
 
-    this.store$.select(selectFormAlreadyDirty).pipe(takeUntil(this.destroyed)).subscribe(value => this.formDirty = value);
-    this.store$.select(selectCurrentFeature).pipe(takeUntil(this.destroyed)).subscribe((feature) => {
-      this.feature = {...feature};
-      if (this.feature.clazz) {
-        this.initForm();
-      }
-    });
     this.isOpen$ = this.store$.select(selectFeatureFormOpen);
     this.treeOpen$ = this.store$.select(selectTreeOpen);
     this.editing$ = this.store$.select(selectFormEditing);
     this.isMultiFormWorkflow$ = this.store$.select(selectIsMultiFormWorkflow);
     this.isOpenTreeClosed$ = combineLatest([ this.isOpen$, this.treeOpen$ ])
       .pipe(map(([ isOpen, treeOpen ]) => isOpen && !treeOpen));
+  }
+
+  private initForm(
+    feature: Feature,
+    features: Feature[],
+    closeAfterSave: boolean,
+    formAlreadyDirty: boolean,
+    formConfig: FormConfiguration,
+    allFormConfigs: Map<string, ExtendedFormConfigurationModel>,
+    metaDataResponse: AttributeMetadataResponse,
+  ) {
+    this.feature = { ...feature };
+    this.formDirty = !!formAlreadyDirty;
+    this.formConfig = formConfig;
+    this.features = [...features];
+    this.isBulk = features.length > 1;
+    this.closeAfterSave = closeAfterSave;
+
+    metaDataResponse.relations.forEach(rel => {
+      const relationName = LayerUtils.sanitizeLayername(rel.foreignFeatureTypeName);
+      if (allFormConfigs.has(relationName)) {
+        this.formsForNew.push(allFormConfigs.get(relationName));
+      }
+    });
   }
 
   public openTree(): void {
@@ -96,36 +132,6 @@ export class FormComponent implements OnDestroy, OnInit {
   public ngOnDestroy() {
     this.destroyed.next();
     this.destroyed.complete();
-  }
-
-  private initForm() {
-    this.formDirty = false;
-    combineLatest([
-      this.store$.select(selectFormConfigForFeatureTypeName, this.feature.clazz),
-      this.store$.select(selectFormConfigs),
-      this.store$.select(selectVisibleLayers),
-      this.store$.select(selectFeatureFormOpen),
-    ])
-      .pipe(
-        takeUntil(this.destroyed),
-        filter(([_formConfig, _configs, _appLayers, formOpen]) => formOpen),
-      )
-      .subscribe(([formConfig, configs, appLayers]) => {
-      this.formConfig = formConfig;
-      const layer = appLayers.filter(appLayer => LayerUtils.sanitizeLayername(appLayer.layerName) === this.features[0].clazz)[0];
-      this.metadataService.getFeatureTypeMetadata$(layer.id).pipe(take(1)).subscribe((response) => {
-        const relNames: string[] = [];
-        response.relations.forEach(rel => {
-          relNames.push(LayerUtils.sanitizeLayername(rel.foreignFeatureTypeName));
-        });
-        this.formsForNew = [];
-        configs.forEach((config, key) => {
-          if (relNames.indexOf(key) !== -1) {
-            this.formsForNew.push(config);
-          }
-        });
-      });
-    });
   }
 
   public formChanged(result: boolean) {
