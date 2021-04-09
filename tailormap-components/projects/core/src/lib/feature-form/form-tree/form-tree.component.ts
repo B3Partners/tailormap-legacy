@@ -59,7 +59,7 @@ export class FormTreeComponent implements OnInit, OnDestroy {
       filter(node => !node.metadata.isFeatureType),
     ).subscribe(node => {
       if (this.isCopy) {
-        this.store$.dispatch(FormActions.setCopySelectedFeature({ feature: node.metadata.objectGuid }));
+        this.store$.dispatch(FormActions.setCopySelectedFeature({ feature: node.metadata.feature }));
       } else {
         this.store$.dispatch(FormActions.setFeature({feature: node.metadata.feature}));
       }

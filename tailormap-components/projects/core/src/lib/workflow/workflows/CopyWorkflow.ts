@@ -2,8 +2,9 @@ import { Workflow } from './Workflow';
 import { MapClickedEvent } from '../../shared/models/event-models';
 import { Feature } from '../../shared/generated';
 import { selectFeature } from '../state/workflow.selectors';
-import { takeUntil } from 'rxjs/operators';
-import { openCopyForm } from '../../feature-form/state/form.actions';
+import { take, takeUntil } from 'rxjs/operators';
+import { openCopyForm, toggleCopyDestinationFeature } from '../../feature-form/state/form.actions';
+import { selectCopyDestinationFeatures, selectCopyFormOpen } from '../../feature-form/state/form.selectors';
 
 export class CopyWorkflow extends Workflow {
   private feature: Feature;
@@ -18,7 +19,11 @@ export class CopyWorkflow extends Workflow {
       this.feature = feature;
       this.openDialog();
     });
-
+    this.store$.select(selectCopyFormOpen).pipe(takeUntil(this.destroyed)).subscribe((open) => {
+      if (!open) {
+        this.removeAllHighLightedDeatures();
+      }
+    });
   }
 
   public afterEditing(): void {
@@ -36,9 +41,7 @@ export class CopyWorkflow extends Workflow {
       (features: Feature[]) => {
         if (features && features.length > 0) {
           const feat = features[0];
-          if (!this.hasDestinationFeature(feat)) {
-            this.destinationFeatures.push(feat);
-          }
+          this.store$.dispatch(toggleCopyDestinationFeature({destinationFeature: feat}));
           this.highlightDestinationFeatures();
         }
       },
@@ -50,47 +53,22 @@ export class CopyWorkflow extends Workflow {
     );
   }
 
-  private hasDestinationFeature(feat: Feature): boolean {
-    let hasDestinationFeature = false;
-    for (let i = 0 ; i <= this.destinationFeatures.length - 1; i++) {
-      if (this.destinationFeatures[i].objectGuid === feat.objectGuid ) {
-        hasDestinationFeature = true;
-        this.destinationFeatures.splice(i, 1);
-        break;
-      }
-    }
-    return hasDestinationFeature;
+  private removeAllHighLightedDeatures () {
+    this.highlightLayer.removeAllFeatures();
   }
 
-  public highlightDestinationFeatures () {
+  private highlightDestinationFeatures () {
     this.highlightLayer.removeAllFeatures();
-    for (let i = 0 ; i <= this.destinationFeatures.length - 1; i++) {
-      const feat = this.destinationFeatures[i];
-      this.highlightLayer.readGeoJSON(this.featureInitializerService.retrieveGeometry(feat));
-    }
+    this.store$.select(selectCopyDestinationFeatures).pipe(take(1)).subscribe((features) => {
+      for (let i = 0 ; i <= features.length - 1; i++) {
+        const feat = features[i];
+        this.highlightLayer.readGeoJSON(this.featureInitializerService.retrieveGeometry(feat));
+      }
+    });
   }
 
   public openDialog() {
     this.store$.dispatch(openCopyForm({ feature: this.feature }));
-    // const dialogData: CopyDialogData = {
-    //   originalFeature: this.feature,
-    //   destinationFeatures: this.destinationFeatures,
-    //
-    // };
-    // const dialogRef = this.dialog.open(FormCopyComponent, {
-    //   width: '400px',
-    //   data: dialogData,
-    //   position: {
-    //     right: '50px',
-    //   },
-    //   hasBackdrop: false,
-    // });
-    //
-    // dialogRef.afterClosed().subscribe(() => {
-    //   this.highlightLayer.removeAllFeatures();
-    //   this.destinationFeatures = [];
-    //   this.endWorkflow();
-    // });
   }
 
   public getDestinationFeatures(): Feature[] {

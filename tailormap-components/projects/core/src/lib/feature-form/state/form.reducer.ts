@@ -83,7 +83,7 @@ const onOpenCopyForm = (state: FormState, payload: ReturnType<typeof FormActions
   ...state,
   copyFeature: payload.feature,
   copyFormOpen: true,
-  copySelectedFeature: payload.feature.objectGuid,
+  copySelectedFeature: payload.feature,
 });
 
 const onSetCopySelectedFeature = (state: FormState, payload: ReturnType<typeof FormActions.setCopySelectedFeature>): FormState => ({
@@ -136,6 +136,7 @@ const onCloseCopyForm = (state: FormState): FormState => ({
   copyFormOpen: false,
   copyFeature: null,
   copySelectedFeature: null,
+  copyDestinationFeatures: [],
 });
 
 const onSetCopyOptionsOpen = (state: FormState, payload: ReturnType<typeof FormActions.setCopyOptionsOpen>): FormState => ({

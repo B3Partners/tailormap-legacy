@@ -55,7 +55,7 @@ export const openCopyForm = createAction(
 
 export const setCopySelectedFeature = createAction(
   `${formActionsPrefix} Set Copy Selected Feature`,
-  props<{ feature: string }>(),
+  props<{ feature: Feature }>(),
 );
 
 export const toggleCopyDestinationFeature = createAction(
@@ -64,7 +64,7 @@ export const toggleCopyDestinationFeature = createAction(
 );
 
 export const toggleSelectedAttribute = createAction(
-  `${formActionsPrefix} Toggle Copy Destination Feature`,
+  `${formActionsPrefix} Toggle Selected Copy Attribute`,
   props<{ attribute: SelectedCopyAttribute }>(),
 );
 

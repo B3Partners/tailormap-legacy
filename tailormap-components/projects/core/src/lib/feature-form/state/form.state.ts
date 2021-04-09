@@ -20,7 +20,7 @@ export interface FormState {
   copyFeature: Feature;
   copyDestinationFeatures: Feature[];
   copySelectedAttributes: SelectedCopyAttribute[];
-  copySelectedFeature: string;
+  copySelectedFeature: Feature;
   copyFormOpen: boolean;
   copyOptionsOpen: boolean;
 }
