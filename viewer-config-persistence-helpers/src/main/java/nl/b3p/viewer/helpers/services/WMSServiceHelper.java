@@ -341,6 +341,9 @@ public class WMSServiceHelper implements GeoServiceHelper {
      * Reload the WMS capabilities metadata and update this entity if it is
      * changed. If WMSServicegetOverrideUrl( is false, will pickup URL changes
      * from the service.
+     * @param service Update this service
+     * @param em EntityManager Use this entitymanager
+     * @return The result
      */
     public static UpdateResult update(EntityManager em, WMSService service) {
 

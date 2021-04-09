@@ -13,6 +13,7 @@ public class LevelHelper {
      * Find the applications this level is used in. Because of mashups a level
      * can be used in more than one application.
      *
+     * @param l Level Level for which the applications must be found
      * @param em the entity manager to use
      * @return the applications this level is part of
      */

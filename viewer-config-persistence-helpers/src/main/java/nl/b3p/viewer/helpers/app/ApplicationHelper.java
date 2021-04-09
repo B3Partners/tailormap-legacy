@@ -252,6 +252,7 @@ public class ApplicationHelper {
      * method an Map is created in the same way as deepCopy creates. This Map is
      * used for converting the layerIds in the component configuration.
      *
+     * @param app The Application from which the layerIds should be matched.
      * @param old The Application to which the layerIds should be matched.
      * @param em the entity manager to use
      */
@@ -342,6 +343,7 @@ public class ApplicationHelper {
     /**
      * Create a JSON representation for use in browser to start this application.
      *
+     * @param app                   Application for which the jsonobject should be created
      * @param request               servlet request to check authorisation
      * @param validXmlTags          {@code true} if valid xml names should be produced
      * @param onlyServicesAndLayers {@code true} if only services and layers should be returned
@@ -349,7 +351,7 @@ public class ApplicationHelper {
      * @param em                    the entity manager to use
      * @return a json representation of this object
      * @throws JSONException if transforming to json fails
-     * @deprecated gebruik {@link #toJSON(HttpServletRequest, boolean, boolean, boolean, boolean,
+     * @deprecated gebruik {@link #toJSON(Application, HttpServletRequest, boolean, boolean, boolean, boolean,
      * EntityManager, boolean)}
      */
     @Deprecated
@@ -371,6 +373,7 @@ public class ApplicationHelper {
      * Create a JSON representation for use in browser to start this
      * application.
      *
+     * @param app  Application for which the jsonobject should be created
      * @param request servlet request to check authorisation
      * @param validXmlTags {@code true} if valid xml names should be produced
      * @param onlyServicesAndLayers {@code true} if only services and layers
