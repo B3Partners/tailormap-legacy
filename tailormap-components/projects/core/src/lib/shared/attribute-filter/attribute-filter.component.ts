@@ -38,6 +38,10 @@ export class AttributeFilterComponent implements OnInit, OnDestroy {
       value = filter.value[0];
     }
     this.attributeFilterForm.patchValue({ condition: filter.condition, value }, { emitEvent: false });
+    if (this.formValues && this.formValues.condition !== filter.condition && filter.condition === AttributeFilterHelper.UNIQUE_VALUES_KEY) {
+      this.initUniqueValues();
+    }
+    this.formValues = { condition: filter.condition, value: filter.value.map(val => this.mapValueToString(val)) };
   }
 
   @Input()
@@ -45,6 +49,9 @@ export class AttributeFilterComponent implements OnInit, OnDestroy {
     this.uniqueValuesLoader$ = uniqueValues$;
     this.hasUniqueValues = !!uniqueValues$;
     this.updateConditions();
+    if (this.formValues && this.formValues.condition === AttributeFilterHelper.UNIQUE_VALUES_KEY) {
+      this.initUniqueValues();
+    }
   }
 
   @Output()
@@ -55,6 +62,9 @@ export class AttributeFilterComponent implements OnInit, OnDestroy {
   public loadingUniqueValues = false;
   private uniqueValuesLoaded = false;
   public uniqueValues: { value: string; selected: boolean }[];
+
+  public allUniqueValuesSelected = false;
+  public someUniqueValuesSelected = false;
 
   public attributeFilterForm = this.fb.group({
     condition: [''],
@@ -81,11 +91,8 @@ export class AttributeFilterComponent implements OnInit, OnDestroy {
         takeUntil(this.destroyed),
         debounceTime(250),
         map<FilterFormData, FilterData>(formValues => {
-          let value: string[] = [ formValues.value ];
-          if (formValues.value && this._attributeType === AttributeTypeEnum.DATE && moment.isMoment(formValues.value)) {
-            value = [ formValues.value.toISOString() ];
-          }
-          if (this.hasUniqueValues && this.formValues.condition !== formValues.condition && formValues.condition === AttributeFilterHelper.UNIQUE_VALUES_KEY) {
+          let value = [ this.mapValueToString(formValues.value) ];
+          if (this.formValues.condition !== formValues.condition && formValues.condition === AttributeFilterHelper.UNIQUE_VALUES_KEY) {
             this.initUniqueValues();
           }
           if (formValues.condition === AttributeFilterHelper.UNIQUE_VALUES_KEY) {
@@ -105,17 +112,50 @@ export class AttributeFilterComponent implements OnInit, OnDestroy {
     this.destroyed.complete();
   }
 
+  private mapValueToString(inputValue: string | moment.Moment): string {
+    if (inputValue && this._attributeType === AttributeTypeEnum.DATE && moment.isMoment(inputValue)) {
+      return inputValue.toISOString();
+    }
+    if (typeof inputValue === 'string') {
+      return inputValue;
+    }
+    return '';
+  }
+
   private initUniqueValues() {
-    if (this.uniqueValuesLoaded) {
+    if (this.loadingUniqueValues || this.uniqueValuesLoaded || !this.hasUniqueValues) {
       return;
     }
     this.loadingUniqueValues = true;
     this.uniqueValuesLoader$.pipe(take(1)).subscribe(uniqueValues => {
-      const selectedItems = this.filter && this.filter.value && Array.isArray(this.filter.value) ? new Set(this.filter.value) : new Set();
+      const selectedItems = this.formValues && this.formValues.value && Array.isArray(this.formValues.value)
+        ? new Set(this.formValues.value)
+        : new Set();
       this.uniqueValues = uniqueValues.map(value => ({ value, selected: selectedItems.has(value) }));
       this.loadingUniqueValues = false;
       this.uniqueValuesLoaded = true;
+      this.allUniqueValuesSelected = this.getAllUniqueValuesSelected();
+      this.someUniqueValuesSelected = this.getSomeUniqueValuesSelected();
     });
+  }
+
+  private getAllUniqueValuesSelected() {
+    return this.uniqueValues.every(v => v.selected);
+  }
+
+  private getSomeUniqueValuesSelected() {
+    return this.uniqueValues.some(v => v.selected);
+  }
+
+  public toggleAllUniqueValues() {
+    this.someUniqueValuesSelected = false;
+    if (this.allUniqueValuesSelected) {
+      this.allUniqueValuesSelected = false;
+      this.uniqueValues = this.uniqueValues.map(v => ({ ...v, selected: false }));
+    } else {
+      this.allUniqueValuesSelected = true;
+      this.uniqueValues = this.uniqueValues.map(v => ({ ...v, selected: true }));
+    }
   }
 
   public showValueInput() {
@@ -152,6 +192,9 @@ export class AttributeFilterComponent implements OnInit, OnDestroy {
       }
       return u;
     });
+
+    this.allUniqueValuesSelected = this.getAllUniqueValuesSelected();
+    this.someUniqueValuesSelected = this.getSomeUniqueValuesSelected();
 
     if (this.formValues.condition === AttributeFilterHelper.UNIQUE_VALUES_KEY) {
       this.formValues.value = this.getSelectedUniqueValues();

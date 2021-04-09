@@ -21,9 +21,17 @@
     <mat-datepicker #dp></mat-datepicker>
   </div>
 
+  <mat-checkbox *ngIf="!loadingUniqueValues && showUniqueValuesInput()"
+                [checked]="allUniqueValuesSelected"
+                [indeterminate]="someUniqueValuesSelected"
+                (change)="toggleAllUniqueValues()"
+                class="unique-values-check-all">
+    <span *ngIf="allUniqueValuesSelected">Deselecteer alle waardes</span>
+    <span *ngIf="!allUniqueValuesSelected">Selecteer alle waardes</span>
+  </mat-checkbox>
+
   <div class="unique-values-list" *ngIf="showUniqueValuesInput()">
     <mat-spinner mode="indeterminate" diameter="20" *ngIf="loadingUniqueValues"></mat-spinner>
-
     <ng-container *ngFor="let uniqueValue of uniqueValues; let i = index; trackBy: trackByIndex">
       <mat-checkbox [checked]="uniqueValue.selected" (change)="toggleUniqueValue(uniqueValue.value)">{{uniqueValue.value}}</mat-checkbox>
     </ng-container>

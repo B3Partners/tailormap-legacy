@@ -26,7 +26,7 @@ export class AttributeFilterHelper {
       { condition: 'FALSE', label: 'Is niet waar', readableLabel: 'niet waar is', attributeType: AttributeTypeEnum.BOOLEAN },
     ];
     if (includeUniqueValues) {
-      types.push({ condition: AttributeFilterHelper.UNIQUE_VALUES_KEY, label: 'Bevat 1 van de waardes', readableLabel: 'bevat 1 van de waardes' });
+      types.push({ condition: AttributeFilterHelper.UNIQUE_VALUES_KEY, label: 'Kies waardes', readableLabel: 'bevat 1 van de waardes' });
     }
     return types;
   }
