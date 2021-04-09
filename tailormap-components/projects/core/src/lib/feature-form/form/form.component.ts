@@ -66,7 +66,7 @@ export class FormComponent implements OnDestroy, OnInit {
           this.store$.select(selectFeatures),
           this.store$.select(selectFeatureFormOpen),
         ])),
-        filter(([ feature, _features, formOpen ]) => formOpen && !!feature.clazz),
+        filter(([ feature, _features, formOpen ]) => formOpen && !!feature && !!feature.clazz),
         switchMap(([ feature, features ]) => combineLatest([
           of(feature),
           of(features),
