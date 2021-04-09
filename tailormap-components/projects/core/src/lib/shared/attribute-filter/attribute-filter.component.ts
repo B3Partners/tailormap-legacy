@@ -41,7 +41,7 @@ export class AttributeFilterComponent implements OnInit, OnDestroy {
     if (this.formValues && this.formValues.condition !== filter.condition && filter.condition === AttributeFilterHelper.UNIQUE_VALUES_KEY) {
       this.initUniqueValues();
     }
-    this.formValues = { condition: filter.condition, value: filter.value.map(val => this.mapValueToString(val)) };
+    this.formValues = { condition: filter.condition, value: !!filter.value ? filter.value.map(val => this.mapValueToString(val)) : [] };
   }
 
   @Input()
