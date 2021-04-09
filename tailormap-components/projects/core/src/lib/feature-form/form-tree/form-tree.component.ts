@@ -5,7 +5,7 @@ import { FormTreeHelpers } from './form-tree-helpers';
 import { Store } from '@ngrx/store';
 import { FormState } from '../state/form.state';
 import * as FormActions from '../state/form.actions';
-import { selectCurrentCopyFeature, selectFeatures } from '../state/form.selectors';
+import { selectParentCopyFeature, selectFeatures } from '../state/form.selectors';
 import { combineLatest, Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 import { TreeService } from '../../shared/tree/tree.service';
@@ -77,7 +77,7 @@ export class FormTreeComponent implements OnInit, OnDestroy {
     );
 
     const selectFeatures$ = this.isCopy
-      ? this.store$.select(selectCurrentCopyFeature).pipe(map(feature => [feature]))
+      ? this.store$.select(selectParentCopyFeature).pipe(map(feature => [feature]))
       : this.store$.select(selectFeatures);
     combineLatest([
       selectFeatures$,
