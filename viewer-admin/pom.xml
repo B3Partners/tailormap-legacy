@@ -137,7 +137,7 @@
         </dependency>
         <dependency>
             <groupId>org.flamingo-mc</groupId>
-            <artifactId>viewer-config-persistence-helpers</artifactId>
+            <artifactId>viewer-helpers</artifactId>
             <type>test-jar</type>
             <scope>test</scope>
             <version>${flamingo.version}</version>
@@ -148,7 +148,7 @@
         </dependency>
         <dependency>
             <groupId>org.flamingo-mc</groupId>
-            <artifactId>viewer-config-persistence-helpers</artifactId>
+            <artifactId>viewer-helpers</artifactId>
         </dependency>
     </dependencies>
     <build>
