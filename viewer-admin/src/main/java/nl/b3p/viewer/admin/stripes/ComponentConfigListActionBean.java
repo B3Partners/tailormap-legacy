@@ -27,6 +27,7 @@ import nl.b3p.viewer.config.app.ApplicationLayer;
 import nl.b3p.viewer.config.security.Group;
 import nl.b3p.viewer.config.services.FeatureSource;
 import nl.b3p.viewer.config.services.SimpleFeatureType;
+import nl.b3p.viewer.helpers.app.ApplicationLayerHelper;
 import nl.b3p.viewer.util.LayerListHelper;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -168,7 +169,7 @@ public class ComponentConfigListActionBean implements ActionBean {
             List<ApplicationLayer> layers =LayerListHelper.getLayers(app, filterable, bufferable, editable, influence, arc, wfs, attribute, false, null,em);
             for (ApplicationLayer layer : layers) {
                 try {
-                    jsonArray.put(layer.toJSONObject(includeAttributes, includeAttributes,em, app));
+                    jsonArray.put(ApplicationLayerHelper.toJSONObject(layer, includeAttributes, includeAttributes,em, app));
                 } catch (JSONException je) {
                     log.error("Error while getting JSONObject of Layer with id: " + layer.getId(), je);
                 }

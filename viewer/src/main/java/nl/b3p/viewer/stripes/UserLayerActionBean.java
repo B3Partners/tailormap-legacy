@@ -8,6 +8,7 @@ import nl.b3p.viewer.audit.AuditMessageObject;
 import nl.b3p.viewer.audit.Auditable;
 import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.ApplicationLayer;
+import nl.b3p.viewer.helpers.app.ApplicationLayerHelper;
 import nl.b3p.viewer.userlayer.UserLayerHandler;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
@@ -188,7 +189,7 @@ public class UserLayerActionBean extends LocalizableActionBean implements Action
                 if (success) {
                     message.put("appLayerId", ulh.getAppLayerId());
                     message.put("layerName", ulh.getLayerName());
-                    message.put("appLayer", ulh.getCreatedAppLayer().toJSONObject(Stripersist.getEntityManager()));
+                    message.put("appLayer", ApplicationLayerHelper.toJSONObject(ulh.getCreatedAppLayer(), Stripersist.getEntityManager()));
                     message.put("service",
                             ulh.getCreatedAppLayer().getService().toJSONObject(false, Stripersist.getEntityManager()));
                     this.auditMessageObject.addMessage(

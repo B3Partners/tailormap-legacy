@@ -34,6 +34,7 @@ import nl.b3p.viewer.config.app.ApplicationLayer;
 import nl.b3p.viewer.config.app.ConfiguredAttribute;
 import nl.b3p.viewer.config.security.Authorizations;
 import nl.b3p.viewer.config.services.*;
+import nl.b3p.viewer.helpers.app.ApplicationLayerHelper;
 import nl.b3p.viewer.helpers.featuresources.FeatureSourceFactoryHelper;
 import nl.b3p.viewer.helpers.featuresources.WFSFeatureSourceHelper;
 import nl.b3p.viewer.util.ChangeMatchCase;
@@ -339,7 +340,7 @@ public class AttributesActionBean extends LocalizableApplicationActionBean imple
             error = getBundle().getString("viewer.attributesactionbean.2");
         } else {
 
-            appLayer.addAttributesJSON(json, true, Stripersist.getEntityManager());
+            ApplicationLayerHelper.addAttributesJSON(appLayer, json, true, Stripersist.getEntityManager());
             if (!userAllowedToEditGeom) {
                 // set editable to false on geometry attribute when editing of the
                 //  geometry has been disabled on the layer fot the current user

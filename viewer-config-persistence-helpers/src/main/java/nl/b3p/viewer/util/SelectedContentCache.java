@@ -20,6 +20,7 @@ import nl.b3p.viewer.config.ClobElement;
 import nl.b3p.viewer.config.app.*;
 import nl.b3p.viewer.config.security.Authorizations;
 import nl.b3p.viewer.config.services.GeoService;
+import nl.b3p.viewer.helpers.app.ApplicationLayerHelper;
 import nl.b3p.viewer.helpers.app.LevelHelper;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -350,7 +351,7 @@ public class SelectedContentCache {
 
         for (ApplicationLayer al : l.getLayers()) {
             StartLayer startLayer = al.getStartLayers().get(app);
-            JSONObject p = al.toJSONObject(includeAppLayerAttributes, includeRelations, em, app);
+            JSONObject p = ApplicationLayerHelper.toJSONObject(al, includeAppLayerAttributes, includeRelations, em, app);
             p.put("background", l.isBackground() || parentIsBackground);
             p.put("removed", startLayer == null ||startLayer.isRemoved());
 

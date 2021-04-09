@@ -309,7 +309,7 @@ public class ConfiguredAttribute {
         return o;
     }
 
-    ConfiguredAttribute deepCopy() throws Exception {
+    public ConfiguredAttribute deepCopy() throws Exception {
         ConfiguredAttribute copy = (ConfiguredAttribute)BeanUtils.cloneBean(this);
         copy.setId(null);
         return copy;

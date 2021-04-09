@@ -44,7 +44,7 @@ public class StartLevel {
     
     private boolean removed;
 
-    StartLevel deepCopy(Application app, Level levelCopy) throws Exception{
+    public StartLevel deepCopy(Application app, Level levelCopy) throws Exception{
         StartLevel copy = (StartLevel) BeanUtils.cloneBean(this);
         copy.setId(null);
         copy.setSelectedIndex(selectedIndex);
