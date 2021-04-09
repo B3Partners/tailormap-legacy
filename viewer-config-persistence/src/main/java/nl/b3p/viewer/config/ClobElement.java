@@ -16,9 +16,10 @@
  */
 package nl.b3p.viewer.config;
 
+import org.apache.commons.lang3.StringUtils;
+
 import javax.persistence.Embeddable;
 import javax.persistence.Lob;
-import org.apache.commons.lang3.StringUtils;
 
 /**
  *

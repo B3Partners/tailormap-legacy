@@ -16,11 +16,12 @@
  */
 package nl.b3p.viewer.config.services;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import javax.persistence.Basic;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 /**
  *

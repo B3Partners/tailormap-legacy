@@ -16,13 +16,14 @@
  */
 package nl.b3p.viewer.util;
 
-import java.sql.Clob;
-import java.sql.SQLException;
-import java.util.Map;
 import org.apache.commons.collections.map.CaseInsensitiveMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.transform.BasicTransformerAdapter;
+
+import java.sql.Clob;
+import java.sql.SQLException;
+import java.util.Map;
 
 /**
  * Transform the clob in application details to a string. Avoid using with very

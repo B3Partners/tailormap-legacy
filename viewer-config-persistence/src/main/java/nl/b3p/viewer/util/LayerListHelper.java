@@ -16,9 +16,6 @@
  */
 package nl.b3p.viewer.util;
 
-import java.util.ArrayList;
-import java.util.List;
-import javax.persistence.EntityManager;
 import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.ApplicationLayer;
 import nl.b3p.viewer.config.services.ArcGISFeatureSource;
@@ -27,6 +24,10 @@ import nl.b3p.viewer.config.services.Layer;
 import nl.b3p.viewer.config.services.WMSService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
+import javax.persistence.EntityManager;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *

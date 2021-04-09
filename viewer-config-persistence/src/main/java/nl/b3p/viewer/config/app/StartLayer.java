@@ -16,10 +16,11 @@
  */
 package nl.b3p.viewer.config.app;
 
+import org.apache.commons.beanutils.BeanUtils;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import org.apache.commons.beanutils.BeanUtils;
 
 /**
  *

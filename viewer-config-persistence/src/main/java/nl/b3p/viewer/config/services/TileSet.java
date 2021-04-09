@@ -16,8 +16,9 @@
  */
 package nl.b3p.viewer.config.services;
 
-import java.util.*;
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
