@@ -16,22 +16,14 @@
  */
 package nl.b3p.viewer.config.services;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import javax.persistence.*;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import javax.persistence.CollectionTable;
-import javax.persistence.Column;
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 /**
  *

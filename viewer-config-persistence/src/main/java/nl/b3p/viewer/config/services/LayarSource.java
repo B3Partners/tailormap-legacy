@@ -16,10 +16,14 @@
  */
 package nl.b3p.viewer.config.services;
 
+import nl.b3p.viewer.config.ClobElement;
+
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import java.util.HashMap;
 import java.util.Map;
-import javax.persistence.*;
-import nl.b3p.viewer.config.ClobElement;
 
 /**
  *

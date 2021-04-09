@@ -16,13 +16,9 @@
  */
 package nl.b3p.viewer.config.services;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import org.json.JSONArray;
 import org.json.JSONObject;
+
+import javax.persistence.*;
 
 /**
  *

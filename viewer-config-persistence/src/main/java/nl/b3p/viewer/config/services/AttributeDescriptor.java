@@ -16,13 +16,17 @@
  */
 package nl.b3p.viewer.config.services;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-import javax.persistence.*;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 /**
  *

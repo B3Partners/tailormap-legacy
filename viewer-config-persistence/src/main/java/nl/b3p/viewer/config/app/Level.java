@@ -16,15 +16,16 @@
  */
 package nl.b3p.viewer.config.app;
 
-import java.util.*;
-import javax.persistence.*;
-import javax.servlet.http.HttpServletRequest;
 import nl.b3p.viewer.config.security.Authorizations;
 import nl.b3p.viewer.config.services.Document;
 import org.apache.commons.beanutils.BeanUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import javax.persistence.*;
+import javax.servlet.http.HttpServletRequest;
+import java.util.*;
 
 /**
  *

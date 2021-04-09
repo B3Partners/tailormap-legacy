@@ -16,25 +16,8 @@
  */
 package nl.b3p.viewer.util;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import javax.persistence.EntityManager;
-import javax.servlet.http.HttpServletRequest;
 import nl.b3p.viewer.config.ClobElement;
-import nl.b3p.viewer.config.app.Application;
-import nl.b3p.viewer.config.app.ApplicationLayer;
-import nl.b3p.viewer.config.app.Level;
-import nl.b3p.viewer.config.app.StartLayer;
-import nl.b3p.viewer.config.app.StartLevel;
+import nl.b3p.viewer.config.app.*;
 import nl.b3p.viewer.config.security.Authorizations;
 import nl.b3p.viewer.config.services.GeoService;
 import org.apache.commons.logging.Log;
@@ -42,6 +25,12 @@ import org.apache.commons.logging.LogFactory;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import javax.persistence.EntityManager;
+import javax.servlet.http.HttpServletRequest;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.*;
 
 /**
  *

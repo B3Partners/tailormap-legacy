@@ -16,7 +16,8 @@
  */
 package nl.b3p.viewer.config.services;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
 
 /**
  *
