@@ -28,6 +28,7 @@ import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.Level;
 import nl.b3p.viewer.config.security.Group;
 import nl.b3p.viewer.config.services.Document;
+import nl.b3p.viewer.helpers.app.LevelHelper;
 import org.hibernate.*;
 import org.hibernate.criterion.*;
 import org.json.*;
@@ -161,7 +162,7 @@ public class DocumentActionBean extends LocalizableActionBean {
                 .getResultList();
         
             for (Level level: levels){
-                for(Application app: level.findApplications(em)) {
+                for(Application app: LevelHelper.findApplications(level, em)) {
                     message+="<li>"
                             + MessageFormat.format(getBundle().getString("viewer_admin.documentactionbean.inuseapp"), level.getPath(), app.getNameWithVersion())
                             + "</li>";

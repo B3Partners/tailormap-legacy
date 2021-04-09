@@ -113,6 +113,7 @@ import java.util.*;
 public class Authorizations {
     /** Humongous lock for everything, but should be locked for only short times */
     private static final Object LOCK = new Object();
+    public static final String AUTHORIZATIONS_KEY = "authorizations";
     
     private static final String ROLES_ATTRIBUTE = Authorizations.class.getName() + ".roles";
 

@@ -3,6 +3,7 @@ package nl.b3p.viewer.helpers.app;
 import net.sourceforge.stripes.action.ActionBeanContext;
 import nl.b3p.viewer.config.ClobElement;
 import nl.b3p.viewer.config.app.*;
+import nl.b3p.viewer.config.security.Authorizations;
 import nl.b3p.viewer.util.SelectedContentCache;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.logging.Log;
@@ -12,6 +13,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import javax.persistence.EntityManager;
+import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
 public class ApplicationHelper {
@@ -41,7 +43,7 @@ public class ApplicationHelper {
             copy.getRoot().processForWorkversion(copy, base);
         }
 
-        Set<Application> apps = base.getRoot().findApplications(em);
+        Set<Application> apps = LevelHelper.findApplications(base.getRoot(), em);
         for (Application application : apps) {
             em.detach(application);
         }
@@ -334,4 +336,105 @@ public class ApplicationHelper {
         }
     }
     // </editor-fold>
+
+
+    //<editor-fold desc="toJSON" default-state="collapsed">
+    /**
+     * Create a JSON representation for use in browser to start this application.
+     *
+     * @param request               servlet request to check authorisation
+     * @param validXmlTags          {@code true} if valid xml names should be produced
+     * @param onlyServicesAndLayers {@code true} if only services and layers should be returned
+     *                              should be included
+     * @param em                    the entity manager to use
+     * @return a json representation of this object
+     * @throws JSONException if transforming to json fails
+     * @deprecated gebruik {@link #toJSON(HttpServletRequest, boolean, boolean, boolean, boolean,
+     * EntityManager, boolean)}
+     */
+    @Deprecated
+    public static JSONObject toJSON(Application app,HttpServletRequest request, boolean validXmlTags, boolean onlyServicesAndLayers, EntityManager em) throws JSONException {
+        return toJSON(app, request, validXmlTags, onlyServicesAndLayers, false, false, em, true);
+    }
+
+    public static JSONObject toJSON(Application app,HttpServletRequest request, boolean validXmlTags, boolean onlyServicesAndLayers, EntityManager em, boolean hideAdminOnly) throws JSONException {
+        return toJSON(app, request, validXmlTags, onlyServicesAndLayers, false, false, em, true, hideAdminOnly);
+    }
+
+    public static JSONObject toJSON(Application app,HttpServletRequest request, boolean validXmlTags, boolean onlyServicesAndLayers,
+                             boolean includeAppLayerAttributes, boolean includeRelations,
+                             EntityManager em, boolean shouldProcessCache) throws JSONException {
+        return toJSON(app, request, validXmlTags, onlyServicesAndLayers, includeAppLayerAttributes, includeRelations, em,
+                shouldProcessCache, false);
+    }
+    /**
+     * Create a JSON representation for use in browser to start this
+     * application.
+     *
+     * @param request servlet request to check authorisation
+     * @param validXmlTags {@code true} if valid xml names should be produced
+     * @param onlyServicesAndLayers {@code true} if only services and layers
+     * should be returned
+     * @param includeAppLayerAttributes {@code true} if applayer attributes
+     * should be included
+     * @param includeRelations {@code true} if relations should be included
+     * @param em the entity manager to use
+     * @param shouldProcessCache Flag if the cache should be processed (filtering the layers/levels according to the logged in user)
+     * @param hideAdminOnly True to prevent adminOnly config items from showing up in the output
+     * @return a json representation of this object
+     * @throws JSONException if transforming to json fails
+     */
+    public static JSONObject toJSON(Application app, HttpServletRequest request, boolean validXmlTags, boolean onlyServicesAndLayers, boolean includeAppLayerAttributes, boolean includeRelations,
+                             EntityManager em, boolean shouldProcessCache, boolean hideAdminOnly) throws JSONException {
+        JSONObject o = null;
+        SelectedContentCache cache = new SelectedContentCache();
+        o = cache.getSelectedContent(request, app, validXmlTags, includeAppLayerAttributes, includeRelations, em, shouldProcessCache);
+
+        o.put("id", app.getId());
+        o.put("name", app.getName());
+        if (!onlyServicesAndLayers && app.getLayout() != null) {
+            o.put("layout", new JSONObject(app.getLayout()));
+        }
+        o.put("version", app.getVersion());
+        o.put("title", app.getTitle());
+        o.put("language", app.getLang());
+        o.put("projectionCode", app.getProjectionCode() != null ? app.getProjectionCode() : "EPSG:28992[+proj=sterea +lat_0=52.15616055555555 +lon_0=5.38763888888889 +k=0.9999079 +x_0=155000 +y_0=463000 +ellps=bessel +towgs84=565.237,50.0087,465.658,-0.406857,0.350733,-1.87035,4.0812 +units=m +no_defs]");
+
+        if (!onlyServicesAndLayers) {
+            JSONObject d = new JSONObject();
+            o.put("details", d);
+            for (Map.Entry<String, ClobElement> e : app.getDetails().entrySet()) {
+                if (!app.adminOnlyDetails.contains(e.getKey())) {
+                    d.put(e.getKey(), e.getValue());
+                }
+            }
+        }
+        if (!onlyServicesAndLayers) {
+            if (app.getStartExtent() != null) {
+                o.put("startExtent", app.getStartExtent().toJSONObject());
+            }
+            if (app.getMaxExtent() != null) {
+                o.put("maxExtent", app.getMaxExtent().toJSONObject());
+            }
+        }
+
+        if (!onlyServicesAndLayers) {
+            // Prevent n+1 query for ConfiguredComponent.details
+            em.createQuery(
+                    "from ConfiguredComponent cc left join fetch cc.details where application = :this")
+                    .setParameter("this", app)
+                    .getResultList();
+
+            JSONObject c = new JSONObject();
+            o.put("components", c);
+            for (ConfiguredComponent comp : app.getComponents()) {
+                if (Authorizations.isConfiguredComponentAuthorized(comp, request, em)) {
+                    c.put(comp.getName(), comp.toJSON(hideAdminOnly));
+                }
+            }
+        }
+
+        return o;
+    }
+    //</editor-fold>
 }

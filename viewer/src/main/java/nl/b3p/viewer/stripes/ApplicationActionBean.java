@@ -32,6 +32,7 @@ import nl.b3p.viewer.config.app.ConfiguredComponent;
 import nl.b3p.viewer.config.metadata.Metadata;
 import nl.b3p.viewer.config.security.Authorizations;
 import nl.b3p.viewer.config.security.User;
+import nl.b3p.viewer.helpers.app.ApplicationHelper;
 import nl.b3p.viewer.helpers.app.ComponentHelper;
 import nl.b3p.viewer.util.SelectedContentCache;
 import org.apache.commons.lang.StringUtils;
@@ -307,7 +308,7 @@ public class ApplicationActionBean extends LocalizableApplicationActionBean impl
         EntityManager em = Stripersist.getEntityManager();
         JSONObject response = new JSONObject();
         response.put("success", false);
-        JSONObject obj = application.toJSON(context.getRequest(), false, false, em, true);
+        JSONObject obj = ApplicationHelper.toJSON(application, context.getRequest(), false, false, em, true);
         JSONObject details = obj.optJSONObject("details");
         if (details != null) {
             details.remove(SelectedContentCache.DETAIL_CACHED_EXPANDED_SELECTED_CONTENT);
@@ -375,7 +376,7 @@ public class ApplicationActionBean extends LocalizableApplicationActionBean impl
 
         buildComponentSourceHTML(em);
 
-        appConfigJSON = application.toJSON(context.getRequest(),false, false,em).toString();
+        appConfigJSON = ApplicationHelper.toJSON(application, context.getRequest(),false, false,em).toString();
         this.viewerType = retrieveViewerType();
         if(StringUtils.isBlank(title)) {
             this.title = application.getName();

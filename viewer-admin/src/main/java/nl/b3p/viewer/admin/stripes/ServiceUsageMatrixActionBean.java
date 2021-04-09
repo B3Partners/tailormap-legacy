@@ -54,6 +54,7 @@ import nl.b3p.viewer.config.app.Level;
 import nl.b3p.viewer.config.security.Group;
 import nl.b3p.viewer.config.services.FeatureSource;
 import nl.b3p.viewer.config.services.SimpleFeatureType;
+import nl.b3p.viewer.helpers.app.ApplicationHelper;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.poi.ss.usermodel.Cell;
@@ -104,7 +105,7 @@ public class ServiceUsageMatrixActionBean extends LocalizableActionBean {
         JSONArray jsonApps = new JSONArray();
         EntityManager em = Stripersist.getEntityManager();
         for (Application app: applications) {
-            JSONObject json = new JSONObject(app.toJSON(this.context.getRequest(),true,true,em, true));
+            JSONObject json = new JSONObject(ApplicationHelper.toJSON(app, this.context.getRequest(),true,true,em, true));
             jsonApps.put(json);
         }
         //add the featureSources to the JSON.
