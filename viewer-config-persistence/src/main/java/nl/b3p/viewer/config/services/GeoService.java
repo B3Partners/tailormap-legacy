@@ -20,7 +20,6 @@ import nl.b3p.viewer.config.ClobElement;
 import nl.b3p.viewer.config.security.Authorizations;
 import nl.b3p.viewer.config.security.Authorizations.ReadWrite;
 import nl.b3p.viewer.util.DB;
-import nl.b3p.viewer.util.SelectedContentCache;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.mutable.MutableObject;
 import org.json.JSONArray;
@@ -435,7 +434,7 @@ public abstract class GeoService implements Serializable {
                 JSONObject layer = l.toJSONObject();
                 if(includeAuthorizations){
                     ReadWrite rw = Authorizations.getLayerAuthorizations(l, em);
-                    layer.put(SelectedContentCache.AUTHORIZATIONS_KEY, rw != null ? rw.toJSON() : new JSONObject());
+                    layer.put(Authorizations.AUTHORIZATIONS_KEY, rw != null ? rw.toJSON() : new JSONObject());
                 }
                 layers.put(name, layer);
             }

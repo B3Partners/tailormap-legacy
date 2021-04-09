@@ -20,6 +20,7 @@ import nl.b3p.viewer.config.ClobElement;
 import nl.b3p.viewer.config.app.*;
 import nl.b3p.viewer.config.security.Authorizations;
 import nl.b3p.viewer.config.services.GeoService;
+import nl.b3p.viewer.helpers.app.LevelHelper;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.json.JSONArray;
@@ -32,6 +33,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.*;
 
+import static nl.b3p.viewer.config.security.Authorizations.AUTHORIZATIONS_KEY;
+
 /**
  *
  * @author Meine Toonen
@@ -39,7 +42,6 @@ import java.util.*;
 public class SelectedContentCache {
 
     private static final Log log = LogFactory.getLog(SelectedContentCache.class);
-    public static final String AUTHORIZATIONS_KEY = "authorizations";
     public static final String DETAIL_CACHED_SELECTED_CONTENT = "cachedSelectedContent";
     public static final String DETAIL_CACHED_SELECTED_CONTENT_DIRTY = "cachedSelectedContentDirty";
     public static final String DETAIL_CACHED_EXPANDED_SELECTED_CONTENT = "cachedExpandedSelectedContent";
@@ -427,7 +429,7 @@ public class SelectedContentCache {
     public static void setApplicationCacheDirty(Application app, Boolean dirty, Boolean expanded, Boolean onlyThisApplication, EntityManager em) {
         Set<Application> apps = new HashSet<Application>();
         if (dirty && !onlyThisApplication) {
-            apps = app.getRoot().findApplications(em);
+            apps = LevelHelper.findApplications(app.getRoot(), em);
         } else {
             apps.add(app);
         }

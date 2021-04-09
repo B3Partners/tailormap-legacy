@@ -211,27 +211,6 @@ public class Level implements Comparable{
         
         return o;
     }    
-    
-    /**
-     * Find the applications this level is used in. Because of mashups a level
-     * can be used in more than one application.
-     *
-     * @param em the entity manager to use
-     * @return the applications this level is part of
-     */
-    public Set<Application> findApplications(EntityManager em) {
-        Level l = this;
-        while(l.getParent() != null) {
-            l = l.getParent();
-        }
-        
-        Set<Application> apps = new HashSet();
-        apps.addAll(em.createQuery(
-                    "from Application where root = :level")
-                    .setParameter("level", l)
-                    .getResultList());        
-        return apps;
-    }
 
     public String getPath() {
         Level l = this;

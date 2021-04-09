@@ -23,7 +23,6 @@ import nl.b3p.viewer.config.services.BoundingBox;
 import nl.b3p.viewer.config.services.GeoService;
 import nl.b3p.viewer.util.ApplicationDetailsValueTransformer;
 import nl.b3p.viewer.util.DB;
-import nl.b3p.viewer.util.SelectedContentCache;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
@@ -54,7 +53,7 @@ public class Application implements Comparable<Application>{
     public static final String DETAIL_GLOBAL_LAYOUT = "globalLayout";
     public static final String DETAIL_LAST_SPINUP_TIME = "lastSpinupTime";
 
-    private static Set adminOnlyDetails = new HashSet<>(Arrays.asList("opmerking"));
+    public static Set adminOnlyDetails = new HashSet<>(Arrays.asList("opmerking"));
 
     public static final Set<String> preventClearDetails = new HashSet<>(Arrays.asList(DETAIL_IS_MASHUP,
             DETAIL_GLOBAL_LAYOUT));
@@ -414,103 +413,7 @@ public class Application implements Comparable<Application>{
         authorizationsModified = new Date();
     }
 
-    /**
-     * Create a JSON representation for use in browser to start this application.
-     *
-     * @param request               servlet request to check authorisation
-     * @param validXmlTags          {@code true} if valid xml names should be produced
-     * @param onlyServicesAndLayers {@code true} if only services and layers should be returned
-     *                              should be included
-     * @param em                    the entity manager to use
-     * @return a json representation of this object
-     * @throws JSONException if transforming to json fails
-     * @deprecated gebruik {@link #toJSON(HttpServletRequest, boolean, boolean, boolean, boolean,
-     * EntityManager, boolean)}
-     */
-    @Deprecated
-    public JSONObject toJSON(HttpServletRequest request, boolean validXmlTags, boolean onlyServicesAndLayers, EntityManager em) throws JSONException {
-        return toJSON(request, validXmlTags, onlyServicesAndLayers, false, false, em, true);
-    }
 
-    public JSONObject toJSON(HttpServletRequest request, boolean validXmlTags, boolean onlyServicesAndLayers, EntityManager em, boolean hideAdminOnly) throws JSONException {
-        return toJSON(request, validXmlTags, onlyServicesAndLayers, false, false, em, true, hideAdminOnly);
-    }
-
-    public JSONObject toJSON(HttpServletRequest request, boolean validXmlTags, boolean onlyServicesAndLayers,
-                             boolean includeAppLayerAttributes, boolean includeRelations,
-                             EntityManager em, boolean shouldProcessCache) throws JSONException {
-        return toJSON(request, validXmlTags, onlyServicesAndLayers, includeAppLayerAttributes, includeRelations, em,
-                shouldProcessCache, false);
-    }
-    /**
-     * Create a JSON representation for use in browser to start this
-     * application.
-     *
-     * @param request servlet request to check authorisation
-     * @param validXmlTags {@code true} if valid xml names should be produced
-     * @param onlyServicesAndLayers {@code true} if only services and layers
-     * should be returned
-     * @param includeAppLayerAttributes {@code true} if applayer attributes
-     * should be included
-     * @param includeRelations {@code true} if relations should be included
-     * @param em the entity manager to use
-     * @param shouldProcessCache Flag if the cache should be processed (filtering the layers/levels according to the logged in user)
-     * @param hideAdminOnly True to prevent adminOnly config items from showing up in the output
-     * @return a json representation of this object
-     * @throws JSONException if transforming to json fails
-     */
-    public JSONObject toJSON(HttpServletRequest request, boolean validXmlTags, boolean onlyServicesAndLayers, boolean includeAppLayerAttributes, boolean includeRelations, 
-            EntityManager em, boolean shouldProcessCache, boolean hideAdminOnly) throws JSONException {
-        JSONObject o = null;
-        SelectedContentCache cache = new SelectedContentCache();
-        o = cache.getSelectedContent(request, this, validXmlTags, includeAppLayerAttributes, includeRelations, em, shouldProcessCache);
-
-        o.put("id", id);
-        o.put("name", name);
-        if (!onlyServicesAndLayers && layout != null) {
-            o.put("layout", new JSONObject(layout));
-        }
-        o.put("version", version);
-        o.put("title", title);
-        o.put("language", lang);
-        o.put("projectionCode", projectionCode != null ? projectionCode : "EPSG:28992[+proj=sterea +lat_0=52.15616055555555 +lon_0=5.38763888888889 +k=0.9999079 +x_0=155000 +y_0=463000 +ellps=bessel +towgs84=565.237,50.0087,465.658,-0.406857,0.350733,-1.87035,4.0812 +units=m +no_defs]");
-
-        if (!onlyServicesAndLayers) {
-            JSONObject d = new JSONObject();
-            o.put("details", d);
-            for (Map.Entry<String, ClobElement> e : details.entrySet()) {
-                if (!adminOnlyDetails.contains(e.getKey())) {
-                    d.put(e.getKey(), e.getValue());
-                }
-            }
-        }
-        if (!onlyServicesAndLayers) {
-            if (startExtent != null) {
-                o.put("startExtent", startExtent.toJSONObject());
-            }
-            if (maxExtent != null) {
-                o.put("maxExtent", maxExtent.toJSONObject());
-            }
-        }
-
-        if (!onlyServicesAndLayers) {
-            // Prevent n+1 query for ConfiguredComponent.details
-            em.createQuery(
-                    "from ConfiguredComponent cc left join fetch cc.details where application = :this")
-                    .setParameter("this", this)
-                    .getResultList();
-
-            JSONObject c = new JSONObject();
-            o.put("components", c);
-            for (ConfiguredComponent comp : components) {
-                if (Authorizations.isConfiguredComponentAuthorized(comp, request, em)) {
-                    c.put(comp.getName(), comp.toJSON(hideAdminOnly));
-                }
-            }
-        }
-
-        return o;
-    }
 
     private void walkAppTreeForJSON(JSONObject levels, JSONObject appLayers, List selectedContent, Level l, boolean parentIsBackground, HttpServletRequest request, boolean validXmlTags, boolean includeAppLayerAttributes, boolean includeRelations, EntityManager em) throws JSONException {
         JSONObject o = l.toJSONObject(false, this, request, em);
