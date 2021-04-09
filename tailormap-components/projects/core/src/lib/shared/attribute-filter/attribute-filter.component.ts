@@ -2,12 +2,12 @@ import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angu
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { AttributeFilterTypeModel } from '../models/attribute-filter-type.model';
 import { AttributeTypeEnum } from '../models/attribute-type.enum';
-import { FormArray, FormBuilder } from '@angular/forms';
+import { FormBuilder } from '@angular/forms';
 import { debounceTime, map, take, takeUntil } from 'rxjs/operators';
-import { CriteriaHelper } from '../../analysis/criteria/helpers/criteria.helper';
 import * as moment from 'moment';
+import { AttributeFilterHelper } from '../helpers/attribute-filter.helper';
 
-type FilterData = { condition?: string; value?: string | string[] };
+type FilterData = { condition?: string; value?: string[] };
 
 interface FilterFormData {
   condition: string;
@@ -30,11 +30,14 @@ export class AttributeFilterComponent implements OnInit, OnDestroy {
   }
 
   @Input()
-  public set filter(filter: { condition?: string; value?: string | string[] | moment.Moment }) {
-    if (filter.value && this._attributeType === AttributeTypeEnum.DATE) {
-      filter.value = moment(filter.value);
+  public set filter(filter: { condition?: string; value?: Array<string | moment.Moment> }) {
+    let value: string | moment.Moment = '';
+    if (filter.value && filter.value.length === 1 && this._attributeType === AttributeTypeEnum.DATE) {
+      value = moment(filter.value[0]);
+    } else if (filter.value && filter.value.length === 1) {
+      value = filter.value[0];
     }
-    this.attributeFilterForm.patchValue(filter, { emitEvent: false });
+    this.attributeFilterForm.patchValue({ condition: filter.condition, value }, { emitEvent: false });
   }
 
   @Input()
@@ -45,17 +48,17 @@ export class AttributeFilterComponent implements OnInit, OnDestroy {
   }
 
   @Output()
-  public filterChanged: EventEmitter<{ condition: string; value: string | string[] }> = new EventEmitter<{condition: string; value: string | string[] }>();
+  public filterChanged: EventEmitter<{ condition: string; value: string[] }> = new EventEmitter<{condition: string; value: string[] }>();
 
   private hasUniqueValues: boolean;
   private uniqueValuesLoader$: Observable<string[]>;
   public loadingUniqueValues = false;
-  public uniqueValues: string[];
+  private uniqueValuesLoaded = false;
+  public uniqueValues: { value: string; selected: boolean }[];
 
   public attributeFilterForm = this.fb.group({
     condition: [''],
     value: [''],
-    values: this.fb.array([]),
   });
 
   private _attributeType: AttributeTypeEnum;
@@ -78,15 +81,15 @@ export class AttributeFilterComponent implements OnInit, OnDestroy {
         takeUntil(this.destroyed),
         debounceTime(250),
         map<FilterFormData, FilterData>(formValues => {
-          let value: string | string[] = formValues.value;
-          if (value && this._attributeType === AttributeTypeEnum.DATE && moment.isMoment(value)) {
-            value = value.toISOString();
+          let value: string[] = [ formValues.value ];
+          if (formValues.value && this._attributeType === AttributeTypeEnum.DATE && moment.isMoment(formValues.value)) {
+            value = [ formValues.value.toISOString() ];
           }
-          if (this.hasUniqueValues && this.formValues.condition !== formValues.condition && formValues.condition === CriteriaHelper.UNIQUE_VALUES_KEY) {
+          if (this.hasUniqueValues && this.formValues.condition !== formValues.condition && formValues.condition === AttributeFilterHelper.UNIQUE_VALUES_KEY) {
             this.initUniqueValues();
           }
-          if (formValues.condition === CriteriaHelper.UNIQUE_VALUES_KEY) {
-            value = (formValues.values || []).map((selected, i) => selected ? this.uniqueValues[i] : null).filter(val => val !== null);
+          if (formValues.condition === AttributeFilterHelper.UNIQUE_VALUES_KEY) {
+            value = this.getSelectedUniqueValues();
           }
           return { condition: formValues.condition, value };
         }),
@@ -103,21 +106,16 @@ export class AttributeFilterComponent implements OnInit, OnDestroy {
   }
 
   private initUniqueValues() {
+    if (this.uniqueValuesLoaded) {
+      return;
+    }
     this.loadingUniqueValues = true;
     this.uniqueValuesLoader$.pipe(take(1)).subscribe(uniqueValues => {
       const selectedItems = this.filter && this.filter.value && Array.isArray(this.filter.value) ? new Set(this.filter.value) : new Set();
-      const valuesForm = this.values;
-      this.uniqueValues = uniqueValues;
-      valuesForm.clear();
-      uniqueValues.forEach(value => {
-        valuesForm.push(this.fb.control(selectedItems.has(value)));
-      });
+      this.uniqueValues = uniqueValues.map(value => ({ value, selected: selectedItems.has(value) }));
       this.loadingUniqueValues = false;
+      this.uniqueValuesLoaded = true;
     });
-  }
-
-  public get values(): FormArray {
-    return this.attributeFilterForm.get('values') as FormArray;
   }
 
   public showValueInput() {
@@ -129,7 +127,7 @@ export class AttributeFilterComponent implements OnInit, OnDestroy {
   }
 
   public showUniqueValuesInput() {
-    return this.formValues.condition === CriteriaHelper.UNIQUE_VALUES_KEY;
+    return this.formValues.condition === AttributeFilterHelper.UNIQUE_VALUES_KEY;
   }
 
   public setDisabledState() {
@@ -143,8 +141,26 @@ export class AttributeFilterComponent implements OnInit, OnDestroy {
   }
 
   private updateConditions() {
-    const conditions = CriteriaHelper.getConditionTypes(this.hasUniqueValues).filter(c => !c.attributeType || c.attributeType === this._attributeType);
+    const conditions = AttributeFilterHelper.getConditionTypes(this.hasUniqueValues).filter(c => !c.attributeType || c.attributeType === this._attributeType);
     this.filteredConditionsSubject$.next(conditions);
+  }
+
+  public toggleUniqueValue(uniqueValue: string) {
+    this.uniqueValues = this.uniqueValues.map(u => {
+      if (u.value === uniqueValue) {
+        return { ...u, selected: !u.selected };
+      }
+      return u;
+    });
+
+    if (this.formValues.condition === AttributeFilterHelper.UNIQUE_VALUES_KEY) {
+      this.formValues.value = this.getSelectedUniqueValues();
+      this.filterChanged.emit({ condition: this.formValues.condition, value: this.formValues.value });
+    }
+  }
+
+  private getSelectedUniqueValues(): string[] {
+    return (this.uniqueValues || []).filter(val => val.selected).map(val => val.value);
   }
 
 }

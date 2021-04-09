@@ -174,6 +174,7 @@ import { AttributeFilterComponent } from './attribute-filter/attribute-filter.co
         display: {
           ...MAT_MOMENT_DATE_FORMATS.parse,
           dateInput: 'DD-MM-YYYY',
+          monthYearLabel: 'MMM YYYY',
         },
       },
     },

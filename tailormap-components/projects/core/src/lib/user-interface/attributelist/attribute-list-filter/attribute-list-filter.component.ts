@@ -4,16 +4,16 @@ import { deleteColumnFilter, setColumnFilter } from '../state/attribute-list.act
 import { Store } from '@ngrx/store';
 import { AttributeListState } from '../state/attribute-list.state';
 import { MetadataService } from '../../../application/services/metadata.service';
-import { AttributeListFilterModel } from '../models/attribute-list-filter-models';
 import { AttributeTypeEnum } from '../../../shared/models/attribute-type.enum';
 import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
+import { AttributeFilterModel } from '../../../shared/models/attribute-filter.model';
 
 export interface FilterDialogData {
   columnName: string;
   featureType: number;
   layerId: string;
-  filter: AttributeListFilterModel | null;
+  filter: AttributeFilterModel | null;
   columnType: AttributeTypeEnum;
 }
 
@@ -38,17 +38,21 @@ export class AttributeListFilterComponent implements OnInit {
       return;
     }
     this.filter = {
-      condition: this.data.filter.name,
+      condition: this.data.filter.condition,
       value: this.data.filter.value,
     };
   }
 
   public onOk() {
-    this.store$.dispatch(setColumnFilter({
-      filterType: this.filter.condition,
+    const filter: AttributeFilterModel = {
+      condition: this.filter.condition,
       value: typeof this.filter.value === 'string' ? [ this.filter.value ] : this.filter.value,
+      attribute: this.data.columnName,
+      attributeType: this.data.columnType,
       featureType: this.data.featureType,
-      colName: this.data.columnName,
+    };
+    this.store$.dispatch(setColumnFilter({
+      filter,
       layerId: this.data.layerId,
     }));
 
@@ -61,11 +65,10 @@ export class AttributeListFilterComponent implements OnInit {
 
   public onClear() {
     this.store$.dispatch(deleteColumnFilter({
-      colName: this.data.columnName,
+      attribute: this.data.columnName,
       featureType: this.data.featureType,
       layerId: this.data.layerId,
     }));
-
     this.dialogRef.close();
   }
 

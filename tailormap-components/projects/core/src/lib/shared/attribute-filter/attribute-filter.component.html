@@ -3,7 +3,7 @@
   <div class="form-field">
     <label>Conditie</label>
     <mat-select formControlName="condition">
-      <mat-option *ngFor="let attr of filteredConditions$ | async" [value]="attr.value">{{attr.label}}</mat-option>
+      <mat-option *ngFor="let attr of filteredConditions$ | async" [value]="attr.condition">{{attr.label}}</mat-option>
     </mat-select>
   </div>
 
@@ -23,8 +23,9 @@
 
   <div class="unique-values-list" *ngIf="showUniqueValuesInput()">
     <mat-spinner mode="indeterminate" diameter="20" *ngIf="loadingUniqueValues"></mat-spinner>
-    <ng-container *ngFor="let valueControl of values.controls; let i=index; trackBy: trackByIndex">
-      <mat-checkbox [formControl]="valueControl">{{uniqueValues[i]}}</mat-checkbox>
+
+    <ng-container *ngFor="let uniqueValue of uniqueValues; let i = index; trackBy: trackByIndex">
+      <mat-checkbox [checked]="uniqueValue.selected" (change)="toggleUniqueValue(uniqueValue.value)">{{uniqueValue.value}}</mat-checkbox>
     </ng-container>
   </div>
 

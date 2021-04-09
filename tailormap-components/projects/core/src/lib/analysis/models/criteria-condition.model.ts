@@ -8,5 +8,5 @@ export interface CriteriaConditionModel {
   attributeType?: AttributeTypeEnum;
   attributeAlias?: string;
   condition?: string;
-  value?: string;
+  value?: string[];
 }

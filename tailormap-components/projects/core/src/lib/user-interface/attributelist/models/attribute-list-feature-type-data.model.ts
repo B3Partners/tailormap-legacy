@@ -1,7 +1,7 @@
 import { AttributeListColumnModel } from './attribute-list-column-models';
 import { AttributeListRowModel } from './attribute-list-row.model';
-import { AttributeListFilterModel } from './attribute-list-filter-models';
 import { AttributeListStatisticColumnModel } from './attribute-list-statistic-column.model';
+import { AttributeFilterModel } from '../../../shared/models/attribute-filter.model';
 
 export interface CheckedFeature extends Record<string, string> {
   rowId: string;
@@ -16,7 +16,7 @@ export interface AttributeListFeatureTypeData {
   showPassportColumnsOnly: boolean;
   rows: AttributeListRowModel[];
   checkedFeatures: CheckedFeature[];
-  filter: AttributeListFilterModel[];
+  filter: AttributeFilterModel[];
   pageSize: number;
   pageIndex: number;
   totalCount: number;

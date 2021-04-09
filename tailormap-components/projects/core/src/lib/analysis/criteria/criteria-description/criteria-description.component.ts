@@ -23,6 +23,7 @@ import {
 import { AttributeTypeEnum } from '../../../shared/models/attribute-type.enum';
 import * as moment from 'moment';
 import { MetadataService } from '../../../application/services/metadata.service';
+import { AttributeFilterHelper } from '../../../shared/helpers/attribute-filter.helper';
 
 @Component({
   selector: 'tailormap-criteria-description',
@@ -76,9 +77,9 @@ export class CriteriaDescriptionComponent {
   }
 
   private static convertConditionToQuery(condition: CriteriaConditionModel) {
-    let value = condition.value;
+    let value = condition.value.join(',');
     if (condition.attributeType === AttributeTypeEnum.DATE) {
-      value = moment(value).format('DD-MM-YYYY HH:mm');
+      value = condition.value.map(v => moment(v).format('DD-MM-YYYY HH:mm')).join(', ');
     }
     return `<strong>${condition.attributeAlias || condition.attribute}</strong> ${CriteriaDescriptionComponent.convertCondition(condition.condition)} <strong>${value}</strong>`;
   }
@@ -88,7 +89,7 @@ export class CriteriaDescriptionComponent {
   }
 
   private static convertCondition(condition: string) {
-    return CriteriaHelper.getConditionTypes().find(c => c.value === condition).readableLabel;
+    return AttributeFilterHelper.getConditionTypes().find(c => c.condition === condition).readableLabel;
   }
 
   private updateTotalCount(selectedDataSource: AnalysisSourceModel, criteria: CriteriaModel) {

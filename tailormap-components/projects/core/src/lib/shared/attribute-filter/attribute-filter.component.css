@@ -1,6 +1,7 @@
 .unique-values-list {
   max-height: 300px;
   overflow: auto;
+  margin-top: 16px;
 }
 
 .unique-values-list mat-checkbox {
