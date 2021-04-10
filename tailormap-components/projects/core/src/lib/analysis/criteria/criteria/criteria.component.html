@@ -17,7 +17,8 @@
                                   (attributeSelected)="attributeSelected($event)"></tailormap-attribute-selector>
   </div>
 
-  <tailormap-attribute-filter [attributeType]="formData.attributeType"
+  <tailormap-attribute-filter class="attribute-filter"
+                              [attributeType]="formData.attributeType"
                               [filter]="this.attributeFilter"
                               (filterChanged)="updateAttributeFilter($event)"></tailormap-attribute-filter>
 
