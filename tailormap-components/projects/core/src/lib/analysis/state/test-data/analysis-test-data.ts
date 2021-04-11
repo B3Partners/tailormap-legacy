@@ -2,7 +2,7 @@ import { AnalysisState } from '../analysis.state';
 import { CreateLayerModeEnum } from '../../models/create-layer-mode.enum';
 import { CriteriaTypeEnum } from '../../models/criteria-type.enum';
 import { CriteriaOperatorEnum } from '../../models/criteria-operator.enum';
-import { AttributeTypeEnum } from '../../../application/models/attribute-type.enum';
+import { AttributeTypeEnum } from '../../../shared/models/attribute-type.enum';
 import { ScopedUserLayerStyleModel } from '../../models/scoped-user-layer-style.model';
 
 export const analysisStateTestData: AnalysisState = {

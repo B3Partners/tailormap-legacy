@@ -1,8 +1,8 @@
 import { AttributeListTabModel } from '../models/attribute-list-tab.model';
 import { AttributeListFeatureTypeData } from '../models/attribute-list-feature-type-data.model';
 import { AttributeTypeHelper } from '../../../application/helpers/attribute-type.helper';
-import { AttributeTypeEnum } from '../../../application/models/attribute-type.enum';
-import { AttributeListFilterModel, FilterType } from '../models/attribute-list-filter-models';
+import { AttributeTypeEnum } from '../../../shared/models/attribute-type.enum';
+import { AttributeFilterHelper } from '../../../shared/helpers/attribute-filter.helper';
 
 export class AttributeListFilterHelper {
 
@@ -13,7 +13,7 @@ export class AttributeListFilterHelper {
   ): string {
     const filters = new Map<number, string>();
     tabFeatureData.forEach(data => {
-      const query = data.filter.map(filter => AttributeListFilterHelper.getQueryForFilter(filter)).join(' AND ');
+      const query = data.filter.map(filter => AttributeFilterHelper.convertFilterToQuery(filter)).join(' AND ');
       if (query !== '') {
         filters.set(data.featureType, query);
       }
@@ -83,26 +83,6 @@ export class AttributeListFilterHelper {
       return '';
     }
     return `(${selectedRowsFilter.join(' AND ')})`;
-  }
-
-  private static getQueryForFilter(filter: AttributeListFilterModel): string {
-    if (filter.type === FilterType.NOT_LIKE) {
-      return `${filter.name} NOT ILIKE ${AttributeListFilterHelper.buildValueFilterString(filter.type, filter.value)}`;
-    }
-    if (filter.type === FilterType.UNIQUE_VALUES) {
-      return `${filter.name} IN (${AttributeListFilterHelper.buildValueFilterString(filter.type, filter.value)})`;
-    }
-    return `${filter.name} ILIKE ${AttributeListFilterHelper.buildValueFilterString(filter.type, filter.value)}`;
-  }
-
-  private static buildValueFilterString(type: FilterType, values: string[]): string {
-    if (values.length === 1) {
-      if (type === FilterType.LIKE || type === FilterType.NOT_LIKE) {
-        return AttributeTypeHelper.getExpression(`%${values[0]}%`, AttributeTypeEnum.STRING);
-      }
-      return AttributeTypeHelper.getExpression(`${values[0]}`, AttributeTypeEnum.STRING);
-    }
-    return values.map(value => AttributeTypeHelper.getExpression(`${value}`, AttributeTypeEnum.STRING)).join(',');
   }
 
 }

@@ -17,26 +17,10 @@
                                   (attributeSelected)="attributeSelected($event)"></tailormap-attribute-selector>
   </div>
 
-  <div class="form-field">
-    <label>Conditie</label>
-    <mat-select formControlName="condition">
-      <mat-option *ngFor="let attr of filteredConditions$ | async" [value]="attr.value">{{attr.label}}</mat-option>
-    </mat-select>
-  </div>
-
-  <div class="form-field" *ngIf="showValueInput()">
-    <label>Waarde</label>
-    <input type="text" formControlName="value" />
-  </div>
-
-  <div class="form-field" *ngIf="showDateInput()">
-    <label>Waarde</label>
-    <div class="datepicker-input">
-      <input matInput [matDatepicker]="dp" formControlName="value" />
-      <mat-datepicker-toggle matSuffix [for]="dp"></mat-datepicker-toggle>
-    </div>
-    <mat-datepicker #dp></mat-datepicker>
-  </div>
+  <tailormap-attribute-filter class="attribute-filter"
+                              [attributeType]="formData.attributeType"
+                              [filter]="this.attributeFilter"
+                              (filterChanged)="updateAttributeFilter($event)"></tailormap-attribute-filter>
 
   <div class="form-field centered" *ngIf="showRemoveLink">
     <button class="link-button" mat-flat-button (click)="removeCriteria()">Verwijderen</button>

@@ -1,6 +1,6 @@
 import { UserLayerStyleModel } from '../../models/user-layer-style.model';
 import { ScopedUserLayerStyleModel } from '../../models/scoped-user-layer-style.model';
-import { AttributeTypeEnum } from '../../../application/models/attribute-type.enum';
+import { AttributeTypeEnum } from '../../../shared/models/attribute-type.enum';
 import { AnalysisSourceModel } from '../../models/analysis-source.model';
 
 export const getDummyUserLayerStyle = (overrides?: Partial<UserLayerStyleModel>): UserLayerStyleModel => ({

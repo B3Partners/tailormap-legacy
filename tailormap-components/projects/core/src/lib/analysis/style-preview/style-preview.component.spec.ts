@@ -6,7 +6,7 @@ import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { SharedModule } from '../../shared/shared.module';
 import { selectSelectedDataSource, selectStyles } from '../state/analysis.selectors';
 import { getDummySelectedDataSource, getDummyUserLayerStyle } from '../helpers/test-data/style-test-data';
-import { AttributeTypeEnum } from '../../application/models/attribute-type.enum';
+import { AttributeTypeEnum } from '../../shared/models/attribute-type.enum';
 
 const styles = [
   getDummyUserLayerStyle({ label: 'Boom' }),

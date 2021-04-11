@@ -12,10 +12,10 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
 import { AttributeListColumnModel } from '../models/attribute-list-column-models';
 import { AttributeListFilterComponent } from '../attribute-list-filter/attribute-list-filter.component';
 import { MatDialog } from '@angular/material/dialog';
-import { AttributeListFilterModel } from '../models/attribute-list-filter-models';
 import { AttributeListStatisticColumnModel } from '../models/attribute-list-statistic-column.model';
 import { StatisticsHelper } from '../helpers/statistics-helper';
 import { StatisticType } from '../../../shared/statistic-service/statistic-models';
+import { AttributeFilterModel } from '../../../shared/models/attribute-filter.model';
 
 @Component({
   selector: 'tailormap-attribute-list-table',
@@ -46,7 +46,7 @@ export class AttributeListTableComponent implements OnInit, OnDestroy {
 
   public uncheckedCount: number;
   public checkedCount: number;
-  private filters: AttributeListFilterModel[];
+  private filters: AttributeFilterModel[];
   public showCheckboxColumn$: Observable<boolean>;
   public sort: { column: string; direction: string };
   public rowLength: number;
@@ -135,19 +135,21 @@ export class AttributeListTableComponent implements OnInit, OnDestroy {
   }
 
   public onFilterClick(columnName: string): void {
-    const filterModel = this.filters.find(f => f.name === columnName);
+    const filterModel = this.filters.find(f => f.attribute === columnName);
+    const column = this.columns.find(c => c.name === columnName);
     this.dialog.open(AttributeListFilterComponent, {
       data: {
         columnName,
         featureType: this.featureType,
         layerId: this.layerId,
         filter: filterModel,
+        columnType: column.attributeType,
       },
     });
   }
 
   public getIsFilterActive(columnName): boolean {
-    const filterModel = this.filters.find(f => f.name === columnName);
+    const filterModel = this.filters.find(f => f.attribute === columnName);
     return !!filterModel;
   }
 

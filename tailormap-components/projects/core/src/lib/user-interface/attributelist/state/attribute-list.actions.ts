@@ -3,8 +3,8 @@ import { AttributeListConfig } from '../models/attribute-list.config';
 import { AttributeListTabModel } from '../models/attribute-list-tab.model';
 import { AttributeListFeatureTypeData } from '../models/attribute-list-feature-type-data.model';
 import { LoadDataResult, LoadTotalCountResult } from '../services/attribute-list-data.service';
-import { FilterType } from '../models/attribute-list-filter-models';
 import { StatisticType } from '../../../shared/statistic-service/statistic-models';
+import { AttributeFilterModel } from '../../../shared/models/attribute-filter.model';
 
 const attributeListActionsPrefix = '[Attributelist]';
 
@@ -110,12 +110,12 @@ export const toggleShowPassportColumns = createAction(
 
 export const setColumnFilter = createAction(
   `${attributeListActionsPrefix} Set Filter For Column On Data Tab`,
-  props<{ filterType: FilterType; value: string[]; featureType: number; colName: string; layerId: string }>(),
+  props<{ filter: AttributeFilterModel; layerId: string }>(),
 );
 
 export const deleteColumnFilter = createAction(
   `${attributeListActionsPrefix} Delete Filter For Column On Data Tab`,
-  props<{ colName: string; featureType: number; layerId: string }>(),
+  props<{ attribute: string; featureType: number; layerId: string }>(),
 );
 
 export const clearFilterForFeatureType = createAction(

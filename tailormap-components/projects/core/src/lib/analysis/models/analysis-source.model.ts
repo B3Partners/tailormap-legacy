@@ -1,4 +1,4 @@
-import { AttributeTypeEnum } from '../../application/models/attribute-type.enum';
+import { AttributeTypeEnum } from '../../shared/models/attribute-type.enum';
 
 export interface AnalysisSourceModel {
   layerId?: number;

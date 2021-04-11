@@ -1,5 +1,5 @@
 import { UserLayerStyleModel } from './user-layer-style.model';
-import { AttributeTypeEnum } from '../../application/models/attribute-type.enum';
+import { AttributeTypeEnum } from '../../shared/models/attribute-type.enum';
 
 export interface ScopedUserLayerStyleModel extends UserLayerStyleModel {
   attribute: string;

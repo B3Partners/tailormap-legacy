@@ -5,7 +5,7 @@ import { getMetadataServiceMockProvider } from '../../application/services/mocks
 import { ExtendedAttributeModel } from '../../application/models/extended-attribute.model';
 import { Observable, of } from 'rxjs';
 import { mockAttribute } from '../../shared/tests/test-data';
-import { AttributeTypeEnum } from '../../application/models/attribute-type.enum';
+import { AttributeTypeEnum } from '../../shared/models/attribute-type.enum';
 
 const setInputs = (spectator: Spectator<AttributeSelectorComponent>) => {
   spectator.setInput('appLayerId', 1);

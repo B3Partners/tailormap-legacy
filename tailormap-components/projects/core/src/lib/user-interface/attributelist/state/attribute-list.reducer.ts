@@ -5,8 +5,8 @@ import { AttributeListTabModel } from '../models/attribute-list-tab.model';
 import { AttributeListRowModel } from '../models/attribute-list-row.model';
 import { UpdateAttributeListStateHelper } from '../helpers/update-attribute-list-state.helper';
 import { AttributeListFeatureTypeData, CheckedFeature } from '../models/attribute-list-feature-type-data.model';
-import { AttributeListFilterModel } from '../models/attribute-list-filter-models';
 import { AttributeListStatisticColumnModel } from '../models/attribute-list-statistic-column.model';
+import { AttributeFilterModel } from '../../../shared/models/attribute-filter.model';
 
 const onSetAttributeListVisibility = (
   state: AttributeListState,
@@ -383,19 +383,14 @@ const onToggleShowPassportColumns = (
 const onSetSelectedColumnFilter = (
   state: AttributeListState,
   payload: ReturnType<typeof AttributeListActions.setColumnFilter>,
-): AttributeListState => updateFeatureData(state, payload.featureType, tab => {
-  const newFilter: AttributeListFilterModel = {
-    name: payload.colName,
-    value: payload.value,
-    type: payload.filterType,
-  };
+): AttributeListState => updateFeatureData(state, payload.filter.featureType, tab => {
   return {
     ...tab,
-    filter: addOrUpdateArrayItemInState<AttributeListFilterModel>(
+    filter: addOrUpdateArrayItemInState<AttributeFilterModel>(
       tab.filter,
-      (f => f.name === payload.colName),
-      (filter => ({...filter, ...newFilter})),
-      newFilter,
+      (f => f.attribute === payload.filter.attribute),
+      (filter => ({...filter, ...payload.filter})),
+      payload.filter,
     ),
   };
 });
@@ -404,7 +399,7 @@ const onDeleteColumnFilter = (
   state: AttributeListState,
   payload: ReturnType<typeof AttributeListActions.deleteColumnFilter>,
 ): AttributeListState => updateFeatureData(state, payload.featureType, featureData => {
-  const idx = featureData.filter.findIndex(filter => filter.name === payload.colName);
+  const idx = featureData.filter.findIndex(filter => filter.attribute === payload.attribute);
   if (idx === -1) {
     return featureData;
   }
