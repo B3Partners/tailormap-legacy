@@ -6,18 +6,21 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { FeatureInitializerService } from '../../shared/feature-initializer/feature-initializer.service';
 import { FormCopyService } from './form-copy.service';
 import { ConfirmDialogService } from '../../shared/confirm-dialog/confirm-dialog.service';
-import { filter, switchMap, takeUntil } from 'rxjs/operators';
-import { combineLatest, of, Subject } from 'rxjs';
+import { filter, take, takeUntil } from 'rxjs/operators';
+import { combineLatest, Subject } from 'rxjs';
 import {
-  selectCopyDestinationFeatures, selectCurrentSelectedCopyFeature, selectParentCopyFeature,
+  selectCopyDestinationFeatures,
+  selectCurrentSelectedCopyFeature, selectParentCopyFeature,
 } from '../state/form.selectors';
 import { Store } from '@ngrx/store';
 import { FormState } from '../state/form.state';
-import { selectFormConfigForFeatureTypeName, selectFormConfigs } from '../../application/state/application.selectors';
+import {  selectFormConfigs } from '../../application/state/application.selectors';
 import { closeCopyForm } from '../state/form.actions';
 import { ExtendedFormConfigurationModel } from '../../application/models/extended-form-configuration.model';
+import { TreeService } from '../../shared/tree/tree.service';
 
 @Component({
+  providers: [TreeService],
   selector: 'tailormap-form-copy',
   templateUrl: './form-copy.component.html',
   styleUrls: ['./form-copy.component.css'],
@@ -27,6 +30,10 @@ export class FormCopyComponent implements OnInit, OnDestroy {
   private destroyed = new Subject();
 
   public currentFeature: Feature;
+
+  public parentFeature: Feature;
+
+  public allFormConfigs2: Map<string, ExtendedFormConfigurationModel>;
 
   public deleteRelated = false;
 
@@ -53,21 +60,29 @@ export class FormCopyComponent implements OnInit, OnDestroy {
     this.store$.select(selectCurrentSelectedCopyFeature)
       .pipe(
         takeUntil(this.destroyed),
-        filter(feature => !!feature),
-        switchMap(feature => combineLatest([
-          of(feature),
-          this.store$.select(selectParentCopyFeature),
-          this.store$.select(selectCopyDestinationFeatures),
-          this.store$.select(selectFormConfigForFeatureTypeName, feature.clazz),
-          this.store$.select(selectFormConfigs),
-        ])),
-      )
-      .subscribe(([ feature, parentFeature, destinationFeatures, formConfig, allFormConfigs ]) => {
-        this.currentFeature = feature;
-        this.currentFormConfig = formConfig;
-        this.destinationFeatures = destinationFeatures;
-        this.initAttributesToCopy(parentFeature, allFormConfigs);
+        filter(feature => !!feature))
+          .subscribe(feature => {
+            this.currentFeature = feature;
+            if(this.allFormConfigs2) {
+              this.currentFormConfig = this.allFormConfigs2.get(feature.clazz);
+            }
       });
+
+    this.store$.select(selectCopyDestinationFeatures).pipe(takeUntil(this.destroyed)).subscribe(
+      features => {
+        this.destinationFeatures = features;
+      },
+    );
+
+    combineLatest([
+      this.store$.select(selectParentCopyFeature),
+      this.store$.select(selectFormConfigs),
+    ]).pipe(take(1)).subscribe(([parentFeature, allFormConfigs]) => {
+      this.parentFeature = parentFeature;
+      this.currentFormConfig = allFormConfigs.get(parentFeature.clazz);
+      this.allFormConfigs2 = allFormConfigs;
+      this.initAttributesToCopy(parentFeature, allFormConfigs);
+    });
   }
 
   private initAttributesToCopy(parentFeature: Feature, allFormConfigs: Map<string, ExtendedFormConfigurationModel>) {
@@ -121,13 +136,13 @@ export class FormCopyComponent implements OnInit, OnDestroy {
       const valuesToCopy = this.getPropertiesToMerge();
       const childsToCopy = this.getNewChildFeatures();
       for (let i  = 0; i <= destinationFeatures.length - 1; i++) {
-        destinationFeatures[i] = {...destinationFeatures[i], ...valuesToCopy};
+        const copydest = {...destinationFeatures[i], ...valuesToCopy};
         for (let n = 0; n <= childsToCopy.length - 1; n++) {
-          this.actionService.save$(false, [childsToCopy[n]], destinationFeatures[i]).subscribe(() => {
+          this.actionService.save$(false, [childsToCopy[n]], copydest).subscribe(() => {
             console.log('child saved');
           });
         }
-        this.actionService.save$(false, [destinationFeatures[i]], destinationFeatures[i]).subscribe(() => {
+        this.actionService.save$(false, [copydest], copydest).subscribe(() => {
             successCopied++;
             if (successCopied === destinationFeatures.length) {
               this._snackBar.open('Er zijn ' + successCopied + ' features gekopieerd', '', {
@@ -175,7 +190,7 @@ export class FormCopyComponent implements OnInit, OnDestroy {
     const fieldsToCopy = this.formCopyService.featuresToCopy.get(this.currentFeature.objectGuid);
     for (let i  = 0; i <= this.currentFormConfig.fields.length - 1; i++) {
       const config = this.currentFormConfig.fields[i];
-      if (config.tab === tab) {
+      if (config.tab.toString() === tab.toString()) {
         if (!fieldsToCopy.has(config.key)) {
             return false;
         }
@@ -190,7 +205,7 @@ export class FormCopyComponent implements OnInit, OnDestroy {
       const fieldsToCopy = this.formCopyService.featuresToCopy.get(this.currentFeature.objectGuid);
       for (let i  = 0; i <= this.currentFormConfig.fields.length - 1; i++) {
         const config = this.currentFormConfig.fields[i];
-        if (config.tab === tab) {
+        if (config.tab.toString() === tab.toString()) {
           fieldsToCopy.delete(config.key);
         }
       }
@@ -198,7 +213,7 @@ export class FormCopyComponent implements OnInit, OnDestroy {
       const fieldsToCopy = this.formCopyService.featuresToCopy.get(this.currentFeature.objectGuid);
       for (let i  = 0; i <= this.currentFormConfig.fields.length - 1; i++) {
         const config = this.currentFormConfig.fields[i];
-        if (config.tab === tab) {
+        if (config.tab.toString() === tab.toString()) {
           fieldsToCopy.set(config.key, config.label);
         }
       }
@@ -217,6 +232,7 @@ export class FormCopyComponent implements OnInit, OnDestroy {
       if (this.formCopyService.featuresToCopy.has(this.currentFeature.objectGuid)) {
         const fieldsToCopy = this.formCopyService.featuresToCopy.get(this.currentFeature.objectGuid);
         fieldsToCopy.set(event.source.id, event.source.name);
+        this.formCopyService.featuresToCopy.set(this.currentFeature.objectGuid, fieldsToCopy);
       }
     }
   }
@@ -286,7 +302,9 @@ export class FormCopyComponent implements OnInit, OnDestroy {
   public relatedFeaturesCheckedChanged(relFeatures: Map<string, boolean>) {
     relFeatures.forEach((checked, id) => {
       if (checked) {
-        this.relatedFeatures.push(id);
+        if (!this.relatedFeatures.includes(id) && id !== this.parentFeature.objectGuid) {
+          this.relatedFeatures.push(id);
+        }
       } else {
         for (let i = 0; i < this.relatedFeatures.length; i++) {
           if (id === this.relatedFeatures[i]) {

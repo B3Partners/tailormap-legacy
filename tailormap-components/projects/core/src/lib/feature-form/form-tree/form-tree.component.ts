@@ -91,7 +91,7 @@ export class FormTreeComponent implements OnInit, OnDestroy {
     ])
       .pipe(
         takeUntil(this.destroyed),
-        filter(([ features, formConfigs]) => !!features && features.length > 0 && !!formConfigs),
+        filter(([ features, formConfigs]) => !!features[0] && features.length > 0 && !!formConfigs),
       )
       .subscribe(([ features, formConfigs]) => {
         const tree: TreeModel<FormTreeMetadata> [] = FormTreeHelpers.convertFeatureToTreeModel(features, formConfigs);

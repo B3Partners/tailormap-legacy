@@ -21,7 +21,8 @@ export class CopyWorkflow extends Workflow {
     });
     this.store$.select(selectCopyFormOpen).pipe(takeUntil(this.destroyed)).subscribe((open) => {
       if (!open) {
-        this.removeAllHighLightedDeatures();
+        this.removeAllHighLightedFeatures();
+        this.endWorkflow();
       }
     });
   }
@@ -53,7 +54,7 @@ export class CopyWorkflow extends Workflow {
     );
   }
 
-  private removeAllHighLightedDeatures () {
+  private removeAllHighLightedFeatures () {
     this.highlightLayer.removeAllFeatures();
   }
 
