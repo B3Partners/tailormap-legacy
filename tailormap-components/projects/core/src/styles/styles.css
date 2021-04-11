@@ -120,6 +120,10 @@
   flex: 1;
 }
 
+.tab-group .mat-tab-header-pagination-controls-enabled {
+  padding: 0;
+}
+
 .form-field + .form-field {
   margin-top: 16px;
 }

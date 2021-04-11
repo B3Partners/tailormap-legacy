@@ -1,9 +1,3 @@
-[mat-dialog-title] {
-  padding: 10px 24px;
-  background: #369;
-  color: #fff;
-}
-
 .container {
   display: flex;
   flex-direction: row;
@@ -13,25 +7,42 @@
   overflow: hidden;
 }
 
-.form {
-  float: right;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  width: 100%;
+.tab {
+  height: 100%;
   overflow: auto;
-  height: 50%;
+  padding: 16px;
 }
 
-.mat-primarylight {
-  background-color: rgba(98, 54, 255, 0.1);
-  color: #6236ff;
+.tab-group {
+  width: 100%;
 }
 
-.copy-side-panel {
-  width: 50%;
+.overlay-panel > p {
+  padding: 0 16px;
 }
 
-.actions button + button {
-  margin-left: 8px;
+.bottom-bar {
+  padding: 16px;
+  box-shadow: 0 -1px 4px 0 rgba(0, 0, 0, 0.09);
+  display: flex;
+}
+
+.bottom-bar button {
+  flex: 1 0;
+}
+
+.button-separator {
+  width: 16px;
+}
+
+.tree-options {
+  padding: 16px;
+}
+
+.tree-options p {
+  margin: 0;
+}
+
+.tree-options p + p {
+  margin-top: 8px;
 }

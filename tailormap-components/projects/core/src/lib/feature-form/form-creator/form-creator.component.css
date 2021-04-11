@@ -20,7 +20,3 @@ mat-tab-group {
 .is-editing .column + .column {
   border-top: 0 none;
 }
-
-.tab-group ::ng-deep .mat-tab-header-pagination-controls-enabled {
-  padding: 0;
-}

@@ -79,6 +79,71 @@ const onSetFeatureRemoved = (state: FormState, payload: ReturnType<typeof FormAc
   };
 };
 
+const onOpenCopyForm = (state: FormState, payload: ReturnType<typeof FormActions.openCopyForm>): FormState => ({
+  ...state,
+  copyFeature: payload.feature,
+  copyFormOpen: true,
+  copySelectedFeature: payload.feature,
+});
+
+const onSetCopySelectedFeature = (state: FormState, payload: ReturnType<typeof FormActions.setCopySelectedFeature>): FormState => ({
+  ...state,
+  copySelectedFeature: payload.feature,
+});
+
+const onToggleCopyDestinationFeature = (state: FormState, payload: ReturnType<typeof FormActions.toggleCopyDestinationFeature>): FormState => {
+  const idx = state.copyDestinationFeatures.findIndex(f => f.objectGuid === payload.destinationFeature.objectGuid);
+  if (idx !== -1) {
+    return {
+      ...state,
+      copyDestinationFeatures: [
+        ...state.copyDestinationFeatures.slice(0, idx),
+        ...state.copyDestinationFeatures.slice(idx + 1),
+      ],
+    };
+  }
+  return {
+    ...state,
+    copyDestinationFeatures: [
+      ...state.copyDestinationFeatures,
+      payload.destinationFeature,
+    ],
+  };
+};
+
+const onToggleSelectedAttribute = (state: FormState, payload: ReturnType<typeof FormActions.toggleSelectedAttribute>): FormState => {
+  const idx = state.copySelectedAttributes.findIndex(f => f.objectGuid === payload.attribute.objectGuid && f.attributeKey === payload.attribute.attributeKey);
+  if (idx !== -1) {
+    return {
+      ...state,
+      copySelectedAttributes: [
+        ...state.copySelectedAttributes.slice(0, idx),
+        ...state.copySelectedAttributes.slice(idx + 1),
+      ],
+    };
+  }
+  return {
+    ...state,
+    copySelectedAttributes: [
+      ...state.copySelectedAttributes,
+      payload.attribute,
+    ],
+  };
+};
+
+const onCloseCopyForm = (state: FormState): FormState => ({
+  ...state,
+  copyFormOpen: false,
+  copyFeature: null,
+  copySelectedFeature: null,
+  copyDestinationFeatures: [],
+});
+
+const onSetCopyOptionsOpen = (state: FormState, payload: ReturnType<typeof FormActions.setCopyOptionsOpen>): FormState => ({
+  ...state,
+  copyOptionsOpen: payload.open,
+});
+
 const formReducerImpl = createReducer(
   initialFormState,
   on(FormActions.setTreeOpen, onSetTreeOpen),
@@ -90,6 +155,12 @@ const formReducerImpl = createReducer(
   on(FormActions.setOpenFeatureForm, onSetOpenFeatureForm),
   on(FormActions.setCloseFeatureForm, onCloseFeatureForm),
   on(FormActions.toggleFeatureFormVisibility, onSetHideFeatureForm),
+  on(FormActions.openCopyForm, onOpenCopyForm),
+  on(FormActions.setCopySelectedFeature, onSetCopySelectedFeature),
+  on(FormActions.toggleCopyDestinationFeature, onToggleCopyDestinationFeature),
+  on(FormActions.toggleSelectedAttribute, onToggleSelectedAttribute),
+  on(FormActions.closeCopyForm, onCloseCopyForm),
+  on(FormActions.setCopyOptionsOpen, onSetCopyOptionsOpen),
 );
 
 export const formReducer = (state: FormState | undefined, action: Action) => {

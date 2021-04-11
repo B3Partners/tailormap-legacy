@@ -20,3 +20,8 @@
 .tree ::ng-deep .tree-node-wrapper {
   overflow: hidden;
 }
+
+.tree-container {
+  flex: 1;
+  overflow: auto;
+}
