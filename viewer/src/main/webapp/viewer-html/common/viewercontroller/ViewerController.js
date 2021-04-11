@@ -1638,15 +1638,19 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         return layer.details["metadata.stylesheet"];
     },
 
+    getFilterName: function(name) {
+        return "filter_" + name;
+    },
+
     /**
      * add ore replace the filter for the given layer.
      * @param filterString the filter: string type
      * @param appLayer the application layer
      * @param name The name the filter should have
      */
-    setFilterString : function(filterString, appLayer, name){
+    setFilterString : function(filterString, appLayer, name) {
         var filter = Ext.create("viewer.components.CQLFilterWrapper",{
-            id: "filter_"+name,
+            id: this.getFilterName(name),
             cql: filterString,
             operator : "AND",
             type: "ATTRIBUTE"

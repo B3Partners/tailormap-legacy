@@ -2,7 +2,9 @@ import { Injectable, OnDestroy } from '@angular/core';
 import { TailorMapService } from '../../../../../bridge/src/tailor-map.service';
 import { Store } from '@ngrx/store';
 import { ApplicationState } from '../state/application.state';
-import { setApplicationContent, setFormConfigs, setLayerVisibility, setSelectedAppLayer } from '../state/application.actions';
+import {
+  setApplicationContent, setFormConfigs, setLayerVisibility, setSelectedAppLayer,
+} from '../state/application.actions';
 import { concatMap, take, takeUntil, tap, throttleTime } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { FormConfigRepositoryService } from '../../shared/formconfig-repository/form-config-repository.service';

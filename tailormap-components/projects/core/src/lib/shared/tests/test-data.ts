@@ -129,6 +129,7 @@ export const viewerControllerMock = (overrides?: Partial<ViewerController>): Vie
   isDebug: () => true,
   registerSnappingLayer: () => {},
   setFilterString: () => {},
+  getFilterName: () => '',
   createVectorLayer: (_name: string) => vectorLayerMock(),
   ...overrides,
 });

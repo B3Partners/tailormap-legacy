@@ -14,7 +14,6 @@ declare interface LayerSelectedEvent{
 }
 
 type deactivationEvent = ( ) => void;
-type layerEventHandler = ( payload: LayerSelectedEvent) => void;
 
 declare interface ViewerController {
 
@@ -26,9 +25,11 @@ declare interface ViewerController {
   getService: (serviceId: number) => GeoService;
   getAppLayerById: (appLayerId: number) => AppLayer;
   getAppLayer: (serviceId: number, layerName: string) => AppLayer;
+
+  getFilterName: (name: string) => string;
   setFilterString: (filter: string, appLayer: AppLayer, name: string) => void;
 
-  addListener: (eventName: string, handler: layerEventHandler) => void;
+  addListener: <T1, T2 = undefined>(eventName: string, handler: (event: T1, arg1: T2) => void) => void;
   getComponentsByClassNames: (classNames: string[]) => TailormapComponent[];
 
   registerSnappingLayer: (vectorLayer: VectorLayer) => void;

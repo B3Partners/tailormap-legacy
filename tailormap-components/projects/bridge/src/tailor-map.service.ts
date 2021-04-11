@@ -15,16 +15,24 @@ import {
 import {
   App,
   AppLayer,
-  AppLoader,
+  AppLoader, CQLFilter, LayerSelectedEvent,
   MapComponent,
   ViewerController,
 } from '../typings';
 import { take } from 'rxjs/operators';
 
+export enum TailorMapFilters {
+  ATTRIBUTE_LIST = 'ATTRIBUTE_LIST',
+}
+
 @Injectable({
   providedIn: 'root',
 })
 export class TailorMapService {
+
+  private readonly TAILORMAP_FILTERS: Record<TailorMapFilters, string> = {
+    [TailorMapFilters.ATTRIBUTE_LIST]: 'ngattributelist',
+  };
 
   constructor(private ngZone: NgZone) {
     this.init();
@@ -44,6 +52,11 @@ export class TailorMapService {
 
   private selectedLayerSubject$: Subject<AppLayer> = new Subject<AppLayer>();
   public selectedLayerChanged$ = this.selectedLayerSubject$.asObservable();
+
+  private skipNextFilterActivatedEvent = false;
+  private layerFilterChangedSubject$ = new Subject<{ appLayer: AppLayer; filter?: string | null }>();
+  public layerFilterChangedChanged$ = this.layerFilterChangedSubject$.asObservable();
+
   public selectedLayer: AppLayer;
 
   public getAppLoader(): AppLoader {
@@ -66,6 +79,31 @@ export class TailorMapService {
     return this.getViewerController().mapComponent;
   }
 
+  public setFilterString(filter: string, appLayerId: number, filterName: TailorMapFilters) {
+    const viewerController = this.getViewerController();
+    const appLayer = viewerController.getAppLayerById(+(appLayerId));
+    this.skipNextFilterActivatedEvent = true;
+    viewerController.setFilterString(filter, appLayer, this.TAILORMAP_FILTERS[filterName]);
+  }
+
+  public getFilterString(appLayerId: number, excludeTailorMapFilters = true): string {
+    const appLayer = this.getApplayerById(appLayerId);
+    return this.getFilterStringForAppLayer(appLayer, excludeTailorMapFilters);
+  }
+
+  private getFilterStringForAppLayer(appLayer: AppLayer, excludeTailorMapFilters = true): string {
+    const filteredFilterNames: string[] = [
+      this.getViewerController().getFilterName(this.TAILORMAP_FILTERS.ATTRIBUTE_LIST),
+    ];
+    let filter = '';
+    if (appLayer.filter) {
+      filter = excludeTailorMapFilters
+        ? appLayer.filter.getCQLWithoutIds(filteredFilterNames)
+        : appLayer.filter.getCQL();
+    }
+    return filter;
+  }
+
   public init(): void {
     if (this.getViewerController() !== null) {
       this.initViewerController();
@@ -85,16 +123,24 @@ export class TailorMapService {
     vc.addListener('ON_LAYERS_INITIALIZED', () => {
       this.ngZone.run(() => this.layersInitializedSubject$.next(true));
     });
-    map.addListener('ON_LAYER_VISIBILITY_CHANGED', (_object, event) => {
-      this.ngZone.run(() => this.layerVisibilityChangedSubject$.next(event as LayerVisibilityEvent));
+    map.addListener<LayerVisibilityEvent>('ON_LAYER_VISIBILITY_CHANGED', (_object, event) => {
+      this.ngZone.run(() => this.layerVisibilityChangedSubject$.next(event));
     });
-    map.addListener('ON_FINISHED_CHANGE_EXTENT', (object, event) => {
-      this.ngZone.run(() => this.extentChangedSubject$.next(event as ExtentChangedEvent));
+    map.addListener<ExtentChangedEvent>('ON_FINISHED_CHANGE_EXTENT', (object, event) => {
+      this.ngZone.run(() => this.extentChangedSubject$.next(event));
     });
-    vc.addListener('ON_LAYER_SELECTED', (event) => {
+    vc.addListener<LayerSelectedEvent>('ON_LAYER_SELECTED', (event) => {
       const appLayer = (!event || !event.appLayer) ? null : event.appLayer;
       this.selectedLayer = appLayer;
       this.ngZone.run(() => this.selectedLayerSubject$.next(appLayer));
+    });
+    vc.addListener<CQLFilter, AppLayer>('ON_FILTER_ACTIVATED', (_filter, appLayer) => {
+      if (this.skipNextFilterActivatedEvent) {
+        this.skipNextFilterActivatedEvent = false;
+        return;
+      }
+      const filter = this.getFilterStringForAppLayer(appLayer);
+      this.ngZone.run(() => this.layerFilterChangedSubject$.next({ appLayer, filter }));
     });
     this.applicationConfigSubject$.next(this.getAppLoader().getApplicationConfig());
   }
