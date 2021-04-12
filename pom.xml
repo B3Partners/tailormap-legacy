@@ -70,9 +70,9 @@
         or as part of a profile, see eg. 'gh-action' profile in viewer -->
         <test.skip.integrationtests>false</test.skip.integrationtests>
         <maven-surefire-plugin.version>3.0.0-M5</maven-surefire-plugin.version>
-        <tomcat.version>7.0.109</tomcat.version>
-        <tomcat7-maven-plugin.version>2.2</tomcat7-maven-plugin.version>
+        <tomcat.version>9.0.45</tomcat.version>
         <jacoco-maven-plugin.version>0.8.7</jacoco-maven-plugin.version>
+        <cargo-maven3-plugin.version>1.9.0</cargo-maven3-plugin.version>
         <properties-maven-plugin.version>1.0.0</properties-maven-plugin.version>
     </properties>
     <dependencyManagement>
@@ -752,103 +752,6 @@
                     </configuration>
                 </plugin>
                 <plugin>
-                    <groupId>org.apache.tomcat.maven</groupId>
-                    <artifactId>tomcat7-maven-plugin</artifactId>
-                    <version>${tomcat7-maven-plugin.version}</version>
-                    <dependencies>
-                        <dependency>
-                            <groupId>org.apache.tomcat.embed</groupId>
-                            <artifactId>tomcat-embed-core</artifactId>
-                            <version>${tomcat.version}</version>
-                        </dependency>
-                        <dependency>
-                            <groupId>org.apache.tomcat</groupId>
-                            <artifactId>tomcat-util</artifactId>
-                            <version>${tomcat.version}</version>
-                        </dependency>
-                        <dependency>
-                            <groupId>org.apache.tomcat</groupId>
-                            <artifactId>tomcat-coyote</artifactId>
-                            <version>${tomcat.version}</version>
-                        </dependency>
-                        <dependency>
-                            <groupId>org.apache.tomcat</groupId>
-                            <artifactId>tomcat-api</artifactId>
-                            <version>${tomcat.version}</version>
-                        </dependency>
-                        <dependency>
-                            <groupId>org.apache.tomcat</groupId>
-                            <artifactId>tomcat-jdbc</artifactId>
-                            <version>${tomcat.version}</version>
-                        </dependency>
-                        <dependency>
-                            <groupId>org.apache.tomcat</groupId>
-                            <artifactId>tomcat-dbcp</artifactId>
-                            <version>${tomcat.version}</version>
-                        </dependency>
-                        <dependency>
-                            <groupId>org.apache.tomcat</groupId>
-                            <artifactId>tomcat-servlet-api</artifactId>
-                            <version>${tomcat.version}</version>
-                        </dependency>
-                        <dependency>
-                            <groupId>org.apache.tomcat</groupId>
-                            <artifactId>tomcat-jsp-api</artifactId>
-                            <version>${tomcat.version}</version>
-                        </dependency>
-                        <dependency>
-                            <groupId>org.apache.tomcat</groupId>
-                            <artifactId>tomcat-jasper</artifactId>
-                            <version>${tomcat.version}</version>
-                        </dependency>
-                        <dependency>
-                            <groupId>org.apache.tomcat</groupId>
-                            <artifactId>tomcat-jasper-el</artifactId>
-                            <version>${tomcat.version}</version>
-                        </dependency>
-                        <dependency>
-                            <groupId>org.apache.tomcat</groupId>
-                            <artifactId>tomcat-el-api</artifactId>
-                            <version>${tomcat.version}</version>
-                        </dependency>
-                        <dependency>
-                            <groupId>org.apache.tomcat</groupId>
-                            <artifactId>tomcat-catalina</artifactId>
-                            <version>${tomcat.version}</version>
-                        </dependency>
-                        <dependency>
-                            <groupId>org.apache.tomcat</groupId>
-                            <artifactId>tomcat-tribes</artifactId>
-                            <version>${tomcat.version}</version>
-                        </dependency>
-                        <dependency>
-                            <groupId>org.apache.tomcat</groupId>
-                            <artifactId>tomcat-catalina-ha</artifactId>
-                            <version>${tomcat.version}</version>
-                        </dependency>
-                        <dependency>
-                            <groupId>org.apache.tomcat</groupId>
-                            <artifactId>tomcat-annotations-api</artifactId>
-                            <version>${tomcat.version}</version>
-                        </dependency>
-                        <dependency>
-                            <groupId>org.apache.tomcat</groupId>
-                            <artifactId>tomcat-juli</artifactId>
-                            <version>${tomcat.version}</version>
-                        </dependency>
-                        <dependency>
-                            <groupId>org.apache.tomcat.embed</groupId>
-                            <artifactId>tomcat-embed-logging-juli</artifactId>
-                            <version>${tomcat.version}</version>
-                        </dependency>
-                        <dependency>
-                            <groupId>org.apache.tomcat.embed</groupId>
-                            <artifactId>tomcat-embed-logging-log4j</artifactId>
-                            <version>${tomcat.version}</version>
-                        </dependency>
-                    </dependencies>
-                </plugin>
-                <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>properties-maven-plugin</artifactId>
                     <version>${properties-maven-plugin.version}</version>
@@ -874,8 +777,8 @@
                 </plugin>
                 <plugin>
                     <groupId>org.codehaus.cargo</groupId>
-                    <artifactId>cargo-maven2-plugin</artifactId>
-                    <version>1.9.0</version>
+                    <artifactId>cargo-maven3-plugin</artifactId>
+                    <version>${cargo-maven3-plugin.version}</version>
                 </plugin>
                 <plugin>
                     <groupId>io.fabric8</groupId>
