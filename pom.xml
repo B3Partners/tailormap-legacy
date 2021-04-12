@@ -54,7 +54,7 @@
         <hsqldb.version>2.6.0</hsqldb.version>
         <test.persistence.unit>viewer-config-hsqldb</test.persistence.unit>
         <postgresql.version>42.2.19</postgresql.version>
-        <mssql.version>9.2.1.jre8</mssql.version>
+        <mssql.version>9.2.1.jre11</mssql.version>
         <oracle.version>21.1.0.0</oracle.version>
         <apache.poi.version>5.0.0</apache.poi.version>
         <jakarta.mail.version>1.6.6</jakarta.mail.version>
@@ -69,10 +69,9 @@
         <test.skip.integrationtests>false</test.skip.integrationtests>
         <maven-surefire-plugin.version>3.0.0-M5</maven-surefire-plugin.version>
         <tomcat.version>7.0.108</tomcat.version>
-        <jacoco-maven-plugin.version>0.8.6</jacoco-maven-plugin.version>
         <tomcat7-maven-plugin.version>2.2</tomcat7-maven-plugin.version>
+        <jacoco-maven-plugin.version>0.8.6</jacoco-maven-plugin.version>
         <properties-maven-plugin.version>1.0.0</properties-maven-plugin.version>
-        <netbeans.hint.jdkPlatform>JDK_1.8</netbeans.hint.jdkPlatform>
     </properties>
     <dependencyManagement>
         <!--
@@ -525,13 +524,13 @@
                 <version>${mssql.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.oracle.database.jdbc</groupId>
-                <artifactId>ojdbc8_g</artifactId>
+                <groupId>com.oracle.database.jdbc.debug</groupId>
+                <artifactId>ojdbc11_g</artifactId>
                 <version>${oracle.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.oracle.database.jdbc</groupId>
-                <artifactId>ojdbc8</artifactId>
+                <artifactId>ojdbc11</artifactId>
                 <version>${oracle.version}</version>
             </dependency>
             <dependency>
@@ -830,6 +829,11 @@
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>wagon-maven-plugin</artifactId>
                     <version>2.0.2</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.cargo</groupId>
+                    <artifactId>cargo-maven2-plugin</artifactId>
+                    <version>1.9.0</version>
                 </plugin>
                 <plugin>
                     <groupId>io.fabric8</groupId>

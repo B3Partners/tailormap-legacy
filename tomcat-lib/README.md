@@ -8,7 +8,7 @@ When running on Java 11 additional libraries _may_ be required, these are provid
 directory and can be placed in the `<tomcat>/lib` directory as well. **These are only required in specific 
 cases and not the common deployment scenario.**
 
-**Note** The Oracle JDBC driver (`ojdbc8.jar` or `ojdbc11.jar`) is distributed under the "Oracle Free Use Terms 
+**Note** The Oracle JDBC driver (`ojdbc8.jar` and/or `ojdbc11.jar`) is distributed under the "Oracle Free Use Terms 
 and Conditions (FUTC)" with this package; the terms and conditions are listed below.
 
 ## Oracle Free Use Terms and Conditions
