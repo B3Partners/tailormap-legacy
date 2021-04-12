@@ -76,4 +76,6 @@ jobs:
       uses: github/codeql-action/analyze@v1
 
     - name: Cleanup snapshots
-      run: find ~/.m2/repository -name "*SNAPSHOT*" -type d | xargs rm -rf {} 
+      run: |
+        find ~/.m2/repository -name "*SNAPSHOT*" -type d | xargs rm -rf {}
+
