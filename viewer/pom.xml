@@ -608,32 +608,64 @@
                         </executions>
                     </plugin>
                     <plugin>
-                        <groupId>org.apache.tomcat.maven</groupId>
-                        <artifactId>tomcat7-maven-plugin</artifactId>
-                        <version>${tomcat7-maven-plugin.version}</version>
+                        <groupId>org.codehaus.cargo</groupId>
+                        <artifactId>cargo-maven3-plugin</artifactId>
+                        <version>${cargo-maven3-plugin.version}</version>
                         <configuration>
-                            <port>9090</port>
-                            <contextFile>src/test/tomcatconf/context.xml</contextFile>
-                            <systemProperties>
-                            </systemProperties>
+                            <container>
+                                <containerId>tomcat-${tomcat.version}</containerId>
+                                <zipUrlInstaller>
+                                    <url>https://repo.maven.apache.org/maven2/org/apache/tomcat/tomcat/${tomcat.version}/tomcat-${tomcat.version}.zip</url>
+                                    <!-- <extractDir>${project.basedir}/extract/</extractDir>-->
+                                    <downloadDir>${project.basedir}/download/</downloadDir>
+                                </zipUrlInstaller>
+                                <output>${project.build.directory}/tomcat${tomcat.version}x.log</output>
+                                <log>${project.build.directory}/cargo.log</log>
+                                <systemProperties></systemProperties>
+                            </container>
+                            <configuration>
+                                <home>${project.build.directory}/tomcat-${tomcat.version}/container</home>
+                                <properties>
+                                    <cargo.logging>high</cargo.logging>
+                                    <cargo.servlet.port>9090</cargo.servlet.port>
+<!--                                    <cargo.tomcat.ajp.port>9008</cargo.tomcat.ajp.port>-->
+                                </properties>
+                                <configfiles>
+                                    <configfile>
+                                        <file>src/test/tomcatconf/context.xml</file>
+                                        <todir>conf/Catalina/localhost/</todir>
+                                        <tofile>${project.build.finalName}.xml</tofile>
+                                    </configfile>
+                                </configfiles>
+                            </configuration>
                         </configuration>
                         <executions>
                             <execution>
-                                <id>tomcat-startup</id>
-                                <goals>
-                                    <goal>run</goal>
-                                </goals>
+                                <id>start-container</id>
                                 <phase>pre-integration-test</phase>
+                                <goals>
+                                    <goal>start</goal>
+                                    <goal>deploy</goal>
+                                </goals>
                                 <configuration>
-                                    <fork>true</fork>
+                                    <deployer>
+                                        <deployable>
+                                            <groupId>${project.groupId}</groupId>
+                                            <artifactId>${project.artifactId}</artifactId>
+                                            <type>war</type>
+                                            <properties>
+                                                <context>viewer</context>
+                                            </properties>
+                                        </deployable>
+                                    </deployer>
                                 </configuration>
                             </execution>
                             <execution>
-                                <id>tomcat-shutdown</id>
-                                <goals>
-                                    <goal>shutdown</goal>
-                                </goals>
+                                <id>stop-container</id>
                                 <phase>post-integration-test</phase>
+                                <goals>
+                                    <goal>stop</goal>
+                                </goals>
                             </execution>
                         </executions>
                         <dependencies>
