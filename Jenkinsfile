@@ -91,7 +91,7 @@ timestamps {
             sh "curl -s https://codecov.io/bash | bash"
         }
 
-        withEnv(["JAVA_HOME=${ tool 'OpenJDK11' }", "PATH+MAVEN=${tool 'Maven CURRENT'}/bin:${env.JAVA_HOME}/bin"]) {
+        withEnv(["JAVA_HOME=${ tool 'OpenJDK8' }", "PATH+MAVEN=${tool 'Maven CURRENT'}/bin:${env.JAVA_HOME}/bin"]) {
             if (env.BRANCH_NAME == 'master' && env.NODE_NAME == 'master') {
                 stage("Docker image build & push") {
                     echo "Create a docker image of the master branch when running on the master node"
