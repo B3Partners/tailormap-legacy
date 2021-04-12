@@ -1776,7 +1776,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
      * Get the attributes of the appLayer
      */
     getAttributesFromAppLayer: function (appLayer, featureTypeId, addJoinedAttributes){
-        if (appLayer.attributes == undefined){
+        if (appLayer == undefined || appLayer.attributes == undefined) {
             return undefined;
         }
         //if no featureTypeId given, get the one of the application layer.
