@@ -80,7 +80,7 @@
             mvn -U org.codehaus.mojo:versions-maven-plugin:display-dependency-updates -T1 > dependency-updates.log
             and check the output for any available updates.
 
-            To check for vulnarabilities in dependencies use the following command:
+            To check for vulnerabilities in dependencies use the following command:
             mvn org.owasp:dependency-check-maven:check > vuln-check.log
         -->
         <dependencies>
@@ -630,7 +630,7 @@
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>animal-sniffer-maven-plugin</artifactId>
-                    <version>1.16</version>
+                    <version>1.20</version>
                 </plugin>
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
