@@ -17,6 +17,8 @@
 package nl.b3p.viewer.config.app;
 
 
+import org.hibernate.annotations.Type;
+
 import javax.persistence.*;
 import java.util.Date;
 
@@ -39,7 +41,7 @@ public class Bookmark {
     
     @Lob
     @Basic(optional=false)
-    @org.hibernate.annotations.Type(type="org.hibernate.type.StringClobType")
+    @Type(type = "org.hibernate.type.TextType")
     private String params;
     
     @Temporal(TemporalType.TIMESTAMP)

@@ -1,6 +1,7 @@
 package nl.b3p.viewer.config.forms;
 
 import nl.b3p.viewer.config.services.SimpleFeatureType;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -23,7 +24,7 @@ public class Form {
     private Set<String> readers = new HashSet<>();
 
     @Lob
-    @org.hibernate.annotations.Type(type="org.hibernate.type.StringClobType")
+    @Type(type = "org.hibernate.type.TextType")
     private String json;
 
     public Long getId() {

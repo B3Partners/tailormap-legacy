@@ -16,6 +16,7 @@
  */
 package nl.b3p.viewer.config.services;
 
+import org.hibernate.annotations.Type;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.w3c.dom.Node;
@@ -49,7 +50,7 @@ public class StyleLibrary {
     private String externalUrl;
     
     @Lob
-    @org.hibernate.annotations.Type(type="org.hibernate.type.StringClobType")    
+    @Type(type = "org.hibernate.type.TextType")
     private String sldBody;
     
     /**
@@ -62,7 +63,7 @@ public class StyleLibrary {
      * ApplicationLayer.
      */
     @Lob
-    @org.hibernate.annotations.Type(type="org.hibernate.type.StringClobType")    
+    @Type(type = "org.hibernate.type.TextType")
     private String namedLayerUserStylesJson;
     
     /**

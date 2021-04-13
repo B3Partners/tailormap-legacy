@@ -19,6 +19,7 @@ package nl.b3p.viewer.config.app;
 import nl.b3p.viewer.config.security.Authorizations;
 import nl.b3p.viewer.config.services.Document;
 import org.apache.commons.beanutils.BeanUtils;
+import org.hibernate.annotations.Type;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -62,7 +63,7 @@ public class Level implements Comparable{
     private List<Document> documents = new ArrayList<Document>();
 
     @Lob
-    @org.hibernate.annotations.Type(type="org.hibernate.type.StringClobType")
+    @Type(type = "org.hibernate.type.TextType")
     private String info;
 
     @ElementCollection

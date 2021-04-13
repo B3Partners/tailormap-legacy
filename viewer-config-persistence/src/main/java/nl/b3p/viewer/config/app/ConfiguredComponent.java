@@ -17,6 +17,7 @@
 package nl.b3p.viewer.config.app;
 
 import org.apache.commons.beanutils.BeanUtils;
+import org.hibernate.annotations.Type;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -45,7 +46,7 @@ public class ConfiguredComponent implements Comparable<ConfiguredComponent> {
     private String name;
 
     @Lob
-    @org.hibernate.annotations.Type(type="org.hibernate.type.StringClobType")
+    @Type(type = "org.hibernate.type.TextType")
     private String config;
 
     @Basic(optional=false)

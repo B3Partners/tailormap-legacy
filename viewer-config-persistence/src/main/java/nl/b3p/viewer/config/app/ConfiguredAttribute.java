@@ -19,6 +19,7 @@ package nl.b3p.viewer.config.app;
 import nl.b3p.viewer.config.services.FeatureSource;
 import nl.b3p.viewer.config.services.SimpleFeatureType;
 import org.apache.commons.beanutils.BeanUtils;
+import org.hibernate.annotations.Type;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -59,7 +60,7 @@ public class ConfiguredAttribute {
      * JSON array
      */
     @Lob
-    @org.hibernate.annotations.Type(type="org.hibernate.type.StringClobType")
+    @Type(type = "org.hibernate.type.TextType")
     private String editValues;
 
     private String defaultValue;

@@ -21,6 +21,7 @@ import nl.b3p.viewer.config.app.ApplicationLayer;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hibernate.annotations.Type;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -103,7 +104,7 @@ public class Layer implements Serializable {
     private String titleAlias;
 
     @Lob
-    @org.hibernate.annotations.Type(type="org.hibernate.type.StringClobType")
+    @Type(type = "org.hibernate.type.TextType")
     private String legendImageUrl;
 
     private Double minScale;
