@@ -41,9 +41,11 @@ Ext.define("viewer.components.FeatureReport", {
         viewer.components.FeatureReport.superclass.constructor.call(this, conf);
 
         this.layersArrayIndexesToAppLayerIds(this.config);
-        this.legendLayerList = this.config.viewerController.getAppLayersWithAttributes(this.config.restriction, this.config.legendLayers);
-        this.activatedLayerList = this.config.viewerController.getAppLayersWithAttributes(this.config.restriction, this.config.reportLayers);
-        this.reportLayersFetched();
+        this.legendLayerList = this.config.viewerController.getAppLayersWithAttributes('attribute', this.config.legendLayers);
+        this.activatedLayerList = this.config.viewerController.getAppLayersWithAttributes('attribute', this.config.reportLayers);
+        this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_COMPONENTS_FINISHED_LOADING, function () {
+            this.reportLayersFetched();
+        }, this);
 
         this.createForm();
         this.config.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_GET_FEATURE_INFO, this.onFeatureInfoStart, this);
