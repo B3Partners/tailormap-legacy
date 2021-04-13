@@ -24,7 +24,6 @@
             -->
             <property name="hibernate.jdbc.use_get_generated_keys" value="false"/>
 
-            <property name="hibernate.ejb.naming_strategy" value="org.hibernate.cfg.ImprovedNamingStrategy"/>
             <property name="hibernate.cache.provider_class" value="org.hibernate.cache.NoCacheProvider"/>
             <!-- mitigation for CVE-2020-25638 -->
             <property name="hibernate.use_sql_comments" value="false"/>
@@ -48,7 +47,6 @@
             -->
             <property name="hibernate.jdbc.use_get_generated_keys" value="false"/>
 
-            <property name="hibernate.ejb.naming_strategy" value="org.hibernate.cfg.ImprovedNamingStrategy"/>
             <property name="hibernate.cache.provider_class" value="org.hibernate.cache.NoCacheProvider"/>
             <!-- mitigation for CVE-2020-25638 -->
             <property name="hibernate.use_sql_comments" value="false"/>
@@ -72,7 +70,6 @@
             -->
             <property name="hibernate.jdbc.use_get_generated_keys" value="false"/>
 
-            <property name="hibernate.ejb.naming_strategy" value="org.hibernate.cfg.ImprovedNamingStrategy"/>
             <property name="hibernate.cache.provider_class" value="org.hibernate.cache.NoCacheProvider"/>
             <!-- mitigation for CVE-2020-25638 -->
             <property name="hibernate.use_sql_comments" value="false"/>
@@ -87,7 +84,6 @@
             <property name="hibernate.archive.autodetection" value="class"/>
             <property name="hibernate.format_sql" value="true"/>
             <property name="hibernate.hbm2ddl.auto" value="update"/>
-            <property name="hibernate.ejb.naming_strategy" value="org.hibernate.cfg.ImprovedNamingStrategy"/>
             <property name="hibernate.cache.provider_class" value="org.hibernate.cache.NoCacheProvider"/>
             <property name="javax.persistence.jdbc.driver" value="org.hsqldb.jdbcDriver"/>
             <property name="javax.persistence.jdbc.url" value="jdbc:hsqldb:file:./target/unittest-hsqldb/db;shutdown=true"/>
