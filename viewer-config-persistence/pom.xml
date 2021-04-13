@@ -16,63 +16,41 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>hibernate3-maven-plugin</artifactId>
+                <groupId>de.jpdigital</groupId>
+                <artifactId>hibernate54-ddl-maven-plugin</artifactId>
+                <version>2.3.0</version>
+                <configuration>
+                    <dialects>
+                        <param>hsql</param>
+                        <param>postgresql</param>
+                        <param>oracle12c</param>
+                        <param>sqlserver2012</param>
+                    </dialects>
+                    <outputDirectory>${project.build.outputDirectory}/scripts</outputDirectory>
+                    <outputFileNameSuffix>-schema-export</outputFileNameSuffix>
+                    <persistencePropertiesToUse>
+                        <param>format_sql</param>
+                        <param>use_sql_comments</param>
+                        <param>hibernate.physical_naming_strategy</param>
+                    </persistencePropertiesToUse>
+                    <packages>
+                        <param>nl.b3p.viewer.config.app</param>
+                        <param>nl.b3p.viewer.config.forms</param>
+                        <param>nl.b3p.viewer.config.metadata</param>
+                        <param>nl.b3p.viewer.config.security</param>
+                        <param>nl.b3p.viewer.config.services</param>
+                    </packages>
+                </configuration>
                 <executions>
                     <execution>
-                        <id>schema-export</id>
+                        <id>schema-export-main</id>
+                        <goals>
+                            <goal>gen-ddl</goal>
+                        </goals>
+                        <!-- needs to be done after "compile" so the SnakeCase naming strategy is compiled -->
                         <phase>process-classes</phase>
-                        <configuration>
-                            <hibernatetool destdir="${project.build.outputDirectory}/scripts">
-                                <classpath>
-                                    <path location="target" />
-                                </classpath>
-
-                                <hbm2ddl export="false" drop="false" create="true" outputfilename="oracle-schema-export.sql" format="true">
-                                    <jpaconfiguration persistenceUnit="viewer-config-oracle" />
-                                </hbm2ddl>
-
-                                <hbm2ddl export="false" drop="false" create="true" outputfilename="postgresql-schema-export.sql" format="true">
-                                    <jpaconfiguration persistenceUnit="viewer-config-postgresql" />
-                                </hbm2ddl>
-                                <!--use unformatted output to help with serach/replace, see maven-antrun-plugin plugin below-->
-                                <hbm2ddl export="false" drop="false" create="true" outputfilename="microsoft_sql_server-schema-export.sql" format="false">
-                                    <jpaconfiguration persistenceUnit="viewer-config-microsoft_sql_server" />
-                                </hbm2ddl>
-                            </hibernatetool>
-                        </configuration>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>test-schema-export</id>
-                        <phase>generate-test-resources</phase>
-                        <configuration>
-                            <hibernatetool destdir="${project.build.outputDirectory}/scripts">
-                                <classpath>
-                                    <path location="target" />
-                                </classpath>
-                                <!-- voor de unit tests met HSQLDB -->
-                                <hbm2ddl export="true" drop="true" create="true" outputfilename="hsqldb-schema-export.sql" format="true">
-                                    <jpaconfiguration persistenceUnit="viewer-config-hsqldb" />
-                                </hbm2ddl>
-                            </hibernatetool>
-                        </configuration>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
                     </execution>
                 </executions>
-                <dependencies>
-                    <dependency>
-                        <!-- hsqldb wordt alleen voor unit tests gebruikt, maar als deze
-                        als test scope dep wordt opgevoerd treedt er een CNFE op tijdens de build. -->
-                        <groupId>org.hsqldb</groupId>
-                        <artifactId>hsqldb</artifactId>
-                        <version>${hsqldb.version}</version>
-                    </dependency>
-                </dependencies>
             </plugin>
             <plugin>
                 <artifactId>maven-antrun-plugin</artifactId>
@@ -81,58 +59,12 @@
                         <phase>process-classes</phase>
                         <configuration>
                             <target>
-                                <!--
-                                The ms sql schema export needs tweaking due to a bug in the tooling (should be solved in hib 5 and up)
-                                the problem is that details tables are generated with a nullable field for details_key,
-                                but that is not allowed because it takes part in the PK
-
-                                // application_details
-                                details_key varchar(255) null,
-                                details_key varchar(255) not null,
-
-                                // application_layer_details
-                                details_key varchar(255) null,
-                                details_key varchar(255) not null,
-
-                                // configured_component_details (
-                                details_key varchar(255) null,
-                                details_key varchar(255) not null,
-
-                                // geo_service_details
-                                details_key varchar(255) null,
-                                details_key varchar(255) not null,
-
-                                // layar_source_details
-                                details_key varchar(255) null,
-                                details_key varchar(255) not null,
-
-                                // layer_details
-                                details_key varchar(255) null,
-                                details_key varchar(255) not null,
-
-                                // user_details
-                                details_key varchar(255) null,
-                                details_key varchar(255) not null,
-                                -->
-                                <replace token=" details_key varchar(255) null," value=" details_key varchar(255) not null," file="target/classes/scripts/microsoft_sql_server-schema-export.sql" summary="true" />
-                                <!-- and also:
-                                // layer_bounding_boxes
-                                crs varchar(255) null,
-                                crs varchar(255) not null,
-                                -->
-                                <!-- NB this fails on windows
-                                NB this is whitespace sensitive
-                                <replace -->
-                                    <!--file="target/classes/scripts/microsoft_sql_server-schema-export.sql"-->
-                                    <!--summary="true">-->
-                                    <!--<replacetoken><![CDATA[null,-->
-        <!--miny double precision null,-->
-        <!--crs varchar(255) null,]]></replacetoken>-->
-                                    <!--<replacevalue><![CDATA[null,-->
-        <!--miny double precision null,-->
-        <!--crs varchar(255) not null,]]></replacevalue>-->
-                                <!--</replace>-->
-                                <replace token="crs varchar(255) null, primary key (layer, crs));" value="crs varchar(255) not null, primary key (layer, crs));" file="target/classes/scripts/microsoft_sql_server-schema-export.sql" summary="true" />
+                                <!-- run after schema gegeration -->
+                                <move file="target/classes/scripts/sqlserver2012-schema-export.sql" tofile="target/classes/scripts/microsoft_sql_server-schema-export.sql"/>
+                                <move file="target/classes/scripts/oracle12c-schema-export.sql" tofile="target/classes/scripts/oracle-schema-export.sql"/>
+                                <move file="target/classes/scripts/hsql-schema-export.sql" tofile="target/classes/scripts/hsqldb-schema-export.sql"/>
+                                <!-- replace token=" details_key varchar(255) null," value=" details_key varchar(255) not null," file="target/classes/scripts/microsoft_sql_server-schema-export.sql" summary="true" / -->
+                                <!-- replace token="crs varchar(255) null, primary key (layer, crs));" value="crs varchar(255) not null, primary key (layer, crs));" file="target/classes/scripts/microsoft_sql_server-schema-export.sql" summary="true" / -->
                             </target>
                         </configuration>
                         <goals>

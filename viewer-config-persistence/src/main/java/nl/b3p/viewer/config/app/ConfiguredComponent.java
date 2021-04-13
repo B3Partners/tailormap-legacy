@@ -40,6 +40,7 @@ public class ConfiguredComponent implements Comparable<ConfiguredComponent> {
     public static final String ADMIN_ONLY = "adminOnly";
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Basic(optional=false)
@@ -53,16 +54,20 @@ public class ConfiguredComponent implements Comparable<ConfiguredComponent> {
     private String className;
 
     @ElementCollection
+    @CollectionTable(joinColumns = @JoinColumn(name = "configured_component"))
     private Map<String,String> details = new HashMap<>();
 
     @ManyToOne(optional=false)
+    @JoinColumn(name = "application")
     private Application application;
 
     @ElementCollection
     @Column(name="role_name")
+    @CollectionTable(joinColumns = @JoinColumn(name = "configured_component"))
     private Set<String> readers = new HashSet<>();
 
     @ManyToOne
+    @JoinColumn(name = "mother_component")
     private ConfiguredComponent motherComponent;
 
     @OneToMany(mappedBy = "motherComponent")

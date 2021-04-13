@@ -37,9 +37,11 @@ public class SimpleFeatureType {
     private static final Log log = LogFactory.getLog(SimpleFeatureType.class);
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(cascade=CascadeType.PERSIST)
+    @JoinColumn(name = "feature_source")
     private FeatureSource featureSource;    
     
     private String typeName;
@@ -54,7 +56,11 @@ public class SimpleFeatureType {
     private List<FeatureTypeRelation> relations = new ArrayList<FeatureTypeRelation>();
     
     @ManyToMany(cascade=CascadeType.ALL) // Actually @OneToMany, workaround for HHH-1268 
-    @JoinTable(inverseJoinColumns=@JoinColumn(name="attribute_descriptor"))
+    @JoinTable(
+            inverseJoinColumns=@JoinColumn(name="attribute_descriptor"),
+            name="feature_type_attributes",
+            joinColumns=@JoinColumn(name = "feature_type", referencedColumnName = "id")
+    )
     @OrderColumn(name="list_index")
     private List<AttributeDescriptor> attributes = new ArrayList<AttributeDescriptor>();
     

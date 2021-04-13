@@ -1,6 +1,8 @@
 package nl.b3p.viewer.config.metadata;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 /**
@@ -10,6 +12,7 @@ import javax.persistence.Id;
 @Entity
 public class Metadata {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;    
     public static final String DATABASE_VERSION_KEY = "database_version";
     public static final String DEFAULT_APPLICATION = "default_application";

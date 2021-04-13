@@ -35,6 +35,9 @@ public class TileSet {
 
     @ElementCollection
     @OrderColumn(name="list_index")
+    @CollectionTable(
+            joinColumns = @JoinColumn(name = "tile_set")
+    )
     @Column(name="resolution")
     private List<Double> resolutions = new ArrayList<Double>();
 

@@ -24,10 +24,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Lob;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 
 /**
  *
@@ -36,6 +33,7 @@ import javax.persistence.ManyToOne;
 @Entity
 public class ConfiguredAttribute {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     /**
@@ -46,6 +44,7 @@ public class ConfiguredAttribute {
      * link with feature type
      */
     @ManyToOne
+    @JoinColumn(name = "feature_type")
     private SimpleFeatureType featureType;
     
     private boolean visible;
@@ -66,9 +65,11 @@ public class ConfiguredAttribute {
     private String defaultValue;
 
     @ManyToOne
+    @JoinColumn(name = "value_list_feature_source")
     private FeatureSource valueListFeatureSource;
 
     @ManyToOne
+    @JoinColumn(name = "value_list_feature_type")
     private SimpleFeatureType valueListFeatureType;
 
     private String valueListLabelName;

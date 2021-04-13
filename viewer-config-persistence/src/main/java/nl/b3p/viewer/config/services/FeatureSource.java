@@ -33,6 +33,7 @@ import java.util.List;
 public abstract class FeatureSource {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Basic(optional=false)
@@ -49,10 +50,15 @@ public abstract class FeatureSource {
      * enable updating of both at the same time
      */
     @ManyToOne
+    @JoinColumn(name = "linked_service")
     private GeoService linkedService;
     
     @ManyToMany(cascade=CascadeType.ALL) // Actually @OneToMany, workaround for HHH-1268
-    @JoinTable(inverseJoinColumns=@JoinColumn(name="feature_type"))
+    @JoinTable(
+            name = "feature_source_feature_types",
+            inverseJoinColumns=@JoinColumn(name="feature_type"),
+            joinColumns=@JoinColumn(name = "feature_source", referencedColumnName = "id")
+    )
     @OrderColumn(name="list_index")
     private List<SimpleFeatureType> featureTypes = new ArrayList<SimpleFeatureType>();
 

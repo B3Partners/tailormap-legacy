@@ -18,10 +18,7 @@ package nl.b3p.viewer.config.app;
 
 import org.apache.commons.beanutils.BeanUtils;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 
 /**
  *
@@ -31,6 +28,7 @@ import javax.persistence.ManyToOne;
 public class StartLevel {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
     @ManyToOne
@@ -38,6 +36,7 @@ public class StartLevel {
     private Level level;
     
     @ManyToOne
+    @JoinColumn(name = "application")
     private Application application;
     
     private Integer selectedIndex;

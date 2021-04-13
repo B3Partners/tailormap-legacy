@@ -19,10 +19,7 @@ package nl.b3p.viewer.config.services;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
@@ -59,6 +56,7 @@ public class AttributeDescriptor {
     })));
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Basic(optional=false)

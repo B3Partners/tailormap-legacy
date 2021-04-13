@@ -86,12 +86,15 @@ public class Layer implements Serializable {
     }));
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch=FetchType.LAZY)
+    @JoinColumn(name = "service")
     private GeoService service;
 
     @ManyToOne(fetch=FetchType.LAZY)
+    @JoinColumn(name = "parent")
     private Layer parent;
 
     private String name;
@@ -111,12 +114,15 @@ public class Layer implements Serializable {
     private Double maxScale;
 
     @ElementCollection
+    @CollectionTable(joinColumns = @JoinColumn(name = "layer"))
     private Set<CoordinateReferenceSystem> crsList = new HashSet<>();
 
     @ElementCollection
+    @CollectionTable(joinColumns = @JoinColumn(name = "layer"))
     private Map<CoordinateReferenceSystem,BoundingBox> boundingBoxes = new HashMap<>();
 
     @ManyToOne(fetch=FetchType.LAZY)
+    @JoinColumn(name = "tileset")
     private TileSet tileset;
 
     /**
@@ -132,26 +138,37 @@ public class Layer implements Serializable {
     private Boolean userlayer = false;
 
     @ManyToOne(fetch=FetchType.LAZY, cascade={CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinColumn(name = "feature_type")
     private SimpleFeatureType featureType;
 
     @ElementCollection
+    @JoinTable(
+            joinColumns=@JoinColumn(name = "layer", referencedColumnName = "id")
+    )
     @Column(name="keyword")
     private Set<String> keywords = new HashSet<>();
 
     @ElementCollection
+    @JoinTable(joinColumns=@JoinColumn(name = "layer", referencedColumnName = "id"))
     @Column(name="role_name")
     private Set<String> readers = new HashSet<>();
 
     @ElementCollection
+    @JoinTable(joinColumns=@JoinColumn(name = "layer", referencedColumnName = "id"))
     @Column(name="role_name")
     public Set<String> writers = new HashSet<>();
 
     @ElementCollection
+    @JoinTable(joinColumns=@JoinColumn(name = "layer", referencedColumnName = "id"))
     @Column(name = "role_name")
     public Set<String> preventGeomEditors = new HashSet<>();
 
     @ManyToMany(cascade=CascadeType.PERSIST) // Actually @OneToMany, workaround for HHH-1268
-    @JoinTable(inverseJoinColumns=@JoinColumn(name="child", unique=true))
+    @JoinTable(
+            name = "layer_children",
+            inverseJoinColumns=@JoinColumn(name="child", unique=true),
+            joinColumns=@JoinColumn(name = "layer", referencedColumnName = "id")
+    )
     @OrderColumn(name="list_index")
     private List<Layer> children = new ArrayList<>();
 
@@ -162,7 +179,11 @@ public class Layer implements Serializable {
 
     
     @ManyToMany(cascade=CascadeType.PERSIST) // Actually @OneToMany, workaround for HHH-1268
-    @JoinTable(inverseJoinColumns=@JoinColumn(name="matrix_set"))
+    @JoinTable(
+            name ="layer_matrix_sets",
+            joinColumns=@JoinColumn(name = "layer", referencedColumnName = "id"),
+            inverseJoinColumns=@JoinColumn(name="matrix_set")
+    )
     @OrderColumn(name="list_index")
     private List<TileMatrixSet> matrixSets = new ArrayList<>();
     

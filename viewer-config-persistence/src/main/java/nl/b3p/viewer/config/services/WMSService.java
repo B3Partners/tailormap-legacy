@@ -19,10 +19,7 @@ package nl.b3p.viewer.config.services;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
+import javax.persistence.*;
 
 /**
  * Entity for saving WMS service metadata. Enables the administration module to
@@ -78,6 +75,7 @@ public class WMSService extends GeoService {
      * Additional persistent property for this subclass to remember wether to
      * search for and join WFS attribute sources, so type must be nullable.
      */
+    @Column(name="skip_discoverwfs")
     private Boolean skipDiscoverWFS;
     
     @Enumerated(EnumType.STRING)

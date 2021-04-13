@@ -33,9 +33,11 @@ import java.util.*;
 @Entity
 public class ApplicationLayer {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
+    @JoinColumn(name = "service")
     private GeoService service;
 
     /**
@@ -48,10 +50,12 @@ public class ApplicationLayer {
     private String layerName;
     
     @ElementCollection
+    @CollectionTable(joinColumns = @JoinColumn(name = "application_layer"))
     @Column(name="role_name")
     private Set<String> readers = new HashSet<>();
 
     @ElementCollection
+    @CollectionTable(joinColumns = @JoinColumn(name = "application_layer"))
     @Column(name="role_name")
     private Set<String> writers = new HashSet<>();
 
@@ -60,8 +64,12 @@ public class ApplicationLayer {
     // Element wrapper required because of http://opensource.atlassian.com/projects/hibernate/browse/JPA-11    
     private Map<String,ClobElement> details = new HashMap<>();
 
-    @ManyToMany(cascade=CascadeType.ALL) // Actually @OneToMany, workaround for HHH-1268    
-    @JoinTable(inverseJoinColumns=@JoinColumn(name="attribute_"))
+    @ManyToMany(cascade=CascadeType.ALL) // Actually @OneToMany, workaround for HHH-1268
+    @JoinTable(
+            name="application_layer_attributes",
+            inverseJoinColumns=@JoinColumn(name="attribute_"),
+            joinColumns=@JoinColumn(name = "application_layer", referencedColumnName = "id")
+    )
     @OrderColumn(name="list_index")
     private List<ConfiguredAttribute> attributes = new ArrayList<>();
 

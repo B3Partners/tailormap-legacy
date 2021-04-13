@@ -20,9 +20,7 @@ import org.hibernate.annotations.Type;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Lob;
+import javax.persistence.*;
 
 /**
  *
@@ -33,6 +31,7 @@ public class CycloramaAccount {
 
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String username;

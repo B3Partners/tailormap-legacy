@@ -18,10 +18,8 @@ package nl.b3p.viewer.admin.stripes;
 
 import java.io.StringReader;
 import java.text.MessageFormat;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.ResourceBundle;
 import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletResponse;
@@ -293,7 +291,7 @@ public class GeoServiceRegistryActionBean extends LocalizableActionBean {
                 j.put("name", service.getName());
                 j.put("type", "service");
                 j.put("isLeaf", service.getTopLayer() == null);
-                j.put("status", service.isMonitoringStatusOK() ? "ok" : "error");
+                j.put("status", service.isMonitoringStatusok() ? "ok" : "error");
                 j.put("parentid", nodeId);
                 children.put(j);
             }

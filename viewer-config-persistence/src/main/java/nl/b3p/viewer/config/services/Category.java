@@ -44,29 +44,41 @@ public class Category {
     public static final Long ROOT_CATEGORY_ID = 0L;
     
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Basic(optional=false)
     private String name;
 
     @ManyToOne
+    @JoinColumn(name = "parent")
     private Category parent;
 
     @ManyToMany // Actually @OneToMany, workaround for HHH-1268
-    @JoinTable(inverseJoinColumns=@JoinColumn(name="child"))
+    @JoinTable(
+            name="category_children",
+            inverseJoinColumns=@JoinColumn(name="child"),
+            joinColumns=@JoinColumn(name = "category", referencedColumnName = "id")
+    )
     @OrderColumn(name="list_index")
     private List<Category> children = new ArrayList<Category>();
 
     @ManyToMany // Actually @OneToMany, workaround for HHH-1268
-    @JoinTable(inverseJoinColumns=@JoinColumn(name="service"))
+    @JoinTable(
+            name="category_services",
+            inverseJoinColumns=@JoinColumn(name="service"),
+            joinColumns=@JoinColumn(name = "category", referencedColumnName = "id")
+    )
     @OrderColumn(name="list_index")
     private List<GeoService> services = new ArrayList<GeoService>();
 
     @ElementCollection
     @Column(name="role_name")
+    @CollectionTable(joinColumns = @JoinColumn(name = "category"))
     private Set<String> readers = new HashSet<String>();
 
     @ElementCollection
+    @CollectionTable(joinColumns = @JoinColumn(name = "category"))
     @Column(name="role_name")
     private Set<String> writers = new HashSet<String>();
 

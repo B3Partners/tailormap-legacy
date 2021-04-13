@@ -33,9 +33,11 @@ import java.util.List;
 public class SolrConf {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "simple_feature_type")
     private SimpleFeatureType simpleFeatureType;
     
     @ElementCollection

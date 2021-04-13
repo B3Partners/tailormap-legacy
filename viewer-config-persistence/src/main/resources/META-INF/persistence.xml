@@ -8,7 +8,7 @@
         <class>nl.b3p.viewer.config.services.GeoService</class>
         <class>nl.b3p.viewer.config.services.Category</class>
         <properties>
-            <property name="hibernate.dialect" value="org.hibernate.dialect.Oracle10gDialect"/>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.Oracle12gDialect"/>
             <property name="hibernate.physical_naming_strategy" value="nl.b3p.viewer.util.SnakeCasePhysicalNamingStrategy" />
 
             <!-- Oracle JDBC driver does not work with
@@ -25,7 +25,6 @@
             -->
             <property name="hibernate.jdbc.use_get_generated_keys" value="false"/>
 
-            <property name="hibernate.ejb.naming_strategy" value="org.hibernate.cfg.ImprovedNamingStrategy"/>
             <property name="hibernate.cache.provider_class" value="org.hibernate.cache.NoCacheProvider"/>
             <!-- mitigation for CVE-2020-25638 -->
             <property name="hibernate.use_sql_comments" value="false"/>
@@ -49,7 +48,6 @@
             -->
             <property name="hibernate.jdbc.use_get_generated_keys" value="false"/>
 
-            <property name="hibernate.ejb.naming_strategy" value="org.hibernate.cfg.ImprovedNamingStrategy"/>
             <property name="hibernate.cache.provider_class" value="org.hibernate.cache.NoCacheProvider"/>
             <!-- mitigation for CVE-2020-25638 -->
             <property name="hibernate.use_sql_comments" value="false"/>
@@ -74,7 +72,6 @@
             -->
             <property name="hibernate.jdbc.use_get_generated_keys" value="false"/>
 
-            <property name="hibernate.ejb.naming_strategy" value="org.hibernate.cfg.ImprovedNamingStrategy"/>
             <property name="hibernate.cache.provider_class" value="org.hibernate.cache.NoCacheProvider"/>
             <!-- mitigation for CVE-2020-25638 -->
             <property name="hibernate.use_sql_comments" value="false"/>

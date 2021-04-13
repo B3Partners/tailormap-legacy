@@ -34,11 +34,14 @@ public class FeatureTypeRelation {
     public static final String RELATE = "relate";
     
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne    
+    @ManyToOne
+    @JoinColumn(name = "feature_type")
     private SimpleFeatureType featureType;
     
     @ManyToOne
+    @JoinColumn(name = "foreign_feature_type")
     private SimpleFeatureType foreignFeatureType;
         
     @OneToMany(cascade=CascadeType.ALL, mappedBy="relation", orphanRemoval=true)

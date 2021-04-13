@@ -67,7 +67,7 @@ public class ScriptRunner {
      * @throws IOException if any occurs connecting to the database
      * @throws SQLException if any occurs executing the script
      */
-    public void runScript(Reader reader, boolean canFail) throws IOException, SQLException {
+    public void runScript(Reader reader, boolean canFail) throws  SQLException {
         try {
             boolean originalAutoCommit = connection.getAutoCommit();
             try {
@@ -78,7 +78,7 @@ public class ScriptRunner {
             } finally {
                 connection.setAutoCommit(originalAutoCommit);
             }
-        } catch (IOException | SQLException e) {
+        } catch ( SQLException e) {
             throw e;
         } catch (Exception e) {
             throw new RuntimeException("Error running script.  Cause: " + e.getLocalizedMessage(), e);

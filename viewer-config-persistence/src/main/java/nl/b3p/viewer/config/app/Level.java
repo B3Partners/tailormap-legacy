@@ -36,29 +36,41 @@ import java.util.*;
 @Table(name="level_")
 public class Level implements Comparable{
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
+    @JoinColumn(name = "parent")
     private Level parent;
     
     @Basic(optional=false)
     private String name;
 
     @ManyToMany(cascade=CascadeType.ALL) // Actually @OneToMany, workaround for HHH-1268    
-    @JoinTable(name="level_children", inverseJoinColumns=@JoinColumn(name="child"))
+    @JoinTable(
+            name="level_children",
+            joinColumns=@JoinColumn(name = "level_", referencedColumnName = "id"),
+            inverseJoinColumns=@JoinColumn(name="child"))
     @OrderColumn(name="list_index")
     private List<Level> children = new ArrayList<Level>();
 
     private boolean background;
 
-    @ManyToMany(cascade=CascadeType.ALL) // Actually @OneToMany, workaround for HHH-1268    
-    @JoinTable(name="level_layers", inverseJoinColumns=@JoinColumn(name="layer"))
+    @ManyToMany(cascade=CascadeType.ALL) // Actually @OneToMany, workaround for HHH-1268
+    @JoinTable(
+            name="level_layers",
+            joinColumns=@JoinColumn(name = "level_", referencedColumnName = "id"),
+            inverseJoinColumns=@JoinColumn(name="layer"))
     @OrderColumn(name="list_index")
-    @org.hibernate.annotations.Cascade(org.hibernate.annotations.CascadeType.DELETE_ORPHAN) // cannot use orphanRemoval=true due to workaround
+    @org.hibernate.annotations.Cascade(org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
     private List<ApplicationLayer> layers = new ArrayList<ApplicationLayer>();
 
     @ManyToMany
-    @JoinTable(name="level_documents", inverseJoinColumns=@JoinColumn(name="document"))
+    @JoinTable(
+            name="level_documents",
+            inverseJoinColumns=@JoinColumn(name="document"),
+            joinColumns=@JoinColumn(name = "level_", referencedColumnName = "id")
+    )
     @OrderColumn(name="list_index")
     private List<Document> documents = new ArrayList<Document>();
 

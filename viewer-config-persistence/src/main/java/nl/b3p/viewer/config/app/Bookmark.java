@@ -35,6 +35,7 @@ import java.util.Date;
 public class Bookmark {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
     private String code;
@@ -50,6 +51,7 @@ public class Bookmark {
     private String createdBy;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "application")
     private Application application;
 
     //<editor-fold defaultstate="collapsed" desc="getters & setters">

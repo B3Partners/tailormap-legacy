@@ -30,6 +30,7 @@ import java.util.List;
 @Entity
 public class TileMatrixSet {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String identifier;
@@ -40,6 +41,7 @@ public class TileMatrixSet {
     private List<TileMatrix> matrices = new ArrayList<>();
     
     @ManyToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+    @JoinColumn(name = "tile_service")
     private TileService tileService;
     
     

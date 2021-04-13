@@ -23,6 +23,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
+import org.hibernate.jdbc.Work;
 import org.junit.After;
 import org.junit.Before;
 
@@ -85,9 +86,9 @@ public abstract class TestUtil extends LoggingTestUtil {
         testname = testname.replaceAll(" ", "");
         String randomizer = RandomStringUtils.randomAlphabetic(8);
         // if you want to keep the database of each test in the target directory use this:
-        // config.put("javax.persistence.jdbc.url", "jdbc:hsqldb:file:./target/unittest-hsqldb_"+ testname + "_" + randomizer + "/db;shutdown=true");
+         config.put("javax.persistence.jdbc.url", "jdbc:hsqldb:file:./target/unittest-hsqldb_"+ testname + "_" + randomizer + "/db;shutdown=true");
         // if you want tests to run against in-memory database use:
-        config.put("javax.persistence.jdbc.url", "jdbc:hsqldb:mem:unittest-hsqldb_"+ testname + "_" + randomizer + "/db;shutdown=true");
+        //config.put("javax.persistence.jdbc.url", "jdbc:hsqldb:mem:unittest-hsqldb_"+ testname + "_" + randomizer + "/db;shutdown=true");
         entityManager = Persistence.createEntityManagerFactory(persistenceUnit,config).createEntityManager();
         if(!entityManager.getTransaction().isActive()){
             entityManager.getTransaction().begin();
@@ -144,19 +145,24 @@ public abstract class TestUtil extends LoggingTestUtil {
      * @throws java.io.IOException Thrown when the testdata cannot be found
      * @throws java.sql.SQLException Thrown when the testdata cannot be loaded
      */
-    public void executeScript(Reader f) throws IOException, SQLException {
-        Connection conn = null;
+    public void executeScript(Reader f) {
 
+        Session session = (Session) entityManager.getDelegate();
+        // conn = (Connection) session.connection();
         try {
-            Session session = (Session) entityManager.getDelegate();
-            conn = (Connection) session.connection();
-            ScriptRunner sr = new ScriptRunner(conn, true, true);
-            sr.runScript(f, false);
-            conn.commit();
-            entityManager.flush();
+            session.doWork(new Work() {
+                @Override
+                public void execute(Connection con) throws SQLException {
+                    ScriptRunner sr = new ScriptRunner(con, true, true);
+                    sr.runScript(f, false);
+                    con.commit();
+                }
+            });
         } finally {
-            if (conn != null) {
-                conn.close();
+            entityManager.flush();
+            if (entityManager.getTransaction().isActive()) {
+                entityManager.getTransaction().commit();
+                entityManager.getTransaction().begin();
             }
         }
     }

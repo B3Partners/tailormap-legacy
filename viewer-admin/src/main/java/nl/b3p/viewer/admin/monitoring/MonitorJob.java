@@ -76,10 +76,10 @@ public class MonitorJob implements Job, InterruptableJob {
 
                     GeoserviceFactoryHelper.checkServiceOnline(em, gs);
                     online++;
-                    gs.setMonitoringStatusOK(true);
+                    gs.setMonitoringStatusok(true);
                     log.debug("ONLINE: " + debugMsg);
                 } catch(Exception e) {
-                    gs.setMonitoringStatusOK(false);
+                    gs.setMonitoringStatusok(false);
                     offline++;
                     log.debug("OFFLINE: " + debugMsg);
                     if(log.isTraceEnabled()) {

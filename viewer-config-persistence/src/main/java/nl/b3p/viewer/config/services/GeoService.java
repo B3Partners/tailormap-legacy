@@ -59,12 +59,14 @@ public abstract class GeoService implements Serializable {
     public static final String PARAM_PASSWORD = "password";
     
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Basic(optional=false)
     private String name;
 
     @ManyToOne(fetch=FetchType.LAZY)
+    @JoinColumn(name = "category")
     private Category category;
 
     @Basic(optional=false)
@@ -78,12 +80,16 @@ public abstract class GeoService implements Serializable {
 
     private boolean monitoringEnabled;
     
-    private boolean monitoringStatusOK = true;
+    private boolean monitoringStatusok = true;
 
     @OneToOne(cascade=CascadeType.PERSIST)
+    @JoinColumn(name = "top_layer")
     private Layer topLayer;
 
     @ElementCollection
+    @CollectionTable(
+            joinColumns = @JoinColumn(name = "geo_service")
+    )
     @Column(name="keyword")
     private Set<String> keywords = new HashSet<>();
     
@@ -101,14 +107,19 @@ public abstract class GeoService implements Serializable {
     @JoinTable(joinColumns=@JoinColumn(name="geoservice"))
     // Element wrapper required because of http://opensource.atlassian.com/projects/hibernate/browse/JPA-11
     private Map<String,ClobElement> details = new HashMap<>();
-   
+
+
+    @JoinTable(
+            name = "geo_service_style_libraries",
+            joinColumns = @JoinColumn(name ="geo_service" ),
+            inverseJoinColumns=@JoinColumn(name="style_library"))
     @OneToMany(cascade=CascadeType.PERSIST) // Actually @OneToMany, workaround for HHH-1268
-    @JoinTable(inverseJoinColumns=@JoinColumn(name="style_library"))
-    @OrderColumn(name="list_index")    
+    @OrderColumn(name="list_index")
     private List<StyleLibrary> styleLibraries = new ArrayList();
     
     
     @ElementCollection
+    @CollectionTable(joinColumns = @JoinColumn(name = "geo_service"))
     @Column(name="role_name")
     private Set<String> readers = new HashSet<String>();
     
@@ -193,12 +204,12 @@ public abstract class GeoService implements Serializable {
         this.authorizationsModified = authorizationsModified;
     }
 
-    public boolean isMonitoringStatusOK() {
-        return monitoringStatusOK;
+    public boolean isMonitoringStatusok() {
+        return monitoringStatusok;
     }
 
-    public void setMonitoringStatusOK(boolean monitoringStatusOK) {
-        this.monitoringStatusOK = monitoringStatusOK;
+    public void setMonitoringStatusok(boolean monitoringStatusOK) {
+        this.monitoringStatusok = monitoringStatusOK;
     }
 
     public Map<String, ClobElement> getDetails() {

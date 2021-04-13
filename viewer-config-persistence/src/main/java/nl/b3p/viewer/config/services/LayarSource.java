@@ -18,10 +18,7 @@ package nl.b3p.viewer.config.services;
 
 import nl.b3p.viewer.config.ClobElement;
 
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,15 +29,19 @@ import java.util.Map;
 @Entity
 public class LayarSource {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
     @ManyToOne
+    @JoinColumn(name = "layar_service")
     private LayarService layarService;
     
     @ManyToOne
+    @JoinColumn(name = "feature_type")
     private SimpleFeatureType featureType;
     
     @ElementCollection
+    @JoinTable(joinColumns = @JoinColumn(name = "layar_source"))
     private Map<String,ClobElement> details = new HashMap<String,ClobElement>();
 
     //<editor-fold defaultstate="collapsed" desc="Getters/Setters">

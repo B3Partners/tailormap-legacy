@@ -11,15 +11,18 @@ import java.util.Set;
 public class Form {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String featureTypeName;
     private String name;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "sft")
     private SimpleFeatureType sft;
 
     @ElementCollection
+    @CollectionTable(joinColumns = @JoinColumn(name = "form"))
     @Column(name="role_name")
     private Set<String> readers = new HashSet<>();
 
