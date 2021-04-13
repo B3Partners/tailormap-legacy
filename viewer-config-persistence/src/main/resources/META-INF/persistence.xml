@@ -9,6 +9,7 @@
         <class>nl.b3p.viewer.config.services.Category</class>
         <properties>
             <property name="hibernate.dialect" value="org.hibernate.dialect.Oracle10gDialect"/>
+            <property name="hibernate.physical_naming_strategy" value="nl.b3p.viewer.util.SnakeCasePhysicalNamingStrategy" />
 
             <!-- Oracle JDBC driver does not work with
             PreparedStatement.setBlob() of PreparedStatement.setClob()
@@ -39,7 +40,7 @@
         <class>nl.b3p.viewer.config.services.Category</class>
         <properties>
             <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>
-
+            <property name="hibernate.physical_naming_strategy" value="nl.b3p.viewer.util.SnakeCasePhysicalNamingStrategy" />
             <!-- See comments for Oracle -->
             <property name="hibernate.jdbc.use_streams_for_binary" value="true"/>
 
@@ -63,6 +64,7 @@
         <class>nl.b3p.viewer.config.services.Category</class>
         <properties>
             <property name="hibernate.dialect" value="org.hibernate.dialect.SQLServerDialect"/>
+            <property name="hibernate.physical_naming_strategy" value="nl.b3p.viewer.util.SnakeCasePhysicalNamingStrategy" />
 
             <!-- See comments for Oracle -->
             <property name="hibernate.jdbc.use_streams_for_binary" value="true"/>
@@ -87,7 +89,8 @@
             <property name="hibernate.archive.autodetection" value="class"/>
             <property name="hibernate.format_sql" value="true"/>
             <property name="hibernate.hbm2ddl.auto" value="update"/>
-            <property name="hibernate.ejb.naming_strategy" value="org.hibernate.cfg.ImprovedNamingStrategy"/>
+            
+            <property name="hibernate.physical_naming_strategy" value="nl.b3p.viewer.util.SnakeCasePhysicalNamingStrategy" />
             <property name="hibernate.cache.provider_class" value="org.hibernate.cache.NoCacheProvider"/>
             <property name="javax.persistence.jdbc.driver" value="org.hsqldb.jdbcDriver"/>
             <property name="javax.persistence.jdbc.url" value="jdbc:hsqldb:file:./target/unittest-hsqldb/db;shutdown=true"/>
