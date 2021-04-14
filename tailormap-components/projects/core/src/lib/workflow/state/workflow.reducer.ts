@@ -7,6 +7,9 @@ import { Feature } from '../../shared/generated';
 const onSetAction = (state: WorkflowState, payload: { action: WORKFLOW_ACTION }): WorkflowState => ({
   ...state,
   action: payload.action,
+  featureType: payload.action === WORKFLOW_ACTION.DEFAULT ? null : state.featureType,
+  geometryType: payload.action === WORKFLOW_ACTION.DEFAULT ? null : state.geometryType,
+
 });
 
 const onSetFeature = (state: WorkflowState, payload: { feature: Feature; action: WORKFLOW_ACTION }): WorkflowState => ({
