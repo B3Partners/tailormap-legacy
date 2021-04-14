@@ -1,3 +1,4 @@
+/* tslint:disable */
 /* eslint-disable */
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
@@ -22,21 +23,21 @@ export class FormMechanicalDuctControllerService extends BaseService {
   }
 
   /**
-   * Path part for operation get5
+   * Path part for operation get7
    */
-  static readonly Get5Path = '/mechanischeleiding/{objectGuid}';
+  static readonly Get7Path = '/mechanischeleiding/{objectGuid}';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `get5()` instead.
+   * To access only the response body, use `get7()` instead.
    *
    * This method doesn't expect any request body.
    */
-  get5$Response(params: {
+  get7$Response(params: {
     objectGuid: string;
   }): Observable<StrictHttpResponse<MechLeiding>> {
 
-    const rb = new RequestBuilder(this.rootUrl, FormMechanicalDuctControllerService.Get5Path, 'get');
+    const rb = new RequestBuilder(this.rootUrl, FormMechanicalDuctControllerService.Get7Path, 'get');
     if (params) {
       rb.path('objectGuid', params.objectGuid, {});
     }
@@ -54,37 +55,37 @@ export class FormMechanicalDuctControllerService extends BaseService {
 
   /**
    * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `get5$Response()` instead.
+   * To access the full response (for headers, for example), `get7$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  get5(params: {
+  get7(params: {
     objectGuid: string;
   }): Observable<MechLeiding> {
 
-    return this.get5$Response(params).pipe(
+    return this.get7$Response(params).pipe(
       map((r: StrictHttpResponse<MechLeiding>) => r.body as MechLeiding)
     );
   }
 
   /**
-   * Path part for operation onPoint5
+   * Path part for operation onPoint7
    */
-  static readonly OnPoint5Path = '/mechanischeleiding/{x}/{y}/{scale}';
+  static readonly OnPoint7Path = '/mechanischeleiding/{x}/{y}/{scale}';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `onPoint5()` instead.
+   * To access only the response body, use `onPoint7()` instead.
    *
    * This method doesn't expect any request body.
    */
-  onPoint5$Response(params: {
+  onPoint7$Response(params: {
     'x': number;
     'y': number;
     scale: number;
   }): Observable<StrictHttpResponse<Array<MechLeiding>>> {
 
-    const rb = new RequestBuilder(this.rootUrl, FormMechanicalDuctControllerService.OnPoint5Path, 'get');
+    const rb = new RequestBuilder(this.rootUrl, FormMechanicalDuctControllerService.OnPoint7Path, 'get');
     if (params) {
       rb.path('x', params['x'], {});
       rb.path('y', params['y'], {});
@@ -104,17 +105,17 @@ export class FormMechanicalDuctControllerService extends BaseService {
 
   /**
    * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `onPoint5$Response()` instead.
+   * To access the full response (for headers, for example), `onPoint7$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  onPoint5(params: {
+  onPoint7(params: {
     'x': number;
     'y': number;
     scale: number;
   }): Observable<Array<MechLeiding>> {
 
-    return this.onPoint5$Response(params).pipe(
+    return this.onPoint7$Response(params).pipe(
       map((r: StrictHttpResponse<Array<MechLeiding>>) => r.body as Array<MechLeiding>)
     );
   }

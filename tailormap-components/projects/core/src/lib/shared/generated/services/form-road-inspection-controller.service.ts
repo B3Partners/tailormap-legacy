@@ -1,3 +1,4 @@
+/* tslint:disable */
 /* eslint-disable */
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
@@ -23,21 +24,21 @@ export class FormRoadInspectionControllerService extends BaseService {
   }
 
   /**
-   * Path part for operation get7
+   * Path part for operation get10
    */
-  static readonly Get7Path = '/weginspectie/{objectGuid}';
+  static readonly Get10Path = '/weginspectie/{objectGuid}';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `get7()` instead.
+   * To access only the response body, use `get10()` instead.
    *
    * This method doesn't expect any request body.
    */
-  get7$Response(params: {
+  get10$Response(params: {
     objectGuid: string;
   }): Observable<StrictHttpResponse<Weginspectie>> {
 
-    const rb = new RequestBuilder(this.rootUrl, FormRoadInspectionControllerService.Get7Path, 'get');
+    const rb = new RequestBuilder(this.rootUrl, FormRoadInspectionControllerService.Get10Path, 'get');
     if (params) {
       rb.path('objectGuid', params.objectGuid, {});
     }
@@ -55,36 +56,36 @@ export class FormRoadInspectionControllerService extends BaseService {
 
   /**
    * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `get7$Response()` instead.
+   * To access the full response (for headers, for example), `get10$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  get7(params: {
+  get10(params: {
     objectGuid: string;
   }): Observable<Weginspectie> {
 
-    return this.get7$Response(params).pipe(
+    return this.get10$Response(params).pipe(
       map((r: StrictHttpResponse<Weginspectie>) => r.body as Weginspectie)
     );
   }
 
   /**
-   * Path part for operation update1
+   * Path part for operation update2
    */
-  static readonly Update1Path = '/weginspectie/{objectGuid}';
+  static readonly Update2Path = '/weginspectie/{objectGuid}';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `update1()` instead.
+   * To access only the response body, use `update2()` instead.
    *
    * This method sends `application/json` and handles request body of type `application/json`.
    */
-  update1$Response(params: {
+  update2$Response(params: {
     objectGuid: string;
     body: Weginspectie
   }): Observable<StrictHttpResponse<Weginspectie>> {
 
-    const rb = new RequestBuilder(this.rootUrl, FormRoadInspectionControllerService.Update1Path, 'put');
+    const rb = new RequestBuilder(this.rootUrl, FormRoadInspectionControllerService.Update2Path, 'put');
     if (params) {
       rb.path('objectGuid', params.objectGuid, {});
       rb.body(params.body, 'application/json');
@@ -103,36 +104,36 @@ export class FormRoadInspectionControllerService extends BaseService {
 
   /**
    * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `update1$Response()` instead.
+   * To access the full response (for headers, for example), `update2$Response()` instead.
    *
    * This method sends `application/json` and handles request body of type `application/json`.
    */
-  update1(params: {
+  update2(params: {
     objectGuid: string;
     body: Weginspectie
   }): Observable<Weginspectie> {
 
-    return this.update1$Response(params).pipe(
+    return this.update2$Response(params).pipe(
       map((r: StrictHttpResponse<Weginspectie>) => r.body as Weginspectie)
     );
   }
 
   /**
-   * Path part for operation delete1
+   * Path part for operation delete2
    */
-  static readonly Delete1Path = '/weginspectie/{objectGuid}';
+  static readonly Delete2Path = '/weginspectie/{objectGuid}';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `delete1()` instead.
+   * To access only the response body, use `delete2()` instead.
    *
    * This method doesn't expect any request body.
    */
-  delete1$Response(params: {
+  delete2$Response(params: {
     objectGuid: string;
   }): Observable<StrictHttpResponse<void>> {
 
-    const rb = new RequestBuilder(this.rootUrl, FormRoadInspectionControllerService.Delete1Path, 'delete');
+    const rb = new RequestBuilder(this.rootUrl, FormRoadInspectionControllerService.Delete2Path, 'delete');
     if (params) {
       rb.path('objectGuid', params.objectGuid, {});
     }
@@ -150,31 +151,31 @@ export class FormRoadInspectionControllerService extends BaseService {
 
   /**
    * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `delete1$Response()` instead.
+   * To access the full response (for headers, for example), `delete2$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  delete1(params: {
+  delete2(params: {
     objectGuid: string;
   }): Observable<void> {
 
-    return this.delete1$Response(params).pipe(
+    return this.delete2$Response(params).pipe(
       map((r: StrictHttpResponse<void>) => r.body as void)
     );
   }
 
   /**
-   * Path part for operation getAllPaged
+   * Path part for operation getAllPaged1
    */
-  static readonly GetAllPagedPath = '/weginspectie';
+  static readonly GetAllPaged1Path = '/weginspectie';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `getAllPaged()` instead.
+   * To access only the response body, use `getAllPaged1()` instead.
    *
    * This method doesn't expect any request body.
    */
-  getAllPaged$Response(params?: {
+  getAllPaged1$Response(params?: {
 
     /**
      * Zero-based page index (0..N)
@@ -192,7 +193,7 @@ export class FormRoadInspectionControllerService extends BaseService {
     sort?: Array<string>;
   }): Observable<StrictHttpResponse<PageWeginspectie>> {
 
-    const rb = new RequestBuilder(this.rootUrl, FormRoadInspectionControllerService.GetAllPagedPath, 'get');
+    const rb = new RequestBuilder(this.rootUrl, FormRoadInspectionControllerService.GetAllPaged1Path, 'get');
     if (params) {
       rb.query('page', params.page, {});
       rb.query('size', params.size, {});
@@ -212,11 +213,11 @@ export class FormRoadInspectionControllerService extends BaseService {
 
   /**
    * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `getAllPaged$Response()` instead.
+   * To access the full response (for headers, for example), `getAllPaged1$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  getAllPaged(params?: {
+  getAllPaged1(params?: {
 
     /**
      * Zero-based page index (0..N)
@@ -234,27 +235,27 @@ export class FormRoadInspectionControllerService extends BaseService {
     sort?: Array<string>;
   }): Observable<PageWeginspectie> {
 
-    return this.getAllPaged$Response(params).pipe(
+    return this.getAllPaged1$Response(params).pipe(
       map((r: StrictHttpResponse<PageWeginspectie>) => r.body as PageWeginspectie)
     );
   }
 
   /**
-   * Path part for operation save1
+   * Path part for operation save2
    */
-  static readonly Save1Path = '/weginspectie';
+  static readonly Save2Path = '/weginspectie';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `save1()` instead.
+   * To access only the response body, use `save2()` instead.
    *
    * This method sends `application/json` and handles request body of type `application/json`.
    */
-  save1$Response(params: {
+  save2$Response(params: {
     body: { 'wv'?: Weginspectie, 'parentId'?: string }
   }): Observable<StrictHttpResponse<Weginspectie>> {
 
-    const rb = new RequestBuilder(this.rootUrl, FormRoadInspectionControllerService.Save1Path, 'post');
+    const rb = new RequestBuilder(this.rootUrl, FormRoadInspectionControllerService.Save2Path, 'post');
     if (params) {
       rb.body(params.body, 'application/json');
     }
@@ -272,34 +273,34 @@ export class FormRoadInspectionControllerService extends BaseService {
 
   /**
    * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `save1$Response()` instead.
+   * To access the full response (for headers, for example), `save2$Response()` instead.
    *
    * This method sends `application/json` and handles request body of type `application/json`.
    */
-  save1(params: {
+  save2(params: {
     body: { 'wv'?: Weginspectie, 'parentId'?: string }
   }): Observable<Weginspectie> {
 
-    return this.save1$Response(params).pipe(
+    return this.save2$Response(params).pipe(
       map((r: StrictHttpResponse<Weginspectie>) => r.body as Weginspectie)
     );
   }
 
   /**
-   * Path part for operation getAll1
+   * Path part for operation getAll2
    */
-  static readonly GetAll1Path = '/weginspectie/unpaged';
+  static readonly GetAll2Path = '/weginspectie/unpaged';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `getAll1()` instead.
+   * To access only the response body, use `getAll2()` instead.
    *
    * This method doesn't expect any request body.
    */
-  getAll1$Response(params?: {
+  getAll2$Response(params?: {
   }): Observable<StrictHttpResponse<Array<Weginspectie>>> {
 
-    const rb = new RequestBuilder(this.rootUrl, FormRoadInspectionControllerService.GetAll1Path, 'get');
+    const rb = new RequestBuilder(this.rootUrl, FormRoadInspectionControllerService.GetAll2Path, 'get');
     if (params) {
     }
 
@@ -316,14 +317,14 @@ export class FormRoadInspectionControllerService extends BaseService {
 
   /**
    * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `getAll1$Response()` instead.
+   * To access the full response (for headers, for example), `getAll2$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  getAll1(params?: {
+  getAll2(params?: {
   }): Observable<Array<Weginspectie>> {
 
-    return this.getAll1$Response(params).pipe(
+    return this.getAll2$Response(params).pipe(
       map((r: StrictHttpResponse<Array<Weginspectie>>) => r.body as Array<Weginspectie>)
     );
   }
