@@ -242,7 +242,7 @@ export class FormCopyComponent implements OnInit, OnDestroy {
     const valuesToCopy = {};
     const fieldsToCopy = this.formCopyService.featuresToCopy.get(this.formCopyService.parentFeature.objectGuid);
     fieldsToCopy.forEach((value, key) => {
-      valuesToCopy[key] = this.currentFeature[key];
+      valuesToCopy[key] = this.parentFeature[key];
     });
     return valuesToCopy;
   }
