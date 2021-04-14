@@ -1,3 +1,4 @@
+/* tslint:disable */
 /* eslint-disable */
 import { Feature } from './feature';
 export interface HaagPlanning extends Feature {

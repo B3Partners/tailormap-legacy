@@ -1,3 +1,4 @@
+/* tslint:disable */
 /* eslint-disable */
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
@@ -22,21 +23,21 @@ export class FormNatPlantingControllerService extends BaseService {
   }
 
   /**
-   * Path part for operation get6
+   * Path part for operation get8
    */
-  static readonly Get6Path = '/natbeplanting/{objectGuid}';
+  static readonly Get8Path = '/natbeplanting/{objectGuid}';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `get6()` instead.
+   * To access only the response body, use `get8()` instead.
    *
    * This method doesn't expect any request body.
    */
-  get6$Response(params: {
+  get8$Response(params: {
     objectGuid: string;
   }): Observable<StrictHttpResponse<NatBeplanting>> {
 
-    const rb = new RequestBuilder(this.rootUrl, FormNatPlantingControllerService.Get6Path, 'get');
+    const rb = new RequestBuilder(this.rootUrl, FormNatPlantingControllerService.Get8Path, 'get');
     if (params) {
       rb.path('objectGuid', params.objectGuid, {});
     }
@@ -54,37 +55,37 @@ export class FormNatPlantingControllerService extends BaseService {
 
   /**
    * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `get6$Response()` instead.
+   * To access the full response (for headers, for example), `get8$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  get6(params: {
+  get8(params: {
     objectGuid: string;
   }): Observable<NatBeplanting> {
 
-    return this.get6$Response(params).pipe(
+    return this.get8$Response(params).pipe(
       map((r: StrictHttpResponse<NatBeplanting>) => r.body as NatBeplanting)
     );
   }
 
   /**
-   * Path part for operation onPoint6
+   * Path part for operation onPoint8
    */
-  static readonly OnPoint6Path = '/natbeplanting/{x}/{y}/{scale}';
+  static readonly OnPoint8Path = '/natbeplanting/{x}/{y}/{scale}';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `onPoint6()` instead.
+   * To access only the response body, use `onPoint8()` instead.
    *
    * This method doesn't expect any request body.
    */
-  onPoint6$Response(params: {
+  onPoint8$Response(params: {
     'x': number;
     'y': number;
     scale: number;
   }): Observable<StrictHttpResponse<Array<NatBeplanting>>> {
 
-    const rb = new RequestBuilder(this.rootUrl, FormNatPlantingControllerService.OnPoint6Path, 'get');
+    const rb = new RequestBuilder(this.rootUrl, FormNatPlantingControllerService.OnPoint8Path, 'get');
     if (params) {
       rb.path('x', params['x'], {});
       rb.path('y', params['y'], {});
@@ -104,17 +105,17 @@ export class FormNatPlantingControllerService extends BaseService {
 
   /**
    * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `onPoint6$Response()` instead.
+   * To access the full response (for headers, for example), `onPoint8$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  onPoint6(params: {
+  onPoint8(params: {
     'x': number;
     'y': number;
     scale: number;
   }): Observable<Array<NatBeplanting>> {
 
-    return this.onPoint6$Response(params).pipe(
+    return this.onPoint8$Response(params).pipe(
       map((r: StrictHttpResponse<Array<NatBeplanting>>) => r.body as Array<NatBeplanting>)
     );
   }

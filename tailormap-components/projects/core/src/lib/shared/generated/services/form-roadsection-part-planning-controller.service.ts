@@ -1,3 +1,4 @@
+/* tslint:disable */
 /* eslint-disable */
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
@@ -23,21 +24,21 @@ export class FormRoadsectionPartPlanningControllerService extends BaseService {
   }
 
   /**
-   * Path part for operation get9
+   * Path part for operation get12
    */
-  static readonly Get9Path = '/wegvakonderdeelplanning/{objectGuid}';
+  static readonly Get12Path = '/wegvakonderdeelplanning/{objectGuid}';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `get9()` instead.
+   * To access only the response body, use `get12()` instead.
    *
    * This method doesn't expect any request body.
    */
-  get9$Response(params: {
+  get12$Response(params: {
     objectGuid: string;
   }): Observable<StrictHttpResponse<Wegvakonderdeelplanning>> {
 
-    const rb = new RequestBuilder(this.rootUrl, FormRoadsectionPartPlanningControllerService.Get9Path, 'get');
+    const rb = new RequestBuilder(this.rootUrl, FormRoadsectionPartPlanningControllerService.Get12Path, 'get');
     if (params) {
       rb.path('objectGuid', params.objectGuid, {});
     }
@@ -55,36 +56,36 @@ export class FormRoadsectionPartPlanningControllerService extends BaseService {
 
   /**
    * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `get9$Response()` instead.
+   * To access the full response (for headers, for example), `get12$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  get9(params: {
+  get12(params: {
     objectGuid: string;
   }): Observable<Wegvakonderdeelplanning> {
 
-    return this.get9$Response(params).pipe(
+    return this.get12$Response(params).pipe(
       map((r: StrictHttpResponse<Wegvakonderdeelplanning>) => r.body as Wegvakonderdeelplanning)
     );
   }
 
   /**
-   * Path part for operation update3
+   * Path part for operation update4
    */
-  static readonly Update3Path = '/wegvakonderdeelplanning/{objectGuid}';
+  static readonly Update4Path = '/wegvakonderdeelplanning/{objectGuid}';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `update3()` instead.
+   * To access only the response body, use `update4()` instead.
    *
    * This method sends `application/json` and handles request body of type `application/json`.
    */
-  update3$Response(params: {
+  update4$Response(params: {
     objectGuid: string;
     body: Wegvakonderdeelplanning
   }): Observable<StrictHttpResponse<Wegvakonderdeelplanning>> {
 
-    const rb = new RequestBuilder(this.rootUrl, FormRoadsectionPartPlanningControllerService.Update3Path, 'put');
+    const rb = new RequestBuilder(this.rootUrl, FormRoadsectionPartPlanningControllerService.Update4Path, 'put');
     if (params) {
       rb.path('objectGuid', params.objectGuid, {});
       rb.body(params.body, 'application/json');
@@ -103,36 +104,36 @@ export class FormRoadsectionPartPlanningControllerService extends BaseService {
 
   /**
    * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `update3$Response()` instead.
+   * To access the full response (for headers, for example), `update4$Response()` instead.
    *
    * This method sends `application/json` and handles request body of type `application/json`.
    */
-  update3(params: {
+  update4(params: {
     objectGuid: string;
     body: Wegvakonderdeelplanning
   }): Observable<Wegvakonderdeelplanning> {
 
-    return this.update3$Response(params).pipe(
+    return this.update4$Response(params).pipe(
       map((r: StrictHttpResponse<Wegvakonderdeelplanning>) => r.body as Wegvakonderdeelplanning)
     );
   }
 
   /**
-   * Path part for operation delete3
+   * Path part for operation delete4
    */
-  static readonly Delete3Path = '/wegvakonderdeelplanning/{objectGuid}';
+  static readonly Delete4Path = '/wegvakonderdeelplanning/{objectGuid}';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `delete3()` instead.
+   * To access only the response body, use `delete4()` instead.
    *
    * This method doesn't expect any request body.
    */
-  delete3$Response(params: {
+  delete4$Response(params: {
     objectGuid: string;
   }): Observable<StrictHttpResponse<void>> {
 
-    const rb = new RequestBuilder(this.rootUrl, FormRoadsectionPartPlanningControllerService.Delete3Path, 'delete');
+    const rb = new RequestBuilder(this.rootUrl, FormRoadsectionPartPlanningControllerService.Delete4Path, 'delete');
     if (params) {
       rb.path('objectGuid', params.objectGuid, {});
     }
@@ -150,31 +151,31 @@ export class FormRoadsectionPartPlanningControllerService extends BaseService {
 
   /**
    * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `delete3$Response()` instead.
+   * To access the full response (for headers, for example), `delete4$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  delete3(params: {
+  delete4(params: {
     objectGuid: string;
   }): Observable<void> {
 
-    return this.delete3$Response(params).pipe(
+    return this.delete4$Response(params).pipe(
       map((r: StrictHttpResponse<void>) => r.body as void)
     );
   }
 
   /**
-   * Path part for operation getAllPaged2
+   * Path part for operation getAllPaged3
    */
-  static readonly GetAllPaged2Path = '/wegvakonderdeelplanning';
+  static readonly GetAllPaged3Path = '/wegvakonderdeelplanning';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `getAllPaged2()` instead.
+   * To access only the response body, use `getAllPaged3()` instead.
    *
    * This method doesn't expect any request body.
    */
-  getAllPaged2$Response(params?: {
+  getAllPaged3$Response(params?: {
 
     /**
      * Zero-based page index (0..N)
@@ -192,7 +193,7 @@ export class FormRoadsectionPartPlanningControllerService extends BaseService {
     sort?: Array<string>;
   }): Observable<StrictHttpResponse<PageWegvakonderdeelplanning>> {
 
-    const rb = new RequestBuilder(this.rootUrl, FormRoadsectionPartPlanningControllerService.GetAllPaged2Path, 'get');
+    const rb = new RequestBuilder(this.rootUrl, FormRoadsectionPartPlanningControllerService.GetAllPaged3Path, 'get');
     if (params) {
       rb.query('page', params.page, {});
       rb.query('size', params.size, {});
@@ -212,11 +213,11 @@ export class FormRoadsectionPartPlanningControllerService extends BaseService {
 
   /**
    * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `getAllPaged2$Response()` instead.
+   * To access the full response (for headers, for example), `getAllPaged3$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  getAllPaged2(params?: {
+  getAllPaged3(params?: {
 
     /**
      * Zero-based page index (0..N)
@@ -234,27 +235,27 @@ export class FormRoadsectionPartPlanningControllerService extends BaseService {
     sort?: Array<string>;
   }): Observable<PageWegvakonderdeelplanning> {
 
-    return this.getAllPaged2$Response(params).pipe(
+    return this.getAllPaged3$Response(params).pipe(
       map((r: StrictHttpResponse<PageWegvakonderdeelplanning>) => r.body as PageWegvakonderdeelplanning)
     );
   }
 
   /**
-   * Path part for operation save3
+   * Path part for operation save4
    */
-  static readonly Save3Path = '/wegvakonderdeelplanning';
+  static readonly Save4Path = '/wegvakonderdeelplanning';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `save3()` instead.
+   * To access only the response body, use `save4()` instead.
    *
    * This method sends `application/json` and handles request body of type `application/json`.
    */
-  save3$Response(params: {
+  save4$Response(params: {
     body: { 'wv'?: Wegvakonderdeelplanning, 'parentId'?: string }
   }): Observable<StrictHttpResponse<Wegvakonderdeelplanning>> {
 
-    const rb = new RequestBuilder(this.rootUrl, FormRoadsectionPartPlanningControllerService.Save3Path, 'post');
+    const rb = new RequestBuilder(this.rootUrl, FormRoadsectionPartPlanningControllerService.Save4Path, 'post');
     if (params) {
       rb.body(params.body, 'application/json');
     }
@@ -272,34 +273,34 @@ export class FormRoadsectionPartPlanningControllerService extends BaseService {
 
   /**
    * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `save3$Response()` instead.
+   * To access the full response (for headers, for example), `save4$Response()` instead.
    *
    * This method sends `application/json` and handles request body of type `application/json`.
    */
-  save3(params: {
+  save4(params: {
     body: { 'wv'?: Wegvakonderdeelplanning, 'parentId'?: string }
   }): Observable<Wegvakonderdeelplanning> {
 
-    return this.save3$Response(params).pipe(
+    return this.save4$Response(params).pipe(
       map((r: StrictHttpResponse<Wegvakonderdeelplanning>) => r.body as Wegvakonderdeelplanning)
     );
   }
 
   /**
-   * Path part for operation getAll3
+   * Path part for operation getAll4
    */
-  static readonly GetAll3Path = '/wegvakonderdeelplanning/unpaged';
+  static readonly GetAll4Path = '/wegvakonderdeelplanning/unpaged';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `getAll3()` instead.
+   * To access only the response body, use `getAll4()` instead.
    *
    * This method doesn't expect any request body.
    */
-  getAll3$Response(params?: {
+  getAll4$Response(params?: {
   }): Observable<StrictHttpResponse<Array<Wegvakonderdeelplanning>>> {
 
-    const rb = new RequestBuilder(this.rootUrl, FormRoadsectionPartPlanningControllerService.GetAll3Path, 'get');
+    const rb = new RequestBuilder(this.rootUrl, FormRoadsectionPartPlanningControllerService.GetAll4Path, 'get');
     if (params) {
     }
 
@@ -316,14 +317,14 @@ export class FormRoadsectionPartPlanningControllerService extends BaseService {
 
   /**
    * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `getAll3$Response()` instead.
+   * To access the full response (for headers, for example), `getAll4$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  getAll3(params?: {
+  getAll4(params?: {
   }): Observable<Array<Wegvakonderdeelplanning>> {
 
-    return this.getAll3$Response(params).pipe(
+    return this.getAll4$Response(params).pipe(
       map((r: StrictHttpResponse<Array<Wegvakonderdeelplanning>>) => r.body as Array<Wegvakonderdeelplanning>)
     );
   }

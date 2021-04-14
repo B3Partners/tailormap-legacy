@@ -1,3 +1,4 @@
+/* tslint:disable */
 /* eslint-disable */
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
@@ -22,21 +23,21 @@ export class FormHedgeControllerService extends BaseService {
   }
 
   /**
-   * Path part for operation get4
+   * Path part for operation get6
    */
-  static readonly Get4Path = '/haag/{objectGuid}';
+  static readonly Get6Path = '/haag/{objectGuid}';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `get4()` instead.
+   * To access only the response body, use `get6()` instead.
    *
    * This method doesn't expect any request body.
    */
-  get4$Response(params: {
+  get6$Response(params: {
     objectGuid: string;
   }): Observable<StrictHttpResponse<Haag>> {
 
-    const rb = new RequestBuilder(this.rootUrl, FormHedgeControllerService.Get4Path, 'get');
+    const rb = new RequestBuilder(this.rootUrl, FormHedgeControllerService.Get6Path, 'get');
     if (params) {
       rb.path('objectGuid', params.objectGuid, {});
     }
@@ -54,37 +55,37 @@ export class FormHedgeControllerService extends BaseService {
 
   /**
    * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `get4$Response()` instead.
+   * To access the full response (for headers, for example), `get6$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  get4(params: {
+  get6(params: {
     objectGuid: string;
   }): Observable<Haag> {
 
-    return this.get4$Response(params).pipe(
+    return this.get6$Response(params).pipe(
       map((r: StrictHttpResponse<Haag>) => r.body as Haag)
     );
   }
 
   /**
-   * Path part for operation onPoint4
+   * Path part for operation onPoint6
    */
-  static readonly OnPoint4Path = '/haag/{x}/{y}/{scale}';
+  static readonly OnPoint6Path = '/haag/{x}/{y}/{scale}';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `onPoint4()` instead.
+   * To access only the response body, use `onPoint6()` instead.
    *
    * This method doesn't expect any request body.
    */
-  onPoint4$Response(params: {
+  onPoint6$Response(params: {
     'x': number;
     'y': number;
     scale: number;
   }): Observable<StrictHttpResponse<Array<Haag>>> {
 
-    const rb = new RequestBuilder(this.rootUrl, FormHedgeControllerService.OnPoint4Path, 'get');
+    const rb = new RequestBuilder(this.rootUrl, FormHedgeControllerService.OnPoint6Path, 'get');
     if (params) {
       rb.path('x', params['x'], {});
       rb.path('y', params['y'], {});
@@ -104,17 +105,17 @@ export class FormHedgeControllerService extends BaseService {
 
   /**
    * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `onPoint4$Response()` instead.
+   * To access the full response (for headers, for example), `onPoint6$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  onPoint4(params: {
+  onPoint6(params: {
     'x': number;
     'y': number;
     scale: number;
   }): Observable<Array<Haag>> {
 
-    return this.onPoint4$Response(params).pipe(
+    return this.onPoint6$Response(params).pipe(
       map((r: StrictHttpResponse<Array<Haag>>) => r.body as Array<Haag>)
     );
   }
