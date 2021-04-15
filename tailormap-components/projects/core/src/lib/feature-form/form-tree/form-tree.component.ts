@@ -5,7 +5,7 @@ import { FormTreeHelpers } from './form-tree-helpers';
 import { Store } from '@ngrx/store';
 import { FormState } from '../state/form.state';
 import * as FormActions from '../state/form.actions';
-import { selectParentCopyFeature, selectFeatures, selectCopyFormOptionsOpen, selectTreeOpen } from '../state/form.selectors';
+import { selectParentCopyFeature, selectFeatures, selectCopyFormOptionsOpen, selectTreeVisible } from '../state/form.selectors';
 import { combineLatest, Observable, Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 import { TreeService } from '../../shared/tree/tree.service';
@@ -25,6 +25,9 @@ export class FormTreeComponent implements OnInit, OnDestroy {
 
   @Input()
   public isCopy = false;
+
+  @Input()
+  public hidden = false;
 
   private selectedFeature: Feature;
 
@@ -79,7 +82,7 @@ export class FormTreeComponent implements OnInit, OnDestroy {
       this.hasCheckboxes,
     );
 
-    this.treeOpen$ = this.isCopy ? this.store$.select(selectCopyFormOptionsOpen) : this.store$.select(selectTreeOpen);
+    this.treeOpen$ = this.isCopy ? this.store$.select(selectCopyFormOptionsOpen) : this.store$.select(selectTreeVisible);
     this.treeClosed$ = this.treeOpen$.pipe(map(open => !open));
 
     const selectFeatures$ = this.isCopy
