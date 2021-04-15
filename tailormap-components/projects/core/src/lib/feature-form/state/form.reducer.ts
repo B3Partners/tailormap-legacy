@@ -8,15 +8,16 @@ const onCloseFeatureForm = (state: FormState): FormState => ({
   ...state,
   features: [],
   feature: null,
-  formOpen: false,
-  treeOpen: false,
+  formEnabled: false,
+  formVisible: false,
+  treeVisible: false,
   multiFormWorkflow: false,
 });
 
 const onSetHideFeatureForm = (state: FormState, payload: ReturnType<typeof FormActions.toggleFeatureFormVisibility>): FormState => ({
   ...state,
-  formOpen: payload.visible,
-  treeOpen: payload.visible,
+  formVisible: payload.visible,
+  treeVisible: payload.visible,
 });
 
 const onSetFeature = (state: FormState, payload: ReturnType<typeof FormActions.setFeature>): FormState => ({
@@ -51,7 +52,8 @@ const onSetFeatures = (state: FormState, payload: ReturnType<typeof FormActions.
 const onSetOpenFeatureForm = (state: FormState, payload: ReturnType<typeof FormActions.setOpenFeatureForm>): FormState => ({
   ...state,
   features: payload.features,
-  formOpen: true,
+  formEnabled: true,
+  formVisible: true,
   closeAfterSave: typeof payload.closeAfterSave !== 'undefined' ? payload.closeAfterSave : false,
   alreadyDirty: typeof payload.alreadyDirty !== 'undefined' ? payload.alreadyDirty : false,
   editing: typeof payload.editMode !== 'undefined' ? payload.editMode : false,
@@ -60,7 +62,7 @@ const onSetOpenFeatureForm = (state: FormState, payload: ReturnType<typeof FormA
 
 const onSetTreeOpen = (state: FormState, payload: ReturnType<typeof FormActions.setTreeOpen>): FormState => ({
   ...state,
-  treeOpen: payload.treeOpen,
+  treeVisible: payload.treeOpen,
 });
 
 const onSetFormEditing = (state: FormState, payload: ReturnType<typeof FormActions.setFormEditing>): FormState => ({
@@ -70,12 +72,14 @@ const onSetFormEditing = (state: FormState, payload: ReturnType<typeof FormActio
 
 const onSetFeatureRemoved = (state: FormState, payload: ReturnType<typeof FormActions.setFeatureRemoved>): FormState => {
   const features = removeFeature([...state.features], payload.feature);
+  const hasFeaturesLeft = features.length > 0;
   return {
     ...state,
     features,
-    feature: features.length > 0 ? features[0] : null,
-    formOpen: features.length > 0,
-    treeOpen: features.length > 0,
+    feature: hasFeaturesLeft ? features[0] : null,
+    formEnabled: hasFeaturesLeft,
+    formVisible: hasFeaturesLeft,
+    treeVisible: hasFeaturesLeft,
   };
 };
 

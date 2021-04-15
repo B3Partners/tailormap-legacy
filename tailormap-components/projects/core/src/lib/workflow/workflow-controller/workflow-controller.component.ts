@@ -11,7 +11,7 @@ import { MapClickedEvent } from '../../shared/models/event-models';
 import { Store } from '@ngrx/store';
 import { WorkflowState } from '../state/workflow.state';
 import { updateConfig } from '../state/workflow.actions';
-import { selectCopyFormOpen, selectFeatureFormOpen } from '../../feature-form/state/form.selectors';
+import { selectCopyFormOpen, selectFeatureFormEnabled } from '../../feature-form/state/form.selectors';
 import { Observable } from 'rxjs';
 
 @Component({
@@ -31,7 +31,7 @@ export class WorkflowControllerComponent implements OnInit {
     private tailorMap: TailorMapService,
     private store$: Store<WorkflowState>,
   ) {
-    this.formComponentOpen$ = this.store$.select(selectFeatureFormOpen);
+    this.formComponentOpen$ = this.store$.select(selectFeatureFormEnabled);
     this.formCopyComponentOpen$ = this.store$.select(selectCopyFormOpen);
   }
 

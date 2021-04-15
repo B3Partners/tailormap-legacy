@@ -1,5 +1,6 @@
 <tailormap-form-tree [isBulk]="isBulk" [feature]="feature"></tailormap-form-tree>
 
+<ng-container *ngIf="isVisible$ | async">
 <div *ngIf="formConfig" class="overlay-panel mat-elevation-z4">
   <tailormap-dialog-close-button (closeDialog)="closeForm()"></tailormap-dialog-close-button>
   <h1>{{formConfig.name}} {{formDirty ? '*' : ''}}</h1>
@@ -54,3 +55,4 @@
 </div>
 
 <ng-template #saveLabel><span>Opslaan</span></ng-template>
+</ng-container>
