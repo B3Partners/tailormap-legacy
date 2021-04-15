@@ -106,7 +106,7 @@ export class FormComponent implements OnDestroy, OnInit {
     this.features = [...features];
     this.isBulk = features.length > 1;
     this.closeAfterSave = closeAfterSave;
-
+    this.formsForNew = [];
     metaDataResponse.relations.forEach(rel => {
       const relationName = LayerUtils.sanitizeLayername(rel.foreignFeatureTypeName);
       if (allFormConfigs.has(relationName)) {
