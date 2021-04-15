@@ -1,7 +1,7 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { AttributeListState } from '../state/attribute-list.state';
-import { selectVisibleLayersWithAttributes } from '../../../application/state/application.selectors';
+import { selectFormConfigsLoaded, selectFormConfigs, selectVisibleLayersWithAttributes } from '../../../application/state/application.selectors';
 import { concatMap, filter, map, take, takeUntil, withLatestFrom } from 'rxjs/operators';
 import { combineLatest, forkJoin, Observable, of, Subject } from 'rxjs';
 import { selectAttributeListConfig, selectAttributeListTabs } from '../state/attribute-list.selectors';
@@ -17,7 +17,6 @@ import { AttributeMetadataResponse } from '../../../shared/attribute-service/att
 import { AttributeListConfig } from '../models/attribute-list.config';
 import { AttributeListFeatureTypeData } from '../models/attribute-list-feature-type-data.model';
 import { IdService } from '../../../shared/id-service/id.service';
-import { selectFormConfigForFeatureTypeName, selectFormConfigsLoaded } from '../../../application/state/application.selectors';
 
 interface TabFromLayerResult {
   tab: AttributeListTabModel;
@@ -124,10 +123,10 @@ export class AttributeListManagerService implements OnDestroy {
   ): Observable<TabFromLayerResult> {
     const layerName = LayerUtils.sanitizeLayername(layer);
     return forkJoin([
-      this.store$.select(selectFormConfigForFeatureTypeName, layerName).pipe(take(1)),
+      this.store$.select(selectFormConfigs).pipe(take(1)),
       this.metadataService.getFeatureTypeMetadata$(layer.id),
     ]).pipe(
-      map(([ formConfig, metadata ]): TabFromLayerResult => {
+      map(([ formConfigs, metadata ]): TabFromLayerResult => {
         const tab: AttributeListTabModel = {
           ...AttributeListManagerService.EMPTY_ATTRIBUTE_LIST_TAB,
           layerId: layer.id,
@@ -145,7 +144,7 @@ export class AttributeListManagerService implements OnDestroy {
             pageSize,
             layer.id,
             metadata,
-            formConfig,
+            formConfigs.get(LayerUtils.sanitizeLayername(layerName)),
           ),
           ...(metadata.relations || []).map(featureType => {
             return this.createDataForFeatureType(
@@ -155,7 +154,7 @@ export class AttributeListManagerService implements OnDestroy {
               pageSize,
               layer.id,
               metadata,
-              formConfig,
+              formConfigs.get(LayerUtils.sanitizeLayername(featureType.foreignFeatureTypeName)),
             );
           }),
         ];
