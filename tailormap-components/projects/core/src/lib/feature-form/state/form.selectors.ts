@@ -10,7 +10,7 @@ export const selectFeatures = createSelector(selectFormState, state => state.fea
 
 export const selectCurrentFeature = createSelector(selectFormState, state => state.feature);
 
-export const selectFeatureFormOpen = createSelector(selectFormState, state => state.formOpen);
+export const selectFeatureFormEnabled = createSelector(selectFormState, state => state.formEnabled);
 
 export const selectFormAlreadyDirty = createSelector(selectFormState, state => state.alreadyDirty);
 
@@ -20,7 +20,9 @@ export const selectIsMultiFormWorkflow = createSelector(selectFormState, state =
 
 export const selectFormEditing = createSelector(selectFormState, state => state.editing);
 
-export const selectTreeOpen = createSelector(selectFormState, state => state.treeOpen);
+export const selectFormVisible = createSelector(selectFormState, state => state.formVisible);
+
+export const selectTreeVisible = createSelector(selectFormState, state => state.treeVisible);
 
 export const selectFormConfigForFeature = createSelector(
   selectFormConfigs,

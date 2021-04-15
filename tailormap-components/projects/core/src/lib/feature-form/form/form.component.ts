@@ -11,7 +11,8 @@ import { Store } from '@ngrx/store';
 import * as FormActions from '../state/form.actions';
 import * as WorkflowActions from '../../workflow/state/workflow.actions';
 import {
-  selectCloseAfterSaveFeatureForm, selectCurrentFeature, selectFeatureFormOpen, selectFeatures, selectFormAlreadyDirty, selectFormEditing,
+  selectCloseAfterSaveFeatureForm, selectCurrentFeature, selectFeatures, selectFormAlreadyDirty,
+  selectFormEditing, selectFormVisible,
   selectIsMultiFormWorkflow,
 } from '../state/form.selectors';
 import { LayerUtils } from '../../shared/layer-utils/layer-utils.service';
@@ -43,7 +44,7 @@ export class FormComponent implements OnDestroy, OnInit {
   private destroyed = new Subject();
   public closeAfterSave = false;
 
-  public isOpen$: Observable<boolean>;
+  public isHidden$: Observable<boolean>;
   public editing$: Observable<boolean>;
   public isMultiFormWorkflow$: Observable<boolean>;
 
@@ -64,9 +65,8 @@ export class FormComponent implements OnDestroy, OnInit {
         switchMap(feature => combineLatest([
           of(feature),
           this.store$.select(selectFeatures),
-          this.store$.select(selectFeatureFormOpen),
         ])),
-        filter(([ feature, _features, formOpen ]) => formOpen && !!feature && !!feature.clazz),
+        filter(([ feature, _features ]) => !!feature && !!feature.clazz),
         switchMap(([ feature, features ]) => combineLatest([
           of(feature),
           of(features),
@@ -86,7 +86,7 @@ export class FormComponent implements OnDestroy, OnInit {
         this.initForm(feature, features, closeAfterSave, formAlreadyDirty, formConfig, allFormConfigs, metaDataResponse);
       });
 
-    this.isOpen$ = this.store$.select(selectFeatureFormOpen);
+    this.isHidden$ = this.store$.select(selectFormVisible).pipe(map(visible => !visible));
     this.editing$ = this.store$.select(selectFormEditing);
     this.isMultiFormWorkflow$ = this.store$.select(selectIsMultiFormWorkflow);
   }
