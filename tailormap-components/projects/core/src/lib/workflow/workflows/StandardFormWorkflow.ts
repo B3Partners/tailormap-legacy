@@ -76,8 +76,8 @@ export class StandardFormWorkflow extends Workflow {
         this.accept(geoJson);
       } else {
         vectorLayer.removeAllFeatures();
-        this.endWorkflow();
       }
+      this.endWorkflow();
       this.isDrawing = false;
       this.geometryConfirmService.hide();
     });
