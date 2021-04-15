@@ -17,7 +17,6 @@ const onCloseFeatureForm = (state: FormState): FormState => ({
 const onSetHideFeatureForm = (state: FormState, payload: ReturnType<typeof FormActions.toggleFeatureFormVisibility>): FormState => ({
   ...state,
   formVisible: payload.visible,
-  treeVisible: payload.visible,
 });
 
 const onSetFeature = (state: FormState, payload: ReturnType<typeof FormActions.setFeature>): FormState => ({

@@ -26,6 +26,9 @@ export class FormTreeComponent implements OnInit, OnDestroy {
   @Input()
   public isCopy = false;
 
+  @Input()
+  public hidden = false;
+
   private selectedFeature: Feature;
 
   public treeOpen$: Observable<boolean>;

@@ -44,7 +44,7 @@ export class FormComponent implements OnDestroy, OnInit {
   private destroyed = new Subject();
   public closeAfterSave = false;
 
-  public isVisible$: Observable<boolean>;
+  public isHidden$: Observable<boolean>;
   public editing$: Observable<boolean>;
   public isMultiFormWorkflow$: Observable<boolean>;
 
@@ -86,7 +86,7 @@ export class FormComponent implements OnDestroy, OnInit {
         this.initForm(feature, features, closeAfterSave, formAlreadyDirty, formConfig, allFormConfigs, metaDataResponse);
       });
 
-    this.isVisible$ = this.store$.select(selectFormVisible);
+    this.isHidden$ = this.store$.select(selectFormVisible).pipe(map(visible => !visible));
     this.editing$ = this.store$.select(selectFormEditing);
     this.isMultiFormWorkflow$ = this.store$.select(selectIsMultiFormWorkflow);
   }
