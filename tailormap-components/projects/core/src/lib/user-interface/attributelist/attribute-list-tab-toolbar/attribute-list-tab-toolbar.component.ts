@@ -24,6 +24,7 @@ import { Feature } from '../../../shared/generated';
 import * as wellknown from 'wellknown';
 import { LayerUtils } from '../../../shared/layer-utils/layer-utils.service';
 import { setOpenFeatureForm } from '../../../feature-form/state/form.actions';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'tailormap-attribute-list-tab-toolbar',
@@ -70,6 +71,7 @@ export class AttributeListTabToolbarComponent implements OnInit, OnDestroy {
     private store$: Store<AttributeListState>,
     private popoverService: PopoverService,
     private changeDetectorRef: ChangeDetectorRef,
+    private snackbar: MatSnackBar,
   ) {
   }
 
@@ -104,36 +106,41 @@ export class AttributeListTabToolbarComponent implements OnInit, OnDestroy {
   }
 
   public createUserLayer(): void {
-      const dialogRef = this.dialog.open(AttributeListLayernameChooserComponent, {
-        width: '250px',
-        data: {},
+    const query = this.tailorMapService.getFilterString(+(this.layerId), false);
+    if (!query) {
+      this.snackbar.open('Stel eerst een filter in op de attributenlijst in om een laag te kunnen publiceren', '', {duration: 5000});
+      return;
+    }
+    const dialogRef = this.dialog.open(AttributeListLayernameChooserComponent, {
+      width: '250px',
+      data: {},
+    });
+    dialogRef.afterClosed()
+      .pipe(
+        filter(result => !!result),
+        switchMap(result => {
+          return forkJoin([
+            of(result),
+            this.metadataService.getFeatureTypeMetadata$(this.layerId),
+          ]);
+        }),
+        switchMap(([ result, attributeMetadata ]) => {
+          const appLayerId = +(this.layerId);
+          const appLayer = this.tailorMapService.getApplayerById(appLayerId);
+          this.creatingLayer = true;
+          this.createUserLayerName = result;
+          return this.userLayer.createUserLayerFromParams$({
+            appLayerId: `${appLayerId}`,
+            title: result,
+            query,
+            source: UserLayerHelper.createUserLayerSourceFromMetadata(attributeMetadata, appLayer),
+          });
+        }),
+      )
+      .subscribe(() => {
+        this.creatingLayer = false;
+        this.createUserLayerName = '';
       });
-      dialogRef.afterClosed()
-        .pipe(
-          filter(result => !!result),
-          switchMap(result => {
-            return forkJoin([
-              of(result),
-              this.metadataService.getFeatureTypeMetadata$(this.layerId),
-            ]);
-          }),
-          switchMap(([ result, attributeMetadata ]) => {
-            const appLayerId = +(this.layerId);
-            const appLayer = this.tailorMapService.getApplayerById(appLayerId);
-            this.creatingLayer = true;
-            this.createUserLayerName = result;
-            return this.userLayer.createUserLayerFromParams$({
-              appLayerId: `${appLayerId}`,
-              title: result,
-              query: this.tailorMapService.getFilterString(appLayerId, false),
-              source: UserLayerHelper.createUserLayerSourceFromMetadata(attributeMetadata, appLayer),
-            });
-          }),
-        )
-        .subscribe(() => {
-          this.creatingLayer = false;
-          this.createUserLayerName = '';
-        });
   }
 
   public onClearFeatureTypeFilterClick(): void {
