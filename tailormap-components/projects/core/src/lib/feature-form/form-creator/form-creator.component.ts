@@ -106,7 +106,7 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
         if (featureAttribute.value && featureAttribute.value !== '-1') {
           this.domainValues.set(attr, featureAttribute.value);
           const compVal = FormFieldHelpers.getComparableValue(featureAttribute);
-          value =  typeof compVal !== 'undefined' && compVal !== null ? compVal.val : featureAttribute.value
+          value =  typeof compVal !== 'undefined' && compVal !== null ? compVal.val : featureAttribute.value;
         }
       }
       formControls[attr.key] = new FormControl(value, [FormFieldHelpers.nonExistingValueValidator(featureAttribute)]);
