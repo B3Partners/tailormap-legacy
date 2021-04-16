@@ -128,6 +128,11 @@ export const clearAllFilters = createAction(
   props<{ layerId: string }>(),
 );
 
+export const externalFilterChanged = createAction(
+  `${attributeListActionsPrefix} External Filter Changed`,
+  props<{ layerId: string }>(),
+);
+
 export const clearCountForFeatureTypes = createAction(
   `${attributeListActionsPrefix} Clear Count For Feature Types`,
   props<{ featureTypes: number[] }>(),

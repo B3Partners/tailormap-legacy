@@ -106,12 +106,13 @@ export class AttributeListEffects {
     }),
   ));
 
-  public updateColumnFilter$ = createEffect(() => this.actions$.pipe(
+  public updateFilter$ = createEffect(() => this.actions$.pipe(
     ofType(
       AttributeListActions.setColumnFilter,
       AttributeListActions.deleteColumnFilter,
       AttributeListActions.clearAllFilters,
       AttributeListActions.clearFilterForFeatureType,
+      AttributeListActions.externalFilterChanged,
     ),
     concatMap(action => of(action).pipe(
       withLatestFrom(
@@ -153,7 +154,7 @@ export class AttributeListEffects {
         column: action.column,
         featureType: action.featureType,
         type: action.statisticType,
-        filter: AttributeListFilterHelper.getFilter(tab, action.featureType, tabFeatureData),
+        filter: AttributeListFilterHelper.getFilter(tab, action.featureType, tabFeatureData, this.tailorMapService.getFilterString(+(tab.layerId))),
       }).pipe(map(result => {
         return AttributeListActions.statisticsForColumnLoaded({
           column: action.column,
@@ -181,7 +182,7 @@ export class AttributeListEffects {
         column: s.name,
         featureType: action.featureType,
         type: s.statisticType,
-        filter: AttributeListFilterHelper.getFilter(tab, action.featureType, tabFeatureData),
+        filter: AttributeListFilterHelper.getFilter(tab, action.featureType, tabFeatureData, this.tailorMapService.getFilterString(+(tab.layerId))),
       }).pipe(map(result => ({ value: result.result, column: s.name }))));
       return forkJoin([ of(action), forkJoin(statQueries$) ]);
     }),
