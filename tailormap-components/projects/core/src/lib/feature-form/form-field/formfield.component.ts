@@ -85,7 +85,8 @@ export class FormfieldComponent implements AfterViewInit, OnDestroy {
     ])
       .pipe(
         filter(([feature, config]) => !!feature && !!config &&
-          LayerUtils.sanitizeLayername(config.featureType) === feature.clazz && feature[this.attribute.key]),
+          LayerUtils.sanitizeLayername(config.featureType) === feature.clazz && feature[this.attribute.key] &&
+          config.fields.find(field => field.key === this.attribute.key) !== undefined),
         takeUntil(this.destroyed),
         map(([feature, config]) => {
           return FormTreeHelpers.getFeatureValueForField(feature, config, this.attribute.key);
