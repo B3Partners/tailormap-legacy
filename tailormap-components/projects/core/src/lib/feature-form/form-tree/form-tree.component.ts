@@ -61,6 +61,7 @@ export class FormTreeComponent implements OnInit, OnDestroy {
   ) {
     this.treeService.selectionStateChangedSource$.pipe(
       takeUntil(this.destroyed),
+      filter(() => !this.isBulk),
       map(nodeId => this.treeService.getNode(nodeId)),
       filter(node => !node.metadata.isFeatureType),
     ).subscribe(node => {
