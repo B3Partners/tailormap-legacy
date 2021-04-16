@@ -188,7 +188,10 @@ const onLoadTotalCountForTabSuccess = (
   const dict = new Map<number, number>(payload.counts.map(countResult => [countResult.featureType, countResult.totalCount]));
   return {
     ...state,
-    featureTypeData: state.featureTypeData.map(data => ({ ...data, totalCount: dict.get(data.featureType) || data.totalCount })),
+    featureTypeData: state.featureTypeData.map(data => ({
+      ...data,
+      totalCount: dict.has(data.featureType) ? dict.get(data.featureType) : data.totalCount,
+    })),
   };
 };
 
