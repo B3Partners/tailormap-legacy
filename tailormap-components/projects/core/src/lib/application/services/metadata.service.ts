@@ -92,11 +92,17 @@ export class MetadataService implements OnDestroy {
 
   public getUniqueValuesAndTotalForAttribute$(
     appLayerId: number,
+    featureType: number,
     attribute: ExtendedAttributeModel,
   ): Observable<UniqueValueCountResponse[]> {
     const attributeModel: ExtendedAttributeModel = { ...attribute };
     const appLayer = appLayerId;
-    return this.valueService.uniqueValues$({ applicationLayer: appLayerId, attributes: [ attributeModel.name ] })
+    return this.valueService.uniqueValues$({
+      applicationLayer: appLayerId,
+      attributes: [ attributeModel.name ],
+      featureType,
+      maxFeatures: -1,
+    })
       .pipe(
         switchMap((uniqueValuesResponse: UniqueValuesResponse) => {
           if (!uniqueValuesResponse.uniqueValues

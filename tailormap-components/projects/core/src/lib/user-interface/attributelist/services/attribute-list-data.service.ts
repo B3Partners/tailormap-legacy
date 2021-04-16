@@ -18,7 +18,7 @@ import { FormTreeHelpers } from '../../../feature-form/form-tree/form-tree-helpe
 import { AttributeListFilterHelper } from '../helpers/attribute-list-filter.helper';
 import { TailorMapService } from '../../../../../../bridge/src/tailor-map.service';
 import { selectAttributeListTabDictionary } from '../state/attribute-list.selectors';
-import { loadDataForTab } from '../state/attribute-list.actions';
+import { externalFilterChanged } from '../state/attribute-list.actions';
 
 export interface LoadDataResult {
   layerId: string;
@@ -56,7 +56,7 @@ export class AttributeListDataService implements OnDestroy {
       .subscribe(([ layerFilterChanged, tabsDictionary ]) => {
         const layerId = `${layerFilterChanged.appLayer.id}`;
         if (tabsDictionary.has(layerId)) {
-          this.store$.dispatch(loadDataForTab({ layerId }));
+          this.store$.dispatch(externalFilterChanged({ layerId }));
         }
       });
   }
