@@ -33,7 +33,7 @@ export class AttributeFilterHelper {
 
   public static convertFilterToQuery(filter: AttributeFilterModel) {
     let cql: string;
-    if (filter.value.length > 1) {
+    if (filter.condition === AttributeFilterHelper.UNIQUE_VALUES_KEY) {
       const value = filter.value.map(v => AttributeTypeHelper.getExpression(v, filter.attributeType)).join(',');
       return `(${filter.attribute} IN (${value}))`;
     }

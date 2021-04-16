@@ -119,4 +119,25 @@ describe('AttributeListReducer', () => {
     expect(updatedState.featureTypeData[0].totalCount).toEqual(200);
   });
 
+  it ('Handles AttributeListActions.loadTotalCountForTabSuccess', () => {
+    const state: AttributeListState = { ...initialState, tabs: [ dummyTab ], featureTypeData: [ { ...dummyFeatureData, totalCount: 150 } ]};
+    const action = AttributeListActions.loadTotalCountForTabSuccess({
+      layerId: dummyFeatureData.layerId,
+      counts: [ { featureType: dummyFeatureData.featureType, totalCount: 100 } ],
+    });
+    const updatedState = attributeListReducer(state, action);
+    expect(updatedState.tabs.length).toEqual(1);
+    expect(updatedState.featureTypeData.length).toEqual(1);
+    expect(updatedState.featureTypeData[0].totalCount).toEqual(100);
+
+    const action2 = AttributeListActions.loadTotalCountForTabSuccess({
+      layerId: dummyFeatureData.layerId,
+      counts: [ { featureType: dummyFeatureData.featureType, totalCount: 0 }, { featureType: 1234546, totalCount: 1000000 } ],
+    });
+    const updatedState2 = attributeListReducer(updatedState, action2);
+    expect(updatedState2.tabs.length).toEqual(1);
+    expect(updatedState2.featureTypeData.length).toEqual(1);
+    expect(updatedState2.featureTypeData[0].totalCount).toEqual(0);
+  });
+
 });
