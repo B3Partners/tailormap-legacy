@@ -141,9 +141,19 @@ public class TailormapDBManager {
                 LOG.error("time: " + (end.getTime() - start.getTime()));
                 SimpleFeatureType newFt = fs.getFeatureType(viewName);
                 l.setFeatureType(newFt);
+
+
             } catch (Exception e) {
                 LOG.error("Error processing featuretype/featuresource",e);
             }
+
+        }
+    }
+
+    private void copyRelations(SimpleFeatureType sft, Layer l){
+        List<FeatureTypeRelation> rels = this.layer.getFeatureType().getRelations();
+        for (FeatureTypeRelation rel:rels) {
+            rel.
 
         }
     }
