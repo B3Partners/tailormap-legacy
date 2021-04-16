@@ -66,6 +66,7 @@ export class CreateStyleService {
           if (createLayerData.createLayerMode === CreateLayerModeEnum.THEMATIC) {
             return this.createThematicStyles$(
               createLayerData.selectedDataSource.layerId,
+              createLayerData.selectedDataSource.featureType,
               createLayerData.thematicAttribute,
             );
           }
@@ -100,15 +101,15 @@ export class CreateStyleService {
       );
   }
 
-  private createThematicStyles$(appLayer?: number, attribute?: ExtendedAttributeModel): Observable<CreateStyleResult> {
-    if (!appLayer || !attribute) {
+  private createThematicStyles$(appLayer?: number, featureType?: number, attribute?: ExtendedAttributeModel): Observable<CreateStyleResult> {
+    if (!appLayer || !attribute || !featureType) {
       return of(CreateStyleService.INCOMPLETE_DATA_RESULT);
     }
-    const cachingKey = `${appLayer}_${attribute.name}`;
+    const cachingKey = `${appLayer}_${featureType}_${attribute.name}`;
     if (this.cachedThematicStyle && this.cachedThematicStyle[0] === cachingKey) {
       return of(this.cachedThematicStyle[1]);
     }
-    return this.metadataService.getUniqueValuesAndTotalForAttribute$(appLayer, attribute)
+    return this.metadataService.getUniqueValuesAndTotalForAttribute$(appLayer, featureType, attribute)
       .pipe(
         map((featureInfoRequests: UniqueValueCountResponse[]) => {
           const styles = featureInfoRequests
