@@ -24,6 +24,7 @@ export class AttributeFilterHelper {
       { condition: 'BEFORE', label: 'Voor', readableLabel: 'voor', attributeType: AttributeTypeEnum.DATE },
       { condition: 'TRUE', label: 'Is waar', readableLabel: 'waar is', attributeType: AttributeTypeEnum.BOOLEAN },
       { condition: 'FALSE', label: 'Is niet waar', readableLabel: 'niet waar is', attributeType: AttributeTypeEnum.BOOLEAN },
+      { condition: 'NULL', label: 'Filter op NULL', readableLabel: 'Filter op NULL', attributeType: AttributeTypeEnum.NULL },
     ];
     if (includeUniqueValues) {
       types.push({ condition: AttributeFilterHelper.UNIQUE_VALUES_KEY, label: 'Kies waardes', readableLabel: 'bevat 1 van de waardes' });
@@ -63,6 +64,11 @@ export class AttributeFilterHelper {
     if (filter.condition === 'NOT_LIKE') {
       query.push('NOT');
     }
+    if (filter.condition === 'NULL') {
+      query.push('IS');
+      query.push('NULL');
+      return `${query.join(' ')}`;
+    }
     query.push('ILIKE');
     if (filter.condition === 'EQUALS') {
       query.push(AttributeTypeHelper.getExpression(`${value}`, AttributeTypeEnum.STRING));
@@ -75,6 +81,9 @@ export class AttributeFilterHelper {
     }
     if (filter.condition === 'ENDS_WITH') {
       query.push(AttributeTypeHelper.getExpression(`%${value}`, AttributeTypeEnum.STRING));
+    }
+    if (filter.condition === 'NULL') {
+      query.push(AttributeTypeHelper.getExpression(`%${value}`, AttributeTypeEnum.NULL));
     }
     return `${query.join(' ')}`;
   }
