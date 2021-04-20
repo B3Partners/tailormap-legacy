@@ -65,8 +65,7 @@ export class AttributeFilterHelper {
       query.push('NOT');
     }
     if (filter.condition === 'NULL') {
-      query.push('IS');
-      query.push('NULL');
+      query.push('IS NULL');
       return `${query.join(' ')}`;
     }
     query.push('ILIKE');
@@ -81,9 +80,6 @@ export class AttributeFilterHelper {
     }
     if (filter.condition === 'ENDS_WITH') {
       query.push(AttributeTypeHelper.getExpression(`%${value}`, AttributeTypeEnum.STRING));
-    }
-    if (filter.condition === 'NULL') {
-      query.push(AttributeTypeHelper.getExpression(`%${value}`, AttributeTypeEnum.NULL));
     }
     return `${query.join(' ')}`;
   }
