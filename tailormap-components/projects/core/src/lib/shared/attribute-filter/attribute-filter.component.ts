@@ -159,7 +159,8 @@ export class AttributeFilterComponent implements OnInit, OnDestroy {
   }
 
   public showValueInput() {
-    return !this.showUniqueValuesInput() && (this._attributeType === AttributeTypeEnum.STRING || this._attributeType === AttributeTypeEnum.NUMBER);
+    return !this.showUniqueValuesInput() && this.formValues.condition !== AttributeTypeEnum.NULL &&
+      (this._attributeType === AttributeTypeEnum.STRING || this._attributeType === AttributeTypeEnum.NUMBER);
   }
 
   public showDateInput() {
@@ -181,7 +182,9 @@ export class AttributeFilterComponent implements OnInit, OnDestroy {
   }
 
   private updateConditions() {
-    const conditions = AttributeFilterHelper.getConditionTypes(this.hasUniqueValues).filter(c => !c.attributeType || c.attributeType === this._attributeType);
+    const conditions = AttributeFilterHelper.getConditionTypes(this.hasUniqueValues).filter(c => !c.attributeType
+      || c.attributeType === AttributeTypeEnum.NULL
+      || c.attributeType === this._attributeType);
     this.filteredConditionsSubject$.next(conditions);
   }
 
