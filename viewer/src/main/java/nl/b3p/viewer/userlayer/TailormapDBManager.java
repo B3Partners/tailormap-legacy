@@ -198,6 +198,7 @@ public class TailormapDBManager {
             entityManager.getTransaction().commit();
             entityManager.getTransaction().begin();
             newAppLayer.synchronizeFeaturetype(entityManager, null, null, null, true);
+            newAppLayer.getAttributes().forEach(configuredAttribute -> configuredAttribute.setVisible(true));
             entityManager.persist(newAppLayer);
             entityManager.getTransaction().commit();
             return newAppLayer;
