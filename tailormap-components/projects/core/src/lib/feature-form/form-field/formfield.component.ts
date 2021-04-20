@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Input, OnDestroy } from '@angular/core';
+import { AfterViewInit, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, FormGroup } from '@angular/forms';
 import { Attribute, FeatureAttribute, FormFieldType } from '../form/form-models';
 import { LinkedAttributeRegistryService } from '../linked-fields/registry/linked-attribute-registry.service';
@@ -16,7 +16,9 @@ import { LayerUtils } from '../../shared/layer-utils/layer-utils.service';
   templateUrl: './formfield.component.html',
   styleUrls: ['./formfield.component.css'],
 })
-export class FormfieldComponent implements AfterViewInit, OnDestroy {
+export class FormfieldComponent implements AfterViewInit, OnDestroy, OnInit {
+
+  public humanReadableValue$: Observable<string>;
 
   @Input()
   public attribute: FeatureAttribute;
@@ -42,6 +44,21 @@ export class FormfieldComponent implements AfterViewInit, OnDestroy {
     private store$: Store<FormState>,
   ) {
   }
+
+  public ngOnInit(): void {
+    this.humanReadableValue$ = combineLatest([
+      this.store$.select(selectCurrentFeature),
+      this.store$.select(selectFormConfigForFeature),
+    ])
+      .pipe(
+        filter(([feature, config]) => !!feature && !!config &&
+          LayerUtils.sanitizeLayername(config.featureType) === feature.clazz &&
+          config.fields.find(field => field.key === this.attribute.key) !== undefined),
+        takeUntil(this.destroyed),
+        map(([feature, config]) => {
+          return FormTreeHelpers.getFeatureValueForField(feature, config, this.attribute.key);
+        }));
+    }
 
   public ngOnDestroy() {
     this.destroyed.next();
@@ -76,20 +93,6 @@ export class FormfieldComponent implements AfterViewInit, OnDestroy {
 
   public hasNonValidValue(): boolean {
     return FormFieldHelpers.hasNonValidValue(this.attribute);
-  }
-
-  public humanReadableValue$(): Observable<string> {
-    return combineLatest([
-      this.store$.select(selectCurrentFeature),
-      this.store$.select(selectFormConfigForFeature),
-    ])
-      .pipe(
-        filter(([feature, config]) => !!feature && !!config &&
-          LayerUtils.sanitizeLayername(config.featureType) === feature.clazz && feature[this.attribute.key]),
-        takeUntil(this.destroyed),
-        map(([feature, config]) => {
-          return FormTreeHelpers.getFeatureValueForField(feature, config, this.attribute.key);
-        }));
   }
 
   public isTextAttribute = (attr: Attribute): boolean => attr.type === FormFieldType.TEXTFIELD;

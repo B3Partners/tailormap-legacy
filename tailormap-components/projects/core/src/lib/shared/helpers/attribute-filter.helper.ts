@@ -24,6 +24,7 @@ export class AttributeFilterHelper {
       { condition: 'BEFORE', label: 'Voor', readableLabel: 'voor', attributeType: AttributeTypeEnum.DATE },
       { condition: 'TRUE', label: 'Is waar', readableLabel: 'waar is', attributeType: AttributeTypeEnum.BOOLEAN },
       { condition: 'FALSE', label: 'Is niet waar', readableLabel: 'niet waar is', attributeType: AttributeTypeEnum.BOOLEAN },
+      { condition: 'NULL', label: 'Filter op NULL', readableLabel: 'Filter op NULL', attributeType: AttributeTypeEnum.NULL },
     ];
     if (includeUniqueValues) {
       types.push({ condition: AttributeFilterHelper.UNIQUE_VALUES_KEY, label: 'Kies waardes', readableLabel: 'bevat 1 van de waardes' });
@@ -33,7 +34,7 @@ export class AttributeFilterHelper {
 
   public static convertFilterToQuery(filter: AttributeFilterModel) {
     let cql: string;
-    if (filter.value.length > 1) {
+    if (filter.condition === AttributeFilterHelper.UNIQUE_VALUES_KEY) {
       const value = filter.value.map(v => AttributeTypeHelper.getExpression(v, filter.attributeType)).join(',');
       return `(${filter.attribute} IN (${value}))`;
     }
@@ -62,6 +63,10 @@ export class AttributeFilterHelper {
     const value = filter.value[0];
     if (filter.condition === 'NOT_LIKE') {
       query.push('NOT');
+    }
+    if (filter.condition === 'NULL') {
+      query.push('IS NULL');
+      return `${query.join(' ')}`;
     }
     query.push('ILIKE');
     if (filter.condition === 'EQUALS') {
