@@ -23,7 +23,9 @@ export class CriteriaHelper {
       && typeof criteria.attribute !== 'undefined' && criteria.attribute !== ''
       && typeof criteria.condition !== 'undefined' && criteria.condition !== ''
       && typeof criteria.source !== 'undefined' && Number.isInteger(criteria.source)
-      && criteria.attributeType === AttributeTypeEnum.BOOLEAN || (typeof criteria.value !== 'undefined' && criteria.value.join('') !== '');
+      && (criteria.attributeType === AttributeTypeEnum.BOOLEAN
+      || criteria.condition === AttributeTypeEnum.NULL)
+      || (typeof criteria.value !== 'undefined' && criteria.value.join('') !== '');
   }
 
   public static createCriteria(type: CriteriaTypeEnum, groups: CriteriaGroupModel[]): CriteriaModel {
