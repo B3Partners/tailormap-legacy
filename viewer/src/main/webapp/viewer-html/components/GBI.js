@@ -46,6 +46,8 @@ Ext.define("viewer.components.GBI", {
         });
         this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_LAYERS_INITIALIZED,
             this.initialize, this);
+        this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE,
+            this.addLayersToMap, this);
         return this;
     },
     initialize: function () {
@@ -139,5 +141,12 @@ Ext.define("viewer.components.GBI", {
     },
     failed: function (msg) {
         Ext.MessageBox.alert(i18next.t('viewer_components_graph_5'), i18next.t('viewer_components_graph_6'));
+    },
+
+    addLayersToMap: function () {
+        if (this.highlightLayer !== null && this.vectorLayer !== null) {
+            this.config.viewerController.mapComponent.getMap().addLayer(this.vectorLayer);
+            this.config.viewerController.mapComponent.getMap().addLayer(this.highlightLayer);
+        }
     }
 });
