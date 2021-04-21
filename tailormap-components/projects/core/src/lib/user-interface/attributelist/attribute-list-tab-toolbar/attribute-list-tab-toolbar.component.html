@@ -34,10 +34,12 @@
     </div>
 
     <mat-menu #optiesMenu="matMenu" yPosition="below">
-      <div matTooltip="Er kunnen geen selectielagen op basis van andere selectielagen gemaakt worden" [matTooltipDisabled]="!isUserLayer()">
-        <button mat-menu-item [disabled]="isUserLayer()" (click)="createUserLayer()">Laag maken</button>
+      <div [matTooltip]="getToolTipMessage()" [matTooltipDisabled]="canCreateUserLayer()">
+        <button mat-menu-item [disabled]="!canCreateUserLayer()" (click)="createUserLayer()">Laag maken</button>
       </div>
-      <button mat-menu-item  (click)="openPassportForm()">Bewerk geselecteerde objecten</button>
+      <div matTooltip="Selecteer één of meerdere objecten" [matTooltipDisabled]="canOpenPassportForm()">
+        <button mat-menu-item [disabled]="!canOpenPassportForm()" (click)="openPassportForm()">Bewerk geselecteerde objecten</button>
+      </div>
     </mat-menu>
 
     <mat-menu #menu="matMenu">

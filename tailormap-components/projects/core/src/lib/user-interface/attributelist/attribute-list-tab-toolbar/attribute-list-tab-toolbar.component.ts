@@ -24,7 +24,6 @@ import { Feature } from '../../../shared/generated';
 import * as wellknown from 'wellknown';
 import { LayerUtils } from '../../../shared/layer-utils/layer-utils.service';
 import { setOpenFeatureForm } from '../../../feature-form/state/form.actions';
-import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'tailormap-attribute-list-tab-toolbar',
@@ -71,7 +70,6 @@ export class AttributeListTabToolbarComponent implements OnInit, OnDestroy {
     private store$: Store<AttributeListState>,
     private popoverService: PopoverService,
     private changeDetectorRef: ChangeDetectorRef,
-    private snackbar: MatSnackBar,
   ) {
   }
 
@@ -105,16 +103,32 @@ export class AttributeListTabToolbarComponent implements OnInit, OnDestroy {
     this.attributeListExportService.createAttributeListExport(format, this.layerId, this.featureType);
   }
 
-  public isUserLayer(): boolean {
-    return this.tailorMapService.getApplayerById(+(this.layerId)).userlayer;
+  public canOpenPassportForm(): boolean {
+    return this.getCheckedRowsAsFeatures().length > 0;
+  }
+
+  public canCreateUserLayer(): boolean {
+    if(this.tailorMapService.getApplayerById(+(this.layerId)).userlayer) {
+      return false;
+    } else if(!this.tailorMapService.getFilterString(+(this.layerId), false)) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  public getToolTipMessage(): string {
+    if (this.tailorMapService.getApplayerById(+(this.layerId)).userlayer) {
+      return 'Er kunnen geen selectielagen op basis van andere selectielagen gemaakt worden';
+    } else if(!this.tailorMapService.getFilterString(+(this.layerId), false)) {
+      return 'Stel eerst een filter in op de attributenlijst in om een laag te kunnen publiceren';
+    } else {
+      return '';
+    }
   }
 
   public createUserLayer(): void {
     const query = this.tailorMapService.getFilterString(+(this.layerId), false);
-    if (!query) {
-      this.snackbar.open('Stel eerst een filter in op de attributenlijst in om een laag te kunnen publiceren', '', {duration: 5000});
-      return;
-    }
     const dialogRef = this.dialog.open(AttributeListLayernameChooserComponent, {
       width: '250px',
       data: {},
