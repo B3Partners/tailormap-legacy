@@ -1,5 +1,6 @@
 import { createAction, props } from '@ngrx/store';
 import { Feature } from '../../shared/generated';
+import { SelectedCopyAttribute } from './form.state';
 
 const formActionsPrefix = '[Form]';
 
@@ -10,7 +11,7 @@ export const setTreeOpen = createAction(
 
 export const setOpenFeatureForm = createAction(
   `${formActionsPrefix} Open feature form`,
-  props<{ features: Feature[]; closeAfterSave?: boolean; alreadyDirty?: boolean; editMode?: boolean}>(),
+  props<{ features: Feature[]; closeAfterSave?: boolean; alreadyDirty?: boolean; editMode?: boolean; multiFormWorkflow?: boolean }>(),
 );
 
 export const setSetFeatures = createAction(
@@ -45,4 +46,33 @@ export const setFeatureRemoved = createAction(
 export const setFormEditing = createAction(
   `${formActionsPrefix} Set form editing`,
   props<{ editing: boolean }>(),
+);
+
+export const openCopyForm = createAction(
+  `${formActionsPrefix} Open Copy Feature Form`,
+  props<{ feature: Feature }>(),
+);
+
+export const setCopySelectedFeature = createAction(
+  `${formActionsPrefix} Set Copy Selected Feature`,
+  props<{ feature: Feature }>(),
+);
+
+export const toggleCopyDestinationFeature = createAction(
+  `${formActionsPrefix} Toggle Copy Destination Feature`,
+  props<{ destinationFeature: Feature }>(),
+);
+
+export const toggleSelectedAttribute = createAction(
+  `${formActionsPrefix} Toggle Selected Copy Attribute`,
+  props<{ attribute: SelectedCopyAttribute }>(),
+);
+
+export const closeCopyForm = createAction(
+  `${formActionsPrefix} Close Copy Feature Form`,
+);
+
+export const setCopyOptionsOpen = createAction(
+  `${formActionsPrefix} Set Copy Options Panel Open`,
+  props<{ open: boolean }>(),
 );

@@ -5,8 +5,9 @@ import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { SharedModule } from '../../../shared/shared.module';
 import { getMetadataServiceMockProvider } from '../../../application/services/mocks/metadata.service.mock';
 import { selectSelectedDataSource } from '../../state/analysis.selectors';
-import { AttributeTypeEnum } from '../../../application/models/attribute-type.enum';
+import { AttributeTypeEnum } from '../../../shared/models/attribute-type.enum';
 import { AttributeSelectorComponent } from '../../attribute-selector/attribute-selector.component';
+import { AttributeFilterComponent } from '../../../shared/attribute-filter/attribute-filter.component';
 
 describe('CriteriaComponent', () => {
   let spectator: Spectator<CriteriaComponent>;
@@ -15,7 +16,7 @@ describe('CriteriaComponent', () => {
 
   const createComponent = createComponentFactory({
     component: CriteriaComponent,
-    declarations: [ AttributeSelectorComponent ],
+    declarations: [ AttributeSelectorComponent, AttributeFilterComponent ],
     imports: [ SharedModule ],
     providers: [
       provideMockStore({ initialState }),

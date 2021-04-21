@@ -5,15 +5,14 @@ import { SharedModule } from '../../shared/shared.module';
 import { getFormActionsServiceMockProvider } from '../form-actions/form-actions.service.mock';
 import { getFeatureInitializerServiceMockProvider } from '../../shared/feature-initializer/feature-initializer.service.mock';
 import { FormCopyService } from './form-copy.service';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { mockFeature } from '../../shared/tests/test-data';
 import { CopyDialogData } from './form-copy-models';
-import { getDialogRefMockProvider } from '../../shared/tests/test-mocks';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { formStateKey, initialFormState } from '../state/form.state';
+import { FormState, formStateKey, initialFormState } from '../state/form.state';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { applicationStateKey, initialApplicationState } from '../../application/state/application.state';
 import { testFormConfigs } from '../../application/state/test-data/application-test-data';
+import { ExtendedFormConfigurationModel } from '../../application/models/extended-form-configuration.model';
 
 
 describe('FormCopyComponent', () => {
@@ -22,14 +21,17 @@ describe('FormCopyComponent', () => {
     originalFeature: mockFeature(),
     destinationFeatures: [ mockFeature(), mockFeature() ],
   };
+  const selectedFeature = mockFeature();
+  const formState: FormState = {
+    ...initialFormState,
+    copyFeature: selectedFeature,
+    copySelectedFeature: selectedFeature,
+  };
   const initialState = {
-    [formStateKey]: {
-      ...initialFormState,
-      feature: mockFeature(),
-    },
+    [formStateKey]: formState,
     [applicationStateKey]: {
       ...initialApplicationState,
-      formConfigs: testFormConfigs,
+      formConfigs: testFormConfigs.map<ExtendedFormConfigurationModel>(c => ({ ...c, tableName: selectedFeature.clazz })),
     },
   };
   let store: MockStore;
@@ -44,8 +46,6 @@ describe('FormCopyComponent', () => {
       getFormActionsServiceMockProvider(),
       getFeatureInitializerServiceMockProvider(),
       FormCopyService,
-      getDialogRefMockProvider(),
-      { provide: MAT_DIALOG_DATA, useValue: mockDialogData },
     ],
     schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
   });

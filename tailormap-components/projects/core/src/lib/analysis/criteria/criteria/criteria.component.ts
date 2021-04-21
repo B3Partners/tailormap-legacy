@@ -4,15 +4,12 @@ import { Store } from '@ngrx/store';
 import { AnalysisState } from '../../state/analysis.state';
 import { selectSelectedDataSource } from '../../state/analysis.selectors';
 import { concatMap, debounceTime, filter, takeUntil } from 'rxjs/operators';
-import { BehaviorSubject, forkJoin, of, Subject } from 'rxjs';
+import { forkJoin, of, Subject } from 'rxjs';
 import { MetadataService } from '../../../application/services/metadata.service';
 import { AttributeMetadataResponse } from '../../../shared/attribute-service/attribute-models';
 import { AnalysisSourceModel } from '../../models/analysis-source.model';
 import { CriteriaConditionModel } from '../../models/criteria-condition.model';
-import { CriteriaHelper } from '../helpers/criteria.helper';
-import { AttributeTypeEnum } from '../../../application/models/attribute-type.enum';
-import { CriteriaConditionTypeModel } from '../../models/criteria-condition-type.model';
-import * as moment from 'moment';
+import { AttributeTypeEnum } from '../../../shared/models/attribute-type.enum';
 import { ExtendedAttributeModel } from '../../../application/models/extended-attribute.model';
 
 type AttributeSource = Omit<AnalysisSourceModel, 'geometryType' | 'geometryAttribute'>;
@@ -39,17 +36,14 @@ export class CriteriaComponent implements OnInit, OnDestroy {
   private destroyed = new Subject();
   public availableSources: AttributeSource[] = [];
 
-  private filteredConditionsSubject$ = new BehaviorSubject<CriteriaConditionTypeModel[]>([]);
-  public filteredConditions$ = this.filteredConditionsSubject$.asObservable();
-
   public criteriaForm = this.fb.group({
     source: [''],
     attribute: [''],
-    condition: [''],
-    value: [''],
   });
 
-  public formData: Omit<CriteriaConditionModel, 'id'> = {};
+  public formData: Omit<CriteriaConditionModel, 'id' | 'condition' | 'value'> = {};
+  public attributeFilter: { condition?: string; value?: string[] } = {};
+
   public selectedDataSource: AnalysisSourceModel;
 
   constructor(
@@ -76,11 +70,8 @@ export class CriteriaComponent implements OnInit, OnDestroy {
         this.formData = {
           ...this.formData,
           source: source.featureType,
-          condition: formValues.condition,
-          value: formValues.value,
           relatedTo,
         };
-        this.setDisabledState();
         this.emitChanges();
       });
 
@@ -135,34 +126,29 @@ export class CriteriaComponent implements OnInit, OnDestroy {
         attribute: initialCriteria.attribute,
       };
     }
-    if (initialCriteria.attributeType) {
-      this.filteredConditionsSubject$.next(this.getConditionsForAttributeType(initialCriteria.attributeType));
-    }
-
-    let value: string | moment.Moment = initialCriteria.value;
-    if (value && initialCriteria.attributeType === AttributeTypeEnum.DATE) {
-      value = moment(value);
-    }
 
     this.criteriaForm.patchValue({
       ...initialCriteria,
-      value,
     });
+
+    this.attributeFilter = {
+      ...this.attributeFilter,
+      value: initialCriteria.value,
+      condition: initialCriteria.condition,
+    };
+
   }
 
-  private getConditionsForAttributeType(attributeType: AttributeTypeEnum) {
-    return CriteriaHelper.getConditionTypes().filter(c => c.attributeType === attributeType);
+  public updateAttributeFilter(attributeFilter: { condition: string; value: string[] }) {
+    this.attributeFilter = { ...this.attributeFilter, ...attributeFilter };
+    this.emitChanges();
   }
 
   private emitChanges() {
-    let value: string | moment.Moment = this.formData.value;
-    if (value && this.formData.attributeType === AttributeTypeEnum.DATE && moment.isMoment(value)) {
-      value = value.toISOString();
-    }
     const criteria = {
       id: this.criteria.id,
       ...this.formData,
-      value,
+      ...this.attributeFilter,
     };
     this.criteriaChanged.emit(criteria);
   }
@@ -171,36 +157,13 @@ export class CriteriaComponent implements OnInit, OnDestroy {
     this.criteriaRemoved.emit(this.criteria);
   }
 
-  public setDisabledState() {
-    const hasAttribute = !!this.formData.attribute && !!this.formData.attributeType;
-    if (hasAttribute) {
-      this.criteriaForm.controls.condition.enable({ emitEvent: false });
-      this.criteriaForm.controls.value.enable({ emitEvent: false });
-    } else {
-      this.criteriaForm.controls.condition.disable({ emitEvent: false });
-      this.criteriaForm.controls.value.disable({ emitEvent: false });
-    }
-  }
-
-  public showValueInput() {
-    return this.formData.attributeType === AttributeTypeEnum.STRING || this.formData.attributeType === AttributeTypeEnum.NUMBER;
-  }
-
-  public showDateInput() {
-    return this.formData.attributeType === AttributeTypeEnum.DATE;
-  }
-
   public attributeSelected($event: { attribute: ExtendedAttributeModel; attributeType: AttributeTypeEnum }) {
-    if (this.formData.attributeType !== $event.attributeType) {
-      this.filteredConditionsSubject$.next(this.getConditionsForAttributeType($event.attributeType));
-    }
     this.formData = {
       ...this.formData,
       attribute: $event.attribute.name,
       attributeType: $event.attributeType,
       attributeAlias: $event.attribute.alias,
     };
-    this.setDisabledState();
     this.emitChanges();
   }
 

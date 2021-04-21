@@ -1,8 +1,8 @@
 import { AttributeListTabModel } from '../models/attribute-list-tab.model';
 import { AttributeListFeatureTypeData } from '../models/attribute-list-feature-type-data.model';
 import { AttributeTypeHelper } from '../../../application/helpers/attribute-type.helper';
-import { AttributeTypeEnum } from '../../../application/models/attribute-type.enum';
-import { AttributeListFilterModel, FilterType } from '../models/attribute-list-filter-models';
+import { AttributeTypeEnum } from '../../../shared/models/attribute-type.enum';
+import { AttributeFilterHelper } from '../../../shared/helpers/attribute-filter.helper';
 
 export class AttributeListFilterHelper {
 
@@ -10,17 +10,25 @@ export class AttributeListFilterHelper {
     tab: AttributeListTabModel,
     featureType: number,
     tabFeatureData: AttributeListFeatureTypeData[],
+    extraLayerFilters?: string,
   ): string {
     const filters = new Map<number, string>();
     tabFeatureData.forEach(data => {
-      const query = data.filter.map(filter => AttributeListFilterHelper.getQueryForFilter(filter)).join(' AND ');
+      const query = data.filter.map(filter => AttributeFilterHelper.convertFilterToQuery(filter)).join(' AND ');
       if (query !== '') {
         filters.set(data.featureType, query);
       }
     });
     const isRelatedFeature = tab.featureType !== featureType;
     const mainFeatureData = tabFeatureData.find(data => data.featureType === tab.featureType);
-    return AttributeListFilterHelper.getQueryForFeatureType(tab, featureType, filters, isRelatedFeature, mainFeatureData);
+    return AttributeListFilterHelper.getQueryForFeatureType(
+      tab,
+      featureType,
+      filters,
+      isRelatedFeature,
+      mainFeatureData,
+      extraLayerFilters,
+    );
   }
 
   private static getQueryForFeatureType(
@@ -29,6 +37,7 @@ export class AttributeListFilterHelper {
     filters: Map<number, string>,
     isRelatedFeature: boolean,
     mainFeatureData: AttributeListFeatureTypeData,
+    extraLayerFilters?: string,
   ) {
     const featureFilter: string[] = tab.relatedFeatures.map<string>(relation => {
       if (relation.foreignFeatureType === featureType) {
@@ -49,6 +58,12 @@ export class AttributeListFilterHelper {
     }
     if (isRelatedFeature && filters.has(tab.featureType)) {
       featureFilter.push(`RELATED_FEATURE(${featureType},${tab.featureType},(${filters.get(tab.featureType)}))`);
+    }
+    if (isRelatedFeature && extraLayerFilters) {
+      featureFilter.push(`RELATED_FEATURE(${featureType},${tab.featureType},(${extraLayerFilters})`);
+    }
+    if (!isRelatedFeature && extraLayerFilters) {
+      featureFilter.push(extraLayerFilters);
     }
     if (isRelatedFeature && mainFeatureData.checkedFeatures.length > 0) {
       const checkedRowsFilter = AttributeListFilterHelper.getQueryForCheckedRows(tab, featureType, mainFeatureData);
@@ -83,26 +98,6 @@ export class AttributeListFilterHelper {
       return '';
     }
     return `(${selectedRowsFilter.join(' AND ')})`;
-  }
-
-  private static getQueryForFilter(filter: AttributeListFilterModel): string {
-    if (filter.type === FilterType.NOT_LIKE) {
-      return `${filter.name} NOT ILIKE ${AttributeListFilterHelper.buildValueFilterString(filter.type, filter.value)}`;
-    }
-    if (filter.type === FilterType.UNIQUE_VALUES) {
-      return `${filter.name} IN (${AttributeListFilterHelper.buildValueFilterString(filter.type, filter.value)})`;
-    }
-    return `${filter.name} ILIKE ${AttributeListFilterHelper.buildValueFilterString(filter.type, filter.value)}`;
-  }
-
-  private static buildValueFilterString(type: FilterType, values: string[]): string {
-    if (values.length === 1) {
-      if (type === FilterType.LIKE || type === FilterType.NOT_LIKE) {
-        return AttributeTypeHelper.getExpression(`%${values[0]}%`, AttributeTypeEnum.STRING);
-      }
-      return AttributeTypeHelper.getExpression(`${values[0]}`, AttributeTypeEnum.STRING);
-    }
-    return values.map(value => AttributeTypeHelper.getExpression(`${value}`, AttributeTypeEnum.STRING)).join(',');
   }
 
 }

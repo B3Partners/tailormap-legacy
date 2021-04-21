@@ -16,6 +16,10 @@
   min-width: 170px;
 }
 
+.resize-active {
+  user-select: none;
+}
+
 [ng-version],
 .overlay-panel,
 .mat-dialog-container {
@@ -90,6 +94,11 @@
   height: 18px;
 }
 
+.overlay-panel--hidden,
+.overlay-panel-toggle--hidden {
+  display: none;
+}
+
 .tab-group .mat-tab-label {
   min-width: 48px;
   padding: 0;
@@ -114,6 +123,10 @@
 
 .tab-group .mat-tab-body-wrapper {
   flex: 1;
+}
+
+.tab-group .mat-tab-header-pagination-controls-enabled {
+  padding: 0;
 }
 
 .form-field + .form-field {

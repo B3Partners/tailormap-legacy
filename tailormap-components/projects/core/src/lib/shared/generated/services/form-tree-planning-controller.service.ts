@@ -1,3 +1,4 @@
+/* tslint:disable */
 /* eslint-disable */
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
@@ -23,21 +24,21 @@ export class FormTreePlanningControllerService extends BaseService {
   }
 
   /**
-   * Path part for operation get12
+   * Path part for operation get15
    */
-  static readonly Get12Path = '/boomplanning/{objectGuid}';
+  static readonly Get15Path = '/boomplanning/{objectGuid}';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `get12()` instead.
+   * To access only the response body, use `get15()` instead.
    *
    * This method doesn't expect any request body.
    */
-  get12$Response(params: {
+  get15$Response(params: {
     objectGuid: string;
   }): Observable<StrictHttpResponse<Boomplanning>> {
 
-    const rb = new RequestBuilder(this.rootUrl, FormTreePlanningControllerService.Get12Path, 'get');
+    const rb = new RequestBuilder(this.rootUrl, FormTreePlanningControllerService.Get15Path, 'get');
     if (params) {
       rb.path('objectGuid', params.objectGuid, {});
     }
@@ -55,36 +56,36 @@ export class FormTreePlanningControllerService extends BaseService {
 
   /**
    * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `get12$Response()` instead.
+   * To access the full response (for headers, for example), `get15$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  get12(params: {
+  get15(params: {
     objectGuid: string;
   }): Observable<Boomplanning> {
 
-    return this.get12$Response(params).pipe(
+    return this.get15$Response(params).pipe(
       map((r: StrictHttpResponse<Boomplanning>) => r.body as Boomplanning)
     );
   }
 
   /**
-   * Path part for operation update5
+   * Path part for operation update6
    */
-  static readonly Update5Path = '/boomplanning/{objectGuid}';
+  static readonly Update6Path = '/boomplanning/{objectGuid}';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `update5()` instead.
+   * To access only the response body, use `update6()` instead.
    *
    * This method sends `application/json` and handles request body of type `application/json`.
    */
-  update5$Response(params: {
+  update6$Response(params: {
     objectGuid: string;
     body: Boomplanning
   }): Observable<StrictHttpResponse<Boomplanning>> {
 
-    const rb = new RequestBuilder(this.rootUrl, FormTreePlanningControllerService.Update5Path, 'put');
+    const rb = new RequestBuilder(this.rootUrl, FormTreePlanningControllerService.Update6Path, 'put');
     if (params) {
       rb.path('objectGuid', params.objectGuid, {});
       rb.body(params.body, 'application/json');
@@ -103,36 +104,36 @@ export class FormTreePlanningControllerService extends BaseService {
 
   /**
    * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `update5$Response()` instead.
+   * To access the full response (for headers, for example), `update6$Response()` instead.
    *
    * This method sends `application/json` and handles request body of type `application/json`.
    */
-  update5(params: {
+  update6(params: {
     objectGuid: string;
     body: Boomplanning
   }): Observable<Boomplanning> {
 
-    return this.update5$Response(params).pipe(
+    return this.update6$Response(params).pipe(
       map((r: StrictHttpResponse<Boomplanning>) => r.body as Boomplanning)
     );
   }
 
   /**
-   * Path part for operation delete5
+   * Path part for operation delete6
    */
-  static readonly Delete5Path = '/boomplanning/{objectGuid}';
+  static readonly Delete6Path = '/boomplanning/{objectGuid}';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `delete5()` instead.
+   * To access only the response body, use `delete6()` instead.
    *
    * This method doesn't expect any request body.
    */
-  delete5$Response(params: {
+  delete6$Response(params: {
     objectGuid: string;
   }): Observable<StrictHttpResponse<void>> {
 
-    const rb = new RequestBuilder(this.rootUrl, FormTreePlanningControllerService.Delete5Path, 'delete');
+    const rb = new RequestBuilder(this.rootUrl, FormTreePlanningControllerService.Delete6Path, 'delete');
     if (params) {
       rb.path('objectGuid', params.objectGuid, {});
     }
@@ -150,31 +151,31 @@ export class FormTreePlanningControllerService extends BaseService {
 
   /**
    * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `delete5$Response()` instead.
+   * To access the full response (for headers, for example), `delete6$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  delete5(params: {
+  delete6(params: {
     objectGuid: string;
   }): Observable<void> {
 
-    return this.delete5$Response(params).pipe(
+    return this.delete6$Response(params).pipe(
       map((r: StrictHttpResponse<void>) => r.body as void)
     );
   }
 
   /**
-   * Path part for operation getAllPaged4
+   * Path part for operation getAllPaged5
    */
-  static readonly GetAllPaged4Path = '/boomplanning';
+  static readonly GetAllPaged5Path = '/boomplanning';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `getAllPaged4()` instead.
+   * To access only the response body, use `getAllPaged5()` instead.
    *
    * This method doesn't expect any request body.
    */
-  getAllPaged4$Response(params?: {
+  getAllPaged5$Response(params?: {
 
     /**
      * Zero-based page index (0..N)
@@ -192,7 +193,7 @@ export class FormTreePlanningControllerService extends BaseService {
     sort?: Array<string>;
   }): Observable<StrictHttpResponse<PageBoomplanning>> {
 
-    const rb = new RequestBuilder(this.rootUrl, FormTreePlanningControllerService.GetAllPaged4Path, 'get');
+    const rb = new RequestBuilder(this.rootUrl, FormTreePlanningControllerService.GetAllPaged5Path, 'get');
     if (params) {
       rb.query('page', params.page, {});
       rb.query('size', params.size, {});
@@ -212,11 +213,11 @@ export class FormTreePlanningControllerService extends BaseService {
 
   /**
    * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `getAllPaged4$Response()` instead.
+   * To access the full response (for headers, for example), `getAllPaged5$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  getAllPaged4(params?: {
+  getAllPaged5(params?: {
 
     /**
      * Zero-based page index (0..N)
@@ -234,27 +235,27 @@ export class FormTreePlanningControllerService extends BaseService {
     sort?: Array<string>;
   }): Observable<PageBoomplanning> {
 
-    return this.getAllPaged4$Response(params).pipe(
+    return this.getAllPaged5$Response(params).pipe(
       map((r: StrictHttpResponse<PageBoomplanning>) => r.body as PageBoomplanning)
     );
   }
 
   /**
-   * Path part for operation save5
+   * Path part for operation save6
    */
-  static readonly Save5Path = '/boomplanning';
+  static readonly Save6Path = '/boomplanning';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `save5()` instead.
+   * To access only the response body, use `save6()` instead.
    *
    * This method sends `application/json` and handles request body of type `application/json`.
    */
-  save5$Response(params: {
+  save6$Response(params: {
     body: { 'wv'?: Boomplanning, 'parentId'?: string }
   }): Observable<StrictHttpResponse<Boomplanning>> {
 
-    const rb = new RequestBuilder(this.rootUrl, FormTreePlanningControllerService.Save5Path, 'post');
+    const rb = new RequestBuilder(this.rootUrl, FormTreePlanningControllerService.Save6Path, 'post');
     if (params) {
       rb.body(params.body, 'application/json');
     }
@@ -272,34 +273,34 @@ export class FormTreePlanningControllerService extends BaseService {
 
   /**
    * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `save5$Response()` instead.
+   * To access the full response (for headers, for example), `save6$Response()` instead.
    *
    * This method sends `application/json` and handles request body of type `application/json`.
    */
-  save5(params: {
+  save6(params: {
     body: { 'wv'?: Boomplanning, 'parentId'?: string }
   }): Observable<Boomplanning> {
 
-    return this.save5$Response(params).pipe(
+    return this.save6$Response(params).pipe(
       map((r: StrictHttpResponse<Boomplanning>) => r.body as Boomplanning)
     );
   }
 
   /**
-   * Path part for operation getAll5
+   * Path part for operation getAll6
    */
-  static readonly GetAll5Path = '/boomplanning/unpaged';
+  static readonly GetAll6Path = '/boomplanning/unpaged';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `getAll5()` instead.
+   * To access only the response body, use `getAll6()` instead.
    *
    * This method doesn't expect any request body.
    */
-  getAll5$Response(params?: {
+  getAll6$Response(params?: {
   }): Observable<StrictHttpResponse<Array<Boomplanning>>> {
 
-    const rb = new RequestBuilder(this.rootUrl, FormTreePlanningControllerService.GetAll5Path, 'get');
+    const rb = new RequestBuilder(this.rootUrl, FormTreePlanningControllerService.GetAll6Path, 'get');
     if (params) {
     }
 
@@ -316,14 +317,14 @@ export class FormTreePlanningControllerService extends BaseService {
 
   /**
    * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `getAll5$Response()` instead.
+   * To access the full response (for headers, for example), `getAll6$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  getAll5(params?: {
+  getAll6(params?: {
   }): Observable<Array<Boomplanning>> {
 
-    return this.getAll5$Response(params).pipe(
+    return this.getAll6$Response(params).pipe(
       map((r: StrictHttpResponse<Array<Boomplanning>>) => r.body as Array<Boomplanning>)
     );
   }

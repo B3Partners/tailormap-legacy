@@ -1,3 +1,4 @@
+/* tslint:disable */
 /* eslint-disable */
 import { Feature } from './feature';
 import { Geometry } from './geometry';

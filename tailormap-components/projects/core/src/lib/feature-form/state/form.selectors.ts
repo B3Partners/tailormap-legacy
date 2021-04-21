@@ -10,15 +10,19 @@ export const selectFeatures = createSelector(selectFormState, state => state.fea
 
 export const selectCurrentFeature = createSelector(selectFormState, state => state.feature);
 
-export const selectFeatureFormOpen = createSelector(selectFormState, state => state.formOpen);
+export const selectFeatureFormEnabled = createSelector(selectFormState, state => state.formEnabled);
 
 export const selectFormAlreadyDirty = createSelector(selectFormState, state => state.alreadyDirty);
 
 export const selectCloseAfterSaveFeatureForm = createSelector(selectFormState, state => state.closeAfterSave);
 
+export const selectIsMultiFormWorkflow = createSelector(selectFormState, state => state.multiFormWorkflow);
+
 export const selectFormEditing = createSelector(selectFormState, state => state.editing);
 
-export const selectTreeOpen = createSelector(selectFormState, state => state.treeOpen);
+export const selectFormVisible = createSelector(selectFormState, state => state.formVisible);
+
+export const selectTreeVisible = createSelector(selectFormState, state => state.treeVisible);
 
 export const selectFormConfigForFeature = createSelector(
   selectFormConfigs,
@@ -34,3 +38,9 @@ export const selectFeatureLabel = createSelector(
    return feature[formConfigs.get(LayerUtils.sanitizeLayername(feature.clazz))];
   },
 );
+
+export const selectCopyFormOpen = createSelector(selectFormState, state => state.copyFormOpen);
+export const selectCopyFormOptionsOpen = createSelector(selectFormState, state => state.copyOptionsOpen);
+export const selectParentCopyFeature = createSelector(selectFormState, state => state.copyFeature);
+export const selectCurrentSelectedCopyFeature = createSelector(selectFormState, state => state.copySelectedFeature);
+export const selectCopyDestinationFeatures = createSelector(selectFormState, state => state.copyDestinationFeatures);

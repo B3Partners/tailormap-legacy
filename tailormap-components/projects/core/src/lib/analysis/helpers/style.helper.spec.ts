@@ -1,6 +1,6 @@
 /* eslint max-len: 0 */
 
-import { AttributeTypeEnum } from '../../application/models/attribute-type.enum';
+import { AttributeTypeEnum } from '../../shared/models/attribute-type.enum';
 import { StyleHelper } from './style.helper';
 import { getDummyScopedStyleModel, getDummyUserLayerStyle, getDummySelectedDataSource } from './test-data/style-test-data';
 

@@ -36,6 +36,7 @@ import { FormNodeComponent } from './form-tree/form-node/form-node.component';
   ],
   exports: [
     FormComponent,
+    FormCopyComponent,
   ],
   entryComponents: [
   ],

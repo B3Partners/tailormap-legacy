@@ -1,3 +1,4 @@
+/* tslint:disable */
 /* eslint-disable */
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
@@ -22,21 +23,21 @@ export class FormTreeControllerService extends BaseService {
   }
 
   /**
-   * Path part for operation get10
+   * Path part for operation get13
    */
-  static readonly Get10Path = '/boom/{objectGuid}';
+  static readonly Get13Path = '/boom/{objectGuid}';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `get10()` instead.
+   * To access only the response body, use `get13()` instead.
    *
    * This method doesn't expect any request body.
    */
-  get10$Response(params: {
+  get13$Response(params: {
     objectGuid: string;
   }): Observable<StrictHttpResponse<Boom>> {
 
-    const rb = new RequestBuilder(this.rootUrl, FormTreeControllerService.Get10Path, 'get');
+    const rb = new RequestBuilder(this.rootUrl, FormTreeControllerService.Get13Path, 'get');
     if (params) {
       rb.path('objectGuid', params.objectGuid, {});
     }
@@ -54,37 +55,37 @@ export class FormTreeControllerService extends BaseService {
 
   /**
    * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `get10$Response()` instead.
+   * To access the full response (for headers, for example), `get13$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  get10(params: {
+  get13(params: {
     objectGuid: string;
   }): Observable<Boom> {
 
-    return this.get10$Response(params).pipe(
+    return this.get13$Response(params).pipe(
       map((r: StrictHttpResponse<Boom>) => r.body as Boom)
     );
   }
 
   /**
-   * Path part for operation onPoint8
+   * Path part for operation onPoint11
    */
-  static readonly OnPoint8Path = '/boom/{x}/{y}/{scale}';
+  static readonly OnPoint11Path = '/boom/{x}/{y}/{scale}';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `onPoint8()` instead.
+   * To access only the response body, use `onPoint11()` instead.
    *
    * This method doesn't expect any request body.
    */
-  onPoint8$Response(params: {
+  onPoint11$Response(params: {
     'x': number;
     'y': number;
     scale: number;
   }): Observable<StrictHttpResponse<Array<Boom>>> {
 
-    const rb = new RequestBuilder(this.rootUrl, FormTreeControllerService.OnPoint8Path, 'get');
+    const rb = new RequestBuilder(this.rootUrl, FormTreeControllerService.OnPoint11Path, 'get');
     if (params) {
       rb.path('x', params['x'], {});
       rb.path('y', params['y'], {});
@@ -104,17 +105,17 @@ export class FormTreeControllerService extends BaseService {
 
   /**
    * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `onPoint8$Response()` instead.
+   * To access the full response (for headers, for example), `onPoint11$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  onPoint8(params: {
+  onPoint11(params: {
     'x': number;
     'y': number;
     scale: number;
   }): Observable<Array<Boom>> {
 
-    return this.onPoint8$Response(params).pipe(
+    return this.onPoint11$Response(params).pipe(
       map((r: StrictHttpResponse<Array<Boom>>) => r.body as Array<Boom>)
     );
   }

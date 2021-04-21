@@ -1,11 +1,11 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 import { AttributeListTabModel } from '../models/attribute-list-tab.model';
-import { catchError, map, take } from 'rxjs/operators';
+import { catchError, map, take, takeUntil, withLatestFrom } from 'rxjs/operators';
 import {
   AttributeListFeature, AttributeListParameters, AttributeListResponse, RelatedFeatureType,
 } from '../../../shared/attribute-service/attribute-models';
 import { AttributeService } from '../../../shared/attribute-service/attribute.service';
-import { forkJoin, Observable, of } from 'rxjs';
+import { forkJoin, Observable, of, Subject } from 'rxjs';
 import { FormConfiguration } from '../../../feature-form/form/form-models';
 import { AttributeListRowModel } from '../models/attribute-list-row.model';
 import { ApplicationService } from '../../../application/services/application.service';
@@ -16,6 +16,9 @@ import { AttributeListState } from '../state/attribute-list.state';
 import { selectFormConfigForFeatureTypeName } from '../../../application/state/application.selectors';
 import { FormTreeHelpers } from '../../../feature-form/form-tree/form-tree-helpers';
 import { AttributeListFilterHelper } from '../helpers/attribute-list-filter.helper';
+import { TailorMapService } from '../../../../../../bridge/src/tailor-map.service';
+import { selectAttributeListTabDictionary } from '../state/attribute-list.selectors';
+import { externalFilterChanged } from '../state/attribute-list.actions';
 
 export interface LoadDataResult {
   layerId: string;
@@ -34,14 +37,34 @@ export interface LoadTotalCountResult {
 @Injectable({
   providedIn: 'root',
 })
-export class AttributeListDataService {
+export class AttributeListDataService implements OnDestroy {
+
+  private destroyed = new Subject();
 
   constructor(
     private attributeService: AttributeService,
     private store$: Store<AttributeListState>,
     private applicationService: ApplicationService,
     private metadataService: MetadataService,
-  ) {}
+    private tailorMapService: TailorMapService,
+  ) {
+    this.tailorMapService.layerFilterChangedChanged$
+      .pipe(
+        takeUntil(this.destroyed),
+        withLatestFrom(this.store$.select(selectAttributeListTabDictionary)),
+      )
+      .subscribe(([ layerFilterChanged, tabsDictionary ]) => {
+        const layerId = `${layerFilterChanged.appLayer.id}`;
+        if (tabsDictionary.has(layerId)) {
+          this.store$.dispatch(externalFilterChanged({ layerId }));
+        }
+      });
+  }
+
+  public ngOnDestroy() {
+    this.destroyed.next();
+    this.destroyed.complete();
+  }
 
   public loadData$(
     tab: AttributeListTabModel,
@@ -66,7 +89,7 @@ export class AttributeListDataService {
   ): Observable<LoadTotalCountResult> {
     return this.metadataService.getTotalFeaturesForQuery$(
       +(tab.layerId),
-      AttributeListFilterHelper.getFilter(tab, featureType, tabFeatureData),
+      AttributeListFilterHelper.getFilter(tab, featureType, tabFeatureData, this.getExtraFiltersForTab(tab)),
       featureType,
     ).pipe(map(count => ({ featureType, totalCount: count })));
   }
@@ -81,7 +104,7 @@ export class AttributeListDataService {
       application: this.applicationService.getId(),
       appLayer: +(tab.layerId),
       featureType,
-      filter: AttributeListFilterHelper.getFilter(tab, featureType, tabFeatureData),
+      filter: AttributeListFilterHelper.getFilter(tab, featureType, tabFeatureData, this.getExtraFiltersForTab(tab)),
       limit: featureTypeData.pageSize,
       page: 1,
       start: featureTypeData.pageIndex * featureTypeData.pageSize,
@@ -116,6 +139,10 @@ export class AttributeListDataService {
         };
       }),
     );
+  }
+
+  private getExtraFiltersForTab(tab: AttributeListTabModel) {
+    return this.tailorMapService.getFilterString(+(tab.layerId));
   }
 
   private decorateFeatures(

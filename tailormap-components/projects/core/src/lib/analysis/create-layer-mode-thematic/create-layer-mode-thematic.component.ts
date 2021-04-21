@@ -4,7 +4,7 @@ import { Store } from '@ngrx/store';
 import { AnalysisState } from '../state/analysis.state';
 import { Subject } from 'rxjs';
 import { AnalysisSourceModel } from '../models/analysis-source.model';
-import { AttributeTypeEnum } from '../../application/models/attribute-type.enum';
+import { AttributeTypeEnum } from '../../shared/models/attribute-type.enum';
 import { map, takeUntil } from 'rxjs/operators';
 import { setSelectedThematicAttribute } from '../state/analysis.actions';
 import { ExtendedAttributeModel } from '../../application/models/extended-attribute.model';

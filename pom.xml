@@ -51,28 +51,27 @@
         <geotools.version>25.0</geotools.version>
         <b3p-commons-csw.version>6.4</b3p-commons-csw.version>
         <powermock.version>2.0.9</powermock.version>
-        <hsqldb.version>2.5.1</hsqldb.version>
+        <hsqldb.version>2.6.0</hsqldb.version>
         <test.persistence.unit>viewer-config-hsqldb</test.persistence.unit>
         <postgresql.version>42.2.19</postgresql.version>
-        <mssql.version>9.2.1.jre8</mssql.version>
+        <mssql.version>9.2.1.jre11</mssql.version>
         <oracle.version>21.1.0.0</oracle.version>
         <apache.poi.version>5.0.0</apache.poi.version>
-        <jakarta.mail.version>1.6.5</jakarta.mail.version>
+        <jakarta.mail.version>1.6.6</jakarta.mail.version>
         <apache.httpcomponents.version>4.5.13</apache.httpcomponents.version>
         <jaxb.api.version>2.3.3</jaxb.api.version>
         <jaxb.impl.version>2.3.3</jaxb.impl.version>
         <activation.api.version>1.2.2</activation.api.version>
         <slf4j.version>1.7.30</slf4j.version>
-        <jackson2.version>2.12.2</jackson2.version>
+        <jackson2.version>2.12.3</jackson2.version>
         <!-- skip integration tests by default, override this property from commandline
         or as part of a profile, see eg. 'gh-action' profile in viewer -->
         <test.skip.integrationtests>false</test.skip.integrationtests>
         <maven-surefire-plugin.version>3.0.0-M5</maven-surefire-plugin.version>
         <tomcat.version>7.0.108</tomcat.version>
-        <jacoco-maven-plugin.version>0.8.6</jacoco-maven-plugin.version>
         <tomcat7-maven-plugin.version>2.2</tomcat7-maven-plugin.version>
+        <jacoco-maven-plugin.version>0.8.6</jacoco-maven-plugin.version>
         <properties-maven-plugin.version>1.0.0</properties-maven-plugin.version>
-        <netbeans.hint.jdkPlatform>JDK_1.8</netbeans.hint.jdkPlatform>
     </properties>
     <dependencyManagement>
         <!--
@@ -242,7 +241,7 @@
             <dependency>
                 <groupId>com.google.javascript</groupId>
                 <artifactId>closure-compiler</artifactId>
-                <version>v20210302</version>
+                <version>v20210406</version>
             </dependency>
             <dependency>
                 <groupId>javax.servlet</groupId>
@@ -310,7 +309,7 @@
             <dependency>
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-core</artifactId>
-                <version>3.8.0</version>
+                <version>3.9.0</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
@@ -556,13 +555,13 @@
                 <version>${mssql.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.oracle.database.jdbc</groupId>
-                <artifactId>ojdbc8_g</artifactId>
+                <groupId>com.oracle.database.jdbc.debug</groupId>
+                <artifactId>ojdbc11_g</artifactId>
                 <version>${oracle.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.oracle.database.jdbc</groupId>
-                <artifactId>ojdbc8</artifactId>
+                <artifactId>ojdbc11</artifactId>
                 <version>${oracle.version}</version>
             </dependency>
             <dependency>
@@ -640,7 +639,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-release-plugin</artifactId>
-                    <version>3.0.0-M1</version>
+                    <version>3.0.0-M4</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -863,9 +862,14 @@
                     <version>2.0.2</version>
                 </plugin>
                 <plugin>
+                    <groupId>org.codehaus.cargo</groupId>
+                    <artifactId>cargo-maven2-plugin</artifactId>
+                    <version>1.9.0</version>
+                </plugin>
+                <plugin>
                     <groupId>io.fabric8</groupId>
                     <artifactId>docker-maven-plugin</artifactId>
-                    <version>0.34.1</version>
+                    <version>0.35.0</version>
                 </plugin>
             </plugins>
         </pluginManagement>

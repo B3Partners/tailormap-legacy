@@ -5,8 +5,8 @@ import { FormTreeHelpers } from './form-tree-helpers';
 import { Store } from '@ngrx/store';
 import { FormState } from '../state/form.state';
 import * as FormActions from '../state/form.actions';
-import { selectFeatures } from '../state/form.selectors';
-import { combineLatest, Subject } from 'rxjs';
+import { selectParentCopyFeature, selectFeatures, selectCopyFormOptionsOpen, selectTreeVisible } from '../state/form.selectors';
+import { combineLatest, Observable, Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 import { TreeService } from '../../shared/tree/tree.service';
 import { TreeModel } from '../../shared/tree/models/tree.model';
@@ -26,7 +26,13 @@ export class FormTreeComponent implements OnInit, OnDestroy {
   @Input()
   public isCopy = false;
 
+  @Input()
+  public hidden = false;
+
   private selectedFeature: Feature;
+
+  public treeOpen$: Observable<boolean>;
+  public treeClosed$: Observable<boolean>;
 
   @Input()
   public set feature (feature: Feature) {
@@ -51,13 +57,19 @@ export class FormTreeComponent implements OnInit, OnDestroy {
 
   constructor(
     private store$: Store<FormState>,
-    private treeService: TreeService) {
+    private treeService: TreeService,
+  ) {
     this.treeService.selectionStateChangedSource$.pipe(
       takeUntil(this.destroyed),
+      filter(() => !this.isBulk),
       map(nodeId => this.treeService.getNode(nodeId)),
       filter(node => !node.metadata.isFeatureType),
     ).subscribe(node => {
-      this.store$.dispatch(FormActions.setFeature({feature: node.metadata.feature}));
+      if (this.isCopy) {
+        this.store$.dispatch(FormActions.setCopySelectedFeature({ feature: node.metadata.feature }));
+      } else {
+        this.store$.dispatch(FormActions.setFeature({feature: node.metadata.feature}));
+      }
     });
   }
 
@@ -71,13 +83,19 @@ export class FormTreeComponent implements OnInit, OnDestroy {
       this.hasCheckboxes,
     );
 
+    this.treeOpen$ = this.isCopy ? this.store$.select(selectCopyFormOptionsOpen) : this.store$.select(selectTreeVisible);
+    this.treeClosed$ = this.treeOpen$.pipe(map(open => !open));
+
+    const selectFeatures$ = this.isCopy
+      ? this.store$.select(selectParentCopyFeature).pipe(map(feature => [feature]))
+      : this.store$.select(selectFeatures);
     combineLatest([
-      this.store$.select(selectFeatures),
+      selectFeatures$,
       this.store$.select(selectFormConfigs),
     ])
       .pipe(
         takeUntil(this.destroyed),
-        filter(([ features, formConfigs]) => !!features && features.length > 0 && !!formConfigs),
+        filter(([ features, formConfigs]) => !!features[0] && features.length > 0 && !!formConfigs),
       )
       .subscribe(([ features, formConfigs]) => {
         const tree: TreeModel<FormTreeMetadata> [] = FormTreeHelpers.convertFeatureToTreeModel(features, formConfigs);
@@ -105,7 +123,18 @@ export class FormTreeComponent implements OnInit, OnDestroy {
     this.destroyed.complete();
   }
 
-  public closePanel() {
-    this.store$.dispatch(FormActions.setTreeOpen({treeOpen: false}));
+  public closeTree() {
+    const action = this.isCopy
+      ? FormActions.setCopyOptionsOpen({ open: false })
+      : FormActions.setTreeOpen({treeOpen: false});
+    this.store$.dispatch(action);
   }
+
+  public openTree() {
+    const action = this.isCopy
+      ? FormActions.setCopyOptionsOpen({ open: true })
+      : FormActions.setTreeOpen({treeOpen: true});
+    this.store$.dispatch(action);
+  }
+
 }

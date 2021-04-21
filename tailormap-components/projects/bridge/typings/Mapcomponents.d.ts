@@ -1,7 +1,3 @@
-import {
-  ExtentChangedEvent,
-  LayerVisibilityEvent,
-} from '../../core/src/lib/shared/models/event-models';
 import { Geometry } from '../../core/src/lib/shared/generated';
 
 declare interface App {
@@ -46,6 +42,7 @@ declare interface CQLFilter{
   type: 'ATTRIBUTE' | 'GEOMETRY' | 'APPLAYER';
   getCQL: () => string;
   getCQLWithoutType: () => string;
+  getCQLWithoutIds: (ids: string[]) => string;
   addFilter: (filter: CQLFilter) => void;
   removeFilter: (filter: CQLFilter) => void;
   removeFilterById: (id: string) => void;
@@ -70,11 +67,11 @@ declare interface Pixel{
   y: number;
 }
 
-type MapEvent = (object: any, event: LayerVisibilityEvent | ExtentChangedEvent) => void;
+type MapEvent<T> = (object: any, event: T) => void;
 type layerEvent = (object: any, event: any) => void;
 
 declare interface Map {
-  addListener: (eventName: string, handler: MapEvent) => void;
+  addListener: <T>(eventName: string, handler: MapEvent<T>) => void;
   addLayer: (layer: Layer) => void;
   getLayer: (id: string) => Layer;
   update: () => void;
@@ -87,7 +84,7 @@ declare interface Map {
 declare interface MapComponent {
   getMap: () => Map;
   createVectorLayer: (config: any) => VectorLayer;
-  addListener: (eventName: string, handler: MapEvent) => void;
+  addListener: <T>(eventName: string, handler: MapEvent<T>) => void;
 }
 
 declare interface Layer {

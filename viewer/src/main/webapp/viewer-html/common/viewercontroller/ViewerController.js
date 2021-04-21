@@ -462,7 +462,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         var levels = Ext.clone(this.app.levels);
         for (var levelId in levels) if (levels.hasOwnProperty(levelId)) {
             levels[levelId].layers = Ext.Array.filter(levels[levelId].layers || [], function(layer) {
-                return '' + layer.id !== '' + appLayer.id;
+                return '' + layer !== '' + appLayer.id;
             });
         }
         this.app.levels = levels;
@@ -1638,15 +1638,19 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         return layer.details["metadata.stylesheet"];
     },
 
+    getFilterName: function(name) {
+        return "filter_" + name;
+    },
+
     /**
      * add ore replace the filter for the given layer.
      * @param filterString the filter: string type
      * @param appLayer the application layer
      * @param name The name the filter should have
      */
-    setFilterString : function(filterString, appLayer, name){
+    setFilterString : function(filterString, appLayer, name) {
         var filter = Ext.create("viewer.components.CQLFilterWrapper",{
-            id: "filter_"+name,
+            id: this.getFilterName(name),
             cql: filterString,
             operator : "AND",
             type: "ATTRIBUTE"
@@ -1863,7 +1867,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
      * Get the attributes of the appLayer
      */
     getAttributesFromAppLayer: function (appLayer, featureTypeId, addJoinedAttributes){
-        if (appLayer.attributes == undefined){
+        if (appLayer == undefined || appLayer.attributes == undefined) {
             return undefined;
         }
         //if no featureTypeId given, get the one of the application layer.

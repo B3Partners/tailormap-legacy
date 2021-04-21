@@ -11,6 +11,9 @@ export const createMockProvider = (template?: Partial<Record<keyof MetadataServi
     getVisibleExtendedAttributesForLayer$(layerId: string | number): Observable<Attribute[]> {
       return of([]);
     },
+    getUniqueValuesForAttribute$(): Observable<string[]> {
+      return of([]);
+    },
     ...template,
   });
 };

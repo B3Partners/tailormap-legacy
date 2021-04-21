@@ -12,7 +12,7 @@ import {
 import { forkJoin, Observable, of } from 'rxjs';
 import { AttributeListDataService, LoadDataResult } from '../services/attribute-list-data.service';
 import { UpdateAttributeListStateHelper } from '../helpers/update-attribute-list-state.helper';
-import { TailorMapService } from '../../../../../../bridge/src/tailor-map.service';
+import { TailorMapFilters, TailorMapService } from '../../../../../../bridge/src/tailor-map.service';
 import { StatisticService } from '../../../shared/statistic-service/statistic.service';
 import { AttributeListFilterHelper } from '../helpers/attribute-list-filter.helper';
 
@@ -55,9 +55,7 @@ export class AttributeListEffects {
     filter(([_action, tab, _featureData]) => {return !!tab; }),
     tap(([action, tab, featureData]) => {
       const mainFilter = AttributeListFilterHelper.getFilter(tab, tab.featureType, featureData);
-      const viewerController = this.tailorMapService.getViewerController();
-      const appLayer = viewerController.getAppLayerById(+(action.layerId));
-      viewerController.setFilterString(mainFilter, appLayer, 'ngattributelist');
+      this.tailorMapService.setFilterString(mainFilter, +(action.layerId), TailorMapFilters.ATTRIBUTE_LIST);
     }),
     concatMap(([action, tab, featureData]) => {
       return this.attributeListDataService.loadData$(tab, featureData).pipe(
@@ -108,12 +106,13 @@ export class AttributeListEffects {
     }),
   ));
 
-  public updateColumnFilter$ = createEffect(() => this.actions$.pipe(
+  public updateFilter$ = createEffect(() => this.actions$.pipe(
     ofType(
       AttributeListActions.setColumnFilter,
       AttributeListActions.deleteColumnFilter,
       AttributeListActions.clearAllFilters,
       AttributeListActions.clearFilterForFeatureType,
+      AttributeListActions.externalFilterChanged,
     ),
     concatMap(action => of(action).pipe(
       withLatestFrom(
@@ -155,7 +154,7 @@ export class AttributeListEffects {
         column: action.column,
         featureType: action.featureType,
         type: action.statisticType,
-        filter: AttributeListFilterHelper.getFilter(tab, action.featureType, tabFeatureData),
+        filter: AttributeListFilterHelper.getFilter(tab, action.featureType, tabFeatureData, this.tailorMapService.getFilterString(+(tab.layerId))),
       }).pipe(map(result => {
         return AttributeListActions.statisticsForColumnLoaded({
           column: action.column,
@@ -183,7 +182,7 @@ export class AttributeListEffects {
         column: s.name,
         featureType: action.featureType,
         type: s.statisticType,
-        filter: AttributeListFilterHelper.getFilter(tab, action.featureType, tabFeatureData),
+        filter: AttributeListFilterHelper.getFilter(tab, action.featureType, tabFeatureData, this.tailorMapService.getFilterString(+(tab.layerId))),
       }).pipe(map(result => ({ value: result.result, column: s.name }))));
       return forkJoin([ of(action), forkJoin(statQueries$) ]);
     }),

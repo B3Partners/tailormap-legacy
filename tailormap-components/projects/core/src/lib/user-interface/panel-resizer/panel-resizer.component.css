@@ -1,4 +1,6 @@
 .resize-panel {
+  --translate-pos: 0;
+
   width: 100%;
   height: 20px;
   position: absolute;
@@ -6,6 +8,7 @@
   flex-flow: row nowrap;
   justify-content: center;
   align-items: center;
+  z-index: 999;
 }
 
 .resize-handle {
@@ -19,4 +22,26 @@ mat-icon {
   width: 20px;
   height: 20px;
   line-height: 20px;
+}
+
+.resize-indicator {
+  position: absolute;
+  display: none;
+  background-color: #6236ff;
+}
+
+.resize-indicator--resizing {
+  display: block;
+}
+
+.resize-indicator--vertical {
+  height: 5px;
+  width: 100%;
+  transform: translateY(var(--translate-pos));
+}
+
+.resize-indicator--horizontal {
+  width: 5px;
+  height: 100%;
+  transform: translateX(var(--translate-pos));
 }

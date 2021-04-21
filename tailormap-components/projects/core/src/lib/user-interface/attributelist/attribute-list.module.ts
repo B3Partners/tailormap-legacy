@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 
 import { SharedModule } from '../../shared/shared.module';
 
-import { AttributeListPanelComponent } from './attribute-list-panel/attribute-list-panel.component';
 import { AttributeListTabComponent } from './attribute-list-tab/attribute-list-tab.component';
 import { AttributeListTabToolbarComponent } from './attribute-list-tab-toolbar/attribute-list-tab-toolbar.component';
 import { AttributeListDetailsComponent } from './attribute-list-details/attribute-list-details.component';
@@ -27,9 +26,7 @@ import { AttributeListFilterComponent } from './attribute-list-filter/attribute-
 import { AttributeListManagerService } from './services/attribute-list-manager.service';
 
 @NgModule({
-  // The components, directives, and pipes that belong to this NgModule.
   declarations: [
-    AttributeListPanelComponent,
     AttributeListTabComponent,
     AttributeListTabToolbarComponent,
     AttributeListDetailsComponent,
@@ -50,9 +47,6 @@ import { AttributeListManagerService } from './services/attribute-list-manager.s
     SharedModule,
     StoreModule.forFeature(attributeListStateKey, attributeListReducer),
     EffectsModule.forFeature([ AttributeListEffects ]),
-  ],
-  exports: [
-    AttributeListPanelComponent,
   ],
 })
 export class AttributeListModule {

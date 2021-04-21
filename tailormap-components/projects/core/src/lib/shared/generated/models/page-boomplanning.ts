@@ -1,3 +1,4 @@
+/* tslint:disable */
 /* eslint-disable */
 import { Boomplanning } from './boomplanning';
 import { Pageable } from './pageable';
