@@ -3,7 +3,6 @@ import * as AttributeListActions from './attribute-list.actions';
 import { AttributeListState, initialAttributeListState } from './attribute-list.state';
 import { AttributeListTabModel } from '../models/attribute-list-tab.model';
 import { AttributeListRowModel } from '../models/attribute-list-row.model';
-import { UpdateAttributeListStateHelper } from '../helpers/update-attribute-list-state.helper';
 import { AttributeListFeatureTypeData, CheckedFeature } from '../models/attribute-list-feature-type-data.model';
 import { AttributeListStatisticColumnModel } from '../models/attribute-list-statistic-column.model';
 import { AttributeFilterModel } from '../../../shared/models/attribute-filter.model';
@@ -195,9 +194,9 @@ const onLoadTotalCountForTabSuccess = (
   };
 };
 
-const onUpdatePageOrSort = (
+const onUpdatePage = (
   state: AttributeListState,
-  payload: ReturnType<typeof AttributeListActions.updatePage | typeof AttributeListActions.updateSort>,
+  payload: ReturnType<typeof AttributeListActions.updatePage>,
 ): AttributeListState => ({
   ...state,
   tabs: updateArrayItemInState<AttributeListTabModel>(
@@ -208,7 +207,28 @@ const onUpdatePageOrSort = (
   featureTypeData: updateArrayItemInState<AttributeListFeatureTypeData>(
     state.featureTypeData,
     d => d.featureType === payload.featureType,
-    data => UpdateAttributeListStateHelper.updateDataForAction(payload, data),
+    data => ({ ...data, pageIndex: payload.page }),
+  ),
+});
+
+const onUpdateSort = (
+  state: AttributeListState,
+  payload: ReturnType<typeof AttributeListActions.updateSort>,
+): AttributeListState => ({
+  ...state,
+  tabs: updateArrayItemInState<AttributeListTabModel>(
+    state.tabs,
+    (t => t.layerId === payload.layerId),
+    (tab => ({ ...tab, loadingData: true })),
+  ),
+  featureTypeData: updateArrayItemInState<AttributeListFeatureTypeData>(
+    state.featureTypeData,
+    d => d.featureType === payload.featureType,
+    data => ({
+      ...data,
+      sortedColumn: payload.direction !== '' ? payload.column : '',
+      sortDirection: payload.direction === 'desc' ? 'DESC' : 'ASC',
+    }),
   ),
 });
 
@@ -333,7 +353,8 @@ const onSetSelectedFeatureType = (
   state: AttributeListState,
   payload: ReturnType<typeof AttributeListActions.setSelectedFeatureType>,
 ): AttributeListState => updateTab(state, payload.layerId, tab => ({
-  ...UpdateAttributeListStateHelper.updateTabForAction(payload, tab),
+  ...tab,
+  selectedRelatedFeatureType: payload.featureType,
   loadingData: true,
 }));
 
@@ -523,8 +544,8 @@ const attributeListReducerImpl = createReducer(
   on(AttributeListActions.loadDataForTab, onLoadDataForTab),
   on(AttributeListActions.loadDataForTabSuccess, onLoadDataForTabSuccess),
   on(AttributeListActions.loadDataForFeatureTypeSuccess, onLoadDataForFeatureTypeSuccess),
-  on(AttributeListActions.updatePage, onUpdatePageOrSort),
-  on(AttributeListActions.updateSort, onUpdatePageOrSort),
+  on(AttributeListActions.updatePage, onUpdatePage),
+  on(AttributeListActions.updateSort, onUpdateSort),
   on(AttributeListActions.toggleCheckedAllRows, onToggleCheckedAllRows),
   on(AttributeListActions.updateRowChecked, onUpdateRowChecked),
   on(AttributeListActions.updateRowExpanded, onUpdateRowExpanded),

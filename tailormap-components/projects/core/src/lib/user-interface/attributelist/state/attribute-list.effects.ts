@@ -11,7 +11,6 @@ import {
 } from './attribute-list.selectors';
 import { forkJoin, Observable, of } from 'rxjs';
 import { AttributeListDataService, LoadDataResult } from '../services/attribute-list-data.service';
-import { UpdateAttributeListStateHelper } from '../helpers/update-attribute-list-state.helper';
 import { TailorMapFilters, TailorMapService } from '../../../../../../bridge/src/tailor-map.service';
 import { StatisticService } from '../../../shared/statistic-service/statistic.service';
 import { AttributeListFilterHelper } from '../helpers/attribute-list-filter.helper';
@@ -73,15 +72,8 @@ export class AttributeListEffects {
       ),
     )),
     filter(([_action, tab, _data]) => !!tab),
-    concatMap(([action, tab, featureData]) => {
-      const updatedFeatureData = featureData.map(data => {
-        if (data.featureType === action.featureType) {
-          return UpdateAttributeListStateHelper.updateDataForAction(action, data);
-        }
-        return data;
-      });
-      const updatedTab = UpdateAttributeListStateHelper.updateTabForAction(action, tab);
-      return this.attributeListDataService.loadDataForFeatureType$(updatedTab, tab.selectedRelatedFeatureType, updatedFeatureData);
+    concatMap(([_action, tab, featureData]) => {
+      return this.attributeListDataService.loadDataForFeatureType$(tab, tab.selectedRelatedFeatureType, featureData);
     }),
     tap(() => {
       this.highlightService.clearHighlight();

@@ -13,7 +13,7 @@ import { MetadataService } from '../../../application/services/metadata.service'
 import { AttributeListColumnModel } from '../models/attribute-list-column-models';
 import { Attribute, FormConfiguration } from '../../../feature-form/form/form-models';
 import { AttributeTypeHelper } from '../../../application/helpers/attribute-type.helper';
-import { AttributeMetadataResponse } from '../../../shared/attribute-service/attribute-models';
+import { AttributeMetadataResponse, Relation } from '../../../shared/attribute-service/attribute-models';
 import { AttributeListConfig } from '../models/attribute-list.config';
 import { AttributeListFeatureTypeData } from '../models/attribute-list-feature-type-data.model';
 import { IdService } from '../../../shared/id-service/id.service';
@@ -147,21 +147,39 @@ export class AttributeListManagerService implements OnDestroy {
             metadata,
             formConfigs.get(LayerUtils.sanitizeLayername(layerName)),
           ),
-          ...(metadata.relations || []).map(featureType => {
-            return this.createDataForFeatureType(
-              featureType.foreignFeatureType,
-              featureType.foreignFeatureTypeName,
-              metadata.featureType,
-              pageSize,
-              layer.id,
-              metadata,
-              formConfigs.get(LayerUtils.sanitizeLayername(featureType.foreignFeatureTypeName)),
-            );
-          }),
+          ...this.getRelatedFeatureData(metadata.relations || [], metadata.featureType, layer, pageSize, metadata, formConfigs),
         ];
         return { tab, featureData };
       }),
     );
+  }
+
+  private getRelatedFeatureData(
+    relations: Relation[],
+    parentFeatureType: number,
+    layer: TailormapAppLayer,
+    pageSize = 10,
+    metadata: AttributeMetadataResponse,
+    formConfigs: Map<string, FormConfiguration>,
+  ): AttributeListFeatureTypeData[] {
+    const relatedData = [];
+    relations.forEach(relation => {
+      const featureData = this.createDataForFeatureType(
+        relation.foreignFeatureType,
+        relation.foreignFeatureTypeName,
+        parentFeatureType,
+        pageSize,
+        layer.id,
+        metadata,
+        formConfigs.get(LayerUtils.sanitizeLayername(relation.foreignFeatureTypeName)),
+      );
+      relatedData.push(featureData);
+      if (relation.relations && relation.relations.length > 0) {
+        const childRelations = this.getRelatedFeatureData(relation.relations, relation.foreignFeatureType, layer, pageSize, metadata, formConfigs);
+        relatedData.push(...childRelations);
+      }
+    });
+    return relatedData;
   }
 
   private createDataForFeatureType(
