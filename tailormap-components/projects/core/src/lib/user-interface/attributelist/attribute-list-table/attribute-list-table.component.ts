@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { AttributeListRowModel } from '../models/attribute-list-row.model';
 import { AttributeListColumnModel } from '../models/attribute-list-column-models';
 import { StatisticsHelper } from '../helpers/statistics-helper';
@@ -34,7 +34,7 @@ interface StatisticValue {
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AttributeListTableComponent implements OnInit {
+export class AttributeListTableComponent {
 
   @Input()
   public layerId: string;
@@ -127,12 +127,6 @@ export class AttributeListTableComponent implements OnInit {
 
   private filtersDictionary: Set<string> = new Set();
   private statisticsDictionary: Map<string, StatisticValue> = new Map();
-
-  constructor() {
-  }
-
-  public ngOnInit(): void {
-  }
 
   public trackByRowId(idx: number, row: AttributeListRowModel) {
     return row.rowId;
