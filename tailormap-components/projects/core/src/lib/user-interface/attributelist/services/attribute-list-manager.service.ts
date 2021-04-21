@@ -4,7 +4,7 @@ import { AttributeListState } from '../state/attribute-list.state';
 import { selectFormConfigsLoaded, selectFormConfigs, selectVisibleLayersWithAttributes } from '../../../application/state/application.selectors';
 import { concatMap, filter, map, take, takeUntil, withLatestFrom } from 'rxjs/operators';
 import { combineLatest, forkJoin, Observable, of, Subject } from 'rxjs';
-import { selectAttributeListConfig, selectAttributeListTabs } from '../state/attribute-list.selectors';
+import { selectAttributeListConfig, selectAttributeListTabs, selectAttributeListVisible } from '../state/attribute-list.selectors';
 import { changeAttributeListTabs } from '../state/attribute-list.actions';
 import { AttributeListTabModel } from '../models/attribute-list-tab.model';
 import { TailormapAppLayer } from '../../../application/models/tailormap-app-layer.model';
@@ -64,11 +64,12 @@ export class AttributeListManagerService implements OnDestroy {
     combineLatest([
       this.store$.select(selectVisibleLayersWithAttributes),
       this.store$.select(selectFormConfigsLoaded),
+      this.store$.select(selectAttributeListVisible),
     ])
       .pipe(
         takeUntil(this.destroyed),
-        filter(([ _layers, formConfigLoaded ]) => !!formConfigLoaded),
-        map(([ layers, _formConfigLoaded ]) => layers),
+        filter(([ _layers, formConfigLoaded, attributeListVisible ]) => !!formConfigLoaded && attributeListVisible),
+        map(([ layers, _formConfigLoaded, _attributeListVisible ]) => layers),
         withLatestFrom(this.store$.select(selectAttributeListTabs), this.store$.select(selectAttributeListConfig)),
         concatMap(([ layers, tabs, config ]) => {
           const closedTabs = this.getClosedTabs(layers, tabs);
