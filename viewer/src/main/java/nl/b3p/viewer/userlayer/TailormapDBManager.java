@@ -141,10 +141,31 @@ public class TailormapDBManager {
                 LOG.error("time: " + (end.getTime() - start.getTime()));
                 SimpleFeatureType newFt = fs.getFeatureType(viewName);
                 l.setFeatureType(newFt);
+                copyRelations(newFt);
             } catch (Exception e) {
                 LOG.error("Error processing featuretype/featuresource",e);
             }
 
+        }
+    }
+
+    private void copyRelations(SimpleFeatureType sft) {
+        List<FeatureTypeRelation> rels = this.layer.getFeatureType().getRelations();
+        for (FeatureTypeRelation rel : rels) {
+            FeatureTypeRelation copy = new FeatureTypeRelation();
+            copy.setFeatureType(sft);
+            copy.setForeignFeatureType(rel.getForeignFeatureType());
+            copy.setType(rel.getType());
+
+            List<FeatureTypeRelationKey> keys = rel.getRelationKeys();
+            for (FeatureTypeRelationKey key : keys) {
+                FeatureTypeRelationKey keyCopy = new FeatureTypeRelationKey();
+                keyCopy.setRightSide(key.getRightSide());
+                keyCopy.setLeftSide(key.getLeftSide());
+                keyCopy.setRelation(copy);
+                copy.getRelationKeys().add(keyCopy);
+            }
+            sft.getRelations().add(copy);
         }
     }
 
@@ -177,6 +198,7 @@ public class TailormapDBManager {
             entityManager.getTransaction().commit();
             entityManager.getTransaction().begin();
             newAppLayer.synchronizeFeaturetype(entityManager, null, null, null, true);
+            newAppLayer.getAttributes().forEach(configuredAttribute -> configuredAttribute.setVisible(true));
             entityManager.persist(newAppLayer);
             entityManager.getTransaction().commit();
             return newAppLayer;

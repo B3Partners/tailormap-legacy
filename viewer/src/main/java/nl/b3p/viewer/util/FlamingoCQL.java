@@ -59,7 +59,7 @@ public class FlamingoCQL {
     private static final Log LOG = LogFactory.getLog(FlamingoCQL.class);
 
     private final static String BEGIN_APPLAYER_PART = "APPLAYER(";
-    private final static String BEGIN_RELATED_FEATURE_PART = "RELATED_FEATURE(";
+    public final static String BEGIN_RELATED_FEATURE_PART = "RELATED_FEATURE(";
 
     private static FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2(null);
 
