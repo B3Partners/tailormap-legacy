@@ -108,13 +108,8 @@ export class AttributeListTabToolbarComponent implements OnInit, OnDestroy {
   }
 
   public canCreateUserLayer(): boolean {
-    if (this.tailorMapService.getApplayerById(+(this.layerId)).userlayer) {
-      return false;
-    } else if (!this.tailorMapService.getFilterString(+(this.layerId), false)) {
-      return false;
-    } else {
-      return true;
-    }
+    return !(this.tailorMapService.getApplayerById(+(this.layerId)).userlayer
+      || !this.tailorMapService.getFilterString(+(this.layerId), false));
   }
 
   public getToolTipMessage(): string {
