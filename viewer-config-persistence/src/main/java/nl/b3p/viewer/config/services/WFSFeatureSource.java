@@ -32,6 +32,7 @@ import java.util.Map;
 @DiscriminatorValue(WFSFeatureSource.PROTOCOL)
 public class WFSFeatureSource extends FeatureSource {
 
+    public static final String URL_KEY = "WFSDataStoreFactory:GET_CAPABILITIES_URL";
     private static final Log log = LogFactory.getLog(WFSFeatureSource.class);
     public static final String PROTOCOL = "wfs";
 
@@ -42,7 +43,7 @@ public class WFSFeatureSource extends FeatureSource {
     public WFSFeatureSource(Map params) throws JSONException {
         super();
 
-        setUrl(params.get("WFSDataStoreFactory:GET_CAPABILITIES_URL").toString());
+        setUrl(params.get(URL_KEY).toString());
         setUsername((String) params.get("WFSDataStoreFactory:USERNAME"));
         setPassword((String) params.get("WFSDataStoreFactory:PASSWORD"));
     }
