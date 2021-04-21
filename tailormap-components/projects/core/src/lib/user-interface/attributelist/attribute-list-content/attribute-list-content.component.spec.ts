@@ -1,6 +1,6 @@
 import { Spectator, createComponentFactory } from '@ngneat/spectator';
 
-import { AttributeListTableComponent } from './attribute-list-table.component';
+import { AttributeListContentComponent } from './attribute-list-content.component';
 import { attributeListStateKey, initialAttributeListState } from '../state/attribute-list.state';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { getStatisticServiceMockProvider } from '../../../shared/statistic-service/mocks/statistic.service.mock';
@@ -9,12 +9,12 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 describe('AttributeListTableComponent', () => {
 
-  let spectator: Spectator<AttributeListTableComponent>;
+  let spectator: Spectator<AttributeListContentComponent>;
   const initialState = { [attributeListStateKey]: initialAttributeListState };
   let store: MockStore;
 
   const createComponent = createComponentFactory({
-    component: AttributeListTableComponent,
+    component: AttributeListContentComponent,
     imports: [ SharedModule ],
     schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
     providers: [

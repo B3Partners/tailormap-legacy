@@ -8,7 +8,7 @@ import { updateRowExpanded } from '../../state/attribute-list.actions';
 @Component({
   selector: 'tailormap-attribute-list-details-column',
   templateUrl: './attribute-list-details-column.component.html',
-  styleUrls: ['../attribute-list-table.component.css'],
+  styleUrls: ['../attribute-list-content.component.css'],
 })
 export class AttributeListDetailsColumnComponent implements OnInit {
 

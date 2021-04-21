@@ -15,7 +15,7 @@ enum CheckState {
 @Component({
   selector: 'tailormap-attribute-list-checkbox-column',
   templateUrl: './attribute-list-checkbox-column.component.html',
-  styleUrls: ['../attribute-list-table.component.css'],
+  styleUrls: ['../attribute-list-content.component.css'],
 })
 export class AttributeListCheckboxColumnComponent implements OnInit, OnDestroy {
 

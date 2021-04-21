@@ -18,9 +18,9 @@ import { StatisticType } from '../../../shared/statistic-service/statistic-model
 import { AttributeFilterModel } from '../../../shared/models/attribute-filter.model';
 
 @Component({
-  selector: 'tailormap-attribute-list-table',
-  templateUrl: './attribute-list-table.component.html',
-  styleUrls: ['./attribute-list-table.component.css'],
+  selector: 'tailormap-attribute-list-content',
+  templateUrl: './attribute-list-content.component.html',
+  styleUrls: ['./attribute-list-content.component.css'],
   animations: [
     trigger('detailExpand', [
       state('collapsed', style({ height: '0px', minHeight: '0' })),
@@ -30,7 +30,7 @@ import { AttributeFilterModel } from '../../../shared/models/attribute-filter.mo
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AttributeListTableComponent implements OnInit, OnDestroy {
+export class AttributeListContentComponent implements OnInit, OnDestroy {
 
   @Input()
   public layerId: string;
