@@ -116,7 +116,7 @@ export class AttributeListTabToolbarComponent implements OnInit, OnDestroy {
     if (this.tailorMapService.getApplayerById(+(this.layerId)).userlayer) {
       return 'Er kunnen geen selectielagen op basis van andere selectielagen gemaakt worden';
     } else if(!this.tailorMapService.getFilterString(+(this.layerId), false)) {
-      return 'Stel eerst een filter in op de attributenlijst in om een laag te kunnen publiceren';
+      return 'Stel eerst een filter in op de attributenlijst om een laag te kunnen publiceren';
     } else {
       return '';
     }
