@@ -1,0 +1,229 @@
+/*
+ * Copyright (C) 2012-2013 B3Partners B.V.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+package nl.b3p.geotools.data.arcgis;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.zip.GZIPInputStream;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.codehaus.httpcache4j.*;
+import org.codehaus.httpcache4j.cache.HTTPCache;
+import org.codehaus.httpcache4j.payload.InputStreamPayload;
+import org.codehaus.httpcache4j.payload.Payload;
+import org.geotools.data.Base64;
+import org.geotools.data.ows.HTTPClient;
+import org.geotools.data.ows.HTTPResponse;
+
+/**
+ * HTTPClient implementation which uses HttpCache4j to do HTTP caching.
+ * <p>
+ * HttpCache4j has no API to set timeouts, so these are ignored.
+ * <p>
+ * <b>Note:</b> using HTTP caching with ArcGIS server is not very useful, read the 
+ * {@link ArcGISDataStore} comments.
+ * <p>
+ * Note: ArcGIS sends an ETag header without the double quotes that are required
+ * in the RFC. HttpCache4j only caches it with quotes, so to make it work patch
+ * HttpCache4j as follows:
+ * 
+ * <pre>diff --git a/httpcache4j-api/src/main/java/org/codehaus/httpcache4j/Tag.java b/httpcache4j-api/src/main/java/org/codehaus/httpcache4j/Tag.java<br/>index e51f1c7..ddcae70 100644<br/>--- a/httpcache4j-api/src/main/java/org/codehaus/httpcache4j/Tag.java<br/>+++ b/httpcache4j-api/src/main/java/org/codehaus/httpcache4j/Tag.java<br/>@@ -63,13 +63,9 @@<br/>             httpTagCopy = httpTagCopy.substring(2);<br/>         }<br/> <br/>-        if (httpTagCopy.startsWith(&quot;\&quot;&quot;) &amp;&amp; httpTagCopy.endsWith(&quot;\&quot;&quot;)) {<br/>-            result = new Tag(<br/>-                    httpTagCopy.substring(1, httpTagCopy.length() - 1), weak);<br/>-        }<br/>-        else if (httpTagCopy.equals(&quot;*&quot;)) {<br/>-            result = new Tag(&quot;*&quot;, weak);<br/>-        }<br/>+        // XXX be lenient in accepting non-conformant servers which do not<br/>+        // use quotes<br/>+        result = new Tag(httpTagCopy, weak);<br/> <br/>         return result;<br/>     }<br/>@@ -155,7 +151,7 @@<br/>             if (isWeak()) {<br/>                 sb.append(&quot;W/&quot;);<br/>             }<br/>-            return sb.append('&quot;').append(getName()).append('&quot;').toString();<br/>+            return sb.append(getName()).toString();<br/>         }<br/>     }<br/></pre>
+ * @author Matthijs Laan
+ */
+public class CachingHTTPClient implements HTTPClient {
+    private static final Log log = LogFactory.getLog(CachingHTTPClient.class);
+    
+    private static final int DEFAULT_TIMEOUT = 30000;// 30 seconds
+    
+    private String user;
+    private String password;
+    private int connectTimeout = DEFAULT_TIMEOUT;
+    private int readTimeout = DEFAULT_TIMEOUT;
+    private boolean gzip;
+    
+    private HTTPCache cache;
+    
+    public CachingHTTPClient(HTTPCache cache) {
+        this.cache = cache;
+    }
+    
+    @Override
+    public String getUser() {
+        return user;
+    }
+
+    @Override
+    public void setUser(String user) {
+        this.user = user;
+    }
+
+    @Override
+    public String getPassword() {
+        return password;
+    }
+
+    @Override
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    @Override
+    public int getConnectTimeout() {
+        return connectTimeout;
+    }
+
+    @Override
+    public void setConnectTimeout(int connectTimeout) {
+        this.connectTimeout = connectTimeout;
+    }
+
+    @Override
+    public int getReadTimeout() {
+        return readTimeout;
+    }
+
+    @Override
+    public void setReadTimeout(int readTimeout) {
+        this.readTimeout = readTimeout;
+    }
+
+    public boolean isGzip() {
+        return gzip;
+    }
+
+    public void setGzip(boolean gzip) {
+        this.gzip = gzip;
+    }
+
+    public HTTPCache getCache() {
+        return cache;
+    }
+
+    public void setCache(HTTPCache cache) {
+        this.cache = cache;
+    }
+    
+    @Override
+    public HTTPResponse post(URL url, InputStream in, String postContentType) throws IOException {
+        return request(url, HTTPMethod.POST, new InputStreamPayload(in, new MIMEType(postContentType)));
+    }
+
+    @Override
+    public HTTPResponse get(URL url) throws IOException {
+        return request(url, HTTPMethod.GET, null);
+    }
+
+    private HTTPResponse request(URL url, HTTPMethod method, Payload payload) throws IOException {
+
+        Headers headers = new Headers();
+        if(gzip) {
+            headers = headers.set("Accept-Encoding", "gzip");
+        }
+        if (user != null && password != null) {
+            String userpassword = user + ":" + password;
+            String encodedAuthorization = Base64.encodeBytes(userpassword.getBytes("UTF-8"));
+            headers = headers.set("Authorization", "Basic " + encodedAuthorization);
+        }        
+
+        HTTPRequest request;
+        try {
+            request = new HTTPRequest(url.toURI(), method, headers, null, null, null, null, null);
+        } catch (URISyntaxException ex) {
+            throw new IOException(ex);
+        }
+        long start = System.currentTimeMillis();
+        org.codehaus.httpcache4j.HTTPResponse response = cache.execute(request);
+        if(log.isDebugEnabled()) {
+            long time = System.currentTimeMillis() - start;
+            if(response.isCached()) {
+                log.debug(String.format("%d ms: returned cached response for URL %s", time, url.toString()));
+            } else {
+                log.debug(String.format("%d ms: no cache for URL %s", time, url.toString()));
+            }
+        }
+
+        if(response.getStatus().isClientError() || response.getStatus().isServerError()) {
+            response.consume();
+            
+            throw new IOException("HTTP error " + response.getStatus().getCode() + ": " +response.getStatusLine().getMessage());
+        }
+
+        return new CachingHTTPResponse(response);        
+    }
+    
+    public static class CachingHTTPResponse implements HTTPResponse {
+
+        org.codehaus.httpcache4j.HTTPResponse response;
+        
+        private InputStream responseStream;        
+        
+        public CachingHTTPResponse(org.codehaus.httpcache4j.HTTPResponse response) {
+            this.response = response;            
+        }
+        
+        @Override
+        public void dispose() {
+            if(responseStream != null) {
+                try {
+                    responseStream.close();
+                } catch (IOException e) {
+                    // ignore
+                }
+                responseStream = null;
+            }
+            if(response != null) {
+                response.consume();
+                response = null;
+            }            
+        }
+
+        @Override
+        public String getContentType() {
+            return getResponseHeader(HeaderConstants.CONTENT_TYPE);
+        }
+
+        @Override
+        public String getResponseHeader(String header) {
+            return response.getHeaders().getFirstHeaderValue(header);
+        }
+
+        @Override
+        public InputStream getResponseStream() throws IOException {
+            
+            if(responseStream == null) {
+            
+                if(!response.hasPayload()) {
+                    responseStream = new ByteArrayInputStream(new byte[] {});
+                } else {
+                    InputStream inputStream = response.getPayload().getInputStream();
+
+                    final String contentEncoding = getResponseHeader("Content-Encoding");
+
+                    if(contentEncoding != null && contentEncoding.indexOf("gzip") != -1) {
+                        inputStream = new GZIPInputStream(inputStream);
+                    }
+                    responseStream = inputStream;
+                }
+            }
+
+            return responseStream;            
+        }
+    }
+}
