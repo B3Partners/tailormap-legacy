@@ -168,12 +168,12 @@ export const selectActiveColumnsForFeature = createSelector(
 
 export const selectColumnsForTab = createSelector(
   selectFeatureTypeDataForTab,
-  featureData => featureData.columns,
+  featureData => featureData ? featureData.columns : [],
 );
 
 export const selectShowPassportColumnsOnlyForTab = createSelector(
   selectFeatureTypeDataForTab,
-  featureData => featureData.showPassportColumnsOnly,
+  featureData => featureData ? featureData.showPassportColumnsOnly : false,
 );
 
 export const selectActiveColumnsForTab = createSelector(
@@ -225,12 +225,12 @@ export const selectAttributeListRelationsTree = createSelector(
 
 export const selectRowsForTab = createSelector(
   selectFeatureTypeDataForTab,
-  featureData => featureData.rows,
+  featureData => featureData ? featureData.rows : [],
 );
 
 export const selectFeatureTypeForTab = createSelector(
   selectFeatureTypeDataForTab,
-  featureData => featureData.featureType,
+  featureData => featureData ? featureData.featureType : null,
 );
 
 
@@ -256,12 +256,12 @@ export const selectCheckedUncheckedCountForTab = createSelector(
 
 export const selectSortedColumnForTab = createSelector(
   selectFeatureTypeDataForTab,
-  featureData => featureData.sortedColumn,
+  featureData => featureData ? featureData.sortedColumn : '',
 );
 
 export const selectSortDirectionForTab = createSelector(
   selectFeatureTypeDataForTab,
-  featureData => featureData.sortDirection,
+  featureData => featureData ? featureData.sortDirection : '',
 );
 
 export const selectSortForTab = createSelector(
@@ -272,12 +272,12 @@ export const selectSortForTab = createSelector(
 
 export const selectFiltersForTab = createSelector(
   selectFeatureTypeDataForTab,
-  featureData => featureData.filter,
+  featureData => featureData ? featureData.filter : [],
 );
 
 export const selectStatisticsForTab = createSelector(
   selectFeatureTypeDataForTab,
-  featureData => featureData.statistics,
+  featureData => featureData ? featureData.statistics : [],
 );
 
 export const selectShowCheckboxColumnForTab = createSelector(
