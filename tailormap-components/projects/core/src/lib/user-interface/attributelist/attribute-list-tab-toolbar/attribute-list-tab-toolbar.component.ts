@@ -105,11 +105,11 @@ export class AttributeListTabToolbarComponent implements OnInit, OnDestroy {
     this.attributeListExportService.createAttributeListExport(format, this.layerId, this.featureType);
   }
 
+  public isUserLayer(): boolean {
+    return this.tailorMapService.getApplayerById(+(this.layerId)).userlayer;
+  }
+
   public createUserLayer(): void {
-    if (this.tailorMapService.getApplayerById(+(this.layerId)).userlayer) {
-      this.snackbar.open('Er kunnen geen selectielagen op basis van andere selectielagen gemaakt worden', '', {duration: 5000});
-      return;
-    }
     const query = this.tailorMapService.getFilterString(+(this.layerId), false);
     if (!query) {
       this.snackbar.open('Stel eerst een filter in op de attributenlijst in om een laag te kunnen publiceren', '', {duration: 5000});

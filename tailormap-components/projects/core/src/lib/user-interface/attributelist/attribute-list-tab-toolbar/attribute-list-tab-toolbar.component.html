@@ -34,7 +34,9 @@
     </div>
 
     <mat-menu #optiesMenu="matMenu" yPosition="below">
-      <button mat-menu-item  (click)="createUserLayer()">Laag maken</button>
+      <div matTooltip="Er kunnen geen selectielagen op basis van andere selectielagen gemaakt worden" [matTooltipDisabled]="!isUserLayer()">
+        <button mat-menu-item [disabled]="isUserLayer()" (click)="createUserLayer()">Laag maken</button>
+      </div>
       <button mat-menu-item  (click)="openPassportForm()">Bewerk geselecteerde objecten</button>
     </mat-menu>
 
