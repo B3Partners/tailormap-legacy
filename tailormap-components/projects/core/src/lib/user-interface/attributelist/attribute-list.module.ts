@@ -24,6 +24,7 @@ import { AttributeListTreeDialogComponent } from './attribute-list-tree-dialog/a
 import { AttributeListColumnSelectionComponent } from './attribute-list-column-selection/attribute-list-column-selection.component';
 import { AttributeListFilterComponent } from './attribute-list-filter/attribute-list-filter.component';
 import { AttributeListManagerService } from './services/attribute-list-manager.service';
+import { AttributeListTableComponent } from './attribute-list-table/attribute-list-table.component';
 
 @NgModule({
   declarations: [
@@ -41,6 +42,7 @@ import { AttributeListManagerService } from './services/attribute-list-manager.s
     AttributeListTreeDialogComponent,
     AttributeListColumnSelectionComponent,
     AttributeListFilterComponent,
+    AttributeListTableComponent,
   ],
   imports: [
     CommonModule,

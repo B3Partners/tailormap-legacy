@@ -1,0 +1,114 @@
+<mat-menu #statsMenu="matMenu">
+  <ng-template matMenuContent let-column="column">
+    <ng-container *ngFor="let option of statisticTypes">
+      <button *ngIf="isStatisticsTypeAvailable(option.type, column)"
+              mat-menu-item
+              (click)="loadStatisticClicked(option.type, column)">
+        <mat-icon *ngIf="isStatisticsTypeSelected(option.type, column)">
+          check
+        </mat-icon>
+        {{option.label}}
+      </button>
+    </ng-container>
+  </ng-template>
+</mat-menu>
+
+{{ getRenderCount() }}
+
+<mat-table [dataSource]="rows"
+           [trackBy]="trackByRowId"
+           multiTemplateDataRows>
+
+  <ng-container matColumnDef="_checked">
+    <mat-header-cell class="column_small" *matHeaderCellDef>
+      <mat-checkbox [checked]="checkState === 'All'"
+                    [indeterminate]="checkState === 'Some'"
+                    (change)="onHeaderCheckClick()"></mat-checkbox>
+    </mat-header-cell>
+
+    <mat-cell class="column_small" *matCellDef="let currRow;">
+      <mat-checkbox [checked]="currRow._checked"
+                    (change)="onRowCheckClick(currRow)"
+                    (click)="$event.stopPropagation()"></mat-checkbox>
+    </mat-cell>
+
+    <mat-footer-cell class="column_small" *matFooterCellDef>
+      <mat-icon (click)="onStatisticsHelp()">functions</mat-icon>
+    </mat-footer-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="_details">
+    <mat-header-cell class="column_small" *matHeaderCellDef></mat-header-cell>
+    <mat-cell class="column_small" *matCellDef="let currRow;">
+      <mat-icon *ngIf="currRow.related_featuretypes.length === 0" class="expand-disabled" svgIcon="contextual_expand_open"></mat-icon>
+      <mat-icon *ngIf="currRow.related_featuretypes.length > 0"
+                class="expand-enabled"
+                [svgIcon]="currRow._expanded ? 'contextual_expand_close' : 'contextual_expand_open'"
+                (click)="onRowExpandClick($event, currRow);"></mat-icon>
+    </mat-cell>
+    <mat-footer-cell class="column_small" *matFooterCellDef></mat-footer-cell>
+  </ng-container>
+
+  <!-- Columns with data -->
+  <ng-container *ngFor="let col of columns" matColumnDef="{{col.name}}">
+    <!-- Header -->
+    <mat-header-cell *matHeaderCellDef
+                     class="header-cell--with-filter header-cell--with-sort"
+                     (click)="onSortClick(col.name)">
+      <span [title]="col.alias || col.name">{{col.alias || col.name}}</span>
+      <mat-icon [class.filter-active]="getIsFilterActive(col.name)"
+                (click)="onFilterClick($event, col)">
+        filter_list
+      </mat-icon>
+      <mat-icon class="sort"
+                [class.sort-active]="sort.column === col.name"
+                [svgIcon]="sort.direction === 'asc' ? 'contextual_drop_down' : 'contextual_drop_top'"></mat-icon>
+    </mat-header-cell>
+
+    <mat-cell *matCellDef="let currRow">
+      {{currRow[col.name]}}
+    </mat-cell>
+
+    <mat-footer-cell *matFooterCellDef class="statistics-footer-cell"
+                     [matMenuTriggerFor]="statsMenu"
+                     [matMenuTriggerData]="{column: col}">
+      <div *ngIf="isStatisticsProcessing(col.name)">
+        <mat-spinner diameter="20"></mat-spinner>
+      </div>
+      <div *ngIf="!hasStatisticResult(col)" class="statistics-placeholder">
+        <mat-icon>functions</mat-icon>
+      </div>
+      <div *ngIf="hasStatisticResult(col)">
+        {{getStatisticResult(col)}}
+      </div>
+    </mat-footer-cell>
+
+  </ng-container>
+
+  <ng-container matColumnDef="expandedDetail">
+    <mat-cell *matCellDef="let currRow" [attr.colspan]="columnNames.length">
+      <div class="details-container" *ngIf="currRow._expanded">
+        <tailormap-attribute-list-details
+          *ngFor="let featureType of currRow.related_featuretypes"
+          [parentLayerId]="layerId"
+          [featureType]="featureType">
+        </tailormap-attribute-list-details>
+      </div>
+    </mat-cell>
+  </ng-container>
+
+  <!-- Columns with related details data -->
+  <mat-header-row *matHeaderRowDef="columnNames; sticky: true;"></mat-header-row>
+
+  <mat-row *matRowDef="let row; let dataIndex = dataIndex; columns: columnNames;"
+           (click)="onRowClick($event, row);"
+           [class.even_row]="dataIndex % 2 === 1"
+           [class.selected_row]="row._selected"
+           [class.expanded_row]="row._expanded"></mat-row>
+
+  <mat-row *matRowDef="let row; columns: ['expandedDetail']" class="details-row"
+           [@detailExpand]="row._expanded ? 'expanded' : 'collapsed'"></mat-row>
+
+  <mat-footer-row *matFooterRowDef="columnNames; sticky: true;"></mat-footer-row>
+
+</mat-table>
