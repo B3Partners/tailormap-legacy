@@ -3,7 +3,6 @@ package nl.b3p.i18n;
 import org.json.JSONObject;
 import java.util.Iterator;
 import java.util.ResourceBundle;
-import org.apache.commons.lang3.StringUtils;
 
 public class ResourceBundleToJsProvider {
 
@@ -20,7 +19,7 @@ public class ResourceBundleToJsProvider {
         }
         final StringBuilder sb = new StringBuilder();
         String lang = bundle.getLocale().getLanguage();
-        if (StringUtils.isEmpty(lang)) {
+        if (lang == null || lang.isEmpty()) {
             lang = "nl";
         }
         sb.append(String.format("i18next.init({ lng: '%1$s', fallbackLng: '%1$s', resources: { %1$s: { translation: ", lang));

@@ -49,6 +49,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <!-- when updating geotools also check b3p-commons-csw (and maybe jts) or you will end up in transitive dependency hell -->
         <geotools.version>25.0</geotools.version>
+        <jts.version>1.18.1</jts.version>
         <b3p-commons-csw.version>6.4</b3p-commons-csw.version>
         <powermock.version>2.0.9</powermock.version>
         <hsqldb.version>2.6.0</hsqldb.version>
@@ -99,6 +100,11 @@
                 <groupId>org.jdom</groupId>
                 <artifactId>jdom2</artifactId>
                 <version>2.0.6</version>
+            </dependency>
+            <dependency>
+                <groupId>org.locationtech.jts</groupId>
+                <artifactId>jts-core</artifactId>
+                <version>${jts.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.geotools</groupId>
@@ -385,6 +391,11 @@
             <dependency>
                 <groupId>org.flamingo-mc</groupId>
                 <artifactId>viewer-commons</artifactId>
+                <version>${flamingo.version} </version>
+            </dependency>
+            <dependency>
+                <groupId>org.flamingo-mc</groupId>
+                <artifactId>geotools-commons</artifactId>
                 <version>${flamingo.version} </version>
             </dependency>
             <dependency>
@@ -1009,6 +1020,7 @@
     </profiles>
     <modules>
         <module>tomcat-lib</module>
+        <module>geotools-commons</module>
         <module>web-commons</module>
         <module>viewer-audit</module>
         <module>viewer-audit-noplogger</module>
