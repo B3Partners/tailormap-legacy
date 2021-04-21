@@ -108,9 +108,9 @@ export class AttributeListTabToolbarComponent implements OnInit, OnDestroy {
   }
 
   public canCreateUserLayer(): boolean {
-    if(this.tailorMapService.getApplayerById(+(this.layerId)).userlayer) {
+    if (this.tailorMapService.getApplayerById(+(this.layerId)).userlayer) {
       return false;
-    } else if(!this.tailorMapService.getFilterString(+(this.layerId), false)) {
+    } else if (!this.tailorMapService.getFilterString(+(this.layerId), false)) {
       return false;
     } else {
       return true;
