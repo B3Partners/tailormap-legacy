@@ -63,6 +63,12 @@ export class FeatureInitializerService {
         return 'geometrie';
       case 'Wegvakonderdeel':
         return 'geometrie';
+      case 'IMBORVerhardingsobject':
+        return 'geometrie';
+      case 'IMBORBoom':
+        return 'geometrie';
+      case 'IMBORGroenobject':
+        return 'geometrie';
     }
     return null;
   }
