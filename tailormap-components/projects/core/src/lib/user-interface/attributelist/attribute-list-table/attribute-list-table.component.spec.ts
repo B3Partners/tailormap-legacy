@@ -1,13 +1,13 @@
 import { Spectator, createComponentFactory } from '@ngneat/spectator';
 
 import { AttributeListTableComponent } from './attribute-list-table.component';
-import { MatMenuModule } from '@angular/material/menu';
+import { SharedModule } from '../../../shared/shared.module';
 
 describe('AttributeListTableComponent', () => {
   let spectator: Spectator<AttributeListTableComponent>;
   const createComponent = createComponentFactory({
     component: AttributeListTableComponent,
-    imports: [ MatMenuModule ],
+    imports: [ SharedModule ],
   });
 
   it('should create', () => {
