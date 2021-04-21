@@ -17,8 +17,6 @@ import { createCustomElement } from '@angular/elements';
 import { EffectsModule } from '@ngrx/effects';
 import { AttributeListEffects } from './state/attribute-list.effects';
 import { AttributeListContentComponent } from './attribute-list-content/attribute-list-content.component';
-import { AttributeListCheckboxColumnComponent } from './attribute-list-content/attribute-list-checkbox-column/attribute-list-checkbox-column.component';
-import { AttributeListDetailsColumnComponent } from './attribute-list-content/attribute-list-details-column/attribute-list-details-column.component';
 import { AttributeListTreeComponent } from './attribute-list-tree/attribute-list-tree.component';
 import { AttributeListTreeDialogComponent } from './attribute-list-tree-dialog/attribute-list-tree-dialog.component';
 import { AttributeListColumnSelectionComponent } from './attribute-list-column-selection/attribute-list-column-selection.component';
@@ -36,8 +34,6 @@ import { AttributeListTableComponent } from './attribute-list-table/attribute-li
     AttributeListComponent,
     AttributeListButtonComponent,
     AttributeListContentComponent,
-    AttributeListCheckboxColumnComponent,
-    AttributeListDetailsColumnComponent,
     AttributeListTreeComponent,
     AttributeListTreeDialogComponent,
     AttributeListColumnSelectionComponent,
