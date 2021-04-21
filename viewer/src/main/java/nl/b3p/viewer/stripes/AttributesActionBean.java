@@ -438,6 +438,21 @@ public class AttributesActionBean extends LocalizableApplicationActionBean imple
             f = FeatureToJson.reformatFilter(f, ft, includeRelations);
             q.setFilter(f);
         }
+        applyUserLayerFilter(q, appLayer, ft, em);
+    }
+
+    private void applyUserLayerFilter(Query q, ApplicationLayer appLayer, SimpleFeatureType mainSft, EntityManager em) throws CQLException {
+        GeoService gs = appLayer.getService();
+        Layer l = gs.getLayer(appLayer.getLayerName(), em);
+        if(l != null && l.isUserlayer() && !mainSft.getId().equals(l.getFeatureType().getId())){
+            String cql = l.getDetails().get(Layer.DETAIL_USERLAYER_FILTER).getValue();
+            String relatedLayerFilter = FlamingoCQL.BEGIN_RELATED_FEATURE_PART + mainSft.getId() + ", "
+            + l.getFeatureType().getId() + ", " + cql + ")";
+            Filter ulFilter = FlamingoCQL.toFilter(relatedLayerFilter, em);
+            FilterFactory2 ff2 = CommonFactoryFinder.getFilterFactory2(GeoTools.getDefaultHints());
+            Filter f = q.getFilter() != null ? ff2.and(q.getFilter(), ulFilter) : ulFilter;
+            q.setFilter(f);
+        }
     }
 
     private static final int MAX_CACHE_SIZE = 50;
