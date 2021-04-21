@@ -8,7 +8,7 @@ import { combineLatest, Observable, Subject } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { FormState } from '../state/form.state';
 import { selectCurrentFeature, selectFormConfigForFeature } from '../state/form.selectors';
-import { filter, map, takeUntil } from 'rxjs/operators';
+import { filter, map, take, takeUntil } from 'rxjs/operators';
 import { LayerUtils } from '../../shared/layer-utils/layer-utils.service';
 
 @Component({
@@ -88,6 +88,16 @@ export class FormfieldComponent implements AfterViewInit, OnDestroy, OnInit {
   public valueChanged(event: any): void {
     if (this.isDomainAttribute(this.attribute)) {
       this.registry.domainFieldChanged(this.attribute, event.value);
+      this.registry.parentValue$.pipe(take(1)).subscribe((parentAttribute) => {
+        if(parentAttribute) {
+          this.groep.get(parentAttribute.key).setValue(parentAttribute.value, {
+            emitEvent: true,
+            onlySelf: false,
+            emitModelToViewChange: true,
+            emitViewToModelChange: true,
+          });
+        }
+      });
     }
   }
 
