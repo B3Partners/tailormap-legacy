@@ -14,14 +14,21 @@ enum CheckState {
   All = 'All',
 }
 
+interface StatisticValue {
+  statisticType: StatisticType;
+  statisticValue: string;
+  labelForStatisticType: string;
+  processing: boolean;
+}
+
 @Component({
   selector: 'tailormap-attribute-list-table',
   templateUrl: './attribute-list-table.component.html',
   styleUrls: ['./attribute-list-table.component.css'],
   animations: [
     trigger('detailExpand', [
-      state('collapsed', style({ height: '0px', minHeight: '0' })),
-      state('expanded', style({ height: '*' })),
+      state('collapsed', style({height: '0px', minHeight: '0'})),
+      state('expanded', style({height: '*'})),
       transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
     ]),
   ],
@@ -34,12 +41,11 @@ export class AttributeListTableComponent implements OnInit {
 
   @Input()
   public rows: AttributeListRowModel[];
-  private static count = 0;
 
   @Input()
   public set columns(columns: AttributeListColumnModel[]) {
     this._columns = columns;
-    this.columnNames = this.getColumnNames(columns);
+    this.columnNames = this.updateColumnNames();
   }
 
   public get columns() {
@@ -48,30 +54,42 @@ export class AttributeListTableComponent implements OnInit {
 
   @Input()
   public set filters(filters: AttributeFilterModel[]) {
-    this.filtersDictionary = new Map<string, AttributeFilterModel>(filters.map(f => [ f.attribute, f ]));
+    this.filtersDictionary = new Set<string>(filters.map(f => f.attribute));
   }
 
   @Input()
   public set statistics(statistics: AttributeListStatisticColumnModel[]) {
-    this.statisticsDictionary = new Map<string, AttributeListStatisticColumnModel>(statistics.map(s => [ s.name, s ]));
+    this.statisticsDictionary = new Map<string, StatisticValue>(statistics.map(
+      s => {
+        const statisticValue = StatisticsHelper.getStatisticValue(s.dataType, s);
+        const label = StatisticsHelper.getLabelForStatisticType(s.statisticType);
+        const value: StatisticValue = {
+          statisticType: s.statisticType,
+          labelForStatisticType: `${label} = ${statisticValue}`,
+          processing: s.processing,
+          statisticValue,
+        };
+        return [s.name, value];
+      },
+    ));
   }
 
   @Input()
   public sort: { column: string; direction: string };
 
   @Input()
-  public showCheckboxColumn: boolean;
+  public set showCheckboxColumn(showCheckboxColumn: boolean) {
+    this._showCheckboxColumn = showCheckboxColumn;
+    this.columnNames = this.updateColumnNames();
+  }
 
-  @Input()
-  public set checkedCount(count: number) {
-    this._checkedCount = count;
-    this.updateCheckState();
+  public get showCheckboxColumn() {
+    return this._showCheckboxColumn;
   }
 
   @Input()
-  public set uncheckedCount(count: number) {
-    this._uncheckedCount = count;
-    this.updateCheckState();
+  public set checkedCounters(counters: { checked: number; unchecked: number }) {
+    this.updateCheckState(counters);
   }
 
   @Output()
@@ -90,28 +108,28 @@ export class AttributeListTableComponent implements OnInit {
   public selectRow = new EventEmitter<{ rowId: string; selected: boolean }>();
 
   @Output()
-  public loadStatistics = new EventEmitter<{ columnName: string; type: StatisticType }>();
+  public loadStatistics = new EventEmitter<{ columnName: string; type: StatisticType; dataType: string }>();
 
   @Output()
   public setFilter = new EventEmitter<{ columnName: string; attributeType?: AttributeTypeEnum }>();
 
   @Output()
-  public setSort = new EventEmitter<{ columnName: string; direction: 'asc' | 'desc' | ''}>();
+  public setSort = new EventEmitter<{ columnName: string; direction: 'asc' | 'desc' | '' }>();
 
   private _columns: AttributeListColumnModel[];
+  private _showCheckboxColumn: boolean;
 
   public columnNames: string[];
 
   public statisticTypes = StatisticsHelper.getStatisticOptions();
 
-  private filtersDictionary: Map<string, AttributeFilterModel> = new Map();
-  private statisticsDictionary: Map<string, AttributeListStatisticColumnModel> = new Map();
-
-  private _checkedCount: number;
-  private _uncheckedCount: number;
   public checkState = CheckState.None;
 
-  constructor() { }
+  private filtersDictionary: Set<string> = new Set();
+  private statisticsDictionary: Map<string, StatisticValue> = new Map();
+
+  constructor() {
+  }
 
   public ngOnInit(): void {
   }
@@ -138,7 +156,7 @@ export class AttributeListTableComponent implements OnInit {
   }
 
   public getIsFilterActive(columnName): boolean {
-    return !!this.filtersDictionary.get(columnName);
+    return this.filtersDictionary.has(columnName);
   }
 
   public onFilterClick($event: MouseEvent, column: AttributeListColumnModel): void {
@@ -161,14 +179,13 @@ export class AttributeListTableComponent implements OnInit {
 
   public hasStatisticResult(col: AttributeListColumnModel): boolean {
     const column = this.statisticsDictionary.get(col.name);
-    return !!column && !column.processing &&  StatisticsHelper.getStatisticValue(col.dataType, column) !== null;
+    return column && column.statisticValue !== null;
   }
 
   public getStatisticResult(col: AttributeListColumnModel): string {
     const column = this.statisticsDictionary.get(col.name);
-    const value = StatisticsHelper.getStatisticValue(col.dataType, column);
-    if (column && value) {
-      return `${StatisticsHelper.getLabelForStatisticType(column.statisticType)} = ${value}`;
+    if (column && column.statisticValue) {
+      return column.labelForStatisticType;
     }
     return '';
   }
@@ -187,13 +204,16 @@ export class AttributeListTableComponent implements OnInit {
   }
 
   public loadStatisticClicked(type: StatisticType, col: AttributeListColumnModel) {
-    this.loadStatistics.emit({ type, columnName: col.name });
+    this.loadStatistics.emit({ type, columnName: col.name, dataType: col.dataType });
   }
 
-  private getColumnNames(columns: AttributeListColumnModel[]): string[] {
+  private updateColumnNames(): string[] {
+    if (!this.columns) {
+      return;
+    }
     const columnNames = [
       '_details',
-      ...columns.map(c => c.name),
+      ...this.columns.map(c => c.name),
     ];
     if (this.showCheckboxColumn) {
       columnNames.unshift('_checked');
@@ -201,13 +221,10 @@ export class AttributeListTableComponent implements OnInit {
     return columnNames;
   }
 
-  private updateCheckState() {
-    this.checkState = this._uncheckedCount && this._checkedCount
+  private updateCheckState(counters: { checked: number; unchecked: number }) {
+    this.checkState = counters.unchecked && counters.checked
       ? CheckState.Some
-      : (this._uncheckedCount ? CheckState.None : CheckState.All);
+      : (counters.unchecked ? CheckState.None : CheckState.All);
   }
 
-  public getRenderCount() {
-    return ++AttributeListTableComponent.count;
-  }
 }

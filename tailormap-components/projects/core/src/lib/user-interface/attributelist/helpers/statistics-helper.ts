@@ -35,7 +35,7 @@ export class StatisticsHelper {
   }
 
   public static getStatisticValue(columnDataType?: string, column?: AttributeListStatisticColumnModel): string {
-    if (!column || column.statisticType === StatisticType.NONE) {
+    if (!column || !column.statisticValue || column.statisticType === StatisticType.NONE) {
       return null;
     }
     if (column.statisticType === StatisticType.COUNT || (columnDataType && columnDataType.toLowerCase() === 'integer')) {

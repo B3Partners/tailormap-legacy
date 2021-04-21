@@ -166,13 +166,24 @@ export const selectActiveColumnsForFeature = createSelector(
   },
 );
 
-export const selectActiveColumnsForTab = createSelector(
+export const selectColumnsForTab = createSelector(
   selectFeatureTypeDataForTab,
-  (tabFeatureData): AttributeListColumnModel[] => {
-    if (!tabFeatureData) {
+  featureData => featureData.columns,
+);
+
+export const selectShowPassportColumnsOnlyForTab = createSelector(
+  selectFeatureTypeDataForTab,
+  featureData => featureData.showPassportColumnsOnly,
+);
+
+export const selectActiveColumnsForTab = createSelector(
+  selectColumnsForTab,
+  selectShowPassportColumnsOnlyForTab,
+  (columns, showPassportColumnsOnly): AttributeListColumnModel[] => {
+    if (!columns) {
       return [];
     }
-    return tabFeatureData.columns.filter(c => filterColumns(c, tabFeatureData.showPassportColumnsOnly));
+    return columns.filter(c => filterColumns(c, showPassportColumnsOnly));
   },
 );
 
@@ -209,5 +220,72 @@ export const selectAttributeListRelationsTree = createSelector(
       children: featureDataTreeModels,
       expanded: true,
     }];
+  },
+);
+
+export const selectRowsForTab = createSelector(
+  selectFeatureTypeDataForTab,
+  featureData => featureData.rows,
+);
+
+export const selectFeatureTypeForTab = createSelector(
+  selectFeatureTypeDataForTab,
+  featureData => featureData.featureType,
+);
+
+
+export const selectRowCountForTab = createSelector(
+  selectRowsForTab,
+  rows => rows.length,
+);
+
+export const selectCheckedUncheckedCountForTab = createSelector(
+  selectRowsForTab,
+  rows => {
+    const counters = { checked: 0, unchecked: 0 };
+    rows.forEach(row => {
+      if (row._checked) {
+        counters.checked++;
+      } else {
+        counters.unchecked++;
+      }
+    });
+    return counters;
+  },
+);
+
+export const selectSortedColumnForTab = createSelector(
+  selectFeatureTypeDataForTab,
+  featureData => featureData.sortedColumn,
+);
+
+export const selectSortDirectionForTab = createSelector(
+  selectFeatureTypeDataForTab,
+  featureData => featureData.sortDirection,
+);
+
+export const selectSortForTab = createSelector(
+  selectSortedColumnForTab,
+  selectSortDirectionForTab,
+  (sortedColumn, sortDirection) => ({ column: sortedColumn, direction: sortDirection.toLowerCase() }),
+);
+
+export const selectFiltersForTab = createSelector(
+  selectFeatureTypeDataForTab,
+  featureData => featureData.filter,
+);
+
+export const selectStatisticsForTab = createSelector(
+  selectFeatureTypeDataForTab,
+  featureData => featureData.statistics,
+);
+
+export const selectShowCheckboxColumnForTab = createSelector(
+  selectTabAndFeatureTypeDataForTab,
+  ([ tab, featureData ]) => {
+    if (!tab || !featureData) {
+      return false;
+    }
+    return tab.featureType === featureData.featureType;
   },
 );

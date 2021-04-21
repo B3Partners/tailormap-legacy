@@ -1,8 +1,9 @@
 import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import {
-  selectActiveColumnsForTab, selectFeatureTypeDataForTab, selectLoadingDataForTab, selectTabAndFeatureTypeDataForTab,
+  selectActiveColumnsForTab, selectCheckedUncheckedCountForTab, selectFeatureTypeForTab, selectFiltersForTab,
+  selectLoadingDataForTab, selectRowCountForTab, selectRowsForTab, selectShowCheckboxColumnForTab, selectSortForTab, selectStatisticsForTab,
 } from '../state/attribute-list.selectors';
-import { filter, map, takeUntil } from 'rxjs/operators';
+import { map, take, takeUntil } from 'rxjs/operators';
 import { Observable, Subject } from 'rxjs';
 import { AttributeListRowModel } from '../models/attribute-list-row.model';
 import { Store } from '@ngrx/store';
@@ -34,21 +35,16 @@ export class AttributeListContentComponent implements OnInit, OnDestroy {
 
   private destroyed = new Subject();
 
-  public rows: AttributeListRowModel[];
-
+  public rows$: Observable<AttributeListRowModel[]>;
   public columns$: Observable<AttributeListColumnModel[]>;
-
-  public uncheckedCount: number;
-  public checkedCount: number;
-  public filters: AttributeFilterModel[];
   public showCheckboxColumn$: Observable<boolean>;
-  public sort: { column: string; direction: string };
-  public rowLength: number;
-
   public loadingData$: Observable<boolean>;
   public notLoadingData$: Observable<boolean>;
-
-  public statistics: AttributeListStatisticColumnModel[];
+  public statistics$: Observable<AttributeListStatisticColumnModel[]>;
+  public checkCounters$: Observable<{ unchecked: number; checked: number }>;
+  public sort$: Observable<{ column: string; direction: string }>;
+  public filters$: Observable<AttributeFilterModel[]>;
+  public rowLength$: Observable<number>;
 
   constructor(
     private store$: Store<AttributeListState>,
@@ -57,26 +53,17 @@ export class AttributeListContentComponent implements OnInit, OnDestroy {
   ) { }
 
   public ngOnInit(): void {
-    this.store$.select(selectFeatureTypeDataForTab, this.layerId)
-      .pipe(
-        takeUntil(this.destroyed),
-        filter(featureData => !!featureData),
-      )
-      .subscribe(featureData => {
-        this.rows = featureData.rows;
-        this.uncheckedCount = featureData.rows.filter(row => !row._checked).length;
-        this.checkedCount = featureData.rows.filter(row => row._checked).length;
-        this.featureType = featureData.featureType;
-        this.sort = { column: featureData.sortedColumn, direction: featureData.sortDirection.toLowerCase() };
-        this.filters = featureData.filter;
-        this.rowLength = featureData.rows.length;
-        this.statistics = featureData.statistics;
-      });
-    this.showCheckboxColumn$ = this.store$.select(selectTabAndFeatureTypeDataForTab, this.layerId)
-      .pipe(
-        filter(([tab, featureData]) => !!tab && !!featureData),
-        map(([tab, featureData]) => tab.featureType === featureData.featureType),
-      );
+    this.store$.select(selectFeatureTypeForTab, this.layerId)
+      .pipe(takeUntil(this.destroyed))
+      .subscribe(featureType => this.featureType = featureType);
+
+    this.rows$ = this.store$.select(selectRowsForTab, this.layerId);
+    this.checkCounters$ = this.store$.select(selectCheckedUncheckedCountForTab, this.layerId);
+    this.sort$ = this.store$.select(selectSortForTab, this.layerId);
+    this.filters$ = this.store$.select(selectFiltersForTab, this.layerId);
+    this.rowLength$ = this.store$.select(selectRowCountForTab, this.layerId);
+    this.statistics$ = this.store$.select(selectStatisticsForTab, this.layerId);
+    this.showCheckboxColumn$ = this.store$.select(selectShowCheckboxColumnForTab, this.layerId);
     this.columns$ = this.store$.select(selectActiveColumnsForTab, this.layerId);
     this.loadingData$ = this.store$.select(selectLoadingDataForTab, this.layerId);
     this.notLoadingData$ = this.store$.select(selectLoadingDataForTab, this.layerId).pipe(map(loading => !loading));
@@ -92,7 +79,7 @@ export class AttributeListContentComponent implements OnInit, OnDestroy {
       featureType: this.featureType,
       layerId: this.layerId,
       rowId: row.rowId,
-      selected: !row.selected,
+      selected: row.selected,
     }));
   }
 
@@ -106,24 +93,31 @@ export class AttributeListContentComponent implements OnInit, OnDestroy {
   }
 
   public onFilterClick(col: { columnName: string; attributeType?: AttributeTypeEnum }): void {
-    const filterModel = this.filters.find(f => f.attribute === col.columnName);
-    this.dialog.open(AttributeListFilterComponent, {
-      data: {
-        columnName: col.columnName,
-        featureType: this.featureType,
-        layerId: this.layerId,
-        filter: filterModel,
-        columnType: col.attributeType,
-      },
-    });
+    this.store$.select(selectFiltersForTab, this.layerId)
+      .pipe(
+        take(1),
+        map(filters => filters.find(f => f.attribute === col.columnName)),
+      )
+      .subscribe(filterModel => {
+        this.dialog.open(AttributeListFilterComponent, {
+          data: {
+            columnName: col.columnName,
+            featureType: this.featureType,
+            layerId: this.layerId,
+            filter: filterModel,
+            columnType: col.attributeType,
+          },
+        });
+      });
   }
 
-  public loadStatistic(statistics: { type: StatisticType; columnName: string }) {
+  public loadStatistic(statistics: { type: StatisticType; columnName: string; dataType: string }) {
     this.store$.dispatch(loadStatisticsForColumn({
       layerId: this.layerId,
       featureType: this.featureType,
       column: statistics.columnName,
       statisticType: statistics.type,
+      dataType: statistics.dataType,
     }));
   }
 
@@ -132,7 +126,7 @@ export class AttributeListContentComponent implements OnInit, OnDestroy {
   }
 
   public onRowCheckClick(row: { rowId: string; checked: boolean }): void {
-    this.store$.dispatch(updateRowChecked({ featureType: this.featureType, rowId: row.rowId, checked: !row.checked }));
+    this.store$.dispatch(updateRowChecked({ featureType: this.featureType, rowId: row.rowId, checked: row.checked }));
   }
 
   public onStatisticsHelp(): void {
@@ -143,7 +137,7 @@ export class AttributeListContentComponent implements OnInit, OnDestroy {
   }
 
   public onRowExpandClick(row: { rowId: string; expanded: boolean }): void {
-    this.store$.dispatch(updateRowExpanded({ featureType: this.featureType, rowId: row.rowId, expanded: !row.expanded }));
+    this.store$.dispatch(updateRowExpanded({ featureType: this.featureType, rowId: row.rowId, expanded: row.expanded }));
   }
 
 }

@@ -1,23 +1,22 @@
 <div class="table-container">
 
-  <div *ngIf="rowLength === 0 && loadingData$ | async">
+  <div *ngIf="(rowLength$ | async) === 0 && loadingData$ | async">
     <mat-spinner diameter="20" mode="indeterminate" color="primary"></mat-spinner>
   </div>
 
-  <div *ngIf="rowLength === 0 && notLoadingData$ | async">
+  <div *ngIf="(rowLength$ | async) === 0 && notLoadingData$ | async">
     Geen rijen gevonden
   </div>
 
-  <tailormap-attribute-list-table *ngIf="rowLength > 0"
+  <tailormap-attribute-list-table *ngIf="(rowLength$ | async) > 0"
                                   [layerId]="layerId"
-                                  [rows]="rows"
+                                  [rows]="rows$ | async"
                                   [columns]="columns$ | async"
-                                  [filters]="filters"
-                                  [statistics]="statistics"
-                                  [sort]="sort"
+                                  [filters]="filters$ | async"
+                                  [statistics]="statistics$ | async"
+                                  [sort]="sort$ | async"
                                   [showCheckboxColumn]="showCheckboxColumn$ | async"
-                                  [uncheckedCount]="uncheckedCount"
-                                  [checkedCount]="checkedCount"
+                                  [checkedCounters]="checkCounters$ | async"
                                   (headerCheckboxChanged)="onHeaderCheckClick()"
                                   (rowCheckboxChanged)="onRowCheckClick($event)"
                                   (statisticHelp)="onStatisticsHelp()"
