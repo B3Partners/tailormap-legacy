@@ -444,10 +444,10 @@ public class AttributesActionBean extends LocalizableApplicationActionBean imple
     private void applyUserLayerFilter(Query q, ApplicationLayer appLayer, SimpleFeatureType mainSft, EntityManager em) throws CQLException {
         GeoService gs = appLayer.getService();
         Layer l = gs.getLayer(appLayer.getLayerName(), em);
-        if(l != null && l.isUserlayer() && !mainSft.getId().equals(l.getFeatureType().getId())){
+        if(l != null && (l.isUserlayer() != null &&  l.isUserlayer())  && !mainSft.getId().equals(l.getFeatureType().getId())){
             String cql = l.getDetails().get(Layer.DETAIL_USERLAYER_FILTER).getValue();
             String relatedLayerFilter = FlamingoCQL.BEGIN_RELATED_FEATURE_PART + mainSft.getId() + ", "
-            + l.getFeatureType().getId() + ", " + cql + ")";
+            + l.getFeatureType().getId() + ", (" + cql + "))";
             Filter ulFilter = FlamingoCQL.toFilter(relatedLayerFilter, em);
             FilterFactory2 ff2 = CommonFactoryFinder.getFilterFactory2(GeoTools.getDefaultHints());
             Filter f = q.getFilter() != null ? ff2.and(q.getFilter(), ulFilter) : ulFilter;
