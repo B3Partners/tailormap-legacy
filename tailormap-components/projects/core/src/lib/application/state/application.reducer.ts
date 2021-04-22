@@ -120,6 +120,16 @@ const onSetFormConfigs = (state: ApplicationState, payload: ReturnType<typeof Ap
   };
 };
 
+const onEditFeatures = (state: ApplicationState, payload: ReturnType<typeof ApplicationActions.editFeatures>): ApplicationState => ({
+  ...state,
+  editFeatureLayerId: payload.layerId,
+});
+
+const onEditFeaturesComplete = (state: ApplicationState): ApplicationState => ({
+  ...state,
+  editFeatureLayerId: null,
+});
+
 const applicationReducerImpl = createReducer(
   initialApplicationState,
   on(ApplicationActions.setApplicationContent, onSetApplicationContent),
@@ -128,6 +138,8 @@ const applicationReducerImpl = createReducer(
   on(ApplicationActions.setSelectedAppLayer, onSetSelectedAppLayer),
   on(ApplicationActions.setLayerVisibility, onSetLayerVisibility),
   on(ApplicationActions.setFormConfigs, onSetFormConfigs),
+  on(ApplicationActions.editFeatures, onEditFeatures),
+  on(ApplicationActions.editFeaturesComplete, onEditFeaturesComplete),
 );
 
 export const applicationReducer = (state: ApplicationState | undefined, action: Action) => {

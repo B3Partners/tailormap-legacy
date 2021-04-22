@@ -15,6 +15,7 @@ import { UpdateAttributeListStateHelper } from '../helpers/update-attribute-list
 import { TailorMapFilters, TailorMapService } from '../../../../../../bridge/src/tailor-map.service';
 import { StatisticService } from '../../../shared/statistic-service/statistic.service';
 import { AttributeListFilterHelper } from '../helpers/attribute-list-filter.helper';
+import * as ApplicationActions from '../../../application/state/application.actions';
 
 @Injectable()
 export class AttributeListEffects {
@@ -193,6 +194,11 @@ export class AttributeListEffects {
         results,
       });
     }),
+  ));
+
+  public editFeaturesComplete$ = createEffect(() => this.actions$.pipe(
+    ofType(ApplicationActions.editFeaturesComplete),
+    map(action => AttributeListActions.loadDataForTab({ layerId: action.layerId })),
   ));
 
   constructor(
