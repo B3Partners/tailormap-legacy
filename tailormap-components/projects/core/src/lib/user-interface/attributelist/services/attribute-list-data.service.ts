@@ -99,7 +99,7 @@ export class AttributeListDataService implements OnDestroy {
     featureType: number,
     tabFeatureData: AttributeListFeatureTypeData[],
   ): Observable<LoadDataResult> {
-    const featureTypeData = tabFeatureData.find(data => data.featureType === featureType);
+    const featureTypeData = tabFeatureData.find(data => data.featureType === featureType && data.layerId === tab.layerId);
     const attrParams: AttributeListParameters = {
       application: this.applicationService.getId(),
       appLayer: +(tab.layerId),

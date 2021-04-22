@@ -1,5 +1,3 @@
-import { Relation } from '../../../shared/attribute-service/attribute-models';
-
 export interface AttributeListTabModel {
   layerId: string;
   layerAlias: string;
@@ -8,5 +6,4 @@ export interface AttributeListTabModel {
   selectedRelatedFeatureType: number;
   loadingData: boolean;
   loadingError?: string;
-  relatedFeatures: Relation[];
 }

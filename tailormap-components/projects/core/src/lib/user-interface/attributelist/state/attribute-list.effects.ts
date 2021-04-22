@@ -5,10 +5,7 @@ import { concatMap, filter, map, tap, withLatestFrom } from 'rxjs/operators';
 import { HighlightService } from '../../../shared/highlight-service/highlight.service';
 import { Store } from '@ngrx/store';
 import { AttributeListState } from './attribute-list.state';
-import {
-  selectAttributeListConfig, selectFeatureDataAndRelatedFeatureDataForFeatureType, selectFeatureDataForTab, selectTab,
-  selectTabForFeatureType,
-} from './attribute-list.selectors';
+import { selectAttributeListConfig, selectFeatureDataForTab, selectTab } from './attribute-list.selectors';
 import { forkJoin, Observable, of } from 'rxjs';
 import { AttributeListDataService, LoadDataResult } from '../services/attribute-list-data.service';
 import { TailorMapFilters, TailorMapService } from '../../../../../../bridge/src/tailor-map.service';
@@ -67,8 +64,8 @@ export class AttributeListEffects {
     ofType(AttributeListActions.updatePage, AttributeListActions.updateSort, AttributeListActions.setSelectedFeatureType),
     concatMap(action => of(action).pipe(
       withLatestFrom(
-        this.store$.select(selectTabForFeatureType, action.featureType),
-        this.store$.select(selectFeatureDataAndRelatedFeatureDataForFeatureType, action.featureType),
+        this.store$.select(selectTab, action.layerId),
+        this.store$.select(selectFeatureDataForTab, action.layerId),
       ),
     )),
     filter(([_action, tab, _data]) => !!tab),
@@ -122,12 +119,15 @@ export class AttributeListEffects {
     ofType(AttributeListActions.toggleCheckedAllRows, AttributeListActions.updateRowChecked),
     concatMap(action => of(action).pipe(
       withLatestFrom(
-        this.store$.select(selectFeatureDataAndRelatedFeatureDataForFeatureType, action.featureType),
+        this.store$.select(selectFeatureDataForTab, action.layerId),
       ),
     )),
     map(([ action, featureData ]) => {
       const relatedFeatures = featureData.filter(data => data.featureType !== action.featureType);
-      return AttributeListActions.clearCountForFeatureTypes({ featureTypes: relatedFeatures.map(data => data.featureType)});
+      return AttributeListActions.clearCountForFeatureTypes({
+        layerId: action.layerId,
+        featureTypes: relatedFeatures.map(data => data.featureType),
+      });
     }),
   ));
 
@@ -135,8 +135,8 @@ export class AttributeListEffects {
     ofType(AttributeListActions.loadStatisticsForColumn),
     concatMap(action => of(action).pipe(
       withLatestFrom(
-        this.store$.select(selectTabForFeatureType, action.featureType),
-        this.store$.select(selectFeatureDataAndRelatedFeatureDataForFeatureType, action.featureType),
+        this.store$.select(selectTab, action.layerId),
+        this.store$.select(selectFeatureDataForTab, action.layerId),
       ),
     )),
     concatMap(([ action, tab, tabFeatureData ]) => {
@@ -162,8 +162,8 @@ export class AttributeListEffects {
     ofType(AttributeListActions.refreshStatisticsForTab),
     concatMap(action => of(action).pipe(
       withLatestFrom(
-        this.store$.select(selectTabForFeatureType, action.featureType),
-        this.store$.select(selectFeatureDataAndRelatedFeatureDataForFeatureType, action.featureType),
+        this.store$.select(selectTab, action.layerId),
+        this.store$.select(selectFeatureDataForTab, action.layerId),
       ),
     )),
     concatMap(([ action, tab, tabFeatureData ]) => {

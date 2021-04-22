@@ -27,7 +27,7 @@ export class AttributeListExportService {
 
   public createAttributeListExport(format: ExportType, layerId: string, featureType: number) {
     combineLatest([
-      this.store$.select(selectActiveColumnsForFeature, featureType),
+      this.store$.select(selectActiveColumnsForFeature, { featureType, layerId }),
       this.store$.select(selectAttributeListConfig),
     ])
       .pipe(

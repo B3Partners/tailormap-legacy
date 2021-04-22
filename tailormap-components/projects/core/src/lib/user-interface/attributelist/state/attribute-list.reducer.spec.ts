@@ -51,7 +51,7 @@ describe('AttributeListReducer', () => {
       createDummyAttributeListFeatureTypeData({ layerId: '2', featureType: 24 }),
     ];
     const action = AttributeListActions.changeAttributeListTabs({
-      closedTabs: [ 1, 2, 3 ],
+      closedTabs: [ '1', '2', '3' ],
       newTabs: tabs,
       newFeatureData: featureData,
     });
@@ -60,7 +60,7 @@ describe('AttributeListReducer', () => {
     const updatedState = attributeListReducer(initialState, action);
     expect(updatedState.tabs.length).toEqual(2);
     expect(updatedState.featureTypeData.length).toEqual(2);
-    const action2 = AttributeListActions.changeAttributeListTabs({ closedTabs: [ 12 ], newTabs: [], newFeatureData: [] });
+    const action2 = AttributeListActions.changeAttributeListTabs({ closedTabs: [ '1' ], newTabs: [], newFeatureData: [] });
     const updatedState2 = attributeListReducer(updatedState, action2);
     expect(updatedState2.tabs.length).toEqual(1);
     expect(updatedState2.featureTypeData.length).toEqual(1);
