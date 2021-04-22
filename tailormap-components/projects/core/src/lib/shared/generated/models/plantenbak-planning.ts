@@ -1,0 +1,22 @@
+/* tslint:disable */
+/* eslint-disable */
+import { Feature } from './feature';
+export interface PlantenbakPlanning extends Feature {
+  belang?: number;
+  calc_plan_code?: string;
+  calc_plan_id?: string;
+  calc_plan_name?: string;
+  data_guid?: string;
+  frequentie?: number;
+  gepland_uitgevoerd?: boolean;
+  hoeveelheid?: number;
+  id?: number;
+  jaarvanuitvoering?: number;
+  kosten?: number;
+  maatregel_pbak?: string;
+  maatregelgroep?: string;
+  maatregeltype?: string;
+  planstatus?: string;
+  plantenbak_id?: string;
+  werkeenheid?: string;
+}

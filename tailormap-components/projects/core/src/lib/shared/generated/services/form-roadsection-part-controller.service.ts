@@ -1,3 +1,4 @@
+/* tslint:disable */
 /* eslint-disable */
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
@@ -23,21 +24,21 @@ export class FormRoadsectionPartControllerService extends BaseService {
   }
 
   /**
-   * Path part for operation get8
+   * Path part for operation get11
    */
-  static readonly Get8Path = '/wegvakonderdeel/{objectGuid}';
+  static readonly Get11Path = '/wegvakonderdeel/{objectGuid}';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `get8()` instead.
+   * To access only the response body, use `get11()` instead.
    *
    * This method doesn't expect any request body.
    */
-  get8$Response(params: {
+  get11$Response(params: {
     objectGuid: string;
   }): Observable<StrictHttpResponse<Wegvakonderdeel>> {
 
-    const rb = new RequestBuilder(this.rootUrl, FormRoadsectionPartControllerService.Get8Path, 'get');
+    const rb = new RequestBuilder(this.rootUrl, FormRoadsectionPartControllerService.Get11Path, 'get');
     if (params) {
       rb.path('objectGuid', params.objectGuid, {});
     }
@@ -55,36 +56,36 @@ export class FormRoadsectionPartControllerService extends BaseService {
 
   /**
    * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `get8$Response()` instead.
+   * To access the full response (for headers, for example), `get11$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  get8(params: {
+  get11(params: {
     objectGuid: string;
   }): Observable<Wegvakonderdeel> {
 
-    return this.get8$Response(params).pipe(
+    return this.get11$Response(params).pipe(
       map((r: StrictHttpResponse<Wegvakonderdeel>) => r.body as Wegvakonderdeel)
     );
   }
 
   /**
-   * Path part for operation update2
+   * Path part for operation update3
    */
-  static readonly Update2Path = '/wegvakonderdeel/{objectGuid}';
+  static readonly Update3Path = '/wegvakonderdeel/{objectGuid}';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `update2()` instead.
+   * To access only the response body, use `update3()` instead.
    *
    * This method sends `application/json` and handles request body of type `application/json`.
    */
-  update2$Response(params: {
+  update3$Response(params: {
     objectGuid: string;
     body: Wegvakonderdeel
   }): Observable<StrictHttpResponse<Wegvakonderdeel>> {
 
-    const rb = new RequestBuilder(this.rootUrl, FormRoadsectionPartControllerService.Update2Path, 'put');
+    const rb = new RequestBuilder(this.rootUrl, FormRoadsectionPartControllerService.Update3Path, 'put');
     if (params) {
       rb.path('objectGuid', params.objectGuid, {});
       rb.body(params.body, 'application/json');
@@ -103,36 +104,36 @@ export class FormRoadsectionPartControllerService extends BaseService {
 
   /**
    * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `update2$Response()` instead.
+   * To access the full response (for headers, for example), `update3$Response()` instead.
    *
    * This method sends `application/json` and handles request body of type `application/json`.
    */
-  update2(params: {
+  update3(params: {
     objectGuid: string;
     body: Wegvakonderdeel
   }): Observable<Wegvakonderdeel> {
 
-    return this.update2$Response(params).pipe(
+    return this.update3$Response(params).pipe(
       map((r: StrictHttpResponse<Wegvakonderdeel>) => r.body as Wegvakonderdeel)
     );
   }
 
   /**
-   * Path part for operation delete2
+   * Path part for operation delete3
    */
-  static readonly Delete2Path = '/wegvakonderdeel/{objectGuid}';
+  static readonly Delete3Path = '/wegvakonderdeel/{objectGuid}';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `delete2()` instead.
+   * To access only the response body, use `delete3()` instead.
    *
    * This method doesn't expect any request body.
    */
-  delete2$Response(params: {
+  delete3$Response(params: {
     objectGuid: string;
   }): Observable<StrictHttpResponse<void>> {
 
-    const rb = new RequestBuilder(this.rootUrl, FormRoadsectionPartControllerService.Delete2Path, 'delete');
+    const rb = new RequestBuilder(this.rootUrl, FormRoadsectionPartControllerService.Delete3Path, 'delete');
     if (params) {
       rb.path('objectGuid', params.objectGuid, {});
     }
@@ -150,35 +151,35 @@ export class FormRoadsectionPartControllerService extends BaseService {
 
   /**
    * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `delete2$Response()` instead.
+   * To access the full response (for headers, for example), `delete3$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  delete2(params: {
+  delete3(params: {
     objectGuid: string;
   }): Observable<void> {
 
-    return this.delete2$Response(params).pipe(
+    return this.delete3$Response(params).pipe(
       map((r: StrictHttpResponse<void>) => r.body as void)
     );
   }
 
   /**
-   * Path part for operation save2
+   * Path part for operation save3
    */
-  static readonly Save2Path = '/wegvakonderdeel';
+  static readonly Save3Path = '/wegvakonderdeel';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `save2()` instead.
+   * To access only the response body, use `save3()` instead.
    *
    * This method sends `application/json` and handles request body of type `application/json`.
    */
-  save2$Response(params: {
+  save3$Response(params: {
     body: { 'wv'?: Wegvakonderdeel, 'parentId'?: string }
   }): Observable<StrictHttpResponse<Wegvakonderdeel>> {
 
-    const rb = new RequestBuilder(this.rootUrl, FormRoadsectionPartControllerService.Save2Path, 'post');
+    const rb = new RequestBuilder(this.rootUrl, FormRoadsectionPartControllerService.Save3Path, 'post');
     if (params) {
       rb.body(params.body, 'application/json');
     }
@@ -196,34 +197,34 @@ export class FormRoadsectionPartControllerService extends BaseService {
 
   /**
    * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `save2$Response()` instead.
+   * To access the full response (for headers, for example), `save3$Response()` instead.
    *
    * This method sends `application/json` and handles request body of type `application/json`.
    */
-  save2(params: {
+  save3(params: {
     body: { 'wv'?: Wegvakonderdeel, 'parentId'?: string }
   }): Observable<Wegvakonderdeel> {
 
-    return this.save2$Response(params).pipe(
+    return this.save3$Response(params).pipe(
       map((r: StrictHttpResponse<Wegvakonderdeel>) => r.body as Wegvakonderdeel)
     );
   }
 
   /**
-   * Path part for operation getAll2
+   * Path part for operation getAll3
    */
-  static readonly GetAll2Path = '/wegvakonderdelen/unpaged';
+  static readonly GetAll3Path = '/wegvakonderdelen/unpaged';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `getAll2()` instead.
+   * To access only the response body, use `getAll3()` instead.
    *
    * This method doesn't expect any request body.
    */
-  getAll2$Response(params?: {
+  getAll3$Response(params?: {
   }): Observable<StrictHttpResponse<Array<Wegvakonderdeel>>> {
 
-    const rb = new RequestBuilder(this.rootUrl, FormRoadsectionPartControllerService.GetAll2Path, 'get');
+    const rb = new RequestBuilder(this.rootUrl, FormRoadsectionPartControllerService.GetAll3Path, 'get');
     if (params) {
     }
 
@@ -240,36 +241,36 @@ export class FormRoadsectionPartControllerService extends BaseService {
 
   /**
    * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `getAll2$Response()` instead.
+   * To access the full response (for headers, for example), `getAll3$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  getAll2(params?: {
+  getAll3(params?: {
   }): Observable<Array<Wegvakonderdeel>> {
 
-    return this.getAll2$Response(params).pipe(
+    return this.getAll3$Response(params).pipe(
       map((r: StrictHttpResponse<Array<Wegvakonderdeel>>) => r.body as Array<Wegvakonderdeel>)
     );
   }
 
   /**
-   * Path part for operation onPoint7
+   * Path part for operation onPoint10
    */
-  static readonly OnPoint7Path = '/wegvakonderdelen/{x}/{y}/{scale}';
+  static readonly OnPoint10Path = '/wegvakonderdelen/{x}/{y}/{scale}';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `onPoint7()` instead.
+   * To access only the response body, use `onPoint10()` instead.
    *
    * This method doesn't expect any request body.
    */
-  onPoint7$Response(params: {
+  onPoint10$Response(params: {
     'x': number;
     'y': number;
     scale: number;
   }): Observable<StrictHttpResponse<Array<Wegvakonderdeel>>> {
 
-    const rb = new RequestBuilder(this.rootUrl, FormRoadsectionPartControllerService.OnPoint7Path, 'get');
+    const rb = new RequestBuilder(this.rootUrl, FormRoadsectionPartControllerService.OnPoint10Path, 'get');
     if (params) {
       rb.path('x', params['x'], {});
       rb.path('y', params['y'], {});
@@ -289,33 +290,33 @@ export class FormRoadsectionPartControllerService extends BaseService {
 
   /**
    * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `onPoint7$Response()` instead.
+   * To access the full response (for headers, for example), `onPoint10$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  onPoint7(params: {
+  onPoint10(params: {
     'x': number;
     'y': number;
     scale: number;
   }): Observable<Array<Wegvakonderdeel>> {
 
-    return this.onPoint7$Response(params).pipe(
+    return this.onPoint10$Response(params).pipe(
       map((r: StrictHttpResponse<Array<Wegvakonderdeel>>) => r.body as Array<Wegvakonderdeel>)
     );
   }
 
   /**
-   * Path part for operation getAllPaged1
+   * Path part for operation getAllPaged2
    */
-  static readonly GetAllPaged1Path = '/wegvakonderdelen';
+  static readonly GetAllPaged2Path = '/wegvakonderdelen';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `getAllPaged1()` instead.
+   * To access only the response body, use `getAllPaged2()` instead.
    *
    * This method doesn't expect any request body.
    */
-  getAllPaged1$Response(params?: {
+  getAllPaged2$Response(params?: {
 
     /**
      * Zero-based page index (0..N)
@@ -333,7 +334,7 @@ export class FormRoadsectionPartControllerService extends BaseService {
     sort?: Array<string>;
   }): Observable<StrictHttpResponse<PageWegvakonderdeel>> {
 
-    const rb = new RequestBuilder(this.rootUrl, FormRoadsectionPartControllerService.GetAllPaged1Path, 'get');
+    const rb = new RequestBuilder(this.rootUrl, FormRoadsectionPartControllerService.GetAllPaged2Path, 'get');
     if (params) {
       rb.query('page', params.page, {});
       rb.query('size', params.size, {});
@@ -353,11 +354,11 @@ export class FormRoadsectionPartControllerService extends BaseService {
 
   /**
    * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `getAllPaged1$Response()` instead.
+   * To access the full response (for headers, for example), `getAllPaged2$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  getAllPaged1(params?: {
+  getAllPaged2(params?: {
 
     /**
      * Zero-based page index (0..N)
@@ -375,7 +376,7 @@ export class FormRoadsectionPartControllerService extends BaseService {
     sort?: Array<string>;
   }): Observable<PageWegvakonderdeel> {
 
-    return this.getAllPaged1$Response(params).pipe(
+    return this.getAllPaged2$Response(params).pipe(
       map((r: StrictHttpResponse<PageWegvakonderdeel>) => r.body as PageWegvakonderdeel)
     );
   }

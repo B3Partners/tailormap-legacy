@@ -462,7 +462,7 @@ Ext.define("viewer.viewercontroller.ViewerController", {
         var levels = Ext.clone(this.app.levels);
         for (var levelId in levels) if (levels.hasOwnProperty(levelId)) {
             levels[levelId].layers = Ext.Array.filter(levels[levelId].layers || [], function(layer) {
-                return '' + layer.id !== '' + appLayer.id;
+                return '' + layer !== '' + appLayer.id;
             });
         }
         this.app.levels = levels;

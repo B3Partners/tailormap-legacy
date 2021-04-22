@@ -12,8 +12,9 @@ export interface FormState {
   feature: Feature;
   closeAfterSave: boolean;
   alreadyDirty: boolean;
-  formOpen: boolean;
-  treeOpen: boolean;
+  formEnabled: boolean;
+  formVisible: boolean;
+  treeVisible: boolean;
   editing: boolean;
   multiFormWorkflow: boolean;
 
@@ -29,9 +30,10 @@ export const initialFormState: FormState = {
   feature: null,
   features: [],
   closeAfterSave: false,
-  formOpen: false,
+  formEnabled: false,
+  formVisible: false,
   alreadyDirty: false,
-  treeOpen: false,
+  treeVisible: false,
   editing: false,
   multiFormWorkflow: false,
 

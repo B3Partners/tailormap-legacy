@@ -103,37 +103,57 @@ export class AttributeListTabToolbarComponent implements OnInit, OnDestroy {
     this.attributeListExportService.createAttributeListExport(format, this.layerId, this.featureType);
   }
 
+  public canOpenPassportForm(): boolean {
+    return this.getCheckedRowsAsFeatures().length > 0;
+  }
+
+  public canCreateUserLayer(): boolean {
+    return !(this.tailorMapService.getApplayerById(+(this.layerId)).userlayer
+      || !this.tailorMapService.getFilterString(+(this.layerId), false));
+  }
+
+  public getToolTipMessageForUserLayer(): string {
+    if (this.tailorMapService.getApplayerById(+(this.layerId)).userlayer) {
+      return 'Er kunnen geen selectielagen op basis van andere selectielagen gemaakt worden';
+    } else if(!this.tailorMapService.getFilterString(+(this.layerId), false)) {
+      return 'Stel eerst een filter in op de attributenlijst om een laag te kunnen publiceren';
+    } else {
+      return '';
+    }
+  }
+
   public createUserLayer(): void {
-      const dialogRef = this.dialog.open(AttributeListLayernameChooserComponent, {
-        width: '250px',
-        data: {},
+    const query = this.tailorMapService.getFilterString(+(this.layerId), false);
+    const dialogRef = this.dialog.open(AttributeListLayernameChooserComponent, {
+      width: '250px',
+      data: {},
+    });
+    dialogRef.afterClosed()
+      .pipe(
+        filter(result => !!result),
+        switchMap(result => {
+          return forkJoin([
+            of(result),
+            this.metadataService.getFeatureTypeMetadata$(this.layerId),
+          ]);
+        }),
+        switchMap(([ result, attributeMetadata ]) => {
+          const appLayerId = +(this.layerId);
+          const appLayer = this.tailorMapService.getApplayerById(appLayerId);
+          this.creatingLayer = true;
+          this.createUserLayerName = result;
+          return this.userLayer.createUserLayerFromParams$({
+            appLayerId: `${appLayerId}`,
+            title: result,
+            query,
+            source: UserLayerHelper.createUserLayerSourceFromMetadata(attributeMetadata, appLayer),
+          });
+        }),
+      )
+      .subscribe(() => {
+        this.creatingLayer = false;
+        this.createUserLayerName = '';
       });
-      dialogRef.afterClosed()
-        .pipe(
-          filter(result => !!result),
-          switchMap(result => {
-            return forkJoin([
-              of(result),
-              this.metadataService.getFeatureTypeMetadata$(this.layerId),
-            ]);
-          }),
-          switchMap(([ result, attributeMetadata ]) => {
-            const appLayerId = +(this.layerId);
-            const appLayer = this.tailorMapService.getApplayerById(appLayerId);
-            this.creatingLayer = true;
-            this.createUserLayerName = result;
-            return this.userLayer.createUserLayerFromParams$({
-              appLayerId: `${appLayerId}`,
-              title: result,
-              query: this.tailorMapService.getFilterString(appLayerId, false),
-              source: UserLayerHelper.createUserLayerSourceFromMetadata(attributeMetadata, appLayer),
-            });
-          }),
-        )
-        .subscribe(() => {
-          this.creatingLayer = false;
-          this.createUserLayerName = '';
-        });
   }
 
   public onClearFeatureTypeFilterClick(): void {
