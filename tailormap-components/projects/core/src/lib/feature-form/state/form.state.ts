@@ -24,7 +24,6 @@ export interface FormState {
   copySelectedFeature: Feature;
   copyFormOpen: boolean;
   copyOptionsOpen: boolean;
-  columns: number;
 }
 
 export const initialFormState: FormState = {
@@ -44,5 +43,4 @@ export const initialFormState: FormState = {
   copySelectedFeature: null,
   copyFormOpen: false,
   copyOptionsOpen: false,
-  columns: 1,
 };
