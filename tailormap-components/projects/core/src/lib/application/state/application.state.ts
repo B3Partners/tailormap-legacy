@@ -12,6 +12,7 @@ export interface ApplicationState {
   selectedAppLayer: string;
   formConfigsLoaded: boolean;
   formConfigs: ExtendedFormConfigurationModel[];
+  editFeatureLayerId: string;
 }
 
 export const initialApplicationState: ApplicationState = {
@@ -22,4 +23,5 @@ export const initialApplicationState: ApplicationState = {
   selectedAppLayer: null,
   formConfigsLoaded: false,
   formConfigs: [],
+  editFeatureLayerId: null,
 };

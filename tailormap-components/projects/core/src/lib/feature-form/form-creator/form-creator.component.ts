@@ -14,9 +14,9 @@ import { Store } from '@ngrx/store';
 import { FormState } from '../state/form.state';
 import * as FormActions from '../state/form.actions';
 import { WorkflowState } from '../../workflow/state/workflow.state';
-import { loadDataForTab } from '../../user-interface/attributelist/state/attribute-list.actions';
 import { selectFormEditing } from '../state/form.selectors';
-import { selectLayerIdForLayerName } from '../../application/state/application.selectors';
+import { selectLayerIdForEditingFeatures } from '../../application/state/application.selectors';
+import { editFeaturesComplete } from '../../application/state/application.actions';
 
 @Component({
   selector: 'tailormap-form-creator',
@@ -151,7 +151,6 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
   public save() {
     const feature = this.formgroep.value;
     feature.__fid = this.feature.objectGuid;
-    const clazzName = this.feature.clazz;
     this.mergeFormToFeature(feature);
     const parentFeature = this.features[0];
 
@@ -165,9 +164,9 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
         });
       },
       () => {
-        this.store$.select(selectLayerIdForLayerName, clazzName)
+        this.store$.select(selectLayerIdForEditingFeatures)
           .pipe(take(1), filter(layerId => layerId !== null))
-          .subscribe(layerId => this.store$.dispatch(loadDataForTab({ layerId })));
+          .subscribe(layerId => this.store$.dispatch(editFeaturesComplete({ layerId })));
       });
   }
 
