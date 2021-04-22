@@ -7,6 +7,7 @@ import {
 } from '../../../../../bridge/typings';
 import { TailormapAppLayer } from '../models/tailormap-app-layer.model';
 import { FormConfiguration } from '../../feature-form/form/form-models';
+import { Feature } from '../../shared/generated';
 
 const applicationActionsPrefix = '[Application]';
 
@@ -38,4 +39,14 @@ export const setLayerVisibility = createAction(
 export const setFormConfigs = createAction(
   `${applicationActionsPrefix} Set Form Configurations`,
   props<{ formConfigs: Map<string, FormConfiguration> }>(),
+);
+
+export const editFeatures = createAction(
+  `${applicationActionsPrefix} Edit Features`,
+  props<{ layerId: string; features: Feature[] }>(),
+);
+
+export const editFeaturesComplete = createAction(
+  `${applicationActionsPrefix} Edit Features Complete`,
+  props<{ layerId: string }>(),
 );
