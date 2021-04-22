@@ -21,6 +21,11 @@ public class SQLServer implements DataBase {
     }
 
     @Override
+    public String getGtPkMetadataDDL() {
+        return null;
+    }
+
+    @Override
     public boolean createView(String viewName, String tableName, String filterSQL, String comments) {
         // TODO implement
         return false;

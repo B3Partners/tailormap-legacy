@@ -1,14 +1,15 @@
 package nl.b3p.viewer.userlayer;
 
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 public interface DataBase {
+    Log LOG = LogFactory.getLog(DataBase.class);
     /**
      * Prefix for userlayer view names, {@value #PREFIX}.
      *
@@ -27,6 +28,8 @@ public interface DataBase {
      * @return message describing any problem or {@code null} when there are no problems
      */
     String preValidateView(String tableName, String filterSQL);
+
+    String getGtPkMetadataDDL();
 
     /**
      * Create a view in the database.
@@ -49,10 +52,16 @@ public interface DataBase {
 
     /**
      * Insert item into gt_pk_metadata table
+     * @param viewName name of the view
+     * @param tableName name of the table on which the view is based
+     * @return {@code true} after successful execution
      */
     boolean addToGtPKMetadata(String viewName, String tableName);
+
     /**
-     * Insert item into gt_pk_metadata table
+     * Remove item from gt_pk_metadata table
+     * @param viewName name of the view
+     * @return {@code true} after successful execution
      */
     boolean removeFromGtPKMetadata(String viewName);
 
@@ -96,6 +105,27 @@ public interface DataBase {
             }
         }
         return keys;
+    }
+
+    default boolean doesGtPkMetadataExists(Connection connection) throws SQLException {
+        DatabaseMetaData dbm = connection.getMetaData();
+        try (ResultSet tables = dbm.getTables(null, null, "gt_pk_metadata", null)) {
+            return tables.next();
+        }
+    }
+
+    default boolean createGtPkMetadata( Connection connection) {
+        String query = getGtPkMetadataDDL();
+        boolean result;
+        LOG.debug("try to create gt_pk_metadata table and query " + query);
+        try (PreparedStatement ps = connection.prepareStatement(
+                String.format(query))) {
+            result = (0 == ps.executeUpdate());
+        } catch (SQLException throwables) {
+            LOG.error("Probleem tijdens maken van view: " + throwables.getLocalizedMessage());
+            result = false;
+        }
+        return result;
     }
 }
 
