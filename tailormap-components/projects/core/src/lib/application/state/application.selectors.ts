@@ -157,3 +157,5 @@ export const selectLayerIdForLayerName = createSelector(
   },
 );
 
+export const selectLayerIdForEditingFeatures = createSelector(selectApplicationState, state => state.editFeatureLayerId);
+

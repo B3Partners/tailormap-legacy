@@ -23,7 +23,7 @@ import { clearAllFilters, clearFilterForFeatureType, updatePage } from '../state
 import { Feature } from '../../../shared/generated';
 import * as wellknown from 'wellknown';
 import { LayerUtils } from '../../../shared/layer-utils/layer-utils.service';
-import { setOpenFeatureForm } from '../../../feature-form/state/form.actions';
+import { editFeatures } from '../../../application/state/application.actions';
 
 @Component({
   selector: 'tailormap-attribute-list-tab-toolbar',
@@ -191,7 +191,7 @@ export class AttributeListTabToolbarComponent implements OnInit, OnDestroy {
     if (features.length === 0) {
       return;
     }
-    this.store$.dispatch(setOpenFeatureForm({ features, closeAfterSave: true, editMode: true }));
+    this.store$.dispatch(editFeatures({ features, layerId: this.layerId }));
   }
 
   /**
