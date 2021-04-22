@@ -17,6 +17,7 @@ export interface FormConfiguration {
   tabConfig: Map<number, string>;
   relation?: FormRelation;
   featuretypeMetadata?: FeaturetypeMetadata;
+  columns?: number;
 }
 
 export interface Attribute {

@@ -1,8 +1,8 @@
 <form [formGroup]="formgroep">
   <mat-tab-group class="tab-group" [class.is-editing]="editing$ | async">
     <mat-tab *ngFor="let tab of tabbedConfig; trackBy: trackByTabId" label="{{formConfig.tabConfig[tab.tabId]}}">
-      <div class="tab">
-        <div *ngFor="let attr of tab.attributes" class="column">
+      <div *ngFor="let column of getColumns()" class="tab">
+        <div *ngFor="let attr of getAttributes(tab, column)" class="column">
           <tailormap-formfield
             [value]=indexedAttributes.attrs.get(attr.key)?.value
             [attribute]=indexedAttributes.attrs.get(attr.key)

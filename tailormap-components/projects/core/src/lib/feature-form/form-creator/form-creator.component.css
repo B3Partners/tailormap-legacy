@@ -4,6 +4,10 @@ mat-tab-group {
   height: 100%;
 }
 
+.tab {
+  float: left;
+  width: calc(100 / var(--overlay-panel-columns) * 1%);
+}
 .is-editing .tab {
   padding-bottom: 16px;
 }
@@ -11,6 +15,7 @@ mat-tab-group {
 .column {
   display: flex;
   flex-direction: column;
+  height: 77px;
 }
 
 .column + .column {

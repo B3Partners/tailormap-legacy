@@ -66,6 +66,8 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
   private destroyed = new Subject();
 
   public ngOnChanges() {
+    document.documentElement.style.setProperty('--overlay-panel-columns', Math.max.apply(Math,this.formConfig.fields.map(field=> field.column)));
+
     this.tabbedConfig = this.prepareFormConfig();
     if (this.feature) {
       this.indexedAttributes = FormCreatorHelpers.convertFeatureToIndexed(this.feature, this.formConfig);
@@ -82,6 +84,7 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
     this.subscriptions.unsubscribe();
     this.destroyed.next();
     this.destroyed.complete();
+    document.documentElement.style.setProperty('--overlay-panel-columns', '1');
   }
 
   private prepareFormConfig(): Array<TabbedField> {
@@ -209,5 +212,17 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
       features.forEach(f => f.attributes = attributes);
     }
     return features;
+  }
+
+  public getColumns(): number[] {
+    const columns = [];
+      for (let i = 1; i <= Math.max.apply(Math,this.formConfig.fields.map(field=> field.column)); i++) {
+        columns.push(i);
+      }
+    return columns;
+  }
+
+  public getAttributes(tab: TabbedField, column: number): Attribute[] {
+    return tab.attributes.filter(attr => attr.column === column);
   }
 }
