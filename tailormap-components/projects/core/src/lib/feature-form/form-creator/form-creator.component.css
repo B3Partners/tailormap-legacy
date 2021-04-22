@@ -8,6 +8,7 @@ mat-tab-group {
   float: left;
   width: calc(100 / var(--overlay-panel-columns) * 1%);
 }
+
 .is-editing .tab {
   padding-bottom: 16px;
 }

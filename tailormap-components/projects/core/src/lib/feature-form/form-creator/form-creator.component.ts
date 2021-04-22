@@ -216,7 +216,7 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
 
   public getColumns(): number[] {
     const columns = [];
-      for (let i = 1; i <= Math.max.apply(Math,this.formConfig.fields.map(field=> field.column)); i++) {
+      for (let i = 1; i <= Math.max.apply(Math,this.formConfig.fields.map(field => field.column)); i++) {
         columns.push(i);
       }
     return columns;

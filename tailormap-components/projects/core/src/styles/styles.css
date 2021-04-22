@@ -78,9 +78,6 @@
   flex-direction: column;
 }
 
-/*right: calc(var(--overlay-panel-columns) * var(--overlay-panel-width) + 10px);
-  width: calc(var(--overlay-panel-columns) * var(--overlay-panel-width) + 50px);*/
-
 .overlay-panel-toggle {
   position: absolute;
   right: calc(var(--overlay-panel-columns) * var(--overlay-panel-width) + 10px);
