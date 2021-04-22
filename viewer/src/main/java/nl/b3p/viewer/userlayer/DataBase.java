@@ -1,5 +1,11 @@
 package nl.b3p.viewer.userlayer;
 
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public interface DataBase {
@@ -42,6 +48,15 @@ public interface DataBase {
     boolean dropView(String viewName);
 
     /**
+     * Insert item into gt_pk_metadata table
+     */
+    boolean addToGtPKMetadata(String viewName, String tableName);
+    /**
+     * Insert item into gt_pk_metadata table
+     */
+    boolean removeFromGtPKMetadata(String viewName);
+
+    /**
      * close any resources such as open connections.
      */
     void close();
@@ -59,6 +74,28 @@ public interface DataBase {
                 .append('_')
                 .append(UUID.randomUUID())
                 .toString().replace('-', '_');
+    }
+
+    default List<String> getPrimaryKey(String tableName, String schema,Connection connection) throws SQLException {
+        List<String> keys = new ArrayList<>();
+        DatabaseMetaData meta = connection.getMetaData();
+        try (ResultSet primaryKeys = meta.getPrimaryKeys(null, schema, tableName);) {
+            while (primaryKeys.next()) {
+                keys.add(primaryKeys.getString("COLUMN_NAME"));
+            }
+        }
+        return keys;
+    }
+
+    default List<String> getSchema(String tableName, Connection connection) throws SQLException {
+        List<String> keys = new ArrayList<>();
+        DatabaseMetaData meta = connection.getMetaData();
+        try (ResultSet tables = meta.getTables(null, null, tableName, new String[] { "TABLE", "VIEW" })) {
+            while (tables.next()) {
+                keys.add(tables.getString("TABLE_SCHEM"));
+            }
+        }
+        return keys;
     }
 }
 

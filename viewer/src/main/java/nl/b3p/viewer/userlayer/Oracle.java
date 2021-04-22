@@ -33,6 +33,16 @@ public class Oracle implements DataBase {
     }
 
     @Override
+    public boolean addToGtPKMetadata(String viewName, String tableName) {
+        return false;
+    }
+
+    @Override
+    public boolean removeFromGtPKMetadata(String viewName) {
+        return false;
+    }
+
+    @Override
     public void close() {
         try {
             this.connection.close();
