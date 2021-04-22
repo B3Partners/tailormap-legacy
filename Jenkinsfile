@@ -71,7 +71,7 @@ timestamps {
                 }
 
                 stage("check Java runtime version") {
-                    sh " .jenkins/check-java-binary-version.sh"
+                    sh ".jenkins/check-java-binary-version.sh"
                 }
                 
                 if (jdkTestName == 'OpenJDK11') {

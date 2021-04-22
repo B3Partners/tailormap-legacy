@@ -59,6 +59,8 @@ jobs:
           mvn -e clean test -B
           mvn -e verify -B -Pgh-action -pl '!viewer-admin'
           mvn -e verify -B -Pgh-action -pl 'viewer-admin'
+      - name: Verify Java classfile version
+        run: .jenkins/check-java-binary-version.sh
       - name: build javadoc
         run: |
           mvn javadoc:javadoc
