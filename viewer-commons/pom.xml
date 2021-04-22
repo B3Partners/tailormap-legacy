@@ -105,9 +105,6 @@
             <activation>
                 <jdk>[11,)</jdk>
             </activation>
-            <properties>
-                <java.version>11</java.version>
-            </properties>
             <dependencies>
                 <dependency>
                     <groupId>jakarta.xml.bind</groupId>
