@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { concatMap, filter, map, withLatestFrom } from 'rxjs/operators';
 import * as FormActions from './form.actions';
+import * as ApplicationActions from '../../application/state/application.actions';
 import { of } from 'rxjs';
 import { selectCloseAfterSaveFeatureForm } from './form.selectors';
 import { Store } from '@ngrx/store';
@@ -10,6 +11,12 @@ import { FormState } from './form.state';
 @Injectable()
 export class FormEffects {
 
+  public editFeatures$ = createEffect(() => this.actions$.pipe(
+    ofType(ApplicationActions.editFeatures),
+    map(action => {
+      return FormActions.setOpenFeatureForm({ features: action.features, closeAfterSave: true, editMode: true });
+    }),
+  ));
 
   public closePanelAfterSave$ = createEffect(() => this.actions$.pipe(
     ofType(FormActions.setSetFeatures, FormActions.setNewFeature),

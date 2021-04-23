@@ -21,6 +21,11 @@ public class SQLServer implements DataBase {
     }
 
     @Override
+    public String getGtPkMetadataDDL() {
+        return "CREATE TABLE gt_pk_metadata (table_schema varchar(255), table_name varchar(255), pk_column varchar(255), pk_column_idx int, pk_policy varchar(255), pk_sequence varchar(255))";
+    }
+
+    @Override
     public boolean createView(String viewName, String tableName, String filterSQL, String comments) {
         // TODO implement
         return false;
@@ -29,6 +34,16 @@ public class SQLServer implements DataBase {
     @Override
     public boolean dropView(String viewName) {
         // TODO implement
+        return false;
+    }
+
+    @Override
+    public boolean addToGtPKMetadata(String viewName, String tableName) {
+        return false;
+    }
+
+    @Override
+    public boolean removeFromGtPKMetadata(String viewName) {
         return false;
     }
 
