@@ -1,6 +1,8 @@
 import { AttributeListTabModel } from '../models/attribute-list-tab.model';
 import { AttributeListFeatureTypeData } from '../models/attribute-list-feature-type-data.model';
 import { AttributeFilterHelper } from '../../../shared/helpers/attribute-filter.helper';
+import { RelatedFilterHelper } from '../../../shared/helpers/related-filter.helper';
+import { RelatedFilterDataModel } from '../../../shared/models/related-filter-data.model';
 
 export class AttributeListFilterHelper {
 
@@ -10,69 +12,63 @@ export class AttributeListFilterHelper {
     tabFeatureData: AttributeListFeatureTypeData[],
     extraLayerFilters?: string,
   ): string {
-    const filters = new Map<number, string>();
-    tabFeatureData.forEach(data => {
-      const query = data.filter.map(filter => AttributeFilterHelper.convertFilterToQuery(filter)).join(' AND ');
-      if (query !== '') {
-        filters.set(data.featureType, query);
+    const filterData: RelatedFilterDataModel[] = tabFeatureData.map<RelatedFilterDataModel>(featureData => {
+      const filter = [featureData.filter.map(f => AttributeFilterHelper.convertFilterToQuery(f)).join(' AND ')];
+      if (featureData.featureType === tab.featureType && extraLayerFilters) {
+        filter.push(extraLayerFilters);
       }
+      return {
+        featureType: featureData.featureType,
+        parentFeatureType: featureData.parentFeatureType,
+        filter: filter.join(' AND '),
+      };
     });
-    const isRelatedFeature = tab.featureType !== featureType;
-    const mainFeatureData = tabFeatureData.find(data => data.featureType === tab.featureType);
-    return AttributeListFilterHelper.getQueryForFeatureType(
-      tab,
-      featureType,
-      filters,
-      isRelatedFeature,
-      mainFeatureData,
-      extraLayerFilters,
-    );
+    return RelatedFilterHelper.getFilter(tab.featureType, filterData).join(' AND ');
   }
 
-  private static getQueryForFeatureType(
-    tab: AttributeListTabModel,
-    featureType: number,
-    filters: Map<number, string>,
-    isRelatedFeature: boolean,
-    mainFeatureData: AttributeListFeatureTypeData,
-    extraLayerFilters?: string,
-  ) {
-    const featureFilter: string[] = [];
-    /* tab.relatedFeatures.map<string>(relation => {
-      if (relation.foreignFeatureType === featureType) {
-        return '';
-      }
-      const relationFilter = filters.get(relation.foreignFeatureType);
-      if (relationFilter) {
-        const filter = `RELATED_FEATURE(${tab.featureType},${relation.foreignFeatureType},(${relationFilter}))`;
-        if (isRelatedFeature) {
-          return `RELATED_FEATURE(${featureType},${tab.featureType},(${filter}))`;
-        }
-        return filter;
-      }
-      return '';
-    });
-    */
-    if (filters.has(featureType)) {
-      featureFilter.push(filters.get(featureType));
-    }
-    if (isRelatedFeature && filters.has(tab.featureType)) {
-      featureFilter.push(`RELATED_FEATURE(${featureType},${tab.featureType},(${filters.get(tab.featureType)}))`);
-    }
-    if (isRelatedFeature && extraLayerFilters) {
-      featureFilter.push(`RELATED_FEATURE(${featureType},${tab.featureType},(${extraLayerFilters})`);
-    }
-    if (!isRelatedFeature && extraLayerFilters) {
-      featureFilter.push(extraLayerFilters);
-    }
-    // if (isRelatedFeature && mainFeatureData.checkedFeatures.length > 0) {
-    //   const checkedRowsFilter = AttributeListFilterHelper.getQueryForCheckedRows(tab, featureType, mainFeatureData);
-    //   if (checkedRowsFilter) {
-    //     featureFilter.push(checkedRowsFilter);
-    //   }
-    // }
-    return featureFilter.filter(f => !!f).join(' AND ');
-  }
+  // private static getQueryForFeatureType(
+  //   tab: AttributeListTabModel,
+  //   featureType: number,
+  //   filters: Map<number, string>,
+  //   isRelatedFeature: boolean,
+  //   mainFeatureData: AttributeListFeatureTypeData,
+  //   extraLayerFilters?: string,
+  // ) {
+  //   const featureFilter: string[] = [];
+  //   tab.relatedFeatures.map<string>(relation => {
+  //     if (relation.foreignFeatureType === featureType) {
+  //       return '';
+  //     }
+  //     const relationFilter = filters.get(relation.foreignFeatureType);
+  //     if (relationFilter) {
+  //       const filter = `RELATED_FEATURE(${tab.featureType},${relation.foreignFeatureType},(${relationFilter}))`;
+  //       if (isRelatedFeature) {
+  //         return `RELATED_FEATURE(${featureType},${tab.featureType},(${filter}))`;
+  //       }
+  //       return filter;
+  //     }
+  //     return '';
+  //   });
+  //   if (filters.has(featureType)) {
+  //     featureFilter.push(filters.get(featureType));
+  //   }
+  //   if (isRelatedFeature && filters.has(tab.featureType)) {
+  //     featureFilter.push(`RELATED_FEATURE(${featureType},${tab.featureType},(${filters.get(tab.featureType)}))`);
+  //   }
+  //   if (isRelatedFeature && extraLayerFilters) {
+  //     featureFilter.push(`RELATED_FEATURE(${featureType},${tab.featureType},(${extraLayerFilters})`);
+  //   }
+  //   if (!isRelatedFeature && extraLayerFilters) {
+  //     featureFilter.push(extraLayerFilters);
+  //   }
+  //   if (isRelatedFeature && mainFeatureData.checkedFeatures.length > 0) {
+  //     const checkedRowsFilter = AttributeListFilterHelper.getQueryForCheckedRows(tab, featureType, mainFeatureData);
+  //     if (checkedRowsFilter) {
+  //       featureFilter.push(checkedRowsFilter);
+  //     }
+  //   }
+  //   return featureFilter.filter(f => !!f).join(' AND ');
+  // }
 
   // private static getQueryForCheckedRows(
   //   tab: AttributeListTabModel,
