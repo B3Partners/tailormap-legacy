@@ -1,15 +1,17 @@
 <form [formGroup]="formgroep">
   <mat-tab-group class="tab-group" [class.is-editing]="editing$ | async">
-    <mat-tab *ngFor="let tab of tabbedConfig; trackBy: trackByTabId" label="{{formConfig.tabConfig[tab.tabId]}}">
-      <div *ngFor="let column of getColumns()" class="tab">
-        <div *ngFor="let attr of getAttributes(tab, column)" class="column">
-          <tailormap-formfield
-            [value]=indexedAttributes.attrs.get(attr.key)?.value
-            [attribute]=indexedAttributes.attrs.get(attr.key)
-            [groep]="formgroep"
-            [isBulk]=isBulk
-            [editing]="(editing$ | async) || isBulk"
-          ></tailormap-formfield>
+    <mat-tab *ngFor="let tab of formTabs; trackBy: trackByTabId" label="{{tab.label}}">
+      <div class="column-container">
+        <div *ngFor="let column of tab.columns" class="column">
+          <div *ngFor="let attr of column.attributes" class="row">
+            <tailormap-formfield
+              [value]=indexedAttributes.attrs.get(attr.key)?.value
+              [attribute]=indexedAttributes.attrs.get(attr.key)
+              [groep]="formgroep"
+              [isBulk]=isBulk
+              [editing]="(editing$ | async) || isBulk"
+            ></tailormap-formfield>
+          </div>
         </div>
       </div>
     </mat-tab>

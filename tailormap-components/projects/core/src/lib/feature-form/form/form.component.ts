@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ConfirmDialogService } from '../../shared/confirm-dialog/confirm-dialog.service';
 import { filter, map, switchMap, take, takeUntil } from 'rxjs/operators';
 import { combineLatest, Observable, of, Subject } from 'rxjs';
-import { FormConfiguration } from './form-models';
+import { Attribute, FormConfiguration, TabbedField, TabColumn } from './form-models';
 import { Feature } from '../../shared/generated';
 import { FormActionsService } from '../form-actions/form-actions.service';
 import { MetadataService } from '../../application/services/metadata.service';
@@ -47,6 +47,7 @@ export class FormComponent implements OnDestroy, OnInit {
   public isHidden$: Observable<boolean>;
   public editing$: Observable<boolean>;
   public isMultiFormWorkflow$: Observable<boolean>;
+  public formTabs: TabbedField[] = [];
 
   constructor(
     private store$: Store<FormState | WorkflowState>,
@@ -116,6 +117,40 @@ export class FormComponent implements OnDestroy, OnInit {
         this.formsForNew.push(allFormConfigs.get(relationName));
       }
     });
+    this.formTabs = this.prepareFormConfig();
+  }
+
+  private prepareFormConfig(): Array<TabbedField> {
+    const tabbedFields = [];
+    for (let tabNr = 1; tabNr <= this.formConfig.tabs; tabNr++) {
+      tabbedFields.push({
+        tabId: tabNr,
+        label: this.formConfig.tabConfig[tabNr],
+        columns: this.getColumns(),
+      });
+    }
+    return tabbedFields;
+  }
+
+  public getColumns(): TabColumn[] {
+    const columns: TabColumn[] = [];
+    const columnCount = this.getColumnCount();
+    for (let i = 1; i <= columnCount; i++) {
+      columns.push({
+        columnId: i,
+        attributes: this.getAttributes(i),
+      });
+    }
+    return columns;
+  }
+
+  public getAttributes(column: number): Attribute[] {
+    return this.formConfig.fields.filter(attr => attr.column === column);
+  }
+
+  private getColumnCount() {
+    const columnNumbers = this.formConfig.fields.map(field => field.column);
+    return Math.max(...columnNumbers);
   }
 
   public ngOnDestroy() {
