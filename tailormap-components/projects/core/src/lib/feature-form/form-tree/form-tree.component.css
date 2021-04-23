@@ -1,5 +1,5 @@
 .tree {
-  right: 310px;
+  right: calc(var(--overlay-panel-form-columns) * var(--overlay-panel-width) + 10px);
   width: 350px;
 }
 

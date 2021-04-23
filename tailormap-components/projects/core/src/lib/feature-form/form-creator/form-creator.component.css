@@ -1,22 +1,30 @@
 :host,
 form,
-mat-tab-group {
+mat-tab-group,
+.column-container {
   height: 100%;
 }
 
-.is-editing .tab {
-  padding-bottom: 16px;
+.column-container {
+  display: flex;
 }
 
 .column {
-  display: flex;
-  flex-direction: column;
+  flex: 1 0;
 }
 
-.column + .column {
+.is-editing .column {
+  padding-bottom: 16px;
+}
+
+.row {
+  min-height: 77px;
+}
+
+.row + .row {
   border-top: 1px solid rgba(216, 216, 216, 0.62);
 }
 
-.is-editing .column + .column {
+.is-editing .row + .row {
   border-top: 0 none;
 }
