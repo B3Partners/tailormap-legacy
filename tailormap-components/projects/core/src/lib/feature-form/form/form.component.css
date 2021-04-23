@@ -11,10 +11,6 @@
   width: calc(var(--overlay-panel-form-columns) * var(--overlay-panel-width));
 }
 
-.overlay-panel-toggle {
-  right: calc(var(--overlay-panel-form-columns) * var(--overlay-panel-width) + 10px);
-}
-
 .container {
   display: flex;
   flex-direction: column;
