@@ -3,6 +3,18 @@
   height: 100%;
 }
 
+:host {
+  --overlay-panel-form-columns: 1;
+}
+
+.overlay-panel {
+  width: calc(var(--overlay-panel-form-columns) * var(--overlay-panel-width));
+}
+
+.overlay-panel-toggle {
+  right: calc(var(--overlay-panel-form-columns) * var(--overlay-panel-width) + 10px);
+}
+
 .container {
   display: flex;
   flex-direction: column;
@@ -49,4 +61,8 @@
 
 .button-separator {
   width: 16px;
+}
+
+.push-buttons {
+  width: calc(calc(var(--overlay-panel-form-columns) * var(--overlay-panel-width)) - var(--overlay-panel-width));
 }

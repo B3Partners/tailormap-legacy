@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit } from '@angular/core';
 import { ConfirmDialogService } from '../../shared/confirm-dialog/confirm-dialog.service';
 import { filter, map, switchMap, take, takeUntil } from 'rxjs/operators';
 import { combineLatest, Observable, of, Subject } from 'rxjs';
@@ -56,6 +56,7 @@ export class FormComponent implements OnDestroy, OnInit {
     private featureInitializerService: FeatureInitializerService,
     public actions: FormActionsService,
     private editFeatureGeometryService: EditFeatureGeometryService,
+    private formElement: ElementRef,
   ) {
   }
 
@@ -118,6 +119,7 @@ export class FormComponent implements OnDestroy, OnInit {
       }
     });
     this.formTabs = this.prepareFormConfig();
+    this.formElement.nativeElement.style.setProperty('--overlay-panel-form-columns', `${this.getColumnCount()}`);
   }
 
   private prepareFormConfig(): Array<TabbedField> {

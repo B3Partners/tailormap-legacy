@@ -6,7 +6,6 @@
   --top-panel-height: 0;
   --bottom-panel-height: 0;
   --overlay-panel-z-index: 25000;
-  --overlay-panel-columns: 1;
   --overlay-panel-width: 300px;
 }
 
@@ -70,7 +69,7 @@
   right: 10px;
   top: 10px;
   bottom: 10px;
-  width: calc(var(--overlay-panel-columns) * var(--overlay-panel-width));
+  width: var(--overlay-panel-width);
   background-color: #fff;
   z-index: var(--overlay-panel-z-index);
   padding-top: 30px;
@@ -80,7 +79,7 @@
 
 .overlay-panel-toggle {
   position: absolute;
-  right: calc(var(--overlay-panel-columns) * var(--overlay-panel-width) + 10px);
+  right: calc(var(--overlay-panel-width) + 10px);
   top: 10px;
   width: 35px;
   height: 62px;
