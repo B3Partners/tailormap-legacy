@@ -87,6 +87,9 @@ export const selectTabAndFeatureTypeDataForTab = createSelector(
     selectedFeatureType: number,
     tab: AttributeListTabModel,
   ): [ AttributeListTabModel, AttributeListFeatureTypeData ] => {
+    if (!tab) {
+      return [null, null];
+    }
     return [ tab, data.find(findFeatureTypeData({ layerId: tab.layerId, featureType: selectedFeatureType })) ];
   },
 );
