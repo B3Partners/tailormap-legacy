@@ -22,7 +22,7 @@ public class SQLServer implements DataBase {
 
     @Override
     public String getGtPkMetadataDDL() {
-        return null;
+        return "CREATE TABLE gt_pk_metadata (table_schema varchar(255), table_name varchar(255), pk_column varchar(255), pk_column_idx int, pk_policy varchar(255), pk_sequence varchar(255))";
     }
 
     @Override
