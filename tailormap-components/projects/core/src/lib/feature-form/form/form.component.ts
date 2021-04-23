@@ -128,26 +128,26 @@ export class FormComponent implements OnDestroy, OnInit {
       tabbedFields.push({
         tabId: tabNr,
         label: this.formConfig.tabConfig[tabNr],
-        columns: this.getColumns(),
+        columns: this.getColumns(tabNr),
       });
     }
     return tabbedFields;
   }
 
-  public getColumns(): TabColumn[] {
+  public getColumns(tabNr: number): TabColumn[] {
     const columns: TabColumn[] = [];
     const columnCount = this.getColumnCount();
     for (let i = 1; i <= columnCount; i++) {
       columns.push({
         columnId: i,
-        attributes: this.getAttributes(i),
+        attributes: this.getAttributes(i, tabNr),
       });
     }
     return columns;
   }
 
-  public getAttributes(column: number): Attribute[] {
-    return this.formConfig.fields.filter(attr => attr.column === column);
+  public getAttributes(column: number, tabNr: number): Attribute[] {
+    return this.formConfig.fields.filter(attr => attr.column === column && attr.tab === tabNr);
   }
 
   private getColumnCount() {
