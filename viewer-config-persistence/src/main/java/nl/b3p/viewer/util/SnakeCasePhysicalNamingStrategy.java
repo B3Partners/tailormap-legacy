@@ -1,37 +1,38 @@
 package nl.b3p.viewer.util;
 
 import org.hibernate.boot.model.naming.Identifier;
-import org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl;
+import org.hibernate.boot.model.naming.PhysicalNamingStrategy;
 import org.hibernate.engine.jdbc.env.spi.JdbcEnvironment;
 
-public class SnakeCasePhysicalNamingStrategy extends PhysicalNamingStrategyStandardImpl {
+public class SnakeCasePhysicalNamingStrategy implements PhysicalNamingStrategy {
+
 
     @Override
-    public Identifier toPhysicalCatalogName(Identifier name, JdbcEnvironment context) {
-        return super.toPhysicalCatalogName(toSnakeCase(name), context);
+    public Identifier toPhysicalCatalogName(final Identifier identifier, final JdbcEnvironment jdbcEnv) {
+        return convertToSnakeCase(identifier);
     }
 
     @Override
-    public Identifier toPhysicalColumnName(Identifier name, JdbcEnvironment context) {
-        return super.toPhysicalColumnName(toSnakeCase(name), context);
+    public Identifier toPhysicalColumnName(final Identifier identifier, final JdbcEnvironment jdbcEnv) {
+        return convertToSnakeCase(identifier);
     }
 
     @Override
-    public Identifier toPhysicalSchemaName(Identifier name, JdbcEnvironment context) {
-        return super.toPhysicalSchemaName(toSnakeCase(name), context);
+    public Identifier toPhysicalSchemaName(final Identifier identifier, final JdbcEnvironment jdbcEnv) {
+        return convertToSnakeCase(identifier);
     }
 
     @Override
-    public Identifier toPhysicalSequenceName(Identifier name, JdbcEnvironment context) {
-        return super.toPhysicalSequenceName(toSnakeCase(name), context);
+    public Identifier toPhysicalSequenceName(final Identifier identifier, final JdbcEnvironment jdbcEnv) {
+        return convertToSnakeCase(identifier);
     }
 
     @Override
-    public Identifier toPhysicalTableName(Identifier name, JdbcEnvironment context) {
-        return super.toPhysicalTableName(toSnakeCase(name), context);
+    public Identifier toPhysicalTableName(final Identifier identifier, final JdbcEnvironment jdbcEnv) {
+        return convertToSnakeCase(identifier);
     }
 
-    private Identifier toSnakeCase(Identifier id) {
+    private Identifier convertToSnakeCase(Identifier id) {
         if (id == null)
             return id;
 

@@ -33,7 +33,6 @@ import java.util.*;
 import static nl.b3p.viewer.config.RemoveEmptyMapValuesUtil.removeEmptyMapValues;
 
 /**
- *
  * @author Matthijs Laan
  */
 @Entity
@@ -45,7 +44,7 @@ public class Layer implements Serializable {
     public static final String EXTRA_KEY_METADATA_STYLESHEET_URL = "metadata.stylesheet";
     public static final String EXTRA_KEY_DOWNLOAD_URL = "download.url";
     public static final String EXTRA_KEY_FILTERABLE = "filterable";
-    public static final String EXTRA_IMAGE_EXTENSION ="image_extension";
+    public static final String EXTRA_IMAGE_EXTENSION = "image_extension";
     public static final String EXTRA_KEY_ATTRIBUTION = "attribution";
 
     /**
@@ -67,33 +66,33 @@ public class Layer implements Serializable {
     public static final String DETAIL_USERLAYER_DATE_ADDED = "userlayer_date_added";
     public static final String DETAIL_USERLAYER_USER = "userlayer_user";
 
-    private static Set<String> interestingDetails = new HashSet<>(Arrays.asList(new String[] {
-        EXTRA_KEY_METADATA_URL,
-        EXTRA_KEY_METADATA_STYLESHEET_URL,
-        EXTRA_KEY_DOWNLOAD_URL,
-        EXTRA_KEY_FILTERABLE,
-        EXTRA_IMAGE_EXTENSION,
-        DETAIL_ALL_CHILDREN,
-        DETAIL_WMS_STYLES,
-        DETAIL_ALTERNATE_LEGEND_IMAGE_URL,
-        EXTRA_KEY_ATTRIBUTION
+    private static Set<String> interestingDetails = new HashSet<>(Arrays.asList(new String[]{
+            EXTRA_KEY_METADATA_URL,
+            EXTRA_KEY_METADATA_STYLESHEET_URL,
+            EXTRA_KEY_DOWNLOAD_URL,
+            EXTRA_KEY_FILTERABLE,
+            EXTRA_IMAGE_EXTENSION,
+            DETAIL_ALL_CHILDREN,
+            DETAIL_WMS_STYLES,
+            DETAIL_ALTERNATE_LEGEND_IMAGE_URL,
+            EXTRA_KEY_ATTRIBUTION
     }));
 
-    private static Set<String> updatableDetails = new HashSet<>(Arrays.asList(new String[] {
-        EXTRA_KEY_METADATA_URL,
-        DETAIL_ALL_CHILDREN,
-        DETAIL_WMS_STYLES
+    private static Set<String> updatableDetails = new HashSet<>(Arrays.asList(new String[]{
+            EXTRA_KEY_METADATA_URL,
+            DETAIL_ALL_CHILDREN,
+            DETAIL_WMS_STYLES
     }));
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch=FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "service")
     private GeoService service;
 
-    @ManyToOne(fetch=FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent")
     private Layer parent;
 
@@ -119,16 +118,16 @@ public class Layer implements Serializable {
 
     @ElementCollection
     @CollectionTable(joinColumns = @JoinColumn(name = "layer"))
-    private Map<CoordinateReferenceSystem,BoundingBox> boundingBoxes = new HashMap<>();
+    private Map<CoordinateReferenceSystem, BoundingBox> boundingBoxes = new HashMap<>();
 
-    @ManyToOne(fetch=FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "tileset")
     private TileSet tileset;
 
     /**
      * If a service does not have a single top layer, a virtual top layer is
      * created. A virtual layer should not be used in a request to the service.
-     *
+     * <p>
      * Also a WMS layer which does not have a name is virtual.
      */
     private boolean virtual;
@@ -137,68 +136,69 @@ public class Layer implements Serializable {
 
     private Boolean userlayer = false;
 
-    @ManyToOne(fetch=FetchType.LAZY, cascade={CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "feature_type")
     private SimpleFeatureType featureType;
 
     @ElementCollection
     @JoinTable(
-            joinColumns=@JoinColumn(name = "layer", referencedColumnName = "id")
+            joinColumns = @JoinColumn(name = "layer", referencedColumnName = "id")
     )
-    @Column(name="keyword")
+    @Column(name = "keyword")
     private Set<String> keywords = new HashSet<>();
 
     @ElementCollection
-    @JoinTable(joinColumns=@JoinColumn(name = "layer", referencedColumnName = "id"))
-    @Column(name="role_name")
+    @JoinTable(joinColumns = @JoinColumn(name = "layer", referencedColumnName = "id"))
+    @Column(name = "role_name")
     private Set<String> readers = new HashSet<>();
 
     @ElementCollection
-    @JoinTable(joinColumns=@JoinColumn(name = "layer", referencedColumnName = "id"))
-    @Column(name="role_name")
+    @JoinTable(joinColumns = @JoinColumn(name = "layer", referencedColumnName = "id"))
+    @Column(name = "role_name")
     public Set<String> writers = new HashSet<>();
 
     @ElementCollection
-    @JoinTable(joinColumns=@JoinColumn(name = "layer", referencedColumnName = "id"))
+    @JoinTable(joinColumns = @JoinColumn(name = "layer", referencedColumnName = "id"))
     @Column(name = "role_name")
     public Set<String> preventGeomEditors = new HashSet<>();
 
-    @ManyToMany(cascade=CascadeType.PERSIST) // Actually @OneToMany, workaround for HHH-1268
+    @ManyToMany(cascade = CascadeType.PERSIST) // Actually @OneToMany, workaround for HHH-1268
     @JoinTable(
             name = "layer_children",
-            inverseJoinColumns=@JoinColumn(name="child", unique=true),
-            joinColumns=@JoinColumn(name = "layer", referencedColumnName = "id")
+            inverseJoinColumns = @JoinColumn(name = "child", unique = true),
+            joinColumns = @JoinColumn(name = "layer", referencedColumnName = "id")
     )
-    @OrderColumn(name="list_index")
+    @OrderColumn(name = "list_index")
     private List<Layer> children = new ArrayList<>();
 
     @ElementCollection
-    @JoinTable(joinColumns=@JoinColumn(name="layer"))
+    @JoinTable(joinColumns = @JoinColumn(name = "layer"))
     // Element wrapper required because of http://opensource.atlassian.com/projects/hibernate/browse/JPA-11
-    private Map<String,ClobElement> details = new HashMap<>();
+    private Map<String, ClobElement> details = new HashMap<>();
 
-    
-    @ManyToMany(cascade=CascadeType.PERSIST) // Actually @OneToMany, workaround for HHH-1268
+
+    @ManyToMany(cascade = CascadeType.PERSIST) // Actually @OneToMany, workaround for HHH-1268
     @JoinTable(
-            name ="layer_matrix_sets",
-            joinColumns=@JoinColumn(name = "layer", referencedColumnName = "id"),
-            inverseJoinColumns=@JoinColumn(name="matrix_set")
+            name = "layer_matrix_sets",
+            joinColumns = @JoinColumn(name = "layer", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "matrix_set")
     )
-    @OrderColumn(name="list_index")
+    @OrderColumn(name = "list_index")
     private List<TileMatrixSet> matrixSets = new ArrayList<>();
-    
+
     public Layer() {
     }
 
     public Layer clone() throws CloneNotSupportedException {
-        return (Layer)super.clone();
+        return (Layer) super.clone();
     }
+
     public void update(Layer update) {
         update(update, null);
     }
 
     public void update(Layer update, Set<String> additionalUpdatableDetails) {
-        if(!getName().equals(update.getName())) {
+        if (!getName().equals(update.getName())) {
             throw new IllegalArgumentException("Cannot update layer with properties from layer with different name!");
         }
 
@@ -209,15 +209,15 @@ public class Layer implements Serializable {
         minScale = update.minScale;
         maxScale = update.maxScale;
 
-        if(!boundingBoxes.equals(update.boundingBoxes)) {
+        if (!boundingBoxes.equals(update.boundingBoxes)) {
             boundingBoxes.clear();
             boundingBoxes.putAll(update.boundingBoxes);
         }
-        if(!crsList.equals(update.crsList)) {
+        if (!crsList.equals(update.crsList)) {
             crsList.clear();
             crsList.addAll(update.crsList);
         }
-        if(!keywords.equals(update.keywords)) {
+        if (!keywords.equals(update.keywords)) {
             keywords.clear();
             keywords.addAll(update.keywords);
         }
@@ -225,11 +225,11 @@ public class Layer implements Serializable {
         // updateableDetails maps are used for clearing only details which are
         // set by loading metadata, leave details set by other code alone
 
-        for(String s: updatableDetails) {
+        for (String s : updatableDetails) {
             details.remove(s);
         }
-        if(additionalUpdatableDetails != null) {
-            for(String s: additionalUpdatableDetails) {
+        if (additionalUpdatableDetails != null) {
+            for (String s : additionalUpdatableDetails) {
                 details.remove(s);
             }
         }
@@ -264,7 +264,7 @@ public class Layer implements Serializable {
      * @return {@code true} if the layer has a featuretype, {@code false}
      * otherwise
      */
-    public boolean isBufferable(){
+    public boolean isBufferable() {
         return this.getFeatureType() != null;
     }
 
@@ -277,12 +277,12 @@ public class Layer implements Serializable {
      * stack to save layers yet to visit.
      *
      * @param visitor the Layer.Visitor
-     * @param em the entity manager to use
+     * @param em      the entity manager to use
      * @return {@code true} if visitor accepted all layers
      */
     public boolean accept(Layer.Visitor visitor, EntityManager em) {
-        for(Layer child: getCachedChildren(em)) {
-            if(!child.accept(visitor, em)) {
+        for (Layer child : getCachedChildren(em)) {
+            if (!child.accept(visitor, em)) {
                 return false;
             }
         }
@@ -290,9 +290,9 @@ public class Layer implements Serializable {
     }
 
     public String getDisplayName() {
-        if(StringUtils.isNotBlank(titleAlias)) {
+        if (StringUtils.isNotBlank(titleAlias)) {
             return titleAlias;
-        } else if(StringUtils.isNotBlank("title")) {
+        } else if (StringUtils.isNotBlank("title")) {
             return title;
         } else {
             return name;
@@ -312,66 +312,66 @@ public class Layer implements Serializable {
 
         o.put("userlayer", userlayer);
 
-        if(title != null) {
+        if (title != null) {
             o.put("title", title);
         }
-        if(titleAlias != null) {
+        if (titleAlias != null) {
             o.put("titleAlias", titleAlias);
         }
-        if(legendImageUrl != null) {
+        if (legendImageUrl != null) {
             o.put("legendImageUrl", legendImageUrl);
         }
-        if(minScale != null) {
-            if (minScale.isNaN()||minScale.isInfinite()){
-                log.error("Can't use minScale: "+minScale+ " of Servicelayer" +this.service.getName() +" - "+this.name );
-            }else{
+        if (minScale != null) {
+            if (minScale.isNaN() || minScale.isInfinite()) {
+                log.error("Can't use minScale: " + minScale + " of Servicelayer" + this.service.getName() + " - " + this.name);
+            } else {
                 o.put("minScale", minScale);
             }
         }
-        if(maxScale != null) {
-            if (maxScale.isNaN()||maxScale.isInfinite()){
-                log.error("Can't use maxScale: "+maxScale+ " of Servicelayer" +this.service.getName() +" - "+this.name );
-            }else{
+        if (maxScale != null) {
+            if (maxScale.isNaN() || maxScale.isInfinite()) {
+                log.error("Can't use maxScale: " + maxScale + " of Servicelayer" + this.service.getName() + " - " + this.name);
+            } else {
                 o.put("maxScale", maxScale);
             }
         }
 
         o.put("hasFeatureType", featureType != null);
-        if(featureType != null) {
+        if (featureType != null) {
             o.put("featureTypeName", featureType.getTypeName());
-            o.put("featureTypeId",featureType.getId());
+            o.put("featureTypeId", featureType.getId());
         }
 
         /* Only include "interesting" details in JSON */
 
-        if(!details.isEmpty()) {
+        if (!details.isEmpty()) {
             JSONObject d = new JSONObject();
             o.put("details", d);
-            for(Map.Entry<String,ClobElement> e: details.entrySet()) {
-                if(interestingDetails.contains(e.getKey())) {
+            for (Map.Entry<String, ClobElement> e : details.entrySet()) {
+                if (interestingDetails.contains(e.getKey())) {
                     d.put(e.getKey(), e.getValue().getValue());
                 }
             }
         }
 
-        if (tileset!=null){
-            o.put("tileHeight",tileset.getHeight());
-            o.put("tileWidth",tileset.getWidth());
-            if (tileset.getResolutions()!=null){
-                String resolutions="";
-                for (Double d : tileset.getResolutions()){
-                    if (resolutions.length()>0){
-                        resolutions+=",";
+        if (tileset != null) {
+            o.put("tileHeight", tileset.getHeight());
+            o.put("tileWidth", tileset.getWidth());
+            if (tileset.getResolutions() != null) {
+                String resolutions = "";
+                for (Double d : tileset.getResolutions()) {
+                    if (resolutions.length() > 0) {
+                        resolutions += ",";
                     }
-                    resolutions+=d.toString();
+                    resolutions += d.toString();
                 }
-                o.put("resolutions",resolutions);
+                o.put("resolutions", resolutions);
             }
         }
 
-        if (boundingBoxes.size()==1){
-            BoundingBox bbox=boundingBoxes.values().iterator().next();
-            o.put("bbox",bbox.toJSONObject());
+        if (boundingBoxes.size() == 1) {
+            BoundingBox bbox = boundingBoxes.values().iterator().next();
+            o.put("bbox", bbox.toJSONObject());
         }
         JSONArray sets = new JSONArray();
         o.put("matrixSets", sets);
@@ -385,8 +385,8 @@ public class Layer implements Serializable {
     public List<Layer> getCachedChildren(EntityManager em) {
         return service.getLayerChildrenCache(this, em);
     }
-    
-    public List<ApplicationLayer> getApplicationLayers(EntityManager em){
+
+    public List<ApplicationLayer> getApplicationLayers(EntityManager em) {
         List<ApplicationLayer> appLayers = em.createQuery("from ApplicationLayer where service = :service"
                 + " and layerName = :layerName").setParameter("service", service).setParameter("layerName", this.getName()).getResultList();
         return appLayers;
@@ -568,7 +568,7 @@ public class Layer implements Serializable {
     public void setBoundingBoxes(Map<CoordinateReferenceSystem, BoundingBox> boundingBoxes) {
         this.boundingBoxes = boundingBoxes;
     }
-    
+
     public List<TileMatrixSet> getMatrixSets() {
         return matrixSets;
     }
