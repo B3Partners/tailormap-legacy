@@ -40,7 +40,7 @@
     <properties>
         <flamingo.version>5.9.1-SNAPSHOT</flamingo.version>
         <java.version>11</java.version>
-        <node.version>v14.15.5</node.version>
+        <node.version>v14.16.1</node.version>
         <project.build.sourceVersion>${java.version}</project.build.sourceVersion>
         <project.build.targetVersion>${java.version}</project.build.targetVersion>
         <maven.compiler.source>${java.version}</maven.compiler.source>
