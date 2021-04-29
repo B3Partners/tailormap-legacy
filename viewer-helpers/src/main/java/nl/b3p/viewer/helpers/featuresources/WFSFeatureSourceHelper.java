@@ -182,7 +182,7 @@ public class WFSFeatureSourceHelper implements FeatureSourceHelper {
 
         Map logParams = new HashMap(params);
         if(fs.getPassword() != null) {
-            logParams.put(WFSDataStoreFactory.PASSWORD.key, new String(new char[fs.getPassword().length()]).replace("\0", "*"));
+            logParams.put(WFSDataStoreFactory.PASSWORD.key, String.valueOf(new char[fs.getPassword().length()]).replace("\0", "*"));
         }
         if(log.isDebugEnabled()) {
             log.debug("Opening datastore using parameters: " + logParams);

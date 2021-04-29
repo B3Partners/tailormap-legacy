@@ -162,7 +162,7 @@ public class JDBCFeatureSourceHelper implements FeatureSourceHelper {
         }
         Map logParams = new HashMap(params);
         if(fs.getPassword() != null) {
-            logParams.put("passwd", new String(new char[fs.getPassword().length()]).replace("\0", "*"));
+            logParams.put("passwd", String.valueOf(new char[fs.getPassword().length()]).replace("\0", "*"));
         }
         log.debug("Opening datastore using parameters: " + logParams);
         try {
