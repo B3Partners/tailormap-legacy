@@ -37,7 +37,7 @@ import nl.b3p.viewer.config.services.Layer;
 import nl.b3p.viewer.config.services.SimpleFeatureType;
 import nl.b3p.viewer.config.services.StyleLibrary;
 import nl.b3p.viewer.util.ChangeMatchCase;
-import nl.b3p.viewer.util.FeatureToJson;
+import nl.b3p.viewer.util.FilterHelper;
 import nl.b3p.viewer.util.FlamingoCQL;
 import nl.b3p.web.SharedSessionData;
 import org.apache.commons.io.IOUtils;
@@ -542,7 +542,7 @@ public class SldActionBean extends LocalizableActionBean implements ActionBean {
                     SimpleFeatureType sft=layer.getFeatureType();
                     Filter f =FlamingoCQL.toFilter(filter, em);
                     f = (Filter) f.accept(new ChangeMatchCase(false), null);
-                    f = FeatureToJson.reformatFilter(f, sft);
+                    f = FilterHelper.reformatFilter(f, sft);
                     String cqlFilter = ECQL.toCQL(f);
                     if(f == Filter.EXCLUDE){
                         String attributeName = sft.getAttributes().get(0).getName();

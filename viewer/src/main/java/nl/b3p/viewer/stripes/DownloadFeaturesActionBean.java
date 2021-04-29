@@ -58,7 +58,7 @@ import nl.b3p.viewer.features.ShapeDownloader;
 import nl.b3p.viewer.helpers.featuresources.FeatureSourceFactoryHelper;
 import nl.b3p.viewer.helpers.featuresources.WFSFeatureSourceHelper;
 import nl.b3p.viewer.util.ChangeMatchCase;
-import nl.b3p.viewer.util.FeatureToJson;
+import nl.b3p.viewer.util.FilterHelper;
 import nl.b3p.viewer.util.FlamingoCQL;
 import nl.b3p.web.SharedSessionData;
 import nl.b3p.web.stripes.ErrorMessageResolution;
@@ -418,7 +418,7 @@ public class DownloadFeaturesActionBean extends LocalizableApplicationActionBean
             Filter f = FlamingoCQL.toFilter(filter, em);
             f = (Filter) f.accept(new RemoveDistanceUnit(), null);
             f = (Filter) f.accept(new ChangeMatchCase(false), null);
-            f = FeatureToJson.reformatFilter(f, ft);
+            f = FilterHelper.reformatFilter(f, ft);
             q.setFilter(f);
         }
     }

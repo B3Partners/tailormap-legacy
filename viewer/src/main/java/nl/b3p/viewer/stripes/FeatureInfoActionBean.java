@@ -18,6 +18,7 @@ package nl.b3p.viewer.stripes;
 
 import net.sourceforge.stripes.controller.LifecycleStage;
 import nl.b3p.viewer.helpers.featuresources.FeatureSourceFactoryHelper;
+import nl.b3p.viewer.util.FilterHelper;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
@@ -340,7 +341,7 @@ public class FeatureInfoActionBean extends LocalizableApplicationActionBean impl
                         f = (Filter)f.accept(new RemoveDistanceUnit(), null);
                     }
 
-                    f = FeatureToJson.reformatFilter(f, layer.getFeatureType());
+                    f = FilterHelper.reformatFilter(f, layer.getFeatureType());
 
                     q.setFilter(f);
                     q.setMaxFeatures(limit +1);
@@ -466,7 +467,7 @@ public class FeatureInfoActionBean extends LocalizableApplicationActionBean impl
                         f = (Filter) f.accept(new RemoveDistanceUnit(), null);
                     }
 
-                    f = FeatureToJson.reformatFilter(f, layer.getFeatureType());
+                    f = FilterHelper.reformatFilter(f, layer.getFeatureType());
                     q.setFilter(f);
                     q.setMaxFeatures(limit + 1);
                     JSONArray features = executeQuery(al, layer.getFeatureType(), fs, q);

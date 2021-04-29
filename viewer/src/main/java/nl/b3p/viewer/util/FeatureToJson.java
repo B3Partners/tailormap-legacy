@@ -16,15 +16,6 @@
  */
 package nl.b3p.viewer.util;
 
-import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import nl.b3p.viewer.config.app.Application;
 import nl.b3p.viewer.config.app.ApplicationLayer;
 import nl.b3p.viewer.config.app.ConfiguredAttribute;
@@ -32,29 +23,27 @@ import nl.b3p.viewer.config.services.AttributeDescriptor;
 import nl.b3p.viewer.config.services.FeatureTypeRelation;
 import nl.b3p.viewer.config.services.FeatureTypeRelationKey;
 import nl.b3p.viewer.config.services.SimpleFeatureType;
-import static nl.b3p.viewer.stripes.FeatureInfoActionBean.FID;
-
 import nl.b3p.viewer.helpers.featuresources.FeatureSourceFactoryHelper;
 import nl.b3p.viewer.stripes.FileUploadActionBean;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
 import org.geotools.data.wfs.WFSDataStore;
-import org.geotools.factory.CommonFactoryFinder;
-import org.geotools.util.factory.GeoTools;
 import org.geotools.feature.FeatureIterator;
 import org.geotools.filter.text.cql2.CQL;
-import org.geotools.filter.visitor.SimplifyingFilterVisitor;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.filter.Filter;
-import org.opengis.filter.FilterFactory2;
-import org.opengis.filter.sort.SortBy;
-import org.opengis.filter.sort.SortOrder;
 
 import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
+
+import static nl.b3p.viewer.stripes.FeatureInfoActionBean.FID;
 
 /**
  *
@@ -78,7 +67,6 @@ public class FeatureToJson {
     private boolean returnNullval = false;
     private List<Long> attributesToInclude = new ArrayList();
     private static final int TIMEOUT = 5000;
-    private FilterFactory2 ff2 = CommonFactoryFinder.getFilterFactory2(GeoTools.getDefaultHints());
 
     public FeatureToJson(boolean arrays,boolean edit){
         this.arrays=arrays;
@@ -306,7 +294,7 @@ public class FeatureToJson {
                     try{
                         Query foreignQ = new Query(foreignFs.getName().toString());
                         //create filter
-                        Filter filter = createFilter(feature,rel);
+                        Filter filter = FilterHelper.createFilter(feature,rel);
                         if (filter==null){
                             continue;
                         }
@@ -354,7 +342,7 @@ public class FeatureToJson {
                         foreignFs.getDataStore().dispose();
                     }
                 }else{
-                    Filter filter = createFilter(feature,rel);
+                    Filter filter = FilterHelper.createFilter(feature,rel);
                     if (filter==null){
                         continue;
                     }
@@ -486,22 +474,7 @@ public class FeatureToJson {
                 }
             }
         }
-        this.setSortBy(q, sortAttribute, dir);
-    }
-    /**
-     * Set sort on query
-     * @param q the query on which the sort is added
-     * @param sort the name of the sort column
-     * @param dir sorting direction DESC or ASC
-     */
-    private void setSortBy(Query q,String sort, String dir){
-
-        if(sort != null) {
-            q.setSortBy(new SortBy[] {
-                ff2.sort(sort, "DESC".equals(dir) ? SortOrder.DESCENDING : SortOrder.ASCENDING)
-            });
-        }
-
+        FilterHelper.setSortBy(q, sortAttribute, dir);
     }
 
     private DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
@@ -517,74 +490,6 @@ public class FeatureToJson {
         } else {
             return value;
         }
-    }
-
-    private Filter createFilter(SimpleFeature feature,FeatureTypeRelation rel) {
-        List<Filter> filters = new ArrayList<Filter>();
-        for (FeatureTypeRelationKey key : rel.getRelationKeys()){
-            AttributeDescriptor rightSide = key.getRightSide();
-            AttributeDescriptor leftSide = key.getLeftSide();
-            Object value= feature.getAttribute(leftSide.getName());
-            if (value==null){
-                continue;
-            }
-            if (AttributeDescriptor.GEOMETRY_TYPES.contains(rightSide.getType()) &&
-                    AttributeDescriptor.GEOMETRY_TYPES.contains(leftSide.getType())){
-                filters.add(ff2.not(ff2.isNull(ff2.property(rightSide.getName()))));
-                filters.add(ff2.intersects(ff2.property(rightSide.getName()),ff2.literal(value)));
-            }else{
-                filters.add(ff2.equals(ff2.property(rightSide.getName()),ff2.literal(value)));
-            }
-        }
-        if (filters.size()>1){
-            return ff2.and(filters);
-        }else if (filters.size()==1){
-            return filters.get(0);
-        }else{
-            return null;
-        }
-    }
-
-    /**
-     *
-     * Optimze and reformat filter. Delegates to
-     * {@link #reformatFilter(org.opengis.filter.Filter, nl.b3p.viewer.config.services.SimpleFeatureType, boolean)}
-     * with the {@code includeRelations} set to {@code true}.
-     *
-     * @param filter the filter to process
-     * @param ft featuretype to apply filter
-     * @return reformatted / optimised filter
-     * @throws Exception if any
-     * @see #reformatFilter(org.opengis.filter.Filter,
-     * nl.b3p.viewer.config.services.SimpleFeatureType, boolean)
-     */
-    public static Filter reformatFilter(Filter filter, SimpleFeatureType ft) throws Exception {
-        return reformatFilter(filter, ft, true);
-    }
-
-    /**
-     * Optimze and reformat filter.
-     *
-     * @param filter the filter to process
-     * @param ft featuretype to apply filter
-     * @param includeRelations whether to include related (joined) data
-     * @return reformatted / optimised filter
-     * @throws Exception if any
-     */
-    public static Filter reformatFilter(Filter filter, SimpleFeatureType ft, boolean includeRelations) throws Exception {
-        if (Filter.INCLUDE.equals(filter) || Filter.EXCLUDE.equals(filter)) {
-            return filter;
-        }
-        if (includeRelations) {
-            for (FeatureTypeRelation rel : ft.getRelations()) {
-                if (FeatureTypeRelation.JOIN.equals(rel.getType())) {
-                    filter = reformatFilter(filter, rel.getForeignFeatureType(), includeRelations);
-                    filter = (Filter) filter.accept(new ValidFilterExtractor(rel), filter);
-                }
-            }
-        }
-        filter = (Filter) filter.accept(new SimplifyingFilterVisitor(), null);
-        return filter;
     }
 
 }
