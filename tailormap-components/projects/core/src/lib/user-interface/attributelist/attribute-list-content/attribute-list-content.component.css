@@ -1,0 +1,10 @@
+.table-container {
+  max-width: 100%;
+  overflow: auto;
+  padding: 0 6px;
+  height: 100%;
+}
+
+mat-spinner {
+  margin: 16px;
+}

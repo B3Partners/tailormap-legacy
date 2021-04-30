@@ -140,7 +140,7 @@ export const clearCountForFeatureTypes = createAction(
 
 export const loadStatisticsForColumn = createAction(
   `${attributeListActionsPrefix} Load Statistics For Column`,
-  props<{ layerId: string; featureType: number; column: string; statisticType: StatisticType }>(),
+  props<{ layerId: string; featureType: number; column: string; statisticType: StatisticType; dataType: string }>(),
 );
 
 export const statisticsForColumnLoaded = createAction(

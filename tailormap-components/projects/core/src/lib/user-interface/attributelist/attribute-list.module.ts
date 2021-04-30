@@ -16,14 +16,13 @@ import { attributeListReducer } from './state/attribute-list.reducer';
 import { createCustomElement } from '@angular/elements';
 import { EffectsModule } from '@ngrx/effects';
 import { AttributeListEffects } from './state/attribute-list.effects';
-import { AttributeListTableComponent } from './attribute-list-table/attribute-list-table.component';
-import { AttributeListCheckboxColumnComponent } from './attribute-list-table/attribute-list-checkbox-column/attribute-list-checkbox-column.component';
-import { AttributeListDetailsColumnComponent } from './attribute-list-table/attribute-list-details-column/attribute-list-details-column.component';
+import { AttributeListContentComponent } from './attribute-list-content/attribute-list-content.component';
 import { AttributeListTreeComponent } from './attribute-list-tree/attribute-list-tree.component';
 import { AttributeListTreeDialogComponent } from './attribute-list-tree-dialog/attribute-list-tree-dialog.component';
 import { AttributeListColumnSelectionComponent } from './attribute-list-column-selection/attribute-list-column-selection.component';
 import { AttributeListFilterComponent } from './attribute-list-filter/attribute-list-filter.component';
 import { AttributeListManagerService } from './services/attribute-list-manager.service';
+import { AttributeListTableComponent } from './attribute-list-table/attribute-list-table.component';
 
 @NgModule({
   declarations: [
@@ -34,13 +33,12 @@ import { AttributeListManagerService } from './services/attribute-list-manager.s
     AttributeListLayernameChooserComponent,
     AttributeListComponent,
     AttributeListButtonComponent,
-    AttributeListTableComponent,
-    AttributeListCheckboxColumnComponent,
-    AttributeListDetailsColumnComponent,
+    AttributeListContentComponent,
     AttributeListTreeComponent,
     AttributeListTreeDialogComponent,
     AttributeListColumnSelectionComponent,
     AttributeListFilterComponent,
+    AttributeListTableComponent,
   ],
   imports: [
     CommonModule,

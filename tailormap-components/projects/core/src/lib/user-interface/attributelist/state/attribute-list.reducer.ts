@@ -473,7 +473,7 @@ const onLoadStatisticsForColumn = (
       tab.statistics,
       (s => s.name === payload.column),
       (s => ({...s, processing: true, statisticType: payload.statisticType})),
-      { name: payload.column, statisticType: payload.statisticType, processing: true, statisticValue: null },
+      { name: payload.column, statisticType: payload.statisticType, processing: true, statisticValue: null, dataType: payload.dataType },
     ),
   };
 });
