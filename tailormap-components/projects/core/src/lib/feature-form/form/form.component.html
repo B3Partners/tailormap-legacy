@@ -6,14 +6,17 @@
   <div class="form-container">
     <div class="form">
       <tailormap-form-creator #formCreator
-                             [feature]="feature"
-                             [features]="features"
-                             [formConfig]="formConfig"
-                             [isBulk]="isBulk"
-                             (formChanged)="formChanged($event)"></tailormap-form-creator>
+                              [feature]="feature"
+                              [formTabs]="formTabs"
+                              [features]="features"
+                              [formConfig]="formConfig"
+                              [isBulk]="isBulk"
+                              (formChanged)="formChanged($event)"></tailormap-form-creator>
     </div>
   </div>
   <div class="bottom-bar">
+
+    <div class="push-buttons"></div>
 
     <button mat-flat-button color="accent" (click)="formCreator.resetForm()" *ngIf="formCreator.editing$ | async">
       Annuleren
