@@ -233,15 +233,7 @@ const onUpdateSort = (
   ),
 });
 
-const getRelationAttributes = (state: AttributeListState, layerId: string, featureType: number): string[] => {
-  const featureData = state.featureTypeData.find(t => t.featureType === featureType && t.layerId === layerId);
-  if (featureData) {
-    return featureData.attributeRelationKeys || [];
-  }
-  return [];
-};
-
-const getRelatedAttributesForRow = (row: AttributeListRowModel, relationAttributes: string[]) => {
+const getRelatedAttributesForRow = (row: AttributeListRowModel, relationAttributes: string[]): CheckedFeature => {
   const relationAttributesForRow = {
     rowId: row.rowId,
   };
@@ -264,7 +256,7 @@ const onToggleCheckedAllRows = (
   const featureData = state.featureTypeData[featureTypeIdx];
   const someUnchecked = featureData.rows.findIndex(row => !row._checked) !== -1;
   const checkedRows = new Map<string, CheckedFeature>(featureData.checkedFeatures.map(c => [ c.rowId, c ]));
-  const relationAttributes = getRelationAttributes(state, payload.layerId, payload.featureType);
+  const relationAttributes = featureData.attributeRelationKeys;
   featureData.rows.forEach(row => {
     if (someUnchecked) {
       checkedRows.set(row.rowId, getRelatedAttributesForRow(row, relationAttributes));
@@ -300,13 +292,7 @@ const onUpdateRowChecked = (
     return state;
   }
   const row = featureData.rows[rowIdx];
-  const relationAttributes = getRelationAttributes(state, payload.layerId, payload.featureType);
-  const checkedRows = new Map<string, CheckedFeature>(featureData.checkedFeatures.map(c => [ c.rowId, c ]));
-  if (payload.checked) {
-    checkedRows.set(row.rowId, getRelatedAttributesForRow(row, relationAttributes));
-  } else {
-    checkedRows.delete(payload.rowId);
-  }
+  const idx = featureData.checkedFeatures.findIndex(c => c.rowId === payload.rowId);
   return {
     ...state,
     featureTypeData: [
@@ -321,7 +307,11 @@ const onUpdateRowChecked = (
           },
           ...featureData.rows.slice(rowIdx + 1),
         ],
-        checkedFeatures: Array.from(checkedRows.values()),
+        checkedFeatures: [
+          ...featureData.checkedFeatures.slice(0, idx),
+          ...(payload.checked ? [ getRelatedAttributesForRow(row, featureData.attributeRelationKeys) ] : []),
+          ...featureData.checkedFeatures.slice(idx + 1),
+        ],
       },
       ...state.featureTypeData.slice(featureTypeIdx + 1),
     ],

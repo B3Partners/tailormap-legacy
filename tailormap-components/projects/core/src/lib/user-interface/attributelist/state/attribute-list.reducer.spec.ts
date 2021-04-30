@@ -140,4 +140,31 @@ describe('AttributeListReducer', () => {
     expect(updatedState2.featureTypeData[0].totalCount).toEqual(0);
   });
 
+  it ('Handles AttributeListActions.updateRowChecked', () => {
+    const featureData: AttributeListFeatureTypeData = {
+      ...dummyFeatureData,
+      rows: createDummyRows(10, rowId => ({ featureId: `feature-${rowId}` })),
+      attributeRelationKeys: [ 'featureId' ],
+    };
+    const state: AttributeListState = { ...initialState, tabs: [ dummyTab ], featureTypeData: [ featureData ]};
+    const createUpdateRowCheckedAction = (rowId: string, checked: boolean) => AttributeListActions.updateRowChecked({
+      layerId: dummyFeatureData.layerId,
+      rowId,
+      featureType: featureData.featureType,
+      checked,
+    });
+
+    const action = createUpdateRowCheckedAction('row-5', true);
+    const updatedState = attributeListReducer(state, action);
+    expect(updatedState.featureTypeData[0].checkedFeatures).toEqual([{ rowId: 'row-5', featureId: 'feature-5' }]);
+
+    const action2 = createUpdateRowCheckedAction('row-6', true);
+    const updatedState2 = attributeListReducer(updatedState, action2);
+    expect(updatedState2.featureTypeData[0].checkedFeatures).toEqual([{ rowId: 'row-6', featureId: 'feature-6' }, { rowId: 'row-5', featureId: 'feature-5' }]);
+
+    const action3 = createUpdateRowCheckedAction('row-5', false);
+    const updatedState3 = attributeListReducer(updatedState2, action3);
+    expect(updatedState3.featureTypeData[0].checkedFeatures).toEqual([{ rowId: 'row-6', featureId: 'feature-6' }]);
+  });
+
 });

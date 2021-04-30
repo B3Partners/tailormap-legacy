@@ -7,6 +7,11 @@ export interface CheckedFeature extends Record<string, string> {
   rowId: string;
 }
 
+export interface ParentRelationKey {
+  childAttribute: string;
+  parentAttribute: string;
+}
+
 export interface AttributeListFeatureTypeData {
   layerId: string;
   featureType: number;
@@ -17,6 +22,7 @@ export interface AttributeListFeatureTypeData {
   showPassportColumnsOnly: boolean;
   rows: AttributeListRowModel[];
   attributeRelationKeys: string[];
+  parentAttributeRelationKeys?: ParentRelationKey[];
   checkedFeatures: CheckedFeature[];
   filter: AttributeFilterModel[];
   pageSize: number;
