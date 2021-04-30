@@ -66,6 +66,12 @@ export interface IndexedFeatureAttributes {
 
 export interface TabbedField {
   tabId: number;
+  label: string;
+  columns: TabColumn[];
+}
+
+export interface TabColumn {
+  columnId: number;
   attributes: Attribute[];
 }
 
