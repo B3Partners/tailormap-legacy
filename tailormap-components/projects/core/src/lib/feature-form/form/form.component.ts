@@ -1,8 +1,8 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit } from '@angular/core';
 import { ConfirmDialogService } from '../../shared/confirm-dialog/confirm-dialog.service';
 import { filter, map, switchMap, take, takeUntil } from 'rxjs/operators';
 import { combineLatest, Observable, of, Subject } from 'rxjs';
-import { FormConfiguration } from './form-models';
+import { Attribute, FormConfiguration, TabbedField, TabColumn } from './form-models';
 import { Feature } from '../../shared/generated';
 import { FormActionsService } from '../form-actions/form-actions.service';
 import { MetadataService } from '../../application/services/metadata.service';
@@ -47,6 +47,7 @@ export class FormComponent implements OnDestroy, OnInit {
   public isHidden$: Observable<boolean>;
   public editing$: Observable<boolean>;
   public isMultiFormWorkflow$: Observable<boolean>;
+  public formTabs: TabbedField[] = [];
 
   constructor(
     private store$: Store<FormState | WorkflowState>,
@@ -55,6 +56,7 @@ export class FormComponent implements OnDestroy, OnInit {
     private featureInitializerService: FeatureInitializerService,
     public actions: FormActionsService,
     private editFeatureGeometryService: EditFeatureGeometryService,
+    private formElement: ElementRef,
   ) {
   }
 
@@ -116,6 +118,41 @@ export class FormComponent implements OnDestroy, OnInit {
         this.formsForNew.push(allFormConfigs.get(relationName));
       }
     });
+    this.formTabs = this.prepareFormConfig();
+    this.formElement.nativeElement.style.setProperty('--overlay-panel-form-columns', `${this.getColumnCount()}`);
+  }
+
+  private prepareFormConfig(): Array<TabbedField> {
+    const tabbedFields = [];
+    for (let tabNr = 1; tabNr <= this.formConfig.tabs; tabNr++) {
+      tabbedFields.push({
+        tabId: tabNr,
+        label: this.formConfig.tabConfig[tabNr],
+        columns: this.getColumns(tabNr),
+      });
+    }
+    return tabbedFields;
+  }
+
+  public getColumns(tabNr: number): TabColumn[] {
+    const columns: TabColumn[] = [];
+    const columnCount = this.getColumnCount();
+    for (let i = 1; i <= columnCount; i++) {
+      columns.push({
+        columnId: i,
+        attributes: this.getAttributes(i, tabNr),
+      });
+    }
+    return columns;
+  }
+
+  public getAttributes(column: number, tabNr: number): Attribute[] {
+    return this.formConfig.fields.filter(attr => attr.column === column && attr.tab === tabNr);
+  }
+
+  private getColumnCount() {
+    const columnNumbers = this.formConfig.fields.map(field => field.column);
+    return Math.max(...columnNumbers);
   }
 
   public ngOnDestroy() {

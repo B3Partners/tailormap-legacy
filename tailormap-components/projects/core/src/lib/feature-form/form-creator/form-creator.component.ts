@@ -51,7 +51,8 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
   @Output()
   public formChanged = new EventEmitter<boolean>();
 
-  public tabbedConfig: Array<TabbedField> = [];
+  @Input()
+  public formTabs: TabbedField[] = [];
 
   public trackByTabId = (idx, tab: TabbedField) => tab.tabId;
 
@@ -66,7 +67,6 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
   private destroyed = new Subject();
 
   public ngOnChanges() {
-    this.tabbedConfig = this.prepareFormConfig();
     if (this.feature) {
       this.indexedAttributes = FormCreatorHelpers.convertFeatureToIndexed(this.feature, this.formConfig);
       this.createFormControls();
@@ -82,15 +82,6 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
     this.subscriptions.unsubscribe();
     this.destroyed.next();
     this.destroyed.complete();
-  }
-
-  private prepareFormConfig(): Array<TabbedField> {
-    const tabbedFields = [];
-    const attrs = this.formConfig.fields;
-    for (let tabNr = 1; tabNr <= this.formConfig.tabs; tabNr++) {
-      tabbedFields.push({ tabId: tabNr, attributes: attrs.filter(attr => attr.tab === tabNr) });
-    }
-    return tabbedFields;
   }
 
   private createFormControls() {
@@ -209,4 +200,5 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
     }
     return features;
   }
+
 }
