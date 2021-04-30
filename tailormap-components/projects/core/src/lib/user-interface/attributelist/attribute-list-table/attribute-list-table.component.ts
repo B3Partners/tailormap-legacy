@@ -132,6 +132,10 @@ export class AttributeListTableComponent {
     return row.rowId;
   }
 
+  public trackByColumnId(idx: number, column: AttributeListColumnModel) {
+    return column.id;
+  }
+
   public onHeaderCheckClick(): void {
     this.headerCheckboxChanged.emit();
   }

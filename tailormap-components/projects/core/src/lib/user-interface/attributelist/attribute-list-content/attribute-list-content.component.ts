@@ -122,11 +122,11 @@ export class AttributeListContentComponent implements OnInit, OnDestroy {
   }
 
   public onHeaderCheckClick(): void {
-    this.store$.dispatch(toggleCheckedAllRows({ featureType: this.featureType }));
+    this.store$.dispatch(toggleCheckedAllRows({ layerId: this.layerId, featureType: this.featureType }));
   }
 
   public onRowCheckClick(row: { rowId: string; checked: boolean }): void {
-    this.store$.dispatch(updateRowChecked({ featureType: this.featureType, rowId: row.rowId, checked: row.checked }));
+    this.store$.dispatch(updateRowChecked({ layerId: this.layerId, featureType: this.featureType, rowId: row.rowId, checked: row.checked }));
   }
 
   public onStatisticsHelp(): void {
@@ -137,7 +137,7 @@ export class AttributeListContentComponent implements OnInit, OnDestroy {
   }
 
   public onRowExpandClick(row: { rowId: string; expanded: boolean }): void {
-    this.store$.dispatch(updateRowExpanded({ featureType: this.featureType, rowId: row.rowId, expanded: row.expanded }));
+    this.store$.dispatch(updateRowExpanded({ layerId: this.layerId, featureType: this.featureType, rowId: row.rowId, expanded: row.expanded }));
   }
 
 }

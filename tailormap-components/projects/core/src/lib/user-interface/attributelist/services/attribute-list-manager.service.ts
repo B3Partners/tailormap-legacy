@@ -13,7 +13,7 @@ import { MetadataService } from '../../../application/services/metadata.service'
 import { AttributeListColumnModel } from '../models/attribute-list-column-models';
 import { Attribute, FormConfiguration } from '../../../feature-form/form/form-models';
 import { AttributeTypeHelper } from '../../../application/helpers/attribute-type.helper';
-import { AttributeMetadataResponse } from '../../../shared/attribute-service/attribute-models';
+import { AttributeMetadataResponse, Relation } from '../../../shared/attribute-service/attribute-models';
 import { AttributeListConfig } from '../models/attribute-list.config';
 import { AttributeListFeatureTypeData } from '../models/attribute-list-feature-type-data.model';
 import { IdService } from '../../../shared/id-service/id.service';
@@ -35,7 +35,6 @@ export class AttributeListManagerService implements OnDestroy {
     loadingData: false,
     featureType: 0,
     selectedRelatedFeatureType: 0,
-    relatedFeatures: [],
   };
 
   public static readonly EMPTY_FEATURE_TYPE_DATA: AttributeListFeatureTypeData = {
@@ -44,8 +43,10 @@ export class AttributeListManagerService implements OnDestroy {
     showPassportColumnsOnly: true,
     featureType: 0,
     featureTypeName: '',
+    layerFeatureType: 0,
     filter: [],
     rows: [],
+    attributeRelationKeys: [],
     checkedFeatures: [],
     pageIndex: 0,
     pageSize: 10,
@@ -92,13 +93,13 @@ export class AttributeListManagerService implements OnDestroy {
     this.destroyed.complete();
   }
 
-  private getClosedTabs(visibleLayers: TailormapAppLayer[], currentTabs: AttributeListTabModel[]): number[] {
+  private getClosedTabs(visibleLayers: TailormapAppLayer[], currentTabs: AttributeListTabModel[]): string[] {
     if (!currentTabs || currentTabs.length === 0) {
       return [];
     }
     return currentTabs
       .filter(tab => visibleLayers.findIndex(l => l.id === tab.layerId) === -1)
-      .map<number>(tab => tab.featureType);
+      .map<string>(tab => tab.layerId);
   }
 
   private getNewTabs$(
@@ -135,39 +136,68 @@ export class AttributeListManagerService implements OnDestroy {
           layerName,
           featureType: metadata.featureType,
           selectedRelatedFeatureType: metadata.featureType,
-          relatedFeatures: metadata.relations || [],
         };
         const featureData: AttributeListFeatureTypeData[] = [
           this.createDataForFeatureType(
             metadata.featureType,
             layer.alias || layerName,
             metadata.featureType,
+            metadata.featureType,
             pageSize,
             layer.id,
             metadata,
             formConfigs.get(LayerUtils.sanitizeLayername(layerName)),
           ),
-          ...(metadata.relations || []).map(featureType => {
-            return this.createDataForFeatureType(
-              featureType.foreignFeatureType,
-              featureType.foreignFeatureTypeName,
-              metadata.featureType,
-              pageSize,
-              layer.id,
-              metadata,
-              formConfigs.get(LayerUtils.sanitizeLayername(featureType.foreignFeatureTypeName)),
-            );
-          }),
+          ...this.getRelatedFeatureData(metadata.relations || [], metadata.featureType, metadata.featureType, layer, pageSize, metadata, formConfigs),
         ];
         return { tab, featureData };
       }),
     );
   }
 
+  private getRelatedFeatureData(
+    relations: Relation[],
+    parentFeatureType: number,
+    layerFeatureType: number,
+    layer: TailormapAppLayer,
+    pageSize = 10,
+    metadata: AttributeMetadataResponse,
+    formConfigs: Map<string, FormConfiguration>,
+  ): AttributeListFeatureTypeData[] {
+    const relatedData = [];
+    relations.forEach(relation => {
+      const featureData = this.createDataForFeatureType(
+        relation.foreignFeatureType,
+        relation.foreignFeatureTypeName,
+        parentFeatureType,
+        layerFeatureType,
+        pageSize,
+        layer.id,
+        metadata,
+        formConfigs.get(LayerUtils.sanitizeLayername(relation.foreignFeatureTypeName)),
+      );
+      relatedData.push(featureData);
+      if (relation.relations && relation.relations.length > 0) {
+        const childRelations = this.getRelatedFeatureData(
+          relation.relations,
+          relation.foreignFeatureType,
+          layerFeatureType,
+          layer,
+          pageSize,
+          metadata,
+          formConfigs,
+        );
+        relatedData.push(...childRelations);
+      }
+    });
+    return relatedData;
+  }
+
   private createDataForFeatureType(
     featureType: number,
     featureTypeName: string,
     parentFeatureType: number,
+    layerFeatureType: number,
     pageSize: number,
     layerId: string,
     metadata: AttributeMetadataResponse,
@@ -179,6 +209,7 @@ export class AttributeListManagerService implements OnDestroy {
       featureType,
       featureTypeName,
       parentFeatureType: featureType !== parentFeatureType ? parentFeatureType : undefined,
+      layerFeatureType,
       columns: this.getColumnsForLayer(metadata, featureType, formConfig),
       showPassportColumnsOnly: !!formConfig,
       pageSize,

@@ -48,7 +48,7 @@
   </ng-container>
 
   <!-- Columns with data -->
-  <ng-container *ngFor="let col of columns" matColumnDef="{{col.name}}">
+  <ng-container *ngFor="let col of columns; trackBy: trackByColumnId" matColumnDef="{{col.name}}">
     <!-- Header -->
     <mat-header-cell *matHeaderCellDef
                      class="header-cell--with-filter header-cell--with-sort"

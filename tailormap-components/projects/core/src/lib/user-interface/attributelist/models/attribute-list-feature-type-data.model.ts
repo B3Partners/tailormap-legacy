@@ -11,10 +11,12 @@ export interface AttributeListFeatureTypeData {
   layerId: string;
   featureType: number;
   featureTypeName: string;
+  layerFeatureType: number;
   parentFeatureType?: number;
   columns: AttributeListColumnModel[];
   showPassportColumnsOnly: boolean;
   rows: AttributeListRowModel[];
+  attributeRelationKeys: string[];
   checkedFeatures: CheckedFeature[];
   filter: AttributeFilterModel[];
   pageSize: number;

@@ -3,7 +3,6 @@ import * as AttributeListActions from './attribute-list.actions';
 import { AttributeListState, initialAttributeListState } from './attribute-list.state';
 import { AttributeListTabModel } from '../models/attribute-list-tab.model';
 import { AttributeListRowModel } from '../models/attribute-list-row.model';
-import { UpdateAttributeListStateHelper } from '../helpers/update-attribute-list-state.helper';
 import { AttributeListFeatureTypeData, CheckedFeature } from '../models/attribute-list-feature-type-data.model';
 import { AttributeListStatisticColumnModel } from '../models/attribute-list-statistic-column.model';
 import { AttributeFilterModel } from '../../../shared/models/attribute-filter.model';
@@ -37,12 +36,11 @@ const onChangeAttributeTabs = (
   payload: ReturnType<typeof AttributeListActions.changeAttributeListTabs>,
 ): AttributeListState => {
   const tabs = [...state.tabs]
-    .filter(t => payload.closedTabs.indexOf(t.featureType) === -1)
+    .filter(t => payload.closedTabs.indexOf(t.layerId) === -1)
     .concat(payload.newTabs);
   const featureTypeData = [...state.featureTypeData]
     .filter(d => {
-      const featureType = d.parentFeatureType || d.featureType;
-      return payload.closedTabs.indexOf(featureType) === -1;
+      return payload.closedTabs.indexOf(d.layerId) === -1;
     })
     .concat(payload.newFeatureData);
   return {
@@ -102,6 +100,7 @@ const updateTab = (
 
 const updateFeatureData = (
   state: AttributeListState,
+  layerId: string,
   featureType: number,
   updateFn: (tab: AttributeListFeatureTypeData) => AttributeListFeatureTypeData,
 ): AttributeListState => {
@@ -109,7 +108,7 @@ const updateFeatureData = (
     ...state,
     featureTypeData: updateArrayItemInState<AttributeListFeatureTypeData>(
       state.featureTypeData,
-      (t => t.featureType === featureType),
+      (t => t.featureType === featureType && t.layerId === layerId),
       updateFn,
     ),
   };
@@ -117,11 +116,12 @@ const updateFeatureData = (
 
 const updateTabRow = (
   state: AttributeListState,
+  layerId: string,
   featureType: number,
   rowId: string,
   updateFn: (tab: AttributeListRowModel) => AttributeListRowModel,
 ): AttributeListState => {
-  return updateFeatureData(state, featureType, data => {
+  return updateFeatureData(state, layerId, featureType, data => {
     return {
       ...data,
       rows: updateArrayItemInState<AttributeListRowModel>(data.rows, r => r.rowId === rowId, updateFn),
@@ -146,15 +146,15 @@ const onLoadDataForTabSuccess = (
       (tab => ({ ...tab, loadingData: false })),
     ),
     featureTypeData: state.featureTypeData.map<AttributeListFeatureTypeData>(featureTypeData => {
-      if (payload.data.featureType !== featureTypeData.featureType) {
-        return featureTypeData;
+      if (payload.data.featureType === featureTypeData.featureType && featureTypeData.layerId === payload.layerId) {
+        return {
+          ...featureTypeData,
+          errorMessage: payload.data.errorMessage,
+          totalCount: payload.data.totalCount,
+          rows: payload.data.rows,
+        };
       }
-      return {
-        ...featureTypeData,
-        errorMessage: payload.data.errorMessage,
-        totalCount: payload.data.totalCount,
-        rows: payload.data.rows,
-      };
+      return featureTypeData;
     }),
   };
 };
@@ -171,7 +171,7 @@ const onLoadDataForFeatureTypeSuccess = (
   ),
   featureTypeData: updateArrayItemInState<AttributeListFeatureTypeData>(
     state.featureTypeData,
-    d => d.featureType === payload.featureType,
+    d => d.featureType === payload.featureType && d.layerId === payload.layerId,
     data => ({
       ...data,
       errorMessage: payload.data.errorMessage,
@@ -190,14 +190,14 @@ const onLoadTotalCountForTabSuccess = (
     ...state,
     featureTypeData: state.featureTypeData.map(data => ({
       ...data,
-      totalCount: dict.has(data.featureType) ? dict.get(data.featureType) : data.totalCount,
+      totalCount: dict.has(data.featureType) && data.layerId === payload.layerId ? dict.get(data.featureType) : data.totalCount,
     })),
   };
 };
 
-const onUpdatePageOrSort = (
+const onUpdatePage = (
   state: AttributeListState,
-  payload: ReturnType<typeof AttributeListActions.updatePage | typeof AttributeListActions.updateSort>,
+  payload: ReturnType<typeof AttributeListActions.updatePage>,
 ): AttributeListState => ({
   ...state,
   tabs: updateArrayItemInState<AttributeListTabModel>(
@@ -207,17 +207,36 @@ const onUpdatePageOrSort = (
   ),
   featureTypeData: updateArrayItemInState<AttributeListFeatureTypeData>(
     state.featureTypeData,
-    d => d.featureType === payload.featureType,
-    data => UpdateAttributeListStateHelper.updateDataForAction(payload, data),
+    d => d.featureType === payload.featureType && d.layerId === payload.layerId,
+    data => ({ ...data, pageIndex: payload.page }),
   ),
 });
 
-const getRelationAttributes = (state: AttributeListState, featureType: number): string[] => {
-  const tabForFeature = state.tabs.find(t => t.featureType === featureType);
-  if (tabForFeature) {
-    return tabForFeature.relatedFeatures.reduce<string[]>((leftSideAttributes, relatedFeature) => {
-      return leftSideAttributes.concat(relatedFeature.relationKeys.map(rk => rk.leftSideName));
-    }, []);
+const onUpdateSort = (
+  state: AttributeListState,
+  payload: ReturnType<typeof AttributeListActions.updateSort>,
+): AttributeListState => ({
+  ...state,
+  tabs: updateArrayItemInState<AttributeListTabModel>(
+    state.tabs,
+    (t => t.layerId === payload.layerId),
+    (tab => ({ ...tab, loadingData: true })),
+  ),
+  featureTypeData: updateArrayItemInState<AttributeListFeatureTypeData>(
+    state.featureTypeData,
+    d => d.featureType === payload.featureType && d.layerId === payload.layerId,
+    data => ({
+      ...data,
+      sortedColumn: payload.direction !== '' ? payload.column : '',
+      sortDirection: payload.direction === 'desc' ? 'DESC' : 'ASC',
+    }),
+  ),
+});
+
+const getRelationAttributes = (state: AttributeListState, layerId: string, featureType: number): string[] => {
+  const featureData = state.featureTypeData.find(t => t.featureType === featureType && t.layerId === layerId);
+  if (featureData) {
+    return featureData.attributeRelationKeys || [];
   }
   return [];
 };
@@ -238,14 +257,14 @@ const onToggleCheckedAllRows = (
   state: AttributeListState,
   payload: ReturnType<typeof AttributeListActions.toggleCheckedAllRows>,
 ): AttributeListState => {
-  const featureTypeIdx = state.featureTypeData.findIndex(d => d.featureType === payload.featureType);
+  const featureTypeIdx = state.featureTypeData.findIndex(d => d.featureType === payload.featureType && d.layerId === payload.layerId);
   if (featureTypeIdx === -1) {
     return state;
   }
   const featureData = state.featureTypeData[featureTypeIdx];
   const someUnchecked = featureData.rows.findIndex(row => !row._checked) !== -1;
   const checkedRows = new Map<string, CheckedFeature>(featureData.checkedFeatures.map(c => [ c.rowId, c ]));
-  const relationAttributes = getRelationAttributes(state, payload.featureType);
+  const relationAttributes = getRelationAttributes(state, payload.layerId, payload.featureType);
   featureData.rows.forEach(row => {
     if (someUnchecked) {
       checkedRows.set(row.rowId, getRelatedAttributesForRow(row, relationAttributes));
@@ -271,7 +290,7 @@ const onUpdateRowChecked = (
   state: AttributeListState,
   payload: ReturnType<typeof AttributeListActions.updateRowChecked>,
 ): AttributeListState => {
-  const featureTypeIdx = state.featureTypeData.findIndex(d => d.featureType === payload.featureType);
+  const featureTypeIdx = state.featureTypeData.findIndex(d => d.featureType === payload.featureType && d.layerId === payload.layerId);
   if (featureTypeIdx === -1) {
     return state;
   }
@@ -281,7 +300,7 @@ const onUpdateRowChecked = (
     return state;
   }
   const row = featureData.rows[rowIdx];
-  const relationAttributes = getRelationAttributes(state, payload.featureType);
+  const relationAttributes = getRelationAttributes(state, payload.layerId, payload.featureType);
   const checkedRows = new Map<string, CheckedFeature>(featureData.checkedFeatures.map(c => [ c.rowId, c ]));
   if (payload.checked) {
     checkedRows.set(row.rowId, getRelatedAttributesForRow(row, relationAttributes));
@@ -312,12 +331,12 @@ const onUpdateRowChecked = (
 const onUpdateRowExpanded = (
   state: AttributeListState,
   payload: ReturnType<typeof AttributeListActions.updateRowExpanded>,
-): AttributeListState => updateTabRow(state, payload.featureType, payload.rowId, row => ({ ...row, _expanded: payload.expanded }));
+): AttributeListState => updateTabRow(state, payload.layerId, payload.featureType, payload.rowId, row => ({ ...row, _expanded: payload.expanded }));
 
 const onUpdateRowSelected = (
   state: AttributeListState,
   payload: ReturnType<typeof AttributeListActions.updateRowSelected>,
-): AttributeListState => updateFeatureData(state, payload.featureType, featureData => {
+): AttributeListState => updateFeatureData(state, payload.layerId, payload.featureType, featureData => {
   return {
     ...featureData,
     rows: featureData.rows.map(row => {
@@ -333,14 +352,15 @@ const onSetSelectedFeatureType = (
   state: AttributeListState,
   payload: ReturnType<typeof AttributeListActions.setSelectedFeatureType>,
 ): AttributeListState => updateTab(state, payload.layerId, tab => ({
-  ...UpdateAttributeListStateHelper.updateTabForAction(payload, tab),
+  ...tab,
+  selectedRelatedFeatureType: payload.featureType,
   loadingData: true,
 }));
 
 const onChangeColumnPosition = (
   state: AttributeListState,
   payload: ReturnType<typeof AttributeListActions.changeColumnPosition>,
-): AttributeListState => updateFeatureData(state, payload.featureType, data => {
+): AttributeListState => updateFeatureData(state, payload.layerId, payload.featureType, data => {
   const columnIdx = data.columns.findIndex(col => col.id === payload.columnId);
   const siblingIndex = payload.previousColumn === null ? 0 : data.columns.findIndex(col => col.id === payload.previousColumn);
   if (columnIdx === -1 || siblingIndex === -1) {
@@ -358,7 +378,7 @@ const onChangeColumnPosition = (
 const onToggleColumnVisible = (
   state: AttributeListState,
   payload: ReturnType<typeof AttributeListActions.toggleColumnVisible>,
-): AttributeListState => updateFeatureData(state, payload.featureType, data => {
+): AttributeListState => updateFeatureData(state, payload.layerId, payload.featureType, data => {
   const columnIdx = data.columns.findIndex(col => col.id === payload.columnId);
   if (columnIdx === -1) {
     return data;
@@ -380,13 +400,15 @@ const onToggleShowPassportColumns = (
   state: AttributeListState,
   payload: ReturnType<typeof AttributeListActions.toggleShowPassportColumns>,
 ): AttributeListState => {
-  return updateFeatureData(state, payload.featureType, data => ({ ...data, showPassportColumnsOnly: !data.showPassportColumnsOnly }));
+  return updateFeatureData(state, payload.layerId, payload.featureType, data => {
+    return {...data, showPassportColumnsOnly: !data.showPassportColumnsOnly};
+  });
 };
 
 const onSetSelectedColumnFilter = (
   state: AttributeListState,
   payload: ReturnType<typeof AttributeListActions.setColumnFilter>,
-): AttributeListState => updateFeatureData(state, payload.filter.featureType, tab => {
+): AttributeListState => updateFeatureData(state, payload.layerId, payload.filter.featureType, tab => {
   return {
     ...tab,
     filter: addOrUpdateArrayItemInState<AttributeFilterModel>(
@@ -401,7 +423,7 @@ const onSetSelectedColumnFilter = (
 const onDeleteColumnFilter = (
   state: AttributeListState,
   payload: ReturnType<typeof AttributeListActions.deleteColumnFilter>,
-): AttributeListState => updateFeatureData(state, payload.featureType, featureData => {
+): AttributeListState => updateFeatureData(state, payload.layerId, payload.featureType, featureData => {
   const idx = featureData.filter.findIndex(filter => filter.attribute === payload.attribute);
   if (idx === -1) {
     return featureData;
@@ -421,6 +443,7 @@ const onClearFilterForFeatureType = (
 ): AttributeListState => {
   return updateFeatureData(
     state,
+    payload.layerId,
     payload.featureType,
     featureData => ({ ...featureData, checkedFeatures: [], filter: [] }),
   );
@@ -452,7 +475,7 @@ const onClearCountForFeatureTypes = (
   return {
     ...state,
     featureTypeData: state.featureTypeData.map(data => {
-      if (payload.featureTypes.includes(data.featureType)) {
+      if (data.layerId === payload.layerId && payload.featureTypes.includes(data.featureType)) {
         return {
           ...data,
           totalCount: null,
@@ -466,7 +489,7 @@ const onClearCountForFeatureTypes = (
 const onLoadStatisticsForColumn = (
   state: AttributeListState,
   payload: ReturnType<typeof AttributeListActions.loadStatisticsForColumn>,
-): AttributeListState => updateFeatureData(state, payload.featureType, tab => {
+): AttributeListState => updateFeatureData(state, payload.layerId, payload.featureType, tab => {
   return {
     ...tab,
     statistics: addOrUpdateArrayItemInState<AttributeListStatisticColumnModel>(
@@ -481,7 +504,7 @@ const onLoadStatisticsForColumn = (
 const onRefreshStatisticsForTab = (
   state: AttributeListState,
   payload: ReturnType<typeof AttributeListActions.refreshStatisticsForTab>,
-): AttributeListState => updateFeatureData(state, payload.featureType, tab => {
+): AttributeListState => updateFeatureData(state, payload.layerId, payload.featureType, tab => {
   return {
     ...tab,
     statistics: tab.statistics.map(s => ({ ...s, processing: true })),
@@ -491,7 +514,7 @@ const onRefreshStatisticsForTab = (
 const onStatisticsForColumnLoaded = (
   state: AttributeListState,
   payload: ReturnType<typeof AttributeListActions.statisticsForColumnLoaded>,
-): AttributeListState => updateFeatureData(state, payload.featureType, tab => {
+): AttributeListState => updateFeatureData(state, payload.layerId, payload.featureType, tab => {
   return {
     ...tab,
     statistics: updateArrayItemInState<AttributeListStatisticColumnModel>(
@@ -505,7 +528,7 @@ const onStatisticsForColumnLoaded = (
 const onStatisticsForTabRefreshed = (
   state: AttributeListState,
   payload: ReturnType<typeof AttributeListActions.statisticsForTabRefreshed>,
-): AttributeListState => updateFeatureData(state, payload.featureType, tab => {
+): AttributeListState => updateFeatureData(state, payload.layerId, payload.featureType, tab => {
   const updateMap: Map<string, number> = new Map(payload.results.map(r => [ r.column, r.value ]));
   return {
     ...tab,
@@ -523,8 +546,8 @@ const attributeListReducerImpl = createReducer(
   on(AttributeListActions.loadDataForTab, onLoadDataForTab),
   on(AttributeListActions.loadDataForTabSuccess, onLoadDataForTabSuccess),
   on(AttributeListActions.loadDataForFeatureTypeSuccess, onLoadDataForFeatureTypeSuccess),
-  on(AttributeListActions.updatePage, onUpdatePageOrSort),
-  on(AttributeListActions.updateSort, onUpdatePageOrSort),
+  on(AttributeListActions.updatePage, onUpdatePage),
+  on(AttributeListActions.updateSort, onUpdateSort),
   on(AttributeListActions.toggleCheckedAllRows, onToggleCheckedAllRows),
   on(AttributeListActions.updateRowChecked, onUpdateRowChecked),
   on(AttributeListActions.updateRowExpanded, onUpdateRowExpanded),

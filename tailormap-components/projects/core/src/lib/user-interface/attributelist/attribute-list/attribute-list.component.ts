@@ -83,7 +83,7 @@ export class AttributeListComponent {
     this.columnSelectionOverlayRef = this.popoverService.open({
       origin: $event.currentTarget as HTMLElement,
       content: AttributeListColumnSelectionComponent,
-      data: { featureType: tab.selectedRelatedFeatureType || tab.featureType },
+      data: { featureType: tab.selectedRelatedFeatureType || tab.featureType, layerId: tab.layerId },
       height: 250,
       width: Math.min(WINDOW_WIDTH, window.innerWidth),
       closeOnClickOutside: true,

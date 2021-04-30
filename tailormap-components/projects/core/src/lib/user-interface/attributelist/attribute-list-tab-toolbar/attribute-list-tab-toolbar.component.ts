@@ -11,7 +11,7 @@ import { AttributeListLayernameChooserComponent } from '../attribute-list-layern
 import { UserLayerHelper } from '../../../analysis/helpers/user-layer.helper';
 import { Store } from '@ngrx/store';
 import { AttributeListState } from '../state/attribute-list.state';
-import { selectFeatureTypeDataForTab, selectLoadingDataForTab, selectRelatedFeaturesForTab } from '../state/attribute-list.selectors';
+import { selectFeatureTypeDataForTab, selectLoadingDataForTab, selectHasRelations } from '../state/attribute-list.selectors';
 import { AttributeListExportService, ExportType } from '../services/attribute-list-export.service';
 import { PopoverService } from '../../../shared/popover/popover.service';
 import { OverlayRef } from '../../../shared/overlay-service/overlay-ref';
@@ -87,8 +87,8 @@ export class AttributeListTabToolbarComponent implements OnInit, OnDestroy {
     this.loadingData$ = this.store$.select(selectLoadingDataForTab, this.layerId);
 
     this.exportParams.application = this.tailorMapService.getApplicationId();
-    this.noRelations$ = this.store$.select(selectRelatedFeaturesForTab, this.layerId)
-      .pipe(map(relations => relations.length === 0));
+    this.noRelations$ = this.store$.select(selectHasRelations, this.layerId)
+      .pipe(map(hasRelations => !hasRelations));
   }
 
   public ngOnDestroy() {

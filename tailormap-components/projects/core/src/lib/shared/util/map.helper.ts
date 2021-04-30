@@ -1,14 +1,14 @@
 import { SubType } from './generic.types';
 
-export const selectOrDefault = <ObjectType, IndexType, ObjectKeyType>(
-  tabs: Map<IndexType, ObjectType>,
-  layerId: IndexType,
+export const selectOrDefault = <ObjectType, ObjectKeyType>(
+  list: ObjectType[],
+  findBy: (item: ObjectType) => boolean,
   prop: keyof SubType<ObjectType, ObjectKeyType>,
   defaultValue: ObjectKeyType,
 ): ObjectKeyType => {
-  const tab = tabs.get(layerId);
-  if (tab) {
-    return tab[prop] as unknown as ObjectKeyType;
+  const item = list.find(findBy);
+  if (item) {
+    return item[prop] as unknown as ObjectKeyType;
   }
   return defaultValue;
 };
