@@ -182,6 +182,19 @@ export const selectHasRelations = createSelector(
   },
 );
 
+const getChildrenForFeatureType = (parentFeatureType: number, featureData: AttributeListFeatureTypeData[]): TreeModel[] => {
+  return featureData
+    .filter(data => data.parentFeatureType === parentFeatureType)
+    .map<TreeModel>(data => {
+      const children = getChildrenForFeatureType(data.featureType, featureData);
+      return {
+        id: `${data.featureType}`,
+        label: `${data.featureTypeName} (${data.totalCount || 0})`,
+        children: children.length > 0 ? children : undefined,
+      };
+    });
+};
+
 export const selectAttributeListRelationsTree = createSelector(
   selectAttributeListTabDictionary,
   selectAttributeListFeatureData,
@@ -195,17 +208,11 @@ export const selectAttributeListRelationsTree = createSelector(
       return [];
     }
     const featureData = featureTypeData.filter(d => d.layerId === layerId);
-    const featureDataTreeModels = featureData
-      .filter(data => data.featureType !== tab.featureType)
-      .map<TreeModel>(data => ({
-        id: `${data.featureType}`,
-        label: `${data.featureTypeName} (${data.totalCount || 0})`,
-      }));
     const tabFeatureData = featureTypeData.find(findFeatureTypeData({ layerId: tab.layerId, featureType: tab.featureType }));
     return [{
       id: `${tab.featureType}`,
       label: `${tab.layerAlias || tab.layerName} (${tabFeatureData.totalCount || 0})`,
-      children: featureDataTreeModels,
+      children: getChildrenForFeatureType(tab.featureType, featureData),
       expanded: true,
     }];
   },
