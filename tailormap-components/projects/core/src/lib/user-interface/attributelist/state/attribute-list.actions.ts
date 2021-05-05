@@ -25,7 +25,7 @@ export const updateAttributeListHeight = createAction(
 
 export const changeAttributeListTabs = createAction(
   `${attributeListActionsPrefix} Change AttributeList Tabs`,
-  props<{ newTabs: AttributeListTabModel[]; newFeatureData: AttributeListFeatureTypeData[]; closedTabs: number[] }>(),
+  props<{ newTabs: AttributeListTabModel[]; newFeatureData: AttributeListFeatureTypeData[]; closedTabs: string[] }>(),
 );
 
 export const loadDataForTab = createAction(
@@ -70,17 +70,17 @@ export const updateSort = createAction(
 
 export const toggleCheckedAllRows = createAction(
   `${attributeListActionsPrefix} Toggle Checked All Rows`,
-  props<{ featureType: number }>(),
+  props<{ layerId: string; featureType: number }>(),
 );
 
 export const updateRowChecked = createAction(
   `${attributeListActionsPrefix} Update Row Checked`,
-  props<{ featureType: number; rowId: string; checked: boolean }>(),
+  props<{ layerId: string; featureType: number; rowId: string; checked: boolean }>(),
 );
 
 export const updateRowExpanded = createAction(
   `${attributeListActionsPrefix} Update Row Expanded`,
-  props<{ featureType: number; rowId: string; expanded: boolean }>(),
+  props<{ layerId: string; featureType: number; rowId: string; expanded: boolean }>(),
 );
 
 export const updateRowSelected = createAction(
@@ -95,17 +95,17 @@ export const setSelectedFeatureType = createAction(
 
 export const changeColumnPosition = createAction(
   `${attributeListActionsPrefix} Change Column Position`,
-  props<{ featureType: number; columnId: string; previousColumn: string | null}>(),
+  props<{ layerId: string; featureType: number; columnId: string; previousColumn: string | null}>(),
 );
 
 export const toggleColumnVisible = createAction(
   `${attributeListActionsPrefix} Toggle Column Visibility`,
-  props<{ featureType: number; columnId: string }>(),
+  props<{ layerId: string; featureType: number; columnId: string }>(),
 );
 
 export const toggleShowPassportColumns = createAction(
   `${attributeListActionsPrefix} Toggle Show Passport Columns`,
-  props<{ featureType: number }>(),
+  props<{ layerId: string; featureType: number }>(),
 );
 
 export const setColumnFilter = createAction(
@@ -135,12 +135,12 @@ export const externalFilterChanged = createAction(
 
 export const clearCountForFeatureTypes = createAction(
   `${attributeListActionsPrefix} Clear Count For Feature Types`,
-  props<{ featureTypes: number[] }>(),
+  props<{ layerId: string; featureTypes: number[] }>(),
 );
 
 export const loadStatisticsForColumn = createAction(
   `${attributeListActionsPrefix} Load Statistics For Column`,
-  props<{ layerId: string; featureType: number; column: string; statisticType: StatisticType }>(),
+  props<{ layerId: string; featureType: number; column: string; statisticType: StatisticType; dataType: string }>(),
 );
 
 export const statisticsForColumnLoaded = createAction(

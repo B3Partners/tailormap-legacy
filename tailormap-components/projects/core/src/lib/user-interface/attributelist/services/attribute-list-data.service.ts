@@ -77,8 +77,7 @@ export class AttributeListDataService implements OnDestroy {
     tab: AttributeListTabModel,
     tabFeatureData: AttributeListFeatureTypeData[],
   ): Observable<LoadTotalCountResult[]> {
-    const counts$ = [ tab.featureType, ...tabFeatureData.map(data => data.featureType) ]
-      .map(featureType => this.getCountForFeatureType$(tab, featureType, tabFeatureData));
+    const counts$ = tabFeatureData.map(data => this.getCountForFeatureType$(tab, data.featureType, tabFeatureData));
     return forkJoin(counts$);
   }
 
@@ -99,7 +98,7 @@ export class AttributeListDataService implements OnDestroy {
     featureType: number,
     tabFeatureData: AttributeListFeatureTypeData[],
   ): Observable<LoadDataResult> {
-    const featureTypeData = tabFeatureData.find(data => data.featureType === featureType);
+    const featureTypeData = tabFeatureData.find(data => data.featureType === featureType && data.layerId === tab.layerId);
     const attrParams: AttributeListParameters = {
       application: this.applicationService.getId(),
       appLayer: +(tab.layerId),

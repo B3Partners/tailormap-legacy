@@ -5,4 +5,5 @@ export interface AttributeListStatisticColumnModel {
   statisticType: StatisticType;
   statisticValue: number;
   processing: boolean;
+  dataType: string;
 }

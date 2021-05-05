@@ -44,7 +44,7 @@ export class AttributeListDetailsComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
-    this.store$.select(selectFeatureTypeData, this.featureType.id).pipe(
+    this.store$.select(selectFeatureTypeData, { layerId: this.parentLayerId, featureType: this.featureType.id }).pipe(
       takeUntil(this.destroyed),
       filter(featureData => !!featureData),
     ).subscribe(featureData => {

@@ -5,7 +5,7 @@
   flex-flow: column nowrap;
 }
 
-tailormap-attribute-list-table {
+.attribute-list-content {
   display: block;
   flex: 1;
   overflow: hidden;

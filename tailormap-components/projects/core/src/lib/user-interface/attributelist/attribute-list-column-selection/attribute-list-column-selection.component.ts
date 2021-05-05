@@ -26,17 +26,17 @@ export class AttributeListColumnSelectionComponent implements OnInit, OnDestroy 
   constructor(
     private store$: Store<AttributeListState>,
     private overlayRef: OverlayRef,
-    @Inject(OVERLAY_DATA) private data: { featureType: number },
+    @Inject(OVERLAY_DATA) private data: { featureType: number; layerId: string },
   ) { }
 
   public ngOnInit(): void {
-    this.store$.select(selectSelectedColumnsForFeature, this.data.featureType)
+    this.store$.select(selectSelectedColumnsForFeature, { featureType: this.data.featureType, layerId: this.data.layerId })
       .pipe(takeUntil(this.destroyed))
       .subscribe(columns => {
         this.columns = [...columns];
         this.hasPassportColumns = this.columns.findIndex(c => c.columnType === 'passport') !== -1;
       });
-    this.store$.select(selectShowPassportColumnsOnly, this.data.featureType)
+    this.store$.select(selectShowPassportColumnsOnly, { featureType: this.data.featureType, layerId: this.data.layerId })
       .pipe(takeUntil(this.destroyed))
       .subscribe(showPassportColumnsOnly => this.showPassportColumnsOnly = showPassportColumnsOnly);
   }
@@ -56,6 +56,7 @@ export class AttributeListColumnSelectionComponent implements OnInit, OnDestroy 
 
   public toggleCheckbox(column: AttributeListColumnModel) {
     this.store$.dispatch(toggleColumnVisible({
+      layerId: this.data.layerId,
       featureType: this.data.featureType,
       columnId: column.id,
     }));
@@ -65,6 +66,7 @@ export class AttributeListColumnSelectionComponent implements OnInit, OnDestroy 
     moveItemInArray(this.columns, $event.previousIndex, $event.currentIndex);
     const prevItem = $event.currentIndex === 0 ? null : this.columns[$event.currentIndex - 1].id;
     this.store$.dispatch(changeColumnPosition({
+      layerId: this.data.layerId,
       featureType: this.data.featureType,
       columnId: $event.item.data.id,
       previousColumn: prevItem,
@@ -72,7 +74,7 @@ export class AttributeListColumnSelectionComponent implements OnInit, OnDestroy 
   }
 
   public toggleShowPassportColumns() {
-    this.store$.dispatch(toggleShowPassportColumns({ featureType: this.data.featureType }));
+    this.store$.dispatch(toggleShowPassportColumns({ layerId: this.data.layerId, featureType: this.data.featureType }));
   }
 
 }

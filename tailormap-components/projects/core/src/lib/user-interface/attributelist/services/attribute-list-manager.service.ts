@@ -4,7 +4,7 @@ import { AttributeListState } from '../state/attribute-list.state';
 import { selectFormConfigsLoaded, selectFormConfigs, selectVisibleLayersWithAttributes } from '../../../application/state/application.selectors';
 import { concatMap, filter, map, take, takeUntil, withLatestFrom } from 'rxjs/operators';
 import { combineLatest, forkJoin, Observable, of, Subject } from 'rxjs';
-import { selectAttributeListConfig, selectAttributeListTabs } from '../state/attribute-list.selectors';
+import { selectAttributeListConfig, selectAttributeListTabs, selectAttributeListVisible } from '../state/attribute-list.selectors';
 import { changeAttributeListTabs } from '../state/attribute-list.actions';
 import { AttributeListTabModel } from '../models/attribute-list-tab.model';
 import { TailormapAppLayer } from '../../../application/models/tailormap-app-layer.model';
@@ -13,9 +13,9 @@ import { MetadataService } from '../../../application/services/metadata.service'
 import { AttributeListColumnModel } from '../models/attribute-list-column-models';
 import { Attribute, FormConfiguration } from '../../../feature-form/form/form-models';
 import { AttributeTypeHelper } from '../../../application/helpers/attribute-type.helper';
-import { AttributeMetadataResponse } from '../../../shared/attribute-service/attribute-models';
+import { AttributeMetadataResponse, Relation } from '../../../shared/attribute-service/attribute-models';
 import { AttributeListConfig } from '../models/attribute-list.config';
-import { AttributeListFeatureTypeData } from '../models/attribute-list-feature-type-data.model';
+import { AttributeListFeatureTypeData, ParentRelationKey } from '../models/attribute-list-feature-type-data.model';
 import { IdService } from '../../../shared/id-service/id.service';
 
 interface TabFromLayerResult {
@@ -35,7 +35,6 @@ export class AttributeListManagerService implements OnDestroy {
     loadingData: false,
     featureType: 0,
     selectedRelatedFeatureType: 0,
-    relatedFeatures: [],
   };
 
   public static readonly EMPTY_FEATURE_TYPE_DATA: AttributeListFeatureTypeData = {
@@ -44,8 +43,10 @@ export class AttributeListManagerService implements OnDestroy {
     showPassportColumnsOnly: true,
     featureType: 0,
     featureTypeName: '',
+    layerFeatureType: 0,
     filter: [],
     rows: [],
+    attributeRelationKeys: [],
     checkedFeatures: [],
     pageIndex: 0,
     pageSize: 10,
@@ -64,11 +65,12 @@ export class AttributeListManagerService implements OnDestroy {
     combineLatest([
       this.store$.select(selectVisibleLayersWithAttributes),
       this.store$.select(selectFormConfigsLoaded),
+      this.store$.select(selectAttributeListVisible),
     ])
       .pipe(
         takeUntil(this.destroyed),
-        filter(([ _layers, formConfigLoaded ]) => !!formConfigLoaded),
-        map(([ layers, _formConfigLoaded ]) => layers),
+        filter(([ _layers, formConfigLoaded, attributeListVisible ]) => !!formConfigLoaded && attributeListVisible),
+        map(([ layers, _formConfigLoaded, _attributeListVisible ]) => layers),
         withLatestFrom(this.store$.select(selectAttributeListTabs), this.store$.select(selectAttributeListConfig)),
         concatMap(([ layers, tabs, config ]) => {
           const closedTabs = this.getClosedTabs(layers, tabs);
@@ -91,13 +93,13 @@ export class AttributeListManagerService implements OnDestroy {
     this.destroyed.complete();
   }
 
-  private getClosedTabs(visibleLayers: TailormapAppLayer[], currentTabs: AttributeListTabModel[]): number[] {
+  private getClosedTabs(visibleLayers: TailormapAppLayer[], currentTabs: AttributeListTabModel[]): string[] {
     if (!currentTabs || currentTabs.length === 0) {
       return [];
     }
     return currentTabs
       .filter(tab => visibleLayers.findIndex(l => l.id === tab.layerId) === -1)
-      .map<number>(tab => tab.featureType);
+      .map<string>(tab => tab.layerId);
   }
 
   private getNewTabs$(
@@ -134,43 +136,77 @@ export class AttributeListManagerService implements OnDestroy {
           layerName,
           featureType: metadata.featureType,
           selectedRelatedFeatureType: metadata.featureType,
-          relatedFeatures: metadata.relations || [],
         };
         const featureData: AttributeListFeatureTypeData[] = [
           this.createDataForFeatureType(
             metadata.featureType,
             layer.alias || layerName,
             metadata.featureType,
+            metadata.featureType,
             pageSize,
             layer.id,
             metadata,
+            AttributeListManagerService.getAttributeRelationKeys(metadata.relations),
             formConfigs.get(LayerUtils.sanitizeLayername(layerName)),
           ),
-          ...(metadata.relations || []).map(featureType => {
-            return this.createDataForFeatureType(
-              featureType.foreignFeatureType,
-              featureType.foreignFeatureTypeName,
-              metadata.featureType,
-              pageSize,
-              layer.id,
-              metadata,
-              formConfigs.get(LayerUtils.sanitizeLayername(featureType.foreignFeatureTypeName)),
-            );
-          }),
+          ...this.getRelatedFeatureData(metadata.relations || [], metadata.featureType, metadata.featureType, layer, pageSize, metadata, formConfigs),
         ];
         return { tab, featureData };
       }),
     );
   }
 
+  private getRelatedFeatureData(
+    relations: Relation[],
+    parentFeatureType: number,
+    layerFeatureType: number,
+    layer: TailormapAppLayer,
+    pageSize = 10,
+    metadata: AttributeMetadataResponse,
+    formConfigs: Map<string, FormConfiguration>,
+  ): AttributeListFeatureTypeData[] {
+    const relatedData = [];
+    relations.forEach(relation => {
+      const featureData = this.createDataForFeatureType(
+        relation.foreignFeatureType,
+        relation.foreignFeatureTypeName,
+        parentFeatureType,
+        layerFeatureType,
+        pageSize,
+        layer.id,
+        metadata,
+        AttributeListManagerService.getAttributeRelationKeys(relation.relations),
+        formConfigs.get(LayerUtils.sanitizeLayername(relation.foreignFeatureTypeName)),
+        AttributeListManagerService.getParentAttributeRelationKeys(relation),
+      );
+      relatedData.push(featureData);
+      if (relation.relations && relation.relations.length > 0) {
+        const childRelations = this.getRelatedFeatureData(
+          relation.relations,
+          relation.foreignFeatureType,
+          layerFeatureType,
+          layer,
+          pageSize,
+          metadata,
+          formConfigs,
+        );
+        relatedData.push(...childRelations);
+      }
+    });
+    return relatedData;
+  }
+
   private createDataForFeatureType(
     featureType: number,
     featureTypeName: string,
     parentFeatureType: number,
+    layerFeatureType: number,
     pageSize: number,
     layerId: string,
     metadata: AttributeMetadataResponse,
+    attributeRelationKeys: string[],
     formConfig?: FormConfiguration,
+    parentAttributeRelationKeys?: ParentRelationKey[],
   ): AttributeListFeatureTypeData {
     return {
       ...AttributeListManagerService.EMPTY_FEATURE_TYPE_DATA,
@@ -178,9 +214,12 @@ export class AttributeListManagerService implements OnDestroy {
       featureType,
       featureTypeName,
       parentFeatureType: featureType !== parentFeatureType ? parentFeatureType : undefined,
+      layerFeatureType,
       columns: this.getColumnsForLayer(metadata, featureType, formConfig),
       showPassportColumnsOnly: !!formConfig,
       pageSize,
+      attributeRelationKeys,
+      parentAttributeRelationKeys,
     };
   }
 
@@ -205,6 +244,20 @@ export class AttributeListManagerService implements OnDestroy {
         attributeType: AttributeTypeHelper.getAttributeType(a),
       };
     });
+  }
+
+  private static getAttributeRelationKeys(relations: Relation[]): string[] {
+    const relationKeys: string[][] = (relations || []).map(relation => {
+      return relation.relationKeys.map(key => key.leftSideName || '').filter(key => !!key);
+    });
+    return Array.from(new Set([].concat(...relationKeys)));
+  }
+
+  private static getParentAttributeRelationKeys(relation: Relation): ParentRelationKey[] {
+    return relation.relationKeys.map<ParentRelationKey>(rel => ({
+      childAttribute: rel.rightSideName,
+      parentAttribute: rel.leftSideName,
+    }));
   }
 
 }

@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.flamingo-mc</groupId>
     <artifactId>flamingo-mc</artifactId>
-    <version>5.9.1-SNAPSHOT</version>
+    <version>5.9.2-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>flamingo-mc</name>
     <url>http://github.com/flamingo-mc</url>
@@ -38,9 +38,9 @@
         </license>
     </licenses>
     <properties>
-        <flamingo.version>5.9.1-SNAPSHOT</flamingo.version>
+        <flamingo.version>5.9.2-SNAPSHOT</flamingo.version>
         <java.version>11</java.version>
-        <node.version>v14.15.5</node.version>
+        <node.version>v14.16.1</node.version>
         <project.build.sourceVersion>${java.version}</project.build.sourceVersion>
         <project.build.targetVersion>${java.version}</project.build.targetVersion>
         <maven.compiler.source>${java.version}</maven.compiler.source>
@@ -72,7 +72,7 @@
         <maven-surefire-plugin.version>3.0.0-M5</maven-surefire-plugin.version>
         <tomcat.version>7.0.109</tomcat.version>
         <tomcat7-maven-plugin.version>2.2</tomcat7-maven-plugin.version>
-        <jacoco-maven-plugin.version>0.8.6</jacoco-maven-plugin.version>
+        <jacoco-maven-plugin.version>0.8.7</jacoco-maven-plugin.version>
         <properties-maven-plugin.version>1.0.0</properties-maven-plugin.version>
     </properties>
     <dependencyManagement>
@@ -744,7 +744,7 @@
                 <plugin>
                     <groupId>org.owasp</groupId>
                     <artifactId>dependency-check-maven</artifactId>
-                    <version>6.1.5</version>
+                    <version>6.1.6</version>
                     <configuration>
                         <skipSystemScope>true</skipSystemScope>
                         <format>ALL</format>
