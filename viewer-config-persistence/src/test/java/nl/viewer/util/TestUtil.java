@@ -142,8 +142,6 @@ public abstract class TestUtil extends LoggingTestUtil {
     /**
      * Helper function for initializing data.
      * @param f The reader containing the scripts to be executed
-     * @throws java.io.IOException Thrown when the testdata cannot be found
-     * @throws java.sql.SQLException Thrown when the testdata cannot be loaded
      */
     public void executeScript(Reader f) {
 
