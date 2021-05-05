@@ -335,6 +335,7 @@ public class ApplicationLayer {
      * Get all the relations of featuretypes that have this applayer as dependend n - 1 (n are other featuretypes, 1 = current layer)
      *
      * @param layer Layer for which relations must be retrievd
+     * @param em EntityManager used for retrieving the inverted relations
      * @return JSONArray with relations
      * @throws JSONException when an exception occurs
      */

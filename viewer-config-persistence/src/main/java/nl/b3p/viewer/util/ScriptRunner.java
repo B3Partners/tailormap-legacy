@@ -64,6 +64,7 @@ public class ScriptRunner {
      * Runs a SQL script (read in using the Reader parameter).
      *
      * @param reader the source of the script
+     * @param canFail May the script contain failing statements
      * @throws IOException if any occurs connecting to the database
      * @throws SQLException if any occurs executing the script
      */
