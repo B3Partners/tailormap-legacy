@@ -24,7 +24,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <link rel="stylesheet" href="${contextPath}/resources/css/HtmlEditorExtensions.css" />
     </stripes:layout-component>
     <stripes:layout-component name="body">
-        <stripes:form beanclass="nl.b3p.viewer.admin.stripes.ApplicationTreeLevelActionBean" id="levelform" class="maximize">
+        <stripes:form beanclass="nl.viewer.admin.stripes.ApplicationTreeLevelActionBean" id="levelform" class="maximize">
             <stripes:hidden name="level" value="${actionBean.level.id}"/>
             <c:if test="${actionBean.context.eventName!='delete'}">
                 <h1 id="headertext"><fmt:message key="viewer_admin.applicationtreelevel.1" />: <c:out value="${actionBean.level.name}"/></h1>
@@ -93,11 +93,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         
         <script type="text/javascript">
             // Definition of URLS and icons... how are we going to do this?
-            var treeurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.GeoServiceRegistryActionBean" event="tree"/>';
-            var selectedlayersurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.ApplicationTreeActionBean" event="loadSelectedLayers"/>';
-            var pathSelectionUrl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.ApplicationTreeActionBean" event="loadRegistryPath"/>';
-            var doctreeurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.ApplicationTreeActionBean" event="loadDocumentTree"/>';
-            var selecteddocsurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.ApplicationTreeActionBean" event="loadSelectedDocuments"/>';
+            var treeurl = '<stripes:url beanclass="nl.viewer.admin.stripes.GeoServiceRegistryActionBean" event="tree"/>';
+            var selectedlayersurl = '<stripes:url beanclass="nl.viewer.admin.stripes.ApplicationTreeActionBean" event="loadSelectedLayers"/>';
+            var pathSelectionUrl = '<stripes:url beanclass="nl.viewer.admin.stripes.ApplicationTreeActionBean" event="loadRegistryPath"/>';
+            var doctreeurl = '<stripes:url beanclass="nl.viewer.admin.stripes.ApplicationTreeActionBean" event="loadDocumentTree"/>';
+            var selecteddocsurl = '<stripes:url beanclass="nl.viewer.admin.stripes.ApplicationTreeActionBean" event="loadSelectedDocuments"/>';
             var levelid = '${actionBean.level.id}';
             var layersAllowed = ${actionBean.layersAllowed};
 
@@ -117,8 +117,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             vieweradmin.components.Menu.setActiveLink('menu_boomstructuur');
             
             var actionBeans = { 
-                "appTreeLevel": <js:quote><stripes:url beanclass="nl.b3p.viewer.admin.stripes.ApplicationTreeLevelActionBean"/></js:quote>,
-                "imageupload": <js:quote><stripes:url beanclass="nl.b3p.viewer.admin.stripes.ImageUploadActionBean"/></js:quote>
+                "appTreeLevel": <js:quote><stripes:url beanclass="nl.viewer.admin.stripes.ApplicationTreeLevelActionBean"/></js:quote>,
+                "imageupload": <js:quote><stripes:url beanclass="nl.viewer.admin.stripes.ImageUploadActionBean"/></js:quote>
             };
         </script>
         <script type="text/javascript" src="${contextPath}/resources/js/ux/form/HtmlEditorImage.js"></script>

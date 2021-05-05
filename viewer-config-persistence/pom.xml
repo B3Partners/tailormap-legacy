@@ -34,11 +34,11 @@
                         <param>hibernate.physical_naming_strategy</param>
                     </persistencePropertiesToUse>
                     <packages>
-                        <param>nl.b3p.viewer.config.app</param>
-                        <param>nl.b3p.viewer.config.forms</param>
-                        <param>nl.b3p.viewer.config.metadata</param>
-                        <param>nl.b3p.viewer.config.security</param>
-                        <param>nl.b3p.viewer.config.services</param>
+                        <param>nl.viewer.config.app</param>
+                        <param>nl.viewer.config.forms</param>
+                        <param>nl.viewer.config.metadata</param>
+                        <param>nl.viewer.config.security</param>
+                        <param>nl.viewer.config.services</param>
                     </packages>
                 </configuration>
                 <executions>

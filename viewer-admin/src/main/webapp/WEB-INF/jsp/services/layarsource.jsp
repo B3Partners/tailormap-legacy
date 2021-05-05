@@ -46,15 +46,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
             <div id="grid-container" class="attribute"></div>
             <div id="form-container" class="attribute">
-                <iframe src="<stripes:url beanclass="nl.b3p.viewer.admin.stripes.LayarSourceActionBean" event="cancel"/>" id="editFrame" frameborder="0"></iframe>
+                <iframe src="<stripes:url beanclass="nl.viewer.admin.stripes.LayarSourceActionBean" event="cancel"/>" id="editFrame" frameborder="0"></iframe>
             </div>
         </div>
             
         <script type="text/javascript" src="${contextPath}/resources/js/services/layarsource.js"></script>
         <script type="text/javascript">
-            var gridurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.LayarSourceActionBean" event="getGridData"/>';
-            var editurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.LayarSourceActionBean" event="edit"/>';
-            var deleteurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.LayarSourceActionBean" event="delete"/>';
+            var gridurl = '<stripes:url beanclass="nl.viewer.admin.stripes.LayarSourceActionBean" event="getGridData"/>';
+            var editurl = '<stripes:url beanclass="nl.viewer.admin.stripes.LayarSourceActionBean" event="edit"/>';
+            var deleteurl = '<stripes:url beanclass="nl.viewer.admin.stripes.LayarSourceActionBean" event="delete"/>';
             vieweradmin.components.Menu.setActiveLink('menu_layarsource');
             
             Ext.onReady(function() {

@@ -12,7 +12,7 @@
         </persistence-unit-defaults>
     </persistence-unit-metadata>
 
-    <named-native-query name="getLayerTree" result-class="nl.b3p.viewer.config.services.Layer">
+    <named-native-query name="getLayerTree" result-class="nl.viewer.config.services.Layer">
         <query><![CDATA[
             select * from layer where id in (
                 with recursive layer_tree(id) as (
@@ -23,7 +23,7 @@
                 select * from layer_tree)
         ]]></query>
     </named-native-query>
-    <named-native-query name="getLevelTree"  result-class="nl.b3p.viewer.config.app.Level">
+    <named-native-query name="getLevelTree"  result-class="nl.viewer.config.app.Level">
         <query><![CDATA[
             select * from level_ where id in (
                 with recursive level_tree(id) as (
@@ -37,22 +37,14 @@
 
     <!-- For PostgreSQL the IDENTITY strategy will use (big)serial columns -->
 
-    <entity class="nl.b3p.viewer.config.services.Category">
+    <entity class="nl.viewer.config.services.Category">
         <attributes>
             <id name="id">
                 <generated-value strategy="IDENTITY"/>
             </id>
         </attributes>
     </entity>
-    <entity class="nl.b3p.viewer.config.forms.Form">
-        <attributes>
-            <id name="id">
-                <generated-value strategy="IDENTITY"/>
-            </id>
-        </attributes>
-    </entity>
-
-    <entity class="nl.b3p.viewer.config.services.GeoService">
+    <entity class="nl.viewer.config.forms.Form">
         <attributes>
             <id name="id">
                 <generated-value strategy="IDENTITY"/>
@@ -60,7 +52,7 @@
         </attributes>
     </entity>
 
-    <entity class="nl.b3p.viewer.config.services.Layer">
+    <entity class="nl.viewer.config.services.GeoService">
         <attributes>
             <id name="id">
                 <generated-value strategy="IDENTITY"/>
@@ -68,7 +60,7 @@
         </attributes>
     </entity>
 
-    <entity class="nl.b3p.viewer.config.services.FeatureSource">
+    <entity class="nl.viewer.config.services.Layer">
         <attributes>
             <id name="id">
                 <generated-value strategy="IDENTITY"/>
@@ -76,7 +68,7 @@
         </attributes>
     </entity>
 
-    <entity class="nl.b3p.viewer.config.services.SimpleFeatureType">
+    <entity class="nl.viewer.config.services.FeatureSource">
         <attributes>
             <id name="id">
                 <generated-value strategy="IDENTITY"/>
@@ -84,7 +76,7 @@
         </attributes>
     </entity>
 
-    <entity class="nl.b3p.viewer.config.services.AttributeDescriptor">
+    <entity class="nl.viewer.config.services.SimpleFeatureType">
         <attributes>
             <id name="id">
                 <generated-value strategy="IDENTITY"/>
@@ -92,7 +84,7 @@
         </attributes>
     </entity>
 
-    <entity class="nl.b3p.viewer.config.services.FeatureTypeRelation">
+    <entity class="nl.viewer.config.services.AttributeDescriptor">
         <attributes>
             <id name="id">
                 <generated-value strategy="IDENTITY"/>
@@ -100,7 +92,7 @@
         </attributes>
     </entity>
 
-    <entity class="nl.b3p.viewer.config.services.FeatureTypeRelationKey">
+    <entity class="nl.viewer.config.services.FeatureTypeRelation">
         <attributes>
             <id name="id">
                 <generated-value strategy="IDENTITY"/>
@@ -108,7 +100,7 @@
         </attributes>
     </entity>
 
-    <entity class="nl.b3p.viewer.config.services.SolrConf">
+    <entity class="nl.viewer.config.services.FeatureTypeRelationKey">
         <attributes>
             <id name="id">
                 <generated-value strategy="IDENTITY"/>
@@ -116,7 +108,7 @@
         </attributes>
     </entity>
 
-    <entity class="nl.b3p.viewer.config.services.Document">
+    <entity class="nl.viewer.config.services.SolrConf">
         <attributes>
             <id name="id">
                 <generated-value strategy="IDENTITY"/>
@@ -124,7 +116,7 @@
         </attributes>
     </entity>
 
-    <entity class="nl.b3p.viewer.config.app.Application">
+    <entity class="nl.viewer.config.services.Document">
         <attributes>
             <id name="id">
                 <generated-value strategy="IDENTITY"/>
@@ -132,7 +124,7 @@
         </attributes>
     </entity>
 
-    <entity class="nl.b3p.viewer.config.app.Bookmark">
+    <entity class="nl.viewer.config.app.Application">
         <attributes>
             <id name="id">
                 <generated-value strategy="IDENTITY"/>
@@ -140,7 +132,7 @@
         </attributes>
     </entity>
 
-    <entity class="nl.b3p.viewer.config.app.Level">
+    <entity class="nl.viewer.config.app.Bookmark">
         <attributes>
             <id name="id">
                 <generated-value strategy="IDENTITY"/>
@@ -148,7 +140,7 @@
         </attributes>
     </entity>
 
-    <entity class="nl.b3p.viewer.config.app.ConfiguredComponent">
+    <entity class="nl.viewer.config.app.Level">
         <attributes>
             <id name="id">
                 <generated-value strategy="IDENTITY"/>
@@ -156,7 +148,7 @@
         </attributes>
     </entity>
 
-    <entity class="nl.b3p.viewer.config.app.ConfiguredAttribute">
+    <entity class="nl.viewer.config.app.ConfiguredComponent">
         <attributes>
             <id name="id">
                 <generated-value strategy="IDENTITY"/>
@@ -164,7 +156,7 @@
         </attributes>
     </entity>
 
-    <entity class="nl.b3p.viewer.config.app.ApplicationLayer">
+    <entity class="nl.viewer.config.app.ConfiguredAttribute">
         <attributes>
             <id name="id">
                 <generated-value strategy="IDENTITY"/>
@@ -172,7 +164,7 @@
         </attributes>
     </entity>
 
-    <entity class="nl.b3p.viewer.config.services.LayarService">
+    <entity class="nl.viewer.config.app.ApplicationLayer">
         <attributes>
             <id name="id">
                 <generated-value strategy="IDENTITY"/>
@@ -180,7 +172,7 @@
         </attributes>
     </entity>
 
-    <entity class="nl.b3p.viewer.config.services.LayarSource">
+    <entity class="nl.viewer.config.services.LayarService">
         <attributes>
             <id name="id">
                 <generated-value strategy="IDENTITY"/>
@@ -188,7 +180,7 @@
         </attributes>
     </entity>
 
-    <entity class="nl.b3p.viewer.config.services.TileMatrix">
+    <entity class="nl.viewer.config.services.LayarSource">
         <attributes>
             <id name="id">
                 <generated-value strategy="IDENTITY"/>
@@ -196,7 +188,7 @@
         </attributes>
     </entity>
 
-    <entity class="nl.b3p.viewer.config.services.TileMatrixSet">
+    <entity class="nl.viewer.config.services.TileMatrix">
         <attributes>
             <id name="id">
                 <generated-value strategy="IDENTITY"/>
@@ -204,7 +196,15 @@
         </attributes>
     </entity>
 
-    <entity class="nl.b3p.viewer.config.app.Resource">
+    <entity class="nl.viewer.config.services.TileMatrixSet">
+        <attributes>
+            <id name="id">
+                <generated-value strategy="IDENTITY"/>
+            </id>
+        </attributes>
+    </entity>
+
+    <entity class="nl.viewer.config.app.Resource">
         <attributes>
             <basic name="data">
                 <column nullable="false" name="data_" column-definition="BINARY"/>
@@ -212,7 +212,7 @@
         </attributes>
     </entity>
 
-    <entity class="nl.b3p.viewer.config.services.StyleLibrary">
+    <entity class="nl.viewer.config.services.StyleLibrary">
         <attributes>
             <id name="id">
                 <generated-value strategy="IDENTITY"/>
@@ -220,7 +220,7 @@
         </attributes>
     </entity>
 
-    <entity class="nl.b3p.viewer.config.metadata.Metadata">
+    <entity class="nl.viewer.config.metadata.Metadata">
         <attributes>
             <id name="id">
                 <generated-value strategy="IDENTITY"/>
@@ -228,7 +228,7 @@
         </attributes>
     </entity>
 
-    <entity class="nl.b3p.viewer.config.CycloramaAccount">
+    <entity class="nl.viewer.config.CycloramaAccount">
         <attributes>
             <id name="id">
                 <generated-value strategy="IDENTITY"/>
@@ -236,7 +236,7 @@
         </attributes>
     </entity>
     
-    <entity class="nl.b3p.viewer.config.app.StartLayer">
+    <entity class="nl.viewer.config.app.StartLayer">
         <attributes>
             <id name="id">
                 <generated-value strategy="IDENTITY"/>
@@ -244,14 +244,14 @@
         </attributes>
     </entity>
     
-    <entity class="nl.b3p.viewer.config.app.StartLevel">
+    <entity class="nl.viewer.config.app.StartLevel">
         <attributes>
             <id name="id">
                 <generated-value strategy="IDENTITY"/>
             </id>
         </attributes>
     </entity>
-    <entity class="nl.b3p.viewer.config.app.FileUpload">
+    <entity class="nl.viewer.config.app.FileUpload">
         <attributes>
             <id name="id">
                 <generated-value strategy="IDENTITY"/>

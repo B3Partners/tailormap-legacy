@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Context antiJARLocking="true" disableURLRewriting="true" path="/viewer">
   <Parameter name="componentregistry.path" override="false" value="/viewer-html/components"/>
-  <Parameter name="flamingo.data.dir" override="false" value="/opt/tailormap_data"/>
-  <Parameter name="flamingo.solr.url" override="false" value="https://tailormap.nl/solr/"/>
+  <Parameter name="tailormap.data.dir" override="false" value="/opt/tailormap_data"/>
+  <Parameter name="tailormap.solr.url" override="false" value="https://tailormap.nl/solr/"/>
   <Parameter name="flamingo.restproxy.port" override="false" value="8084"/>
 
     <!-- You must create this by hand in your geoserver to use the UserLayerActionBean-->

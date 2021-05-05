@@ -38,7 +38,7 @@
         </license>
     </licenses>
     <properties>
-        <flamingo.version>5.9.2-SNAPSHOT</flamingo.version>
+        <tailormap.version>5.9.2-SNAPSHOT</tailormap.version>
         <java.version>11</java.version>
         <node.version>v14.16.1</node.version>
         <project.build.sourceVersion>${java.version}</project.build.sourceVersion>
@@ -135,27 +135,27 @@
             <dependency>
                 <groupId>org.tailormap</groupId>
                 <artifactId>viewer-audit</artifactId>
-                <version>${flamingo.version}</version>
+                <version>${tailormap.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.tailormap</groupId>
                 <artifactId>viewer-config-persistence</artifactId>
-                <version>${flamingo.version}</version>
+                <version>${tailormap.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.tailormap</groupId>
                 <artifactId>viewer-helpers</artifactId>
-                <version>${flamingo.version}</version>
+                <version>${tailormap.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.tailormap</groupId>
                 <artifactId>solr-commons</artifactId>
-                <version>${flamingo.version}</version>
+                <version>${tailormap.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.tailormap</groupId>
                 <artifactId>form</artifactId>
-                <version>${flamingo.version}</version>
+                <version>${tailormap.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.xmlgraphics</groupId>
@@ -221,7 +221,7 @@
                 <artifactId>viewer-config-persistence</artifactId>
                 <type>test-jar</type>
                 <scope>test</scope>
-                <version>${flamingo.version}</version>
+                <version>${tailormap.version}</version>
             </dependency>
 
             <!-- nl b3p csw-->
@@ -391,17 +391,17 @@
             <dependency>
                 <groupId>org.tailormap</groupId>
                 <artifactId>viewer-commons</artifactId>
-                <version>${flamingo.version} </version>
+                <version>${tailormap.version} </version>
             </dependency>
             <dependency>
                 <groupId>org.tailormap</groupId>
                 <artifactId>geotools-commons</artifactId>
-                <version>${flamingo.version} </version>
+                <version>${tailormap.version} </version>
             </dependency>
             <dependency>
                 <groupId>org.tailormap</groupId>
                 <artifactId>web-commons</artifactId>
-                <version>${flamingo.version} </version>
+                <version>${tailormap.version} </version>
             </dependency>
             <dependency>
                 <groupId>org.geotools</groupId>

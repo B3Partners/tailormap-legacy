@@ -26,7 +26,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <div id="formcontent">
             <stripes:errors/>
             <stripes:messages/>
-            <stripes:form beanclass="nl.b3p.viewer.admin.stripes.LayarSourceActionBean">
+            <stripes:form beanclass="nl.viewer.admin.stripes.LayarSourceActionBean">
                 <c:choose>
                     <c:when test="${actionBean.context.eventName == 'edit'}">
                         <stripes:hidden name="layarSource" value="${actionBean.layarSource.id}"/>
@@ -147,7 +147,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             </stripes:form>
         </div>        
         <script type="text/javascript">
-            var attributesUrl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.LayarSourceActionBean" event="getAttributes"/>';
+            var attributesUrl = '<stripes:url beanclass="nl.viewer.admin.stripes.LayarSourceActionBean" event="getAttributes"/>';
             Ext.onReady(function() {
                 appendPanel('headertext', 'formcontent');
             });

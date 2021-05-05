@@ -89,7 +89,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             </div>
         </div>
 
-        <stripes:url var="url" beanclass="nl.b3p.viewer.admin.stripes.LayoutManagerActionBean" event="config">
+        <stripes:url var="url" beanclass="nl.viewer.admin.stripes.LayoutManagerActionBean" event="config">
             <c:if test="${param.debug}"><stripes:param name="debug" value="true"/></c:if>
         </stripes:url>
         <script type="text/javascript">
@@ -118,8 +118,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     globalLayout: globalLayout,
                     components: ${actionBean.components},
                     configPageLink: <js:quote value="${url}"/>,
-                    layoutSaveUrl: '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.LayoutManagerActionBean" event="saveApplicationLayout"/>',
-                    removeComponentUrl: '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.LayoutManagerActionBean" event="removeComponent"/>'
+                    layoutSaveUrl: '<stripes:url beanclass="nl.viewer.admin.stripes.LayoutManagerActionBean" event="saveApplicationLayout"/>',
+                    removeComponentUrl: '<stripes:url beanclass="nl.viewer.admin.stripes.LayoutManagerActionBean" event="removeComponent"/>'
                 });
             });
         </script>

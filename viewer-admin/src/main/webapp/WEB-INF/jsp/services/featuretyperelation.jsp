@@ -33,16 +33,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <div id="grid-container" class="documenten">
             </div>
             <div id="form-container" class="documenten">
-                <iframe src="<stripes:url beanclass="nl.b3p.viewer.admin.stripes.FeatureTypeRelationActionBean" event="cancel"/>" id="editFrame" frameborder="0"></iframe>
+                <iframe src="<stripes:url beanclass="nl.viewer.admin.stripes.FeatureTypeRelationActionBean" event="cancel"/>" id="editFrame" frameborder="0"></iframe>
             </div>
             <script type="text/javascript" src="${contextPath}/resources/js/services/featuretyperelation.js"></script>
             <script type="text/javascript">
                 Ext.onReady(function() {
                     // Expose vieweradmin_components_FeaturetypeRelation to global scope to be able to access the component from the iframe
                     window.vieweradmin_components_FeaturetypeRelation = Ext.create('vieweradmin.components.FeaturetypeRelation', {
-                        gridurl: '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.FeatureTypeRelationActionBean" event="getGridData"/>',
-                        editurl: '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.FeatureTypeRelationActionBean" event="edit"/>',
-                        deleteurl: '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.FeatureTypeRelationActionBean" event="delete"/>'
+                        gridurl: '<stripes:url beanclass="nl.viewer.admin.stripes.FeatureTypeRelationActionBean" event="getGridData"/>',
+                        editurl: '<stripes:url beanclass="nl.viewer.admin.stripes.FeatureTypeRelationActionBean" event="edit"/>',
+                        deleteurl: '<stripes:url beanclass="nl.viewer.admin.stripes.FeatureTypeRelationActionBean" event="delete"/>'
                     });
                 });
             </script>

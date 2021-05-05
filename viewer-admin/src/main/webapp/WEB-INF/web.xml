@@ -60,10 +60,10 @@
     </context-param>
     <context-param>
         <description>
-            Configure the directory at which the flamingo data directory is located. This application must have permissions to write/read to that directory. In this directory
+            Configure the directory at which the tailormap data directory is located. This application must have permissions to write/read to that directory. In this directory
             the solr configuration and index will be located.
         </description>
-        <param-name>flamingo.data.dir</param-name>
+        <param-name>tailormap.data.dir</param-name>
         <param-value>PATH/TO/DATA/DIRECTORY</param-value>
     </context-param>
     <context-param>
@@ -71,7 +71,7 @@
             Configure whether or not this web application had to create the directory structure for solr. Default is false. Set to true for the viewer-admin, because the
             viewer-admin has the resources for a new server/core istance to be created.
         </description>
-        <param-name>flamingo.solr.setup</param-name>
+        <param-name>tailormap.solr.setup</param-name>
         <param-value>true</param-value>
     </context-param>
     <context-param>
@@ -80,35 +80,35 @@
             The interval should be a valid cron-expression string, you can use http://www.cronmaker.com/
             Comment out this context parameter or set to -1 to disable. 
         </description>
-        <param-name>flamingo.solr.schedule</param-name>
+        <param-name>tailormap.solr.schedule</param-name>
         <param-value>-1</param-value>
     </context-param>
     <context-param>
         <description>
             The url on where the solr server is to be found.
         </description>
-        <param-name>flamingo.solr.url</param-name>
+        <param-name>tailormap.solr.url</param-name>
         <param-value>http://SERVER/solr</param-value>
     </context-param>
     <context-param>
         <description>
             List of supported language codes (comma-separated)
         </description>
-        <param-name>flamingo.i18n.languagecodes</param-name>
+        <param-name>tailormap.i18n.languagecodes</param-name>
         <param-value>nl_NL</param-value>
     </context-param>
     <context-param>
         <description>
             List of projectioncodes, separated by semicolons.
         </description>
-        <param-name>flamingo.projections.epsgcodes</param-name>
+        <param-name>tailormap.projections.epsgcodes</param-name>
         <param-value>EPSG:28992[+proj=sterea +lat_0=52.15616055555555 +lon_0=5.38763888888889 +k=0.9999079 +x_0=155000 +y_0=463000 +ellps=bessel +towgs84=565.237,50.0087,465.658,-0.406857,0.350733,-1.87035,4.0812 +units=m +no_defs]</param-value>
     </context-param>
     <context-param>
         <description>
             List of projection names(/labels), separated by comma's.
         </description>
-        <param-name>flamingo.projections.epsgnames</param-name>
+        <param-name>tailormap.projections.epsgnames</param-name>
         <param-value>RD</param-value>
     </context-param>
     <context-param>
@@ -117,21 +117,21 @@
         <param-value>12</param-value>
     </context-param>
     <listener>
-        <listener-class>nl.b3p.viewer.components.ComponentRegistryInitializer</listener-class>
+        <listener-class>nl.viewer.components.ComponentRegistryInitializer</listener-class>
     </listener>
     <listener>
-        <listener-class>nl.b3p.viewer.admin.monitoring.GeoServiceMonitoringListener</listener-class>
+        <listener-class>nl.viewer.admin.monitoring.GeoServiceMonitoringListener</listener-class>
     </listener>
     <listener>
-        <listener-class>nl.b3p.web.stripes.StripersistCleanupListener</listener-class>
-    </listener>
-    <listener>
-        <description>The class which initializes (and if configured sets up) the solr instance.</description>
-        <listener-class>nl.b3p.viewer.solr.SolrInitializer</listener-class>
+        <listener-class>nl.web.stripes.StripersistCleanupListener</listener-class>
     </listener>
     <listener>
         <description>The class which initializes (and if configured sets up) the solr instance.</description>
-        <listener-class>nl.b3p.viewer.solr.SolrUpdaterListener</listener-class>
+        <listener-class>nl.viewer.solr.SolrInitializer</listener-class>
+    </listener>
+    <listener>
+        <description>The class which initializes (and if configured sets up) the solr instance.</description>
+        <listener-class>nl.viewer.solr.SolrUpdaterListener</listener-class>
     </listener>
     <context-param>
         <description>interval (in minutes) to use for refreshing SPOTinfo access tokens, default 60 minutes</description>
@@ -140,7 +140,7 @@
     </context-param>
     <listener>
         <description>Update access tokens for SPOTinfo / omgevingsserver.nl</description>
-        <listener-class>nl.b3p.viewer.admin.processes.SPOTinfoTokenRefresherListener</listener-class>
+        <listener-class>nl.viewer.admin.processes.SPOTinfoTokenRefresherListener</listener-class>
     </listener>
     <!-- Localization context for the likes of the <fmt:message> JSTL tag -->
     <context-param>
@@ -150,7 +150,7 @@
     <filter>
         <description>Filter from Tomcat 6 distribution, see http://wiki.apache.org/tomcat/FAQ/CharacterEncoding</description>
         <filter-name>SetCharacterEncodingFilter</filter-name>
-        <filter-class>nl.b3p.web.filter.SetCharacterEncodingFilter</filter-class>
+        <filter-class>nl.web.filter.SetCharacterEncodingFilter</filter-class>
         <init-param>
             <param-name>encoding</param-name>
             <param-value>UTF-8</param-value>
@@ -159,7 +159,7 @@
     <filter>
         <description>Filter to clean up GeoTools thread locals</description>
         <filter-name>GeoToolsFilter</filter-name>
-        <filter-class>nl.b3p.web.geotools.GeoToolsFilter</filter-class>
+        <filter-class>nl.web.geotools.GeoToolsFilter</filter-class>
     </filter>
     <filter>
         <display-name>Stripes Filter</display-name>
@@ -167,7 +167,7 @@
         <filter-class>net.sourceforge.stripes.controller.StripesFilter</filter-class>
         <init-param>
             <param-name>ActionResolver.Packages</param-name>
-            <param-value>nl.b3p.viewer.admin.stripes</param-value>
+            <param-value>nl.viewer.admin.stripes</param-value>
         </init-param>
         <init-param>
             <param-name>Extension.Packages</param-name>
@@ -187,7 +187,7 @@
         </init-param>
         <init-param>
             <param-name>Stripersist.InitializeSettingsClass</param-name>
-            <param-value>nl.b3p.viewer.config.stripersist.DynamicStripersistInitializer</param-value>
+            <param-value>nl.viewer.config.stripersist.DynamicStripersistInitializer</param-value>
         </init-param>
         <init-param>
             <param-name>LocalePicker.Locales</param-name>

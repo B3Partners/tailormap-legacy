@@ -28,7 +28,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 <stripes:errors/>
 <stripes:messages/>
 
-<stripes:form beanclass="nl.b3p.viewer.admin.stripes.GeoServiceActionBean">
+<stripes:form beanclass="nl.viewer.admin.stripes.GeoServiceActionBean">
 
 <script type="text/javascript">
     var frameParent = getParent();
@@ -134,7 +134,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <td>
                 <stripes:select value="Inimage" name="exception_type" id="exception_type">
                     <stripes:option value="-1"><fmt:message key="viewer_admin.geoservice.11" /></stripes:option>
-                    <stripes:options-enumeration enum="nl.b3p.viewer.config.services.WMSExceptionType"  />
+                    <stripes:options-enumeration enum="nl.viewer.config.services.WMSExceptionType"  />
                 </stripes:select>
             </td>
         </tr>
@@ -371,13 +371,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                                 </c:if>
                             </td>
                             <td style="padding: 2px">
-                                <stripes:link beanclass="nl.b3p.viewer.admin.stripes.GeoServiceActionBean" event="editSld">
+                                <stripes:link beanclass="nl.viewer.admin.stripes.GeoServiceActionBean" event="editSld">
                                     <stripes:param name="service" value="${actionBean.service.id}"/>
                                     <stripes:param name="sld" value="${sld.id}"/>
                                     <fmt:message key="viewer_admin.geoservice.47" />
                                 </stripes:link>
                                 <fmt:message key="viewer_admin.geoservice.48" var="geoservice48" />
-                                <stripes:link beanclass="nl.b3p.viewer.admin.stripes.GeoServiceActionBean" event="deleteSld" onclick="return confirm('${geoservice48}')">
+                                <stripes:link beanclass="nl.viewer.admin.stripes.GeoServiceActionBean" event="deleteSld" onclick="return confirm('${geoservice48}')">
                                     <stripes:param name="service" value="${actionBean.service.id}"/>
                                     <stripes:param name="sld" value="${sld.id}"/>
                                     <fmt:message key="viewer_admin.geoservice.49" />
@@ -389,7 +389,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             </c:otherwise>
         </c:choose>
         <br>
-        <stripes:form beanclass="nl.b3p.viewer.admin.stripes.GeoServiceActionBean">
+        <stripes:form beanclass="nl.viewer.admin.stripes.GeoServiceActionBean">
             <stripes:hidden name="service"/>
             <fmt:message key="viewer_admin.geoservice.50" var="geoservice50" />
             <stripes:submit name="addSld" value="${geoservice50}"/>

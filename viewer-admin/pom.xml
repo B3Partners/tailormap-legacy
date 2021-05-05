@@ -90,7 +90,7 @@
             <groupId>org.glassfish.web</groupId>
             <artifactId>javax.servlet.jsp.jstl</artifactId>
         </dependency>
-        <!-- Flamingo dependencies -->
+        <!-- tailormap dependencies -->
         <dependency>
             <groupId>org.tailormap</groupId>
             <artifactId>viewer-config-persistence</artifactId>
@@ -140,7 +140,7 @@
             <artifactId>viewer-helpers</artifactId>
             <type>test-jar</type>
             <scope>test</scope>
-            <version>${flamingo.version}</version>
+            <version>${tailormap.version}</version>
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>

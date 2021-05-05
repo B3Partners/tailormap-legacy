@@ -223,7 +223,7 @@
             <artifactId>viewer-helpers</artifactId>
             <type>test-jar</type>
             <scope>test</scope>
-            <version>${flamingo.version}</version>
+            <version>${tailormap.version}</version>
         </dependency>
         <dependency>
             <groupId>org.powermock</groupId>
@@ -630,7 +630,7 @@
                     <testFailureIgnore>!${test.skip.integrationtests}</testFailureIgnore>
                     <skipTests>!${test.skip.integrationtests}</skipTests>
                     <systemPropertyVariables>
-                        <flamingo.version>${flamingo.version}</flamingo.version>
+                        <tailormap.version>${tailormap.version}</tailormap.version>
                         <test.persistence.unit>${test.persistence.unit}</test.persistence.unit>
                     </systemPropertyVariables>
                     <useFile>false</useFile>
@@ -691,7 +691,7 @@
                             <systemPropertyVariables>
                                 <test.persistence.unit>${test.persistence.unit}</test.persistence.unit>
                                 <database.properties.file>postgres.properties</database.properties.file>
-                                <flamingo.version>${flamingo.version}</flamingo.version>
+                                <tailormap.version>${tailormap.version}</tailormap.version>
                             </systemPropertyVariables>
                             <useFile>false</useFile>
                             <argLine>${failsafeArgLine}</argLine>
@@ -798,7 +798,7 @@
                             <systemPropertyVariables>
                                 <test.persistence.unit>${test.persistence.unit}</test.persistence.unit>
                                 <database.properties.file>oracle.properties</database.properties.file>
-                                <flamingo.version>${flamingo.version}</flamingo.version>
+                                <tailormap.version>${tailormap.version}</tailormap.version>
                             </systemPropertyVariables>
                             <useFile>false</useFile>
                             <rerunFailingTestsCount>3</rerunFailingTestsCount>
@@ -906,7 +906,7 @@
                             <systemPropertyVariables>
                                 <test.persistence.unit>${test.persistence.unit}</test.persistence.unit>
                                 <database.properties.file>ms_sql_server.properties</database.properties.file>
-                                <flamingo.version>${flamingo.version}</flamingo.version>
+                                <tailormap.version>${tailormap.version}</tailormap.version>
                             </systemPropertyVariables>
                             <useFile>false</useFile>
                             <!--<argLine>${failsafeArgLine}</argLine>-->

@@ -24,7 +24,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <link rel="stylesheet" href="${contextPath}/resources/css/HtmlEditorExtensions.css" />
     </stripes:layout-component>
     <stripes:layout-component name="body">
-        <stripes:form beanclass="nl.b3p.viewer.admin.stripes.ApplicationTreeLayerActionBean" id="apptreelayerform" class="maximize">
+        <stripes:form beanclass="nl.viewer.admin.stripes.ApplicationTreeLayerActionBean" id="apptreelayerform" class="maximize">
             <stripes:hidden name="applicationLayer" value="${actionBean.applicationLayer.id}"/>
             <stripes:hidden name="attributesJSON" id="attributesJSON" value="${actionBean.attributesJSON}"/>
             <stripes:hidden name="details['stylesOrder']" id="stylesJSON"/>
@@ -187,12 +187,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         styleDetails : ${actionBean.details.stylesOrder != null ? actionBean.details.stylesOrder : '{}'},
                         imagePath: "${contextPath}/resources/images/",
                         actionBeans: {
-                            imageupload: <js:quote><stripes:url beanclass="nl.b3p.viewer.admin.stripes.ImageUploadActionBean"/></js:quote>,
-                            appTreeLayer: <js:quote><stripes:url beanclass="nl.b3p.viewer.admin.stripes.ApplicationTreeLayerActionBean"/></js:quote>,
-                            featureSourceURL: <js:quote><stripes:url beanclass="nl.b3p.viewer.admin.stripes.AttributeSourceActionBean" event="getGridData"/></js:quote>,
-                            featureTypesURL: <js:quote><stripes:url beanclass="nl.b3p.viewer.admin.stripes.AttributeActionBean" event="getFeatureTypes"/></js:quote>,
-                            attributesURL: <js:quote><stripes:url beanclass="nl.b3p.viewer.admin.stripes.AttributeActionBean" event="getGridData"/></js:quote>,
-                            getDBValuesUrl: <js:quote><stripes:url beanclass="nl.b3p.viewer.admin.stripes.ApplicationTreeLayerActionBean" event="getUniqueValues"/></js:quote>
+                            imageupload: <js:quote><stripes:url beanclass="nl.viewer.admin.stripes.ImageUploadActionBean"/></js:quote>,
+                            appTreeLayer: <js:quote><stripes:url beanclass="nl.viewer.admin.stripes.ApplicationTreeLayerActionBean"/></js:quote>,
+                            featureSourceURL: <js:quote><stripes:url beanclass="nl.viewer.admin.stripes.AttributeSourceActionBean" event="getGridData"/></js:quote>,
+                            featureTypesURL: <js:quote><stripes:url beanclass="nl.viewer.admin.stripes.AttributeActionBean" event="getFeatureTypes"/></js:quote>,
+                            attributesURL: <js:quote><stripes:url beanclass="nl.viewer.admin.stripes.AttributeActionBean" event="getGridData"/></js:quote>,
+                            getDBValuesUrl: <js:quote><stripes:url beanclass="nl.viewer.admin.stripes.ApplicationTreeLayerActionBean" event="getUniqueValues"/></js:quote>
                         }
                     })
                 });
