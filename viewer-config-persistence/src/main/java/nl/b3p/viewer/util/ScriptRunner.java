@@ -65,7 +65,6 @@ public class ScriptRunner {
      *
      * @param reader the source of the script
      * @param canFail May the script contain failing statements
-     * @throws IOException if any occurs connecting to the database
      * @throws SQLException if any occurs executing the script
      */
     public void runScript(Reader reader, boolean canFail) throws  SQLException {

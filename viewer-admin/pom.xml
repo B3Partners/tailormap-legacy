@@ -4,8 +4,8 @@
     <artifactId>viewer-admin</artifactId>
     <packaging>war</packaging>
     <parent>
-        <groupId>org.flamingo-mc</groupId>
-        <artifactId>flamingo-mc</artifactId>
+        <groupId>org.tailormap</groupId>
+        <artifactId>tailormap</artifactId>
         <version>5.9.2-SNAPSHOT</version>
     </parent>
     <name>viewer-admin</name>
@@ -92,19 +92,19 @@
         </dependency>
         <!-- Flamingo dependencies -->
         <dependency>
-            <groupId>org.flamingo-mc</groupId>
+            <groupId>org.tailormap</groupId>
             <artifactId>viewer-config-persistence</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.flamingo-mc</groupId>
+            <groupId>org.tailormap</groupId>
             <artifactId>solr-commons</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.flamingo-mc</groupId>
+            <groupId>org.tailormap</groupId>
             <artifactId>web-commons</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.flamingo-mc</groupId>
+            <groupId>org.tailormap</groupId>
             <artifactId>form</artifactId>
         </dependency>
         <!-- nl b3p csw-->
@@ -130,13 +130,13 @@
                <groupId>org.apache.solr</groupId>
         </dependency>
         <dependency>
-            <groupId>org.flamingo-mc</groupId>
+            <groupId>org.tailormap</groupId>
             <artifactId>viewer-config-persistence</artifactId>
             <type>test-jar</type>
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.flamingo-mc</groupId>
+            <groupId>org.tailormap</groupId>
             <artifactId>viewer-helpers</artifactId>
             <type>test-jar</type>
             <scope>test</scope>
@@ -147,7 +147,7 @@
             <artifactId>mockito-core</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.flamingo-mc</groupId>
+            <groupId>org.tailormap</groupId>
             <artifactId>viewer-helpers</artifactId>
         </dependency>
     </dependencies>
@@ -307,7 +307,7 @@
                             <propertiesPortFilePath>${project.build.testOutputDirectory}/tomcatports.properties</propertiesPortFilePath>
                             <!--webapps>
                                 <webapp>
-                                    <groupId>org.flamingo-mc</groupId>
+                                    <groupId>org.tailormap</groupId>
                                     <artifactId>viewer</artifactId>
                                     <version>${project.version}</version>
                                     <type>war</type>
