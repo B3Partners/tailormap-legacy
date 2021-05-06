@@ -131,7 +131,7 @@
                             <imagePullPolicy>IfNotPresent</imagePullPolicy>
                             <images>
                                 <image>
-                                    <name>docker.b3p.nl/b3partners/flamingo:%l</name>
+                                    <name>docker.b3p.nl/b3partners/tailormap:%l</name>
                                     <build>
                                         <dockerFile>Dockerfile</dockerFile>
                                         <args>
