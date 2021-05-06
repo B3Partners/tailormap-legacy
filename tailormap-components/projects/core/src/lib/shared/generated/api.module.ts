@@ -5,6 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { ApiConfiguration, ApiConfigurationParams } from './api-configuration';
 
 import { FeatureControllerService } from './services/feature-controller.service';
+import { AttributeControllerService } from './services/attribute-controller.service';
 
 /**
  * Module that provides all services and configuration.
@@ -15,6 +16,7 @@ import { FeatureControllerService } from './services/feature-controller.service'
   declarations: [],
   providers: [
     FeatureControllerService,
+    AttributeControllerService,
     ApiConfiguration
   ],
 })
