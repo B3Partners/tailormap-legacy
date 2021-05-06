@@ -1,21 +1,7 @@
 /* eslint @typescript-eslint/naming-convention: [ "error", { "selector": ["objectLiteralProperty","classProperty"], "format": ["camelCase", "UPPER_CASE", "snake_case"] } ] */
 
 import { Injectable } from '@angular/core';
-import {
-  Boom,
-  Boominspectie,
-  Feature,
-  Geometry,
-  Gras,
-  Haag,
-  MechLeiding,
-  NatBeplanting,
-  Rioolput,
-  VrijvLeiding,
-  Weginspectie,
-  Wegvakonderdeel,
-  Wegvakonderdeelplanning,
-} from '../generated';
+import { Feature, Geometry } from '../generated';
 import { FormHelpers } from '../../feature-form/form/form-helpers';
 
 
@@ -76,7 +62,7 @@ export class FeatureInitializerService {
   public create(type: string, params: any): Feature {
     params.clazz = type.toLowerCase();
     params.objecttype = FormHelpers.snakecaseToCamel(type);
-    params.objectGuid = FeatureInitializerService.STUB_OBJECT_GUID_NEW_OBJECT;
+    params.fid = FeatureInitializerService.STUB_OBJECT_GUID_NEW_OBJECT;
     switch (type) {
       case 'Wegvakonderdeel':
         const wv: Wegvakonderdeel = {

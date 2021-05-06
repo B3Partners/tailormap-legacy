@@ -35,7 +35,7 @@ export class FeatureSelectionComponent {
   }
 
   public trackByFeatureId(idx: number, feature: Feature): string {
-    return feature.objectGuid;
+    return feature.fid;
   }
 
   public getLabelForFeature(feature: Feature) {

@@ -186,7 +186,7 @@ export class FormComponent implements OnDestroy, OnInit {
           children: null,
           [formConfig.treeNodeColumn]: `Nieuwe ${formConfig.name}`,
         });
-        this.store$.dispatch(FormActions.setNewFeature({newFeature, parentId: features[0].objectGuid}));
+        this.store$.dispatch(FormActions.setNewFeature({newFeature, parentId: features[0].fid}));
         this.store$.dispatch(FormActions.setFormEditing({editing: true}));
       });
   }

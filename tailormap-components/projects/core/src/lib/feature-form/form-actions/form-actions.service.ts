@@ -19,23 +19,23 @@ export class FormActionsService {
     if (isBulk) {
       const reqs: Observable<any>[] = [];
       features.forEach(feature => {
-        const objectGuid = feature.objectGuid;
+        const objectGuid = feature.fid;
         reqs.push(this.service.update({objectGuid, body: feature}));
       });
       return forkJoin(reqs);
     } else {
       const feature = features[0];
-      const objectGuid = feature.objectGuid;
+      const objectGuid = feature.fid;
       if (objectGuid && objectGuid !== FeatureInitializerService.STUB_OBJECT_GUID_NEW_OBJECT) {
         return this.service.update({objectGuid, body: feature});
       } else {
-        const parentId = parent ? parent.objectGuid : null;
+        const parentId = parent ? parent.fid : null;
         return this.service.save({parentId, body: feature});
       }
     }
   }
 
   public removeFeature$(feature: Feature): Observable<any> {
-    return this.service.delete({featuretype: feature.clazz, objectGuid: feature.objectGuid});
+    return this.service.delete({featuretype: feature.clazz, objectGuid: feature.fid});
   }
 }

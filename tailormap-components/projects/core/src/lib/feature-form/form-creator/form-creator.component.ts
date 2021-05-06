@@ -141,12 +141,12 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
 
   public save() {
     const feature = this.formgroep.value;
-    feature.__fid = this.feature.objectGuid;
+    feature.__fid = this.feature.fid;
     this.mergeFormToFeature(feature);
     const parentFeature = this.features[0];
 
     this.actions.save$(this.isBulk, this.isBulk ? this.features : [this.feature], parentFeature).subscribe(savedFeature => {
-        this.store$.dispatch(FormActions.setNewFeature({newFeature: savedFeature, parentId: parentFeature.objectGuid}));
+        this.store$.dispatch(FormActions.setNewFeature({newFeature: savedFeature, parentId: parentFeature.fid}));
         this._snackBar.open('Opgeslagen', '', {duration: 5000});
       },
       error => {
