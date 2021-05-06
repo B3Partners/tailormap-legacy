@@ -10,6 +10,7 @@ import { Observable } from 'rxjs';
 import { map, filter } from 'rxjs/operators';
 
 import { Feature } from '../models/feature';
+import { FeaturetypeMetadata } from '../models/featuretype-metadata';
 
 @Injectable({
   providedIn: 'root',
@@ -230,6 +231,55 @@ export class FeatureControllerService extends BaseService {
 
     return this.onPoint$Response(params).pipe(
       map((r: StrictHttpResponse<Array<Feature>>) => r.body as Array<Feature>)
+    );
+  }
+
+  /**
+   * Path part for operation featuretypeInformation
+   */
+  static readonly FeaturetypeInformationPath = '/features/info/{appId}/{featureTypes}';
+
+  /**
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `featuretypeInformation()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  featuretypeInformation$Response(params: {
+    appId: number;
+    featureTypes: Array<string>;
+  }): Observable<StrictHttpResponse<Array<FeaturetypeMetadata>>> {
+
+    const rb = new RequestBuilder(this.rootUrl, FeatureControllerService.FeaturetypeInformationPath, 'get');
+    if (params) {
+      rb.path('appId', params.appId, {});
+      rb.path('featureTypes', params.featureTypes, {});
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'blob',
+      accept: '*/*'
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<Array<FeaturetypeMetadata>>;
+      })
+    );
+  }
+
+  /**
+   * This method provides access to only to the response body.
+   * To access the full response (for headers, for example), `featuretypeInformation$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  featuretypeInformation(params: {
+    appId: number;
+    featureTypes: Array<string>;
+  }): Observable<Array<FeaturetypeMetadata>> {
+
+    return this.featuretypeInformation$Response(params).pipe(
+      map((r: StrictHttpResponse<Array<FeaturetypeMetadata>>) => r.body as Array<FeaturetypeMetadata>)
     );
   }
 

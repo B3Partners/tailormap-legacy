@@ -65,7 +65,7 @@ export class FeatureInitializerService {
     params.fid = FeatureInitializerService.STUB_OBJECT_GUID_NEW_OBJECT;
     switch (type) {
       case 'Wegvakonderdeel':
-        const wv: Wegvakonderdeel = {
+        const wv: Feature = {
           a1_rafeling: 0,
           a3_dwarsonvlakheid: 0,
           a4_oneffenheden: 0,
@@ -210,7 +210,7 @@ export class FeatureInitializerService {
         };
         return wv;
       case 'Wegvakonderdeelplanning':
-        const wvp: Wegvakonderdeelplanning = {
+        const wvp: Feature = {
           belang: 0,
           binnen_kom: false,
           calc_plan_code: '',
@@ -247,7 +247,7 @@ export class FeatureInitializerService {
         };
         return wvp;
       case 'Rioolput':
-        const rp: Rioolput = {
+        const rp: Feature = {
           aanlegjaar: 0,
           aansluitend_stelseltype: null,
           aant_aansl_inw_recr: 0,
@@ -425,7 +425,7 @@ export class FeatureInitializerService {
         };
         return rp;
       case 'Mechleiding':
-        const ml: MechLeiding = {
+        const ml: Feature = {
           aanlegjaar: 0,
           aantal_buizen: 0,
           afbeelding: null,
@@ -528,7 +528,7 @@ export class FeatureInitializerService {
         };
         return ml;
       case 'Vrijvleiding':
-        const vl: VrijvLeiding = {
+        const vl: Feature = {
           aanlegjaar: 0,
           aant_ie_bedrijven: 0,
           aant_ie_recreatie: 0,
@@ -731,7 +731,7 @@ export class FeatureInitializerService {
         };
         return vl;
       case 'Boom':
-        const boom: Boom = {
+        const boom: Feature = {
           aanlegjaar: 0,
           aes: null,
           afbeelding: null,
@@ -849,7 +849,7 @@ export class FeatureInitializerService {
         };
         return boom;
       case 'Boominspectie':
-        const bi: Boominspectie = {
+        const bi: Feature = {
           aes: null,
           afbeelding_vta: null,
           boom_id: null,
@@ -900,7 +900,7 @@ export class FeatureInitializerService {
         };
         return bi;
       case 'Gras':
-        const gras: Gras = {
+        const gras: Feature = {
           aanlegjaar: 0,
           afbeelding: null,
           bbv: null,
@@ -972,7 +972,7 @@ export class FeatureInitializerService {
         };
         return gras;
       case 'Haag':
-        const haag: Haag = {
+        const haag: Feature = {
           aanlegjaar: 0,
           aantal_knipbeurten: 0,
           aantal_zijden: null,
@@ -1044,7 +1044,7 @@ export class FeatureInitializerService {
         };
         return haag;
       case 'NatBeplanting':
-        const natBeplanting: NatBeplanting = {
+        const natBeplanting: Feature = {
           aanlegjaar: 0,
           afbeelding: null,
           bbv: null,
@@ -1113,7 +1113,7 @@ export class FeatureInitializerService {
         };
         return natBeplanting;
       case 'Weginspectie':
-        const weginspectie: Weginspectie = {
+        const weginspectie: Feature = {
           a1_rafeling: 0,
           a3_dwarsonvlakheid: 0,
           a4_oneffenheden: 0,

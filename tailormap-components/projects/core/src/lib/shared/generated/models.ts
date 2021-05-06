@@ -3,3 +3,7 @@ export { Crs } from './models/crs';
 export { Feature } from './models/feature';
 export { Geometry } from './models/geometry';
 export { Relation } from './models/relation';
+export { FeaturetypeMetadata } from './models/featuretype-metadata';
+export { Attribuut } from './models/attribuut';
+export { Domein } from './models/domein';
+export { Domeinwaarde } from './models/domeinwaarde';
