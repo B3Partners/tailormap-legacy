@@ -37,7 +37,7 @@ export class FormTreeComponent implements OnInit, OnDestroy {
   @Input()
   public set feature (feature: Feature) {
     if (feature && this.transientTreeHelper) {
-      this.transientTreeHelper.selectNode(feature.objectGuid);
+      this.transientTreeHelper.selectNode(feature.fid);
     }
     this.selectedFeature = feature;
   }
@@ -78,7 +78,7 @@ export class FormTreeComponent implements OnInit, OnDestroy {
       this.treeService,
       true,
       node => {
-        return !node.metadata.isFeatureType && this.selectedFeature.objectGuid === node.metadata.objectGuid;
+        return !node.metadata.isFeatureType && this.selectedFeature.fid === node.metadata.fid;
       },
       this.hasCheckboxes,
     );
@@ -101,7 +101,7 @@ export class FormTreeComponent implements OnInit, OnDestroy {
         const tree: TreeModel<FormTreeMetadata> [] = FormTreeHelpers.convertFeatureToTreeModel(features, formConfigs);
         this.transientTreeHelper.createTree(tree);
         if (this.selectedFeature) {
-          this.transientTreeHelper.selectNode(this.selectedFeature.objectGuid);
+          this.transientTreeHelper.selectNode(this.selectedFeature.fid);
         }
       });
 
@@ -110,7 +110,7 @@ export class FormTreeComponent implements OnInit, OnDestroy {
       event.forEach((checked, id) => {
         const node = this.treeService.getNode(id);
         if (node.metadata.feature) {
-          relIds.set(node.metadata.feature.objectGuid, checked);
+          relIds.set(node.metadata.feature.fid, checked);
         }
       });
       this.relatedFeatureChecked.emit(relIds);

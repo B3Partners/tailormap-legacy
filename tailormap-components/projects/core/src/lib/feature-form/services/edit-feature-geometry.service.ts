@@ -76,7 +76,7 @@ export class EditFeatureGeometryService {
             ...feature,
             [geomField]: updatedGeom,
           };
-          return this.featureControllerService.update({ objectGuid: updatedFeature.objectGuid, body: updatedFeature })
+          return this.featureControllerService.update({ objectGuid: updatedFeature.fid, body: updatedFeature })
             .pipe(
               map(() => updatedGeom),
               catchError(() => {

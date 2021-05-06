@@ -3,10 +3,7 @@
 import { Workflow } from './Workflow';
 import * as wellknown from 'wellknown';
 import { GeoJSONPoint } from 'wellknown';
-import {
-  Boom, Boominspectie, Boomplanning, CultBeplanting, Feature, Gras, Haag, MechLeiding, NatBeplanting, Rioolput, VrijvLeiding, Weginspectie,
-  Wegvakonderdeel, Wegvakonderdeelplanning,
-} from '../../shared/generated';
+import { Feature } from '../../shared/generated';
 import { VectorLayer } from '../../../../../bridge/typings';
 import { ChooseTypesComponent } from '../../user-interface/sewage/choose-types/choose-types.component';
 import { Observable } from 'rxjs';
@@ -111,13 +108,13 @@ export class SewageWorkflow extends Workflow {
       switch (this.choice.duct) {
         case 'mechleiding':
           return {
-            pompput_id: this.well1Feature.objectGuid,
-            lozingsput_id: this.well2Feature.objectGuid,
+            pompput_id: this.well1Feature.fid,
+            lozingsput_id: this.well2Feature.fid,
           };
         case 'vrijvleiding':
           return {
-            beginput_id: this.well1Feature.objectGuid,
-            eindput_id: this.well2Feature.objectGuid,
+            beginput_id: this.well1Feature.fid,
+            eindput_id: this.well2Feature.fid,
           };
       }
     } else {
@@ -175,9 +172,7 @@ export class SewageWorkflow extends Workflow {
   }
 
   private retrieveFeatures$(coords: [number, number] | [number, number, number]):
-    Observable<Array<Boom | Boominspectie | Boomplanning | CultBeplanting | Gras | Haag
-      | MechLeiding | NatBeplanting | Rioolput | VrijvLeiding | Weginspectie | Wegvakonderdeel
-      | Wegvakonderdeelplanning>> {
+    Observable<Array<Feature>> {
     const x = coords[0];
     const y = coords[1];
 

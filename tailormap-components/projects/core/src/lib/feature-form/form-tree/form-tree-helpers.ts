@@ -45,12 +45,12 @@ export class FormTreeHelpers {
       const metadata = {
         isFeatureType: false,
         feature,
-        objectGuid: feature.objectGuid,
+        objectGuid: feature.fid,
       };
       nodes.push({
         label: FormTreeHelpers.getFeatureValueForField(feature, config),
         children: allChildren.length > 0 ? allChildren : undefined,
-        id: feature.objectGuid,
+        id: feature.fid,
         metadata,
       });
     });

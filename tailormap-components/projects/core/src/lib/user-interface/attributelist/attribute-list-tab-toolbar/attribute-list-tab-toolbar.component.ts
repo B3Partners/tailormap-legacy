@@ -211,7 +211,7 @@ export class AttributeListTabToolbarComponent implements OnInit, OnDestroy {
         const className = LayerUtils.sanitizeLayername(appLayer);
         feature.children = [];
         feature.clazz = className;
-        feature.objectGuid = row.object_guid;
+        feature.fid = row.object_guid;
         feature.relatedFeatureTypes = row.related_featuretypes;
         feature.objecttype = className[0].toUpperCase() + className.substr(1);
         featuresChecked.push({ ...feature, ...rest });
