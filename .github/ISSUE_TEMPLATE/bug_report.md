@@ -9,7 +9,7 @@ assignees: ''
 
 
 ### Version
-Which version of flamingo do you use: <!-- go to http://<server>/viewer-admin/about.jsp or http://<server>/viewer/about.jsp and paste below -->
+Which version of Tailormap do you use: <!-- go to http://<server>/viewer-admin/about.jsp or http://<server>/viewer/about.jsp and paste below -->
 
 ### Browser info
 <!-- Which browser are you using? visit https://whichbrowser.net/ and paste the information below -->
