@@ -109,7 +109,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
      }
 
      var scriptTag = document.createElement("script");
-     scriptTag.src = "https://api.github.com/repos/flamingo-geocms/flamingo/releases/latest?callback=v";
+     scriptTag.src = "https://api.github.com/repos/B3Partners/tailormap/releases/latest?callback=v";
      document.getElementsByTagName('head')[0].appendChild(scriptTag);
 </script>
     </body>
