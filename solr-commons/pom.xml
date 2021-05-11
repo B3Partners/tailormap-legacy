@@ -1,13 +1,13 @@
 <?xml version="1.0"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.flamingo-mc</groupId>
+    <groupId>org.tailormap</groupId>
     <artifactId>solr-commons</artifactId>
     <packaging>jar</packaging>
 
     <parent>
-        <groupId>org.flamingo-mc</groupId>
-        <artifactId>flamingo-mc</artifactId>
+        <groupId>org.tailormap</groupId>
+        <artifactId>tailormap</artifactId>
         <version>5.9.2-SNAPSHOT</version>
     </parent>
     <name>solr-commons</name>
@@ -39,8 +39,12 @@
             <artifactId>stripersist</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.flamingo-mc</groupId>
+            <groupId>org.tailormap</groupId>
             <artifactId>viewer-config-persistence</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.tailormap</groupId>
+            <artifactId>viewer-helpers</artifactId>
         </dependency>
     </dependencies>
 </project>

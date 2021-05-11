@@ -5,7 +5,9 @@
     <element name="roleRegistry" type="gsr:RoleRegistryType">
         <key name="RoleKey">
     		<selector xpath="gsr:roleList/gsr:role"/>
-    		<field xpath="@id"/>
+    		<field xpath="@Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)"/>
     	</key>
     	<keyref name="ParentKey" refer="gsr:RoleKey">
     		<selector xpath="gsr:roleList/gsr:role"/>

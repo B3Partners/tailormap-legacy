@@ -18,7 +18,7 @@
             <param name="ConversionPattern" value="%d{HH:mm:ss} viewer-audit-test: %5p (%C#%M:%L) - %m%n"/>
         </layout>
     </appender>
-    <logger name="nl.b3p.viewer.audit.impl.DefaultLoggingService" additivity="false">
+    <logger name="nl.viewer.audit.impl.DefaultLoggingService" additivity="false">
         <level value="info"/>
         <appender-ref ref="auditlog"/>
     </logger>

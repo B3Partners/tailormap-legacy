@@ -33,21 +33,21 @@
         <dispatcher>ERROR</dispatcher>
     </filter-mapping>
     <listener>
-        <listener-class>nl.b3p.viewer.components.ComponentRegistryInitializer</listener-class>
+        <listener-class>nl.viewer.components.ComponentRegistryInitializer</listener-class>
     </listener>
     <listener>
         <description>scan for audit logging providers</description>
-        <listener-class>nl.b3p.web.stripes.AuditLogginingInitializer</listener-class>
+        <listener-class>nl.web.stripes.AuditLogginingInitializer</listener-class>
     </listener>
     <listener>
-        <listener-class>nl.b3p.web.stripes.StripersistCleanupListener</listener-class>
+        <listener-class>nl.web.stripes.StripersistCleanupListener</listener-class>
     </listener>
     <listener>
-        <listener-class>nl.b3p.web.SharedSessionData</listener-class>
+        <listener-class>nl.web.SharedSessionData</listener-class>
     </listener>
     <listener>
         <description>The class which initializes (and if configured sets up) the solr instance.</description>
-        <listener-class>nl.b3p.viewer.solr.SolrInitializer</listener-class>
+        <listener-class>nl.viewer.solr.SolrInitializer</listener-class>
     </listener>
     <!-- Localization context voor o.a. de <fmt:message> JSTL tag -->
     <context-param>
@@ -61,10 +61,10 @@
     </context-param>
     <context-param>
         <description>
-            Configure the directory at which the flamingo data directory is located. This application must have permissions to write/read to that directory. In this directory
+            Configure the directory at which the tailormap data directory is located. This application must have permissions to write/read to that directory. In this directory
             the solr configuration and index will be located.
         </description>
-        <param-name>flamingo.data.dir</param-name>
+        <param-name>tailormap.data.dir</param-name>
         <param-value>PATH/TO/DATA/DIRECTORY</param-value>
     </context-param>
     <context-param>
@@ -72,14 +72,14 @@
             Configure whether or not this web application had to create the directory structure for solr. Default is false. Set to true for the viewer-admin, because the 
             viewer-admin has the resources for a new server/core istance to be created.
         </description>
-        <param-name>flamingo.solr.setup</param-name>
+        <param-name>tailormap.solr.setup</param-name>
         <param-value>false</param-value>
     </context-param>
     <context-param>
         <description>
             The url on where the solr server is to be found.
         </description>
-        <param-name>flamingo.solr.url</param-name>
+        <param-name>tailormap.solr.url</param-name>
         <param-value>http://SERVER/solr/</param-value>
     </context-param>
     <context-param>
@@ -95,7 +95,7 @@
     <filter>
         <description>Filter from Tomcat 6 distribution, see http://wiki.apache.org/tomcat/FAQ/CharacterEncoding</description>
         <filter-name>SetCharacterEncodingFilter</filter-name>
-        <filter-class>nl.b3p.web.filter.SetCharacterEncodingFilter</filter-class>
+        <filter-class>nl.web.filter.SetCharacterEncodingFilter</filter-class>
         <init-param>
             <param-name>encoding</param-name>
             <param-value>UTF-8</param-value>
@@ -104,7 +104,7 @@
     <filter>
         <description>Filter to clean up GeoTools thread locals</description>
         <filter-name>GeoToolsFilter</filter-name>
-        <filter-class>nl.b3p.web.geotools.GeoToolsFilter</filter-class>
+        <filter-class>nl.web.geotools.GeoToolsFilter</filter-class>
     </filter>
     <filter>
         <display-name>Stripes Filter</display-name>
@@ -112,11 +112,11 @@
         <filter-class>net.sourceforge.stripes.controller.StripesFilter</filter-class>
         <init-param>
             <param-name>ActionResolver.Packages</param-name>
-            <param-value>nl.b3p.viewer.stripes</param-value>
+            <param-value>nl.viewer.stripes</param-value>
         </init-param>
         <init-param>
             <param-name>Extension.Packages</param-name>
-            <param-value>org.stripesstuff.stripersist, nl.b3p.web.stripes</param-value>
+            <param-value>org.stripesstuff.stripersist, nl.web.stripes</param-value>
         </init-param>
         <init-param>
             <param-name>MultipartWrapper.Class</param-name>
@@ -124,7 +124,7 @@
         </init-param>
         <init-param>
             <param-name>Stripersist.InitializeSettingsClass</param-name>
-            <param-value>nl.b3p.viewer.config.stripersist.DynamicStripersistInitializer</param-value>
+            <param-value>nl.viewer.config.stripersist.DynamicStripersistInitializer</param-value>
         </init-param>
         <init-param>
             <param-name>LocalePicker.Locales</param-name>
@@ -141,7 +141,7 @@
     </filter>
     <filter>
         <filter-name>IPAuthenticationFilter</filter-name>
-        <filter-class>nl.b3p.viewer.util.IPAuthenticationFilter</filter-class>
+        <filter-class>nl.viewer.util.IPAuthenticationFilter</filter-class>
     </filter>
     <filter>
         <!-- See JavaDoc for documentation.
@@ -150,7 +150,7 @@
         <p>Klik <a href="${contextPath}/auth/init?returnTo=${contextPath}/app?name=${param['name']}&version=${param['version']}&debug=${param['debug']}">hier</a> om in te loggen met uw externe account.</p> 
         -->
         <filter-name>HeaderAuthenticationFilter</filter-name>
-        <filter-class>nl.b3p.web.filter.HeaderAuthenticationFilter</filter-class>
+        <filter-class>nl.web.filter.HeaderAuthenticationFilter</filter-class>
         <init-param>
             <!-- Must be set to a secret random prefix to enable.
 
@@ -177,7 +177,7 @@
     </servlet>
     <servlet>
         <servlet-name>DatabaseSynchronizer</servlet-name>
-        <servlet-class>nl.b3p.viewer.util.databaseupdate.DatabaseSynchronizer</servlet-class>
+        <servlet-class>nl.viewer.util.databaseupdate.DatabaseSynchronizer</servlet-class>
         <load-on-startup>2</load-on-startup>
     </servlet>
     <servlet-mapping>

@@ -36,7 +36,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <div id="formcontent">
         <stripes:errors/>
         <stripes:messages/>
-        <stripes:form beanclass="nl.b3p.viewer.admin.stripes.ConfigureSolrActionBean">
+        <stripes:form beanclass="nl.viewer.admin.stripes.ConfigureSolrActionBean">
             <c:choose>
                 <c:when test="${empty actionBean.context.validationErrors && actionBean.context.eventName == 'newSearchConfig' || actionBean.context.eventName == 'edit' }">
                     <c:choose>
@@ -112,12 +112,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         </div>
         <script>
             
-            var gridurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.AttributeSourceActionBean" event="getGridData"/>';
-            var editurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.ConfigureSolrActionBean" event="edit"/>';
-            var featureType ='<stripes:url beanclass="nl.b3p.viewer.admin.stripes.AttributeActionBean" event="getFeatureTypes"/>';
-            var attributesUrl ='<stripes:url beanclass="nl.b3p.viewer.admin.stripes.ConfigureSolrActionBean" event="getAttributesList"/>';
-            var deleteurl = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.ConfigureSolrActionBean" event="delete"/>';
-            var editSolrConfiguration = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.ConfigureSolrActionBean" event="view"/>';
+            var gridurl = '<stripes:url beanclass="nl.viewer.admin.stripes.AttributeSourceActionBean" event="getGridData"/>';
+            var editurl = '<stripes:url beanclass="nl.viewer.admin.stripes.ConfigureSolrActionBean" event="edit"/>';
+            var featureType ='<stripes:url beanclass="nl.viewer.admin.stripes.AttributeActionBean" event="getFeatureTypes"/>';
+            var attributesUrl ='<stripes:url beanclass="nl.viewer.admin.stripes.ConfigureSolrActionBean" event="getAttributesList"/>';
+            var deleteurl = '<stripes:url beanclass="nl.viewer.admin.stripes.ConfigureSolrActionBean" event="delete"/>';
+            var editSolrConfiguration = '<stripes:url beanclass="nl.viewer.admin.stripes.ConfigureSolrActionBean" event="view"/>';
             vieweradmin.components.Menu.setActiveLink('menu_solrconfig');
             var configId = "${actionBean.solrConfiguration.id}";
             Ext.onReady(function() {

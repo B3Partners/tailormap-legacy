@@ -35,7 +35,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <div id="grid-container" class="attribute"></div>
             </div>
             <div class="">
-                <stripes:form beanclass="nl.b3p.viewer.admin.stripes.FormActionBean">
+                <stripes:form beanclass="nl.viewer.admin.stripes.FormActionBean">
                     <stripes:select id="defaultFSSelector" name="defaultFeatureSourceId" value="${actionBean.defaultFeatureSourceId}" style="display: none;">
                         <fmt:message key="viewer_admin.form.choosedefaultfs" var="OptLabel1" />
                         <stripes:option label="${OptLabel1}" value="" />
@@ -44,7 +44,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 </stripes:form>
             </div>
             <div id="form-container" class="applicaties">
-                <iframe src="<stripes:url beanclass="nl.b3p.viewer.admin.stripes.FormActionBean" event="cancel"/>" id="editFrame" frameborder="0"></iframe>
+                <iframe src="<stripes:url beanclass="nl.viewer.admin.stripes.FormActionBean" event="cancel"/>" id="editFrame" frameborder="0"></iframe>
 
             </div>
         </div>
@@ -56,10 +56,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 // Expose vieweradmin_components_Bookmark to global scope to be able to access the component from the iframe
                 window.vieweradmin_components_FormSource = Ext.create('vieweradmin.components.Form', {
                     forms:forms,
-                    gridurl: '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.FormActionBean" event="getGridData"/>',
-                    editurl: '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.FormActionBean" event="edit"/>',
-                    deleteurl: '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.FormActionBean" event="delete"/>',
-                    setDefaultFeaturesource :  '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.FormActionBean" event="saveDefaultFeatureSource"/>'
+                    gridurl: '<stripes:url beanclass="nl.viewer.admin.stripes.FormActionBean" event="getGridData"/>',
+                    editurl: '<stripes:url beanclass="nl.viewer.admin.stripes.FormActionBean" event="edit"/>',
+                    deleteurl: '<stripes:url beanclass="nl.viewer.admin.stripes.FormActionBean" event="delete"/>',
+                    setDefaultFeaturesource :  '<stripes:url beanclass="nl.viewer.admin.stripes.FormActionBean" event="saveDefaultFeatureSource"/>'
 
                 });
             });

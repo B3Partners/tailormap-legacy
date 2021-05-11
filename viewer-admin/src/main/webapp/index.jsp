@@ -18,7 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@include file="/WEB-INF/jsp/taglibs.jsp"%>
 
-<stripes:url var="url" beanclass="nl.b3p.viewer.admin.stripes.IndexActionBean"/>
+<stripes:url var="url" beanclass="nl.viewer.admin.stripes.IndexActionBean"/>
 <html>
     <head>
         <%-- We need to redirect to a JSP page which was forwarded to from Stripes

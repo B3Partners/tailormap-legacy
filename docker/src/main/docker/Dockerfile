@@ -3,12 +3,12 @@ FROM tomcat:9-jdk11
 ARG FLA_VERSION=5.7.8
 ENV PG_PORT=5432
 ENV PG_HOST=127.0.0.1
-ENV DB_NAME=flamingo
-ENV DB_USER=flamingo
-ENV DB_PASS=flamingo
+ENV DB_NAME=tailormap
+ENV DB_USER=tailormap
+ENV DB_PASS=tailormap
 ENV MAIL_FROM=noreply@b3partners.nl
 ENV MAIL_HOST=mail.b3partners.nl
-ENV FLA_DATA_DIR=/opt/flamingo_data
+ENV FLA_DATA_DIR=/opt/tailormap_data
 ENV AJP_ADDRESS=::1
 ENV AJP_SECRET=noisyPurpl317
 ENV CATALINA_OPTS="-DPG_PORT=$PG_PORT -DPG_HOST=$PG_HOST -DDB_NAME=$DB_NAME -DDB_USER=$DB_USER -DDB_PASS=$DB_PASS -DMAIL_FROM=$MAIL_FROM -DMAIL_HOST=$MAIL_HOST -DFLA_DATA_DIR=$FLA_DATA_DIR -DAJP_SECRET=$AJP_SECRET -DAJP_ADDRESS=$AJP_ADDRESS"
@@ -42,7 +42,7 @@ HEALTHCHECK CMD curl -f http://localhost:8080/viewer-admin/action/admin/upgradec
 
 LABEL maintainer=B3Partners \
       nl.b3p.vendor=B3Partners \
-      nl.b3p.image=Flamingo \
+      nl.b3p.image=Tailormap \
       nl.b3p.version=$FLA_VERSION
 
 VOLUME ["$FLA_DATA_DIR", "/usr/local/tomcat/logs"]

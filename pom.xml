@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.flamingo-mc</groupId>
-    <artifactId>flamingo-mc</artifactId>
+    <groupId>org.tailormap</groupId>
+    <artifactId>tailormap</artifactId>
     <version>5.9.2-SNAPSHOT</version>
     <packaging>pom</packaging>
-    <name>flamingo-mc</name>
-    <url>http://github.com/flamingo-mc</url>
+    <name>tailormap</name>
+    <url>http://github.com/b3partners/tailormap</url>
     <scm>
-        <connection>scm:git:git@github.com:flamingo-mc/flamingo.git</connection>
-        <developerConnection>scm:git:git@github.com:flamingo-mc/flamingo.git</developerConnection>
-        <url>https://github.com/flamingo-mc/flamingo.git</url>
+        <connection>scm:git:git@github.com:b3partners/tailormap.git</connection>
+        <developerConnection>scm:git:git@github.com:b3partners/tailormap.git</developerConnection>
+        <url>https://github.com/b3partners/tailormap.git</url>
         <tag>HEAD</tag>
     </scm>
     <ciManagement>
@@ -33,12 +33,12 @@
         <license>
             <distribution>repo</distribution>
             <name>GNU Affero General Public License v3.0</name>
-            <comments>For any parts of the Flamingo codebase</comments>
-            <url>https://raw.githubusercontent.com/flamingo-geocms/flamingo/master/LICENSE.txt</url>
+            <comments>For any parts of the tailormap codebase</comments>
+            <url>https://raw.githubusercontent.com/b3partners/tailormap/master/LICENSE.txt</url>
         </license>
     </licenses>
     <properties>
-        <flamingo.version>5.9.2-SNAPSHOT</flamingo.version>
+        <tailormap.version>5.9.2-SNAPSHOT</tailormap.version>
         <java.version>11</java.version>
         <node.version>v14.16.1</node.version>
         <project.build.sourceVersion>${java.version}</project.build.sourceVersion>
@@ -49,6 +49,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <!-- when updating geotools also check b3p-commons-csw (and maybe jts) or you will end up in transitive dependency hell -->
         <geotools.version>25.0</geotools.version>
+        <jts.version>1.18.1</jts.version>
         <b3p-commons-csw.version>6.4</b3p-commons-csw.version>
         <powermock.version>2.0.9</powermock.version>
         <hsqldb.version>2.6.0</hsqldb.version>
@@ -63,6 +64,7 @@
         <jaxb.impl.version>2.3.3</jaxb.impl.version>
         <activation.api.version>1.2.2</activation.api.version>
         <slf4j.version>1.7.30</slf4j.version>
+        <hibernate.version>5.4.30.Final</hibernate.version>
         <jackson2.version>2.12.3</jackson2.version>
         <!-- skip integration tests by default, override this property from commandline
         or as part of a profile, see eg. 'gh-action' profile in viewer -->
@@ -100,6 +102,11 @@
                 <version>2.0.6</version>
             </dependency>
             <dependency>
+                <groupId>org.locationtech.jts</groupId>
+                <artifactId>jts-core</artifactId>
+                <version>${jts.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.geotools</groupId>
                 <artifactId>gt-main</artifactId>
                 <version>${geotools.version}</version>
@@ -126,24 +133,29 @@
                 <version>1.0.3</version>
             </dependency>
             <dependency>
-                <groupId>org.flamingo-mc</groupId>
+                <groupId>org.tailormap</groupId>
                 <artifactId>viewer-audit</artifactId>
-                <version>${flamingo.version}</version>
+                <version>${tailormap.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.flamingo-mc</groupId>
+                <groupId>org.tailormap</groupId>
                 <artifactId>viewer-config-persistence</artifactId>
-                <version>${flamingo.version}</version>
+                <version>${tailormap.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.flamingo-mc</groupId>
+                <groupId>org.tailormap</groupId>
+                <artifactId>viewer-helpers</artifactId>
+                <version>${tailormap.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.tailormap</groupId>
                 <artifactId>solr-commons</artifactId>
-                <version>${flamingo.version}</version>
+                <version>${tailormap.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.flamingo-mc</groupId>
+                <groupId>org.tailormap</groupId>
                 <artifactId>form</artifactId>
-                <version>${flamingo.version}</version>
+                <version>${tailormap.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.xmlgraphics</groupId>
@@ -205,11 +217,11 @@
                 <version>${activation.api.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.flamingo-mc</groupId>
+                <groupId>org.tailormap</groupId>
                 <artifactId>viewer-config-persistence</artifactId>
                 <type>test-jar</type>
                 <scope>test</scope>
-                <version>${flamingo.version}</version>
+                <version>${tailormap.version}</version>
             </dependency>
 
             <!-- nl b3p csw-->
@@ -353,12 +365,12 @@
             <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-core</artifactId>
-                <version>3.6.10.Final</version>
+                <version>${hibernate.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-entitymanager</artifactId>
-                <version>3.6.10.Final</version>
+                <version>${hibernate.version}</version>
                 <exclusions>
                     <exclusion>
                         <!--
@@ -377,14 +389,19 @@
                 <version>1.9.4</version>
             </dependency>
             <dependency>
-                <groupId>org.flamingo-mc</groupId>
+                <groupId>org.tailormap</groupId>
                 <artifactId>viewer-commons</artifactId>
-                <version>${flamingo.version} </version>
+                <version>${tailormap.version} </version>
             </dependency>
             <dependency>
-                <groupId>org.flamingo-mc</groupId>
+                <groupId>org.tailormap</groupId>
+                <artifactId>geotools-commons</artifactId>
+                <version>${tailormap.version} </version>
+            </dependency>
+            <dependency>
+                <groupId>org.tailormap</groupId>
                 <artifactId>web-commons</artifactId>
-                <version>${flamingo.version} </version>
+                <version>${tailormap.version} </version>
             </dependency>
             <dependency>
                 <groupId>org.geotools</groupId>
@@ -400,16 +417,42 @@
                 <groupId>org.geotools.jdbc</groupId>
                 <artifactId>gt-jdbc-oracle</artifactId>
                 <version>${geotools.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>com.oracle.database.jdbc</groupId>
+                        <artifactId>ojdbc8</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.geotools.jdbc</groupId>
                 <artifactId>gt-jdbc-postgis</artifactId>
                 <version>${geotools.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>postgresql</groupId>
+                        <artifactId>postgresql</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.postgresql</groupId>
+                        <artifactId>postgresql</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.geotools.jdbc</groupId>
                 <artifactId>gt-jdbc-sqlserver</artifactId>
                 <version>${geotools.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>net.sourceforge.jtds</groupId>
+                        <artifactId>jtds</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>com.microsoft.sqlserver</groupId>
+                        <artifactId>mssql-jdbc</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.geotools.xsd</groupId>
@@ -977,11 +1020,13 @@
     </profiles>
     <modules>
         <module>tomcat-lib</module>
+        <module>geotools-commons</module>
         <module>web-commons</module>
         <module>viewer-audit</module>
         <module>viewer-audit-noplogger</module>
         <module>viewer-commons</module>
         <module>viewer-config-persistence</module>
+        <module>viewer-helpers</module>
         <module>solr-commons</module>
         <module>form</module>
         <module>viewer</module>

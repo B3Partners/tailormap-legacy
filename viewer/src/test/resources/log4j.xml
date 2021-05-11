@@ -34,10 +34,10 @@
     <logger name="httpclient.wire">
         <level value="info" />
     </logger>
-    <logger name="nl.b3p.viewer.util.databaseupdate.ScriptRunner">
+    <logger name="nl.viewer.util.ScriptRunner">
         <level value="error" />
     </logger>
-    <logger name="nl.b3p.viewer.userlayer">
+    <logger name="nl.viewer.userlayer">
         <level value="trace" />
     </logger>
     <root>

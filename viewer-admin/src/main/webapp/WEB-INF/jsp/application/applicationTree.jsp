@@ -55,9 +55,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 var rootName = <js:quote value="${actionBean.rootLevel.name}"/>;
                 var rootId = 'n${actionBean.rootLevel.id}';
                 var actionBeans = {
-                    "appTree": <js:quote><stripes:url beanclass="nl.b3p.viewer.admin.stripes.ApplicationTreeActionBean"/></js:quote>,
-                    "appTreeLevel": <js:quote><stripes:url beanclass="nl.b3p.viewer.admin.stripes.ApplicationTreeLevelActionBean"/></js:quote>,
-                    "appTreeLayer": <js:quote><stripes:url beanclass="nl.b3p.viewer.admin.stripes.ApplicationTreeLayerActionBean"/></js:quote>
+                    "appTree": <js:quote><stripes:url beanclass="nl.viewer.admin.stripes.ApplicationTreeActionBean"/></js:quote>,
+                    "appTreeLevel": <js:quote><stripes:url beanclass="nl.viewer.admin.stripes.ApplicationTreeLevelActionBean"/></js:quote>,
+                    "appTreeLayer": <js:quote><stripes:url beanclass="nl.viewer.admin.stripes.ApplicationTreeLayerActionBean"/></js:quote>
                 };
                 </script>
                 <script type="text/javascript" src="${contextPath}/resources/js/application/applicationTree.js"></script>

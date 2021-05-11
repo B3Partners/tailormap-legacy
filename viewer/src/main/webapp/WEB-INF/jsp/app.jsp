@@ -54,12 +54,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             var FlamingoErrorLogger = createFlamingoErrorLogger(
                 "${actionBean.application.name}",
                 "${actionBean.application.id}",
-                <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.ClientsideErrorLoggerActionBean"/></js:quote>
+                <js:quote><stripes:url beanclass="nl.viewer.stripes.ClientsideErrorLoggerActionBean"/></js:quote>
             );
             window.onerror = FlamingoErrorLogger;
         </script>
         <script type="text/javascript" src="${contextPath}/viewer-html/i18n/i18next.11.9.0.min.js"></script>
-        <script type="text/javascript" src="<stripes:url beanclass="nl.b3p.viewer.stripes.I18nActionBean" event="i18nextJs"><stripes:param name="language" value="${actionBean.language}"/></stripes:url>"></script>
+        <script type="text/javascript" src="<stripes:url beanclass="nl.viewer.stripes.I18nActionBean" event="i18nextJs"><stripes:param name="language" value="${actionBean.language}"/></stripes:url>"></script>
 
         <link href="${contextPath}/resources/css/viewer.css" rel="stylesheet">
         <link href="${contextPath}/viewer-html/components/resources/css/maptip.css" rel="stylesheet">
@@ -129,7 +129,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                <link href="${contextPath}/viewer-html/common/ol/ol.css" rel="stylesheet">
                <link href="${contextPath}/viewer-html/common/resources/css/openlayers.css" rel="stylesheet">
                <script src="${contextPath}/viewer-html/common/ol/proj4.js" type="text/javascript"></script>
-               <c:set var="olStylesheet"><stripes:url beanclass="nl.b3p.viewer.stripes.CSSActionBean" /></c:set>
+               <c:set var="olStylesheet"><stripes:url beanclass="nl.viewer.stripes.CSSActionBean" /></c:set>
                <link href="${olStylesheet}?theme=flamingo&app=${actionBean.application.id}" rel="stylesheet">
 
                <c:choose>
@@ -290,40 +290,40 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
             var actionBeans = {
-                "app":                <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.ApplicationActionBean"/></js:quote>,
-                "appConfig":          <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.ApplicationActionBean" event="retrieveAppConfigJSON" /></js:quote>,
-                "service":            <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.ServiceActionBean"/></js:quote>,
-                "feature":            <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.FeatureActionBean"/></js:quote>,
-                "sld":                <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.SldActionBean"/></js:quote>,
-                "bookmark":           <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.BookmarkActionBean"/></js:quote>,
-                "layerlist":          <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.LayerListActionBean"/></js:quote>,
-                "geoserviceregistry": <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.GeoServiceRegistryActionBean"/></js:quote>,
-                "attributes":         <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.AttributesActionBean"/></js:quote>,
-                "combineimage":       <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.CombineImageActionBean"/></js:quote>,
-                "drawing":            <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.DrawingActionBean"/></js:quote>,
-                "print":              <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.PrintActionBean"/></js:quote>,
-                "featureinfo":        <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.FeatureInfoActionBean"/></js:quote>,
-                "editfeature":        <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.EditFeatureActionBean"/></js:quote>,
-                "editbulkfeature":    <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.EditBulkFeatureActionBean"/></js:quote>,
-                "csw":                <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.CatalogSearchActionBean"/></js:quote>,
-                "advancedcsw":        <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.CatalogSearchActionBean" event="advancedSearch"/></js:quote>,
-                "unique":             <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.UniqueValuesActionBean"/></js:quote>,
-                "arcqueryutil":       <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.ArcQueryUtilActionBean"/></js:quote>,
-                "proxy":              <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.ProxyActionBean"/></js:quote>,
-                "datastorespinup":    <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.DataStoreSpinupActionBean"/></js:quote>,
-                "autosuggest":        <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.SearchActionBean" event="autosuggest"/></js:quote>,
-                "componentresource":  <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.ComponentResourceActionBean"/></js:quote>,
-                "css":                <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.CSSActionBean"/></js:quote>,
-                "download":           <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.DownloadFeaturesActionBean"/></js:quote>,
-                "buffergeom":         <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.BufferActionBean" event="bufferGeometry"/></js:quote>,
-                "cyclorama":          <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.CycloramaActionBean"/></js:quote>,
-                "featureExtent":      <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.FeatureExtentActionBean"/></js:quote>,
-                "featureReport":      <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.FeatureReportActionBean"/></js:quote>,
-                "ontbrandings":       <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.OntbrandingsActionBean"/></js:quote>,
-                "file":               <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.FileUploadActionBean"/></js:quote>,
-                "wkt":                <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.WriteWKTActionBean"/></js:quote>,
-                "contact":            <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.ContactActionBean"/></js:quote>,
-                "simplify":            <js:quote><stripes:url beanclass="nl.b3p.viewer.stripes.SimplifyFeatureActionBean"/></js:quote>
+                "app":                <js:quote><stripes:url beanclass="nl.viewer.stripes.ApplicationActionBean"/></js:quote>,
+                "appConfig":          <js:quote><stripes:url beanclass="nl.viewer.stripes.ApplicationActionBean" event="retrieveAppConfigJSON" /></js:quote>,
+                "service":            <js:quote><stripes:url beanclass="nl.viewer.stripes.ServiceActionBean"/></js:quote>,
+                "feature":            <js:quote><stripes:url beanclass="nl.viewer.stripes.FeatureActionBean"/></js:quote>,
+                "sld":                <js:quote><stripes:url beanclass="nl.viewer.stripes.SldActionBean"/></js:quote>,
+                "bookmark":           <js:quote><stripes:url beanclass="nl.viewer.stripes.BookmarkActionBean"/></js:quote>,
+                "layerlist":          <js:quote><stripes:url beanclass="nl.viewer.stripes.LayerListActionBean"/></js:quote>,
+                "geoserviceregistry": <js:quote><stripes:url beanclass="nl.viewer.stripes.GeoServiceRegistryActionBean"/></js:quote>,
+                "attributes":         <js:quote><stripes:url beanclass="nl.viewer.stripes.AttributesActionBean"/></js:quote>,
+                "combineimage":       <js:quote><stripes:url beanclass="nl.viewer.stripes.CombineImageActionBean"/></js:quote>,
+                "drawing":            <js:quote><stripes:url beanclass="nl.viewer.stripes.DrawingActionBean"/></js:quote>,
+                "print":              <js:quote><stripes:url beanclass="nl.viewer.stripes.PrintActionBean"/></js:quote>,
+                "featureinfo":        <js:quote><stripes:url beanclass="nl.viewer.stripes.FeatureInfoActionBean"/></js:quote>,
+                "editfeature":        <js:quote><stripes:url beanclass="nl.viewer.stripes.EditFeatureActionBean"/></js:quote>,
+                "editbulkfeature":    <js:quote><stripes:url beanclass="nl.viewer.stripes.EditBulkFeatureActionBean"/></js:quote>,
+                "csw":                <js:quote><stripes:url beanclass="nl.viewer.stripes.CatalogSearchActionBean"/></js:quote>,
+                "advancedcsw":        <js:quote><stripes:url beanclass="nl.viewer.stripes.CatalogSearchActionBean" event="advancedSearch"/></js:quote>,
+                "unique":             <js:quote><stripes:url beanclass="nl.viewer.stripes.UniqueValuesActionBean"/></js:quote>,
+                "arcqueryutil":       <js:quote><stripes:url beanclass="nl.viewer.stripes.ArcQueryUtilActionBean"/></js:quote>,
+                "proxy":              <js:quote><stripes:url beanclass="nl.viewer.stripes.ProxyActionBean"/></js:quote>,
+                "datastorespinup":    <js:quote><stripes:url beanclass="nl.viewer.stripes.DataStoreSpinupActionBean"/></js:quote>,
+                "autosuggest":        <js:quote><stripes:url beanclass="nl.viewer.stripes.SearchActionBean" event="autosuggest"/></js:quote>,
+                "componentresource":  <js:quote><stripes:url beanclass="nl.viewer.stripes.ComponentResourceActionBean"/></js:quote>,
+                "css":                <js:quote><stripes:url beanclass="nl.viewer.stripes.CSSActionBean"/></js:quote>,
+                "download":           <js:quote><stripes:url beanclass="nl.viewer.stripes.DownloadFeaturesActionBean"/></js:quote>,
+                "buffergeom":         <js:quote><stripes:url beanclass="nl.viewer.stripes.BufferActionBean" event="bufferGeometry"/></js:quote>,
+                "cyclorama":          <js:quote><stripes:url beanclass="nl.viewer.stripes.CycloramaActionBean"/></js:quote>,
+                "featureExtent":      <js:quote><stripes:url beanclass="nl.viewer.stripes.FeatureExtentActionBean"/></js:quote>,
+                "featureReport":      <js:quote><stripes:url beanclass="nl.viewer.stripes.FeatureReportActionBean"/></js:quote>,
+                "ontbrandings":       <js:quote><stripes:url beanclass="nl.viewer.stripes.OntbrandingsActionBean"/></js:quote>,
+                "file":               <js:quote><stripes:url beanclass="nl.viewer.stripes.FileUploadActionBean"/></js:quote>,
+                "wkt":                <js:quote><stripes:url beanclass="nl.viewer.stripes.WriteWKTActionBean"/></js:quote>,
+                "contact":            <js:quote><stripes:url beanclass="nl.viewer.stripes.ContactActionBean"/></js:quote>,
+                "simplify":            <js:quote><stripes:url beanclass="nl.viewer.stripes.SimplifyFeatureActionBean"/></js:quote>
             };
 
             <c:if test="${actionBean.viewerType == 'openlayers'}">

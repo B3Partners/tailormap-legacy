@@ -17,7 +17,7 @@
     </stripes:layout-component>
 
     <stripes:layout-component name="body">
-            <stripes:form beanclass="nl.b3p.viewer.admin.stripes.CycloramaConfigurationActionBean">
+            <stripes:form beanclass="nl.viewer.admin.stripes.CycloramaConfigurationActionBean">
         <div id="content">
             <p>
                 <stripes:errors/>
@@ -57,7 +57,7 @@
             vieweradmin.components.Menu.setActiveLink('menu_cyclorama');
 
             function changeSelection(obj){
-                var url = '<stripes:url beanclass="nl.b3p.viewer.admin.stripes.CycloramaConfigurationActionBean"/>';
+                var url = '<stripes:url beanclass="nl.viewer.admin.stripes.CycloramaConfigurationActionBean"/>';
                 window.location = url + "?account="+obj.value;
             }
         </script>

@@ -26,7 +26,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <div id="formcontent">
             <stripes:errors/>
             <stripes:messages/>
-            <stripes:form beanclass="nl.b3p.viewer.admin.stripes.LayarServiceActionBean">
+            <stripes:form beanclass="nl.viewer.admin.stripes.LayarServiceActionBean">
                 <c:choose>
                     <c:when test="${actionBean.context.eventName == 'edit'}">
                         <stripes:hidden name="layarservice" value="${actionBean.layarservice.id}"/>

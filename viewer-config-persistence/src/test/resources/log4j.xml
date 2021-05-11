@@ -21,7 +21,7 @@ LEVELS: debug, info, warn, error, fatal en off, all -->
     <logger name="org.hibernate.tool.hbm2ddl">
         <level value="error" />
     </logger>
-    <logger name="nl.b3p.viewer.util.databaseupdate.ScriptRunner">
+    <logger name="ScriptRunner">
         <level value="error" />
     </logger>
     <logger name="org.hibernate.SQL">

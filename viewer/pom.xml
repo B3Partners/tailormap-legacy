@@ -4,8 +4,8 @@
     <artifactId>viewer</artifactId>
     <packaging>war</packaging>
     <parent>
-        <groupId>org.flamingo-mc</groupId>
-        <artifactId>flamingo-mc</artifactId>
+        <groupId>org.tailormap</groupId>
+        <artifactId>tailormap</artifactId>
         <version>5.9.2-SNAPSHOT</version>
     </parent>
     <name>viewer</name>
@@ -40,6 +40,12 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.hsqldb</groupId>
+            <artifactId>hsqldb</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>commons-fileupload</groupId>
@@ -99,11 +105,15 @@
             <artifactId>httpclient</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.flamingo-mc</groupId>
+            <groupId>org.tailormap</groupId>
             <artifactId>viewer-config-persistence</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.flamingo-mc</groupId>
+            <groupId>org.tailormap</groupId>
+            <artifactId>viewer-helpers</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.tailormap</groupId>
             <artifactId>solr-commons</artifactId>
         </dependency>
         <dependency>
@@ -202,10 +212,18 @@
             <artifactId>xercesImpl</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.flamingo-mc</groupId>
+            <groupId>org.tailormap</groupId>
             <artifactId>viewer-config-persistence</artifactId>
             <type>test-jar</type>
             <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.tailormap</groupId>
+            <artifactId>viewer-helpers</artifactId>
+            <type>test-jar</type>
+            <scope>test</scope>
+            <version>${tailormap.version}</version>
         </dependency>
         <dependency>
             <groupId>org.powermock</groupId>
@@ -236,7 +254,7 @@
                     </filesets>
                 </configuration>
             </plugin>
-            <plugin>
+            <!--plugin>
                 <groupId>com.github.eirslett</groupId>
                 <artifactId>frontend-maven-plugin</artifactId>
                 <executions>
@@ -273,7 +291,7 @@
                     <installDirectory>${project.build.directory}/</installDirectory>
                     <nodeVersion>${node.version}</nodeVersion>
                 </configuration>
-            </plugin>
+            </plugin-->
             <plugin>
                 <artifactId>maven-resources-plugin</artifactId>
                 <executions>
@@ -612,7 +630,7 @@
                     <testFailureIgnore>!${test.skip.integrationtests}</testFailureIgnore>
                     <skipTests>!${test.skip.integrationtests}</skipTests>
                     <systemPropertyVariables>
-                        <flamingo.version>${flamingo.version}</flamingo.version>
+                        <tailormap.version>${tailormap.version}</tailormap.version>
                         <test.persistence.unit>${test.persistence.unit}</test.persistence.unit>
                     </systemPropertyVariables>
                     <useFile>false</useFile>
@@ -673,7 +691,7 @@
                             <systemPropertyVariables>
                                 <test.persistence.unit>${test.persistence.unit}</test.persistence.unit>
                                 <database.properties.file>postgres.properties</database.properties.file>
-                                <flamingo.version>${flamingo.version}</flamingo.version>
+                                <tailormap.version>${tailormap.version}</tailormap.version>
                             </systemPropertyVariables>
                             <useFile>false</useFile>
                             <argLine>${failsafeArgLine}</argLine>
@@ -780,7 +798,7 @@
                             <systemPropertyVariables>
                                 <test.persistence.unit>${test.persistence.unit}</test.persistence.unit>
                                 <database.properties.file>oracle.properties</database.properties.file>
-                                <flamingo.version>${flamingo.version}</flamingo.version>
+                                <tailormap.version>${tailormap.version}</tailormap.version>
                             </systemPropertyVariables>
                             <useFile>false</useFile>
                             <rerunFailingTestsCount>3</rerunFailingTestsCount>
@@ -888,7 +906,7 @@
                             <systemPropertyVariables>
                                 <test.persistence.unit>${test.persistence.unit}</test.persistence.unit>
                                 <database.properties.file>ms_sql_server.properties</database.properties.file>
-                                <flamingo.version>${flamingo.version}</flamingo.version>
+                                <tailormap.version>${tailormap.version}</tailormap.version>
                             </systemPropertyVariables>
                             <useFile>false</useFile>
                             <!--<argLine>${failsafeArgLine}</argLine>-->

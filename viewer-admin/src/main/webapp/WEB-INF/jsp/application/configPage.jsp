@@ -29,8 +29,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     </stripes:layout-component>
 
 
-    <stripes:layout-component name="body"><%--@elvariable id="actionBean" type="nl.b3p.viewer.admin.stripes.LayoutManagerActionBean"--%>
-        <stripes:form beanclass="nl.b3p.viewer.admin.stripes.LayoutManagerActionBean" id="configForm" style="width: 100%; height: 100%;">
+    <stripes:layout-component name="body"><%--@elvariable id="actionBean" type="nl.viewer.admin.stripes.LayoutManagerActionBean"--%>
+        <stripes:form beanclass="nl.viewer.admin.stripes.LayoutManagerActionBean" id="configForm" style="width: 100%; height: 100%;">
             <input type="hidden" name="component" value="${actionBean.component.id}"/>
             <stripes:hidden name="className" value="${actionBean.className}"/>
             <stripes:hidden name="name" value="${actionBean.name}"/>
@@ -59,7 +59,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 </div>
             </div>
         </stripes:form>
-        <stripes:url var="configSource" beanclass="nl.b3p.viewer.admin.stripes.ComponentConfigSourceActionBean">
+        <stripes:url var="configSource" beanclass="nl.viewer.admin.stripes.ComponentConfigSourceActionBean">
             <stripes:param name="className" value="${actionBean.className}"/> 
         </stripes:url>
         <c:if test="${actionBean.loadCustomConfig}">
@@ -99,7 +99,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     details: details,
                     appConfig: {},
                     actionBeans: {
-                        "imageupload": <js:quote><stripes:url beanclass="nl.b3p.viewer.admin.stripes.ImageUploadActionBean"/></js:quote>
+                        "imageupload": <js:quote><stripes:url beanclass="nl.viewer.admin.stripes.ImageUploadActionBean"/></js:quote>
                     }
                 });
             });
