@@ -98,7 +98,7 @@ export class LinkedAttributeRegistryService {
     linkedAttribute.domein.waardes.forEach(value => {
       for (const domeinWaarde of value.linkedDomeinwaardes) {
         const attr = this.domainToAttribute.get(domeinWaarde.domein_id);
-        if (attr) {
+        if (attr && attr.options) {
           attr.options.forEach(option => {
             option.disabled = false;
           });
