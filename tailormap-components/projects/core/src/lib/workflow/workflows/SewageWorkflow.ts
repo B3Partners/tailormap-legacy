@@ -178,7 +178,7 @@ export class SewageWorkflow extends Workflow {
 
     const scale = this.tailorMap.getMapComponent().getMap().getResolution() * 4;
     const featureTypes: string[] = [this.featureType];
-    return this.service.featuretypeOnPoint({featureTypes, x, y, scale});
+    return this.service.featuretypeOnPoint({application: this.tailorMap.getApplicationId(), featureTypes, x, y, scale});
   }
 
 

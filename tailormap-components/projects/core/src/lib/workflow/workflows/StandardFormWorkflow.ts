@@ -118,7 +118,16 @@ export class StandardFormWorkflow extends Workflow {
         takeUntil(this.destroyed),
         concatMap(([ allFeatureTypes, workflowConfig ]) => {
           const featureTypes: string[] = this.layerUtils.getFeatureTypesAllowed(allFeatureTypes, workflowConfig.useSelectedLayerFilter);
-          return this.service.featuretypeOnPoint({featureTypes, x, y, scale});
+          return this.service.featuretypeOnPoint({application: this.tailorMap.getApplicationId(),featureTypes, x, y, scale});
+        }),
+        map( (features: Feature[])=> {
+          features.map(feature =>{
+            feature.attributes.forEach(row => {
+              feature[row.key] = row.value
+            })
+          })
+
+          return features;
         }),
         concatMap((features: Feature[]) => {
           if (features && features.length > 1) {
