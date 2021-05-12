@@ -46,8 +46,8 @@ export class FeatureControllerService extends BaseService {
     }
 
     return this.http.request(rb.build({
-      responseType: 'blob',
-      accept: '*/*'
+      responseType: 'json',
+      accept: 'application/json'
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
@@ -95,8 +95,8 @@ export class FeatureControllerService extends BaseService {
     }
 
     return this.http.request(rb.build({
-      responseType: 'blob',
-      accept: '*/*'
+      responseType: 'json',
+      accept: 'application/json'
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
@@ -124,7 +124,7 @@ export class FeatureControllerService extends BaseService {
   /**
    * Path part for operation featuretypeOnPoint
    */
-  static readonly FeaturetypeOnPointPath = '/features/{featureTypes}/{x}/{y}/{scale}';
+  static readonly FeaturetypeOnPointPath = '/features/{application}/{featureTypes}/{x}/{y}/{scale}';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
@@ -133,6 +133,7 @@ export class FeatureControllerService extends BaseService {
    * This method doesn't expect any request body.
    */
   featuretypeOnPoint$Response(params: {
+    application: number;
     featureTypes: Array<string>;
     'x': number;
     'y': number;
@@ -141,6 +142,7 @@ export class FeatureControllerService extends BaseService {
 
     const rb = new RequestBuilder(this.rootUrl, FeatureControllerService.FeaturetypeOnPointPath, 'get');
     if (params) {
+      rb.path('application', params.application, {});
       rb.path('featureTypes', params.featureTypes, {});
       rb.path('x', params['x'], {});
       rb.path('y', params['y'], {});
@@ -148,8 +150,8 @@ export class FeatureControllerService extends BaseService {
     }
 
     return this.http.request(rb.build({
-      responseType: 'blob',
-      accept: '*/*'
+      responseType: 'json',
+      accept: 'application/json'
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
@@ -165,6 +167,7 @@ export class FeatureControllerService extends BaseService {
    * This method doesn't expect any request body.
    */
   featuretypeOnPoint(params: {
+    application: number;
     featureTypes: Array<string>;
     'x': number;
     'y': number;
@@ -205,8 +208,8 @@ export class FeatureControllerService extends BaseService {
     }
 
     return this.http.request(rb.build({
-      responseType: 'blob',
-      accept: '*/*'
+      responseType: 'json',
+      accept: 'application/json'
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
@@ -235,58 +238,9 @@ export class FeatureControllerService extends BaseService {
   }
 
   /**
-   * Path part for operation featuretypeInformation
-   */
-  static readonly FeaturetypeInformationPath = '/features/info/{appId}/{featureTypes}';
-
-  /**
-   * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `featuretypeInformation()` instead.
-   *
-   * This method doesn't expect any request body.
-   */
-  featuretypeInformation$Response(params: {
-    appId: number;
-    featureTypes: Array<string>;
-  }): Observable<StrictHttpResponse<Array<FeaturetypeMetadata>>> {
-
-    const rb = new RequestBuilder(this.rootUrl, FeatureControllerService.FeaturetypeInformationPath, 'get');
-    if (params) {
-      rb.path('appId', params.appId, {});
-      rb.path('featureTypes', params.featureTypes, {});
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'blob',
-      accept: '*/*'
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<Array<FeaturetypeMetadata>>;
-      })
-    );
-  }
-
-  /**
-   * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `featuretypeInformation$Response()` instead.
-   *
-   * This method doesn't expect any request body.
-   */
-  featuretypeInformation(params: {
-    appId: number;
-    featureTypes: Array<string>;
-  }): Observable<Array<FeaturetypeMetadata>> {
-
-    return this.featuretypeInformation$Response(params).pipe(
-      map((r: StrictHttpResponse<Array<FeaturetypeMetadata>>) => r.body as Array<FeaturetypeMetadata>)
-    );
-  }
-
-  /**
    * Path part for operation onPoint1
    */
-  static readonly OnPoint1Path = '/features/2/{application}/{appLayerIds}/{x}/{y}/{scale}';
+  static readonly OnPoint1Path = '/features/{application}/{appLayerIds}/{x}/{y}/{scale}';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
@@ -312,8 +266,8 @@ export class FeatureControllerService extends BaseService {
     }
 
     return this.http.request(rb.build({
-      responseType: 'blob',
-      accept: '*/*'
+      responseType: 'json',
+      accept: 'application/json'
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
@@ -338,6 +292,55 @@ export class FeatureControllerService extends BaseService {
 
     return this.onPoint1$Response(params).pipe(
       map((r: StrictHttpResponse<Array<Feature>>) => r.body as Array<Feature>)
+    );
+  }
+
+  /**
+   * Path part for operation featuretypeInformation
+   */
+  static readonly FeaturetypeInformationPath = '/features/info/{appId}/{featureTypes}';
+
+  /**
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `featuretypeInformation()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  featuretypeInformation$Response(params: {
+    appId: number;
+    featureTypes: Array<string>;
+  }): Observable<StrictHttpResponse<Array<FeaturetypeMetadata>>> {
+
+    const rb = new RequestBuilder(this.rootUrl, FeatureControllerService.FeaturetypeInformationPath, 'get');
+    if (params) {
+      rb.path('appId', params.appId, {});
+      rb.path('featureTypes', params.featureTypes, {});
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'json',
+      accept: 'application/json'
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<Array<FeaturetypeMetadata>>;
+      })
+    );
+  }
+
+  /**
+   * This method provides access to only to the response body.
+   * To access the full response (for headers, for example), `featuretypeInformation$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  featuretypeInformation(params: {
+    appId: number;
+    featureTypes: Array<string>;
+  }): Observable<Array<FeaturetypeMetadata>> {
+
+    return this.featuretypeInformation$Response(params).pipe(
+      map((r: StrictHttpResponse<Array<FeaturetypeMetadata>>) => r.body as Array<FeaturetypeMetadata>)
     );
   }
 

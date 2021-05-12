@@ -78,12 +78,18 @@ export class FormComponent implements OnDestroy, OnInit {
           this.store$.select(selectFormConfigs),
           this.store$.select(selectVisibleLayers).pipe(
             map(appLayers => {
-              return appLayers.filter(appLayer =>
-                LayerUtils.sanitizeLayername(
-                  appLayer.userlayer ? appLayer.userlayer_original_layername : appLayer.layerName) === features[0].clazz,
-              )[0];
+              const layers = appLayers.filter(appLayer => {
+                const sanitizedName = LayerUtils.sanitizeLayername(
+                    appLayer.userlayer ? appLayer.userlayer_original_layername : appLayer.layerName);
+                return sanitizedName === features[0].clazz || (appLayer.userlayer ? appLayer.userlayer_original_layername : appLayer.layerName) === features[0].clazz;
+                }
+
+              );
+              return layers[0];
             }),
-            switchMap(layer => this.metadataService.getFeatureTypeMetadata$(layer.id).pipe(take(1))),
+            switchMap(layer => {
+              return this.metadataService.getFeatureTypeMetadata$(layer.id).pipe(take(1));
+            }),
           ),
         ])),
       )
