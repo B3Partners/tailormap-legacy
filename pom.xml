@@ -404,6 +404,21 @@
                 <version>${tailormap.version} </version>
             </dependency>
             <dependency>
+                <groupId>org.tailormap</groupId>
+                <artifactId>viewer</artifactId>
+                <version>${tailormap.version} </version>
+            </dependency>
+            <dependency>
+                <groupId>org.tailormap</groupId>
+                <artifactId>viewer-admin</artifactId>
+                <version>${tailormap.version} </version>
+            </dependency>
+            <dependency>
+                <groupId>org.tailormap</groupId>
+                <artifactId>docker</artifactId>
+                <version>${tailormap.version} </version>
+            </dependency>
+            <dependency>
                 <groupId>org.geotools</groupId>
                 <artifactId>gt-wms</artifactId>
                 <version>${geotools.version}</version>
