@@ -159,10 +159,10 @@ export class SewageWorkflow extends Workflow {
 
     this.store$.select(selectCurrentFeature)
       .pipe(
-        filter(feature => feature && feature.objectGuid !== FeatureInitializerService.STUB_OBJECT_GUID_NEW_OBJECT),
+        filter(currentFeature => currentFeature && currentFeature.objectGuid !== FeatureInitializerService.STUB_OBJECT_GUID_NEW_OBJECT),
         take(1),
-        switchMap(feature => {
-          return this.store$.pipe(selectFormClosed, take(1), map(closed => feature));
+        switchMap(currentFeature => {
+          return this.store$.pipe(selectFormClosed, take(1), map(closed => currentFeature));
         }),
       )
       .subscribe(currentFeature => {
