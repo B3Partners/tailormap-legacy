@@ -9,13 +9,14 @@ import {
 } from '../../shared/generated';
 import { VectorLayer } from '../../../../../bridge/typings';
 import { ChooseTypesComponent } from '../../user-interface/sewage/choose-types/choose-types.component';
-import { combineLatest, Observable } from 'rxjs';
-import { take, takeUntil } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { filter, map, switchMap, take, takeUntil } from 'rxjs/operators';
 import { Choice } from './WorkflowModels';
 import { setOpenFeatureForm } from '../../feature-form/state/form.actions';
 import { selectCurrentFeature, selectFeatureLabel } from '../../feature-form/state/form.selectors';
-import { selectFormClosed } from '../../feature-form/state/form.state-helpers';
 import { selectFeatureType } from '../state/workflow.selectors';
+import { selectFormClosed } from '../../feature-form/state/form.state-helpers';
+import { FeatureInitializerService } from '../../shared/feature-initializer/feature-initializer.service';
 
 export class SewageWorkflow extends Workflow {
   private currentStep: Step;
@@ -156,12 +157,15 @@ export class SewageWorkflow extends Workflow {
   public openDialog(feature?: Feature): void {
     this.store$.dispatch(setOpenFeatureForm({features: [feature], closeAfterSave: true, multiFormWorkflow: true}));
 
-    combineLatest([
-      this.store$.select(selectCurrentFeature),
-      this.store$.pipe(selectFormClosed),
-    ])
-      .pipe(take(1))
-      .subscribe(([currentFeature, _close]) => {
+    this.store$.select(selectCurrentFeature)
+      .pipe(
+        filter(feature => feature && feature.objectGuid !== FeatureInitializerService.STUB_OBJECT_GUID_NEW_OBJECT),
+        take(1),
+        switchMap(feature => {
+          return this.store$.pipe(selectFormClosed, take(1), map(closed => feature));
+        }),
+      )
+      .subscribe(currentFeature => {
         this.afterEditing(currentFeature);
       });
   }
