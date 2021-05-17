@@ -38,7 +38,7 @@
         </license>
     </licenses>
     <properties>
-        <tailormap.version>5.9.2</tailormap.version>
+        <tailormap.version>5.9.3-SNAPSHOT</tailormap.version>
         <java.version>11</java.version>
         <node.version>v14.16.1</node.version>
         <project.build.sourceVersion>${java.version}</project.build.sourceVersion>
