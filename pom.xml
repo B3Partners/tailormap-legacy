@@ -157,7 +157,7 @@
                 <groupId>org.tailormap</groupId>
                 <artifactId>viewer-helpers</artifactId>
                 <type>test-jar</type>
-                <version>${tailormap.version}</version>
+                <version>${project.version}</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
