@@ -9,7 +9,7 @@
     <parent>
         <groupId>org.tailormap</groupId>
         <artifactId>tailormap</artifactId>
-        <version>5.9.2-SNAPSHOT</version>
+        <version>5.9.2</version>
     </parent>
     <name>viewer-config-persistence</name>
 
@@ -60,9 +60,9 @@
                         <configuration>
                             <target>
                                 <!-- run after schema gegeration -->
-                                <move file="target/classes/scripts/sqlserver2012-schema-export.sql" tofile="target/classes/scripts/microsoft_sql_server-schema-export.sql"/>
-                                <move file="target/classes/scripts/oracle12c-schema-export.sql" tofile="target/classes/scripts/oracle-schema-export.sql"/>
-                                <move file="target/classes/scripts/hsql-schema-export.sql" tofile="target/classes/scripts/hsqldb-schema-export.sql"/>
+                                <move file="target/classes/scripts/sqlserver2012-schema-export.sql" tofile="target/classes/scripts/microsoft_sql_server-schema-export.sql" />
+                                <move file="target/classes/scripts/oracle12c-schema-export.sql" tofile="target/classes/scripts/oracle-schema-export.sql" />
+                                <move file="target/classes/scripts/hsql-schema-export.sql" tofile="target/classes/scripts/hsqldb-schema-export.sql" />
                                 <!-- replace token=" details_key varchar(255) null," value=" details_key varchar(255) not null," file="target/classes/scripts/microsoft_sql_server-schema-export.sql" summary="true" / -->
                                 <!-- replace token="crs varchar(255) null, primary key (layer, crs));" value="crs varchar(255) not null, primary key (layer, crs));" file="target/classes/scripts/microsoft_sql_server-schema-export.sql" summary="true" / -->
                             </target>
