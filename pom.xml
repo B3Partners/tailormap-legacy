@@ -121,7 +121,6 @@
                 <artifactId>json</artifactId>
                 <version>20210307</version>
             </dependency>
-            <!-- Stripes -->
             <dependency>
                 <groupId>net.sourceforge.stripes</groupId>
                 <artifactId>stripes</artifactId>
@@ -135,27 +134,71 @@
             <dependency>
                 <groupId>org.tailormap</groupId>
                 <artifactId>viewer-audit</artifactId>
-                <version>${tailormap.version}</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.tailormap</groupId>
                 <artifactId>viewer-config-persistence</artifactId>
-                <version>${tailormap.version}</version>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.tailormap</groupId>
+                <artifactId>viewer-config-persistence</artifactId>
+                <type>test-jar</type>
+                <version>${project.version}</version>
+                <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.tailormap</groupId>
                 <artifactId>viewer-helpers</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.tailormap</groupId>
+                <artifactId>viewer-helpers</artifactId>
+                <type>test-jar</type>
                 <version>${tailormap.version}</version>
+                <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.tailormap</groupId>
                 <artifactId>solr-commons</artifactId>
-                <version>${tailormap.version}</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.tailormap</groupId>
                 <artifactId>form</artifactId>
-                <version>${tailormap.version}</version>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.tailormap</groupId>
+                <artifactId>viewer-commons</artifactId>
+                <version>${project.version} </version>
+            </dependency>
+            <dependency>
+                <groupId>org.tailormap</groupId>
+                <artifactId>geotools-commons</artifactId>
+                <version>${project.version} </version>
+            </dependency>
+            <dependency>
+                <groupId>org.tailormap</groupId>
+                <artifactId>web-commons</artifactId>
+                <version>${project.version} </version>
+            </dependency>
+            <dependency>
+                <groupId>org.tailormap</groupId>
+                <artifactId>viewer</artifactId>
+                <version>${project.version} </version>
+            </dependency>
+            <dependency>
+                <groupId>org.tailormap</groupId>
+                <artifactId>viewer-admin</artifactId>
+                <version>${project.version} </version>
+            </dependency>
+            <dependency>
+                <groupId>org.tailormap</groupId>
+                <artifactId>docker</artifactId>
+                <version>${project.version} </version>
             </dependency>
             <dependency>
                 <groupId>org.apache.xmlgraphics</groupId>
@@ -216,15 +259,7 @@
                 <artifactId>jakarta.activation-api</artifactId>
                 <version>${activation.api.version}</version>
             </dependency>
-            <dependency>
-                <groupId>org.tailormap</groupId>
-                <artifactId>viewer-config-persistence</artifactId>
-                <type>test-jar</type>
-                <scope>test</scope>
-                <version>${tailormap.version}</version>
-            </dependency>
 
-            <!-- nl b3p csw-->
             <dependency>
                 <groupId>nl.b3p</groupId>
                 <artifactId>b3p-commons-csw</artifactId>
@@ -357,12 +392,6 @@
                 <version>2.3.2</version>
             </dependency>
             <dependency>
-                <!-- override the version provided by hibernate -->
-                <groupId>org.javassist</groupId>
-                <artifactId>javassist</artifactId>
-                <version>3.28.0-GA</version>
-            </dependency>
-            <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-core</artifactId>
                 <version>${hibernate.version}</version>
@@ -371,52 +400,11 @@
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-entitymanager</artifactId>
                 <version>${hibernate.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <!--
-                        exclude old javassist so we can use 3.26.0-GA, see issue #745
-                        when upgrading hibernate this should be removed
-                        -->
-                        <groupId>javassist</groupId>
-                        <artifactId>javassist</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
-            <!-- viewer-config-persistence -->
             <dependency>
                 <groupId>commons-beanutils</groupId>
                 <artifactId>commons-beanutils</artifactId>
                 <version>1.9.4</version>
-            </dependency>
-            <dependency>
-                <groupId>org.tailormap</groupId>
-                <artifactId>viewer-commons</artifactId>
-                <version>${tailormap.version} </version>
-            </dependency>
-            <dependency>
-                <groupId>org.tailormap</groupId>
-                <artifactId>geotools-commons</artifactId>
-                <version>${tailormap.version} </version>
-            </dependency>
-            <dependency>
-                <groupId>org.tailormap</groupId>
-                <artifactId>web-commons</artifactId>
-                <version>${tailormap.version} </version>
-            </dependency>
-            <dependency>
-                <groupId>org.tailormap</groupId>
-                <artifactId>viewer</artifactId>
-                <version>${tailormap.version} </version>
-            </dependency>
-            <dependency>
-                <groupId>org.tailormap</groupId>
-                <artifactId>viewer-admin</artifactId>
-                <version>${tailormap.version} </version>
-            </dependency>
-            <dependency>
-                <groupId>org.tailormap</groupId>
-                <artifactId>docker</artifactId>
-                <version>${tailormap.version} </version>
             </dependency>
             <dependency>
                 <groupId>org.geotools</groupId>
@@ -479,7 +467,6 @@
                 <artifactId>gt-xsd-gml3</artifactId>
                 <version>${geotools.version}</version>
             </dependency>
-            <!-- web-commons -->
             <dependency>
                 <groupId>javax.servlet.jsp</groupId>
                 <artifactId>javax.servlet.jsp-api</artifactId>
@@ -501,7 +488,6 @@
                 <artifactId>gt-geojson</artifactId>
                 <version>${geotools.version}</version>
             </dependency>
-            <!-- viewer-admin-->
             <dependency>
                 <groupId>org.stripesstuff</groupId>
                 <artifactId>stripesstuff</artifactId>
@@ -520,7 +506,6 @@
                 <artifactId>jakarta.mail</artifactId>
                 <version>${jakarta.mail.version}</version>
             </dependency>
-            <!-- Flamingo dependencies -->
             <dependency>
                 <groupId>org.apache.poi</groupId>
                 <artifactId>poi-ooxml</artifactId>
@@ -621,7 +606,6 @@
                 <artifactId>encoder</artifactId>
                 <version>1.2.3</version>
             </dependency>
-
         </dependencies>
     </dependencyManagement>
     <repositories>

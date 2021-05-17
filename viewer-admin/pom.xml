@@ -140,7 +140,6 @@
             <artifactId>viewer-helpers</artifactId>
             <type>test-jar</type>
             <scope>test</scope>
-            <version>${tailormap.version}</version>
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
