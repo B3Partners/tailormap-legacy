@@ -26,7 +26,7 @@ export class FeatureControllerService extends BaseService {
   /**
    * Path part for operation update
    */
-  static readonly UpdatePath = '/features/{objectGuid}';
+  static readonly UpdatePath = '/features/{application}/{featuretype}/{fid}';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
@@ -35,13 +35,17 @@ export class FeatureControllerService extends BaseService {
    * This method sends `application/json` and handles request body of type `application/json`.
    */
   update$Response(params: {
-    objectGuid: string;
+    application: number;
+    featuretype: string;
+    fid: string;
     body: Feature
   }): Observable<StrictHttpResponse<Feature>> {
 
     const rb = new RequestBuilder(this.rootUrl, FeatureControllerService.UpdatePath, 'put');
     if (params) {
-      rb.path('objectGuid', params.objectGuid, {});
+      rb.path('application', params.application, {});
+      rb.path('featuretype', params.featuretype, {});
+      rb.path('fid', params.fid, {});
       rb.body(params.body, 'application/json');
     }
 
@@ -63,7 +67,9 @@ export class FeatureControllerService extends BaseService {
    * This method sends `application/json` and handles request body of type `application/json`.
    */
   update(params: {
-    objectGuid: string;
+    application: number;
+    featuretype: string;
+    fid: string;
     body: Feature
   }): Observable<Feature> {
 
@@ -73,9 +79,58 @@ export class FeatureControllerService extends BaseService {
   }
 
   /**
+   * Path part for operation delete
+   */
+  static readonly DeletePath = '/features/{application}/{featuretype}/{fid}';
+
+  /**
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `delete()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  delete$Response(params: {
+    featuretype: string;
+    fid: string;
+  }): Observable<StrictHttpResponse<void>> {
+
+    const rb = new RequestBuilder(this.rootUrl, FeatureControllerService.DeletePath, 'delete');
+    if (params) {
+      rb.path('featuretype', params.featuretype, {});
+      rb.path('fid', params.fid, {});
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'text',
+      accept: '*/*'
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return (r as HttpResponse<any>).clone({ body: undefined }) as StrictHttpResponse<void>;
+      })
+    );
+  }
+
+  /**
+   * This method provides access to only to the response body.
+   * To access the full response (for headers, for example), `delete$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  delete(params: {
+    featuretype: string;
+    fid: string;
+  }): Observable<void> {
+
+    return this.delete$Response(params).pipe(
+      map((r: StrictHttpResponse<void>) => r.body as void)
+    );
+  }
+
+  /**
    * Path part for operation save
    */
-  static readonly SavePath = '/features';
+  static readonly SavePath = '/features/{application}/{featuretype}';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
@@ -85,12 +140,16 @@ export class FeatureControllerService extends BaseService {
    */
   save$Response(params: {
     parentId?: string;
+    application: number;
+    featuretype: string;
     body: Feature
   }): Observable<StrictHttpResponse<Feature>> {
 
     const rb = new RequestBuilder(this.rootUrl, FeatureControllerService.SavePath, 'post');
     if (params) {
       rb.query('parentId', params.parentId, {});
+      rb.path('application', params.application, {});
+      rb.path('featuretype', params.featuretype, {});
       rb.body(params.body, 'application/json');
     }
 
@@ -113,11 +172,68 @@ export class FeatureControllerService extends BaseService {
    */
   save(params: {
     parentId?: string;
+    application: number;
+    featuretype: string;
     body: Feature
   }): Observable<Feature> {
 
     return this.save$Response(params).pipe(
       map((r: StrictHttpResponse<Feature>) => r.body as Feature)
+    );
+  }
+
+  /**
+   * Path part for operation onPoint
+   */
+  static readonly OnPointPath = '/features/{application}/{x}/{y}/{scale}';
+
+  /**
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `onPoint()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  onPoint$Response(params: {
+    application: number;
+    'x': number;
+    'y': number;
+    scale: number;
+  }): Observable<StrictHttpResponse<Array<Feature>>> {
+
+    const rb = new RequestBuilder(this.rootUrl, FeatureControllerService.OnPointPath, 'get');
+    if (params) {
+      rb.path('application', params.application, {});
+      rb.path('x', params['x'], {});
+      rb.path('y', params['y'], {});
+      rb.path('scale', params.scale, {});
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'json',
+      accept: 'application/json'
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<Array<Feature>>;
+      })
+    );
+  }
+
+  /**
+   * This method provides access to only to the response body.
+   * To access the full response (for headers, for example), `onPoint$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  onPoint(params: {
+    application: number;
+    'x': number;
+    'y': number;
+    scale: number;
+  }): Observable<Array<Feature>> {
+
+    return this.onPoint$Response(params).pipe(
+      map((r: StrictHttpResponse<Array<Feature>>) => r.body as Array<Feature>)
     );
   }
 
@@ -180,122 +296,6 @@ export class FeatureControllerService extends BaseService {
   }
 
   /**
-   * Path part for operation onPoint
-   */
-  static readonly OnPointPath = '/features/{application}/{appLayerId}/{x}/{y}/{scale}';
-
-  /**
-   * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `onPoint()` instead.
-   *
-   * This method doesn't expect any request body.
-   */
-  onPoint$Response(params: {
-    application: number;
-    appLayerId: number;
-    'x': number;
-    'y': number;
-    scale: number;
-  }): Observable<StrictHttpResponse<Array<Feature>>> {
-
-    const rb = new RequestBuilder(this.rootUrl, FeatureControllerService.OnPointPath, 'get');
-    if (params) {
-      rb.path('application', params.application, {});
-      rb.path('appLayerId', params.appLayerId, {});
-      rb.path('x', params['x'], {});
-      rb.path('y', params['y'], {});
-      rb.path('scale', params.scale, {});
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'json',
-      accept: 'application/json'
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<Array<Feature>>;
-      })
-    );
-  }
-
-  /**
-   * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `onPoint$Response()` instead.
-   *
-   * This method doesn't expect any request body.
-   */
-  onPoint(params: {
-    application: number;
-    appLayerId: number;
-    'x': number;
-    'y': number;
-    scale: number;
-  }): Observable<Array<Feature>> {
-
-    return this.onPoint$Response(params).pipe(
-      map((r: StrictHttpResponse<Array<Feature>>) => r.body as Array<Feature>)
-    );
-  }
-
-  /**
-   * Path part for operation onPoint1
-   */
-  static readonly OnPoint1Path = '/features/{application}/{appLayerIds}/{x}/{y}/{scale}';
-
-  /**
-   * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `onPoint1()` instead.
-   *
-   * This method doesn't expect any request body.
-   */
-  onPoint1$Response(params: {
-    application: number;
-    appLayerIds: Array<number>;
-    'x': number;
-    'y': number;
-    scale: number;
-  }): Observable<StrictHttpResponse<Array<Feature>>> {
-
-    const rb = new RequestBuilder(this.rootUrl, FeatureControllerService.OnPoint1Path, 'get');
-    if (params) {
-      rb.path('application', params.application, {});
-      rb.path('appLayerIds', params.appLayerIds, {});
-      rb.path('x', params['x'], {});
-      rb.path('y', params['y'], {});
-      rb.path('scale', params.scale, {});
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'json',
-      accept: 'application/json'
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<Array<Feature>>;
-      })
-    );
-  }
-
-  /**
-   * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `onPoint1$Response()` instead.
-   *
-   * This method doesn't expect any request body.
-   */
-  onPoint1(params: {
-    application: number;
-    appLayerIds: Array<number>;
-    'x': number;
-    'y': number;
-    scale: number;
-  }): Observable<Array<Feature>> {
-
-    return this.onPoint1$Response(params).pipe(
-      map((r: StrictHttpResponse<Array<Feature>>) => r.body as Array<Feature>)
-    );
-  }
-
-  /**
    * Path part for operation featuretypeInformation
    */
   static readonly FeaturetypeInformationPath = '/features/info/{appId}/{featureTypes}';
@@ -341,55 +341,6 @@ export class FeatureControllerService extends BaseService {
 
     return this.featuretypeInformation$Response(params).pipe(
       map((r: StrictHttpResponse<Array<FeaturetypeMetadata>>) => r.body as Array<FeaturetypeMetadata>)
-    );
-  }
-
-  /**
-   * Path part for operation delete
-   */
-  static readonly DeletePath = '/features/{featuretype}/{objectGuid}';
-
-  /**
-   * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `delete()` instead.
-   *
-   * This method doesn't expect any request body.
-   */
-  delete$Response(params: {
-    featuretype: string;
-    objectGuid: string;
-  }): Observable<StrictHttpResponse<void>> {
-
-    const rb = new RequestBuilder(this.rootUrl, FeatureControllerService.DeletePath, 'delete');
-    if (params) {
-      rb.path('featuretype', params.featuretype, {});
-      rb.path('objectGuid', params.objectGuid, {});
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'text',
-      accept: '*/*'
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return (r as HttpResponse<any>).clone({ body: undefined }) as StrictHttpResponse<void>;
-      })
-    );
-  }
-
-  /**
-   * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `delete$Response()` instead.
-   *
-   * This method doesn't expect any request body.
-   */
-  delete(params: {
-    featuretype: string;
-    objectGuid: string;
-  }): Observable<void> {
-
-    return this.delete$Response(params).pipe(
-      map((r: StrictHttpResponse<void>) => r.body as void)
     );
   }
 

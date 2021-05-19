@@ -17,6 +17,7 @@ import { WorkflowState } from '../../workflow/state/workflow.state';
 import { selectFormEditing } from '../state/form.selectors';
 import { selectLayerIdForEditingFeatures } from '../../application/state/application.selectors';
 import { editFeaturesComplete } from '../../application/state/application.actions';
+import { FeatureHelper } from '../../application/helpers/feature.helper';
 
 @Component({
   selector: 'tailormap-form-creator',
@@ -146,6 +147,7 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
     const parentFeature = this.features[0];
 
     this.actions.save$(this.isBulk, this.isBulk ? this.features : [this.feature], parentFeature).subscribe(savedFeature => {
+        FeatureHelper.convertNewFeatureToGBI(savedFeature);
         this.store$.dispatch(FormActions.setNewFeature({newFeature: savedFeature, parentId: parentFeature.fid}));
         this._snackBar.open('Opgeslagen', '', {duration: 5000});
       },
