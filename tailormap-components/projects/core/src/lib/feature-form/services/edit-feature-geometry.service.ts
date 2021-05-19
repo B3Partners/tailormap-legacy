@@ -9,9 +9,10 @@ import { WorkflowHelper } from '../../workflow/workflows/workflow.helper';
 import { GeometryConfirmService } from '../../user-interface/geometry-confirm-buttons/geometry-confirm.service';
 import { VectorLayer } from '../../../../../bridge/typings';
 import { GeoJSONGeometry } from 'wellknown';
-import { Feature, FeatureControllerService, Geometry } from '../../shared/generated';
+import { Feature, FeatureControllerService } from '../../shared/generated';
 import { TailorMapService } from '../../../../../bridge/src/tailor-map.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { FeatureHelper } from '../../application/helpers/feature.helper';
 
 @Injectable({
   providedIn: 'root',
@@ -34,7 +35,7 @@ export class EditFeatureGeometryService {
     });
   }
 
-  public updateCurrentFeatureGeometry$(): Observable<GeoJSONGeometry | Geometry | null> {
+  public updateCurrentFeatureGeometry$(): Observable<GeoJSONGeometry | null> {
     this.clearDrawing();
     return this.store$.select(selectCurrentFeature)
       .pipe(
@@ -61,22 +62,24 @@ export class EditFeatureGeometryService {
     return this.geometryConfirmService.open$(WorkflowHelper.findTopRight(geom));
   }
 
-  private saveUpdatedGeometry$(): Observable<GeoJSONGeometry | Geometry | null> {
+  private saveUpdatedGeometry$(): Observable<GeoJSONGeometry | null> {
     return this.store$.select(selectCurrentFeature)
       .pipe(
         take(1),
         concatMap(feature => {
-          const geomField = this.featureInitializerService.retrieveGeometryField(feature);
+          const geomField = feature.defaultGeometryField;
           if (!geomField) {
             return of(null);
           }
           const wkt = this.drawingVectorLayer.getActiveFeature().config.wktgeom;
+
           const updatedFeature: Feature = {
             ...feature,
             [geomField]: wkt,
           };
+          const newF = FeatureHelper.convertGBIFeatureToFeature(updatedFeature);
           return this.featureControllerService.update({application: this.tailorMapService.getApplicationId(),
-            featuretype: updatedFeature.clazz, fid: updatedFeature.fid, body: updatedFeature })
+            featuretype: newF.clazz, fid: newF.fid, body: newF })
             .pipe(
               map(() => wkt),
               catchError(() => {
