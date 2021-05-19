@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { Feature, FeatureControllerService } from '../../shared/generated';
 import { forkJoin, Observable } from 'rxjs';
 import { FeatureInitializerService } from '../../shared/feature-initializer/feature-initializer.service';
+import { TailorMapService } from '../../../../../bridge/src/tailor-map.service';
+import { FeatureHelper } from '../../application/helpers/feature.helper';
 
 
 @Injectable({
@@ -11,31 +13,34 @@ export class FormActionsService {
 
   constructor(
     private service: FeatureControllerService,
+    private tailormap: TailorMapService,
   ) {
   }
 
   public save$(isBulk: boolean, features: Feature[], parent: Feature): Observable<any> {
-
+    features = FeatureHelper.convertGBIFeaturesToFeatures(features);
+    parent = FeatureHelper.convertGBIFeatureToFeature(parent);
     if (isBulk) {
       const reqs: Observable<any>[] = [];
       features.forEach(feature => {
-        const objectGuid = feature.fid;
-        reqs.push(this.service.update({objectGuid, body: feature}));
+        reqs.push(this.service.update({application: this.tailormap.getApplicationId(),
+          featuretype: feature.clazz, fid: feature.fid, body: feature}));
       });
       return forkJoin(reqs);
     } else {
       const feature = features[0];
-      const objectGuid = feature.fid;
-      if (objectGuid && objectGuid !== FeatureInitializerService.STUB_OBJECT_GUID_NEW_OBJECT) {
-        return this.service.update({objectGuid, body: feature});
+      const appId = this.tailormap.getApplicationId();
+      if (feature.fid && feature.fid !== FeatureInitializerService.STUB_OBJECT_GUID_NEW_OBJECT) {
+        return this.service.update({application: appId,
+          featuretype: feature.clazz, fid: feature.fid, body: feature});
       } else {
         const parentId = parent ? parent.fid : null;
-        return this.service.save({parentId, body: feature});
+        return this.service.save({application: appId,featuretype: feature.clazz, parentId, body: feature});
       }
     }
   }
 
   public removeFeature$(feature: Feature): Observable<any> {
-    return this.service.delete({featuretype: feature.clazz, objectGuid: feature.fid});
+    return this.service.delete({featuretype: feature.clazz, fid: feature.fid});
   }
 }

@@ -1,14 +1,14 @@
 import { Injectable, NgZone } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { FormState } from '../state/form.state';
-import {  Observable, of } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { selectCurrentFeature } from '../state/form.selectors';
 import { catchError, concatMap, map, take, tap } from 'rxjs/operators';
 import { FeatureInitializerService } from '../../shared/feature-initializer/feature-initializer.service';
 import { WorkflowHelper } from '../../workflow/workflows/workflow.helper';
 import { GeometryConfirmService } from '../../user-interface/geometry-confirm-buttons/geometry-confirm.service';
 import { VectorLayer } from '../../../../../bridge/typings';
-import { GeoJSONGeometry, parse } from 'wellknown';
+import { GeoJSONGeometry } from 'wellknown';
 import { Feature, FeatureControllerService, Geometry } from '../../shared/generated';
 import { TailorMapService } from '../../../../../bridge/src/tailor-map.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -71,14 +71,14 @@ export class EditFeatureGeometryService {
             return of(null);
           }
           const wkt = this.drawingVectorLayer.getActiveFeature().config.wktgeom;
-          const updatedGeom = parse(wkt);
           const updatedFeature: Feature = {
             ...feature,
-            [geomField]: updatedGeom,
+            [geomField]: wkt,
           };
-          return this.featureControllerService.update({ objectGuid: updatedFeature.fid, body: updatedFeature })
+          return this.featureControllerService.update({application: this.tailorMapService.getApplicationId(),
+            featuretype: updatedFeature.clazz, fid: updatedFeature.fid, body: updatedFeature })
             .pipe(
-              map(() => updatedGeom),
+              map(() => wkt),
               catchError(() => {
                 this.snackbar.open('Opslaan van geometrie is mislukt, probeer opnieuw');
                 return of(null);

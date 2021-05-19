@@ -1,6 +1,5 @@
 import { Workflow } from './Workflow';
 import * as wellknown from 'wellknown';
-import { GeoJSONGeometry } from 'wellknown';
 import { Feature } from '../../shared/generated';
 import { MapClickedEvent } from '../../shared/models/event-models';
 import { OLFeature, VectorLayer } from '../../../../../bridge/typings';
@@ -9,11 +8,12 @@ import { WorkflowHelper } from './workflow.helper';
 import * as FormActions from '../../feature-form/state/form.actions';
 import { selectFormClosed } from '../../feature-form/state/form.state-helpers';
 import {
-  selectFormConfigForFeatureTypeName, selectFormConfigFeatureTypeNames, selectFormConfigs,
+  selectFormConfigFeatureTypeNames, selectFormConfigForFeatureTypeName, selectFormConfigs,
 } from '../../application/state/application.selectors';
 import { selectFeatureType, selectGeometryType, selectWorkflowConfig } from '../state/workflow.selectors';
 import { combineLatest, Observable, of } from 'rxjs';
 import { FeatureSelectionComponent } from '../../shared/feature-selection/feature-selection.component';
+import { FeatureHelper } from '../../application/helpers/feature.helper';
 
 
 export class StandardFormWorkflow extends Workflow {
@@ -72,8 +72,8 @@ export class StandardFormWorkflow extends Workflow {
     this.geometryConfirmService.open$(coord).pipe(takeUntil(this.destroyed)).subscribe(accepted => {
       if (accepted) {
         const wkt = this.vectorLayer.getActiveFeature().config.wktgeom;
-        geoJson = wellknown.parse(wkt);
-        this.accept(geoJson);
+
+        this.accept(wkt);
       } else {
         vectorLayer.removeAllFeatures();
       }
@@ -83,7 +83,7 @@ export class StandardFormWorkflow extends Workflow {
     });
   }
 
-  private accept(geoJson: GeoJSONGeometry): void {
+  private accept(geoJson: string): void {
     const objecttype = this.featureType.charAt(0).toUpperCase() + this.featureType.slice(1);
     const feat = this.featureInitializerService.create(objecttype,
       {geometrie: geoJson, clazz: this.featureType, children: []});
@@ -121,12 +121,7 @@ export class StandardFormWorkflow extends Workflow {
           return this.service.featuretypeOnPoint({application: this.tailorMap.getApplicationId(),featureTypes, x, y, scale});
         }),
         map( (features: Feature[])=> {
-          features.map(feature =>{
-            feature.attributes.forEach(row => {
-              feature[row.key] = row.value
-            })
-          })
-
+          FeatureHelper.convertNewFeaturesToGBI(features);
           return features;
         }),
         concatMap((features: Feature[]) => {
