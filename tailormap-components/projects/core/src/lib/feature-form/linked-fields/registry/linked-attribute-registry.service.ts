@@ -67,7 +67,7 @@ export class LinkedAttributeRegistryService {
     // set all the fields to the new values
     Object.keys(options).forEach(domainId => {
       const attr = this.domainToAttribute.get(parseInt(domainId, 10));
-      if (attr) {
+      if (attr && attr.options) {
         const selectedOptions = options[domainId];
         attr.options.forEach(option => {
           option.disabled = true;

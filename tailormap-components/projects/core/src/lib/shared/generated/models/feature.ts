@@ -1,7 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
 import { Attribute } from './attribute';
-import { Geometry } from './geometry';
 import { Relation } from './relation';
 import { RelatedFeatureType } from '../../attribute-service/attribute-models';
 export interface Feature {
@@ -9,7 +8,7 @@ export interface Feature {
   attributes?: Array<Attribute>;
   children?: Array<Feature>;
   clazz?: string;
-  defaultGeometry?: Geometry;
+  defaultGeometry?: string;
   defaultGeometryField?: string;
   fid?: string;
   objecttype?: string;

@@ -196,7 +196,7 @@ export class FormComponent implements OnDestroy, OnInit {
         if (!geometry) {
           return;
         }
-        const geomField = this.featureInitializerService.retrieveGeometryField(this.feature);
+        const geomField = this.feature.defaultGeometryField;
         if (!geomField) {
           return;
         }

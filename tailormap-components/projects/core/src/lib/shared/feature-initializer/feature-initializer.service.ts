@@ -1,8 +1,10 @@
 /* eslint @typescript-eslint/naming-convention: [ "error", { "selector": ["objectLiteralProperty","classProperty"], "format": ["camelCase", "UPPER_CASE", "snake_case"] } ] */
 
 import { Injectable } from '@angular/core';
-import { Feature, Geometry } from '../generated';
+import { Feature } from '../generated';
 import { FormHelpers } from '../../feature-form/form/form-helpers';
+import * as wellknown from 'wellknown';
+import { GeoJSONGeometry } from 'wellknown';
 
 
 @Injectable({
@@ -14,47 +16,13 @@ export class FeatureInitializerService {
 
   public static readonly STUB_OBJECT_GUID_NEW_OBJECT = '-1';
 
-  private static isGeometry(geometry: any): geometry is Geometry {
-    return ((geometry as Geometry).bbox || []).length > 0
-      || ((geometry as Geometry).coordinates || []).length > 0
-      || typeof (geometry as Geometry).crs !== 'undefined';
-  }
-
   constructor() {
   }
 
-  public retrieveGeometry(feature: Feature): Geometry {
-    const field = this.retrieveGeometryField(feature);
-    if (feature[field] && FeatureInitializerService.isGeometry(feature[field])) {
-      return feature[field];
-    }
-    return null;
-  }
-
-  public retrieveGeometryField(feature: Feature): string {
-    switch (feature.objecttype) {
-      case 'Boom':
-        return 'geometrie';
-      case 'Gras':
-        return 'geometrie';
-      case 'Haag':
-        return 'geometrie';
-      case 'Mechleiding':
-        return 'geometrie';
-      case 'NatBeplanting':
-        return 'geometrie';
-      case 'Rioolput':
-        return 'geometrie';
-      case 'Vrijvleiding':
-        return 'geometrie';
-      case 'Wegvakonderdeel':
-        return 'geometrie';
-      case 'IMBORVerhardingsobject':
-        return 'geometrie';
-      case 'IMBORBoom':
-        return 'geometrie';
-      case 'IMBORGroenobject':
-        return 'geometrie';
+  public retrieveGeometry(feature: Feature): GeoJSONGeometry {
+    const wkt = feature.defaultGeometry;
+    if(wkt != null){
+      return wellknown.parse(wkt);
     }
     return null;
   }
@@ -64,7 +32,7 @@ export class FeatureInitializerService {
     params.objecttype = FormHelpers.snakecaseToCamel(type);
     params.fid = FeatureInitializerService.STUB_OBJECT_GUID_NEW_OBJECT;
     switch (type) {
-      case 'Wegvakonderdeel':
+      case 'wegvakonderdeel':
         const wv: Feature = {
           a1_rafeling: 0,
           a3_dwarsonvlakheid: 0,
@@ -209,7 +177,7 @@ export class FeatureInitializerService {
           ...params,
         };
         return wv;
-      case 'Wegvakonderdeelplanning':
+      case 'wegvakonderdeelplanning':
         const wvp: Feature = {
           belang: 0,
           binnen_kom: false,
@@ -246,7 +214,7 @@ export class FeatureInitializerService {
           ...params,
         };
         return wvp;
-      case 'Rioolput':
+      case 'rioolput':
         const rp: Feature = {
           aanlegjaar: 0,
           aansluitend_stelseltype: null,
@@ -424,7 +392,7 @@ export class FeatureInitializerService {
           ...params,
         };
         return rp;
-      case 'Mechleiding':
+      case 'mechleiding':
         const ml: Feature = {
           aanlegjaar: 0,
           aantal_buizen: 0,
@@ -527,7 +495,7 @@ export class FeatureInitializerService {
           ...params,
         };
         return ml;
-      case 'Vrijvleiding':
+      case 'vrijvleiding':
         const vl: Feature = {
           aanlegjaar: 0,
           aant_ie_bedrijven: 0,
@@ -730,7 +698,7 @@ export class FeatureInitializerService {
           ...params,
         };
         return vl;
-      case 'Boom':
+      case 'boom':
         const boom: Feature = {
           aanlegjaar: 0,
           aes: null,
@@ -848,7 +816,7 @@ export class FeatureInitializerService {
           ...params,
         };
         return boom;
-      case 'Boominspectie':
+      case 'boominspectie':
         const bi: Feature = {
           aes: null,
           afbeelding_vta: null,
@@ -899,7 +867,7 @@ export class FeatureInitializerService {
           ...params,
         };
         return bi;
-      case 'Gras':
+      case 'gras':
         const gras: Feature = {
           aanlegjaar: 0,
           afbeelding: null,
@@ -971,7 +939,7 @@ export class FeatureInitializerService {
           ...params,
         };
         return gras;
-      case 'Haag':
+      case 'haag':
         const haag: Feature = {
           aanlegjaar: 0,
           aantal_knipbeurten: 0,
@@ -1043,7 +1011,7 @@ export class FeatureInitializerService {
           ...params,
         };
         return haag;
-      case 'NatBeplanting':
+      case 'natbeplanting':
         const natBeplanting: Feature = {
           aanlegjaar: 0,
           afbeelding: null,
@@ -1112,7 +1080,7 @@ export class FeatureInitializerService {
           ...params,
         };
         return natBeplanting;
-      case 'Weginspectie':
+      case 'weginspectie':
         const weginspectie: Feature = {
           a1_rafeling: 0,
           a3_dwarsonvlakheid: 0,
