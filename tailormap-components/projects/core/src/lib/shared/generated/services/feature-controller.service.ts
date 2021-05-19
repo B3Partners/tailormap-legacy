@@ -90,23 +90,25 @@ export class FeatureControllerService extends BaseService {
    * This method doesn't expect any request body.
    */
   delete$Response(params: {
+    application: number;
     featuretype: string;
     fid: string;
-  }): Observable<StrictHttpResponse<void>> {
+  }): Observable<StrictHttpResponse<boolean>> {
 
     const rb = new RequestBuilder(this.rootUrl, FeatureControllerService.DeletePath, 'delete');
     if (params) {
+      rb.path('application', params.application, {});
       rb.path('featuretype', params.featuretype, {});
       rb.path('fid', params.fid, {});
     }
 
     return this.http.request(rb.build({
-      responseType: 'text',
-      accept: '*/*'
+      responseType: 'json',
+      accept: 'application/json'
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
-        return (r as HttpResponse<any>).clone({ body: undefined }) as StrictHttpResponse<void>;
+        return (r as HttpResponse<any>).clone({ body: String((r as HttpResponse<any>).body) === 'true' }) as StrictHttpResponse<boolean>;
       })
     );
   }
@@ -118,12 +120,13 @@ export class FeatureControllerService extends BaseService {
    * This method doesn't expect any request body.
    */
   delete(params: {
+    application: number;
     featuretype: string;
     fid: string;
-  }): Observable<void> {
+  }): Observable<boolean> {
 
     return this.delete$Response(params).pipe(
-      map((r: StrictHttpResponse<void>) => r.body as void)
+      map((r: StrictHttpResponse<boolean>) => r.body as boolean)
     );
   }
 
