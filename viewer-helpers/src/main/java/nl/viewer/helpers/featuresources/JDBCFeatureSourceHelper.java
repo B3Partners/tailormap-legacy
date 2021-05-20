@@ -12,6 +12,7 @@ import org.geotools.data.DataStoreFinder;
 import org.geotools.data.simple.SimpleFeatureSource;
 import org.geotools.data.sqlserver.SQLServerDataStoreFactory;
 import org.geotools.feature.FeatureCollection;
+import org.geotools.jdbc.JDBCDataStore;
 import org.geotools.jdbc.JDBCDataStoreFactory;
 import org.json.JSONObject;
 import org.opengis.feature.type.AttributeType;
@@ -80,6 +81,9 @@ public class JDBCFeatureSourceHelper implements FeatureSourceHelper {
                         AttributeType gtType = gtAtt.getType();
                         String binding = gtType.getBinding().getName();
 
+                        if(gtAtt.getUserData().containsKey(JDBCDataStore.JDBC_PRIMARY_KEY_COLUMN)){
+                            sft.setPrimaryKeyAttribute(gtAtt.getLocalName());
+                        }
                         /* XXX use instanceof... */
                         String type = "";
                         if(binding.equals("org.locationtech.jts.geom.MultiPolygon")){
