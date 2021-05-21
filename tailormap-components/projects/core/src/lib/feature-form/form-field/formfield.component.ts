@@ -52,7 +52,7 @@ export class FormfieldComponent implements AfterViewInit, OnDestroy, OnInit {
     ])
       .pipe(
         filter(([feature, config]) => !!feature && !!config &&
-          LayerUtils.sanitizeLayername(config.featureType) === feature.clazz &&
+          LayerUtils.sanitizeLayername(config.featureType) === LayerUtils.sanitizeLayername(feature.clazz) &&
           config.fields.find(field => field.key === this.attribute.key) !== undefined),
         takeUntil(this.destroyed),
         map(([feature, config]) => {
@@ -72,9 +72,9 @@ export class FormfieldComponent implements AfterViewInit, OnDestroy, OnInit {
         this.control.setValidators([FormFieldHelpers.nonExistingValueValidator(this.attribute)]);
       } else {
         const comparableValue = FormFieldHelpers.getComparableValue(this.attribute);
-        if (comparableValue) {
-          const val = comparableValue.val;
-          this.control.setValue(val, {
+        const value = comparableValue ? comparableValue.val : this.attribute.value;
+        if (value) {
+          this.control.setValue(value, {
             emitEvent: false,
             onlySelf: false,
             emitModelToViewChange: false,

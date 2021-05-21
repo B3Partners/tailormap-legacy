@@ -5,6 +5,7 @@ import { Attribute, FormConfiguration, FormFieldType } from '../form/form-models
 import { AttributeListFeature } from '../../shared/attribute-service/attribute-models';
 import { FormFieldHelpers } from '../form-field/form-field-helpers';
 import { TreeModel } from '../../shared/tree/models/tree.model';
+import { LayerUtils } from '../../shared/layer-utils/layer-utils.service';
 
 export class FormTreeHelpers {
 
@@ -17,7 +18,7 @@ export class FormTreeHelpers {
         const fts: Record<string , TreeModel<FormTreeMetadata>> = {};
 
         feature.children.forEach((child: Feature) => {
-          const featureType = child.clazz;
+          const featureType = LayerUtils.sanitizeLayername(child.clazz);
           if (formConfigs.has(featureType)) {
             if (!fts.hasOwnProperty(featureType)) {
               const featureTypeNode: TreeModel<FormTreeMetadata> = {
@@ -41,7 +42,7 @@ export class FormTreeHelpers {
           }
         }
       }
-      const config = formConfigs.get(feature.clazz);
+      const config = formConfigs.get(LayerUtils.sanitizeLayername(feature.clazz));
       const metadata = {
         isFeatureType: false,
         feature,
