@@ -58,6 +58,10 @@ describe('AttributeListFilterHelper', () => {
   it('creates filter with checked rows', () => {
     const mainFeatureData: AttributeListFeatureTypeData = {
       ...featureData,
+      primaryKeyColumn: 'id',
+      columns: [
+        { attributeType: AttributeTypeEnum.STRING, name: 'id', dataType: 'string', columnType: 'data', visible: true, id: '1', alias: 'id' },
+      ],
       filter: [
         { attribute: 'city', value: ['Utrecht'], condition: 'LIKE', attributeType: AttributeTypeEnum.STRING, featureType: 123 },
       ],
@@ -71,9 +75,6 @@ describe('AttributeListFilterHelper', () => {
       layerId: '123',
       featureType: 234,
       parentFeatureType: 123,
-      parentAttributeRelationKeys: [
-        { parentAttribute: 'id', childAttribute: 'city_id' },
-      ],
       filter: [
         { attribute: 'amount', value: ['15'], condition: '=', attributeType: AttributeTypeEnum.NUMBER, featureType: 234 },
       ],
@@ -81,13 +82,13 @@ describe('AttributeListFilterHelper', () => {
     const filter = AttributeListFilterHelper.getFilter(tab, 234, [ mainFeatureData, child1 ]);
     const expectedChildFilters = [
       `(amount = 15)`,
-      `(city_id IN ('1','2','3'))`,
-      `RELATED_FEATURE(234, 123, ((city ILIKE '%Utrecht%')))`,
+      `RELATED_FEATURE(234, 123, ((city ILIKE '%Utrecht%') AND (id IN ('1','2','3'))))`,
     ];
     const mainFilter = AttributeListFilterHelper.getFilter(tab, 123, [ mainFeatureData, child1 ]);
     const expectedMainFilters = [
       `(city ILIKE '%Utrecht%')`,
-      `RELATED_FEATURE(123, 234, ((amount = 15) AND (city_id IN ('1','2','3'))))`,
+      `(id IN ('1','2','3'))`,
+      `RELATED_FEATURE(123, 234, ((amount = 15)))`,
     ];
     expect(mainFilter).toEqual(expectedMainFilters.join(' AND '));
   });

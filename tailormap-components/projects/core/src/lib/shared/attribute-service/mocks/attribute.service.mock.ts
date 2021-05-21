@@ -41,6 +41,7 @@ const mockAttributeMetadataResponse: AttributeMetadataResponse = {
   invertedRelations: [],
   featureTypeName: 'feature',
   geometryAttribute: 'geom',
+  primaryKeyAttribute: 'id',
   geometryAttributeIndex: 0,
   success: true,
 };

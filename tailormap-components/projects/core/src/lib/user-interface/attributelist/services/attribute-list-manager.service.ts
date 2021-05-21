@@ -15,7 +15,7 @@ import { Attribute, FormConfiguration } from '../../../feature-form/form/form-mo
 import { AttributeTypeHelper } from '../../../application/helpers/attribute-type.helper';
 import { AttributeMetadataResponse, Relation } from '../../../shared/attribute-service/attribute-models';
 import { AttributeListConfig } from '../models/attribute-list.config';
-import { AttributeListFeatureTypeData, ParentRelationKey } from '../models/attribute-list-feature-type-data.model';
+import { AttributeListFeatureTypeData } from '../models/attribute-list-feature-type-data.model';
 import { IdService } from '../../../shared/id-service/id.service';
 
 interface TabFromLayerResult {
@@ -46,7 +46,6 @@ export class AttributeListManagerService implements OnDestroy {
     layerFeatureType: 0,
     filter: [],
     rows: [],
-    attributeRelationKeys: [],
     checkedFeatures: [],
     pageIndex: 0,
     pageSize: 10,
@@ -141,12 +140,12 @@ export class AttributeListManagerService implements OnDestroy {
           this.createDataForFeatureType(
             metadata.featureType,
             layer.alias || layerName,
+            metadata.primaryKeyAttribute,
             metadata.featureType,
             metadata.featureType,
             pageSize,
             layer.id,
             metadata,
-            AttributeListManagerService.getAttributeRelationKeys(metadata.relations),
             formConfigs.get(LayerUtils.sanitizeLayername(layerName)),
           ),
           ...this.getRelatedFeatureData(metadata.relations || [], metadata.featureType, metadata.featureType, layer, pageSize, metadata, formConfigs),
@@ -170,14 +169,13 @@ export class AttributeListManagerService implements OnDestroy {
       const featureData = this.createDataForFeatureType(
         relation.foreignFeatureType,
         relation.foreignFeatureTypeName,
+        relation.foreignFeatureTypePrimaryKeyAttribute,
         parentFeatureType,
         layerFeatureType,
         pageSize,
         layer.id,
         metadata,
-        AttributeListManagerService.getAttributeRelationKeys(relation.relations),
         formConfigs.get(LayerUtils.sanitizeLayername(relation.foreignFeatureTypeName)),
-        AttributeListManagerService.getParentAttributeRelationKeys(relation),
       );
       relatedData.push(featureData);
       if (relation.relations && relation.relations.length > 0) {
@@ -199,27 +197,25 @@ export class AttributeListManagerService implements OnDestroy {
   private createDataForFeatureType(
     featureType: number,
     featureTypeName: string,
+    primaryKeyColumn: string,
     parentFeatureType: number,
     layerFeatureType: number,
     pageSize: number,
     layerId: string,
     metadata: AttributeMetadataResponse,
-    attributeRelationKeys: string[],
     formConfig?: FormConfiguration,
-    parentAttributeRelationKeys?: ParentRelationKey[],
   ): AttributeListFeatureTypeData {
     return {
       ...AttributeListManagerService.EMPTY_FEATURE_TYPE_DATA,
       layerId,
       featureType,
       featureTypeName,
+      primaryKeyColumn,
       parentFeatureType: featureType !== parentFeatureType ? parentFeatureType : undefined,
       layerFeatureType,
       columns: this.getColumnsForLayer(metadata, featureType, formConfig),
       showPassportColumnsOnly: !!formConfig,
       pageSize,
-      attributeRelationKeys,
-      parentAttributeRelationKeys,
     };
   }
 
@@ -244,20 +240,6 @@ export class AttributeListManagerService implements OnDestroy {
         attributeType: AttributeTypeHelper.getAttributeType(a),
       };
     });
-  }
-
-  private static getAttributeRelationKeys(relations: Relation[]): string[] {
-    const relationKeys: string[][] = (relations || []).map(relation => {
-      return relation.relationKeys.map(key => key.leftSideName || '').filter(key => !!key);
-    });
-    return Array.from(new Set([].concat(...relationKeys)));
-  }
-
-  private static getParentAttributeRelationKeys(relation: Relation): ParentRelationKey[] {
-    return relation.relationKeys.map<ParentRelationKey>(rel => ({
-      childAttribute: rel.rightSideName,
-      parentAttribute: rel.leftSideName,
-    }));
   }
 
 }
