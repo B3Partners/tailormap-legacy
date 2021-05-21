@@ -9,6 +9,9 @@ export class FeatureHelper {
     feature.attributes.forEach(row => {
       feature[row.key] = row.value
     });
+    if(feature.children){
+      FeatureHelper.convertNewFeaturesToGBI(feature.children);
+    }
   }
 
   public static convertGBIFeaturesToFeatures(feats: Feature[]): Feature[] {
