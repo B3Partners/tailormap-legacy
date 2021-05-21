@@ -115,7 +115,7 @@ public class ApplicationLayerHelper {
 
         if(ft != null) {
             json.put("geometryAttribute", ft.getGeometryAttribute());
-            json.put("primaryKeyAttributes", ft.getPrimaryKeyAttribute());
+            json.put("primaryKeyAttribute", ft.getPrimaryKeyAttribute());
             json.put("featureType", ft.getId());
             json.put("featureTypeName", ft.getTypeName());
             if(includeRelations) {
