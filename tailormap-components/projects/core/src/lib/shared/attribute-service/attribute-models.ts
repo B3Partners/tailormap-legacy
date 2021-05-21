@@ -81,9 +81,11 @@ export interface Attribute {
 export interface Relation {
   featureType: number;
   foreignFeatureType: number;
+  featureTypePrimaryKeyAttribute: string;
   type: RelationType;
   featureTypeName: string;
   foreignFeatureTypeName: string;
+  foreignFeatureTypePrimaryKeyAttribute: string;
   relationKeys: RelationKey[];
   relations?: Relation[];
 }
