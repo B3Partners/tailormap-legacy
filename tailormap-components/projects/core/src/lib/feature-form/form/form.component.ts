@@ -80,7 +80,7 @@ export class FormComponent implements OnDestroy, OnInit {
                 const sanitizedName = LayerUtils.sanitizeLayername(
                     appLayer.userlayer ? appLayer.userlayer_original_layername : appLayer.layerName);
                 return sanitizedName === features[0].clazz || (appLayer.userlayer ? appLayer.userlayer_original_layername : appLayer.layerName) === features[0].clazz;
-                }
+                },
 
               );
               return layers[0];

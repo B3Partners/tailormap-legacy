@@ -7,7 +7,7 @@ export class FeatureHelper {
 
   public static convertNewFeatureToGBI(feature: Feature): void {
     feature.attributes.forEach(row => {
-      feature[row.key] = row.value
+      feature[row.key] = row.value;
     });
     if(feature.children){
       FeatureHelper.convertNewFeaturesToGBI(feature.children);
@@ -19,7 +19,7 @@ export class FeatureHelper {
   }
 
   public static convertGBIFeatureToFeature(feat: Feature): Feature {
-    let newFeature: Feature = {
+    const newFeature: Feature = {
       attributes: [],
       children: feat.children,
       clazz: feat.clazz,
@@ -30,7 +30,7 @@ export class FeatureHelper {
       relatedFeatureTypes: feat.relatedFeatureTypes,
       relations: feat.relations,
     };
-    for (let key in feat) {
+    for (const key in feat) {
       if (!newFeature.hasOwnProperty(key)) {
         const attr = {
           key,

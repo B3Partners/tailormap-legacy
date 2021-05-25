@@ -65,7 +65,7 @@ export class StandardFormWorkflow extends Workflow {
 
   public geometryDrawn(vectorLayer: VectorLayer, feature: OLFeature) {
     const geom = feature.config.wktgeom;
-    let geoJson = wellknown.parse(geom);
+    const geoJson = wellknown.parse(geom);
 
     const coord = WorkflowHelper.findTopRight(geoJson);
 
