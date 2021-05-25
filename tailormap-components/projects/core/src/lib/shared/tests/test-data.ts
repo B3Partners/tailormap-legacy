@@ -1,7 +1,7 @@
 import { App, AppLayer, Map, MapComponent, VectorLayer, ViewerController } from '../../../../../bridge/typings';
 import { Attribute } from '../attribute-service/attribute-models';
 import { FormConfiguration, FormFieldType } from '../../feature-form/form/form-models';
-import { Feature, Geometry } from '../generated';
+import { Feature } from '../generated';
 
 export const mockAttribute = (overrides?: Partial<Attribute>): Attribute => ({
   allowValueListOnly: true,
@@ -53,7 +53,7 @@ export const mockBoom = (overrides?: Partial<Boom>): Boom => ({
   geometrie: mockGeometry(),
   ...overrides,
 });
-*/
+*//*
 export const mockGeometry = (overrides?: Partial<Geometry>): Geometry => ({
   bbox: [ 1, 2, 3, 4 ],
   coordinates: [ [{ x: 1, y: 2 }] ],
@@ -62,7 +62,7 @@ export const mockGeometry = (overrides?: Partial<Geometry>): Geometry => ({
     type: 'link',
   },
   ...overrides,
-});
+});*/
 
 export const appMock = (overrides?: Partial<App>): App => ({
   appLayers: {},
