@@ -15,7 +15,7 @@ export class FeatureHelper {
   }
 
   public static convertGBIFeaturesToFeatures(feats: Feature[]): Feature[] {
-    return feats.map(feat => this.convertGBIFeatureToFeature(feat));
+    return feats.map(feat => FeatureHelper.convertGBIFeatureToFeature(feat));
   }
 
   public static convertGBIFeatureToFeature(feat: Feature): Feature {
