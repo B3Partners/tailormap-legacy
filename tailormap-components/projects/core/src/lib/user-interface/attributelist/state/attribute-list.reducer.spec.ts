@@ -144,7 +144,7 @@ describe('AttributeListReducer', () => {
     const featureData: AttributeListFeatureTypeData = {
       ...dummyFeatureData,
       rows: createDummyRows(10, rowId => ({ featureId: `feature-${rowId}` })),
-      attributeRelationKeys: [ 'featureId' ],
+      primaryKeyColumn: 'featureId',
     };
     const state: AttributeListState = { ...initialState, tabs: [ dummyTab ], featureTypeData: [ featureData ]};
     const createUpdateRowCheckedAction = (rowId: string, checked: boolean) => AttributeListActions.updateRowChecked({

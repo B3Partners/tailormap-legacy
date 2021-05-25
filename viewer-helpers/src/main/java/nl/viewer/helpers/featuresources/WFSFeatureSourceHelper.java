@@ -11,6 +11,7 @@ import org.apache.commons.logging.LogFactory;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFinder;
 import org.geotools.data.simple.SimpleFeatureSource;
+import org.geotools.data.wfs.WFSDataStore;
 import org.geotools.data.wfs.WFSDataStoreFactory;
 import org.geotools.feature.FeatureCollection;
 import org.opengis.feature.type.AttributeType;

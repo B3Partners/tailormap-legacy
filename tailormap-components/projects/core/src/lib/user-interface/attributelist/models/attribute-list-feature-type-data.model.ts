@@ -21,7 +21,7 @@ export interface AttributeListFeatureTypeData {
   columns: AttributeListColumnModel[];
   showPassportColumnsOnly: boolean;
   rows: AttributeListRowModel[];
-  attributeRelationKeys: string[];
+  primaryKeyColumn?: string;
   parentAttributeRelationKeys?: ParentRelationKey[];
   checkedFeatures: CheckedFeature[];
   filter: AttributeFilterModel[];

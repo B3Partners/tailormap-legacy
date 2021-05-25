@@ -238,7 +238,7 @@ const getRelatedAttributesForRow = (row: AttributeListRowModel, relationAttribut
     rowId: row.rowId,
   };
   relationAttributes.forEach(key => {
-    if (!!row[key]) {
+    if (key && !!row[key]) {
       relationAttributesForRow[key] = row[key];
     }
   });
@@ -256,10 +256,9 @@ const onToggleCheckedAllRows = (
   const featureData = state.featureTypeData[featureTypeIdx];
   const someUnchecked = featureData.rows.findIndex(row => !row._checked) !== -1;
   const checkedRows = new Map<string, CheckedFeature>(featureData.checkedFeatures.map(c => [ c.rowId, c ]));
-  const relationAttributes = featureData.attributeRelationKeys;
   featureData.rows.forEach(row => {
     if (someUnchecked) {
-      checkedRows.set(row.rowId, getRelatedAttributesForRow(row, relationAttributes));
+      checkedRows.set(row.rowId, getRelatedAttributesForRow(row, [ featureData.primaryKeyColumn ]));
     } else {
       checkedRows.delete(row.rowId);
     }
@@ -309,7 +308,7 @@ const onUpdateRowChecked = (
         ],
         checkedFeatures: [
           ...featureData.checkedFeatures.slice(0, idx),
-          ...(payload.checked ? [ getRelatedAttributesForRow(row, featureData.attributeRelationKeys) ] : []),
+          ...(payload.checked ? [ getRelatedAttributesForRow(row, [ featureData.primaryKeyColumn ]) ] : []),
           ...featureData.checkedFeatures.slice(idx + 1),
         ],
       },

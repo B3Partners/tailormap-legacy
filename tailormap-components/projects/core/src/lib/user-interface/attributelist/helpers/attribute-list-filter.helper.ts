@@ -4,7 +4,6 @@ import { AttributeFilterHelper } from '../../../shared/helpers/attribute-filter.
 import { RelatedFilterHelper } from '../../../shared/helpers/related-filter.helper';
 import { RelatedFilterDataModel } from '../../../shared/models/related-filter-data.model';
 import { AttributeTypeHelper } from '../../../application/helpers/attribute-type.helper';
-import { AttributeTypeEnum } from '../../../shared/models/attribute-type.enum';
 
 export class AttributeListFilterHelper {
 
@@ -19,7 +18,7 @@ export class AttributeListFilterHelper {
       if (featureData.featureType === tab.featureType && extraLayerFilters) {
         filter.push(extraLayerFilters);
       }
-      const checkedRowsFilter = AttributeListFilterHelper.getQueryForCheckedRows(featureData, tabFeatureData);
+      const checkedRowsFilter = AttributeListFilterHelper.getQueryForCheckedRows(featureData);
       if (checkedRowsFilter) {
         filter.push(checkedRowsFilter);
       }
@@ -34,31 +33,24 @@ export class AttributeListFilterHelper {
 
   private static getQueryForCheckedRows(
     featureData: AttributeListFeatureTypeData,
-    parentsFeatureData: AttributeListFeatureTypeData[],
   ): string {
-    if (typeof featureData.parentFeatureType === 'undefined' || typeof featureData.parentAttributeRelationKeys === 'undefined') {
+    if (!featureData.primaryKeyColumn) {
       return '';
     }
-    const selectedRowsFilter = [];
-    const parentFeature = parentsFeatureData.find(f => f.featureType === featureData.parentFeatureType);
-    if (!parentFeature) {
+    const primaryColumn = featureData.columns.find(c => c.name === featureData.primaryKeyColumn);
+    if (!primaryColumn || !primaryColumn.attributeType) {
       return '';
     }
-    featureData.parentAttributeRelationKeys.forEach(relationKey => {
-      const checkedFeatureKeys = new Set<string>();
-      parentFeature.checkedFeatures.forEach(checkedFeature => {
-        if (checkedFeature[relationKey.parentAttribute]) {
-          checkedFeatureKeys.add(AttributeTypeHelper.getExpression(`${checkedFeature[relationKey.parentAttribute]}`, AttributeTypeEnum.STRING));
-        }
-      });
-      if (checkedFeatureKeys.size !== 0) {
-        selectedRowsFilter.push(`${relationKey.childAttribute} IN (${Array.from(checkedFeatureKeys).join(',')})`);
+    const checkedFeatureKeys = new Set<string>();
+    featureData.checkedFeatures.forEach(checkedFeature => {
+      if (checkedFeature[featureData.primaryKeyColumn]) {
+        checkedFeatureKeys.add(AttributeTypeHelper.getExpression(`${checkedFeature[featureData.primaryKeyColumn]}`, primaryColumn.attributeType));
       }
     });
-    if (selectedRowsFilter.length === 0) {
-      return '';
+    if (checkedFeatureKeys.size !== 0) {
+      return `(${featureData.primaryKeyColumn} IN (${Array.from(checkedFeatureKeys).join(',')}))`;
     }
-    return `(${selectedRowsFilter.join(' AND ')})`;
+    return '';
   }
 
 }

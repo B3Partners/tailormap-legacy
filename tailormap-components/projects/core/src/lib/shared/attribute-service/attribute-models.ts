@@ -51,6 +51,7 @@ export interface AttributeMetadataResponse {
   featureType: number;
   featureTypeName: string;
   geometryAttribute: string;
+  primaryKeyAttribute: string;
   geometryAttributeIndex: number;
   relations: Relation[];
   invertedRelations: Relation[];
@@ -80,9 +81,11 @@ export interface Attribute {
 export interface Relation {
   featureType: number;
   foreignFeatureType: number;
+  featureTypePrimaryKeyAttribute: string;
   type: RelationType;
   featureTypeName: string;
   foreignFeatureTypeName: string;
+  foreignFeatureTypePrimaryKeyAttribute: string;
   relationKeys: RelationKey[];
   relations?: Relation[];
 }

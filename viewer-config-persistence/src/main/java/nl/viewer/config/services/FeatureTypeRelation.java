@@ -98,6 +98,7 @@ public class FeatureTypeRelation {
         if (this.featureType!=null){
             j.put("featureType", this.featureType.getId());
             j.put("featureTypeName", this.featureType.getTypeName());
+            j.put("featureTypePrimaryKeyAttribute", this.featureType.getPrimaryKeyAttribute());
             JSONArray keys = new JSONArray();
             j.put("relationKeys", keys);
             relationKeys.forEach(key -> {
@@ -107,6 +108,7 @@ public class FeatureTypeRelation {
         if (this.foreignFeatureType!=null){
             j.put("foreignFeatureType", this.foreignFeatureType.getId());
             j.put("foreignFeatureTypeName", this.foreignFeatureType.getTypeName());
+            j.put("foreignFeatureTypePrimaryKeyAttribute", this.foreignFeatureType.getPrimaryKeyAttribute());
             JSONArray jRel = new JSONArray();
             if (!this.foreignFeatureType.getRelations().isEmpty()){
                 j.put("relations",jRel);

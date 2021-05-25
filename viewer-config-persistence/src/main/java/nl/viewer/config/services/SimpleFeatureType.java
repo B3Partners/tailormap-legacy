@@ -51,7 +51,9 @@ public class SimpleFeatureType {
     private boolean writeable;
 
     private String geometryAttribute;
-    
+
+    private String primaryKeyAttribute;
+
     @OneToMany (cascade=CascadeType.ALL, mappedBy="featureType")
     private List<FeatureTypeRelation> relations = new ArrayList<FeatureTypeRelation>();
     
@@ -128,6 +130,14 @@ public class SimpleFeatureType {
     public void setRelations(List<FeatureTypeRelation> relations) {
         this.relations = relations;
     }
+
+    public String getPrimaryKeyAttribute() {
+        return primaryKeyAttribute;
+    }
+
+    public void setPrimaryKeyAttribute(String primaryKeyAttribute) {
+        this.primaryKeyAttribute = primaryKeyAttribute;
+    }
     //</editor-fold>
 
     public boolean update(SimpleFeatureType update) {
@@ -138,6 +148,7 @@ public class SimpleFeatureType {
         description = update.description;
         writeable = update.writeable;
         geometryAttribute = update.geometryAttribute;
+        primaryKeyAttribute = update.primaryKeyAttribute;
         
         boolean changed = false;
         
@@ -232,7 +243,8 @@ public class SimpleFeatureType {
         o.put("typeName", typeName);
         o.put("writeable", writeable);
         o.put("geometryAttribute", geometryAttribute);
-        
+        o.put("primaryKeyAttribute", primaryKeyAttribute);
+
         JSONArray atts = new JSONArray();
         o.put("attributes", atts);
         for(AttributeDescriptor a: attributes) {

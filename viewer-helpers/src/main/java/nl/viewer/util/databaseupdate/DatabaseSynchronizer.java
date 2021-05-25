@@ -185,6 +185,8 @@ public class DatabaseSynchronizer implements Servlet {
         updates.put("43", new UpdateElement(Collections.singletonList("add_userlayer.sql"), String.class, false));
         updates.put("44", new UpdateElement(Collections.singletonList("add_form-readers.sql"), String.class, false));
 
+        // 5.9.4
+        updates.put("45", new UpdateElement(Collections.singletonList("add_featuretypePK.sql"), String.class, false));
 
 
         // 

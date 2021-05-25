@@ -276,11 +276,6 @@ export const selectStatisticsForTab = createSelector(
 );
 
 export const selectShowCheckboxColumnForTab = createSelector(
-  selectTabAndFeatureTypeDataForTab,
-  ([ tab, featureData ]) => {
-    if (!tab || !featureData) {
-      return false;
-    }
-    return tab.featureType === featureData.featureType;
-  },
+  selectFeatureTypeDataForTab,
+  featureData => featureData ? !!featureData.primaryKeyColumn : false,
 );
