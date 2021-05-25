@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Attribute, FeatureAttribute } from '../../form/form-models';
 import { Attribuut, Domeinwaarde } from '../../../shared/generated';
+import { Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -13,6 +14,10 @@ export class LinkedAttributeRegistryService {
   private valueToParentValue: Map<number, Domeinwaarde>;
 
   private registry: Map<number, Attribuut>;
+
+  private parentValue = new Subject<FeatureAttribute>();
+
+  public parentValue$ = this.parentValue.asObservable();
 
   constructor() {
     this.registry = new Map();
@@ -85,6 +90,7 @@ export class LinkedAttributeRegistryService {
       const parentValue = this.valueToParentValue.get(selectedValue.id);
       const parentAttribute = this.domainToAttribute.get(parentValue.domein_id);
       parentAttribute.value = parentValue.id;
+      this.parentValue.next(parentAttribute);
     }
   }
 
