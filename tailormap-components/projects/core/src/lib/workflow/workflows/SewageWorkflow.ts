@@ -7,12 +7,13 @@ import { Feature } from '../../shared/generated';
 import { VectorLayer } from '../../../../../bridge/typings';
 import { ChooseTypesComponent } from '../../user-interface/sewage/choose-types/choose-types.component';
 import { Observable } from 'rxjs';
-import { take, takeUntil } from 'rxjs/operators';
+import { filter, map, switchMap, take, takeUntil } from 'rxjs/operators';
 import { Choice } from './WorkflowModels';
 import { setOpenFeatureForm } from '../../feature-form/state/form.actions';
 import { selectCurrentFeature, selectFeatureLabel } from '../../feature-form/state/form.selectors';
 import { selectFormClosed } from '../../feature-form/state/form.state-helpers';
 import { selectFeatureType } from '../state/workflow.selectors';
+import { FeatureInitializerService } from '../../shared/feature-initializer/feature-initializer.service';
 
 export class SewageWorkflow extends Workflow {
   private currentStep: Step;
