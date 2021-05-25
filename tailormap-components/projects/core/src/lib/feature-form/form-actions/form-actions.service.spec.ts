@@ -5,6 +5,7 @@ import {SharedModule} from '../../shared/shared.module';
 import {FeatureControllerService} from '../../shared/generated';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
 import { FormConfigMockModule } from '../../shared/formconfig-repository/formconfig-mock.module.spec';
+import { getTailorMapServiceMockProvider } from '../../../../../bridge/src/tailor-map.service.mock';
 
 describe('FormActionsService', () => {
   beforeEach(() =>
@@ -17,7 +18,7 @@ describe('FormActionsService', () => {
         ],
 
         providers:[
-          FeatureControllerService,
+          FeatureControllerService,  getTailorMapServiceMockProvider(),
           ],
       },
       ),

@@ -12,12 +12,12 @@ describe('FeatureInitializerService', () => {
   });
 
   it('should create wegvakonderdeel', () => {
-    const wv = component.create('Wegvakonderdeel',{});
+    const wv = component.create('wegvakonderdeel',{});
     expect(wv).toBeTruthy();
   });
 
   it('should create wegvakonderdeelplanning', () => {
-    const wv = component.create('Wegvakonderdeelplanning',{});
+    const wv = component.create('wegvakonderdeelplanning',{});
     expect(wv).toBeTruthy();
   });
 
@@ -27,7 +27,7 @@ describe('FeatureInitializerService', () => {
       piet: 'jan',
       smit: 'mon',
     };
-    const wv = component.create('Wegvakonderdeel',params);
+    const wv = component.create('wegvakonderdeel',params);
     expect(wv).toBeTruthy();
     for (const param in params) {
       if (params.hasOwnProperty(param)) {
