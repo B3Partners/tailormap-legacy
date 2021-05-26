@@ -36,7 +36,7 @@ export class FormConfigRepositoryService {
           }
           return forkJoin([
             of(formConfigs),
-            this.featureController.featuretypeInformation({featureTypes})
+            this.featureController.featuretypeInformation({appId: this.tailorMap.getApplicationId(),featureTypes})
               .pipe(catchError((): Observable<Array<FeaturetypeMetadata>> => of([]))),
           ]);
         }),

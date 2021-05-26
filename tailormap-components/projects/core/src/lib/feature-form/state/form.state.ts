@@ -3,7 +3,7 @@ import { Feature } from '../../shared/generated';
 export const formStateKey = 'form';
 
 export interface SelectedCopyAttribute {
-  objectGuid: string;
+  fid: string;
   attributeKey: string;
 }
 

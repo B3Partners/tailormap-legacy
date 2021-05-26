@@ -1,22 +1,10 @@
 /* eslint @typescript-eslint/naming-convention: [ "error", { "selector": ["objectLiteralProperty","classProperty"], "format": ["camelCase", "UPPER_CASE", "snake_case"] } ] */
 
 import { Injectable } from '@angular/core';
-import {
-  Boom,
-  Boominspectie,
-  Feature,
-  Geometry,
-  Gras,
-  Haag,
-  MechLeiding,
-  NatBeplanting,
-  Rioolput,
-  VrijvLeiding,
-  Weginspectie,
-  Wegvakonderdeel,
-  Wegvakonderdeelplanning,
-} from '../generated';
+import { Feature } from '../generated';
 import { FormHelpers } from '../../feature-form/form/form-helpers';
+import * as wellknown from 'wellknown';
+import { GeoJSONGeometry } from 'wellknown';
 
 
 @Injectable({
@@ -28,47 +16,13 @@ export class FeatureInitializerService {
 
   public static readonly STUB_OBJECT_GUID_NEW_OBJECT = '-1';
 
-  private static isGeometry(geometry: any): geometry is Geometry {
-    return ((geometry as Geometry).bbox || []).length > 0
-      || ((geometry as Geometry).coordinates || []).length > 0
-      || typeof (geometry as Geometry).crs !== 'undefined';
-  }
-
   constructor() {
   }
 
-  public retrieveGeometry(feature: Feature): Geometry {
-    const field = this.retrieveGeometryField(feature);
-    if (feature[field] && FeatureInitializerService.isGeometry(feature[field])) {
-      return feature[field];
-    }
-    return null;
-  }
-
-  public retrieveGeometryField(feature: Feature): string {
-    switch (feature.objecttype) {
-      case 'Boom':
-        return 'geometrie';
-      case 'Gras':
-        return 'geometrie';
-      case 'Haag':
-        return 'geometrie';
-      case 'Mechleiding':
-        return 'geometrie';
-      case 'NatBeplanting':
-        return 'geometrie';
-      case 'Rioolput':
-        return 'geometrie';
-      case 'Vrijvleiding':
-        return 'geometrie';
-      case 'Wegvakonderdeel':
-        return 'geometrie';
-      case 'IMBORVerhardingsobject':
-        return 'geometrie';
-      case 'IMBORBoom':
-        return 'geometrie';
-      case 'IMBORGroenobject':
-        return 'geometrie';
+  public retrieveGeometry(feature: Feature): GeoJSONGeometry {
+    const wkt = feature.defaultGeometry;
+    if(wkt != null){
+      return wellknown.parse(wkt);
     }
     return null;
   }
@@ -76,10 +30,10 @@ export class FeatureInitializerService {
   public create(type: string, params: any): Feature {
     params.clazz = type.toLowerCase();
     params.objecttype = FormHelpers.snakecaseToCamel(type);
-    params.objectGuid = FeatureInitializerService.STUB_OBJECT_GUID_NEW_OBJECT;
+    params.fid = FeatureInitializerService.STUB_OBJECT_GUID_NEW_OBJECT;
     switch (type) {
-      case 'Wegvakonderdeel':
-        const wv: Wegvakonderdeel = {
+      case 'wegvakonderdeel':
+        const wv: Feature = {
           a1_rafeling: 0,
           a3_dwarsonvlakheid: 0,
           a4_oneffenheden: 0,
@@ -223,8 +177,8 @@ export class FeatureInitializerService {
           ...params,
         };
         return wv;
-      case 'Wegvakonderdeelplanning':
-        const wvp: Wegvakonderdeelplanning = {
+      case 'wegvakonderdeelplanning':
+        const wvp: Feature = {
           belang: 0,
           binnen_kom: false,
           calc_plan_code: '',
@@ -260,8 +214,8 @@ export class FeatureInitializerService {
           ...params,
         };
         return wvp;
-      case 'Rioolput':
-        const rp: Rioolput = {
+      case 'rioolput':
+        const rp: Feature = {
           aanlegjaar: 0,
           aansluitend_stelseltype: null,
           aant_aansl_inw_recr: 0,
@@ -438,8 +392,8 @@ export class FeatureInitializerService {
           ...params,
         };
         return rp;
-      case 'Mechleiding':
-        const ml: MechLeiding = {
+      case 'mechleiding':
+        const ml: Feature = {
           aanlegjaar: 0,
           aantal_buizen: 0,
           afbeelding: null,
@@ -541,8 +495,8 @@ export class FeatureInitializerService {
           ...params,
         };
         return ml;
-      case 'Vrijvleiding':
-        const vl: VrijvLeiding = {
+      case 'vrijvleiding':
+        const vl: Feature = {
           aanlegjaar: 0,
           aant_ie_bedrijven: 0,
           aant_ie_recreatie: 0,
@@ -744,8 +698,8 @@ export class FeatureInitializerService {
           ...params,
         };
         return vl;
-      case 'Boom':
-        const boom: Boom = {
+      case 'boom':
+        const boom: Feature = {
           aanlegjaar: 0,
           aes: null,
           afbeelding: null,
@@ -862,8 +816,8 @@ export class FeatureInitializerService {
           ...params,
         };
         return boom;
-      case 'Boominspectie':
-        const bi: Boominspectie = {
+      case 'boominspectie':
+        const bi: Feature = {
           aes: null,
           afbeelding_vta: null,
           boom_id: null,
@@ -913,8 +867,8 @@ export class FeatureInitializerService {
           ...params,
         };
         return bi;
-      case 'Gras':
-        const gras: Gras = {
+      case 'gras':
+        const gras: Feature = {
           aanlegjaar: 0,
           afbeelding: null,
           bbv: null,
@@ -985,8 +939,8 @@ export class FeatureInitializerService {
           ...params,
         };
         return gras;
-      case 'Haag':
-        const haag: Haag = {
+      case 'haag':
+        const haag: Feature = {
           aanlegjaar: 0,
           aantal_knipbeurten: 0,
           aantal_zijden: null,
@@ -1057,8 +1011,8 @@ export class FeatureInitializerService {
           ...params,
         };
         return haag;
-      case 'NatBeplanting':
-        const natBeplanting: NatBeplanting = {
+      case 'natbeplanting':
+        const natBeplanting: Feature = {
           aanlegjaar: 0,
           afbeelding: null,
           bbv: null,
@@ -1126,8 +1080,8 @@ export class FeatureInitializerService {
           ...params,
         };
         return natBeplanting;
-      case 'Weginspectie':
-        const weginspectie: Weginspectie = {
+      case 'weginspectie':
+        const weginspectie: Feature = {
           a1_rafeling: 0,
           a3_dwarsonvlakheid: 0,
           a4_oneffenheden: 0,
