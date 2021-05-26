@@ -9,7 +9,7 @@
     <parent>
         <groupId>org.tailormap</groupId>
         <artifactId>tailormap</artifactId>
-        <version>5.9.4-SNAPSHOT</version>
+        <version>5.9.4</version>
     </parent>
     <name>viewer-config-persistence</name>
 
