@@ -108,7 +108,7 @@ public class ProxyRESTActionBean implements ActionBean, Auditable {
         }
         URL requestUrl = new URL(context.getRequest().getRequestURL().toString());
         String port = context.getServletContext().getInitParameter("flamingo.restproxy.port");
-        String constructedURL = "http://localhost:" + (port != null ? port : "8084") + "/form-api" + url + parentId;
+        String constructedURL = "http://localhost:" + (port != null ? port : "8084") + "/feature-api" + url + parentId;
         URL u = new URL(constructedURL);
         return u;
     }
