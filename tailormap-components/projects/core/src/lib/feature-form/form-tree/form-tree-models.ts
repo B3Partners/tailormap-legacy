@@ -12,5 +12,5 @@ export interface FeatureNode {
 export interface FormTreeMetadata {
   feature?: Feature;
   isFeatureType: boolean;
-  objectGuid?: string;
+  fid?: string;
 }

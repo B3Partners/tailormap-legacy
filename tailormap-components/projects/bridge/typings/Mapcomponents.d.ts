@@ -1,4 +1,4 @@
-import { Geometry } from '../../core/src/lib/shared/generated';
+import { GeoJSONGeometry } from 'wellknown';
 
 declare interface App {
   id: number;
@@ -108,7 +108,7 @@ declare interface VectorLayer extends Layer {
   getActiveFeature: () => OLFeature;
   addFeatureFromWKT: (wkt: string) => void;
   drawFeature: (geometryType: string) => void;
-  readGeoJSON: (geojson: Geometry) => void;
+  readGeoJSON: (geojson: GeoJSONGeometry) => void;
   removeAllFeatures: () => void;
 }
 

@@ -9,6 +9,7 @@ import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { workflowStateKey, initialWorkflowState } from '../../workflow/state/workflow.state';
 import { createComponentFactory, Spectator } from '@ngneat/spectator';
 import { formStateKey, initialFormState } from '../state/form.state';
+import { getTailorMapServiceMockProvider } from '../../../../../bridge/src/tailor-map.service.mock';
 
 describe('FormCreatorComponent', () => {
 
@@ -25,6 +26,7 @@ describe('FormCreatorComponent', () => {
     providers: [
       FeatureControllerService,
       provideMockStore({ initialState }),
+      getTailorMapServiceMockProvider(),
     ],
     declarations: [
       FormComponent,

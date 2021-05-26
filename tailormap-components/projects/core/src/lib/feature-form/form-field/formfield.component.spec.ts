@@ -6,7 +6,7 @@ import { FormFieldType } from '../form/form-models';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { formStateKey, initialFormState } from '../state/form.state';
-import { getFormConfigsMocks, mockBoom } from '../../shared/tests/test-data';
+import { getFormConfigsMocks, mockFeature } from '../../shared/tests/test-data';
 import { LabelFieldComponent } from '../../user-interface/generic-components/label-field/label-field.component';
 import { applicationStateKey, initialApplicationState } from '../../application/state/application.state';
 
@@ -17,7 +17,7 @@ describe('FormfieldComponent', () => {
   const initialState = {
     [formStateKey]: {
       ...initialFormState,
-      feature: mockBoom(),
+      feature: mockFeature(),
       formConfigs: getFormConfigsMocks(),
     },
     [applicationStateKey]: initialApplicationState,

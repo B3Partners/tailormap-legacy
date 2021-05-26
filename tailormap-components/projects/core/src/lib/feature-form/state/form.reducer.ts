@@ -25,12 +25,12 @@ const onSetFeature = (state: FormState, payload: ReturnType<typeof FormActions.s
 });
 
 const onSetNewFeature = (state: FormState, payload: ReturnType<typeof FormActions.setNewFeature>): FormState => {
-  const idx = state.features.findIndex(feature => feature.objectGuid === payload.parentId);
+  const idx = state.features.findIndex(feature => feature.fid === payload.parentId);
   if (idx === -1) {
     return state;
   }
   let features = [...state.features];
-  if (payload.newFeature.objectGuid !== FeatureInitializerService.STUB_OBJECT_GUID_NEW_OBJECT) {
+  if (payload.newFeature.fid !== FeatureInitializerService.STUB_OBJECT_GUID_NEW_OBJECT) {
     features = updateFeatureInArray(features, payload.newFeature);
   }else {
     features = addFeatureToParent(features, payload.newFeature, payload.parentId);
@@ -95,7 +95,7 @@ const onSetCopySelectedFeature = (state: FormState, payload: ReturnType<typeof F
 });
 
 const onToggleCopyDestinationFeature = (state: FormState, payload: ReturnType<typeof FormActions.toggleCopyDestinationFeature>): FormState => {
-  const idx = state.copyDestinationFeatures.findIndex(f => f.objectGuid === payload.destinationFeature.objectGuid);
+  const idx = state.copyDestinationFeatures.findIndex(f => f.fid === payload.destinationFeature.fid);
   if (idx !== -1) {
     return {
       ...state,
@@ -115,7 +115,7 @@ const onToggleCopyDestinationFeature = (state: FormState, payload: ReturnType<ty
 };
 
 const onToggleSelectedAttribute = (state: FormState, payload: ReturnType<typeof FormActions.toggleSelectedAttribute>): FormState => {
-  const idx = state.copySelectedAttributes.findIndex(f => f.objectGuid === payload.attribute.objectGuid && f.attributeKey === payload.attribute.attributeKey);
+  const idx = state.copySelectedAttributes.findIndex(f => f.fid === payload.attribute.fid && f.attributeKey === payload.attribute.attributeKey);
   if (idx !== -1) {
     return {
       ...state,

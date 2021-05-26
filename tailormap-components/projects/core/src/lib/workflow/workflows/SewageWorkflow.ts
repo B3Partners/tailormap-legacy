@@ -3,10 +3,7 @@
 import { Workflow } from './Workflow';
 import * as wellknown from 'wellknown';
 import { GeoJSONPoint } from 'wellknown';
-import {
-  Boom, Boominspectie, Boomplanning, CultBeplanting, Feature, Gras, Haag, MechLeiding, NatBeplanting, Rioolput, VrijvLeiding, Weginspectie,
-  Wegvakonderdeel, Wegvakonderdeelplanning,
-} from '../../shared/generated';
+import { Feature } from '../../shared/generated';
 import { VectorLayer } from '../../../../../bridge/typings';
 import { ChooseTypesComponent } from '../../user-interface/sewage/choose-types/choose-types.component';
 import { Observable } from 'rxjs';
@@ -14,8 +11,8 @@ import { filter, map, switchMap, take, takeUntil } from 'rxjs/operators';
 import { Choice } from './WorkflowModels';
 import { setOpenFeatureForm } from '../../feature-form/state/form.actions';
 import { selectCurrentFeature, selectFeatureLabel } from '../../feature-form/state/form.selectors';
-import { selectFeatureType } from '../state/workflow.selectors';
 import { selectFormClosed } from '../../feature-form/state/form.state-helpers';
+import { selectFeatureType } from '../state/workflow.selectors';
 import { FeatureInitializerService } from '../../shared/feature-initializer/feature-initializer.service';
 
 export class SewageWorkflow extends Workflow {
@@ -87,20 +84,20 @@ export class SewageWorkflow extends Workflow {
                 message, false)
                 .pipe(take(1)).subscribe(useExisting => {
                 if (!useExisting) {
-                  feat = this.createFeature(geoJson, this.getExtraParams());
+                  feat = this.createFeature(geom, this.getExtraParams());
                 }
                 this.openDialog(feat);
               });
             });
           } else {
-            feat = this.createFeature(geoJson, this.getExtraParams());
+            feat = this.createFeature(geom, this.getExtraParams());
             this.openDialog(feat);
           }
 
 
         });
     } else {
-      const feat = this.createFeature(geoJson, this.getExtraParams());
+      const feat = this.createFeature(geom, this.getExtraParams());
       this.openDialog(feat);
     }
   }
@@ -111,13 +108,13 @@ export class SewageWorkflow extends Workflow {
       switch (this.choice.duct) {
         case 'mechleiding':
           return {
-            pompput_id: this.well1Feature.objectGuid,
-            lozingsput_id: this.well2Feature.objectGuid,
+            pompput_id: this.well1Feature.fid,
+            lozingsput_id: this.well2Feature.fid,
           };
         case 'vrijvleiding':
           return {
-            beginput_id: this.well1Feature.objectGuid,
-            eindput_id: this.well2Feature.objectGuid,
+            beginput_id: this.well1Feature.fid,
+            eindput_id: this.well2Feature.fid,
           };
       }
     } else {
@@ -125,7 +122,7 @@ export class SewageWorkflow extends Workflow {
     }
   }
 
-  private createFeature(geoJson: wellknown.GeoJSONGeometry, params: any): Feature {
+  private createFeature(geoJson: string, params: any): Feature {
     const objecttype = this.featureType.charAt(0).toUpperCase() + this.featureType.slice(1);
     const feat = this.featureInitializerService.create(objecttype,
       {...params, geometrie: geoJson, clazz: this.featureType, children: []});
@@ -155,19 +152,18 @@ export class SewageWorkflow extends Workflow {
   }
 
   public openDialog(feature?: Feature): void {
-    this.store$.dispatch(setOpenFeatureForm({features: [feature], closeAfterSave: true, multiFormWorkflow: true}));
+    this.store$.dispatch(setOpenFeatureForm({features: [feature], closeAfterSave: true, editMode: true, multiFormWorkflow: true}));
 
     this.store$.select(selectCurrentFeature)
       .pipe(
-        filter(currentFeature => currentFeature && currentFeature.objectGuid !== FeatureInitializerService.STUB_OBJECT_GUID_NEW_OBJECT),
+        filter(currentFeature => currentFeature && currentFeature.fid !== FeatureInitializerService.STUB_OBJECT_GUID_NEW_OBJECT),
         take(1),
         switchMap(currentFeature => {
-          return this.store$.pipe(selectFormClosed, take(1), map(() => currentFeature));
+          return this.store$.pipe(selectFormClosed,
+            take(1),
+            map(() => currentFeature));
         }),
-      )
-      .subscribe(currentFeature => {
-        this.afterEditing(currentFeature);
-      });
+      ).subscribe(currentFeature => {this.afterEditing(currentFeature);});
   }
 
   public mapClick(): void {
@@ -175,15 +171,13 @@ export class SewageWorkflow extends Workflow {
   }
 
   private retrieveFeatures$(coords: [number, number] | [number, number, number]):
-    Observable<Array<Boom | Boominspectie | Boomplanning | CultBeplanting | Gras | Haag
-      | MechLeiding | NatBeplanting | Rioolput | VrijvLeiding | Weginspectie | Wegvakonderdeel
-      | Wegvakonderdeelplanning>> {
+    Observable<Array<Feature>> {
     const x = coords[0];
     const y = coords[1];
 
     const scale = this.tailorMap.getMapComponent().getMap().getResolution() * 4;
     const featureTypes: string[] = [this.featureType];
-    return this.service.featuretypeOnPoint({featureTypes, x, y, scale});
+    return this.service.featuretypeOnPoint({application: this.tailorMap.getApplicationId(), featureTypes, x, y, scale});
   }
 
 

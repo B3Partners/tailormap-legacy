@@ -1,7 +1,7 @@
-import { Boom, Feature, Geometry, Wegvakonderdeel, Wegvakonderdeelplanning } from '../generated';
 import { App, AppLayer, Map, MapComponent, VectorLayer, ViewerController } from '../../../../../bridge/typings';
 import { Attribute } from '../attribute-service/attribute-models';
 import { FormConfiguration, FormFieldType } from '../../feature-form/form/form-models';
+import { Feature } from '../generated';
 
 export const mockAttribute = (overrides?: Partial<Attribute>): Attribute => ({
   allowValueListOnly: true,
@@ -30,11 +30,11 @@ export const mockFeature = (overrides?: Partial<Feature>): Feature => ({
   objecttype: '',
   clazz: 'test',
   children: [],
-  objectGuid: '123-123',
+  attributes: [{key:'object_guid', value: '123-123'}],
   relatedFeatureTypes: [],
   ...overrides,
 });
-
+/*
 export const mockWegvakonderdeel = (overrides?: Partial<Wegvakonderdeel>): Wegvakonderdeel => ({
   ...mockFeature(),
   objecttype: 'Wegvakonderdeel',
@@ -53,7 +53,7 @@ export const mockBoom = (overrides?: Partial<Boom>): Boom => ({
   geometrie: mockGeometry(),
   ...overrides,
 });
-
+*//*
 export const mockGeometry = (overrides?: Partial<Geometry>): Geometry => ({
   bbox: [ 1, 2, 3, 4 ],
   coordinates: [ [{ x: 1, y: 2 }] ],
@@ -62,7 +62,7 @@ export const mockGeometry = (overrides?: Partial<Geometry>): Geometry => ({
     type: 'link',
   },
   ...overrides,
-});
+});*/
 
 export const appMock = (overrides?: Partial<App>): App => ({
   appLayers: {},
