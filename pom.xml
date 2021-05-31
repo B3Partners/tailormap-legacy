@@ -39,7 +39,8 @@
     </licenses>
     <properties>
         <java.version>11</java.version>
-        <node.version>v14.16.1</node.version>
+        <!-- https://nodejs.org/dist/latest-v14.x/ -->
+        <node.version>v14.17.0</node.version>
         <project.build.sourceVersion>${java.version}</project.build.sourceVersion>
         <project.build.targetVersion>${java.version}</project.build.targetVersion>
         <maven.compiler.source>${java.version}</maven.compiler.source>
