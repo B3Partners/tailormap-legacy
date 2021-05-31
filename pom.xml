@@ -992,8 +992,6 @@
             <properties>
                 <!-- om unit tests met postgres te draaien gebruik je
                 -Dtest.persistence.unit=viewer-config-postgresql
-                voor oracle:
-                -Dtest.persistence.unit=viewer-config-oracle
                 voor hsqldb
                 -Dtest.persistence.unit=viewer-config-hsqldb
                 de schema's de test worden niet automatisch aangemaakt.
@@ -1005,7 +1003,6 @@
         <profile>
             <id>jenkins</id>
             <properties>
-                <test.persistence.unit>viewer-config-oracle</test.persistence.unit>
                 <test.skip.integrationtests>true</test.skip.integrationtests>
             </properties>
         </profile>

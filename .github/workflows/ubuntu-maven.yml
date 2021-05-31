@@ -1,23 +1,19 @@
 name: Ubuntu Maven build
 
 on:
- push:
-  paths-ignore:
-  - 'tailormap-components/**'
- pull_request:
-  paths-ignore:
-  - 'tailormap-components/**'
- workflow_dispatch:
-  paths-ignore:
-  - 'tailormap-components/**'
+  push:
+    paths-ignore:
+      - 'tailormap-components/**'
+  pull_request:
+    paths-ignore:
+      - 'tailormap-components/**'
+  workflow_dispatch:
+    paths-ignore:
+      - 'tailormap-components/**'
 jobs:
   build:
-    name: Ubuntu Java ${{ matrix.java }}
-    runs-on: [ubuntu-20.04]
-    strategy:
-      matrix:
-        java: [11]
-
+    name: Ubuntu Java 11 Build
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
       - uses: actions/cache@v2
@@ -36,7 +32,7 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v2
         with:
-          java-version: ${{ matrix.java }}
+          java-version: 11
           distribution: 'adopt'
       - name: setup database
         run: |
@@ -58,9 +54,12 @@ jobs:
           mvn -e clean test -B
           mvn -e verify -B -Pgh-action -pl '!viewer-admin'
           mvn -e verify -B -Pgh-action -pl 'viewer-admin'
-      - name: build javadoc
-        run: |
-          mvn javadoc:javadoc
-          mvn javadoc:test-javadoc
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v1
+      - name: Build javadoc
+        run: mvn javadoc:javadoc
+      - name: Build test javadoc
+        run: mvn javadoc:test-javadoc
+      - name: Cleanup snapshots
+        run: |
+          find ~/.m2/repository -name "*SNAPSHOT*" -type d | xargs rm -rf {}
