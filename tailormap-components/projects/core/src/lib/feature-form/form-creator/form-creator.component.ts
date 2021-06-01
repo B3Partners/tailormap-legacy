@@ -174,10 +174,10 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
                 {
                   key,
                   value : form[key],
-                  type: feature.attributes[index].type
+                  type: feature.attributes[index].type,
                 },
-                ...feature.attributes.slice(index+1)
-              ]
+                ...feature.attributes.slice(index+1),
+              ],
             };
             return f;
 
@@ -187,15 +187,15 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
     } else {
       this.feature.attributes.forEach((attr, index) => {
         for (const key in form) {
-          if (form.hasOwnProperty(key) && key === attr.key &&  form[key] !== "null") {
+          if (form.hasOwnProperty(key) && key === attr.key &&  form[key] !== 'null') {
             this.feature.attributes = [
               ...this.feature.attributes.slice(0, index),
               {
                 key,
                 value : form[key],
-                type: this.feature.attributes[index].type
+                type: this.feature.attributes[index].type,
               },
-              ...this.feature.attributes.slice(index+1)
+              ...this.feature.attributes.slice(index+1),
             ];
 
             break;

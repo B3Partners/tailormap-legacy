@@ -213,13 +213,15 @@ export class AttributeListTabToolbarComponent implements OnInit, OnDestroy {
         feature.fid = (''+row.__fid);
         feature.relatedFeatureTypes = row.related_featuretypes;
         feature.objecttype = className[0].toUpperCase() + className.substr(1);
-        const attributes : Array<Field> = [];
-        for(let key in rest){
-          const val = rest[key];
-          attributes.push({
-            value: val !== 'undefined' ? val : null,
-            key
-          });
+        const attributes: Array<Field> = [];
+        for (const key in rest) {
+          if (rest.hasOwnProperty(key)) {
+            const val = rest[key];
+            attributes.push({
+              value: val !== 'undefined' ? val : null,
+              key,
+            });
+          }
         }
         feature.attributes = attributes;
         featuresChecked.push({ ...feature });

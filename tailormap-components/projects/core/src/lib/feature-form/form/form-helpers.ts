@@ -29,7 +29,7 @@ export class FormHelpers {
   }
 
 
-  public static isGeneratedFeature(feat: Feature | AttributeListFeature) : feat is Feature{
+  public static isGeneratedFeature(feat: Feature | AttributeListFeature): feat is Feature{
     return feat.attributes;
   }
 
