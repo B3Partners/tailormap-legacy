@@ -11,7 +11,7 @@ import { AttributeListLayernameChooserComponent } from '../attribute-list-layern
 import { UserLayerHelper } from '../../../analysis/helpers/user-layer.helper';
 import { Store } from '@ngrx/store';
 import { AttributeListState } from '../state/attribute-list.state';
-import { selectFeatureTypeDataForTab, selectLoadingDataForTab, selectHasRelations } from '../state/attribute-list.selectors';
+import { selectFeatureTypeDataForTab, selectHasRelations, selectLoadingDataForTab } from '../state/attribute-list.selectors';
 import { AttributeListExportService, ExportType } from '../services/attribute-list-export.service';
 import { PopoverService } from '../../../shared/popover/popover.service';
 import { OverlayRef } from '../../../shared/overlay-service/overlay-ref';
@@ -20,8 +20,7 @@ import { PopoverPositionEnum } from '../../../shared/popover/models/popover-posi
 import { AttributeListFeatureTypeData } from '../models/attribute-list-feature-type-data.model';
 import { PageEvent } from '@angular/material/paginator';
 import { clearAllFilters, clearFilterForFeatureType, updatePage } from '../state/attribute-list.actions';
-import { Feature } from '../../../shared/generated';
-import * as wellknown from 'wellknown';
+import { Feature, Field } from '../../../shared/generated';
 import { LayerUtils } from '../../../shared/layer-utils/layer-utils.service';
 import { editFeatures } from '../../../application/state/application.actions';
 
@@ -205,16 +204,25 @@ export class AttributeListTabToolbarComponent implements OnInit, OnDestroy {
         // eslint-disable-next-line @typescript-eslint/naming-convention,@typescript-eslint/no-unused-vars
         const { object_guid, related_featuretypes, __fid, _checked, _expanded, _selected, rowId, geometrie, ...rest } = row;
         if (row.geometrie) {
-          rest.geometrie =  wellknown.parse(row.geometrie);
+          rest.geometrie =  row.geometrie;
         }
         const appLayer = this.tailorMapService.getApplayerById(+(this.featureTypeData.layerId));
         const className = LayerUtils.sanitizeLayername(appLayer);
         feature.children = [];
         feature.clazz = className;
-        feature.fid = row.object_guid;
+        feature.fid = (''+row.__fid);
         feature.relatedFeatureTypes = row.related_featuretypes;
         feature.objecttype = className[0].toUpperCase() + className.substr(1);
-        featuresChecked.push({ ...feature, ...rest });
+        const attributes : Array<Field> = [];
+        for(let key in rest){
+          const val = rest[key];
+          attributes.push({
+            value: val !== 'undefined' ? val : null,
+            key
+          });
+        }
+        feature.attributes = attributes;
+        featuresChecked.push({ ...feature });
       }
     });
     return featuresChecked;

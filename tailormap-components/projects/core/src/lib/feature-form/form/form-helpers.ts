@@ -1,4 +1,5 @@
 import { Feature } from '../../shared/generated';
+import { AttributeListFeature } from '../../shared/attribute-service/attribute-models';
 
 export class FormHelpers {
 
@@ -26,4 +27,10 @@ export class FormHelpers {
   public static copyFeatures(feature: Feature[]): Feature[] {
     return [...feature].map(child => FormHelpers.copyFeature(child));
   }
+
+
+  public static isGeneratedFeature(feat: Feature | AttributeListFeature) : feat is Feature{
+    return feat.attributes;
+  }
+
 }

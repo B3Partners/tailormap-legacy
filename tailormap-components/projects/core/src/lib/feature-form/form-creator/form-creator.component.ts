@@ -17,7 +17,6 @@ import { WorkflowState } from '../../workflow/state/workflow.state';
 import { selectFormEditing } from '../state/form.selectors';
 import { selectLayerIdForEditingFeatures } from '../../application/state/application.selectors';
 import { editFeaturesComplete } from '../../application/state/application.actions';
-import { FeatureHelper } from '../../application/helpers/feature.helper';
 
 @Component({
   selector: 'tailormap-form-creator',
@@ -147,7 +146,6 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
     const parentFeature = this.features[0];
 
     this.actions.save$(this.isBulk, this.isBulk ? this.features : [this.feature], parentFeature).subscribe(savedFeature => {
-        FeatureHelper.convertNewFeatureToGBI(savedFeature);
         this.store$.dispatch(FormActions.setNewFeature({newFeature: savedFeature, parentId: parentFeature.fid}));
         this._snackBar.open('Opgeslagen', '', {duration: 5000});
       },
@@ -167,17 +165,39 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
     if (this.isBulk) {
       for (const key in form) {
         if (this.formgroep.controls[key]?.dirty) {
-          this.features = this.features.map(feature => ({
-            ...feature,
-            [key]: form[key],
-          }));
+          this.features = this.features.map(feature => {
+            const index = feature.attributes.findIndex(field => field.key === key);
+            const f= {
+              ...feature,
+              attributes:[
+                ...feature.attributes.slice(0, index),
+                {
+                  key,
+                  value : form[key],
+                  type: feature.attributes[index].type
+                },
+                ...feature.attributes.slice(index+1)
+              ]
+            };
+            return f;
+
+          });
         }
       }
     } else {
-      Object.keys(this.feature).forEach(attr => {
+      this.feature.attributes.forEach((attr, index) => {
         for (const key in form) {
-          if (form.hasOwnProperty(key) && key === attr) {
-            this.feature = { ...this.feature, [attr]: form[key] };
+          if (form.hasOwnProperty(key) && key === attr.key &&  form[key] !== "null") {
+            this.feature.attributes = [
+              ...this.feature.attributes.slice(0, index),
+              {
+                key,
+                value : form[key],
+                type: this.feature.attributes[index].type
+              },
+              ...this.feature.attributes.slice(index+1)
+            ];
+
             break;
           }
         }

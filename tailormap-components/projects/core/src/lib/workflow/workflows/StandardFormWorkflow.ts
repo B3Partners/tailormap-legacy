@@ -13,7 +13,6 @@ import {
 import { selectFeatureType, selectGeometryType, selectWorkflowConfig } from '../state/workflow.selectors';
 import { combineLatest, Observable, of } from 'rxjs';
 import { FeatureSelectionComponent } from '../../shared/feature-selection/feature-selection.component';
-import { FeatureHelper } from '../../application/helpers/feature.helper';
 
 
 export class StandardFormWorkflow extends Workflow {
@@ -119,10 +118,6 @@ export class StandardFormWorkflow extends Workflow {
         concatMap(([ allFeatureTypes, workflowConfig ]) => {
           const featureTypes: string[] = this.layerUtils.getFeatureTypesAllowed(allFeatureTypes, workflowConfig.useSelectedLayerFilter);
           return this.service.featuretypeOnPoint({application: this.tailorMap.getApplicationId(),featureTypes, x, y, scale});
-        }),
-        map( (features: Feature[])=> {
-          FeatureHelper.convertNewFeaturesToGBI(features);
-          return features;
         }),
         concatMap((features: Feature[]) => {
           if (features && features.length > 1) {

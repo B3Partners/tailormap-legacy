@@ -6,6 +6,7 @@ import { AttributeListFeature } from '../../shared/attribute-service/attribute-m
 import { FormFieldHelpers } from '../form-field/form-field-helpers';
 import { TreeModel } from '../../shared/tree/models/tree.model';
 import { LayerUtils } from '../../shared/layer-utils/layer-utils.service';
+import { FormCreatorHelpers } from '../form-creator/form-creator-helpers';
 
 export class FormTreeHelpers {
 
@@ -59,9 +60,16 @@ export class FormTreeHelpers {
   }
 
   public static getFeatureValueForField(feat: Feature | AttributeListFeature, config: FormConfiguration,
-                                        key: string = config.treeNodeColumn): string {
+                                        key: string = config.treeNodeColumn): string  {
     const attr: Attribute = config.fields.find(field => field.key === key);
-    let value = feat[key];
+    let value = null;
+    if (FormHelpers.isGeneratedFeature(feat)){
+      const field = FormCreatorHelpers.getAttribute(feat, key);
+      value = field?.value;
+    }else{
+      value = feat[key];
+    }
+
     if (attr.type === FormFieldType.DOMAIN) {
       attr.options.forEach(option => {
         if ((FormFieldHelpers.isNumber(value) && option.val === parseInt('' + value, 10))) {
@@ -69,6 +77,6 @@ export class FormTreeHelpers {
         }
       });
     }
-    return value;
+    return '' + value;
   }
 }
