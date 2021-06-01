@@ -97,8 +97,9 @@ export class SewageWorkflow extends Workflow {
 
         });
     } else {
-      const feat = this.createFeature(geom, this.getExtraParams());
-      this.openDialog(feat);
+      this.createFeature(geom, this.getExtraParams()).subscribe(feat=>{
+        this.openDialog(feat);
+      });
     }
   }
 
@@ -122,7 +123,7 @@ export class SewageWorkflow extends Workflow {
     }
   }
 
-  private createFeature(geoJson: string, params: any): Feature {
+  private createFeature(geoJson: string, params: any): Observable<Feature> {
     const objecttype = this.featureType.charAt(0).toUpperCase() + this.featureType.slice(1);
     const feat = this.featureInitializerService.create(objecttype,
       {...params, geometrie: geoJson, clazz: this.featureType, children: []});

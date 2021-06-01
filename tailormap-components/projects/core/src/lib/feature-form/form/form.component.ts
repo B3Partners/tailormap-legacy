@@ -184,16 +184,17 @@ export class FormComponent implements OnDestroy, OnInit {
       .pipe(take(1))
       .subscribe(([formConfig, features]) => {
         const objecttype = FormHelpers.capitalize(type);
-        const newFeature = this.featureInitializerService.create(objecttype, {
+        this.featureInitializerService.create(objecttype, {
           id: null,
           clazz: type,
           isRelated: true,
           objecttype,
           children: null,
           [formConfig.treeNodeColumn]: `Nieuwe ${formConfig.name}`,
+        }).subscribe(newFeature=>{
+          this.store$.dispatch(FormActions.setNewFeature({newFeature, parentId: features[0].fid}));
+          this.store$.dispatch(FormActions.setFormEditing({editing: true}));
         });
-        this.store$.dispatch(FormActions.setNewFeature({newFeature, parentId: features[0].fid}));
-        this.store$.dispatch(FormActions.setFormEditing({editing: true}));
       });
   }
 

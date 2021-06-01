@@ -84,11 +84,11 @@ export class StandardFormWorkflow extends Workflow {
 
   private accept(geoJson: string): void {
     const objecttype = this.featureType.charAt(0).toUpperCase() + this.featureType.slice(1);
-    const feat = this.featureInitializerService.create(objecttype,
-      {geometrie: geoJson, clazz: this.featureType, children: []});
-
-    const features: Feature[] = [feat];
-    this.openDialog(features, true);
+    this.featureInitializerService.create(objecttype,
+      {geometrie: geoJson, clazz: this.featureType, children: []}).subscribe(feat =>{
+      const features: Feature[] = [feat];
+      this.openDialog(features, true);
+    });
   }
 
   public openDialog(formFeatures?: Feature[], editMode: boolean = false): void {
