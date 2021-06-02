@@ -11,13 +11,14 @@ import { ExtendedAttributeModel } from '../models/extended-attribute.model';
 import { UniqueValuesResponse } from '../../shared/value-service/value-models';
 import { ValueService } from '../../shared/value-service/value.service';
 import { FormState } from '../../feature-form/state/form.state';
+import { MetadataServiceModel } from '@tailormap/core-components';
 
 export type UniqueValueCountResponse = { uniqueValue: string; total: number };
 
 @Injectable({
   providedIn: 'root',
 })
-export class MetadataService implements OnDestroy {
+export class MetadataService implements OnDestroy, MetadataServiceModel {
 
   private destroy = new Subject();
 

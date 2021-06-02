@@ -1,15 +1,13 @@
 import { Injectable } from '@angular/core';
 import {
-  Actions,
+  Actions, concatLatestFrom,
   createEffect,
   ofType,
 } from '@ngrx/effects';
 import * as AnalysisActions from './analysis.actions';
-import { concatMap, filter, map, switchMap, withLatestFrom } from 'rxjs/operators';
-import { of } from 'rxjs';
+import { filter, map, switchMap } from 'rxjs/operators';
 import { selectCanCreateLayer } from './analysis.selectors';
 import { Store } from '@ngrx/store';
-import { AnalysisState } from './analysis.state';
 import { CreateStyleService } from '../services/create-style.service';
 import { UserLayerStyleModel } from '../models/user-layer-style.model';
 
@@ -18,9 +16,7 @@ export class AnalysisEffects {
 
   public loadThematicStyles$ = createEffect(() => this.actions$.pipe(
     ofType(AnalysisActions.loadStyles),
-    concatMap(action => of(action).pipe(
-      withLatestFrom(this.store$.select(selectCanCreateLayer)),
-    )),
+    concatLatestFrom(() => this.store$.select(selectCanCreateLayer)),
     filter(([ _action, canCreateLayer ]) => canCreateLayer),
     switchMap(() => this.createStyleService.createStyles$() ),
     map((result: { styles: UserLayerStyleModel[]; errorMessage?: string}) => {
@@ -32,7 +28,7 @@ export class AnalysisEffects {
   ));
 
   constructor(
-    private store$: Store<AnalysisState>,
+    private store$: Store,
     private actions$: Actions,
     private createStyleService: CreateStyleService,
   ) {}

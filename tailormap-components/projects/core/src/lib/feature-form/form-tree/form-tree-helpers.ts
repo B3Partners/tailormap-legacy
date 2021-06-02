@@ -4,7 +4,7 @@ import { FormHelpers } from '../form/form-helpers';
 import { Attribute, FormConfiguration, FormFieldType } from '../form/form-models';
 import { AttributeListFeature } from '../../shared/attribute-service/attribute-models';
 import { FormFieldHelpers } from '../form-field/form-field-helpers';
-import { TreeModel } from '../../shared/tree/models/tree.model';
+import { TreeModel } from '@tailormap/shared';
 import { LayerUtils } from '../../shared/layer-utils/layer-utils.service';
 
 export class FormTreeHelpers {

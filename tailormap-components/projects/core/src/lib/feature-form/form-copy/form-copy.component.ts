@@ -17,7 +17,7 @@ import { FormState } from '../state/form.state';
 import {  selectFormConfigs } from '../../application/state/application.selectors';
 import { closeCopyForm } from '../state/form.actions';
 import { ExtendedFormConfigurationModel } from '../../application/models/extended-form-configuration.model';
-import { TreeService } from '../../shared/tree/tree.service';
+import { TreeService } from '@tailormap/shared';
 
 @Component({
   providers: [TreeService],

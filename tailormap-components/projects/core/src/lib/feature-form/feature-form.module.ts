@@ -15,6 +15,8 @@ import { EffectsModule } from '@ngrx/effects';
 import { FormEffects } from './state/form.effects';
 import { ApplicationModule } from '../application/application.module';
 import { FormNodeComponent } from './form-tree/form-node/form-node.component';
+import { AttributeListService } from '@tailormap/core-components';
+import { FormAttributeListButtonComponent } from './form-attribute-list-button/form-attribute-list-button.component';
 
 @NgModule({
   declarations: [
@@ -24,6 +26,7 @@ import { FormNodeComponent } from './form-tree/form-node/form-node.component';
     FormCreatorComponent,
     FormCopyComponent,
     FormNodeComponent,
+    FormAttributeListButtonComponent,
   ],
   imports: [
     CommonModule,
@@ -41,5 +44,11 @@ import { FormNodeComponent } from './form-tree/form-node/form-node.component';
   entryComponents: [
   ],
 })
-export class FeatureFormModule {}
+export class FeatureFormModule {
+  constructor(
+    attributeListService: AttributeListService,
+  ) {
+    FormAttributeListButtonComponent.registerWithAttributeList(attributeListService);
+  }
+}
 

@@ -1,8 +1,8 @@
-import { NgModule } from '@angular/core';
+import { Injector, NgModule } from '@angular/core';
 
 import { MatPaginatorIntl } from '@angular/material/paginator';
 
-import { AttributeListModule } from './attributelist/attribute-list.module';
+import { AttributeListButtonComponent, AttributeListComponent, AttributeListModule } from '@tailormap/core-components';
 import { CommonModule } from '@angular/common';
 import { PaginatorLabels } from './paginator-labels';
 import { SharedModule } from '../shared/shared.module';
@@ -14,6 +14,7 @@ import { GeometryConfirmButtonsComponent } from './geometry-confirm-buttons/geom
 import { InputFieldComponent } from './generic-components/input-field/input-field.component';
 import { BaseFieldComponent } from './generic-components/base-field/base-field.component';
 import { LabelFieldComponent } from './generic-components/label-field/label-field.component';
+import { createCustomElement } from '@angular/elements';
 
 @NgModule({
   declarations: [
@@ -46,4 +47,12 @@ import { LabelFieldComponent } from './generic-components/label-field/label-fiel
   ],
 })
 export class UserIntefaceModule {
+  public constructor(
+    injector: Injector,
+  ) {
+    customElements.define('tailormap-attribute-list-button',
+      createCustomElement(AttributeListButtonComponent, {injector}));
+    customElements.define('tailormap-attribute-list',
+      createCustomElement(AttributeListComponent, {injector}));
+  }
 }
