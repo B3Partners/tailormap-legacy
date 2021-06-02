@@ -34,35 +34,6 @@ export const mockFeature = (overrides?: Partial<Feature>): Feature => ({
   relatedFeatureTypes: [],
   ...overrides,
 });
-/*
-export const mockWegvakonderdeel = (overrides?: Partial<Wegvakonderdeel>): Wegvakonderdeel => ({
-  ...mockFeature(),
-  objecttype: 'Wegvakonderdeel',
-  ...overrides,
-});
-
-export const mockWegvakonderdeelplanning = (overrides?: Partial<Wegvakonderdeelplanning>): Wegvakonderdeelplanning => ({
-  ...mockFeature(),
-  objecttype: 'Wegvakonderdeelplanning',
-  ...overrides,
-});
-
-export const mockBoom = (overrides?: Partial<Boom>): Boom => ({
-  ...mockFeature(),
-  objecttype: 'Boom',
-  geometrie: mockGeometry(),
-  ...overrides,
-});
-*//*
-export const mockGeometry = (overrides?: Partial<Geometry>): Geometry => ({
-  bbox: [ 1, 2, 3, 4 ],
-  coordinates: [ [{ x: 1, y: 2 }] ],
-  crs: {
-    properties: {},
-    type: 'link',
-  },
-  ...overrides,
-});*/
 
 export const appMock = (overrides?: Partial<App>): App => ({
   appLayers: {},
