@@ -144,7 +144,7 @@ export class FormCopyComponent implements OnInit, OnDestroy {
             {
               key,
               value,
-              type: copydest.attributes[index].type
+              type: copydest.attributes[index].type,
             },
             ...copydest.attributes.slice(index+1),
           ];
@@ -277,7 +277,7 @@ export class FormCopyComponent implements OnInit, OnDestroy {
               });
             }
           }
-          newChild = this.featureInitializer.create(fieldsToCopy.get('objecttype'), valuesToCopy);
+          newChild = this.featureInitializer.create$(fieldsToCopy.get('objecttype'), valuesToCopy);
           // eslint-disable-next-line @typescript-eslint/prefer-for-of
           for (let i = 0; i < relatedFeatures.length; i++) {
             if (relatedFeatures[i] === key) {

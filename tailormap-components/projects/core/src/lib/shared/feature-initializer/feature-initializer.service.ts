@@ -2,7 +2,6 @@
 
 import { Injectable, OnDestroy } from '@angular/core';
 import { Feature } from '../generated';
-import { FormHelpers } from '../../feature-form/form/form-helpers';
 import * as wellknown from 'wellknown';
 import { GeoJSONGeometry } from 'wellknown';
 import { Store } from '@ngrx/store';
@@ -10,7 +9,7 @@ import { ApplicationState } from '../../application/state/application.state';
 import { selectFormConfigForFeatureTypeName } from '../../application/state/application.selectors';
 import { Observable, Subject } from 'rxjs';
 import { map, takeUntil } from 'rxjs/operators';
-import { FormConfiguration } from '../../feature-form/form/form-models';
+import { ExtendedFormConfigurationModel } from '../../application/models/extended-form-configuration.model';
 
 
 @Injectable({
@@ -40,15 +39,15 @@ export class FeatureInitializerService implements OnDestroy {
     return null;
   }
 
-  public create(type: string, params: any): Observable<Feature> {
-    params.clazz = type.toLowerCase();
-    params.objecttype = FormHelpers.snakecaseToCamel(type);
-    params.fid = FeatureInitializerService.STUB_OBJECT_GUID_NEW_OBJECT;
+  public create$(type: string, params: any): Observable<Feature> {
     return this.store$.select(selectFormConfigForFeatureTypeName, type)
       .pipe(takeUntil(this.destroyed),
-      map((config :FormConfiguration) => {
-        const feature :Feature = {
-          relatedFeatureTypes:[],
+      map((config: ExtendedFormConfigurationModel) => {
+        if (!config) {
+          throw new Error('Featuretype not implemented: ' + type);
+        }
+        const feature: Feature = {
+          relatedFeatureTypes: [],
           clazz: type.toLowerCase(),
           fid: FeatureInitializerService.STUB_OBJECT_GUID_NEW_OBJECT,
         };
@@ -58,11 +57,22 @@ export class FeatureInitializerService implements OnDestroy {
             type: attr.type,
           };
         });
-        feature.attributes.push({
-          key: config.featuretypeMetadata.geometryAttribute,
-          type: config.featuretypeMetadata.geometryType,
-          value: params.geometrie
-        })
+
+        for(const key in params){
+          if(params.hasOwnProperty(key)){
+            feature.attributes.push({
+              key,
+              value: params[key],
+            });
+          }
+        }
+        if (config.featuretypeMetadata) {
+          feature.attributes.push({
+            key: config.featuretypeMetadata.geometryAttribute,
+            type: config.featuretypeMetadata.geometryType,
+            value: params.geometrie,
+          });
+        }
         return feature;
       }));
   }

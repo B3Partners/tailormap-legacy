@@ -6,7 +6,7 @@ import { mockFeature } from '../tests/test-data';
 
 export const createFeatureInitializerServiceMockProvider = () => {
   return createSpyObject(FeatureInitializerService, {
-    create(type: string, params: any): Feature {
+    create$(type: string, params: any): Feature {
       return mockFeature();
     },
   });
