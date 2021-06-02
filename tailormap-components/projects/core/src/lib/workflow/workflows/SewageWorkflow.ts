@@ -75,7 +75,7 @@ export class SewageWorkflow extends Workflow {
       this.retrieveFeatures$(coords)
         .pipe(takeUntil(this.destroyed))
         .subscribe(features => {
-          let feat = null;
+          let feat :Feature = null;
           if (features.length > 0) {
             feat = features[0];
             this.store$.select(selectFeatureLabel, feat).pipe(takeUntil(this.destroyed)).subscribe(label => {
@@ -84,17 +84,18 @@ export class SewageWorkflow extends Workflow {
                 message, false)
                 .pipe(take(1)).subscribe(useExisting => {
                 if (!useExisting) {
-                  feat = this.createFeature(geom, this.getExtraParams());
+                  this.createFeature(geom, this.getExtraParams()).subscribe(feature=>{
+                    this.openDialog(feature);
+                  });
                 }
                 this.openDialog(feat);
               });
             });
           } else {
-            feat = this.createFeature(geom, this.getExtraParams());
-            this.openDialog(feat);
+            this.createFeature(geom, this.getExtraParams()).subscribe(feature=>{
+              this.openDialog(feature);
+            });
           }
-
-
         });
     } else {
       this.createFeature(geom, this.getExtraParams()).subscribe(feat=>{

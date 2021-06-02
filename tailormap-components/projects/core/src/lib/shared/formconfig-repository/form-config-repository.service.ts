@@ -45,9 +45,10 @@ export class FormConfigRepositoryService {
             return new Map();
           }
           featureTypeInfo.forEach(featuretypeMetadata => {
-            if (formConfigs.has(featuretypeMetadata.featuretypeName)) {
-              const config = formConfigs.get(featuretypeMetadata.featuretypeName);
-              formConfigs.set(featuretypeMetadata.featuretypeName, {...config, featuretypeMetadata});
+            const sanitized = LayerUtils.sanitizeLayername(featuretypeMetadata.featuretypeName);
+            if (formConfigs.has(sanitized)) {
+              const config = formConfigs.get(sanitized);
+              formConfigs.set(sanitized, {...config, featuretypeMetadata});
             }
           });
           return formConfigs;

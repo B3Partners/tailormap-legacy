@@ -66,18 +66,21 @@ export class AddFeatureMenuComponent implements OnInit, OnDestroy {
   }
 
   public isPolygon(): boolean {
-    const geomtype = this.selectedConfig?.featuretypeMetadata.geometryType;
-    return geomtype === 'GEOMETRY' || geomtype === 'POLYGON';
+    const geomtype = this.selectedConfig?.featuretypeMetadata?.geometryType;
+    return geomtype === 'GEOMETRY' || geomtype === 'POLYGON' || this.noFeatureType();
   }
 
   public isLineString(): boolean {
-    const geomtype = this.selectedConfig?.featuretypeMetadata.geometryType;
-    return geomtype === 'GEOMETRY' || geomtype === 'LINESTRING';
+    const geomtype = this.selectedConfig?.featuretypeMetadata?.geometryType;
+    return geomtype === 'GEOMETRY' || geomtype === 'LINESTRING' || this.noFeatureType();
   }
 
   public isPoint(): boolean {
-    const geomtype = this.selectedConfig?.featuretypeMetadata.geometryType;
-    return geomtype === 'GEOMETRY' || geomtype === 'POINT';
+    const geomtype = this.selectedConfig?.featuretypeMetadata?.geometryType;
+    return geomtype === 'GEOMETRY' || geomtype === 'POINT' || this.noFeatureType();
   }
 
+  private noFeatureType(): boolean{
+    return this.selectedConfig && !this.selectedConfig.featuretypeMetadata;
+  }
 }
