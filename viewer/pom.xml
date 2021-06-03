@@ -336,6 +336,7 @@
                             <filtering>true</filtering>
                             <includes>
                                 <include>about.jsp</include>
+                                <include>META-INF/context.xml</include>
                             </includes>
                         </resource>
                     </webResources>
@@ -648,11 +649,18 @@
     <profiles>
         <profile>
             <id>gh-action</id>
+            <properties>
+                <tomcat.localDatasource>true</tomcat.localDatasource>
+            </properties>
             <dependencies>
                 <dependency>
                     <groupId>org.postgresql</groupId>
                     <artifactId>postgresql</artifactId>
-                    <scope>test</scope>
+                </dependency>
+                <dependency>
+                    <groupId>com.sun.mail</groupId>
+                    <artifactId>jakarta.mail</artifactId>
+                    <version>${jakarta.mail.version}</version>
                 </dependency>
             </dependencies>
             <build>
@@ -709,77 +717,50 @@
                         <configuration>
                             <container>
                                 <containerId>tomcat-${tomcat.version}</containerId>
-                                <zipUrlInstaller>
-                                    <url>https://repo.maven.apache.org/maven2/org/apache/tomcat/tomcat/${tomcat.version}/tomcat-${tomcat.version}.zip</url>
-                                    <!-- <extractDir>${project.basedir}/extract/</extractDir>-->
-                                    <downloadDir>${project.basedir}/download/</downloadDir>
-                                </zipUrlInstaller>
+                                <type>embedded</type>
                                 <output>${project.build.directory}/tomcat${tomcat.version}x.log</output>
                                 <log>${project.build.directory}/cargo.log</log>
                                 <systemProperties></systemProperties>
+                                <dependencies>
+                                    <dependency>
+                                        <groupId>com.sun.mail</groupId>
+                                        <artifactId>jakarta.mail</artifactId>
+                                    </dependency>
+                                </dependencies>
                             </container>
                             <configuration>
                                 <home>${project.build.directory}/tomcat-${tomcat.version}/container</home>
                                 <properties>
                                     <cargo.logging>high</cargo.logging>
                                     <cargo.servlet.port>9090</cargo.servlet.port>
-<!--                                    <cargo.tomcat.ajp.port>9008</cargo.tomcat.ajp.port>-->
                                 </properties>
                                 <configfiles>
                                     <configfile>
                                         <file>src/test/tomcatconf/context.xml</file>
                                         <todir>conf/Catalina/localhost/</todir>
                                         <tofile>${project.build.finalName}.xml</tofile>
+                                        <configfile>true</configfile>
+                                        <overwrite>true</overwrite>
                                     </configfile>
                                 </configfiles>
                             </configuration>
                         </configuration>
                         <executions>
                             <execution>
-                                <id>start-container</id>
+                                <id>start-server</id>
                                 <phase>pre-integration-test</phase>
                                 <goals>
                                     <goal>start</goal>
-                                    <goal>deploy</goal>
                                 </goals>
-                                <configuration>
-                                    <deployer>
-                                        <deployable>
-                                            <groupId>${project.groupId}</groupId>
-                                            <artifactId>${project.artifactId}</artifactId>
-                                            <type>war</type>
-                                            <properties>
-                                                <context>viewer</context>
-                                            </properties>
-                                        </deployable>
-                                    </deployer>
-                                </configuration>
                             </execution>
                             <execution>
-                                <id>stop-container</id>
+                                <id>stop-server</id>
                                 <phase>post-integration-test</phase>
                                 <goals>
                                     <goal>stop</goal>
                                 </goals>
                             </execution>
                         </executions>
-                        <dependencies>
-                            <dependency>
-                                <groupId>com.sun.mail</groupId>
-                                <artifactId>jakarta.mail</artifactId>
-                                <version>${jakarta.mail.version}</version>
-                            </dependency>
-                            <dependency>
-                                <groupId>org.postgresql</groupId>
-                                <artifactId>postgresql</artifactId>
-                                <version>${postgresql.version}</version>
-                            </dependency>
-                            <dependency>
-                                <groupId>org.jacoco</groupId>
-                                <artifactId>org.jacoco.agent</artifactId>
-                                <version>${jacoco-maven-plugin.version}</version>
-                            </dependency>
-                        </dependencies>
                     </plugin>
                 </plugins>
             </build>
