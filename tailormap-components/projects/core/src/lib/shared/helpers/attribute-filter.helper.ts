@@ -35,8 +35,8 @@ export class AttributeFilterHelper {
   public static convertFilterToQuery(filter: AttributeFilterModel) {
     let cql: string;
     if (filter.condition === AttributeFilterHelper.UNIQUE_VALUES_KEY) {
-      const value = filter.value.map(v => AttributeTypeHelper.getExpression(v, filter.attributeType)).join(',');
-      return `(${filter.attribute} IN (${value}))`;
+      const uniqueValList = filter.value.map(v => AttributeTypeHelper.getExpression(v, filter.attributeType)).join(',');
+      return `(${filter.attribute} IN (${uniqueValList}))`;
     }
     const value = filter.value[0];
     if (filter.attributeType === AttributeTypeEnum.NUMBER) {
