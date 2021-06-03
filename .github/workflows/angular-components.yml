@@ -93,7 +93,7 @@ jobs:
           npm install
           npm run test-circular
           
- build-dev:
+  build-dev:
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
@@ -111,7 +111,7 @@ jobs:
           cd tailormap-components
           npm install
           npm run build
- build-prod:
+  build-prod:
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
