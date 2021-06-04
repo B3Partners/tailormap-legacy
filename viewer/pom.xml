@@ -381,8 +381,6 @@
                                 <artifactItem>
                                     <groupId>javax</groupId>
                                     <artifactId>javaee-endorsed-api</artifactId>
-                                    <version>6.0</version>
-                                    <type>jar</type>
                                 </artifactItem>
                             </artifactItems>
                         </configuration>
@@ -732,7 +730,6 @@
                                 <type>embedded</type>
                                 <output>${project.build.directory}/tomcat9x.log</output>
                                 <log>${project.build.directory}/cargo.log</log>
-                                <systemProperties></systemProperties>
                                 <dependencies>
                                     <dependency>
                                         <groupId>com.sun.mail</groupId>

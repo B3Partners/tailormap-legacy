@@ -6,7 +6,7 @@ more about the available context attributes:
 crossContext="true" is required to enable the viewer-admin to load the
   components.json file and component config javascript sources from the viewer
 -->
-<Context crossContext="true" path="/viewer-admin">
+<Context crossContext="true" path="/viewer-admin" antiResourceLocking="false">
     <Parameter name="componentregistry.path" override="false" value="/viewer-html/components"/>
     <Parameter name="tailormap.data.dir" override="false" value="/opt/tailormap_data"/>
     <Parameter name="tailormap.solr.url" override="false" value="https://tailormap.nl/solr/"/>
@@ -29,10 +29,7 @@ crossContext="true" is required to enable the viewer-admin to load the
           - https://tomcat.apache.org/tomcat-9.0-doc/jndi-datasource-examples-howto.html
 
       <Server ...>
-
-
-          <GlobalNamingResources>
-          PostgreSQL:
+        <GlobalNamingResources>
           <Resource auth="Container"
                     driverClassName="org.postgresql.Driver"
                     type="javax.sql.DataSource"
@@ -47,7 +44,7 @@ crossContext="true" is required to enable the viewer-admin to load the
                     validationQuery="select 1"
           />
 
-          </GlobalNamingResources>
+        </GlobalNamingResources>
       </Server>
 
       NOTE: each JDBC driver version and each version of Tomcat will have different options that can/must be set
@@ -78,7 +75,9 @@ crossContext="true" is required to enable the viewer-admin to load the
       </Server>
       -->
     <ResourceLink global="mail/session" name="mail/session" type="javax.mail.Session"/>
-
+    <!-- voor productie aanpassen in onderstaande Realm:
+        localDataSource="false"
+    -->
     <Realm className="org.apache.catalina.realm.LockOutRealm">
         <Realm className="org.apache.catalina.realm.DataSourceRealm"
                dataSourceName="jdbc/geo_viewer"
@@ -88,6 +87,7 @@ crossContext="true" is required to enable the viewer-admin to load the
                userRoleTable="user_groups"
                roleNameCol="group_"
                allRolesMode="authOnly"
+               localDataSource="${tomcat.localDatasource}"
         >
             <CredentialHandler className="org.apache.catalina.realm.MessageDigestCredentialHandler"
                                algorithm="SHA-1"
