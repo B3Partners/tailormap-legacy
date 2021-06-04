@@ -8,13 +8,7 @@ export class FormCreatorHelpers {
   public static convertFeatureToIndexed(feat: Feature | AttributeListFeature, formConfig: FormConfiguration): IndexedFeatureAttributes {
     const m = new Map<string, FeatureAttribute>();
     for (const field of formConfig.fields) {
-      let value = null;
-      if(FormHelpers.isGeneratedFeature(feat)){
-        const attr = FormCreatorHelpers.getAttribute(feat, field.key);
-        value = attr?.value;
-      }else{
-        value = feat[field.key] ? feat[field.key] : '';
-      }
+      let value = FormHelpers.getValue(feat, field);
       m.set(field.key, {
         ...field,
         value,
