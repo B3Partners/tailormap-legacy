@@ -35,7 +35,7 @@ export class FormHelpers {
     return feat.attributes;
   }
 
-  public static getValue(feat : Feature | AttributeListFeature, field: Attribute) :string{
+  public static getValue(feat: Feature | AttributeListFeature, field: Attribute): string{
     let value = null;
     if(FormHelpers.isGeneratedFeature(feat)){
       const attr = FormCreatorHelpers.getAttribute(feat, field.key);
