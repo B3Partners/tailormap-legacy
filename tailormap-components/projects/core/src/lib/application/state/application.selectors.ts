@@ -108,9 +108,14 @@ export const selectVisibleLayers = createSelector(
   (appLayers) => appLayers.filter(layer => layer.visible),
 );
 
-export const selectVisibleLayersWithAttributes = createSelector(
+export const selectLayersWithAttributes = createSelector(
   selectLayers,
-  (appLayers) => appLayers.filter(layer => layer.visible && layer.attribute),
+  (appLayers) => appLayers.filter(layer => layer.attribute),
+);
+
+export const selectVisibleLayersWithAttributes = createSelector(
+  selectVisibleLayers,
+  (appLayers) => appLayers.filter(layer => layer.attribute),
 );
 
 export const selectFormConfigsArray = createSelector(selectApplicationState, state => state.formConfigs);

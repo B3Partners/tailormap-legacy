@@ -136,7 +136,19 @@ export class FormCopyComponent implements OnInit, OnDestroy {
       const valuesToCopy = this.getPropertiesToMerge();
       const childsToCopy = this.getNewChildFeatures();
       for (let i  = 0; i <= destinationFeatures.length - 1; i++) {
-        const copydest = {...destinationFeatures[i], ...valuesToCopy};
+        const copydest = {...destinationFeatures[i]};
+        valuesToCopy.forEach((value, key) => {
+          const index = copydest.attributes.findIndex(field => field.key ===key);
+          copydest.attributes =[
+            ...copydest.attributes.slice(0, index),
+            {
+              key,
+              value,
+              type: copydest.attributes[index].type,
+            },
+            ...copydest.attributes.slice(index+1),
+          ];
+        });
         for (let n = 0; n <= childsToCopy.length - 1; n++) {
           this.actionService.save$(false, [childsToCopy[n]], copydest).subscribe(() => {
             console.log('child saved');
@@ -238,11 +250,12 @@ export class FormCopyComponent implements OnInit, OnDestroy {
   }
 
   // alleen de properties voor main feature
-  private getPropertiesToMerge(): any {
-    const valuesToCopy = {};
+  private getPropertiesToMerge(): Map<string, string> {
+    const valuesToCopy = new Map<string, string>();
     const fieldsToCopy = this.formCopyService.featuresToCopy.get(this.formCopyService.parentFeature.fid);
     fieldsToCopy.forEach((value, key) => {
-      valuesToCopy[key] = this.parentFeature[key];
+      const val = this.parentFeature.attributes.find(field => field.key === key );
+      valuesToCopy.set(key, ''+val.value);
     });
     return valuesToCopy;
   }
@@ -264,7 +277,7 @@ export class FormCopyComponent implements OnInit, OnDestroy {
               });
             }
           }
-          newChild = this.featureInitializer.create(fieldsToCopy.get('objecttype'), valuesToCopy);
+          newChild = this.featureInitializer.create$(fieldsToCopy.get('objecttype'), valuesToCopy);
           // eslint-disable-next-line @typescript-eslint/prefer-for-of
           for (let i = 0; i < relatedFeatures.length; i++) {
             if (relatedFeatures[i] === key) {

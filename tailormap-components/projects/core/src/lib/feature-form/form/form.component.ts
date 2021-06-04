@@ -9,19 +9,20 @@ import { MetadataService } from '../../application/services/metadata.service';
 import { FormState } from '../state/form.state';
 import { Store } from '@ngrx/store';
 import * as FormActions from '../state/form.actions';
+import { toggleFeatureFormVisibility } from '../state/form.actions';
 import * as WorkflowActions from '../../workflow/state/workflow.actions';
 import {
-  selectCloseAfterSaveFeatureForm, selectCurrentFeature, selectFeatures, selectFormAlreadyDirty,
-  selectFormEditing, selectFormVisible,
+  selectCloseAfterSaveFeatureForm, selectCurrentFeature, selectFeatures, selectFormAlreadyDirty, selectFormEditing, selectFormVisible,
   selectIsMultiFormWorkflow,
 } from '../state/form.selectors';
 import { LayerUtils } from '../../shared/layer-utils/layer-utils.service';
 import { WORKFLOW_ACTION } from '../../workflow/state/workflow-models';
 import { WorkflowState } from '../../workflow/state/workflow.state';
-import { selectFormConfigForFeatureTypeName, selectFormConfigs, selectVisibleLayers } from '../../application/state/application.selectors';
+import {
+  selectFormConfigForFeatureTypeName, selectFormConfigs, selectLayersWithAttributes,
+} from '../../application/state/application.selectors';
 import { FormHelpers } from './form-helpers';
 import { FeatureInitializerService } from '../../shared/feature-initializer/feature-initializer.service';
-import { toggleFeatureFormVisibility } from '../state/form.actions';
 import { EditFeatureGeometryService } from '../services/edit-feature-geometry.service';
 import { AttributeMetadataResponse } from '../../shared/attribute-service/attribute-models';
 import { ExtendedFormConfigurationModel } from '../../application/models/extended-form-configuration.model';
@@ -76,12 +77,14 @@ export class FormComponent implements OnDestroy, OnInit {
           this.store$.select(selectFormAlreadyDirty),
           this.store$.select(selectFormConfigForFeatureTypeName, feature.clazz),
           this.store$.select(selectFormConfigs),
-          this.store$.select(selectVisibleLayers).pipe(
+          this.store$.select(selectLayersWithAttributes).pipe(
             map(appLayers => {
               const layers = appLayers.filter(appLayer => {
                 const sanitizedName = LayerUtils.sanitizeLayername(
                     appLayer.userlayer ? appLayer.userlayer_original_layername : appLayer.layerName);
-                return sanitizedName === features[0].clazz || (appLayer.userlayer ? appLayer.userlayer_original_layername : appLayer.layerName) === features[0].clazz;
+                return sanitizedName === features[0].clazz ||
+                  (appLayer.userlayer ? appLayer.userlayer_original_layername : appLayer.layerName) === features[0].clazz ||
+                  sanitizedName === LayerUtils.sanitizeLayername(features[0].clazz);
                 },
 
               );
@@ -184,16 +187,17 @@ export class FormComponent implements OnDestroy, OnInit {
       .pipe(take(1))
       .subscribe(([formConfig, features]) => {
         const objecttype = FormHelpers.capitalize(type);
-        const newFeature = this.featureInitializerService.create(objecttype, {
+        this.featureInitializerService.create$(objecttype, {
           id: null,
           clazz: type,
           isRelated: true,
           objecttype,
           children: null,
           [formConfig.treeNodeColumn]: `Nieuwe ${formConfig.name}`,
+        }).subscribe(newFeature=>{
+          this.store$.dispatch(FormActions.setNewFeature({newFeature, parentId: features[0].fid}));
+          this.store$.dispatch(FormActions.setFormEditing({editing: true}));
         });
-        this.store$.dispatch(FormActions.setNewFeature({newFeature, parentId: features[0].fid}));
-        this.store$.dispatch(FormActions.setFormEditing({editing: true}));
       });
   }
 
