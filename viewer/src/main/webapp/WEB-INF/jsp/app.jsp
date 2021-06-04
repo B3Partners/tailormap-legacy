@@ -74,6 +74,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <link href="${contextPath}/viewer-html/common/resources/css/openlayers.css" rel="stylesheet">
         </c:if>
         <link href="${contextPath}/viewer-html/svg/svgsprite.css" rel="stylesheet">
+        <link href="${contextPath}/resources/css/custom_style.css" rel="stylesheet">
 
     </head>
     <body>
