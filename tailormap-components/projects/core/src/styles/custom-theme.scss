@@ -1,27 +1,28 @@
+@use '~@angular/material' as mat;
 @import 'node_modules/@angular/material/theming';
 // Plus imports for other components in your app.
 
-$custom-typography: mat-typography-config(
+$custom-typography: mat.define-typography-config(
   $font-family: 'Inter, "Lucida Sans Unicode", "Lucida Grande", sans-serif',
-  $display-4:     mat-typography-level(112px, 112px, 400, $letter-spacing: -0.05em),
-  $display-3:     mat-typography-level(56px, 56px, 400, $letter-spacing: -0.02em),
-  $display-2:     mat-typography-level(45px, 48px, 400, $letter-spacing: -0.005em),
-  $display-1:     mat-typography-level(34px, 40px, 400),
-  $headline:      mat-typography-level(24px, 32px, 400),
-  $title:         mat-typography-level(20px, 32px, 600),
-  $subheading-2:  mat-typography-level(16px, 28px, 400),
-  $subheading-1:  mat-typography-level(15px, 24px, 400),
-  $body-2:        mat-typography-level(14px, 24px, 600),
-  $body-1:        mat-typography-level(14px, 20px, 400),
-  $caption:       mat-typography-level(12px, 20px, 400),
-  $button:        mat-typography-level(14px, 14px, 400),
-  $input:         mat-typography-level(inherit, 1.125, 400)
+  $display-4:     mat.define-typography-level(112px, 112px, 400, $letter-spacing: -0.05em),
+  $display-3:     mat.define-typography-level(56px, 56px, 400, $letter-spacing: -0.02em),
+  $display-2:     mat.define-typography-level(45px, 48px, 400, $letter-spacing: -0.005em),
+  $display-1:     mat.define-typography-level(34px, 40px, 400),
+  $headline:      mat.define-typography-level(24px, 32px, 400),
+  $title:         mat.define-typography-level(20px, 32px, 600),
+  $subheading-2:  mat.define-typography-level(16px, 28px, 400),
+  $subheading-1:  mat.define-typography-level(15px, 24px, 400),
+  $body-2:        mat.define-typography-level(14px, 24px, 600),
+  $body-1:        mat.define-typography-level(14px, 20px, 400),
+  $caption:       mat.define-typography-level(12px, 20px, 400),
+  $button:        mat.define-typography-level(14px, 14px, 400),
+  $input:         mat.define-typography-level(inherit, 1.125, 400)
 );
 
 // Include the common styles for Angular Material. We include this here so that you only
 // have to load a single css file for Angular Material in your app.
 // Be sure that you only ever include this mixin once!
-@include mat-core($custom-typography);
+@include mat.core($custom-typography);
 
 $mat-tailormap: (
   50: #efe8fe,
@@ -59,15 +60,15 @@ $mat-tailormap: (
 // Define the palettes for your theme using the Material Design palettes available in palette.scss
 // (imported above). For each palette, you can optionally specify a default, lighter, and darker
 // hue. Available color palettes: https://material.io/design/color/
-$tailormap-app-primary: mat-palette($mat-tailormap);
-$tailormap-app-accent:  mat-palette($mat-tailormap, A200, A100, A400);
+$tailormap-app-primary: mat.define-palette($mat-tailormap);
+$tailormap-app-accent:  mat.define-palette($mat-tailormap, A200, A100, A400);
 
 // The warn palette is optional (defaults to red).
-$tailormap-app-warn:    mat-palette($mat-red);
+$tailormap-app-warn:    mat.define-palette(mat.$red-palette);
 
 // Create the theme object. A theme consists of configurations for individual
 // theming systems such as `color` or `typography`.
-$tailormap-app-theme: mat-light-theme((
+$tailormap-app-theme: mat.define-light-theme((
   color: (
     primary: $tailormap-app-primary,
     accent: $tailormap-app-accent,
@@ -78,7 +79,7 @@ $tailormap-app-theme: mat-light-theme((
 // Include theme styles for core and each component used in your app.
 // Alternatively, you can import and @include the theme mixins for each component
 // that you are using.
-@include angular-material-theme($tailormap-app-theme);
+@include mat.all-component-themes($tailormap-app-theme);
 
 button.mat-button,
 button.mat-stroked-button,
