@@ -59,9 +59,10 @@ export class FormTreeHelpers {
   }
 
   public static getFeatureValueForField(feat: Feature | AttributeListFeature, config: FormConfiguration,
-                                        key: string = config.treeNodeColumn): string {
+                                        key: string = config.treeNodeColumn): string  {
     const attr: Attribute = config.fields.find(field => field.key === key);
-    let value = feat[key];
+    let value = FormHelpers.getValue(feat, attr);
+
     if (attr.type === FormFieldType.DOMAIN) {
       attr.options.forEach(option => {
         if ((FormFieldHelpers.isNumber(value) && option.val === parseInt('' + value, 10))) {
@@ -69,6 +70,6 @@ export class FormTreeHelpers {
         }
       });
     }
-    return value;
+    return '' + value;
   }
 }

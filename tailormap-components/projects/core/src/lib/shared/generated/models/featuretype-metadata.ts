@@ -3,5 +3,5 @@
 export interface FeaturetypeMetadata {
   featuretypeName?: string;
   geometryAttribute?: string;
-  geometryType?: 'LINESTRING' | 'POINT' | 'POLYGON' | 'GEOMETRY';
+  geometryType?: 'LINESTRING' | 'MULTILINESTRING' | 'POINT' | 'MULTIPOINT' | 'POLYGON' | 'MULTIPOLYGON' | 'GEOMETRY';
 }

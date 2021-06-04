@@ -12,7 +12,6 @@ import { GeoJSONGeometry } from 'wellknown';
 import { Feature, FeatureControllerService } from '../../shared/generated';
 import { TailorMapService } from '../../../../../bridge/src/tailor-map.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { FeatureHelper } from '../../application/helpers/feature.helper';
 
 @Injectable({
   providedIn: 'root',
@@ -77,9 +76,8 @@ export class EditFeatureGeometryService {
             ...feature,
             [geomField]: wkt,
           };
-          const newF = FeatureHelper.convertGBIFeatureToFeature(updatedFeature);
           return this.featureControllerService.update({application: this.tailorMapService.getApplicationId(),
-            featuretype: newF.clazz, fid: newF.fid, body: newF })
+            featuretype: updatedFeature.clazz, fid: updatedFeature.fid, body: updatedFeature })
             .pipe(
               map(() => wkt),
               catchError(() => {

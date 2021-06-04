@@ -3,7 +3,6 @@ import { Feature, FeatureControllerService } from '../../shared/generated';
 import { forkJoin, Observable } from 'rxjs';
 import { FeatureInitializerService } from '../../shared/feature-initializer/feature-initializer.service';
 import { TailorMapService } from '../../../../../bridge/src/tailor-map.service';
-import { FeatureHelper } from '../../application/helpers/feature.helper';
 
 
 @Injectable({
@@ -18,8 +17,6 @@ export class FormActionsService {
   }
 
   public save$(isBulk: boolean, features: Feature[], parent: Feature): Observable<any> {
-    features = FeatureHelper.convertGBIFeaturesToFeatures(features);
-    parent = FeatureHelper.convertGBIFeatureToFeature(parent);
     if (isBulk) {
       const reqs: Observable<any>[] = [];
       features.forEach(feature => {
