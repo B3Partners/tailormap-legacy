@@ -59,18 +59,6 @@ updates:
   - dependency-name: org.apache.solr:solr-solrj
     versions:
     - ">= 7.a, < 8"
-  - dependency-name: org.hibernate:hibernate-core
-    versions:
-    - "> 3.6.10.Final"
-  - dependency-name: org.hibernate:hibernate-core
-    versions:
-    - ">= 5.a, < 6"
-  - dependency-name: org.hibernate:hibernate-entitymanager
-    versions:
-    - "> 3.6.10.Final"
-  - dependency-name: org.hibernate:hibernate-entitymanager
-    versions:
-    - ">= 5.a, < 6"
   - dependency-name: org.stripesstuff:stripesstuff
     versions:
     - ">= 1.a, < 2"
