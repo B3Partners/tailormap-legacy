@@ -41,6 +41,7 @@
         <java.version>11</java.version>
         <!-- https://nodejs.org/dist/latest-v14.x/ -->
         <node.version>v14.17.0</node.version>
+        <npm.version>7.16.0</npm.version>
         <project.build.sourceVersion>${java.version}</project.build.sourceVersion>
         <project.build.targetVersion>${java.version}</project.build.targetVersion>
         <maven.compiler.source>${java.version}</maven.compiler.source>
@@ -73,6 +74,7 @@
         <tomcat.version>9.0.45</tomcat.version>
         <jacoco-maven-plugin.version>0.8.7</jacoco-maven-plugin.version>
         <cargo-maven3-plugin.version>1.9.0</cargo-maven3-plugin.version>
+        <tomcat.localDatasource>false</tomcat.localDatasource>
         <properties-maven-plugin.version>1.0.0</properties-maven-plugin.version>
     </properties>
     <dependencyManagement>
@@ -81,8 +83,8 @@
             mvn -U org.codehaus.mojo:versions-maven-plugin:display-dependency-updates -T1 > dependency-updates.log
             and check the output for any available updates.
 
-            To check for vulnarabilities in dependencies use the following command:
-            mvn org.owasp:dependency-check-maven:check > vuln-check.log
+            To check for vulnerabilities in dependencies use the following command:
+            mvn org.owasp:dependency-check-maven:aggregate > vuln-check.log
         -->
         <dependencies>
             <!-- viewer-->
@@ -254,12 +256,6 @@
                 <artifactId>jaxb-runtime</artifactId>
                 <version>${jaxb.impl.version}</version>
             </dependency>
-            <dependency>
-                <groupId>jakarta.activation</groupId>
-                <artifactId>jakarta.activation-api</artifactId>
-                <version>${activation.api.version}</version>
-            </dependency>
-
             <dependency>
                 <groupId>nl.b3p</groupId>
                 <artifactId>b3p-commons-csw</artifactId>
@@ -505,6 +501,16 @@
                 <groupId>com.sun.mail</groupId>
                 <artifactId>jakarta.mail</artifactId>
                 <version>${jakarta.mail.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>jakarta.activation</groupId>
+                <artifactId>jakarta.activation-api</artifactId>
+                <version>${activation.api.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sun.activation</groupId>
+                <artifactId>jakarta.activation</artifactId>
+                <version>${activation.api.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.poi</groupId>

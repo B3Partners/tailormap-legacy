@@ -259,6 +259,7 @@
                     <workingDirectory>${tailormap-components.source.dir}</workingDirectory>
                     <installDirectory>${project.build.directory}/</installDirectory>
                     <nodeVersion>${node.version}</nodeVersion>
+                    <npmVersion>${npm.version}</npmVersion>
                 </configuration>
                 <executions>
                     <execution>
@@ -323,7 +324,6 @@
                 </configuration>
             </plugin>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
                 <configuration>
                     <filters>
@@ -664,21 +664,33 @@
                 </dependency>
             </dependencies>
             <build>
+                <filters>
+                    <filter>${project.basedir}/src/test/resources/postgres.properties</filter>
+                </filters>
+                <testResources>
+                    <testResource>
+                        <directory>${project.basedir}/src/test/tomcatconf/</directory>
+                        <filtering>true</filtering>
+                    </testResource>
+                    <testResource>
+                        <directory>${project.basedir}/src/test/resources/</directory>
+                    </testResource>
+                </testResources>
                 <plugins>
                     <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>properties-maven-plugin</artifactId>
-                        <version>${properties-maven-plugin.version}</version>
+                        <groupId>org.jacoco</groupId>
+                        <artifactId>jacoco-maven-plugin</artifactId>
+                        <version>${jacoco-maven-plugin.version}</version>
                         <executions>
                             <execution>
-                                <phase>initialize</phase>
+                                <id>prepare-agent-integration-cargo</id>
+                                <phase>pre-integration-test</phase>
                                 <goals>
-                                    <goal>read-project-properties</goal>
+                                    <goal>prepare-agent-integration</goal>
                                 </goals>
                                 <configuration>
-                                    <files>
-                                        <file>src/test/resources/postgres.properties</file>
-                                    </files>
+                                    <destFile>${project.build.directory}/jacoco-cargo.exec</destFile>
+                                    <propertyName>cargoArgLine</propertyName>
                                 </configuration>
                             </execution>
                         </executions>
@@ -713,12 +725,12 @@
                     <plugin>
                         <groupId>org.codehaus.cargo</groupId>
                         <artifactId>cargo-maven3-plugin</artifactId>
-                        <version>${cargo-maven2-plugin.version}</version>
+                        <version>${cargo-maven3-plugin.version}</version>
                         <configuration>
                             <container>
-                                <containerId>tomcat-${tomcat.version}</containerId>
+                                <containerId>tomcat9x</containerId>
                                 <type>embedded</type>
-                                <output>${project.build.directory}/tomcat${tomcat.version}x.log</output>
+                                <output>${project.build.directory}/tomcat9x.log</output>
                                 <log>${project.build.directory}/cargo.log</log>
                                 <systemProperties></systemProperties>
                                 <dependencies>
@@ -729,16 +741,16 @@
                                 </dependencies>
                             </container>
                             <configuration>
-                                <home>${project.build.directory}/tomcat-${tomcat.version}/container</home>
                                 <properties>
+                                    <!-- zie: https://codehaus-cargo.github.io/cargo/Tomcat+9.x.html -->
                                     <cargo.logging>high</cargo.logging>
                                     <cargo.servlet.port>9090</cargo.servlet.port>
+                                    <cargo.start.jvmargs>${cargoArgLine}</cargo.start.jvmargs>
                                 </properties>
                                 <configfiles>
                                     <configfile>
-                                        <file>src/test/tomcatconf/context.xml</file>
-                                        <todir>conf/Catalina/localhost/</todir>
-                                        <tofile>${project.build.finalName}.xml</tofile>
+                                        <file>${project.build.directory}/test-classes/context.xml</file>
+                                        <tofile>conf/context.xml</tofile>
                                         <configfile>true</configfile>
                                         <overwrite>true</overwrite>
                                     </configfile>

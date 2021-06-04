@@ -78,7 +78,7 @@ public class ViewerIntegrationTest {
         assumeNotNull("Database environment must be defined.", System.getProperty("database.properties.file"));
         databaseprop.load(ViewerIntegrationTest.class.getClassLoader().getResourceAsStream(System.getProperty("database.properties.file")));
         LOG.debug("database props: " + databaseprop);
-        Class.forName(databaseprop.getProperty("testdb.driverClassName"));
+        Class.forName("org.postgresql.Driver");
     }
 
     /**

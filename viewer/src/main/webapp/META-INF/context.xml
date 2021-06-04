@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Context antiJARLocking="true" disableURLRewriting="true" path="/viewer">
+<Context antiResourceLocking="false" path="/viewer">
     <Parameter name="componentregistry.path" override="false" value="/viewer-html/components"/>
     <Parameter name="tailormap.data.dir" override="false" value="/opt/tailormap_data"/>
     <Parameter name="tailormap.solr.url" override="false" value="https://tailormap.nl/solr/"/>
@@ -14,15 +14,10 @@
       NOTE:
           each version of tomcat comes with it's own version of the pooling library
           that can have subtle difference so you must check for your version:
-          - https://tomcat.apache.org/tomcat-8.5-doc/jndi-datasource-examples-howto.html
           - https://tomcat.apache.org/tomcat-9.0-doc/jndi-datasource-examples-howto.html
 
       <Server ...>
-
         <GlobalNamingResources>
-
-          PostgreSQL:
-
           <Resource auth="Container"
                     driverClassName="org.postgresql.Driver"
                     type="javax.sql.DataSource"
@@ -36,13 +31,8 @@
                     maxTotal="40"
                     validationQuery="select 1"
           />
-
        </GlobalNamingResources>
-
       </Server>
-
-      NOTE: each JDBC driver version and each version of Tomcat will have different options that can/must be set
-
       -->
     <ResourceLink global="jdbc/geo_viewer" name="jdbc/geo_viewer" type="javax.sql.DataSource"/>
 
@@ -52,7 +42,7 @@
 
     <!-- For Tomcat: define JavaMail resource in server.xml. See:
 
-      http://tomcat.apache.org/tomcat-8.0-doc/jndi-resources-howto.html#JavaMail_Sessions
+      https://tomcat.apache.org/tomcat-9.0-doc/jndi-resources-howto.html#JavaMail_Sessions
 
       Don't forget to put a mail.jar in the Tomcat lib directory.
 
@@ -72,6 +62,9 @@
       -->
     <ResourceLink global="mail/session" name="mail/session" type="javax.mail.Session"/>
 
+    <!-- voor productie aanpassen in onderstaande Realm:
+        localDataSource="false"
+    -->
     <Realm className="org.apache.catalina.realm.LockOutRealm">
         <Realm className="org.apache.catalina.realm.DataSourceRealm"
                dataSourceName="jdbc/geo_viewer"
@@ -81,6 +74,7 @@
                userRoleTable="user_groups"
                roleNameCol="group_"
                allRolesMode="authOnly"
+               localDataSource="${tomcat.localDatasource}"
         >
             <CredentialHandler className="org.apache.catalina.realm.MessageDigestCredentialHandler"
                                algorithm="SHA-1"
@@ -88,8 +82,8 @@
         </Realm>
         <!-- Use JNDIRealm for authenticating against a LDAP server (such as
                  Active Directory):
-                 http://tomcat.apache.org/tomcat-8.0-doc/config/realm.html
-                 http://tomcat.apache.org/tomcat-8.0-doc/realm-howto.html#JNDIRealm
+                 https://tomcat.apache.org/tomcat-9.0-doc/config/realm.html
+                 https://tomcat.apache.org/tomcat-9.0-doc/realm-howto.html#JNDIRealm
             -->
         <!--Realm className="org.apache.catalina.realm.JNDIRealm"
                 allRolesMode="authOnly"
