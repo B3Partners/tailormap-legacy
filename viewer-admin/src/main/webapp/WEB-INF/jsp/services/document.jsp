@@ -32,16 +32,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <h1><fmt:message key="viewer_admin.document.1" /><a href="#Documenten_Beheren_help" title="<fmt:message key="viewer_admin.document.2" />" class="helplink"></a></h1>
             <div id="grid-container" class="documenten"></div>
             <div id="form-container" class="documenten">
-                <iframe src="<stripes:url beanclass="nl.viewer.admin.stripes.DocumentActionBean" event="cancel"/>" id="editFrame" frameborder="0"></iframe>
+                <iframe src="<stripes:url beanclass="nl.tailormap.viewer.admin.stripes.DocumentActionBean" event="cancel"/>" id="editFrame" frameborder="0"></iframe>
             </div>
             <script type="text/javascript" src="${contextPath}/resources/js/services/document.js"></script>
             <script type="text/javascript">
                 Ext.onReady(function() {
                     // Expose vieweradmin_components_Document to global scope to be able to access the component from the iframe
                     window.vieweradmin_components_Document = Ext.create('vieweradmin.components.Document', {
-                        gridurl: '<stripes:url beanclass="nl.viewer.admin.stripes.DocumentActionBean" event="getGridData"/>',
-                        editurl: '<stripes:url beanclass="nl.viewer.admin.stripes.DocumentActionBean" event="edit"/>',
-                        deleteurl: '<stripes:url beanclass="nl.viewer.admin.stripes.DocumentActionBean" event="delete"/>'
+                        gridurl: '<stripes:url beanclass="nl.tailormap.viewer.admin.stripes.DocumentActionBean" event="getGridData"/>',
+                        editurl: '<stripes:url beanclass="nl.tailormap.viewer.admin.stripes.DocumentActionBean" event="edit"/>',
+                        deleteurl: '<stripes:url beanclass="nl.tailormap.viewer.admin.stripes.DocumentActionBean" event="delete"/>'
                     });
                 });
             </script>

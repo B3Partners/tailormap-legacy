@@ -34,7 +34,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
             </div>
             <div id="form-container" class="user">
-                <iframe src="<stripes:url beanclass="nl.viewer.admin.stripes.UserActionBean" event="cancel"/>" id="editFrame" frameborder="0"></iframe>
+                <iframe src="<stripes:url beanclass="nl.tailormap.viewer.admin.stripes.UserActionBean" event="cancel"/>" id="editFrame" frameborder="0"></iframe>
             </div>
 
             <script type="text/javascript" src="${contextPath}/resources/js/security/user.js"></script>
@@ -42,9 +42,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 Ext.onReady(function() {
                     // Expose vieweradmin_components_User to global scope to be able to access the component from the iframe
                     window.vieweradmin_components_User = Ext.create('vieweradmin.components.User', {
-                        gridurl: '<stripes:url beanclass="nl.viewer.admin.stripes.UserActionBean" event="getGridData"/>',
-                        editurl: '<stripes:url beanclass="nl.viewer.admin.stripes.UserActionBean" event="edit"/>',
-                        deleteurl: '<stripes:url beanclass="nl.viewer.admin.stripes.UserActionBean" event="delete"/>'
+                        gridurl: '<stripes:url beanclass="nl.tailormap.viewer.admin.stripes.UserActionBean" event="getGridData"/>',
+                        editurl: '<stripes:url beanclass="nl.tailormap.viewer.admin.stripes.UserActionBean" event="edit"/>',
+                        deleteurl: '<stripes:url beanclass="nl.tailormap.viewer.admin.stripes.UserActionBean" event="delete"/>'
                     });
                 });
             </script>

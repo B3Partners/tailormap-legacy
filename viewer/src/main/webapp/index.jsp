@@ -23,7 +23,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <stripes:url var="url" beanclass="nl.viewer.stripes.ApplicationActionBean">
+        <stripes:url var="url" beanclass="nl.tailormap.viewer.stripes.ApplicationActionBean">
             <stripes:param name="unknown" value="true"/>
         </stripes:url>
         <meta http-equiv="Refresh" content="0;url=${url}">

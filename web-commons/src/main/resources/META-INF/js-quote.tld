@@ -13,7 +13,7 @@
     <tag>
         <description>Quote a string for use in a JavaScript &lt;script&gt; block</description>
         <name>quote</name>
-        <tag-class>nl.taglibs.js.QuoteTag</tag-class>
+        <tag-class>nl.tailormap.taglibs.js.QuoteTag</tag-class>
         <body-content>JSP</body-content>
         <attribute>
             <description>String expression to be quoted</description>

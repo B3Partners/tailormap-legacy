@@ -39,7 +39,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             </div>
 
             <div id="form-container" class="attributesources">
-                <iframe src="<stripes:url beanclass="nl.viewer.admin.stripes.ConfigureSolrActionBean" event="cancel"/>" id="editFrame" frameborder="0"></iframe>
+                <iframe src="<stripes:url beanclass="nl.tailormap.viewer.admin.stripes.ConfigureSolrActionBean" event="cancel"/>" id="editFrame" frameborder="0"></iframe>
             </div>
         </div>
         <script type="text/javascript" src="${contextPath}/resources/js/services/solrconfig.js"></script>
@@ -47,12 +47,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             Ext.onReady(function() {
                 // Expose vieweradmin_components_SolrConfig to global scope to be able to access the component from the iframe
                 window.vieweradmin_components_SolrConfig = Ext.create('vieweradmin.components.SolrConfig', {
-                    gridurl: '<stripes:url beanclass="nl.viewer.admin.stripes.ConfigureSolrActionBean" event="getGridData"/>',
-                    editurl: '<stripes:url beanclass="nl.viewer.admin.stripes.ConfigureSolrActionBean" event="edit"/>',
-                    deleteurl: '<stripes:url beanclass="nl.viewer.admin.stripes.ConfigureSolrActionBean" event="delete"/>',
+                    gridurl: '<stripes:url beanclass="nl.tailormap.viewer.admin.stripes.ConfigureSolrActionBean" event="getGridData"/>',
+                    editurl: '<stripes:url beanclass="nl.tailormap.viewer.admin.stripes.ConfigureSolrActionBean" event="edit"/>',
+                    deleteurl: '<stripes:url beanclass="nl.tailormap.viewer.admin.stripes.ConfigureSolrActionBean" event="delete"/>',
                     solrInitialized: ${actionBean.solrInitialized},
-                    addtoindexurl: '<stripes:url beanclass="nl.viewer.admin.stripes.ConfigureSolrActionBean" event="addToIndex"/>',
-                    removefromindexurl: '<stripes:url beanclass="nl.viewer.admin.stripes.ConfigureSolrActionBean" event="removeFromIndex"/>'
+                    addtoindexurl: '<stripes:url beanclass="nl.tailormap.viewer.admin.stripes.ConfigureSolrActionBean" event="addToIndex"/>',
+                    removefromindexurl: '<stripes:url beanclass="nl.tailormap.viewer.admin.stripes.ConfigureSolrActionBean" event="removeFromIndex"/>'
                 });
             });
         </script>

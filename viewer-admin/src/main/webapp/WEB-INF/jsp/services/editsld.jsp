@@ -27,7 +27,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 <div id="formcontent" style="height: 620px">
 <stripes:errors/>
 <stripes:messages/>
-<stripes:form beanclass="nl.viewer.admin.stripes.GeoServiceActionBean">
+<stripes:form beanclass="nl.tailormap.viewer.admin.stripes.GeoServiceActionBean">
 
     <stripes:hidden name="service"/>
     <stripes:hidden name="sld"/>
@@ -86,7 +86,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 </script>
             </c:otherwise>
         </c:choose>
-        <stripes:url var="url" beanclass="nl.viewer.admin.stripes.GeoServiceActionBean">
+        <stripes:url var="url" beanclass="nl.tailormap.viewer.admin.stripes.GeoServiceActionBean">
             <stripes:param name="service" value="${actionBean.service.id}"/>
         </stripes:url>
         <fmt:message key="viewer_admin.editsld.16" var="editsld16" />
@@ -109,7 +109,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     return;
                 }
                 cql = res;
-                <stripes:url var="url" beanclass="nl.viewer.admin.stripes.GeoServiceActionBean" event="cqlToFilter"/>
+                <stripes:url var="url" beanclass="nl.tailormap.viewer.admin.stripes.GeoServiceActionBean" event="cqlToFilter"/>
                 Ext.Ajax.request({
                     url: <js:quote value="${url}"/>,
                     params: {cql: cql}, 

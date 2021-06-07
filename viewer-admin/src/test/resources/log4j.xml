@@ -16,7 +16,7 @@ LEVELS: debug, info, warn, error, fatal en off, all -->
     <logger name="nl.viewer.config.services">
         <level value="info" />
     </logger>
-    <logger name="nl.viewer.util.ScriptRunner">
+    <logger name="nl.tailormap.viewer.util.ScriptRunner">
         <level value="error" />
     </logger>
     <logger name="org.hibernate">

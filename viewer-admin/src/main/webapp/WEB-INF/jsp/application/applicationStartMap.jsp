@@ -34,7 +34,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 <a href="#Startkaartbeeld_Help" title="<fmt:message key="viewer_admin.applicationstartmap.2" />" class="helplink"></a>
             </h1>
 
-                <stripes:form beanclass="nl.viewer.admin.stripes.ApplicationStartMapActionBean" id="startmapform">
+                <stripes:form beanclass="nl.tailormap.viewer.admin.stripes.ApplicationStartMapActionBean" id="startmapform">
 
                     <div id="tree" class="tree-selection-tree">
                         <div id="servicetree-container"></div>
@@ -59,9 +59,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             </div>
             <script type="text/javascript">
                 // Definition of URLS and icons... how are we going to do this?
-                var treeurl = '<stripes:url beanclass="nl.viewer.admin.stripes.ApplicationStartMapActionBean" event="loadApplicationTree"/>';
-                var selectedlayersurl = '<stripes:url beanclass="nl.viewer.admin.stripes.ApplicationStartMapActionBean" event="loadSelectedLayers"/>';
-                var backendCheckUrl = '<stripes:url beanclass="nl.viewer.admin.stripes.ApplicationStartMapActionBean" event="canContentBeSelected"/>';
+                var treeurl = '<stripes:url beanclass="nl.tailormap.viewer.admin.stripes.ApplicationStartMapActionBean" event="loadApplicationTree"/>';
+                var selectedlayersurl = '<stripes:url beanclass="nl.tailormap.viewer.admin.stripes.ApplicationStartMapActionBean" event="loadSelectedLayers"/>';
+                var backendCheckUrl = '<stripes:url beanclass="nl.tailormap.viewer.admin.stripes.ApplicationStartMapActionBean" event="canContentBeSelected"/>';
  
                 var rootid = 'n${actionBean.rootlevel.id}';
                 var levelid = 'n${actionBean.rootlevel.id}';

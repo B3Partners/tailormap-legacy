@@ -26,7 +26,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <div id="formcontent">
             <stripes:errors/>
             <stripes:messages/>
-            <stripes:form beanclass="nl.viewer.admin.stripes.UserActionBean">
+            <stripes:form beanclass="nl.tailormap.viewer.admin.stripes.UserActionBean">
                 <c:choose>
                     <c:when test="${actionBean.context.eventName == 'edit' ||(not empty actionBean.context.validationErrors)}">
                     <h1 id="headertext"><fmt:message key="viewer_admin.edituser.1" /></h1>
@@ -104,7 +104,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         <fmt:message key="viewer_admin.edituser.14" var="edituser14" />
                         <stripes:reset name="cancel" class="extlikebutton" value="${edituser14}"/>
 
-                        <stripes:url var="url" beanclass="nl.viewer.admin.stripes.UserActionBean" event="authorizations">
+                        <stripes:url var="url" beanclass="nl.tailormap.viewer.admin.stripes.UserActionBean" event="authorizations">
                             <stripes:param name="user" value="${actionBean.user}"/>
                         </stripes:url>
                         <stripes:button name="authorizations" class="extlikebutton" id="autorizatieoverzichtbutton" value="Autorisatieoverzicht"/>
@@ -141,7 +141,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         </stripes:form>
         <c:if test="${actionBean.context.eventName == 'edit'}">
             <br />
-            <stripes:form beanclass="nl.viewer.admin.stripes.UserActionBean">
+            <stripes:form beanclass="nl.tailormap.viewer.admin.stripes.UserActionBean">
                 <fmt:message key="viewer_admin.edituser.17" var="edituser17" />
                 <stripes:submit name="edit" value="${edituser17}"/>
             </stripes:form>

@@ -24,10 +24,10 @@
  */
 package org.opensphere.geometry.triangulation;
 
+import org.locationtech.jts.triangulate.quadedge.QuadEdge;
+
 import java.util.Comparator;
 import java.util.Map;
-
-import org.locationtech.jts.triangulate.quadedge.QuadEdge;
 
 /**
  * Comparator of a map containing QuadEdge as key
