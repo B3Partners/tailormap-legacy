@@ -193,7 +193,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 </table>
             </c:if>
 
-            <stripes:form beanclass="nl.viewer.admin.stripes.UserActionBean">
+            <stripes:form beanclass="nl.tailormap.viewer.admin.stripes.UserActionBean">
 
                 <stripes:hidden name="user"/>
                 <p>
