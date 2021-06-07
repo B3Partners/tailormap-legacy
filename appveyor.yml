@@ -6,7 +6,7 @@ skip_commits:
     - 'tailormap-components/**'
     
 clone_folder: C:\projects\tailormap
-clone_depth: 20
+clone_depth: 5
 image: Visual Studio 2019
 
 init:
@@ -18,8 +18,6 @@ environment:
   matrix:
     - JDK: JDK11
       JAVA_HOME: C:\Program Files\Java\jdk11
-      SQL: MSSQL$SQL2019
-      INSTANCENAME: SQL2019
 
 install:
   - choco install codecov
@@ -31,9 +29,6 @@ install:
   - cmd: if "%JDK%"=="JDK11" keytool -importcert -file .\EVRootCA.cer -alias EV -keystore "%JAVA_HOME%\lib\security\cacerts" -storepass changeit -v -noprompt -trustcacerts
   - mvn install -U -DskipTests -Dtest.skip.integrationtests=true -B -V -fae
   
-before_test:
-  - sqlcmd -S (local)\%INSTANCENAME% -U sa -P Password12! -Q "CREATE DATABASE flamingo4" -d "master"
-
 cache:
   - C:\Users\appveyor\.m2\repository -> pom.xml
 
