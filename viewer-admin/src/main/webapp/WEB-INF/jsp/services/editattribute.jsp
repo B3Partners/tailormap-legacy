@@ -26,7 +26,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <div id="formcontent">
             <stripes:errors/>
             <stripes:messages/>
-            <stripes:form beanclass="nl.viewer.admin.stripes.AttributeActionBean">
+            <stripes:form beanclass="nl.tailormap.viewer.admin.stripes.AttributeActionBean">
                 <stripes:hidden name="attribute" value="${actionBean.attribute.id}"/>
                 <c:if test="${actionBean.context.eventName == 'edit'}">
                 <h1 id="headertext">Attribuut bewerken</h1>

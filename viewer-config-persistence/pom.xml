@@ -34,11 +34,11 @@
                         <param>hibernate.physical_naming_strategy</param>
                     </persistencePropertiesToUse>
                     <packages>
-                        <param>nl.viewer.config.app</param>
-                        <param>nl.viewer.config.forms</param>
-                        <param>nl.viewer.config.metadata</param>
-                        <param>nl.viewer.config.security</param>
-                        <param>nl.viewer.config.services</param>
+                        <param>nl.tailormap.viewer.config.app</param>
+                        <param>nl.tailormap.viewer.config.forms</param>
+                        <param>nl.tailormap.viewer.config.metadata</param>
+                        <param>nl.tailormap.viewer.config.security</param>
+                        <param>nl.tailormap.viewer.config.services</param>
                     </packages>
                 </configuration>
                 <executions>

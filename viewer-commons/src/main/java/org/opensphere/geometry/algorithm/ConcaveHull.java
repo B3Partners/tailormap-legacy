@@ -24,17 +24,6 @@
  */
 package org.opensphere.geometry.algorithm;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map.Entry;
-import java.util.TreeMap;
-
-import org.opensphere.geometry.triangulation.model.Edge;
-import org.opensphere.geometry.triangulation.model.Triangle;
-import org.opensphere.geometry.triangulation.model.Vertex;
-
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryCollection;
@@ -52,6 +41,16 @@ import org.locationtech.jts.triangulate.quadedge.QuadEdgeSubdivision;
 import org.locationtech.jts.triangulate.quadedge.QuadEdgeTriangle;
 import org.locationtech.jts.util.UniqueCoordinateArrayFilter;
 import org.opensphere.geometry.triangulation.DoubleComparator;
+import org.opensphere.geometry.triangulation.model.Edge;
+import org.opensphere.geometry.triangulation.model.Triangle;
+import org.opensphere.geometry.triangulation.model.Vertex;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map.Entry;
+import java.util.TreeMap;
 
 
 /**

@@ -30,7 +30,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <stripes:layout-component name="body">
         <script type="text/javascript">
             vieweradmin.components.Menu.setActiveLink('menu_serviceusagematrix');
-            var deleteApplicationLayerUrl= <js:quote><stripes:url beanclass="nl.viewer.admin.stripes.ServiceUsageMatrixActionBean" event="deleteApplicationLayer"/></js:quote>
+            var deleteApplicationLayerUrl= <js:quote><stripes:url beanclass="nl.tailormap.viewer.admin.stripes.ServiceUsageMatrixActionBean" event="deleteApplicationLayer"/></js:quote>
             
             function deleteApplicationLayer(applicationId, appLayerId, store){
                 Ext.Ajax.request({ 
@@ -82,7 +82,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 }
             }
             function exportXsl(){
-                var url=<js:quote><stripes:url beanclass="nl.viewer.admin.stripes.ServiceUsageMatrixActionBean" event="view"/></js:quote>
+                var url=<js:quote><stripes:url beanclass="nl.tailormap.viewer.admin.stripes.ServiceUsageMatrixActionBean" event="view"/></js:quote>
                 url+="?output_format=XSL";
                 <c:if test="${not empty actionBean.featureSource}">
                     url+="&featureSource=${actionBean.featureSource.id}";

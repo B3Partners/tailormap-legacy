@@ -26,7 +26,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <div id="formcontent">
             <stripes:errors/>
             <stripes:messages/>
-            <stripes:form beanclass="nl.viewer.admin.stripes.AttributeSourceActionBean">
+            <stripes:form beanclass="nl.tailormap.viewer.admin.stripes.AttributeSourceActionBean">
                 <c:choose>
                     <c:when test="${empty actionBean.context.validationErrors && (actionBean.context.eventName == 'edit' || actionBean.context.eventName == 'saveEdit' || actionBean.context.eventName == 'save')}">
                     <h1 id="headertext"><fmt:message key="viewer_admin.editattributesource.1" /></h1>
@@ -248,7 +248,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 }
                 this.parent.window.location.href=url;
             }
-            var serviceUsageMatrixUrl='<stripes:url beanclass="nl.viewer.admin.stripes.ServiceUsageMatrixActionBean" event="view"/>';
+            var serviceUsageMatrixUrl='<stripes:url beanclass="nl.tailormap.viewer.admin.stripes.ServiceUsageMatrixActionBean" event="view"/>';
             var changedFeatureSource = "";
             var changedFeatureTypes={};
             <c:forEach items="${actionBean.changedFeatureTypes}" var="change">

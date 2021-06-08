@@ -29,7 +29,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <stripes:layout-component name="body">
         <div id="content">
             <h1 id="headertext"><fmt:message key="viewer_admin.applicationsettings.1" />: <c:out value="${actionBean.applicationName}"/></h1>
-            <stripes:form beanclass="nl.viewer.admin.stripes.ApplicationSettingsActionBean" id="settingsForm" class="maximize">
+            <stripes:form beanclass="nl.tailormap.viewer.admin.stripes.ApplicationSettingsActionBean" id="settingsForm" class="maximize">
 
                 <stripes:hidden name="application" value="${actionBean.application}"/>
                 <stripes:hidden name="mashupName"/>
@@ -191,7 +191,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             Ext.onReady(function() {
                 Ext.create("vieweradmin.components.ApplicationSettings", {
                     actionBeans: {
-                        imageupload: <js:quote><stripes:url beanclass="nl.viewer.admin.stripes.ImageUploadActionBean"/></js:quote>
+                        imageupload: <js:quote><stripes:url beanclass="nl.tailormap.viewer.admin.stripes.ImageUploadActionBean"/></js:quote>
                     },
                     steunkleur1: "${actionBean.application.details['steunkleur1']}",
                     steunkleur2: "${actionBean.application.details['steunkleur2']}"

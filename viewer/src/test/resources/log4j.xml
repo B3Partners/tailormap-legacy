@@ -34,10 +34,10 @@
     <logger name="httpclient.wire">
         <level value="info" />
     </logger>
-    <logger name="nl.viewer.util.ScriptRunner">
+    <logger name="nl.tailormap.viewer.util.ScriptRunner">
         <level value="error" />
     </logger>
-    <logger name="nl.viewer.userlayer">
+    <logger name="nl.tailormap.viewer.userlayer">
         <level value="trace" />
     </logger>
     <root>

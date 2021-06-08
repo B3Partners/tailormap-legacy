@@ -31,6 +31,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <body>
         <h1><fmt:message key="viewer_admin.logout.1" /></h1>
 
-        <b><fmt:message key="viewer_admin.logout.2" /> <stripes:link beanclass="nl.viewer.admin.stripes.IndexActionBean"><fmt:message key="viewer_admin.logout.3" /></stripes:link></b>
+        <b><fmt:message key="viewer_admin.logout.2" /> <stripes:link beanclass="nl.tailormap.viewer.admin.stripes.IndexActionBean"><fmt:message key="viewer_admin.logout.3" /></stripes:link></b>
     </body>
 </html>

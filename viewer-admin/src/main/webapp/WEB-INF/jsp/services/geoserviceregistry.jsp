@@ -44,11 +44,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <script type="text/javascript">
             
             var actionBeans = {
-                "tree": <js:quote><stripes:url beanclass="nl.viewer.admin.stripes.GeoServiceRegistryActionBean" event="tree"/></js:quote>,
-                "category": <js:quote><stripes:url beanclass="nl.viewer.admin.stripes.GeoServiceRegistryActionBean"/></js:quote>,
-                "service": <js:quote><stripes:url beanclass="nl.viewer.admin.stripes.GeoServiceActionBean"/></js:quote>,
-                "layer": <js:quote><stripes:url beanclass="nl.viewer.admin.stripes.LayerActionBean"/></js:quote>,
-                "csw": <js:quote><stripes:url beanclass="nl.viewer.admin.stripes.CatalogServiceActionBean"/></js:quote>
+                "tree": <js:quote><stripes:url beanclass="nl.tailormap.viewer.admin.stripes.GeoServiceRegistryActionBean" event="tree"/></js:quote>,
+                "category": <js:quote><stripes:url beanclass="nl.tailormap.viewer.admin.stripes.GeoServiceRegistryActionBean"/></js:quote>,
+                "service": <js:quote><stripes:url beanclass="nl.tailormap.viewer.admin.stripes.GeoServiceActionBean"/></js:quote>,
+                "layer": <js:quote><stripes:url beanclass="nl.tailormap.viewer.admin.stripes.LayerActionBean"/></js:quote>,
+                "csw": <js:quote><stripes:url beanclass="nl.tailormap.viewer.admin.stripes.CatalogServiceActionBean"/></js:quote>
             };
             
             var imagesPath = "${contextPath}/resources/images/";

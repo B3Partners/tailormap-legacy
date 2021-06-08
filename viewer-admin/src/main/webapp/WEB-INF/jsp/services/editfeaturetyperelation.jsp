@@ -27,7 +27,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <stripes:errors/>
             <stripes:messages/>
             <script type="text/javascript" src="${contextPath}/resources/js/services/editfeaturetyperelation.js"></script>
-            <stripes:form beanclass="nl.viewer.admin.stripes.FeatureTypeRelationActionBean">
+            <stripes:form beanclass="nl.tailormap.viewer.admin.stripes.FeatureTypeRelationActionBean">
                 <c:choose>
                     <c:when test="${actionBean.context.eventName == 'edit'}">
                         <stripes:hidden name="relation" value="${actionBean.relation.id}"/>
@@ -153,8 +153,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         </stripes:form>
         </div>
         <script type="text/javascript">
-            var attributesUrl = '<stripes:url beanclass="nl.viewer.admin.stripes.FeatureTypeRelationActionBean" event="getAttributesForFeaturetype"/>';
-            var featureTypeUrl = '<stripes:url beanclass="nl.viewer.admin.stripes.FeatureTypeRelationActionBean" event="getFeatureTypesForSource"/>';
+            var attributesUrl = '<stripes:url beanclass="nl.tailormap.viewer.admin.stripes.FeatureTypeRelationActionBean" event="getAttributesForFeaturetype"/>';
+            var featureTypeUrl = '<stripes:url beanclass="nl.tailormap.viewer.admin.stripes.FeatureTypeRelationActionBean" event="getFeatureTypesForSource"/>';
             Ext.onReady(function() {
                 function ensureRadioSelection(radiobuttons) {
                     var checkcount = 0;

@@ -10,13 +10,13 @@ LEVELS: debug, info, warn, error, fatal en off, all -->
             <param name="ConversionPattern" value="%d{HH:mm:ss} Flamingo-viewer-admin-test: %5p (%C#%M:%L) - %m%n" />
         </layout>
     </appender>
-    <logger name="nl.viewer.admin.stripes">
+    <logger name="nl.tailormap.viewer.admin.stripes">
         <level value="debug" />
     </logger>
-    <logger name="nl.viewer.config.services">
+    <logger name="nl.tailormap.viewer.config.services">
         <level value="info" />
     </logger>
-    <logger name="nl.viewer.util.ScriptRunner">
+    <logger name="nl.tailormap.viewer.util.ScriptRunner">
         <level value="error" />
     </logger>
     <logger name="org.hibernate">

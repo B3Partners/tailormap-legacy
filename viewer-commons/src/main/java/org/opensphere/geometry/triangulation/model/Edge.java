@@ -24,10 +24,10 @@
  */
 package org.opensphere.geometry.triangulation.model;
 
+import org.locationtech.jts.geom.LineSegment;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import org.locationtech.jts.geom.LineSegment;
 
 /**
  * Edge.

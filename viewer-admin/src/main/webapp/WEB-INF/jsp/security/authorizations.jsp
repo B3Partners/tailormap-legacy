@@ -15,16 +15,16 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 --%>
 
-<%@page import="nl.viewer.config.app.ConfiguredComponent"%>
-<%@page import="nl.viewer.util.Coalesce"%>
-<%@page import="nl.viewer.config.services.GeoService"%>
+<%@page import="nl.tailormap.viewer.config.app.ConfiguredComponent"%>
+<%@page import="nl.tailormap.viewer.util.Coalesce"%>
+<%@page import="nl.tailormap.viewer.config.services.GeoService"%>
 <%@page import="org.stripesstuff.stripersist.Stripersist"%>
-<%@page import="nl.viewer.config.security.Authorizations"%>
+<%@page import="nl.tailormap.viewer.config.security.Authorizations"%>
 <%@page import="java.util.Set"%>
-<%@page import="nl.viewer.config.app.ApplicationLayer"%>
-<%@page import="nl.viewer.config.app.Level"%>
-<%@page import="nl.viewer.config.services.Layer"%>
-<%@page import="nl.viewer.admin.stripes.UserActionBean"%>
+<%@page import="nl.tailormap.viewer.config.app.ApplicationLayer"%>
+<%@page import="nl.tailormap.viewer.config.app.Level"%>
+<%@page import="nl.tailormap.viewer.config.services.Layer"%>
+<%@page import="nl.tailormap.viewer.admin.stripes.UserActionBean"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@include file="/WEB-INF/jsp/taglibs.jsp"%>
 
@@ -193,7 +193,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 </table>
             </c:if>
 
-            <stripes:form beanclass="nl.viewer.admin.stripes.UserActionBean">
+            <stripes:form beanclass="nl.tailormap.viewer.admin.stripes.UserActionBean">
 
                 <stripes:hidden name="user"/>
                 <p>
