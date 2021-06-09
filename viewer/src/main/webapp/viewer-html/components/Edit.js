@@ -59,7 +59,7 @@ Ext.define("viewer.components.Edit", {
         allowNew: true,
         allowEdit: true,
         allowTranslate: true,
-        cancelOtherControls: ["viewer.components.Merge", "viewer.components.Split", "viewer.components.EditBulk"],
+        cancelOtherControls: ["viewer.components.Merge", "viewer.components.Split"],
         formLayout: 'anchor',
         showEditLinkInFeatureInfo: false,
         editHelpText: "",
