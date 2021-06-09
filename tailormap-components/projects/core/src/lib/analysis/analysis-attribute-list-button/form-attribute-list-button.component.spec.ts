@@ -8,7 +8,7 @@ describe('FormAttributeListButtonComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ AnalysisAttributeListButtonComponent ]
+      declarations: [ AnalysisAttributeListButtonComponent ],
     })
     .compileComponents();
   });
