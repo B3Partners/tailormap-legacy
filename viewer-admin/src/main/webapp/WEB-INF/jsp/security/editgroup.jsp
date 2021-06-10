@@ -26,7 +26,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <div id="formcontent">
             <stripes:errors/>
             <stripes:messages/>
-            <stripes:form beanclass="nl.viewer.admin.stripes.GroupActionBean">
+            <stripes:form beanclass="nl.tailormap.viewer.admin.stripes.GroupActionBean">
                 <c:choose>
                     <c:when test="${actionBean.context.eventName == 'edit'}">
                     <h1 id="headertext"><fmt:message key="viewer_admin.editgroup.1" /></h1>

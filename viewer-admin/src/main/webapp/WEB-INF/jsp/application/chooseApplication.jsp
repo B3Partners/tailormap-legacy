@@ -34,14 +34,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
             </div>
             <div id="form-container" class="applicaties">
-                <stripes:form beanclass="nl.viewer.admin.stripes.ApplicationSettingsActionBean">
+                <stripes:form beanclass="nl.tailormap.viewer.admin.stripes.ApplicationSettingsActionBean">
                     <stripes:hidden name="version"/>
                     <stripes:hidden name="name"/>
                     <stripes:hidden name="applicationWorkversion"/>
                     <stripes:submit name="newApplication"><fmt:message key="viewer_admin.chooseapplication.3" /></stripes:submit>
                 </stripes:form>
                 <div class="applicaties">
-                    <stripes:form beanclass="nl.viewer.admin.stripes.ChooseApplicationActionBean">
+                    <stripes:form beanclass="nl.tailormap.viewer.admin.stripes.ChooseApplicationActionBean">
                         <stripes:select id="defaultAppSelector" name="defaultAppId" value="${actionBean.defaultAppId}" style="display: none;">
                             <fmt:message key="viewer_admin.chooseapplication.2" var="OptLabel1" />
                             <stripes:option label="${OptLabel1}" value="" />
@@ -49,17 +49,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         </stripes:select>
                     </stripes:form>
                 </div>
-                <iframe src="<stripes:url beanclass="nl.viewer.admin.stripes.ChooseApplicationActionBean" event="viewEdit"/>" id="editFrame" frameborder="0"></iframe>
+                <iframe src="<stripes:url beanclass="nl.tailormap.viewer.admin.stripes.ChooseApplicationActionBean" event="viewEdit"/>" id="editFrame" frameborder="0"></iframe>
             </div>
             <script type="text/javascript" src="${contextPath}/resources/js/application/chooseApplication.js"></script>
             <script type="text/javascript">
                 Ext.onReady(function() {
                     // Expose vieweradmin_components_ChooseApplication to global scope to be able to access the component from the iframe
                     window.vieweradmin_components_ChooseApplication = Ext.create('vieweradmin.components.ChooseApplication', {
-                        gridurl: '<stripes:url beanclass="nl.viewer.admin.stripes.ChooseApplicationActionBean" event="getGridData"/>',
-                        editurl: '<stripes:url beanclass="nl.viewer.admin.stripes.ApplicationSettingsActionBean" event="view"/>',
-                        deleteurl: '<stripes:url beanclass="nl.viewer.admin.stripes.ChooseApplicationActionBean" event="deleteApplication"/>',
-                        setDefaultApplication :  '<stripes:url beanclass="nl.viewer.admin.stripes.ChooseApplicationActionBean" event="saveDefaultApplication"/>'
+                        gridurl: '<stripes:url beanclass="nl.tailormap.viewer.admin.stripes.ChooseApplicationActionBean" event="getGridData"/>',
+                        editurl: '<stripes:url beanclass="nl.tailormap.viewer.admin.stripes.ApplicationSettingsActionBean" event="view"/>',
+                        deleteurl: '<stripes:url beanclass="nl.tailormap.viewer.admin.stripes.ChooseApplicationActionBean" event="deleteApplication"/>',
+                        setDefaultApplication :  '<stripes:url beanclass="nl.tailormap.viewer.admin.stripes.ChooseApplicationActionBean" event="saveDefaultApplication"/>'
                     });
                 });
             </script>

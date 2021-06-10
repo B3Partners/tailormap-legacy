@@ -1,4 +1,4 @@
-// Parameters as defined in viewer/src/main/java/nl.viewer/stripes/DownloadFeaturesActionBean
+// Parameters as defined in viewer/src/main/java/nl.tailormap.viewer/stripes/DownloadFeaturesActionBean
 
 export interface ExportFeaturesParameters {
   application: number;

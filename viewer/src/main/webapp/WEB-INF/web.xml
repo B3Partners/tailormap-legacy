@@ -33,21 +33,21 @@
         <dispatcher>ERROR</dispatcher>
     </filter-mapping>
     <listener>
-        <listener-class>nl.viewer.components.ComponentRegistryInitializer</listener-class>
+        <listener-class>nl.tailormap.viewer.components.ComponentRegistryInitializer</listener-class>
     </listener>
     <listener>
         <description>scan for audit logging providers</description>
-        <listener-class>nl.web.stripes.AuditLogginingInitializer</listener-class>
+        <listener-class>nl.tailormap.web.stripes.AuditLogginingInitializer</listener-class>
     </listener>
     <listener>
-        <listener-class>nl.web.stripes.StripersistCleanupListener</listener-class>
+        <listener-class>nl.tailormap.web.stripes.StripersistCleanupListener</listener-class>
     </listener>
     <listener>
-        <listener-class>nl.web.SharedSessionData</listener-class>
+        <listener-class>nl.tailormap.web.SharedSessionData</listener-class>
     </listener>
     <listener>
         <description>The class which initializes (and if configured sets up) the solr instance.</description>
-        <listener-class>nl.viewer.solr.SolrInitializer</listener-class>
+        <listener-class>nl.tailormap.viewer.solr.SolrInitializer</listener-class>
     </listener>
     <!-- Localization context voor o.a. de <fmt:message> JSTL tag -->
     <context-param>
@@ -95,7 +95,7 @@
     <filter>
         <description>Filter from Tomcat 6 distribution, see http://wiki.apache.org/tomcat/FAQ/CharacterEncoding</description>
         <filter-name>SetCharacterEncodingFilter</filter-name>
-        <filter-class>nl.web.filter.SetCharacterEncodingFilter</filter-class>
+        <filter-class>nl.tailormap.web.filter.SetCharacterEncodingFilter</filter-class>
         <init-param>
             <param-name>encoding</param-name>
             <param-value>UTF-8</param-value>
@@ -104,7 +104,7 @@
     <filter>
         <description>Filter to clean up GeoTools thread locals</description>
         <filter-name>GeoToolsFilter</filter-name>
-        <filter-class>nl.web.geotools.GeoToolsFilter</filter-class>
+        <filter-class>nl.tailormap.web.geotools.GeoToolsFilter</filter-class>
     </filter>
     <filter>
         <display-name>Stripes Filter</display-name>
@@ -112,7 +112,7 @@
         <filter-class>net.sourceforge.stripes.controller.StripesFilter</filter-class>
         <init-param>
             <param-name>ActionResolver.Packages</param-name>
-            <param-value>nl.viewer.stripes</param-value>
+            <param-value>nl.tailormap.viewer.stripes</param-value>
         </init-param>
         <init-param>
             <param-name>Extension.Packages</param-name>
@@ -124,7 +124,7 @@
         </init-param>
         <init-param>
             <param-name>Stripersist.InitializeSettingsClass</param-name>
-            <param-value>nl.viewer.config.stripersist.DynamicStripersistInitializer</param-value>
+            <param-value>nl.tailormap.viewer.config.stripersist.DynamicStripersistInitializer</param-value>
         </init-param>
         <init-param>
             <param-name>LocalePicker.Locales</param-name>
@@ -141,7 +141,7 @@
     </filter>
     <filter>
         <filter-name>IPAuthenticationFilter</filter-name>
-        <filter-class>nl.viewer.util.IPAuthenticationFilter</filter-class>
+        <filter-class>nl.tailormap.viewer.util.IPAuthenticationFilter</filter-class>
     </filter>
     <filter>
         <!-- See JavaDoc for documentation.
@@ -150,7 +150,7 @@
         <p>Klik <a href="${contextPath}/auth/init?returnTo=${contextPath}/app?name=${param['name']}&version=${param['version']}&debug=${param['debug']}">hier</a> om in te loggen met uw externe account.</p> 
         -->
         <filter-name>HeaderAuthenticationFilter</filter-name>
-        <filter-class>nl.web.filter.HeaderAuthenticationFilter</filter-class>
+        <filter-class>nl.tailormap.web.filter.HeaderAuthenticationFilter</filter-class>
         <init-param>
             <!-- Must be set to a secret random prefix to enable.
 
@@ -177,7 +177,7 @@
     </servlet>
     <servlet>
         <servlet-name>DatabaseSynchronizer</servlet-name>
-        <servlet-class>nl.viewer.util.databaseupdate.DatabaseSynchronizer</servlet-class>
+        <servlet-class>nl.tailormap.viewer.util.databaseupdate.DatabaseSynchronizer</servlet-class>
         <load-on-startup>2</load-on-startup>
     </servlet>
     <servlet-mapping>

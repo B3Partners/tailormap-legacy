@@ -50,7 +50,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
             <div id="grid-container" class="attribute"></div>
             <div id="form-container" class="attribute">
-                <iframe src="<stripes:url beanclass="nl.viewer.admin.stripes.AttributeActionBean" event="cancel"/>" id="editFrame" frameborder="0"></iframe>
+                <iframe src="<stripes:url beanclass="nl.tailormap.viewer.admin.stripes.AttributeActionBean" event="cancel"/>" id="editFrame" frameborder="0"></iframe>
             </div>
         </div>
         <script type="text/javascript" src="${contextPath}/resources/js/services/attribute.js"></script>
@@ -58,9 +58,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             Ext.onReady(function() {
                 // Expose vieweradmin_components_ChooseApplication to global scope to be able to access the component from the iframe
                 window.vieweradmin_components_Attributes = Ext.create('vieweradmin.components.Attributes', {
-                    gridurl: '<stripes:url beanclass="nl.viewer.admin.stripes.AttributeActionBean" event="getGridData"/>',
-                    editurl: '<stripes:url beanclass="nl.viewer.admin.stripes.AttributeActionBean" event="edit"/>',
-                    getfeaturetypesurl: '<stripes:url beanclass="nl.viewer.admin.stripes.AttributeActionBean" event="getFeatureTypes"/>'
+                    gridurl: '<stripes:url beanclass="nl.tailormap.viewer.admin.stripes.AttributeActionBean" event="getGridData"/>',
+                    editurl: '<stripes:url beanclass="nl.tailormap.viewer.admin.stripes.AttributeActionBean" event="edit"/>',
+                    getfeaturetypesurl: '<stripes:url beanclass="nl.tailormap.viewer.admin.stripes.AttributeActionBean" event="getFeatureTypes"/>'
                 });
             });
         </script>

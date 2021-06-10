@@ -12,12 +12,12 @@
         </persistence-unit-defaults>
     </persistence-unit-metadata>
 
-    <named-native-query name="getLayerTree" result-class="nl.viewer.config.services.Layer">
+    <named-native-query name="getLayerTree" result-class="nl.tailormap.viewer.config.services.Layer">
         <query><![CDATA[
             select * from layer start with id = :rootId connect by parent = prior id
         ]]></query>
     </named-native-query>
-    <named-native-query name="getLevelTree" result-class="nl.viewer.config.app.Level">
+    <named-native-query name="getLevelTree" result-class="nl.tailormap.viewer.config.app.Level">
         <query><![CDATA[
             select * from level_ start with id = :rootId connect by parent = prior id
         ]]></query>
@@ -25,7 +25,7 @@
 
     <!-- For Oracle, manually assign sequences for generated id columns -->
 
-    <entity class="nl.viewer.config.services.Category">
+    <entity class="nl.tailormap.viewer.config.services.Category">
         <attributes>
             <id name="id">
                 <generated-value strategy="SEQUENCE" generator="category_id_seq"/>
@@ -34,7 +34,7 @@
         </attributes>
     </entity>
 
-    <entity class="nl.viewer.config.services.GeoService">
+    <entity class="nl.tailormap.viewer.config.services.GeoService">
         <attributes>
             <id name="id">
                 <generated-value strategy="SEQUENCE" generator="geo_service_id_seq"/>
@@ -43,7 +43,7 @@
         </attributes>
     </entity>
 
-    <entity class="nl.viewer.config.forms.Form">
+    <entity class="nl.tailormap.viewer.config.forms.Form">
         <attributes>
             <id name="id">
                 <generated-value strategy="SEQUENCE" generator="form_id_seq"/>
@@ -52,7 +52,7 @@
         </attributes>
     </entity>
 
-    <entity class="nl.viewer.config.services.Layer">
+    <entity class="nl.tailormap.viewer.config.services.Layer">
         <attributes>
             <id name="id">
                 <generated-value strategy="SEQUENCE" generator="layer_id_seq"/>
@@ -61,7 +61,7 @@
         </attributes>
     </entity>
 
-    <entity class="nl.viewer.config.services.FeatureSource">
+    <entity class="nl.tailormap.viewer.config.services.FeatureSource">
         <attributes>
             <id name="id">
                 <generated-value strategy="SEQUENCE" generator="feature_source_id_seq"/>
@@ -70,7 +70,7 @@
         </attributes>
     </entity>
 
-    <entity class="nl.viewer.config.services.SimpleFeatureType">
+    <entity class="nl.tailormap.viewer.config.services.SimpleFeatureType">
         <attributes>
             <id name="id">
                 <generated-value strategy="SEQUENCE" generator="feature_type_id_seq"/>
@@ -79,7 +79,7 @@
         </attributes>
     </entity>
 
-    <entity class="nl.viewer.config.services.AttributeDescriptor">
+    <entity class="nl.tailormap.viewer.config.services.AttributeDescriptor">
         <attributes>
             <id name="id">
                 <generated-value strategy="SEQUENCE" generator="attribute_desc_id_seq"/>
@@ -88,7 +88,7 @@
         </attributes>
     </entity>
 
-    <entity class="nl.viewer.config.services.FeatureTypeRelation">
+    <entity class="nl.tailormap.viewer.config.services.FeatureTypeRelation">
         <attributes>
             <id name="id">
                 <generated-value strategy="SEQUENCE" generator="ft_relation_id_seq"/>
@@ -97,7 +97,7 @@
         </attributes>
     </entity>
 
-    <entity class="nl.viewer.config.services.FeatureTypeRelationKey">
+    <entity class="nl.tailormap.viewer.config.services.FeatureTypeRelationKey">
         <attributes>
             <id name="id">
                 <generated-value strategy="SEQUENCE" generator="ft_relation_key_id_seq"/>
@@ -106,7 +106,7 @@
         </attributes>
     </entity>
 
-       <entity class="nl.viewer.config.services.SolrConf">
+       <entity class="nl.tailormap.viewer.config.services.SolrConf">
         <attributes>
             <id name="id">
                 <generated-value strategy="SEQUENCE" generator="ft_solrconf_key_id_seq"/>
@@ -115,7 +115,7 @@
         </attributes>
     </entity>
 
-    <entity class="nl.viewer.config.services.Document">
+    <entity class="nl.tailormap.viewer.config.services.Document">
         <attributes>
             <id name="id">
                 <generated-value strategy="SEQUENCE" generator="document_id_seq"/>
@@ -124,7 +124,7 @@
         </attributes>
     </entity>
 
-    <entity class="nl.viewer.config.app.Application">
+    <entity class="nl.tailormap.viewer.config.app.Application">
         <attributes>
             <id name="id">
                 <generated-value strategy="SEQUENCE" generator="app_id_seq"/>
@@ -133,7 +133,7 @@
         </attributes>
     </entity>
 
-    <entity class="nl.viewer.config.app.Bookmark">
+    <entity class="nl.tailormap.viewer.config.app.Bookmark">
         <attributes>
             <id name="id">
                 <generated-value strategy="SEQUENCE" generator="bookmark_id_seq"/>
@@ -142,7 +142,7 @@
         </attributes>
     </entity>
 
-    <entity class="nl.viewer.config.app.Level">
+    <entity class="nl.tailormap.viewer.config.app.Level">
         <attributes>
             <id name="id">
                 <generated-value strategy="SEQUENCE" generator="level_id_seq"/>
@@ -151,7 +151,7 @@
         </attributes>
     </entity>
 
-    <entity class="nl.viewer.config.app.ConfiguredComponent">
+    <entity class="nl.tailormap.viewer.config.app.ConfiguredComponent">
         <attributes>
             <id name="id">
                 <generated-value strategy="SEQUENCE" generator="conf_comp_id_seq"/>
@@ -160,7 +160,7 @@
         </attributes>
     </entity>
 
-    <entity class="nl.viewer.config.app.ConfiguredAttribute">
+    <entity class="nl.tailormap.viewer.config.app.ConfiguredAttribute">
         <attributes>
             <id name="id">
                 <generated-value strategy="SEQUENCE" generator="conf_attr_id_seq"/>
@@ -169,7 +169,7 @@
         </attributes>
     </entity>
 
-    <entity class="nl.viewer.config.app.ApplicationLayer">
+    <entity class="nl.tailormap.viewer.config.app.ApplicationLayer">
         <attributes>
             <id name="id">
                 <generated-value strategy="SEQUENCE" generator="app_layer_id_seq"/>
@@ -178,7 +178,7 @@
         </attributes>
     </entity>
 
-    <entity class="nl.viewer.config.services.LayarService">
+    <entity class="nl.tailormap.viewer.config.services.LayarService">
         <attributes>
             <id name="id">
                 <generated-value strategy="SEQUENCE" generator="layar_service_id_seq"/>
@@ -187,7 +187,7 @@
         </attributes>
     </entity>
 
-    <entity class="nl.viewer.config.services.LayarSource">
+    <entity class="nl.tailormap.viewer.config.services.LayarSource">
         <attributes>
             <id name="id">
                 <generated-value strategy="SEQUENCE" generator="layar_source_id_seq"/>
@@ -196,7 +196,7 @@
         </attributes>
     </entity>
 
-    <entity class="nl.viewer.config.services.TileMatrix">
+    <entity class="nl.tailormap.viewer.config.services.TileMatrix">
         <attributes>
             <id name="id">
                 <generated-value strategy="SEQUENCE" generator="tile_matrix_id_seq"/>
@@ -205,7 +205,7 @@
         </attributes>
     </entity>
 
-    <entity class="nl.viewer.config.services.TileMatrixSet">
+    <entity class="nl.tailormap.viewer.config.services.TileMatrixSet">
         <attributes>
             <id name="id">
                 <generated-value strategy="SEQUENCE" generator="tile_matrix_set_id_seq"/>
@@ -214,7 +214,7 @@
         </attributes>
     </entity>
     
-    <entity class="nl.viewer.config.services.StyleLibrary">
+    <entity class="nl.tailormap.viewer.config.services.StyleLibrary">
         <attributes>
             <id name="id">
                 <generated-value strategy="SEQUENCE" generator="style_library_id_seq"/>
@@ -223,7 +223,7 @@
         </attributes>
     </entity>
 
-    <entity class="nl.viewer.config.metadata.Metadata">
+    <entity class="nl.tailormap.viewer.config.metadata.Metadata">
         <attributes>
             <id name="id">
                 <generated-value strategy="SEQUENCE" generator="metadata_id_seq"/>
@@ -232,7 +232,7 @@
         </attributes>
     </entity>
 
-    <entity class="nl.viewer.config.CycloramaAccount">
+    <entity class="nl.tailormap.viewer.config.CycloramaAccount">
         <attributes>
             <id name="id">
                 <generated-value strategy="SEQUENCE" generator="cycloramaaccount_id_seq"/>
@@ -241,7 +241,7 @@
         </attributes>
     </entity>
   
-    <entity class="nl.viewer.config.app.StartLayer">
+    <entity class="nl.tailormap.viewer.config.app.StartLayer">
         <attributes>
             <id name="id">
                 <generated-value strategy="SEQUENCE" generator="startlayer_id_seq"/>
@@ -250,7 +250,7 @@
         </attributes>
     </entity>
   
-    <entity class="nl.viewer.config.app.StartLevel">
+    <entity class="nl.tailormap.viewer.config.app.StartLevel">
         <attributes>
             <id name="id">
                 <generated-value strategy="SEQUENCE" generator="startlevel_id_seq"/>
@@ -259,7 +259,7 @@
         </attributes>
     </entity>
 
-    <entity class="nl.viewer.config.app.FileUpload">
+    <entity class="nl.tailormap.viewer.config.app.FileUpload">
         <attributes>
             <id name="id">
                 <generated-value strategy="SEQUENCE" generator="file_upload_id_seq"/>

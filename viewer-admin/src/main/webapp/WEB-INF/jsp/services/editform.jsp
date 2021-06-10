@@ -26,7 +26,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <div id="formcontent">
             <stripes:errors/>
             <stripes:messages/>
-            <stripes:form beanclass="nl.viewer.admin.stripes.FormActionBean">
+            <stripes:form beanclass="nl.tailormap.viewer.admin.stripes.FormActionBean">
                 <stripes:hidden name="form" value="${actionBean.form.id}"/>
                 <c:choose>
                     <c:when test="${actionBean.context.eventName == 'edit' || actionBean.context.eventName == 'add'}">

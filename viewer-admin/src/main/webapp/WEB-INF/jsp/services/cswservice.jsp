@@ -26,7 +26,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <div id="formcontent">
             <stripes:errors/>
             <stripes:messages/>
-            <stripes:form id="searchForm" beanclass="nl.viewer.admin.stripes.CatalogServiceActionBean">
+            <stripes:form id="searchForm" beanclass="nl.tailormap.viewer.admin.stripes.CatalogServiceActionBean">
                 <stripes:hidden id="category" name="category"/>
                 <h1 id="headertext"><fmt:message key="viewer_admin.cswservice.1" /></h1>
                 <table class="formtable">
@@ -47,7 +47,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     </tr>
                 </table>
             </stripes:form>
-            <stripes:form id="geoserviceForm" beanclass="nl.viewer.admin.stripes.GeoServiceActionBean">
+            <stripes:form id="geoserviceForm" beanclass="nl.tailormap.viewer.admin.stripes.GeoServiceActionBean">
                 <stripes:hidden id="category" name="category"/>
                 <stripes:hidden id="url" name="url"/>
                 <stripes:hidden id="protocol" name="protocol"/>
@@ -57,8 +57,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <script type="text/javascript">
             
             var actionBeans = {
-                "service": <js:quote><stripes:url beanclass="nl.viewer.admin.stripes.GeoServiceActionBean"/></js:quote>,
-                "csw": <js:quote><stripes:url beanclass="nl.viewer.admin.stripes.CatalogServiceActionBean"/></js:quote>
+                "service": <js:quote><stripes:url beanclass="nl.tailormap.viewer.admin.stripes.GeoServiceActionBean"/></js:quote>,
+                "csw": <js:quote><stripes:url beanclass="nl.tailormap.viewer.admin.stripes.CatalogServiceActionBean"/></js:quote>
             };
             Ext.onReady(function() {
                 appendPanel('headertext', 'formcontent');

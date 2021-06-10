@@ -27,6 +27,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
         <link rel="stylesheet" type="text/css" href="${contextPath}/extjs/resources/css/crisp/theme-crisp-all.css">
         <link href="${contextPath}/resources/css/viewer.css" rel="stylesheet">
+        <link href="${contextPath}/resources/css/custom_style.css" rel="stylesheet">
 
         <script type="text/javascript" src="${contextPath}/extjs/ext-all${param.debug == true ? '-debug' : ''}.js"></script>
         <script type="text/javascript" src="${contextPath}/extjs/locale/ext-locale-nl.js"></script>

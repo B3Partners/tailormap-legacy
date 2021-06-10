@@ -26,7 +26,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <div id="formcontent">
             <stripes:errors/>
             <stripes:messages/>
-            <stripes:form beanclass="nl.viewer.admin.stripes.LayerActionBean">
+            <stripes:form beanclass="nl.tailormap.viewer.admin.stripes.LayerActionBean">
 
                 <h1 id="headertext"><fmt:message key="viewer_admin.layer.1" /></h1>
                 <stripes:hidden name="layer" value="${actionBean.layer.id}"/>
@@ -188,7 +188,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
                             if(selectedValue != -1) {
                             Ext.Ajax.request({ 
-                                url: '<stripes:url beanclass="nl.viewer.admin.stripes.AttributeActionBean" event="getFeatureTypes"/>',
+                                url: '<stripes:url beanclass="nl.tailormap.viewer.admin.stripes.AttributeActionBean" event="getFeatureTypes"/>',
                                 params: { 
                                     featureSourceId: selectedValue
                                 }, 
