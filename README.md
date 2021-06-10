@@ -10,8 +10,8 @@ For security related information please check the [security policy](./.github/SE
 
 
 ![Ubuntu Maven build](https://github.com/B3Partners/tailormap/workflows/Ubuntu%20Maven%20build/badge.svg)
-[![Build status](https://ci.appveyor.com/api/projects/status/6wcsx39i2q3cx6k5/branch/master?svg=true)](https://ci.appveyor.com/project/mtoonen/tailormap/branch/master)
 ![MacOS Maven build](https://github.com/B3Partners/tailormap/workflows/MacOS%20Maven%20build/badge.svg)
+![Windows Maven build](https://github.com/B3Partners/tailormap/workflows/Windows%20Maven%20build/badge.svg)
 [![GitHub issues](https://img.shields.io/github/issues/B3Partners/tailormap.svg)](https://github.com/B3Partners/tailormap/issues)
 [![GitHub forks](https://img.shields.io/github/forks/B3Partners/tailormap.svg)](https://github.com/B3Partners/tailormap/network)
 [![GitHub stars](https://img.shields.io/github/stars/B3Partners/tailormap.svg)](https://github.com/B3Partners/tailormap/stargazers)

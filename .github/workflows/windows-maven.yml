@@ -1,0 +1,52 @@
+name: Windows Maven build
+
+env:
+  MAVEN_OPTS: -Djava.awt.headless=true -Dmaven.wagon.httpconnectionManager.ttlSeconds=25 -Dmaven.wagon.http.retryHandler.count=3 -Dbrmo.persistence.microsoftsqlserver
+
+on:
+  push:
+    paths-ignore:
+      - 'tailormap-components/**'
+  pull_request:
+    paths-ignore:
+      - 'tailormap-components/**'
+  workflow_dispatch:
+
+
+jobs:
+  build:
+    name: Windows Java 11
+    runs-on: windows-2019
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/cache@v2
+        with:
+          path: ~/.m2/repository
+          key: maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            maven-
+      - name: Cache Node.js modules
+        uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            node-
+      - name: Set up JDK
+        uses: actions/setup-java@v2
+        with:
+          java-version: 11
+          distribution: 'adopt'
+      - name: Priming build
+        run: |
+          mvn --% install -DskipTests -Dtest.skip.integrationtests=true -B -V -fae
+      - name: Test with Maven
+        run: |
+          mvn --% -e -fae clean test -B
+          mvn --% -e verify -B
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v1
+      - name: Cleanup build artifacts en snapshots
+        run: |
+          mvn --% clean build-helper:remove-project-artifact
+          cmd --% /c for /f %i in ('dir /a:d /s /b %userprofile%\*SNAPSHOT*') do rd /s /q %i

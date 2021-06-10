@@ -774,15 +774,5 @@
                 </plugins>
             </build>
         </profile>
-        <profile>
-            <id>appveyor</id>
-            <dependencies>
-                <dependency>
-                    <groupId>com.microsoft.sqlserver</groupId>
-                    <artifactId>mssql-jdbc</artifactId>
-                    <scope>test</scope>
-                </dependency>
-            </dependencies>
-        </profile>
     </profiles>
 </project>

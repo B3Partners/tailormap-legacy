@@ -915,13 +915,6 @@
                 <test.skip.integrationtests>true</test.skip.integrationtests>
             </properties>
         </profile>
-        <profile>
-            <id>appveyor</id>
-            <properties>
-                <test.persistence.unit>viewer-config-microsoft_sql_server</test.persistence.unit>
-                <test.skip.integrationtests>true</test.skip.integrationtests>
-            </properties>
-        </profile>
     </profiles>
     <modules>
         <module>tomcat-lib</module>
