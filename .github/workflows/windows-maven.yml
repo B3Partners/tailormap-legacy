@@ -12,7 +12,6 @@ on:
       - 'tailormap-components/**'
   workflow_dispatch:
 
-
 jobs:
   build:
     name: Windows Java 11
@@ -46,7 +45,7 @@ jobs:
           mvn --% -e verify -B
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v1
-      - name: Cleanup build artifacts en snapshots
+      - name: Cleanup build artifacts and snapshots
         run: |
-          mvn --% clean build-helper:remove-project-artifact
+          # mvn --% clean build-helper:remove-project-artifact
           cmd --% /c for /f %i in ('dir /a:d /s /b %userprofile%\*SNAPSHOT*') do rd /s /q %i
