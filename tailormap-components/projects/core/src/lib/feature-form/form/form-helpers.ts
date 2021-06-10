@@ -31,11 +31,11 @@ export class FormHelpers {
   }
 
 
-  public static isGeneratedFeature(feat: Feature | AttributeListFeature): feat is Feature {
+  public static isGeneratedFeature(feat: Feature | AttributeListFeature): feat is Feature{
     return feat.attributes;
   }
 
-  public static getValue(feat: Feature | AttributeListFeature, field: Attribute): string {
+  public static getValue(feat: Feature | AttributeListFeature, field: Attribute): string{
     let value = null;
     if(FormHelpers.isGeneratedFeature(feat)){
       const attr = FormCreatorHelpers.getAttribute(feat, field.key);
