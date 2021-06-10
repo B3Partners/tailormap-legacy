@@ -57,12 +57,15 @@ public class GeoServiceMonitoringListener implements ServletContextListener {
             return;
         }
 
-        try {
-            Mailer.getMailSession();
-        } catch(Exception e) {
-            log.error("Error getting mail session, monitoring disabled! Please configure the JNDI JavaMail Session resource correctly.", e);
-            return;
-        }
+// we don't need to do this; mail will try this when running the job, also
+// when no mail session can be set-up monitoring will not start,
+// so no status info about the services will be added in the database
+//        try {
+//            Mailer.getMailSession();
+//        } catch(Exception e) {
+//            log.error("Error getting mail session, monitoring disabled! Please configure the JNDI JavaMail Session resource correctly.", e);
+//            return;
+//        }
         
         try {
             setupQuartz();

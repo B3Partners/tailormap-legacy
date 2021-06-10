@@ -6,12 +6,12 @@
     <version>5.9.5-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>tailormap</name>
-    <url>http://github.com/b3partners/tailormap</url>
+    <url>https://github.com/b3partners/tailormap</url>
     <scm>
         <connection>scm:git:git@github.com:b3partners/tailormap.git</connection>
         <developerConnection>scm:git:git@github.com:b3partners/tailormap.git</developerConnection>
         <url>https://github.com/b3partners/tailormap.git</url>
-        <tag>v5.9.2</tag>
+        <tag>HEAD</tag>
     </scm>
     <ciManagement>
         <system>Jenkins</system>
@@ -41,6 +41,8 @@
         <java.version>11</java.version>
         <!-- https://nodejs.org/dist/latest-v14.x/ -->
         <node.version>v14.17.0</node.version>
+        <!-- https://www.npmjs.com/package/npm -->
+        <npm.version>7.16.0</npm.version>
         <project.build.sourceVersion>${java.version}</project.build.sourceVersion>
         <project.build.targetVersion>${java.version}</project.build.targetVersion>
         <maven.compiler.source>${java.version}</maven.compiler.source>
@@ -70,9 +72,9 @@
         or as part of a profile, see eg. 'gh-action' profile in viewer -->
         <test.skip.integrationtests>false</test.skip.integrationtests>
         <maven-surefire-plugin.version>3.0.0-M5</maven-surefire-plugin.version>
-        <tomcat.version>7.0.109</tomcat.version>
-        <tomcat7-maven-plugin.version>2.2</tomcat7-maven-plugin.version>
         <jacoco-maven-plugin.version>0.8.7</jacoco-maven-plugin.version>
+        <cargo-maven3-plugin.version>1.9.0</cargo-maven3-plugin.version>
+        <tomcat.localDatasource>false</tomcat.localDatasource>
         <properties-maven-plugin.version>1.0.0</properties-maven-plugin.version>
     </properties>
     <dependencyManagement>
@@ -81,8 +83,8 @@
             mvn -U org.codehaus.mojo:versions-maven-plugin:display-dependency-updates -T1 > dependency-updates.log
             and check the output for any available updates.
 
-            To check for vulnarabilities in dependencies use the following command:
-            mvn org.owasp:dependency-check-maven:check > vuln-check.log
+            To check for vulnerabilities in dependencies use the following command:
+            mvn org.owasp:dependency-check-maven:aggregate > vuln-check.log
         -->
         <dependencies>
             <!-- viewer-->
@@ -254,12 +256,6 @@
                 <artifactId>jaxb-runtime</artifactId>
                 <version>${jaxb.impl.version}</version>
             </dependency>
-            <dependency>
-                <groupId>jakarta.activation</groupId>
-                <artifactId>jakarta.activation-api</artifactId>
-                <version>${activation.api.version}</version>
-            </dependency>
-
             <dependency>
                 <groupId>nl.b3p</groupId>
                 <artifactId>b3p-commons-csw</artifactId>
@@ -507,6 +503,16 @@
                 <version>${jakarta.mail.version}</version>
             </dependency>
             <dependency>
+                <groupId>jakarta.activation</groupId>
+                <artifactId>jakarta.activation-api</artifactId>
+                <version>${activation.api.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sun.activation</groupId>
+                <artifactId>jakarta.activation</artifactId>
+                <version>${activation.api.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.apache.poi</groupId>
                 <artifactId>poi-ooxml</artifactId>
                 <version>${apache.poi.version}</version>
@@ -752,103 +758,6 @@
                     </configuration>
                 </plugin>
                 <plugin>
-                    <groupId>org.apache.tomcat.maven</groupId>
-                    <artifactId>tomcat7-maven-plugin</artifactId>
-                    <version>${tomcat7-maven-plugin.version}</version>
-                    <dependencies>
-                        <dependency>
-                            <groupId>org.apache.tomcat.embed</groupId>
-                            <artifactId>tomcat-embed-core</artifactId>
-                            <version>${tomcat.version}</version>
-                        </dependency>
-                        <dependency>
-                            <groupId>org.apache.tomcat</groupId>
-                            <artifactId>tomcat-util</artifactId>
-                            <version>${tomcat.version}</version>
-                        </dependency>
-                        <dependency>
-                            <groupId>org.apache.tomcat</groupId>
-                            <artifactId>tomcat-coyote</artifactId>
-                            <version>${tomcat.version}</version>
-                        </dependency>
-                        <dependency>
-                            <groupId>org.apache.tomcat</groupId>
-                            <artifactId>tomcat-api</artifactId>
-                            <version>${tomcat.version}</version>
-                        </dependency>
-                        <dependency>
-                            <groupId>org.apache.tomcat</groupId>
-                            <artifactId>tomcat-jdbc</artifactId>
-                            <version>${tomcat.version}</version>
-                        </dependency>
-                        <dependency>
-                            <groupId>org.apache.tomcat</groupId>
-                            <artifactId>tomcat-dbcp</artifactId>
-                            <version>${tomcat.version}</version>
-                        </dependency>
-                        <dependency>
-                            <groupId>org.apache.tomcat</groupId>
-                            <artifactId>tomcat-servlet-api</artifactId>
-                            <version>${tomcat.version}</version>
-                        </dependency>
-                        <dependency>
-                            <groupId>org.apache.tomcat</groupId>
-                            <artifactId>tomcat-jsp-api</artifactId>
-                            <version>${tomcat.version}</version>
-                        </dependency>
-                        <dependency>
-                            <groupId>org.apache.tomcat</groupId>
-                            <artifactId>tomcat-jasper</artifactId>
-                            <version>${tomcat.version}</version>
-                        </dependency>
-                        <dependency>
-                            <groupId>org.apache.tomcat</groupId>
-                            <artifactId>tomcat-jasper-el</artifactId>
-                            <version>${tomcat.version}</version>
-                        </dependency>
-                        <dependency>
-                            <groupId>org.apache.tomcat</groupId>
-                            <artifactId>tomcat-el-api</artifactId>
-                            <version>${tomcat.version}</version>
-                        </dependency>
-                        <dependency>
-                            <groupId>org.apache.tomcat</groupId>
-                            <artifactId>tomcat-catalina</artifactId>
-                            <version>${tomcat.version}</version>
-                        </dependency>
-                        <dependency>
-                            <groupId>org.apache.tomcat</groupId>
-                            <artifactId>tomcat-tribes</artifactId>
-                            <version>${tomcat.version}</version>
-                        </dependency>
-                        <dependency>
-                            <groupId>org.apache.tomcat</groupId>
-                            <artifactId>tomcat-catalina-ha</artifactId>
-                            <version>${tomcat.version}</version>
-                        </dependency>
-                        <dependency>
-                            <groupId>org.apache.tomcat</groupId>
-                            <artifactId>tomcat-annotations-api</artifactId>
-                            <version>${tomcat.version}</version>
-                        </dependency>
-                        <dependency>
-                            <groupId>org.apache.tomcat</groupId>
-                            <artifactId>tomcat-juli</artifactId>
-                            <version>${tomcat.version}</version>
-                        </dependency>
-                        <dependency>
-                            <groupId>org.apache.tomcat.embed</groupId>
-                            <artifactId>tomcat-embed-logging-juli</artifactId>
-                            <version>${tomcat.version}</version>
-                        </dependency>
-                        <dependency>
-                            <groupId>org.apache.tomcat.embed</groupId>
-                            <artifactId>tomcat-embed-logging-log4j</artifactId>
-                            <version>${tomcat.version}</version>
-                        </dependency>
-                    </dependencies>
-                </plugin>
-                <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>properties-maven-plugin</artifactId>
                     <version>${properties-maven-plugin.version}</version>
@@ -874,8 +783,8 @@
                 </plugin>
                 <plugin>
                     <groupId>org.codehaus.cargo</groupId>
-                    <artifactId>cargo-maven2-plugin</artifactId>
-                    <version>1.9.0</version>
+                    <artifactId>cargo-maven3-plugin</artifactId>
+                    <version>${cargo-maven3-plugin.version}</version>
                 </plugin>
                 <plugin>
                     <groupId>io.fabric8</groupId>
@@ -1003,13 +912,6 @@
         <profile>
             <id>jenkins</id>
             <properties>
-                <test.skip.integrationtests>true</test.skip.integrationtests>
-            </properties>
-        </profile>
-        <profile>
-            <id>appveyor</id>
-            <properties>
-                <test.persistence.unit>viewer-config-microsoft_sql_server</test.persistence.unit>
                 <test.skip.integrationtests>true</test.skip.integrationtests>
             </properties>
         </profile>
