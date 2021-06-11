@@ -29,6 +29,9 @@ import { StyleFormPanelComponent } from './style-form-panel/style-form-panel.com
 import { ResolutionSelectorComponent } from './resolution-selector/resolution-selector.component';
 import { StylePreviewComponent } from './style-preview/style-preview.component';
 import { ResolutionRangeSelectorComponent } from './resolution-range-selector/resolution-range-selector.component';
+import { AnalysisAttributeListButtonComponent } from './analysis-attribute-list-button/analysis-attribute-list-button.component';
+import { AttributeListService } from '@tailormap/core-components';
+import { AnalysisAttributeListLayerNameChooserComponent } from './analysis-attribute-list-layername-chooser/analysis-attribute-list-layer-name-chooser.component';
 
 
 @NgModule({
@@ -51,6 +54,8 @@ import { ResolutionRangeSelectorComponent } from './resolution-range-selector/re
     ResolutionSelectorComponent,
     StylePreviewComponent,
     ResolutionRangeSelectorComponent,
+    AnalysisAttributeListButtonComponent,
+    AnalysisAttributeListLayerNameChooserComponent,
   ],
   imports: [
     CommonModule,
@@ -61,10 +66,14 @@ import { ResolutionRangeSelectorComponent } from './resolution-range-selector/re
   ],
 })
 export class AnalysisModule {
-  public constructor(injector: Injector) {
+  public constructor(
+    injector: Injector,
+    attributeListService: AttributeListService,
+  ) {
     customElements.define('tailormap-analysis-button',
       createCustomElement(AnalysisButtonComponent, {injector}));
     customElements.define('tailormap-create-layer-panel',
       createCustomElement(CreateLayerPanelComponent, {injector}));
+    AnalysisAttributeListButtonComponent.registerWithAttributeList(attributeListService);
   }
 }

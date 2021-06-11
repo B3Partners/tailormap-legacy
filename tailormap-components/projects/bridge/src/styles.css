@@ -7,3 +7,10 @@ body {
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
 }
+
+/**
+tailormap-frontend / tailormap-components overrides
+ */
+tailormap-menubar-button button.mat-icon-button {
+  margin: 0;
+}

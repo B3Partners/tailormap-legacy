@@ -5,6 +5,7 @@ import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { SharedModule } from '../../shared/shared.module';
 import { CriteriaDescriptionComponent } from '../criteria/criteria-description/criteria-description.component';
 import { getMetadataServiceMockProvider } from '../../application/services/mocks/metadata.service.mock';
+import { MatIconTestingModule } from '@angular/material/icon/testing';
 
 describe('CreateLayerModeAttributesComponent', () => {
   let spectator: Spectator<CreateLayerModeAttributesComponent>;
@@ -13,7 +14,7 @@ describe('CreateLayerModeAttributesComponent', () => {
 
   const createComponent = createComponentFactory({
     component: CreateLayerModeAttributesComponent,
-    imports: [ SharedModule ],
+    imports: [ SharedModule, MatIconTestingModule ],
     providers: [
       provideMockStore({ initialState }),
       getMetadataServiceMockProvider(),

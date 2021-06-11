@@ -13,6 +13,7 @@ import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { applicationStateKey, initialApplicationState } from '../../application/state/application.state';
 import { testFormConfigs } from '../../application/state/test-data/application-test-data';
 import { ExtendedFormConfigurationModel } from '../../application/models/extended-form-configuration.model';
+import { MatIconTestingModule } from '@angular/material/icon/testing';
 
 
 describe('FormCopyComponent', () => {
@@ -40,6 +41,7 @@ describe('FormCopyComponent', () => {
     imports: [
       SharedModule,
       FormConfigMockModule,
+      MatIconTestingModule,
     ],
     providers: [
       provideMockStore({ initialState }),

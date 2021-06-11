@@ -16,6 +16,7 @@ import { formStateKey, initialFormState } from '../state/form.state';
 import { applicationStateKey, initialApplicationState } from '../../application/state/application.state';
 import { getEditFeatureGeometryServiceProvider } from '../services/mocks/edit-feature-geometry.service.mock';
 import { getTailorMapServiceMockProvider } from '../../../../../bridge/src/tailor-map.service.mock';
+import { MatIconTestingModule } from '@angular/material/icon/testing';
 
 describe('FormComponent', () => {
   let spectator: Spectator<FormComponent>;
@@ -33,6 +34,7 @@ describe('FormComponent', () => {
       MatSnackBarModule,
       SharedModule,
       FormConfigMockModule,
+      MatIconTestingModule,
     ],
     declarations: [
       FormCreatorComponent,
