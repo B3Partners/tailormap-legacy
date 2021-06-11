@@ -66,6 +66,8 @@ public class UniqueValuesActionBean extends LocalizableActionBean implements Act
     private int maxFeatures = 250;
     @Validate
     private String filter;
+    @Validate
+    private boolean includeNullValues = false;
 
     // <editor-fold desc="Getters and Setters" defaultstate="collapsed">
     public ActionBeanContext getContext() {
@@ -123,6 +125,14 @@ public class UniqueValuesActionBean extends LocalizableActionBean implements Act
     public void setFilter(String filter) {
         this.filter = filter;
     }
+
+    public boolean isIncludeNullValues() {
+        return includeNullValues;
+    }
+
+    public void setIncludeNullValues(boolean includeNullValues) {
+        this.includeNullValues = includeNullValues;
+    }
     // </editor-fold>
 
     @DefaultHandler
@@ -142,7 +152,7 @@ public class UniqueValuesActionBean extends LocalizableActionBean implements Act
             for (int i = 0; i < attributes.length; i++) {
                 String attribute = attributes[i];
                 Filter  f = filter != null ? TailormapCQL.toFilter(filter,Stripersist.getEntityManager()) : null;
-                List<String> beh = FeatureSourceFactoryHelper.calculateUniqueValues(this.featureType, attribute, maxFeatures, f);
+                List<String> beh = FeatureSourceFactoryHelper.calculateUniqueValues(this.featureType, attribute, maxFeatures, f, includeNullValues);
 
                 uniqueValues.put(attribute, new JSONArray(beh));
                 json.put("success", Boolean.TRUE);

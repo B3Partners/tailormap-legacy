@@ -163,20 +163,27 @@ public class FeatureSourceFactoryHelper {
     }
 
     public static List<String> calculateUniqueValues(SimpleFeatureType sft, String attributeName, Filter filter) throws Exception{
-        return calculateUniqueValues(sft, attributeName, MAX_FEATURES_DEFAULT, filter);
+        return calculateUniqueValues(sft, attributeName, MAX_FEATURES_DEFAULT, filter, false);
     }
 
-    public static List<String> calculateUniqueValues(SimpleFeatureType sft, String attributeName, int maxFeatures, Filter filter) throws Exception{
+    public static List<String> calculateUniqueValues(SimpleFeatureType sft, String attributeName, int maxFeatures, Filter filter, Boolean includeNullValues) throws Exception{
         org.geotools.data.FeatureSource fs = null;
         try {
             FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2(null);
             Function unique = ff.function("Collection_Unique", ff.property(attributeName));
             Filter notNull = ff.not( ff.isNull( ff.property(attributeName) ));
-            Filter f = notNull;
-            if(filter != null){
+            Filter f = null;
+            if(filter != null && !includeNullValues){
                 f = ff.and(notNull, filter);
+            } else if(filter != null) {
+                f = filter;
+            } else if(!includeNullValues) {
+                f = notNull;
             }
-            org.geotools.data.Query q = new org.geotools.data.Query(sft.getTypeName(), f);
+            org.geotools.data.Query q = new org.geotools.data.Query(sft.getTypeName());
+            if(f != null) {
+                q.setFilter(f);
+            }
             if(maxFeatures != -1) {
                 q.setMaxFeatures(maxFeatures);
             }
@@ -190,7 +197,11 @@ public class FeatureSourceFactoryHelper {
                 uniqueValues = new HashSet<String>();
             }
             List<String> l = new ArrayList<String>(uniqueValues);
-            Collections.sort(l);
+            // can't sort list with null values.
+            // Maybe make a method that sorts the other values and places the null value at the top or bottom?
+            if (!includeNullValues) {
+                Collections.sort(l);
+            }
             return l;
         } catch (Exception ex) {
             throw ex;
