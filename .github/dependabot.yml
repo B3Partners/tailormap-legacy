@@ -1,21 +1,5 @@
 version: 2
 updates:
-- package-ecosystem: docker
-  directory: "/viewer-commons/docker/geoserver"
-  schedule:
-    interval: weekly
-    timezone: Europe/Amsterdam
-    day: "saturday"
-  open-pull-requests-limit: 25
-  reviewers:
-  - mprins
-  - mtoonen
-  assignees:
-  - mprins
-  labels:
-  - build infrastructure
-  - backport v5.8.x
-
 - package-ecosystem: maven
   directory: "/"
   schedule:

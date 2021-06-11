@@ -42,11 +42,6 @@ jobs:
           sudo -u postgres psql -a -c "CREATE ROLE flamingo4 LOGIN PASSWORD 'flamingo4' SUPERUSER CREATEDB;"
           sudo -u postgres psql -a -c 'CREATE DATABASE flamingo4;'
           sudo -u postgres psql -a -c 'ALTER DATABASE flamingo4 OWNER TO flamingo4;'
-      - name: setup geoserver
-        run: |
-          docker-compose -f viewer-commons/docker/geoserver/docker-compose.yml up -d
-          sudo npm install -g wait-on
-          wait-on -t 120000 http-get://localhost:8600/geoserver && echo "docker geoserver is up" || true
       - name: Priming build with Maven
         run: mvn install -DskipTests -Dtest.skip.integrationtests=true -B -V -fae
       - name: Test with Maven
