@@ -259,6 +259,7 @@
                     <workingDirectory>${tailormap-components.source.dir}</workingDirectory>
                     <installDirectory>${project.build.directory}/</installDirectory>
                     <nodeVersion>${node.version}</nodeVersion>
+                    <npmVersion>${npm.version}</npmVersion>
                 </configuration>
                 <executions>
                     <execution>
@@ -323,7 +324,6 @@
                 </configuration>
             </plugin>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
                 <configuration>
                     <filters>
@@ -336,6 +336,7 @@
                             <filtering>true</filtering>
                             <includes>
                                 <include>about.jsp</include>
+                                <include>META-INF/context.xml</include>
                             </includes>
                         </resource>
                     </webResources>
@@ -380,8 +381,6 @@
                                 <artifactItem>
                                     <groupId>javax</groupId>
                                     <artifactId>javaee-endorsed-api</artifactId>
-                                    <version>6.0</version>
-                                    <type>jar</type>
                                 </artifactItem>
                             </artifactItems>
                         </configuration>
@@ -648,29 +647,48 @@
     <profiles>
         <profile>
             <id>gh-action</id>
+            <properties>
+                <tomcat.localDatasource>true</tomcat.localDatasource>
+            </properties>
             <dependencies>
                 <dependency>
                     <groupId>org.postgresql</groupId>
                     <artifactId>postgresql</artifactId>
-                    <scope>test</scope>
+                </dependency>
+                <dependency>
+                    <groupId>com.sun.mail</groupId>
+                    <artifactId>jakarta.mail</artifactId>
+                    <version>${jakarta.mail.version}</version>
                 </dependency>
             </dependencies>
             <build>
+                <filters>
+                    <filter>${project.basedir}/src/test/resources/postgres.properties</filter>
+                </filters>
+                <testResources>
+                    <testResource>
+                        <directory>${project.basedir}/src/test/tomcatconf/</directory>
+                        <filtering>true</filtering>
+                    </testResource>
+                    <testResource>
+                        <directory>${project.basedir}/src/test/resources/</directory>
+                    </testResource>
+                </testResources>
                 <plugins>
                     <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>properties-maven-plugin</artifactId>
-                        <version>${properties-maven-plugin.version}</version>
+                        <groupId>org.jacoco</groupId>
+                        <artifactId>jacoco-maven-plugin</artifactId>
+                        <version>${jacoco-maven-plugin.version}</version>
                         <executions>
                             <execution>
-                                <phase>initialize</phase>
+                                <id>prepare-agent-integration-cargo</id>
+                                <phase>pre-integration-test</phase>
                                 <goals>
-                                    <goal>read-project-properties</goal>
+                                    <goal>prepare-agent-integration</goal>
                                 </goals>
                                 <configuration>
-                                    <files>
-                                        <file>src/test/resources/postgres.properties</file>
-                                    </files>
+                                    <destFile>${project.build.directory}/jacoco-cargo.exec</destFile>
+                                    <propertyName>cargoArgLine</propertyName>
                                 </configuration>
                             </execution>
                         </executions>
@@ -703,154 +721,55 @@
                         </executions>
                     </plugin>
                     <plugin>
-                        <groupId>org.apache.tomcat.maven</groupId>
-                        <artifactId>tomcat7-maven-plugin</artifactId>
-                        <version>${tomcat7-maven-plugin.version}</version>
+                        <groupId>org.codehaus.cargo</groupId>
+                        <artifactId>cargo-maven3-plugin</artifactId>
+                        <version>${cargo-maven3-plugin.version}</version>
                         <configuration>
-                            <port>9090</port>
-                            <contextFile>src/test/tomcatconf/context.xml</contextFile>
-                            <systemProperties>
-                            </systemProperties>
+                            <container>
+                                <containerId>tomcat9x</containerId>
+                                <type>embedded</type>
+                                <output>${project.build.directory}/tomcat9x.log</output>
+                                <log>${project.build.directory}/cargo.log</log>
+                                <dependencies>
+                                    <dependency>
+                                        <groupId>com.sun.mail</groupId>
+                                        <artifactId>jakarta.mail</artifactId>
+                                    </dependency>
+                                </dependencies>
+                            </container>
+                            <configuration>
+                                <properties>
+                                    <!-- zie: https://codehaus-cargo.github.io/cargo/Tomcat+9.x.html -->
+                                    <cargo.logging>high</cargo.logging>
+                                    <cargo.servlet.port>9090</cargo.servlet.port>
+                                    <cargo.start.jvmargs>${cargoArgLine}</cargo.start.jvmargs>
+                                </properties>
+                                <configfiles>
+                                    <configfile>
+                                        <file>${project.build.directory}/test-classes/context.xml</file>
+                                        <tofile>conf/context.xml</tofile>
+                                        <configfile>true</configfile>
+                                        <overwrite>true</overwrite>
+                                    </configfile>
+                                </configfiles>
+                            </configuration>
                         </configuration>
                         <executions>
                             <execution>
-                                <id>tomcat-startup</id>
-                                <goals>
-                                    <goal>run</goal>
-                                </goals>
+                                <id>start-server</id>
                                 <phase>pre-integration-test</phase>
-                                <configuration>
-                                    <fork>true</fork>
-                                </configuration>
+                                <goals>
+                                    <goal>start</goal>
+                                </goals>
                             </execution>
                             <execution>
-                                <id>tomcat-shutdown</id>
-                                <goals>
-                                    <goal>shutdown</goal>
-                                </goals>
+                                <id>stop-server</id>
                                 <phase>post-integration-test</phase>
-                            </execution>
-                        </executions>
-                        <dependencies>
-                            <dependency>
-                                <groupId>com.sun.mail</groupId>
-                                <artifactId>jakarta.mail</artifactId>
-                                <version>${jakarta.mail.version}</version>
-                            </dependency>
-                            <dependency>
-                                <groupId>org.postgresql</groupId>
-                                <artifactId>postgresql</artifactId>
-                                <version>${postgresql.version}</version>
-                            </dependency>
-                            <dependency>
-                                <groupId>org.jacoco</groupId>
-                                <artifactId>org.jacoco.agent</artifactId>
-                                <version>${jacoco-maven-plugin.version}</version>
-                            </dependency>
-                        </dependencies>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-        <profile>
-            <id>appveyor</id>
-            <dependencies>
-                <dependency>
-                    <groupId>com.microsoft.sqlserver</groupId>
-                    <artifactId>mssql-jdbc</artifactId>
-                    <scope>test</scope>
-                </dependency>
-            </dependencies>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>properties-maven-plugin</artifactId>
-                        <version>${properties-maven-plugin.version}</version>
-                        <executions>
-                            <execution>
-                                <phase>initialize</phase>
                                 <goals>
-                                    <goal>read-project-properties</goal>
-                                </goals>
-                                <configuration>
-                                    <files>
-                                        <file>src/test/resources/ms_sql_server.properties</file>
-                                    </files>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <artifactId>maven-failsafe-plugin</artifactId>
-                        <version>${maven-surefire-plugin.version}</version>
-                        <configuration>
-                            <includes>
-                                <include>**/*IntegrationTest.java</include>
-                            </includes>
-                            <excludes>
-                            </excludes>
-                            <trimStackTrace>false</trimStackTrace>
-                            <testFailureIgnore>!${test.skip.integrationtests}</testFailureIgnore>
-                            <skipTests>!${test.skip.integrationtests}</skipTests>
-                            <systemPropertyVariables>
-                                <test.persistence.unit>${test.persistence.unit}</test.persistence.unit>
-                                <database.properties.file>ms_sql_server.properties</database.properties.file>
-                                <tailormap.version>${project.version}</tailormap.version>
-                            </systemPropertyVariables>
-                            <useFile>false</useFile>
-                            <!--<argLine>${failsafeArgLine}</argLine>-->
-                        </configuration>
-                        <executions>
-                            <execution>
-                                <goals>
-                                    <goal>integration-test</goal>
-                                    <goal>verify</goal>
+                                    <goal>stop</goal>
                                 </goals>
                             </execution>
                         </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.tomcat.maven</groupId>
-                        <artifactId>tomcat7-maven-plugin</artifactId>
-                        <version>${tomcat7-maven-plugin.version}</version>
-                        <configuration>
-                            <port>9090</port>
-                            <contextFile>src/test/tomcatconf/appveyorcontext.xml</contextFile>
-                            <systemProperties>
-                            </systemProperties>
-                        </configuration>
-                        <executions>
-                            <execution>
-                                <id>tomcat-startup</id>
-                                <goals>
-                                    <goal>run</goal>
-                                </goals>
-                                <phase>pre-integration-test</phase>
-                                <configuration>
-                                    <fork>true</fork>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>tomcat-shutdown</id>
-                                <goals>
-                                    <goal>shutdown</goal>
-                                </goals>
-                                <phase>post-integration-test</phase>
-                            </execution>
-                        </executions>
-                        <dependencies>
-                            <dependency>
-                                <groupId>com.sun.mail</groupId>
-                                <artifactId>jakarta.mail</artifactId>
-                                <version>${jakarta.mail.version}</version>
-                            </dependency>
-                            <dependency>
-                                <groupId>com.microsoft.sqlserver</groupId>
-                                <artifactId>mssql-jdbc</artifactId>
-                                <version>${mssql.version}</version>
-                            </dependency>
-                        </dependencies>
                     </plugin>
                 </plugins>
             </build>
