@@ -7,12 +7,12 @@ import {
   Level,
 } from '../../../../../bridge/typings';
 import { ApplicationTreeHelper } from '../helpers/application-tree.helper';
-import { TreeModel } from '../../shared/tree/models/tree.model';
+import { TreeModel } from '@tailormap/shared';
 
 @Component({
   selector: 'tailormap-application-tree-node',
   templateUrl: './application-tree-node.component.html',
-  styleUrls: ['../../shared/tree/style/tree-node-style.css', './application-tree-node.component.css'],
+  styleUrls: ['./application-tree-node.component.css'],
 })
 export class ApplicationTreeNodeComponent {
 

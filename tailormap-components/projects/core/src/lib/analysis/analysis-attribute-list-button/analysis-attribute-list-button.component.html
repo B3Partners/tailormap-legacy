@@ -1,0 +1,3 @@
+<div [matTooltip]="getToolTipMessageForUserLayer()" [matTooltipDisabled]="getCanCreateUserLayer()">
+  <button mat-menu-item [disabled]="!getCanCreateUserLayer()" (click)="createUserLayer()">Laag maken</button>
+</div>

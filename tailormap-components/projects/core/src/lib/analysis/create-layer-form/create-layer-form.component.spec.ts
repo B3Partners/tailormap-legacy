@@ -4,6 +4,7 @@ import { analysisStateKey, initialAnalysisState } from '../state/analysis.state'
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { SharedModule } from '../../shared/shared.module';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { MatIconTestingModule } from '@angular/material/icon/testing';
 
 describe('CreateLayerFormComponent', () => {
   let spectator: Spectator<CreateLayerFormComponent>;
@@ -12,7 +13,7 @@ describe('CreateLayerFormComponent', () => {
 
   const createComponent = createComponentFactory({
     component: CreateLayerFormComponent,
-    imports: [ SharedModule ],
+    imports: [ SharedModule, MatIconTestingModule ],
     providers: [
       provideMockStore({ initialState }),
     ],

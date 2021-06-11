@@ -14,7 +14,7 @@ export interface FormConfiguration {
   treeNodeColumn: string;
   idInTreeNodeColumn?: boolean;
   featureType: string;
-  tabConfig: Map<number, string>;
+  tabConfig: Record<number, string>;
   relation?: FormRelation;
   featuretypeMetadata?: FeaturetypeMetadata;
 }

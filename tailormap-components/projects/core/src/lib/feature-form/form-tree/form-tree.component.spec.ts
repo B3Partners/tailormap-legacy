@@ -6,6 +6,7 @@ import { FormConfigMockModule } from '../../shared/formconfig-repository/formcon
 import { formStateKey, initialFormState } from '../state/form.state';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { applicationStateKey, initialApplicationState } from '../../application/state/application.state';
+import { MatIconTestingModule } from '@angular/material/icon/testing';
 
 describe('FormTreeComponent', () => {
   let component: FormTreeComponent;
@@ -21,6 +22,7 @@ describe('FormTreeComponent', () => {
       imports: [
         SharedModule,
         FormConfigMockModule,
+        MatIconTestingModule,
       ],
       providers:[
         provideMockStore({ initialState })],

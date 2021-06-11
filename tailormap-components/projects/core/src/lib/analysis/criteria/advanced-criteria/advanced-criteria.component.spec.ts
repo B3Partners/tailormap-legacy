@@ -6,6 +6,7 @@ import { IdService } from '../../../shared/id-service/id.service';
 import { ConfirmDialogService } from '../../../shared/confirm-dialog/confirm-dialog.service';
 import { SharedModule } from '../../../shared/shared.module';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { MatIconTestingModule } from '@angular/material/icon/testing';
 
 describe('AdvancedCriteriaComponent', () => {
 
@@ -15,7 +16,7 @@ describe('AdvancedCriteriaComponent', () => {
 
   const createComponent = createComponentFactory({
     component: AdvancedCriteriaComponent,
-    imports: [ SharedModule ],
+    imports: [ SharedModule, MatIconTestingModule ],
     providers: [
       provideMockStore({ initialState }),
       IdService,

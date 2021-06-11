@@ -5,6 +5,7 @@ import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { SharedModule } from '../../shared/shared.module';
 import { getUserLayerServiceMockProvider } from '../services/mocks/user-layer.service.mock';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { MatIconTestingModule } from '@angular/material/icon/testing';
 
 describe('CreateLayerStylingComponent', () => {
   let spectator: Spectator<CreateLayerStylingComponent>;
@@ -13,7 +14,7 @@ describe('CreateLayerStylingComponent', () => {
 
   const createComponent = createComponentFactory({
     component: CreateLayerStylingComponent,
-    imports: [ SharedModule ],
+    imports: [ SharedModule, MatIconTestingModule ],
     providers: [
       provideMockStore({ initialState }),
       getUserLayerServiceMockProvider(),

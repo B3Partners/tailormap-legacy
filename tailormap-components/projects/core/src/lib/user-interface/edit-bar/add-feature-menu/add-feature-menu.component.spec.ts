@@ -11,6 +11,7 @@ import { MenuButtonComponent } from './menu-button/menu-button.component';
 import { formStateKey, initialFormState } from '../../../feature-form/state/form.state';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { applicationStateKey, initialApplicationState } from '../../../application/state/application.state';
+import { MatIconTestingModule } from '@angular/material/icon/testing';
 
 describe('AddFeatureMenuComponent', () => {
   let spectator: Spectator<AddFeatureMenuComponent>;
@@ -24,6 +25,7 @@ describe('AddFeatureMenuComponent', () => {
     imports: [
       SharedModule,
       FormConfigMockModule,
+      MatIconTestingModule,
     ],
     declarations: [
       MenuButtonComponent,
