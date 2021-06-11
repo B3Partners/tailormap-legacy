@@ -4,6 +4,8 @@ import { getTailorMapServiceMockProvider } from '../../../../../bridge/src/tailo
 import { provideMockStore } from '@ngrx/store/testing';
 import { getAttributeListServiceMockMockProvider } from '../../shared/tests/test-mocks';
 import { SharedModule } from '../../shared/shared.module';
+import { getUserLayerServiceMockProvider } from '../services/mocks/user-layer.service.mock';
+import { getMetadataServiceMockProvider } from '../../application/services/mocks/metadata.service.mock';
 
 describe('AnalysisAttributeListButtonComponent', () => {
 
@@ -14,6 +16,8 @@ describe('AnalysisAttributeListButtonComponent', () => {
       provideMockStore(),
       getTailorMapServiceMockProvider(),
       getAttributeListServiceMockMockProvider(),
+      getUserLayerServiceMockProvider(),
+      getMetadataServiceMockProvider(),
     ],
     imports: [
       SharedModule,

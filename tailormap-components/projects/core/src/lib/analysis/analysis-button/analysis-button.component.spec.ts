@@ -4,6 +4,7 @@ import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { SharedModule } from '../../shared/shared.module';
 import { getUserLayerServiceMockProvider } from '../services/mocks/user-layer.service.mock';
 import { defaultRootState } from '../../state/root-state.model';
+import { MatIconTestingModule } from '@angular/material/icon/testing';
 
 describe('AnalysisButtonComponent', () => {
 
@@ -13,7 +14,7 @@ describe('AnalysisButtonComponent', () => {
 
   const createComponent = createComponentFactory({
     component: AnalysisButtonComponent,
-    imports: [ SharedModule ],
+    imports: [ SharedModule, MatIconTestingModule ],
     providers: [
       provideMockStore({ initialState }),
       getUserLayerServiceMockProvider(),

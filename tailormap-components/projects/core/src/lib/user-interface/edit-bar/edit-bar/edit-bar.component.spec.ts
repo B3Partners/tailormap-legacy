@@ -7,6 +7,7 @@ import { WorkflowControllerService } from '../../../workflow/workflow-controller
 import { MenuButtonComponent } from '../add-feature-menu/menu-button/menu-button.component';
 import { formStateKey, initialFormState } from '../../../feature-form/state/form.state';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
+import { MatIconTestingModule } from '@angular/material/icon/testing';
 
 describe('EditBarComponent', () => {
   let spectator: Spectator<EditBarComponent>;
@@ -17,7 +18,7 @@ describe('EditBarComponent', () => {
     declarations: [
       MenuButtonComponent,
     ],
-    imports: [ SharedModule ],
+    imports: [ SharedModule, MatIconTestingModule ],
     providers: [
       provideMockStore({ initialState }),
       getTailorMapServiceMockProvider(),
