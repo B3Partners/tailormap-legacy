@@ -9,11 +9,12 @@ import {
 } from './statistic-models';
 import { TailorMapService } from '../../../../../bridge/src/tailor-map.service';
 import { Observable } from 'rxjs';
+import { StatisticServiceModel } from '@tailormap/core-components';
 
 @Injectable({
   providedIn: 'root',
 })
-export class StatisticService {
+export class StatisticService implements StatisticServiceModel {
 
   constructor(
     private http: HttpClient,

@@ -8,9 +8,7 @@ import * as FormActions from '../state/form.actions';
 import { selectParentCopyFeature, selectFeatures, selectCopyFormOptionsOpen, selectTreeVisible } from '../state/form.selectors';
 import { combineLatest, Observable, Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
-import { TreeService } from '../../shared/tree/tree.service';
-import { TreeModel } from '../../shared/tree/models/tree.model';
-import { TransientTreeHelper } from '../../shared/tree/helpers/transient-tree.helper';
+import { TreeService, TreeModel, TransientTreeHelper } from '@tailormap/shared';
 import { selectFormConfigs } from '../../application/state/application.selectors';
 
 @Component({

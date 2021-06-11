@@ -11,11 +11,12 @@ import {
 } from './attribute-models';
 import { Observable } from 'rxjs';
 import { TailorMapService } from '../../../../../bridge/src/tailor-map.service';
+import { AttributeServiceModel } from '@tailormap/core-components';
 
 @Injectable({
   providedIn: 'root',
 })
-export class AttributeService {
+export class AttributeService implements AttributeServiceModel {
 
   constructor(
     private http: HttpClient,

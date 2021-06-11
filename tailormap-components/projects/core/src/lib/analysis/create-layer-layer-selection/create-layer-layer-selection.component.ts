@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
-import { TreeModel } from '../../shared/tree/models/tree.model';
-import { TreeService } from '../../shared/tree/tree.service';
-import { TransientTreeHelper } from '../../shared/tree/helpers/transient-tree.helper';
+import { TreeModel } from '@tailormap/shared';
+import { TreeService } from '@tailormap/shared';
+import { TransientTreeHelper } from '@tailormap/shared';
 import { AppLayer, Level } from '../../../../../bridge/typings';
 import { combineLatest, forkJoin, of, Subject } from 'rxjs';
 import { map, switchMap, takeUntil } from 'rxjs/operators';

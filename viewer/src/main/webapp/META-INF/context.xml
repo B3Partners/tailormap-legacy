@@ -1,131 +1,99 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Context antiJARLocking="true" disableURLRewriting="true" path="/viewer">
-  <Parameter name="componentregistry.path" override="false" value="/viewer-html/components"/>
-  <Parameter name="tailormap.data.dir" override="false" value="/opt/tailormap_data"/>
-  <Parameter name="tailormap.solr.url" override="false" value="https://tailormap.nl/solr/"/>
-  <Parameter name="flamingo.restproxy.port" override="false" value="8084"/>
+<Context antiResourceLocking="false" path="/viewer">
+    <Parameter name="componentregistry.path" override="false" value="/viewer-html/components"/>
+    <Parameter name="tailormap.data.dir" override="false" value="/opt/tailormap_data"/>
+    <Parameter name="tailormap.solr.url" override="false" value="https://tailormap.nl/solr/"/>
+    <Parameter name="flamingo.restproxy.port" override="false" value="8084"/>
 
     <!-- You must create this by hand in your geoserver to use the UserLayerActionBean-->
-    <Parameter name="userlayer.geoserver.workspace" override="false" value="GBIuserlayers" />
+    <Parameter name="userlayer.geoserver.workspace" override="false" value="GBIuserlayers"/>
     <!-- You must create this by hand in your geoserver to use the UserLayerActionBean -->
-    <Parameter name="userlayer.geoserver.store" override="false" value="GBIstore" />
-  <!-- For Tomcat: define datasource in server.xml, for example:
-    NOTE:
-        each version of tomcat comes with it's own version of the pooling library
-        that can have subtle difference so you must check for your version:
+    <Parameter name="userlayer.geoserver.store" override="false" value="GBIstore"/>
 
-        - https://tomcat.apache.org/tomcat-7.0-doc/jndi-datasource-examples-howto.html
-        - https://tomcat.apache.org/tomcat-8.0-doc/jndi-resources-howto.html
-        - https://tomcat.apache.org/tomcat-8.5-doc/jndi-datasource-examples-howto.html
+    <!-- For Tomcat: define datasource in server.xml, for example:
+      NOTE:
+          each version of tomcat comes with it's own version of the pooling library
+          that can have subtle difference so you must check for your version:
+          - https://tomcat.apache.org/tomcat-9.0-doc/jndi-datasource-examples-howto.html
 
-    <Server ...>
+      <Server ...>
+        <GlobalNamingResources>
+          <Resource auth="Container"
+                    driverClassName="org.postgresql.Driver"
+                    type="javax.sql.DataSource"
+                    name="jdbc/geo_viewer"
+                    url="jdbc:postgresql://localhost:5432/flamingo4"
+                    username="flamingo4"
+                    password="flamingo4"
+                    timeBetweenEvictionRunsMillis="30000"
+                    maxWaitMillis="15000"
+                    minEvictableIdleTimeMillis="5000"
+                    maxTotal="40"
+                    validationQuery="select 1"
+          />
+       </GlobalNamingResources>
+      </Server>
+      -->
+    <ResourceLink global="jdbc/geo_viewer" name="jdbc/geo_viewer" type="javax.sql.DataSource"/>
 
+    <!-- USE THIS FOR SAFETYMAYPSCOMPONENT
+    <ResourceLink global="jdbc/safetymaps-server" name="jdbc/safetymaps-server" type="javax.sql.DataSource"/>
+    -->
+
+    <!-- For Tomcat: define JavaMail resource in server.xml. See:
+
+      https://tomcat.apache.org/tomcat-9.0-doc/jndi-resources-howto.html#JavaMail_Sessions
+
+      Don't forget to put a mail.jar in the Tomcat lib directory.
+
+      To configure your mail server, use attributes like "mail.smtp.host" for
+      the Resource element. See Appendix A of the JavaMail spec for which
+      attributes you can use, possibly accessible at
+      http://www.oracle.com/technetwork/java/javamail/index-141777.html
+
+      <Server ...>
+      ...
       <GlobalNamingResources>
-        ...
-        Oracle:
+          <Resource name="mail/session"
+                  auth="Container"
+                  type="javax.mail.Session"
+                  mail.smtp.host="smtp.mycompany.com"
+          />
+      -->
+    <ResourceLink global="mail/session" name="mail/session" type="javax.mail.Session"/>
 
-            <Resource name="jdbc/geo_viewer"
-                auth="Container"
-                type="javax.sql.DataSource"
-                username="flamingo4"
-                password="flamingo4"
-                driverClassName="oracle.jdbc.OracleDriver"
-                url="jdbc:oracle:thin:@localhost:1521:orcl"
-                maxActive="40"
-                timeBetweenEvictionRunsMillis="30000"
-                minEvictableIdleTimeMillis="5000"
-                validationQuery="select 1 from dual"
+    <!-- voor productie aanpassen in onderstaande Realm:
+        localDataSource="false"
+    -->
+    <Realm className="org.apache.catalina.realm.LockOutRealm">
+        <Realm className="org.apache.catalina.realm.DataSourceRealm"
+               dataSourceName="jdbc/geo_viewer"
+               userTable="user_"
+               userCredCol="password"
+               userNameCol="username"
+               userRoleTable="user_groups"
+               roleNameCol="group_"
+               allRolesMode="authOnly"
+               localDataSource="${tomcat.localDatasource}"
+        >
+            <CredentialHandler className="org.apache.catalina.realm.MessageDigestCredentialHandler"
+                               algorithm="SHA-1"
             />
-        ...
-
-        PostgreSQL:
-
-        <Resource auth="Container"
-                  driverClassName="org.postgresql.Driver"
-                  type="javax.sql.DataSource"
-                  name="jdbc/geo_viewer"
-                  url="jdbc:postgresql://localhost:5432/flamingo4"
-                  username="flamingo4"
-                  password="flamingo4"
-                  timeBetweenEvictionRunsMillis="30000"
-                  maxWaitMillis="15000"
-                  minEvictableIdleTimeMillis="5000"
-                  maxTotal="40"
-                  validationQuery="select 1"
-        />
-        ...
-
-        MS SQL Server 2017
-
-        <Resource auth="Container"
-                  driverClassName="com.microsoft.sqlserver.jdbc.SQLServerDriver"
-                  type="javax.sql.DataSource"
-                  name="jdbc/geo_viewer"
-                  url="jdbc:sqlserver://localhost:1433;databaseName=flamingo4;"
-                  username="flamingo4"
-                  password="flamingo4"
-                  timeBetweenEvictionRunsMillis="30000"
-                  maxWaitMillis="15000"
-                  minEvictableIdleTimeMillis="5000"
-                  maxTotal="40"
-                  validationQuery="select 1"
-         />
-         ...
-
-     </GlobalNamingResources>
-
-    </Server>
-
-    NOTE: each JDBC driver version and each version of Tomcat will have different options that can/must be set
-    
-    -->
-  <ResourceLink global="jdbc/geo_viewer" name="jdbc/geo_viewer" type="javax.sql.DataSource"/>
-  
-  <!-- USE THIS FOR SAFETYMAYPSCOMPONENT
-  <ResourceLink global="jdbc/safetymaps-server" name="jdbc/safetymaps-server" type="javax.sql.DataSource"/>
-  -->
-  
-  <!-- For Tomcat: define JavaMail resource in server.xml. See:
-
-    http://tomcat.apache.org/tomcat-8.0-doc/jndi-resources-howto.html#JavaMail_Sessions
-
-    Don't forget to put a mail.jar in the Tomcat lib directory.
-
-    To configure your mail server, use attributes like "mail.smtp.host" for
-    the Resource element. See Appendix A of the JavaMail spec for which
-    attributes you can use, possibly accessible at
-    http://www.oracle.com/technetwork/java/javamail/index-141777.html
-
-    <Server ...>
-    ...
-    <GlobalNamingResources>
-        <Resource name="mail/session"
-                auth="Container"
-                type="javax.mail.Session"
-                mail.smtp.host="smtp.mycompany.com"
-        />
-    -->
-  <ResourceLink global="mail/session" name="mail/session" type="javax.mail.Session"/>
-  <!-- Security configuration -->
-  <!-- use LockOutRealm instead of CombinedRealm to prevent brute-forcing -->
-  <Realm className="org.apache.catalina.realm.LockOutRealm">
-    <Realm allRolesMode="authOnly" className="org.apache.catalina.realm.DataSourceRealm" dataSourceName="jdbc/geo_viewer" digest="SHA-1" roleNameCol="group_" userCredCol="password" userNameCol="username" userRoleTable="user_groups" userTable="user_">
-      <CredentialHandler algorithm="SHA-1" className="org.apache.catalina.realm.MessageDigestCredentialHandler"/>
+        </Realm>
+        <!-- Use JNDIRealm for authenticating against a LDAP server (such as
+                 Active Directory):
+                 https://tomcat.apache.org/tomcat-9.0-doc/config/realm.html
+                 https://tomcat.apache.org/tomcat-9.0-doc/realm-howto.html#JNDIRealm
+            -->
+        <!--Realm className="org.apache.catalina.realm.JNDIRealm"
+                allRolesMode="authOnly"
+                connectionURL="ldap://ldap:389"
+                connectionName="cn=ServiceUser,ou=Services,o=MyOrg"
+                connectionPassword=""
+                userBase="o=MyOrg"
+                userSubtree="true"
+                userSearch="cn={0}"
+                commonRole="ExtendedUser"
+            /-->
     </Realm>
-    <!-- Use JNDIRealm for authenticating against a LDAP server (such as
-             Active Directory):
-             http://tomcat.apache.org/tomcat-8.0-doc/config/realm.html
-             http://tomcat.apache.org/tomcat-8.0-doc/realm-howto.html#JNDIRealm
-        -->
-    <!--Realm className="org.apache.catalina.realm.JNDIRealm"
-            allRolesMode="authOnly"
-            connectionURL="ldap://ldap:389"
-            connectionName="cn=ServiceUser,ou=Services,o=MyOrg"
-            connectionPassword=""
-            userBase="o=MyOrg"
-            userSubtree="true"
-            userSearch="cn={0}"
-            commonRole="ExtendedUser"
-        /-->
-  </Realm>
 </Context>

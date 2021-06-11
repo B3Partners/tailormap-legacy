@@ -11,7 +11,7 @@ import {
   Level,
   SelectedContentItem,
 } from '../../../../../bridge/typings';
-import { TreeModel } from '../../shared/tree/models/tree.model';
+import { TreeModel } from '@tailormap/shared';
 import { ApplicationTreeHelper } from '../helpers/application-tree.helper';
 import { LayerUtils } from '../../shared/layer-utils/layer-utils.service';
 import { TailormapAppLayer } from '../models/tailormap-app-layer.model';

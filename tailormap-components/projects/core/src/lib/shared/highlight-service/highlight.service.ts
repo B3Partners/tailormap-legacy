@@ -10,11 +10,12 @@ import {
 } from './highlight-models';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { FeatureExtentService } from '../feature-extent-service/feature-extent.service';
+import { HighlightServiceModel } from '@tailormap/core-components';
 
 @Injectable({
   providedIn: 'root',
 })
-export class HighlightService {
+export class HighlightService implements HighlightServiceModel {
 
   private actionUrl = '';
 

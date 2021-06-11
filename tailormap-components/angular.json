@@ -18,6 +18,7 @@
             "main": "projects/bridge/src/main.ts",
             "polyfills": "projects/bridge/src/polyfills.ts",
             "tsConfig": "projects/bridge/tsconfig.app.json",
+            "preserveSymlinks": true,
             "assets": [
               "projects/bridge/src/favicon.ico",
               "projects/bridge/src/assets",
@@ -102,6 +103,7 @@
             "polyfills": "projects/bridge/src/polyfills.ts",
             "tsConfig": "projects/bridge/tsconfig.spec.json",
             "karmaConfig": "projects/bridge/karma.conf.js",
+            "preserveSymlinks": true,
             "assets": [
               "projects/bridge/src/favicon.ico",
               "projects/bridge/src/assets",
@@ -153,6 +155,7 @@
           "options": {
             "tsConfig": "projects/core/tsconfig.lib.json",
             "project": "projects/core/ng-package.json",
+            "preserveSymlinks": true,
             "assets": [
               "projects/core/src/assets"
             ]
@@ -169,6 +172,7 @@
             "main": "projects/core/src/test.ts",
             "tsConfig": "projects/core/tsconfig.spec.json",
             "karmaConfig": "projects/core/karma.conf.js",
+            "preserveSymlinks": true,
             "assets": [
               "projects/core/src/favicon.ico",
               "projects/core/src/assets",

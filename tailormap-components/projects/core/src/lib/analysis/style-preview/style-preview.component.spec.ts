@@ -7,6 +7,7 @@ import { SharedModule } from '../../shared/shared.module';
 import { selectSelectedDataSource, selectStyles } from '../state/analysis.selectors';
 import { getDummySelectedDataSource, getDummyUserLayerStyle } from '../helpers/test-data/style-test-data';
 import { AttributeTypeEnum } from '../../shared/models/attribute-type.enum';
+import { MatIconTestingModule } from '@angular/material/icon/testing';
 
 const styles = [
   getDummyUserLayerStyle({ label: 'Boom' }),
@@ -26,7 +27,7 @@ describe('StylePreviewComponent', () => {
 
   const createComponent = createComponentFactory({
     component: StylePreviewComponent,
-    imports: [ SharedModule ],
+    imports: [ SharedModule, MatIconTestingModule ],
     providers: [
       provideMockStore({ initialState }),
     ],

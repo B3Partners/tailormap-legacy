@@ -48,10 +48,7 @@ updates:
     - ">= 1.a, < 2"
   - dependency-name: org.apache.tomcat:*
     versions:
-    - ">= 8.a"
-  - dependency-name: org.apache.tomcat.embed:*
-    versions:
-    - ">= 8.a"
+    - ">= 10"
   - dependency-name: com.fasterxml.jackson.core:jackson-databind
     versions:
       # beperk tot 2.12.x
