@@ -437,7 +437,6 @@
                                 <include>common/ajax/CombineImage.js</include>
                                 <include>common/ajax/FeatureInfo.js</include>
                                 <include>common/ajax/EditFeature.js</include>
-                                <include>common/ajax/EditBulkFeature.js</include>
                                 <include>common/ajax/ArcQueryUtil.js</include>
                                 <include>common/ajax/FeatureExtent.js</include>
                                 <!-- Abstracts MapComponent -->
