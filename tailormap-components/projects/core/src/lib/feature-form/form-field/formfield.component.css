@@ -19,3 +19,7 @@ mat-form-field {
 .select-field .label {
   padding-bottom: 5px;
 }
+
+.mat-checkbox {
+  padding: 16px 16px 0px 16px;
+}

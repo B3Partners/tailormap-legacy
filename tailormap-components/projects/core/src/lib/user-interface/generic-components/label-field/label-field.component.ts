@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { BaseFieldComponent } from '../base-field/base-field.component';
 
 @Component({
@@ -7,7 +7,8 @@ import { BaseFieldComponent } from '../base-field/base-field.component';
   styleUrls: ['./label-field.component.css'],
 })
 export class LabelFieldComponent extends BaseFieldComponent implements OnInit {
-
+  @Input()
+  public valueTrue: string;
   constructor() {
     super();
   }

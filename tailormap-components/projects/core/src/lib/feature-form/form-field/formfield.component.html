@@ -3,6 +3,7 @@
   [value]="humanReadableValue$ | async"
   [label]="attribute.label"
   [fieldType]="attribute.type"
+  [valueTrue]="attribute.value === attribute.valueTrue"
 ></tailormap-label-field>
 
 <tailormap-input-field
@@ -28,4 +29,18 @@
       <mat-option *ngFor="let opt of attribute.options" [value]="opt.val" [hidden]="opt.disabled">{{opt.label}}</mat-option>
     </mat-select>
   </div>
+</div>
+
+<div [formGroup]="groep" class="form-field" *ngIf="editing && isCheckboxAttribute(attribute)">
+  <div class="label">{{attribute.label}}</div>
+  <mat-checkbox  [checked]="checkboxValue()" (change)="onCheckboxChange($event)"></mat-checkbox>
+</div>
+
+<div [formGroup]="groep" class="form-field" *ngIf="editing && isDateAttribute(attribute)">
+  <div class="label">{{attribute.label}}</div>
+  <mat-form-field>
+    <input matInput [matDatepicker]="picker" [value]="getDate()" (dateChange)="changeDate($event)" [placeholder]="getDate()">
+    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-datepicker [startAt]="getDate()" #picker></mat-datepicker>
+  </mat-form-field>
 </div>
