@@ -17,6 +17,7 @@ import { WorkflowState } from '../../workflow/state/workflow.state';
 import { selectFormEditing } from '../state/form.selectors';
 import { selectLayerIdForEditingFeatures } from '../../application/state/application.selectors';
 import { editFeaturesComplete } from '../../application/state/application.actions';
+import { FeatureInitializerService } from '../../shared/feature-initializer/feature-initializer.service';
 
 @Component({
   selector: 'tailormap-form-creator',
@@ -30,6 +31,7 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
     private actions: FormActionsService,
     private registry: LinkedAttributeRegistryService,
     private _snackBar: MatSnackBar,
+    private featureInitializer: FeatureInitializerService,
     private confirmDialogService: ConfirmDialogService) {
   }
 
@@ -165,6 +167,8 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
     if (this.isBulk) {
       for (const key in form) {
         if (this.formgroep.controls[key]?.dirty) {
+
+          this.features = this.features.map(f=> this.featureInitializer.convertOldToNewFeature(f, this.formConfig));
           this.features = this.features.map(feature => {
             const index = feature.attributes.findIndex(field => field.key === key);
             const f= {

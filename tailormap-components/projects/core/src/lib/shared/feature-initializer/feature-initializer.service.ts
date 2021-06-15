@@ -10,6 +10,7 @@ import { selectFormConfigForFeatureTypeName } from '../../application/state/appl
 import { Observable, Subject } from 'rxjs';
 import { map, takeUntil } from 'rxjs/operators';
 import { ExtendedFormConfigurationModel } from '../../application/models/extended-form-configuration.model';
+import { FormConfiguration } from '../../feature-form/form/form-models';
 
 
 @Injectable({
@@ -46,17 +47,8 @@ export class FeatureInitializerService implements OnDestroy {
         if (!config) {
           throw new Error('Featuretype not implemented: ' + type);
         }
-        const feature: Feature = {
-          relatedFeatureTypes: [],
-          clazz: type.toLowerCase(),
-          fid: FeatureInitializerService.STUB_OBJECT_GUID_NEW_OBJECT,
-        };
-        feature.attributes = config.fields.map(attr => {
-          return {
-            key: attr.key,
-            type: attr.type,
-          };
-        });
+
+        const feature = this.createFeature(config, type);
 
         for(const key in params){
           if(params.hasOwnProperty(key)){
@@ -76,4 +68,34 @@ export class FeatureInitializerService implements OnDestroy {
         return feature;
       }));
   }
+
+  private createFeature(config: FormConfiguration, type: string): Feature{
+    const feature: Feature = {
+      relatedFeatureTypes: [],
+      clazz: type.toLowerCase(),
+      fid: FeatureInitializerService.STUB_OBJECT_GUID_NEW_OBJECT,
+    };
+    feature.attributes = config.fields.map(attr => {
+      return {
+        key: attr.key,
+        type: attr.type,
+      };
+    });
+    return feature;
+  }
+
+  public convertOldToNewFeature(feature: Feature, formConfig: FormConfiguration): Feature{
+    const newF = this.createFeature(formConfig, feature.clazz);
+    for (const key in newF){
+      if(newF.hasOwnProperty(key) && key !== 'attributes'){
+        newF[key] = feature[key];
+      }
+    }
+    newF.attributes.forEach(attr=>{
+      attr.value = feature[attr.key];
+    });
+
+    return newF;
+  }
+
 }

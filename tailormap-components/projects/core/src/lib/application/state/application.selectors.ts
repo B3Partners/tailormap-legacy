@@ -1,19 +1,8 @@
-import {
-  createFeatureSelector,
-  createSelector,
-} from '@ngrx/store';
-import {
-  ApplicationState,
-  applicationStateKey,
-} from './application.state';
-import {
-  AppLayer,
-  Level,
-  SelectedContentItem,
-} from '../../../../../bridge/typings';
+import { createFeatureSelector, createSelector } from '@ngrx/store';
+import { ApplicationState, applicationStateKey } from './application.state';
+import { AppLayer, Level, SelectedContentItem } from '../../../../../bridge/typings';
 import { TreeModel } from '@tailormap/shared';
 import { ApplicationTreeHelper } from '../helpers/application-tree.helper';
-import { LayerUtils } from '../../shared/layer-utils/layer-utils.service';
 import { TailormapAppLayer } from '../models/tailormap-app-layer.model';
 import { ExtendedFormConfigurationModel } from '../models/extended-form-configuration.model';
 
@@ -128,12 +117,12 @@ export const selectFormConfigsLoaded = createSelector(selectApplicationState, st
 
 export const selectFormConfigForFeatureTypeName = createSelector(
   selectFormConfigs,
-  (formConfigs, featureType: string) => formConfigs.get(LayerUtils.sanitizeLayername(featureType)),
+  (formConfigs, featureType: string) => formConfigs.get(featureType),
 );
 
 export const selectFormConfigFeatureTypeNames = createSelector(
   selectFormConfigsArray,
-  (formConfigs): string[] => formConfigs ? formConfigs.map(f => LayerUtils.sanitizeLayername(f.featureType)) : [],
+  (formConfigs): string[] => formConfigs ? formConfigs.map(f => f.featureType) : [],
 );
 
 export const selectVisibleLayersWithFormConfig = createSelector(
@@ -145,16 +134,15 @@ export const selectVisibleLayersWithFormConfig = createSelector(
     }
     const formFeatureTypeNamesSet = new Set<string>(formConfigFeatureTypeNames.map(name => name.toLowerCase()));
     return visibleLayers
-      .filter(layer => formFeatureTypeNamesSet.has(LayerUtils.sanitizeLayername(layer.layerName)))
-      .map(layer => LayerUtils.sanitizeLayername(layer.layerName));
+      .filter(layer => formFeatureTypeNamesSet.has(layer.layerName))
+      .map(layer => layer.layerName);
   },
 );
 
 export const selectLayerIdForLayerName = createSelector(
   selectLayers,
   (layers: TailormapAppLayer[], layerName: string): string => {
-    const sanitizedLayerName = LayerUtils.sanitizeLayername(layerName);
-    const layer = layers.find(l => LayerUtils.sanitizeLayername(l.layerName) === sanitizedLayerName);
+    const layer = layers.find(l => l.layerName === layerName);
     if (layer) {
       return layer.id;
     }

@@ -15,7 +15,6 @@ import {
   selectCloseAfterSaveFeatureForm, selectCurrentFeature, selectFeatures, selectFormAlreadyDirty, selectFormEditing, selectFormVisible,
   selectIsMultiFormWorkflow,
 } from '../state/form.selectors';
-import { LayerUtils } from '../../shared/layer-utils/layer-utils.service';
 import { WORKFLOW_ACTION } from '../../workflow/state/workflow-models';
 import { WorkflowState } from '../../workflow/state/workflow.state';
 import {
@@ -80,11 +79,10 @@ export class FormComponent implements OnDestroy, OnInit {
           this.store$.select(selectLayersWithAttributes).pipe(
             map(appLayers => {
               const layers = appLayers.filter(appLayer => {
-                const sanitizedName = LayerUtils.sanitizeLayername(
-                    appLayer.userlayer ? appLayer.userlayer_original_layername : appLayer.layerName);
-                return sanitizedName === features[0].clazz ||
+                const layerName = appLayer.userlayer ? appLayer.userlayer_original_layername : appLayer.layerName;
+                return layerName === features[0].clazz ||
                   (appLayer.userlayer ? appLayer.userlayer_original_layername : appLayer.layerName) === features[0].clazz ||
-                  sanitizedName === LayerUtils.sanitizeLayername(features[0].clazz);
+                  layerName === features[0].clazz;
                 },
 
               );
@@ -122,7 +120,7 @@ export class FormComponent implements OnDestroy, OnInit {
     this.closeAfterSave = closeAfterSave;
     this.formsForNew = [];
     metaDataResponse.relations.forEach(rel => {
-      const relationName = LayerUtils.sanitizeLayername(rel.foreignFeatureTypeName);
+      const relationName = rel.foreignFeatureTypeName;
       if (allFormConfigs.has(relationName)) {
         this.formsForNew.push(allFormConfigs.get(relationName));
       }
@@ -178,7 +176,7 @@ export class FormComponent implements OnDestroy, OnInit {
   }
 
   public newItem($event: MouseEvent, featureTypeName: string) {
-    const type = LayerUtils.sanitizeLayername(featureTypeName);
+    const type = featureTypeName;
 
     combineLatest([
       this.store$.select(selectFormConfigForFeatureTypeName, type),

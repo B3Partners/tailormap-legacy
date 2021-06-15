@@ -1,6 +1,5 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
 import { FormState, formStateKey } from './form.state';
-import { LayerUtils } from '../../shared/layer-utils/layer-utils.service';
 import { Feature } from '../../shared/generated';
 import { selectFormConfigs } from '../../application/state/application.selectors';
 
@@ -28,14 +27,14 @@ export const selectFormConfigForFeature = createSelector(
   selectFormConfigs,
   selectCurrentFeature,
   (formConfigs, feature: Feature) => {
-    return feature && formConfigs ? formConfigs.get(LayerUtils.sanitizeLayername(feature.objecttype)) : null;
+    return feature && formConfigs ? formConfigs.get(feature.objecttype) : null;
   },
 );
 
 export const selectFeatureLabel = createSelector(
   selectFormConfigs,
   (formConfigs, feature: Feature): string => {
-   return feature[formConfigs.get(LayerUtils.sanitizeLayername(feature.clazz))];
+   return feature[formConfigs.get(feature.objecttype)];
   },
 );
 

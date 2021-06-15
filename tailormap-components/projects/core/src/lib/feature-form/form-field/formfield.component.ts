@@ -9,7 +9,6 @@ import { Store } from '@ngrx/store';
 import { FormState } from '../state/form.state';
 import { selectCurrentFeature, selectFormConfigForFeature } from '../state/form.selectors';
 import { filter, map, take, takeUntil } from 'rxjs/operators';
-import { LayerUtils } from '../../shared/layer-utils/layer-utils.service';
 
 @Component({
   selector: 'tailormap-formfield',
@@ -52,7 +51,7 @@ export class FormfieldComponent implements AfterViewInit, OnDestroy, OnInit {
     ])
       .pipe(
         filter(([feature, config]) => !!feature && !!config &&
-          LayerUtils.sanitizeLayername(config.featureType) === LayerUtils.sanitizeLayername(feature.clazz) &&
+          config.featureType === feature.clazz &&
           config.fields.find(field => field.key === this.attribute.key) !== undefined),
         takeUntil(this.destroyed),
         map(([feature, config]) => {

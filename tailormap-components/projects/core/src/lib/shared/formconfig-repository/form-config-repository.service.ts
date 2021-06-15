@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { FormConfiguration, FormConfigurations } from '../../feature-form/form/form-models';
 import { TailorMapService } from '../../../../../bridge/src/tailor-map.service';
-import { LayerUtils } from '../layer-utils/layer-utils.service';
 import { FeatureControllerService, FeaturetypeMetadata } from '../generated';
 import { forkJoin, Observable, of } from 'rxjs';
 import { catchError, concatMap, map } from 'rxjs/operators';
@@ -29,9 +28,8 @@ export class FormConfigRepositoryService {
           const featureTypes = [];
           for (const key in data.config) {
             if (data.config.hasOwnProperty(key)) {
-              const sanitized = LayerUtils.sanitizeLayername(key);
-              formConfigs.set(sanitized, data.config[key]);
-              featureTypes.push(sanitized);
+              formConfigs.set(key, data.config[key]);
+              featureTypes.push(key);
             }
           }
           return forkJoin([
@@ -45,10 +43,10 @@ export class FormConfigRepositoryService {
             return new Map();
           }
           featureTypeInfo.forEach(featuretypeMetadata => {
-            const sanitized = LayerUtils.sanitizeLayername(featuretypeMetadata.featuretypeName);
-            if (formConfigs.has(sanitized)) {
-              const config = formConfigs.get(sanitized);
-              formConfigs.set(sanitized, {...config, featuretypeMetadata});
+            const layerName = featuretypeMetadata.featuretypeName;
+            if (formConfigs.has(layerName)) {
+              const config = formConfigs.get(layerName);
+              formConfigs.set(layerName, {...config, featuretypeMetadata});
             }
           });
           return formConfigs;

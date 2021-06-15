@@ -2,7 +2,6 @@ import { Injectable, OnDestroy } from '@angular/core';
 import { FormConfiguration, FormFieldType, SelectOption } from '../../form/form-models';
 import { LinkedAttributeRegistryService } from '../registry/linked-attribute-registry.service';
 import { AttributeControllerService, Attribuut } from '../../../shared/generated';
-import { LayerUtils } from '../../../shared/layer-utils/layer-utils.service';
 import { Observable, of, Subject } from 'rxjs';
 import { map, takeUntil, tap } from 'rxjs/operators';
 
@@ -44,7 +43,7 @@ export class DomainRepositoryService implements OnDestroy {
         map(result => {
           const linkedAttributes: Array<Attribuut> = result;
           for (const attribute of linkedAttributes) {
-            const featureType = LayerUtils.sanitizeLayername(attribute.tabel_naam.toLowerCase());
+            const featureType = attribute.tabel_naam.toLowerCase();
             const fc: FormConfiguration = formConfigs.get(featureType);
             if (!fc) {
               continue;
