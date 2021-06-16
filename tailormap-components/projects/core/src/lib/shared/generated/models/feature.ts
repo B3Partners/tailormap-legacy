@@ -10,7 +10,7 @@ export interface Feature {
   defaultGeometry?: string;
   defaultGeometryField?: string;
   fid?: string;
-  layername?: string;
+  layerName?: string;
   relations?: Array<Relation>;
-  tablename?: string;
+  tableName?: string;
 }
