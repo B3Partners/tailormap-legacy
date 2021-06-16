@@ -77,7 +77,7 @@ export class EditFeatureGeometryService {
             [geomField]: wkt,
           };
           return this.featureControllerService.update({application: this.tailorMapService.getApplicationId(),
-            featuretype: updatedFeature.clazz, fid: updatedFeature.fid, body: updatedFeature })
+            featuretype: updatedFeature.tableName, fid: updatedFeature.fid, body: updatedFeature })
             .pipe(
               map(() => wkt),
               catchError(() => {

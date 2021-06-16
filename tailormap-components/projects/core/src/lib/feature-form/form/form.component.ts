@@ -69,21 +69,19 @@ export class FormComponent implements OnDestroy, OnInit {
           of(feature),
           this.store$.select(selectFeatures),
         ])),
-        filter(([ feature, _features ]) => !!feature && !!feature.clazz),
+        filter(([ feature, _features ]) => !!feature && !!feature.tableName),
         switchMap(([ feature, features ]) => combineLatest([
           of(feature),
           of(features),
           this.store$.select(selectCloseAfterSaveFeatureForm),
           this.store$.select(selectFormAlreadyDirty),
-          this.store$.select(selectFormConfigForFeatureTypeName, feature.clazz),
+          this.store$.select(selectFormConfigForFeatureTypeName, feature.tableName),
           this.store$.select(selectFormConfigs),
           this.store$.select(selectLayersWithAttributes).pipe(
             map(appLayers => {
               const layers = appLayers.filter(appLayer => {
                 const layerName = appLayer.userlayer ? appLayer.userlayer_original_layername : appLayer.layerName;
-                return layerName === features[0].clazz ||
-                  (appLayer.userlayer ? appLayer.userlayer_original_layername : appLayer.layerName) === features[0].clazz ||
-                  layerName === features[0].clazz;
+                return layerName === features[0].layerName;
                 },
 
               );

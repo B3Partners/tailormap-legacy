@@ -76,10 +76,10 @@ export class FormAttributeListButtonComponent implements OnDestroy {
               const appLayer = this.tailorMapService.getApplayerById(+(layerId));
               const className = appLayer.layerName;
               feature.children = [];
-              feature.clazz = className;
+              feature.layerName = className;
               feature.fid = row.object_guid;
               feature.relatedFeatureTypes = row.related_featuretypes;
-              feature.objecttype = className[0].toUpperCase() + className.substr(1);
+              feature.tableName = className[0].toUpperCase() + className.substr(1);
               return ({ ...feature, ...rest });
             }),
           };

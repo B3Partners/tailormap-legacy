@@ -38,12 +38,12 @@ export class FeatureSelectionComponent {
   }
 
   public getLabelForFeature(feature: Feature) {
-    const formConfig = this.data.formConfigs.get(feature.clazz);
+    const formConfig = this.data.formConfigs.get(feature.tableName);
     if (formConfig) {
       const treeName = FormTreeHelpers.getFeatureValueForField(feature, formConfig, formConfig.treeNodeColumn);
-      return `${formConfig.name} (${feature.objecttype}, ${treeName})`;
+      return `${formConfig.name} (${feature.tableName}, ${treeName})`;
     }
-    return feature.objecttype;
+    return feature.tableName;
   }
 
   public featureSelected(feature: Feature) {

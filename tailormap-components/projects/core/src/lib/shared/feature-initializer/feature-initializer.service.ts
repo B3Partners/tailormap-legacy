@@ -72,7 +72,7 @@ export class FeatureInitializerService implements OnDestroy {
   private createFeature(config: FormConfiguration, type: string): Feature{
     const feature: Feature = {
       relatedFeatureTypes: [],
-      clazz: type.toLowerCase(),
+      tableName: type.toLowerCase(),
       fid: FeatureInitializerService.STUB_OBJECT_GUID_NEW_OBJECT,
     };
     feature.attributes = config.fields.map(attr => {
@@ -85,7 +85,7 @@ export class FeatureInitializerService implements OnDestroy {
   }
 
   public convertOldToNewFeature(feature: Feature, formConfig: FormConfiguration): Feature{
-    const newF = this.createFeature(formConfig, feature.clazz);
+    const newF = this.createFeature(formConfig, feature.tableName);
     for (const key in newF){
       if(newF.hasOwnProperty(key) && key !== 'attributes'){
         newF[key] = feature[key];

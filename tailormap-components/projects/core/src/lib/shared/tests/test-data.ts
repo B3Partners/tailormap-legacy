@@ -27,8 +27,8 @@ export const mockAttribute = (overrides?: Partial<Attribute>): Attribute => ({
 });
 
 export const mockFeature = (overrides?: Partial<Feature>): Feature => ({
-  objecttype: '',
-  clazz: 'test',
+  layerName: '',
+  tableName: 'test',
   children: [],
   attributes: [{key:'object_guid', value: '123-123'}],
   relatedFeatureTypes: [],

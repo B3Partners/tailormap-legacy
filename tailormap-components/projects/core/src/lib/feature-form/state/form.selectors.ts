@@ -27,14 +27,14 @@ export const selectFormConfigForFeature = createSelector(
   selectFormConfigs,
   selectCurrentFeature,
   (formConfigs, feature: Feature) => {
-    return feature && formConfigs ? formConfigs.get(feature.objecttype) : null;
+    return feature && formConfigs ? formConfigs.get(feature.tableName) : null;
   },
 );
 
 export const selectFeatureLabel = createSelector(
   selectFormConfigs,
   (formConfigs, feature: Feature): string => {
-   return feature[formConfigs.get(feature.objecttype)];
+   return feature[formConfigs.get(feature.tableName)];
   },
 );
 
