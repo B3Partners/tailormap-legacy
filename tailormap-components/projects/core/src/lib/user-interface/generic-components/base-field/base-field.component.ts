@@ -38,4 +38,7 @@ export class BaseFieldComponent implements OnInit {
     return this.fieldType === FormFieldType.HYPERLINK;
   }
 
+  public isCheckboxField() {
+    return this.fieldType === FormFieldType.CHECKBOX;
+  }
 }

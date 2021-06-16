@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { AbstractControl, FormGroup } from '@angular/forms';
 import { Attribute, FeatureAttribute, FormFieldType } from '../form/form-models';
 import { LinkedAttributeRegistryService } from '../linked-fields/registry/linked-attribute-registry.service';
@@ -10,6 +10,7 @@ import { FormState } from '../state/form.state';
 import { selectCurrentFeature, selectFormConfigForFeature } from '../state/form.selectors';
 import { filter, map, take, takeUntil } from 'rxjs/operators';
 import { LayerUtils } from '../../shared/layer-utils/layer-utils.service';
+import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 
 @Component({
   selector: 'tailormap-formfield',
@@ -19,6 +20,9 @@ import { LayerUtils } from '../../shared/layer-utils/layer-utils.service';
 export class FormfieldComponent implements AfterViewInit, OnDestroy, OnInit {
 
   public humanReadableValue$: Observable<string>;
+
+  @Output()
+  public dateChange: EventEmitter< MatDatepickerInputEvent< any>>;
 
   @Input()
   public attribute: FeatureAttribute;
@@ -101,6 +105,33 @@ export class FormfieldComponent implements AfterViewInit, OnDestroy, OnInit {
     }
   }
 
+  public checkboxValue(): boolean {
+    if(this.attribute.value === null) {
+      return false;
+    }
+    return this.attribute.value === this.attribute.valueTrue;
+  }
+
+  public onCheckboxChange(event: any): void {
+    if (event.checked) {
+      this.attribute.value = this.attribute.valueTrue;
+      this.groep.get(this.attribute.key).setValue(this.attribute.valueTrue, {
+        emitEvent: true,
+        onlySelf: false,
+        emitModelToViewChange: true,
+        emitViewToModelChange: true,
+      });
+    } else {
+      this.attribute.value = this.attribute.valueFalse;
+      this.groep.get(this.attribute.key).setValue(this.attribute.valueFalse, {
+        emitEvent: true,
+        onlySelf: false,
+        emitModelToViewChange: true,
+        emitViewToModelChange: true,
+      });
+    }
+  }
+
   public hasNonValidValue(): boolean {
     return FormFieldHelpers.hasNonValidValue(this.attribute);
   }
@@ -110,5 +141,7 @@ export class FormfieldComponent implements AfterViewInit, OnDestroy, OnInit {
   public isHiddenAttribute = (attr: Attribute): boolean => attr.type === FormFieldType.HIDDEN;
   public isDomainAttribute = (attr: Attribute): boolean => attr.type === FormFieldType.DOMAIN;
   public isHyperlinkAttribute = (attr: Attribute): boolean => attr.type === FormFieldType.HYPERLINK;
+  public isCheckboxAttribute = (attr: Attribute): boolean => attr.type === FormFieldType.CHECKBOX;
+  public isDateAttribute = (attr: Attribute): boolean => attr.type === FormFieldType.DATE;
 
 }

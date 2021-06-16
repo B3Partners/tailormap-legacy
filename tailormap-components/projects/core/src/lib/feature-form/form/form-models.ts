@@ -27,6 +27,9 @@ export interface Attribute {
   label?: string;
   column: number;
   tab: number;
+  valueTrue?: string;
+  valueFalse?: string;
+  dateFormat?: string;
 }
 
 export interface FeatureAttribute extends Attribute {
@@ -41,6 +44,8 @@ export enum FormFieldType {
   HIDDEN = 'hidden',
   DOMAIN = 'domain',
   HYPERLINK = 'hyperlink',
+  CHECKBOX = 'checkbox',
+  DATE = 'date',
 }
 
 
