@@ -59,6 +59,7 @@ declare interface AppLayer {
   featureType: number;
   background: boolean;
   userlayer: boolean;
+  editable: boolean;
   userlayer_original_layername?: string;
   layerId: number;
 }
