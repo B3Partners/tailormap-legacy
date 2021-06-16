@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Inject, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { AnalysisState } from '../../state/analysis.state';
@@ -11,6 +11,7 @@ import { AnalysisSourceModel } from '../../models/analysis-source.model';
 import { CriteriaConditionModel } from '../../models/criteria-condition.model';
 import { AttributeTypeEnum } from '../../../shared/models/attribute-type.enum';
 import { ExtendedAttributeModel } from '../../../application/models/extended-attribute.model';
+import { METADATA_SERVICE } from '@tailormap/core-components';
 
 type AttributeSource = Omit<AnalysisSourceModel, 'geometryType' | 'geometryAttribute'>;
 
@@ -49,7 +50,7 @@ export class CriteriaComponent implements OnInit, OnDestroy {
   constructor(
     private fb: FormBuilder,
     private store$: Store<AnalysisState>,
-    private metadataService: MetadataService,
+    @Inject(METADATA_SERVICE) private metadataService: MetadataService,
   ) { }
 
   public ngOnInit(): void {

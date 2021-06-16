@@ -1,5 +1,5 @@
-import { Component, OnDestroy } from '@angular/core';
-import { AttributeListService } from '@tailormap/core-components';
+import { Component, Inject, OnDestroy } from '@angular/core';
+import { AttributeListService, METADATA_SERVICE } from '@tailormap/core-components';
 import { TailorMapService } from '../../../../../bridge/src/tailor-map.service';
 import { filter, switchMap, takeUntil } from 'rxjs/operators';
 import { forkJoin, of, Subject } from 'rxjs';
@@ -25,7 +25,7 @@ export class AnalysisAttributeListButtonComponent implements OnDestroy {
     private tailorMapService: TailorMapService,
     private attributeListService: AttributeListService,
     private dialog: MatDialog,
-    private metadataService: MetadataService,
+    @Inject(METADATA_SERVICE) private metadataService: MetadataService,
     private userLayerService: UserLayerService,
     private snackBar: MatSnackBar,
   ) {

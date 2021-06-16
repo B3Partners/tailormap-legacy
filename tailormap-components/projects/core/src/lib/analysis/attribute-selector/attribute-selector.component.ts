@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, Input, OnDestroy, EventEmitter, OnInit, Output, Inject } from '@angular/core';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { map, startWith, takeUntil } from 'rxjs/operators';
 import { MetadataService } from '../../application/services/metadata.service';
@@ -6,6 +6,7 @@ import { FormControl } from '@angular/forms';
 import { AttributeTypeHelper } from '../../application/helpers/attribute-type.helper';
 import { AttributeTypeEnum } from '../../shared/models/attribute-type.enum';
 import { ExtendedAttributeModel } from '../../application/models/extended-attribute.model';
+import { METADATA_SERVICE } from '@tailormap/core-components';
 
 @Component({
   selector: 'tailormap-attribute-selector',
@@ -67,7 +68,7 @@ export class AttributeSelectorComponent implements OnInit, OnDestroy {
   };
 
   constructor(
-    private metadataService: MetadataService,
+    @Inject(METADATA_SERVICE) private metadataService: MetadataService,
   ) { }
 
   public ngOnInit(): void {
