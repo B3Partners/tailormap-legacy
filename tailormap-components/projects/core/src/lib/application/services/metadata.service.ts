@@ -1,4 +1,4 @@
-import { Injectable, OnDestroy } from '@angular/core';
+import { Inject, Injectable, OnDestroy } from '@angular/core';
 import { AttributeService } from '../../shared/attribute-service/attribute.service';
 import { Store } from '@ngrx/store';
 import { ApplicationState } from '../state/application.state';
@@ -11,8 +11,7 @@ import { ExtendedAttributeModel } from '../models/extended-attribute.model';
 import { UniqueValuesResponse } from '../../shared/value-service/value-models';
 import { ValueService } from '../../shared/value-service/value.service';
 import { FormState } from '../../feature-form/state/form.state';
-import { MetadataServiceModel } from '@tailormap/core-components';
-import { ApplicationService } from './application.service';
+import { APPLICATION_SERVICE, ApplicationServiceModel, ATTRIBUTE_SERVICE, MetadataServiceModel } from '@tailormap/core-components';
 
 export type UniqueValueCountResponse = { uniqueValue: string; total: number };
 
@@ -27,9 +26,9 @@ export class MetadataService implements OnDestroy, MetadataServiceModel {
 
   constructor(
     private store$: Store<ApplicationState | FormState>,
-    private attributeService: AttributeService,
+    @Inject(ATTRIBUTE_SERVICE) private attributeService: AttributeService,
     private valueService: ValueService,
-    private applicationService: ApplicationService,
+    @Inject(APPLICATION_SERVICE) private applicationService: ApplicationServiceModel,
   ) {
     this.store$.select(selectApplicationId)
       .pipe(takeUntil(this.destroy))
