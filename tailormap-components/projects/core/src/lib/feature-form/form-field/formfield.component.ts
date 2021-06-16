@@ -9,7 +9,6 @@ import { Store } from '@ngrx/store';
 import { FormState } from '../state/form.state';
 import { selectCurrentFeature, selectFormConfigForFeature } from '../state/form.selectors';
 import { filter, map, take, takeUntil } from 'rxjs/operators';
-import { LayerUtils } from '../../shared/layer-utils/layer-utils.service';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 
 @Component({
