@@ -15,6 +15,7 @@ import { InputFieldComponent } from './generic-components/input-field/input-fiel
 import { BaseFieldComponent } from './generic-components/base-field/base-field.component';
 import { LabelFieldComponent } from './generic-components/label-field/label-field.component';
 import { createCustomElement } from '@angular/elements';
+import { DatepickerFieldComponent } from './generic-components/datepicker-field/datepicker-field.component';
 
 @NgModule({
   declarations: [
@@ -26,18 +27,20 @@ import { createCustomElement } from '@angular/elements';
     InputFieldComponent,
     BaseFieldComponent,
     LabelFieldComponent,
+    DatepickerFieldComponent,
   ],
   imports: [
     CommonModule,
     SharedModule,
     AttributeListModule,
   ],
-  exports: [
-    EditBarComponent,
-    GeometryConfirmButtonsComponent,
-    InputFieldComponent,
-    LabelFieldComponent,
-  ],
+    exports: [
+        EditBarComponent,
+        GeometryConfirmButtonsComponent,
+        InputFieldComponent,
+        LabelFieldComponent,
+        DatepickerFieldComponent,
+    ],
   entryComponents: [],
   providers: [
     {
