@@ -55,7 +55,7 @@ export class FormfieldComponent implements AfterViewInit, OnDestroy, OnInit {
     ])
       .pipe(
         filter(([feature, config]) => !!feature && !!config &&
-          config.featureType === feature.clazz &&
+          config.featureType === feature.tablename &&
           config.fields.find(field => field.key === this.attribute.key) !== undefined),
         takeUntil(this.destroyed),
         map(([feature, config]) => {

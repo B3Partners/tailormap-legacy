@@ -7,10 +7,10 @@ export interface Feature {
   relatedFeatureTypes: RelatedFeatureType[];
   attributes?: Array<Field>;
   children?: Array<Feature>;
-  clazz?: string;
   defaultGeometry?: string;
   defaultGeometryField?: string;
   fid?: string;
-  objecttype?: string;
+  layername?: string;
   relations?: Array<Relation>;
+  tablename?: string;
 }

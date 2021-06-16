@@ -17,7 +17,7 @@ export class FormTreeHelpers {
         const fts: Record<string , TreeModel<FormTreeMetadata>> = {};
 
         feature.children.forEach((child: Feature) => {
-          const featureType = child.objecttype;
+          const featureType = child.tablename;
           if (formConfigs.has(featureType)) {
             if (!fts.hasOwnProperty(featureType)) {
               const featureTypeNode: TreeModel<FormTreeMetadata> = {
@@ -41,7 +41,7 @@ export class FormTreeHelpers {
           }
         }
       }
-      const config = formConfigs.get(feature.clazz);
+      const config = formConfigs.get(feature.tablename);
       const metadata = {
         isFeatureType: false,
         feature,

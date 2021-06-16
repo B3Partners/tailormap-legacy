@@ -37,7 +37,7 @@ export class CopyWorkflow extends Workflow {
     const x = data.x;
     const y = data.y;
     const scale = data.scale;
-    const featureTypes: string[] = [this.feature.clazz];
+    const featureTypes: string[] = [this.feature.tablename];
     this.service.featuretypeOnPoint({application: this.tailorMap.getApplicationId(), featureTypes, x, y, scale}).subscribe(
       (features: Feature[]) => {
         if (features && features.length > 0) {
