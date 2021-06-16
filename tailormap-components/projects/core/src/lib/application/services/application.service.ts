@@ -121,8 +121,8 @@ export class ApplicationService implements OnDestroy, ApplicationServiceModel {
   public toggleLevelExpansion(_levelId: string): void {
   }
 
-  public getFilterStringForLayer(layerId: string): string {
-      return this.tailormapService.getFilterString(+(layerId));
+  public getFilterStringForLayer(layerId: string, excludeTailorMapFilters = true): string {
+      return this.tailormapService.getFilterString(+(layerId), excludeTailorMapFilters);
   }
 
   public setFilterStringForLayer(mainFilter: string, layerId: string, _filterKey: string): void {
