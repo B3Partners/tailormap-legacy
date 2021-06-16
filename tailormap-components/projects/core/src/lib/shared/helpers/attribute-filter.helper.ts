@@ -53,7 +53,7 @@ export class AttributeFilterHelper {
       cql = `${filter.attribute} = ${filter.condition === 'TRUE' ? 'true' : 'false'}`;
     }
     if (filter.relatedToFeatureType) {
-      return `RELATED_LAYER(${filter.relatedToFeatureType},${filter.featureType},${cql})`;
+      return `RELATED_FEATURE(${filter.relatedToFeatureType}, ${filter.featureType}, (${cql}))`;
     }
     return `(${cql})`;
   }
