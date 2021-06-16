@@ -12,6 +12,7 @@ import { UniqueValuesResponse } from '../../shared/value-service/value-models';
 import { ValueService } from '../../shared/value-service/value.service';
 import { FormState } from '../../feature-form/state/form.state';
 import { MetadataServiceModel } from '@tailormap/core-components';
+import { ApplicationService } from './application.service';
 
 export type UniqueValueCountResponse = { uniqueValue: string; total: number };
 
@@ -28,6 +29,7 @@ export class MetadataService implements OnDestroy, MetadataServiceModel {
     private store$: Store<ApplicationState | FormState>,
     private attributeService: AttributeService,
     private valueService: ValueService,
+    private applicationService: ApplicationService,
   ) {
     this.store$.select(selectApplicationId)
       .pipe(takeUntil(this.destroy))
@@ -157,12 +159,15 @@ export class MetadataService implements OnDestroy, MetadataServiceModel {
     appLayerId: string,
     attributeName: string,
     featureType: number,
+    applyFilter?: boolean,
   ): Observable<UniqueValuesResponse> {
+    const filter = applyFilter ? this.applicationService.getFilterStringForLayer(appLayerId, false) : undefined;
     return this.valueService.uniqueValues$({
       applicationLayer: Number(appLayerId),
       attributes: [attributeName],
       featureType,
       maxFeatures: -1,
+      filter,
     });
   }
 
