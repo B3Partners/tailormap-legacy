@@ -9,9 +9,7 @@ import { ApplicationTreeHelper } from '../../application/helpers/application-tre
 import { AnalysisSourceModel } from '../models/analysis-source.model';
 import { Store } from '@ngrx/store';
 import { AnalysisState } from '../state/analysis.state';
-import {
-  selectApplicationTreeWithEditableLayers, selectApplicationTreeWithoutBackgroundLayers,
-} from '../../application/state/application.selectors';
+import { selectApplicationTreeWithEditableLayers } from '../../application/state/application.selectors';
 import { selectSelectedDataSource } from '../state/analysis.selectors';
 import { selectDataSource, setSelectedDataSource } from '../state/analysis.actions';
 import { MetadataService } from '../../application/services/metadata.service';
