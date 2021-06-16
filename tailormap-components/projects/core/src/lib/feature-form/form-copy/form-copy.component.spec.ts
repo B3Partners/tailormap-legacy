@@ -32,7 +32,7 @@ describe('FormCopyComponent', () => {
     [formStateKey]: formState,
     [applicationStateKey]: {
       ...initialApplicationState,
-      formConfigs: testFormConfigs.map<ExtendedFormConfigurationModel>(c => ({ ...c, tableName: selectedFeature.clazz })),
+      formConfigs: testFormConfigs.map<ExtendedFormConfigurationModel>(c => ({ ...c, tableName: selectedFeature.tableName })),
     },
   };
   let store: MockStore;
