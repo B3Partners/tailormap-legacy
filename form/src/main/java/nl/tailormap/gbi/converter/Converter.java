@@ -24,9 +24,6 @@ public class Converter {
         Formulier form = new Formulier();
         form.setName(p.getNaam());
         String tableName = p.getTabelnaam().toLowerCase();
-        if (tableName.contains("gb_")) {
-            tableName = tableName.substring(3);
-        }
         form.setFeatureType(tableName);
         form.setTabs(p.getTabs().size());
         form.setTreeNodeColumn(p.getTabs().get(0).getControls().get(0).getKolom().toLowerCase());

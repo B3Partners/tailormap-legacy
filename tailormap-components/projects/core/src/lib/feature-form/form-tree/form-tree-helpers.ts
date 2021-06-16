@@ -5,7 +5,6 @@ import { Attribute, FormConfiguration, FormFieldType } from '../form/form-models
 import { AttributeListFeature } from '../../shared/attribute-service/attribute-models';
 import { FormFieldHelpers } from '../form-field/form-field-helpers';
 import { TreeModel } from '@tailormap/shared';
-import { LayerUtils } from '../../shared/layer-utils/layer-utils.service';
 
 export class FormTreeHelpers {
 
@@ -18,7 +17,7 @@ export class FormTreeHelpers {
         const fts: Record<string , TreeModel<FormTreeMetadata>> = {};
 
         feature.children.forEach((child: Feature) => {
-          const featureType = LayerUtils.sanitizeLayername(child.clazz);
+          const featureType = child.objecttype;
           if (formConfigs.has(featureType)) {
             if (!fts.hasOwnProperty(featureType)) {
               const featureTypeNode: TreeModel<FormTreeMetadata> = {
@@ -42,7 +41,7 @@ export class FormTreeHelpers {
           }
         }
       }
-      const config = formConfigs.get(LayerUtils.sanitizeLayername(feature.clazz));
+      const config = formConfigs.get(feature.clazz);
       const metadata = {
         isFeatureType: false,
         feature,
@@ -63,7 +62,7 @@ export class FormTreeHelpers {
     const attr: Attribute = config.fields.find(field => field.key === key);
     let value = FormHelpers.getValue(feat, attr);
 
-    if (attr.type === FormFieldType.DOMAIN) {
+    if (attr.type === FormFieldType.DOMAIN && attr.options) {
       attr.options.forEach(option => {
         if ((FormFieldHelpers.isNumber(value) && option.val === parseInt('' + value, 10))) {
           value = option.label;

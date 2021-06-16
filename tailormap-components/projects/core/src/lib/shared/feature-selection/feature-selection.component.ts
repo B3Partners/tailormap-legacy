@@ -2,7 +2,6 @@ import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Feature } from '../generated';
 import { FormConfiguration } from '../../feature-form/form/form-models';
-import { LayerUtils } from '../layer-utils/layer-utils.service';
 import { FormTreeHelpers } from '../../feature-form/form-tree/form-tree-helpers';
 
 export interface FeatureSelectionComponentData {
@@ -39,7 +38,7 @@ export class FeatureSelectionComponent {
   }
 
   public getLabelForFeature(feature: Feature) {
-    const formConfig = this.data.formConfigs.get(LayerUtils.sanitizeLayername(feature.objecttype));
+    const formConfig = this.data.formConfigs.get(feature.clazz);
     if (formConfig) {
       const treeName = FormTreeHelpers.getFeatureValueForField(feature, formConfig, formConfig.treeNodeColumn);
       return `${formConfig.name} (${feature.objecttype}, ${treeName})`;

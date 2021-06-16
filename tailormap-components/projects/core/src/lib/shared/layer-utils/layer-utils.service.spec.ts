@@ -76,6 +76,6 @@ describe('LayerUtilsService', () => {
     const normallayer: AppLayer = appLayerMock({userlayer : false, layerName: 'gb_wegvakonderdeel'});
 
     const result = spectator.service.getLayerName(normallayer);
-    expect(result).toEqual('wegvakonderdeel');
+    expect(result).toEqual('gb_wegvakonderdeel');
   });
 });

@@ -3,7 +3,6 @@ import { AttributeListService } from '@tailormap/core-components';
 import { TailorMapService } from '../../../../../bridge/src/tailor-map.service';
 import * as wellknown from 'wellknown';
 import { Feature } from '../../shared/generated';
-import { LayerUtils } from '../../shared/layer-utils/layer-utils.service';
 import { map, take, takeUntil } from 'rxjs/operators';
 import { combineLatest, Observable, Subject } from 'rxjs';
 import { Store } from '@ngrx/store';
@@ -75,7 +74,7 @@ export class FormAttributeListButtonComponent implements OnDestroy {
               }
               const feature = {} as Feature;
               const appLayer = this.tailorMapService.getApplayerById(+(layerId));
-              const className = LayerUtils.sanitizeLayername(appLayer);
+              const className = appLayer.layerName;
               feature.children = [];
               feature.clazz = className;
               feature.fid = row.object_guid;
