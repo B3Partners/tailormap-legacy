@@ -13,7 +13,7 @@ describe('LayerUtilsService', () => {
     getVisibleLayers: getVisibleLayerMocks([1]),
     getAppLayerById(id: number): AppLayer {
       return {
-        alias: '', attribute: false, background: false, featureType: 0, id: '1', layerId: 1, layerName: 'aap', userlayer: true,
+        alias: '', attribute: false, background: false, featureType: 0, id: '1', layerId: 1, layerName: 'aap', userlayer: true, editable: true,
       };
     },
   });
