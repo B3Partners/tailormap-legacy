@@ -84,7 +84,6 @@ export const appLayerMock = (overrides?: Partial<AppLayer>): AppLayer => ({
   editable: true,
   layerName: 'layer1',
   layerId: 1,
-  editable: true,
   ...overrides,
 });
 
