@@ -8,7 +8,7 @@ describe('DatepickerFieldComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ DatepickerFieldComponent ]
+      declarations: [ DatepickerFieldComponent ],
     })
     .compileComponents();
   });
