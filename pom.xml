@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.tailormap</groupId>
     <artifactId>tailormap</artifactId>
-    <version>5.9.6-SNAPSHOT</version>
+    <version>5.9.6</version>
     <packaging>pom</packaging>
     <name>tailormap</name>
     <url>https://github.com/b3partners/tailormap</url>
@@ -11,7 +11,7 @@
         <connection>scm:git:git@github.com:b3partners/tailormap.git</connection>
         <developerConnection>scm:git:git@github.com:b3partners/tailormap.git</developerConnection>
         <url>https://github.com/b3partners/tailormap.git</url>
-        <tag>HEAD</tag>
+        <tag>v5.9.6</tag>
     </scm>
     <ciManagement>
         <system>Jenkins</system>
