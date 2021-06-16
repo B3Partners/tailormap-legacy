@@ -1,0 +1,8 @@
+<div [formGroup]="groep" class="form-field">
+  <div class="label">{{attribute.label}}</div>
+  <mat-form-field>
+    <input matInput [matDatepicker]="picker" [value]="getDate()" (dateChange)="changeDate($event)" [placeholder]="getDate()">
+    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-datepicker [startAt]="getDate()" #picker></mat-datepicker>
+  </mat-form-field>
+</div>
