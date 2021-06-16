@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { TreeModel } from '@tailormap/shared';
 import { TreeService } from '@tailormap/shared';
 import { TransientTreeHelper } from '@tailormap/shared';
@@ -14,6 +14,7 @@ import { selectSelectedDataSource } from '../state/analysis.selectors';
 import { selectDataSource, setSelectedDataSource } from '../state/analysis.actions';
 import { MetadataService } from '../../application/services/metadata.service';
 import { UserLayerHelper } from '../helpers/user-layer.helper';
+import { METADATA_SERVICE } from '@tailormap/core-components';
 
 @Component({
   selector: 'tailormap-create-layer-layer-selection',
@@ -33,7 +34,7 @@ export class CreateLayerLayerSelectionComponent implements OnInit, OnDestroy {
   constructor(
     private store$: Store<AnalysisState>,
     private treeService: TreeService,
-    private metadataService: MetadataService,
+    @Inject(METADATA_SERVICE) private metadataService: MetadataService,
   ) {
   }
 

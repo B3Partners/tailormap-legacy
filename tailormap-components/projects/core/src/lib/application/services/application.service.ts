@@ -3,7 +3,7 @@ import { TailorMapFilters, TailorMapService } from '../../../../../bridge/src/ta
 import { Store } from '@ngrx/store';
 import { ApplicationState } from '../state/application.state';
 import { setApplicationContent, setFormConfigs, setLayerVisibility, setSelectedAppLayer } from '../state/application.actions';
-import { concatMap, map, take, takeUntil, tap, throttleTime } from 'rxjs/operators';
+import { concatMap, debounceTime, map, take, takeUntil, tap } from 'rxjs/operators';
 import { Observable, Subject } from 'rxjs';
 import { FormConfigRepositoryService } from '../../shared/formconfig-repository/form-config-repository.service';
 import { DomainRepositoryService } from '../../feature-form/linked-fields/domain-repository/domain-repository.service';
@@ -55,8 +55,10 @@ export class ApplicationService implements OnDestroy, ApplicationServiceModel {
     this.tailormapService.layerVisibilityChanged$
       .pipe(
         takeUntil(this.destroyed),
-        tap(event => this.visibilityChangedMap.set(`${event.layer.id}`, event.visible)),
-        throttleTime(100),
+        tap(event => {
+          this.visibilityChangedMap.set(`${event.layer.id}`, event.visible);
+        }),
+        debounceTime(100),
       )
       .subscribe(() => {
         this.store$.dispatch(setLayerVisibility({visibility: this.visibilityChangedMap}));

@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnDestroy, OnInit } from '@angular/core';
+import { Component, ElementRef, Inject, OnDestroy, OnInit } from '@angular/core';
 import { ConfirmDialogService } from '../../shared/confirm-dialog/confirm-dialog.service';
 import { filter, map, switchMap, take, takeUntil } from 'rxjs/operators';
 import { combineLatest, Observable, of, Subject } from 'rxjs';
@@ -25,6 +25,7 @@ import { FeatureInitializerService } from '../../shared/feature-initializer/feat
 import { EditFeatureGeometryService } from '../services/edit-feature-geometry.service';
 import { AttributeMetadataResponse } from '../../shared/attribute-service/attribute-models';
 import { ExtendedFormConfigurationModel } from '../../application/models/extended-form-configuration.model';
+import { METADATA_SERVICE } from '@tailormap/core-components';
 
 @Component({
   selector: 'tailormap-form',
@@ -52,7 +53,7 @@ export class FormComponent implements OnDestroy, OnInit {
   constructor(
     private store$: Store<FormState | WorkflowState>,
     private confirmDialogService: ConfirmDialogService,
-    private metadataService: MetadataService,
+    @Inject(METADATA_SERVICE) private metadataService: MetadataService,
     private featureInitializerService: FeatureInitializerService,
     public actions: FormActionsService,
     private editFeatureGeometryService: EditFeatureGeometryService,

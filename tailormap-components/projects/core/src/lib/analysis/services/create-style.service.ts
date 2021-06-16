@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { UserLayerStyleModel } from '../models/user-layer-style.model';
 import { Store } from '@ngrx/store';
@@ -15,6 +15,7 @@ import { AnalysisSourceModel } from '../models/analysis-source.model';
 import { CriteriaHelper } from '../criteria/helpers/criteria.helper';
 import { ScopedUserLayerStyleModel } from '../models/scoped-user-layer-style.model';
 import { AttributeTypeHelper } from '../../application/helpers/attribute-type.helper';
+import { METADATA_SERVICE } from '@tailormap/core-components';
 
 export type CreateStyleResult = { styles: UserLayerStyleModel[]; errorMessage?: string };
 type CachedStylesResult = [ string, CreateStyleResult ];
@@ -45,7 +46,7 @@ export class CreateStyleService {
 
   constructor(
     private store$: Store<AnalysisState>,
-    private metadataService: MetadataService,
+    @Inject(METADATA_SERVICE) private metadataService: MetadataService,
     private idService: IdService,
   ) {}
 

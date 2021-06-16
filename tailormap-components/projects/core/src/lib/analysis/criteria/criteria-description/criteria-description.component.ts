@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { AnalysisState } from '../../state/analysis.state';
 import {
@@ -24,6 +24,7 @@ import { AttributeTypeEnum } from '../../../shared/models/attribute-type.enum';
 import * as moment from 'moment';
 import { MetadataService } from '../../../application/services/metadata.service';
 import { AttributeFilterHelper } from '../../../shared/helpers/attribute-filter.helper';
+import { METADATA_SERVICE } from '@tailormap/core-components';
 
 @Component({
   selector: 'tailormap-criteria-description',
@@ -40,7 +41,7 @@ export class CriteriaDescriptionComponent {
   constructor(
     private store$: Store<AnalysisState>,
     private sanitizer: DomSanitizer,
-    private metadataService: MetadataService,
+    @Inject(METADATA_SERVICE) private metadataService: MetadataService,
   ) {
     this.description$ = combineLatest([
       this.store$.select(selectSelectedDataSource),
