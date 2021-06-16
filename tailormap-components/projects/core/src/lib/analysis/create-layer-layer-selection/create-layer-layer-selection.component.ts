@@ -9,7 +9,9 @@ import { ApplicationTreeHelper } from '../../application/helpers/application-tre
 import { AnalysisSourceModel } from '../models/analysis-source.model';
 import { Store } from '@ngrx/store';
 import { AnalysisState } from '../state/analysis.state';
-import { selectApplicationTreeWithoutBackgroundLayers } from '../../application/state/application.selectors';
+import {
+  selectApplicationTreeWithEditableLayers, selectApplicationTreeWithoutBackgroundLayers,
+} from '../../application/state/application.selectors';
 import { selectSelectedDataSource } from '../state/analysis.selectors';
 import { selectDataSource, setSelectedDataSource } from '../state/analysis.actions';
 import { MetadataService } from '../../application/services/metadata.service';
@@ -28,6 +30,7 @@ export class CreateLayerLayerSelectionComponent implements OnInit, OnDestroy {
 
   private destroyed = new Subject();
   private transientTreeHelper: TransientTreeHelper<AppLayer | Level>;
+  private selectedDataSource: AnalysisSourceModel;
 
   constructor(
     private store$: Store<AnalysisState>,
@@ -37,13 +40,23 @@ export class CreateLayerLayerSelectionComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
+    this.transientTreeHelper = new TransientTreeHelper(
+      this.treeService,
+      true,
+      node => {
+        return !!this.selectedDataSource
+          && ApplicationTreeHelper.isAppLayer(node.metadata)
+          && node.metadata.id === `${this.selectedDataSource.layerId}`;
+      },
+    );
     combineLatest([
-      this.store$.select(selectApplicationTreeWithoutBackgroundLayers),
+      this.store$.select(selectApplicationTreeWithEditableLayers),
       this.store$.select(selectSelectedDataSource),
     ])
       .pipe(takeUntil(this.destroyed))
       .subscribe(([ tree, selectedDataSource ]) => {
-        this.createTree(tree, selectedDataSource);
+        this.selectedDataSource = selectedDataSource;
+        this.createTree(tree);
       });
 
     this.treeService.checkStateChangedSource$
@@ -74,16 +87,7 @@ export class CreateLayerLayerSelectionComponent implements OnInit, OnDestroy {
     this.store$.dispatch(selectDataSource({ selectDataSource: false }));
   }
 
-  private createTree(tree: TreeModel[], selectedDataSource: AnalysisSourceModel) {
-    this.transientTreeHelper = new TransientTreeHelper(
-      this.treeService,
-      true,
-      node => {
-        return !!selectedDataSource
-          && ApplicationTreeHelper.isAppLayer(node.metadata)
-          && node.metadata.id === `${selectedDataSource.layerId}`;
-      },
-    );
+  private createTree(tree: TreeModel[]) {
     this.transientTreeHelper.createTree(tree);
   }
 }

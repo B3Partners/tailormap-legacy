@@ -1,0 +1,8 @@
+:host {
+  flex: 1;
+  overflow: hidden;
+}
+
+.icon {
+  margin-right: 5px;
+}
