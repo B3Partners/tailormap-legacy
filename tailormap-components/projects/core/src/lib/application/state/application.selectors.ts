@@ -29,6 +29,7 @@ export const childToTreeModel = (
   levels: Level[],
   layers: AppLayer[],
   filter?: (item: Level | AppLayer) => boolean,
+  hideEmptyLevels = false,
 ): TreeModel<Level | AppLayer> => {
   if (childNode.type === 'appLayer') {
     const layer = layers.find(i => i.id === childNode.id);
@@ -46,17 +47,21 @@ export const childToTreeModel = (
   if (filter && !filter(level)) {
     return;
   }
-  return {
+  const levelTreeModel: TreeModel<Level | AppLayer> = {
     id: `level-${level.id}`,
     label: level.name,
     type: 'group',
     metadata: level,
     expanded: false,
     children: [
-      ...(level.children || []).map(l => childToTreeModel({ id: l, type: 'level' }, levels, layers, filter)),
-      ...(level.layers || []).map(l => childToTreeModel({ id: l, type: 'appLayer' }, levels, layers, filter)),
+      ...(level.children || []).map(l => childToTreeModel({ id: l, type: 'level' }, levels, layers, filter, hideEmptyLevels)),
+      ...(level.layers || []).map(l => childToTreeModel({ id: l, type: 'appLayer' }, levels, layers, filter, hideEmptyLevels)),
     ].filter(item => !!item),
   };
+  if (hideEmptyLevels && levelTreeModel.children.length === 0) {
+    return;
+  }
+  return levelTreeModel;
 };
 
 export const selectApplicationTree = createSelector(
@@ -82,6 +87,23 @@ export const selectApplicationTreeWithoutBackgroundLayers = createSelector(
       }
       return true;
     })).filter(item => !!item);
+  },
+);
+
+export const selectApplicationTreeWithEditableLayers = createSelector(
+  selectRoot,
+  selectLevels,
+  selectLayers,
+  (rootLevel: SelectedContentItem[], levels: Level[], layers: AppLayer[]): TreeModel[] => {
+    return rootLevel.map(c => childToTreeModel(c, levels, layers, item => {
+      if (ApplicationTreeHelper.isLevel(item)) {
+        return !item.background;
+      }
+      if (ApplicationTreeHelper.isAppLayer(item)) {
+        return item.editable && !item.userlayer && !item.background;
+      }
+      return true;
+    }, true)).filter(item => !!item);
   },
 );
 
