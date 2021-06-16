@@ -65,7 +65,7 @@ export class CriteriaComponent implements OnInit, OnDestroy {
         }
         let relatedTo: number;
         if (source.featureType !== this.selectedDataSource.featureType) {
-          relatedTo = this.selectedDataSource.layerId;
+          relatedTo = this.selectedDataSource.featureType;
         }
         this.formData = {
           ...this.formData,
