@@ -248,6 +248,7 @@ public class ApplicationLayer {
         Layer l = getService() == null ? null : getService().getLayer(getLayerName(), em);
         if(l != null && l.getFeatureType() != null) {
             o.put("featureType", l.getFeatureType().getId());
+            o.put("featureTypeName", l.getFeatureType().getTypeName());
         }
         /* TODO add attribute if writeable according to al.getWriters() */
 

@@ -44,6 +44,7 @@ public class ApplicationLayerHelper {
         Layer l = al.getService() == null ? null : al.getService().getLayer(al.getLayerName(), em);
         if(l != null && l.getFeatureType() != null) {
             o.put("featureType", l.getFeatureType().getId());
+            o.put("featureTypeName", l.getFeatureType().getTypeName());
         }
         /* TODO add attribute if writeable according to al.getWriters() */
 

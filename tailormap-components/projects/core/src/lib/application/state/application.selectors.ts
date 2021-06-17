@@ -156,8 +156,10 @@ export const selectVisibleLayersWithFormConfig = createSelector(
     }
     const formFeatureTypeNamesSet = new Set<string>(formConfigFeatureTypeNames.map(name => name.toLowerCase()));
     return visibleLayers
-      .filter(layer => formFeatureTypeNamesSet.has(layer.layerName))
-      .map(layer => layer.layerName);
+      .filter(layer => {
+        return formFeatureTypeNamesSet.has(layer.featureTypeName);
+      })
+      .map(layer => (layer.alias || layer.layerName));
   },
 );
 

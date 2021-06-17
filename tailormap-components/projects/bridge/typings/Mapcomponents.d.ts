@@ -57,6 +57,7 @@ declare interface AppLayer {
 
   attribute: boolean;   // has attribute table???
   featureType: number;
+  featureTypeName: string;
   background: boolean;
   editable: boolean;
   userlayer: boolean;

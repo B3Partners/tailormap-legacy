@@ -81,7 +81,7 @@ export class FormComponent implements OnDestroy, OnInit {
             map(appLayers => {
               const layers = appLayers.filter(appLayer => {
                 const layerName = appLayer.userlayer ? appLayer.userlayer_original_layername : appLayer.layerName;
-                return layerName === features[0].layerName;
+                return layerName === features[0].layerName || appLayer.featureTypeName === features[0].tableName;
                 },
 
               );
