@@ -13,7 +13,7 @@ describe('LayerUtilsService', () => {
     getVisibleLayers: getVisibleLayerMocks([1]),
     getAppLayerById(id: number): AppLayer {
       return {
-        alias: '', attribute: false,featureTypeName: 'aap',background: false, featureType: 0, id: '1', layerId: 1, layerName: 'aap', userlayer: true, editable: true
+        alias: '', attribute: false,featureTypeName: 'aap',background: false, featureType: 0, id: '1', layerId: 1, layerName: 'aap', userlayer: true, editable: true,
       };
     },
   });
@@ -54,7 +54,8 @@ describe('LayerUtilsService', () => {
       getVisibleLayers: getVisibleLayerMocks([1, 2]),
       getAppLayerById(id: number): AppLayer {
         return {
-          alias: '', attribute: false, background: false, featureType: 0, id: '1', layerId: 1, featureTypeName: id === 2 ? 'noot' : 'aap', layerName: id === 2 ? 'noot' : 'aap', userlayer: false, editable: true,
+          alias: '', attribute: false, background: false, featureType: 0, id: '1', layerId: 1,
+          featureTypeName: id === 2 ? 'noot' : 'aap', layerName: id === 2 ? 'noot' : 'aap', userlayer: false, editable: true,
         };
       },
     });
