@@ -37,6 +37,7 @@ export class FormComponent implements OnDestroy, OnInit {
   public features: Feature[];
   public feature: Feature;
   public formConfig: FormConfiguration;
+  public initComplete = false;
 
   public isBulk: boolean;
   public formsForNew: FormConfiguration[] = [];
@@ -111,6 +112,10 @@ export class FormComponent implements OnDestroy, OnInit {
     allFormConfigs: Map<string, ExtendedFormConfigurationModel>,
     metaDataResponse: AttributeMetadataResponse,
   ) {
+    this.initComplete = true;
+    if (!formConfig) {
+      return;
+    }
     this.feature = { ...feature };
     this.formDirty = !!formAlreadyDirty;
     this.formConfig = formConfig;

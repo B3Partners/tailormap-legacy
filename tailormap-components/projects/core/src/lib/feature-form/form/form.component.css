@@ -16,6 +16,11 @@
   flex-direction: column;
 }
 
+.error {
+  color: #e65757;
+  padding: 16px;
+}
+
 .form-container {
   display: flex;
   flex-direction: row;

@@ -57,9 +57,15 @@ export class FormTreeHelpers {
     return nodes;
   }
 
-  public static getFeatureValueForField(feat: Feature | AttributeListFeature, config: FormConfiguration,
-                                        key: string = config.treeNodeColumn): string  {
-    const attr: Attribute = config.fields.find(field => field.key === key);
+  public static getFeatureValueForField(feat: Feature | AttributeListFeature, config: FormConfiguration, key?: string): string  {
+    if (!config) {
+      return `${feat[key] || ''}`;
+    }
+    const featureKey = key || config.treeNodeColumn;
+    const attr: Attribute = config.fields.find(field => field.key === featureKey);
+    if (!attr) {
+      return `${feat[featureKey] || ''}`;
+    }
     let value = FormHelpers.getValue(feat, attr);
 
     if (attr.type === FormFieldType.DOMAIN && attr.options) {
