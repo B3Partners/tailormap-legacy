@@ -1,0 +1,11 @@
+[
+  {
+    "className": "viewer.components.AnteaMaatregeltoets",
+    "name": "AnteaMaatregeltoets",
+    "group": "Antea",
+    "shortName": "Mtregeltoets",
+    "sources": ["AnteaMaatregeltoets.js"],
+    "singleton": true,
+    "restrictions": ["left_menu"]
+  }
+]

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Context antiResourceLocking="false" path="/viewer">
-    <Parameter name="componentregistry.path" override="false" value="/viewer-html/components"/>
+    <Parameter name="componentregistry.path" override="false" value="/viewer-html/components,/viewer-html/antea"/>
     <Parameter name="tailormap.data.dir" override="false" value="/opt/tailormap_data"/>
     <Parameter name="tailormap.solr.url" override="false" value="https://tailormap.nl/solr/"/>
     <Parameter name="flamingo.restproxy.port" override="false" value="8084"/>
