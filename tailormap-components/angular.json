@@ -198,6 +198,37 @@
           }
         }
       }
+    },
+    "third-party-components": {
+      "projectType": "library",
+      "root": "projects/third-party-components",
+      "sourceRoot": "projects/third-party-components/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "project": "projects/third-party-components/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/third-party-components/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/third-party-components/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/third-party-components/src/test.ts",
+            "tsConfig": "projects/third-party-components/tsconfig.spec.json",
+            "karmaConfig": "projects/third-party-components/karma.conf.js"
+          }
+        }
+      }
     }
   },
   "defaultProject": "bridge",
