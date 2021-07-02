@@ -18,6 +18,10 @@ import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
 import { IconService, ICON_SERVICE_ICON_LOCATION } from '@tailormap/shared';
 import { environment } from '../../../bridge/src/environments/environment';
+import { registerLocaleData } from '@angular/common';
+import localenl from '@angular/common/locales/nl';
+
+registerLocaleData(localenl, 'nl');
 
 @NgModule({
   declarations: [],

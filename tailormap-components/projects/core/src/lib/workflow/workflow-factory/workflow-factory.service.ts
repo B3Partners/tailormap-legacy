@@ -16,6 +16,7 @@ import { LayerUtils } from '../../shared/layer-utils/layer-utils.service';
 import { FormState } from '../../feature-form/state/form.state';
 import { Store } from '@ngrx/store';
 import { WORKFLOW_ACTION } from '../state/workflow-models';
+import { FeatureSelectionService } from '../../shared/feature-selection/feature-selection.service';
 
 @Injectable({
   providedIn: 'root',
@@ -36,7 +37,9 @@ export class WorkflowFactoryService {
     private confirmService: ConfirmDialogService,
     private featureInitializerService: FeatureInitializerService,
     private layerUtils: LayerUtils,
-    private store$: Store<FormState>) {
+    private store$: Store<FormState>,
+    private featureSelectionService: FeatureSelectionService,
+  ) {
   }
 
   public getWorkflow(action: WORKFLOW_ACTION, featureType: string): Workflow {
@@ -57,6 +60,7 @@ export class WorkflowFactoryService {
       case WORKFLOW_ACTION.COPY:
         workflow = new CopyWorkflow();
         break;
+      case WORKFLOW_ACTION.NO_OP:
       case WORKFLOW_ACTION.SPLIT_MERGE:
         workflow = new NoOpWorkflow();
         break;
@@ -72,7 +76,7 @@ export class WorkflowFactoryService {
     workflow.id = this.numWorkflows;
     workflow.init(this.tailorMap, this.dialog, this.featureInitializerService,
       this.snackBar, this.service, this.ngZone, this.confirmService,
-      this.geometryConfirmService, this.layerUtils, this.store$);
+      this.geometryConfirmService, this.layerUtils, this.store$, this.featureSelectionService);
 
     return workflow;
   }
