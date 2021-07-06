@@ -7,7 +7,7 @@ import { VectorLayer } from '../../../../../bridge/typings';
 import { MapClickedEvent } from '../../shared/models/event-models';
 import { NgZone } from '@angular/core';
 import { Subject } from 'rxjs';
-import { ConfirmDialogService } from '../../shared/confirm-dialog/confirm-dialog.service';
+import { ConfirmDialogService } from '@tailormap/shared';
 import { GeometryConfirmService } from '../../user-interface/geometry-confirm-buttons/geometry-confirm.service';
 import { LayerUtils } from '../../shared/layer-utils/layer-utils.service';
 import { FormState } from '../../feature-form/state/form.state';

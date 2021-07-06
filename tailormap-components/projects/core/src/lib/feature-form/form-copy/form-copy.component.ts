@@ -5,7 +5,7 @@ import { FormActionsService } from '../form-actions/form-actions.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { FeatureInitializerService } from '../../shared/feature-initializer/feature-initializer.service';
 import { FormCopyService } from './form-copy.service';
-import { ConfirmDialogService } from '../../shared/confirm-dialog/confirm-dialog.service';
+import { ConfirmDialogService } from '@tailormap/shared';
 import { filter, take, takeUntil } from 'rxjs/operators';
 import { combineLatest, Subject } from 'rxjs';
 import {
