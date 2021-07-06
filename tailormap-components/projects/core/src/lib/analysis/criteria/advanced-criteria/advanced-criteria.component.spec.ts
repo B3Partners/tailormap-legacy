@@ -3,7 +3,7 @@ import { createComponentFactory, Spectator } from '@ngneat/spectator';
 import { analysisStateKey, initialAnalysisState } from '../../state/analysis.state';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { IdService } from '../../../shared/id-service/id.service';
-import { ConfirmDialogService } from '../../../shared/confirm-dialog/confirm-dialog.service';
+import { ConfirmDialogService } from '@tailormap/shared';
 import { SharedModule } from '../../../shared/shared.module';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { MatIconTestingModule } from '@angular/material/icon/testing';

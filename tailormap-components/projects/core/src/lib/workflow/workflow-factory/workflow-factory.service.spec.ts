@@ -4,7 +4,7 @@ import { getTailorMapServiceMockProvider } from '../../../../../bridge/src/tailo
 import { SharedModule } from '../../shared/shared.module';
 import { FeatureControllerService } from '../../shared/generated';
 import { GeometryConfirmService } from '../../user-interface/geometry-confirm-buttons/geometry-confirm.service';
-import { ConfirmDialogService } from '../../shared/confirm-dialog/confirm-dialog.service';
+import { ConfirmDialogService } from '@tailormap/shared';
 import { FeatureInitializerService } from '../../shared/feature-initializer/feature-initializer.service';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { formStateKey, initialFormState } from '../../feature-form/state/form.state';

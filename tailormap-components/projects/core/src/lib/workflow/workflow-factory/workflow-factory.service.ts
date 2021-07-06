@@ -9,7 +9,7 @@ import { FeatureControllerService } from '../../shared/generated';
 import { VectorLayer } from '../../../../../bridge/typings';
 import { SewageWorkflow } from '../workflows/SewageWorkflow';
 import { CopyWorkflow } from '../workflows/CopyWorkflow';
-import { ConfirmDialogService } from '../../shared/confirm-dialog/confirm-dialog.service';
+import { ConfirmDialogService } from '@tailormap/shared';
 import { NoOpWorkflow } from '../workflows/NoOpWorkflow';
 import { GeometryConfirmService } from '../../user-interface/geometry-confirm-buttons/geometry-confirm.service';
 import { LayerUtils } from '../../shared/layer-utils/layer-utils.service';
