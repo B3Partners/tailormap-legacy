@@ -1,14 +1,15 @@
 import { Injectable, NgZone, OnDestroy } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { MaatregeltoetsService } from '@antea/components';
-import { filter, switchMap, take, takeUntil, tap } from 'rxjs/operators';
+import { concatMap, filter, switchMap, take, takeUntil, tap, withLatestFrom } from 'rxjs/operators';
 import * as WorkflowActions from 'projects/core/src/lib/workflow/state/workflow.actions';
 import { WORKFLOW_ACTION } from 'projects/core/src/lib/workflow/state/workflow-models';
-import { Subject } from 'rxjs';
+import { of, Subject } from 'rxjs';
 import { TailorMapService } from 'projects/bridge/src/tailor-map.service';
 import { Tool } from 'projects/bridge/typings';
 import { FeatureSelectionService } from 'projects/core/src/lib/shared/feature-selection/feature-selection.service';
 import { Feature as CoreComponentsFeature } from '@tailormap/core-components';
+import { selectAction } from '../../../core/src/lib/workflow/state/workflow.selectors';
 
 @Injectable()
 export class MaatregeltoetsWorkflowService implements OnDestroy {
@@ -26,12 +27,15 @@ export class MaatregeltoetsWorkflowService implements OnDestroy {
     private ngZone: NgZone,
   ) {
     this.maatregeltoetsService.isActive$()
-      .pipe(takeUntil(this.destroyed))
-      .subscribe(active => {
+      .pipe(
+        takeUntil(this.destroyed),
+        concatMap(active => of(active).pipe(withLatestFrom(this.store$.select(selectAction)))),
+      )
+      .subscribe(([ active, currentAction ]) => {
         if (active) {
-          this.store$.dispatch(WorkflowActions.setAction({ action: WORKFLOW_ACTION.NO_OP, }));
+          this.store$.dispatch(WorkflowActions.setAction({ action: WORKFLOW_ACTION.NO_OP }));
           this.enableMapClick();
-        } else {
+        } else if (!!currentAction) {
           this.store$.dispatch(WorkflowActions.setAction({ action: WORKFLOW_ACTION.DEFAULT }));
           this.disableMapClick();
         }
