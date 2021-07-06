@@ -41,6 +41,7 @@
     "@ngrx/store-devtools": "^12.0.0",
     "@tailormap/core-components": "0.0.10",
     "@tailormap/shared": "0.0.14",
+    "@antea/components": "0.0.3",
     "@types/wellknown": "^0.5.1",
     "document-register-element": "^1.14.10",
     "dpdm": "^3.6.0",
