@@ -7,6 +7,6 @@
   },
   "dependencies": {
     "tslib": "^2.1.0",
-    "@antea/components": "0.0.4"
+    "@b3partners/gbi-maps-components": "0.0.4"
   }
 }

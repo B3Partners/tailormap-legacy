@@ -1,0 +1,11 @@
+[
+  {
+    "className": "viewer.components.GbiMapsMaatregeltoets",
+    "name": "GbiMapsMaatregeltoets",
+    "group": "GBIMaps",
+    "shortName": "Mtregeltoets",
+    "sources": ["GbiMapsMaatregeltoets.js"],
+    "singleton": true,
+    "restrictions": ["left_menu"]
+  }
+]

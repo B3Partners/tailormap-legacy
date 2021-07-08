@@ -15,9 +15,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 /**
- * Creates an Angular Antea Maatregeltoets component
+ * Creates an Angular GbiMaps Maatregeltoets component
  */
-Ext.define ("viewer.components.AnteaMaatregeltoets",{
+Ext.define ("viewer.components.GbiMapsMaatregeltoets",{
     extend: "viewer.components.Component",
     container: null,
     config: {
@@ -30,16 +30,16 @@ Ext.define ("viewer.components.AnteaMaatregeltoets",{
     constructor: function (conf){
         this.initConfig(conf);
         this.config.isPopup = false;
-        viewer.components.AnteaMaatregeltoets.superclass.constructor.call(this, this.config);
+        viewer.components.GbiMapsMaatregeltoets.superclass.constructor.call(this, this.config);
         this.addPopup();
         this.renderAttributelistButton();
     },
     addPopup: function(){
-        var popup = document.createElement("antea-maatregeltoets-popup");
+        var popup = document.createElement("gbi-maps-maatregeltoets-popup");
         document.body.appendChild(popup);
     },
     renderAttributelistButton: function() {
-        var btn = document.createElement('antea-maatregeltoets-menu-button');
+        var btn = document.createElement('gbi-maps-maatregeltoets-menu-button');
 
         var dummyConfig = {
             maatregelLijstId: 1,

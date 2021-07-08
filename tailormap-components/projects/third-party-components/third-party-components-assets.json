@@ -1,7 +1,7 @@
  [
    {
      "glob": "**/*",
-     "input": "projects/third-party-components/node_modules/@antea/components/assets",
+     "input": "projects/third-party-components/node_modules/@antea/gbi-maps-components/assets",
      "output": "assets/core"
    }
  ]

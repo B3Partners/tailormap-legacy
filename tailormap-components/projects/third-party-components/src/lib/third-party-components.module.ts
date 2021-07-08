@@ -6,7 +6,7 @@ import {
   MaatregeltoetsMenuButtonComponent,
   MaatregeltoetsPopupComponent,
   MAATREGEL_LIJST_API_URL,
-} from '@antea/components';
+} from '@b3partners/gbi-maps-components';
 import { MaatregeltoetsWorkflowService } from './maatregeltoets-workflow.service';
 
 @NgModule({
@@ -25,9 +25,9 @@ export class ThirdPartyComponentsModule {
     injector: Injector,
     maatregeltoetsWorkflowService: MaatregeltoetsWorkflowService,
   ) {
-    customElements.define('antea-maatregeltoets-menu-button',
+    customElements.define('gbi-maps-maatregeltoets-menu-button',
       createCustomElement(MaatregeltoetsMenuButtonComponent, {injector}));
-    customElements.define('antea-maatregeltoets-popup',
+    customElements.define('gbi-maps-maatregeltoets-popup',
       createCustomElement(MaatregeltoetsPopupComponent, {injector}));
   }
 }

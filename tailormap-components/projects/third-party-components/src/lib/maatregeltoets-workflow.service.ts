@@ -1,6 +1,6 @@
 import { Injectable, NgZone, OnDestroy } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { MaatregeltoetsService } from '@antea/components';
+import { MaatregeltoetsService } from '@b3partners/gbi-maps-components';
 import { concatMap, filter, switchMap, take, takeUntil, tap, withLatestFrom } from 'rxjs/operators';
 import * as WorkflowActions from 'projects/core/src/lib/workflow/state/workflow.actions';
 import { WORKFLOW_ACTION } from 'projects/core/src/lib/workflow/state/workflow-models';
