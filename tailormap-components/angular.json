@@ -27,11 +27,6 @@
                 "input": "projects/core/src/assets",
                 "glob": "**/*",
                 "output": "assets/core"
-              },
-              {
-                "glob": "**/*",
-                "input": "./node_modules/@antea/components/assets",
-                "output": "assets/core"
               }
             ],
             "styles": [
@@ -116,11 +111,6 @@
                 "input": "projects/core/src/assets",
                 "glob": "**/*",
                 "output": "assets/core"
-              },
-              {
-                "glob": "**/*",
-                "input": "./node_modules/@antea/components/assets",
-                "output": "assets/core"
               }
             ],
             "styles": [
@@ -189,11 +179,6 @@
               {
                 "input": "projects/core/src/assets",
                 "glob": "**/*",
-                "output": "assets/core"
-              },
-              {
-                "glob": "**/*",
-                "input": "./node_modules/@antea/components/assets",
                 "output": "assets/core"
               }
             ],
