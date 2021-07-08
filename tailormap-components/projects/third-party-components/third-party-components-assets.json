@@ -1,0 +1,7 @@
+ [
+   {
+     "glob": "**/*",
+     "input": "projects/third-party-components/node_modules/@antea/components/assets",
+     "output": "assets/core"
+   }
+ ]
