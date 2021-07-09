@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.component';
 import { ApiModule } from './generated';
 import { DialogCloseButtonComponent } from './dialog-close-button/dialog-close-button.component';
 import { OverlayComponent } from './overlay-service/overlay/overlay.component';
@@ -15,7 +14,6 @@ import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
-    ConfirmDialogComponent,
     DialogCloseButtonComponent,
     OverlayComponent,
     ColorPickerComponent,
@@ -40,7 +38,6 @@ import { HttpClientModule } from '@angular/common/http';
     ColorPickerComponent,
     IconPickerComponent,
     CapitalizeFirstPipe,
-    ConfirmDialogComponent,
     ErrorMessageComponent,
     AttributeFilterComponent,
   ],

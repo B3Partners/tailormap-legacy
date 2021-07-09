@@ -25,6 +25,10 @@
       ],
       "core/*": [
         "dist/core/*"
+      ],
+      "third-party-components": [
+        "dist/third-party-components/third-party-components",
+        "dist/third-party-components"
       ]
     }
   },

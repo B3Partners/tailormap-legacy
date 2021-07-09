@@ -7,12 +7,13 @@ import { VectorLayer } from '../../../../../bridge/typings';
 import { MapClickedEvent } from '../../shared/models/event-models';
 import { NgZone } from '@angular/core';
 import { Subject } from 'rxjs';
-import { ConfirmDialogService } from '../../shared/confirm-dialog/confirm-dialog.service';
+import { ConfirmDialogService } from '@tailormap/shared';
 import { GeometryConfirmService } from '../../user-interface/geometry-confirm-buttons/geometry-confirm.service';
 import { LayerUtils } from '../../shared/layer-utils/layer-utils.service';
 import { FormState } from '../../feature-form/state/form.state';
 import { Store } from '@ngrx/store';
 import { WorkflowState } from '../state/workflow.state';
+import { FeatureSelectionService } from '../../shared/feature-selection/feature-selection.service';
 
 export abstract class Workflow {
 
@@ -32,6 +33,7 @@ export abstract class Workflow {
   protected geometryConfirmService: GeometryConfirmService;
   protected layerUtils: LayerUtils;
   protected store$: Store<FormState | WorkflowState>;
+  protected featureSelectionService: FeatureSelectionService;
 
   public close$ = new Subject<boolean>();
 
@@ -45,7 +47,9 @@ export abstract class Workflow {
     confirmService: ConfirmDialogService,
     geometryConfirmService: GeometryConfirmService,
     layerUtils: LayerUtils,
-    store$: Store<FormState>): void {
+    store$: Store<FormState>,
+    featureSelectionService: FeatureSelectionService,
+  ): void {
 
     this.tailorMap = tailorMap;
     this.dialog = dialog;
@@ -58,6 +62,7 @@ export abstract class Workflow {
     this.geometryConfirmService = geometryConfirmService;
     this.layerUtils = layerUtils;
     this.store$ = store$;
+    this.featureSelectionService = featureSelectionService;
     this.destroyed = new Subject();
     this.afterInit();
   }

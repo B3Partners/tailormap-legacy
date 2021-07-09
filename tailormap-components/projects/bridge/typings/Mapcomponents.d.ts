@@ -83,9 +83,16 @@ declare interface Map {
   coordinateToPixel: (x: number, y: number) => Pixel;
 }
 
+declare interface Tool {
+  activateTool: () => void;
+  deactivateTool: () => void;
+}
+
 declare interface MapComponent {
   getMap: () => Map;
   createVectorLayer: (config: any) => VectorLayer;
+  createTool: (config: any) => Tool;
+  removeTool: (tool: Tool) => void;
   addListener: <T>(eventName: string, handler: MapEvent<T>) => void;
 }
 

@@ -1,5 +1,5 @@
 import { Component, ElementRef, Inject, OnDestroy, OnInit } from '@angular/core';
-import { ConfirmDialogService } from '../../shared/confirm-dialog/confirm-dialog.service';
+import { ConfirmDialogService } from '@tailormap/shared';
 import { filter, map, switchMap, take, takeUntil } from 'rxjs/operators';
 import { combineLatest, Observable, of, Subject } from 'rxjs';
 import { Attribute, FormConfiguration, TabbedField, TabColumn } from './form-models';

@@ -7,6 +7,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { WorkflowControllerComponent } from '../../../core/src/lib/workflow/workflow-controller/workflow-controller.component';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { environment } from '../environments/environment';
+import { ThirdPartyComponentsModule } from 'projects/third-party-components/src';
 
 @NgModule({
   declarations: [
@@ -15,6 +16,7 @@ import { environment } from '../environments/environment';
   imports: [
     BrowserModule,
     CoreModule,
+    ThirdPartyComponentsModule,
     BrowserAnimationsModule,
     StoreDevtoolsModule.instrument({maxAge: 25, logOnly: environment.production}),
   ],

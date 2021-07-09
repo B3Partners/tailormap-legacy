@@ -3,4 +3,5 @@ export enum WORKFLOW_ACTION {
   COPY = 'copy_feature',
   SPLIT_MERGE = 'split_merge',
   DEFAULT = 'standard',
+  NO_OP = 'no_op',
 }

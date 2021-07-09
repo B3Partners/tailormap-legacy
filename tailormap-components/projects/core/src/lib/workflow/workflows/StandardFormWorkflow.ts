@@ -3,16 +3,13 @@ import * as wellknown from 'wellknown';
 import { Feature } from '../../shared/generated';
 import { MapClickedEvent } from '../../shared/models/event-models';
 import { OLFeature, VectorLayer } from '../../../../../bridge/typings';
-import { concatMap, map, take, takeUntil } from 'rxjs/operators';
+import { concatMap, take, takeUntil } from 'rxjs/operators';
 import { WorkflowHelper } from './workflow.helper';
 import * as FormActions from '../../feature-form/state/form.actions';
 import { selectFormClosed } from '../../feature-form/state/form.state-helpers';
-import {
-  selectFormConfigFeatureTypeNames, selectFormConfigForFeatureTypeName, selectFormConfigs,
-} from '../../application/state/application.selectors';
+import { selectFormConfigForFeatureTypeName } from '../../application/state/application.selectors';
 import { selectFeatureType, selectGeometryType, selectWorkflowConfig } from '../state/workflow.selectors';
-import { combineLatest, Observable, of } from 'rxjs';
-import { FeatureSelectionComponent } from '../../shared/feature-selection/feature-selection.component';
+import { combineLatest } from 'rxjs';
 
 
 export class StandardFormWorkflow extends Workflow {
@@ -103,30 +100,10 @@ export class StandardFormWorkflow extends Workflow {
     if (this.isDrawing) {
       return;
     }
-
-    const x = data.x;
-    const y = data.y;
-    const scale = data.scale;
-
-    combineLatest([
-      this.store$.select(selectFormConfigFeatureTypeNames),
-      this.store$.select(selectWorkflowConfig),
-    ])
+    this.store$.select(selectWorkflowConfig)
       .pipe(
-        takeUntil(this.destroyed),
-        concatMap(([ allFeatureTypes, workflowConfig ]) => {
-          const featureTypes: string[] = this.layerUtils.getFeatureTypesAllowed(allFeatureTypes, workflowConfig.useSelectedLayerFilter);
-          return this.service.featuretypeOnPoint({application: this.tailorMap.getApplicationId(),featureTypes, x, y, scale});
-        }),
-        concatMap((features: Feature[]) => {
-          if (features && features.length > 1) {
-            return this.featureSelection$(features);
-          }
-          if (features && features.length === 1) {
-            return of(features[0]);
-          }
-          return of(null);
-        }),
+        take(1),
+        concatMap(workFlowConfig => this.featureSelectionService.selectFeatureForClick$(data, workFlowConfig.useSelectedLayerFilter)),
       )
       .subscribe(feature => {
         this.featureSelectionPopupOpen = false;
@@ -140,22 +117,6 @@ export class StandardFormWorkflow extends Workflow {
         }
         this.openDialog([feature]);
       });
-  }
-
-  private featureSelection$(features: Feature[]): Observable<Feature | null> {
-    if (this.featureSelectionPopupOpen) {
-      return;
-    }
-    this.featureSelectionPopupOpen = true;
-    return this.store$.select(selectFormConfigs)
-      .pipe(
-        take(1),
-        concatMap(formConfigs => {
-          return FeatureSelectionComponent.openFeatureSelectionPopup(this.dialog, features, formConfigs)
-            .afterClosed()
-            .pipe(map(selectedFeature => selectedFeature || null));
-        }),
-      );
   }
 
   public afterEditing(): void {

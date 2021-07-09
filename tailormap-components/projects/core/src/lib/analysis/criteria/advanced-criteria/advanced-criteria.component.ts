@@ -19,7 +19,7 @@ import {
   showCriteriaForm,
 } from '../../state/analysis.actions';
 import { CriteriaGroupModel } from '../../models/criteria-group.model';
-import { ConfirmDialogService } from '../../../shared/confirm-dialog/confirm-dialog.service';
+import { ConfirmDialogService } from '@tailormap/shared';
 import { Subject } from 'rxjs';
 import {
   CdkDragDrop,
