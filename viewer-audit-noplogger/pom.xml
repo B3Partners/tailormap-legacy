@@ -9,7 +9,7 @@
     <parent>
         <groupId>org.tailormap</groupId>
         <artifactId>tailormap</artifactId>
-        <version>5.9.8-SNAPSHOT</version>
+        <version>5.9.8</version>
     </parent>
     <name>viewer auditing NOP logger module</name>
     <description>This module primarily serves the testcase of having multiple
