@@ -19,7 +19,13 @@ export class LayerUtils {
     } else {
       allowedFeaturesTypes = allFeatureTypes;
     }
-    const visibleLayers = this.getVisibleLayers(false);
+    const visibleLayers = this.getVisibleLayers(false).map(layer => {
+      const idx = layer.indexOf(':');
+      if (idx !== -1) {
+        return layer.slice(idx + 1);
+      }
+      return layer;
+    });
     let newAr = allowedFeaturesTypes.filter(value => visibleLayers.includes(value));
     const visibleUserLayers = this.getVisibleLayers(true);
 
