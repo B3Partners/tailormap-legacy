@@ -3,16 +3,13 @@ import * as wellknown from 'wellknown';
 import { Feature } from '../../shared/generated';
 import { MapClickedEvent } from '../../shared/models/event-models';
 import { OLFeature, VectorLayer } from '../../../../../bridge/typings';
-import { concatMap, map, switchMap, take, takeUntil } from 'rxjs/operators';
+import { concatMap, take, takeUntil } from 'rxjs/operators';
 import { WorkflowHelper } from './workflow.helper';
 import * as FormActions from '../../feature-form/state/form.actions';
 import { selectFormClosed } from '../../feature-form/state/form.state-helpers';
-import {
-  selectFormConfigFeatureTypeNames, selectFormConfigForFeatureTypeName, selectFormConfigs,
-} from '../../application/state/application.selectors';
+import { selectFormConfigForFeatureTypeName } from '../../application/state/application.selectors';
 import { selectFeatureType, selectGeometryType, selectWorkflowConfig } from '../state/workflow.selectors';
-import { combineLatest, Observable, of } from 'rxjs';
-import { FeatureSelectionComponent } from '../../shared/feature-selection/feature-selection.component';
+import { combineLatest } from 'rxjs';
 
 
 export class StandardFormWorkflow extends Workflow {

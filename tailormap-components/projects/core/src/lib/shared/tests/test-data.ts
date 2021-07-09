@@ -71,6 +71,8 @@ export const mapComponentMock = (overrides?: Partial<MapComponent>): MapComponen
   getMap: () => mapMock(),
   createVectorLayer: () => vectorLayerMock(),
   addListener: () => {},
+  createTool: () => ({ activateTool: () => {}, deactivateTool: () => {} }),
+  removeTool: () => {},
   ...overrides,
 });
 
