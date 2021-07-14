@@ -189,7 +189,7 @@ export class FormComponent implements OnDestroy, OnInit {
       .pipe(take(1))
       .subscribe(([formConfig, features]) => {
         const objecttype = FormHelpers.capitalize(type);
-        this.featureInitializerService.create$(objecttype, {
+        this.featureInitializerService.create$(type, {
           id: null,
           clazz: type,
           isRelated: true,
