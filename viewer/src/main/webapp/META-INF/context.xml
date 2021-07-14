@@ -4,6 +4,7 @@
     <Parameter name="tailormap.data.dir" override="false" value="/opt/tailormap_data"/>
     <Parameter name="tailormap.solr.url" override="false" value="https://tailormap.nl/solr/"/>
     <Parameter name="flamingo.restproxy.port" override="false" value="8084"/>
+    <Parameter name="tailormap.restproxy.endpoints" override="false" value="0=feature-api;1=gbi"/>
 
     <!-- You must create this by hand in your geoserver to use the UserLayerActionBean-->
     <Parameter name="userlayer.geoserver.workspace" override="false" value="GBIuserlayers"/>

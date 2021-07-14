@@ -44,7 +44,7 @@ import java.util.Map;
 @StrictBinding
 public class ProxyRESTActionBean implements ActionBean, Auditable {
 
-    private Map<Integer, String> endpoints;
+    private Map<String, String> endpoints;
     private static final Log log = LogFactory.getLog(ProxyActionBean.class);
     private ActionBeanContext context;
     private AuditMessageObject auditMessageObject;
@@ -52,7 +52,7 @@ public class ProxyRESTActionBean implements ActionBean, Auditable {
     private String url;
 
     @Validate
-    private Integer endpoint = 0;
+    private String endpoint = "0";
 
     private boolean unauthorized;
 
@@ -69,8 +69,17 @@ public class ProxyRESTActionBean implements ActionBean, Auditable {
     @Before(stages = LifecycleStage.EventHandling)
     public void initEndpoints() {
         endpoints = new HashMap<>();
-        endpoints.put(0, "feature-api");
-        endpoints.put(1, "gbi");
+        String config = context.getServletContext().getInitParameter("tailormap.restproxy.endpoints");
+        String[] eps = config.split(";");
+        for (String ep : eps) {
+            if(!ep.isEmpty()){
+                int splitter = ep.indexOf("=");
+                String id = ep.substring(0, splitter);
+                String contextPath = ep.substring(splitter + 1);
+                endpoints.put(id, contextPath);
+            }
+
+        }
     }
 
     @DefaultHandler
@@ -208,11 +217,11 @@ public class ProxyRESTActionBean implements ActionBean, Auditable {
         this.url = url;
     }
 
-    public Integer getEndpoint() {
+    public String getEndpoint() {
         return endpoint;
     }
 
-    public void setEndpoint(Integer endpoint) {
+    public void setEndpoint(String endpoint) {
         this.endpoint = endpoint;
     }
 }
