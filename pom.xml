@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.tailormap</groupId>
     <artifactId>tailormap</artifactId>
-    <version>5.9.8-SNAPSHOT</version>
+    <version>5.9.9-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>tailormap</name>
     <url>https://github.com/b3partners/tailormap</url>
@@ -56,7 +56,7 @@
         <powermock.version>2.0.9</powermock.version>
         <hsqldb.version>2.6.0</hsqldb.version>
         <test.persistence.unit>viewer-config-hsqldb</test.persistence.unit>
-        <postgresql.version>42.2.22</postgresql.version>
+        <postgresql.version>42.2.23</postgresql.version>
         <mssql.version>9.2.1.jre11</mssql.version>
         <oracle.version>21.1.0.0</oracle.version>
         <apache.poi.version>5.0.0</apache.poi.version>
@@ -67,7 +67,7 @@
         <activation.api.version>1.2.2</activation.api.version>
         <slf4j.version>1.7.31</slf4j.version>
         <hibernate.version>5.5.3.Final</hibernate.version>
-        <jackson2.version>2.12.3</jackson2.version>
+        <jackson2.version>2.12.4</jackson2.version>
         <!-- skip integration tests by default, override this property from commandline
         or as part of a profile, see eg. 'gh-action' profile in viewer -->
         <test.skip.integrationtests>false</test.skip.integrationtests>
@@ -590,7 +590,7 @@
             <dependency>
                 <groupId>org.apache.tika</groupId>
                 <artifactId>tika-core</artifactId>
-                <version>1.26</version>
+                <version>1.27</version>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
