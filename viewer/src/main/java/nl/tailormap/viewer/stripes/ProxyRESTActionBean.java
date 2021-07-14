@@ -37,16 +37,22 @@ import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
 
 @UrlBinding("/action/proxyrest")
 @StrictBinding
 public class ProxyRESTActionBean implements ActionBean, Auditable {
 
+    private Map<Integer, String> endpoints;
     private static final Log log = LogFactory.getLog(ProxyActionBean.class);
     private ActionBeanContext context;
     private AuditMessageObject auditMessageObject;
     @Validate
     private String url;
+
+    @Validate
+    private Integer endpoint = 0;
 
     private boolean unauthorized;
 
@@ -58,6 +64,13 @@ public class ProxyRESTActionBean implements ActionBean, Auditable {
         if (sess == null || url == null || request.getRemoteUser() == null) {
             unauthorized = true;
         }
+    }
+
+    @Before(stages = LifecycleStage.EventHandling)
+    public void initEndpoints() {
+        endpoints = new HashMap<>();
+        endpoints.put(0, "feature-api");
+        endpoints.put(1, "gbi");
     }
 
     @DefaultHandler
@@ -123,7 +136,7 @@ public class ProxyRESTActionBean implements ActionBean, Auditable {
         URL requestUrl = new URL(context.getRequest().getRequestURL().toString());
         String host = context.getServletContext().getInitParameter("flamingo.restproxy.host");
         String port = context.getServletContext().getInitParameter("flamingo.restproxy.port");
-        String constructedURL = "http://" + (host != null ? host : "localhost") + ":" + (port != null ? port : "8084") + "/feature-api" + url + parentId;
+        String constructedURL = "http://" + (host != null ? host : "localhost") + ":" + (port != null ? port : "8084") + "/" + endpoints.get(endpoint) + url + parentId;
         URL u = new URL(constructedURL);
         return u;
     }
@@ -195,4 +208,11 @@ public class ProxyRESTActionBean implements ActionBean, Auditable {
         this.url = url;
     }
 
+    public Integer getEndpoint() {
+        return endpoint;
+    }
+
+    public void setEndpoint(Integer endpoint) {
+        this.endpoint = endpoint;
+    }
 }
