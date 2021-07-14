@@ -81,6 +81,7 @@ public class ProxyRESTActionBean implements ActionBean, Auditable {
         URL theUrl = constructURL();
         HttpClientConfigured client = getHttpClient(theUrl, em);
         HttpUriRequest req = getHttpRequest(theUrl);
+        req.setHeader("tailormap-user", request.getUserPrincipal().getName());
         HttpResponse response;
         try {
             response = client.execute(req);
@@ -89,6 +90,7 @@ public class ProxyRESTActionBean implements ActionBean, Auditable {
             if (statusCode >= 200 && statusCode < 300) {
                 final HttpResponse finalResponse = response;
                 final HttpEntity entity = response.getEntity();
+
 
                 return new StreamingResolution(entity.getContentType() != null ?entity.getContentType().getValue() : "application/json") {
                     @Override
