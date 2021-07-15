@@ -2,7 +2,7 @@ import { createSpyObject } from '@ngneat/spectator';
 import { MetadataService } from '../metadata.service';
 import { Observable, of } from 'rxjs';
 import { Attribute, AttributeMetadataResponse } from '../../../shared/attribute-service/attribute-models';
-import { METADATA_SERVICE } from '@tailormap/core-components';
+import { METADATA_SERVICE } from '@tailormap/models';
 
 export const createMockProvider = (template?: Partial<Record<keyof MetadataService, any>>) => {
   return createSpyObject(MetadataService, {

@@ -1,5 +1,5 @@
 import { Component, Inject, OnDestroy } from '@angular/core';
-import { AttributeListService, METADATA_SERVICE } from '@tailormap/core-components';
+import { METADATA_SERVICE } from '@tailormap/models';
 import { TailorMapService } from '../../../../../bridge/src/tailor-map.service';
 import { filter, switchMap, takeUntil } from 'rxjs/operators';
 import { forkJoin, of, Subject } from 'rxjs';
@@ -9,6 +9,7 @@ import { UserLayerService } from '../services/user-layer.service';
 import { UserLayerHelper } from '../helpers/user-layer.helper';
 import { MatSnackBar, MatSnackBarRef, TextOnlySnackBar } from '@angular/material/snack-bar';
 import { AnalysisAttributeListLayerNameChooserComponent } from '../analysis-attribute-list-layername-chooser/analysis-attribute-list-layer-name-chooser.component';
+import { AttributeListService } from '@tailormap/core-components';
 
 @Component({
   selector: 'tailormap-analysis-attribute-list-button',

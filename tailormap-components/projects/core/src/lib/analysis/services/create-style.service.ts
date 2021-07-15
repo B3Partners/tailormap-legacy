@@ -15,7 +15,7 @@ import { AnalysisSourceModel } from '../models/analysis-source.model';
 import { CriteriaHelper } from '../criteria/helpers/criteria.helper';
 import { ScopedUserLayerStyleModel } from '../models/scoped-user-layer-style.model';
 import { AttributeTypeHelper } from '../../application/helpers/attribute-type.helper';
-import { METADATA_SERVICE } from '@tailormap/core-components';
+import { METADATA_SERVICE } from '@tailormap/models';
 
 export type CreateStyleResult = { styles: UserLayerStyleModel[]; errorMessage?: string };
 type CachedStylesResult = [ string, CreateStyleResult ];

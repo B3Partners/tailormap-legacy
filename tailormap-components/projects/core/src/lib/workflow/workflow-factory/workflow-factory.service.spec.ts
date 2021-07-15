@@ -10,7 +10,7 @@ import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { formStateKey, initialFormState } from '../../feature-form/state/form.state';
 import { applicationStateKey, initialApplicationState } from '../../application/state/application.state';
 import { createApplicationServiceMock } from '../../application/services/mocks/application.service.mock';
-import { APPLICATION_SERVICE } from '@tailormap/core-components';
+import { APPLICATION_SERVICE } from '@tailormap/models';
 
 describe('WorkflowFactoryService', () => {
   let spectator: SpectatorService<WorkflowFactoryService>;

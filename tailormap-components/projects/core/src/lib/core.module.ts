@@ -7,7 +7,7 @@ import { StoreModule } from '@ngrx/store';
 import { reducers } from './state/root.reducer';
 import { ApplicationModule } from './application/application.module';
 import { EffectsModule } from '@ngrx/effects';
-import { APPLICATION_SERVICE, ATTRIBUTE_SERVICE, EXPORT_SERVICE, HIGHLIGHT_SERVICE, METADATA_SERVICE, STATISTIC_SERVICE } from '@tailormap/core-components';
+import { APPLICATION_SERVICE, ATTRIBUTE_SERVICE, EXPORT_SERVICE, HIGHLIGHT_SERVICE, METADATA_SERVICE, STATISTIC_SERVICE } from '@tailormap/models';
 import { ExportService } from './shared/export-service/export.service';
 import { MetadataService } from './application/services/metadata.service';
 import { HighlightService } from './shared/highlight-service/highlight.service';
