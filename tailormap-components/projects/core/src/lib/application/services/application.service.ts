@@ -9,7 +9,7 @@ import { FormConfigRepositoryService } from '../../shared/formconfig-repository/
 import { DomainRepositoryService } from '../../feature-form/linked-fields/domain-repository/domain-repository.service';
 import {
   AppLayerModel, ApplicationServiceModel, ExtendedFormConfigurationModel, FormConfiguration, FormConfigurationFormFieldType,
-} from '@tailormap/core-components';
+} from '@tailormap/models';
 import {
   selectApplicationTree, selectApplicationTreeWithoutBackgroundLayers, selectFormConfigForFeatureTypeName, selectFormConfigs,
   selectFormConfigsLoaded, selectSelectedAppLayer, selectVisibleLayersWithAttributes,

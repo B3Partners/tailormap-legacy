@@ -14,7 +14,7 @@ import { selectSelectedDataSource } from '../state/analysis.selectors';
 import { selectDataSource, setSelectedDataSource } from '../state/analysis.actions';
 import { MetadataService } from '../../application/services/metadata.service';
 import { UserLayerHelper } from '../helpers/user-layer.helper';
-import { METADATA_SERVICE } from '@tailormap/core-components';
+import { METADATA_SERVICE } from '@tailormap/models';
 
 @Component({
   selector: 'tailormap-create-layer-layer-selection',

@@ -11,7 +11,7 @@ import { ExtendedAttributeModel } from '../models/extended-attribute.model';
 import { UniqueValuesResponse } from '../../shared/value-service/value-models';
 import { ValueService } from '../../shared/value-service/value.service';
 import { FormState } from '../../feature-form/state/form.state';
-import { APPLICATION_SERVICE, ApplicationServiceModel, ATTRIBUTE_SERVICE, MetadataServiceModel } from '@tailormap/core-components';
+import { APPLICATION_SERVICE, ApplicationServiceModel, ATTRIBUTE_SERVICE, MetadataServiceModel } from '@tailormap/models';
 
 export type UniqueValueCountResponse = { uniqueValue: string; total: number };
 

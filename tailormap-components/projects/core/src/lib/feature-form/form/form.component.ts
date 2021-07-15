@@ -25,7 +25,7 @@ import { FeatureInitializerService } from '../../shared/feature-initializer/feat
 import { EditFeatureGeometryService } from '../services/edit-feature-geometry.service';
 import { AttributeMetadataResponse } from '../../shared/attribute-service/attribute-models';
 import { ExtendedFormConfigurationModel } from '../../application/models/extended-form-configuration.model';
-import { METADATA_SERVICE } from '@tailormap/core-components';
+import { METADATA_SERVICE } from '@tailormap/models';
 
 @Component({
   selector: 'tailormap-form',
