@@ -99,11 +99,20 @@ public class ProxyRESTActionBean implements ActionBean, Auditable {
                 }
             };
         }
+        if(!endpoints.containsKey(endpoint)){
+            return new StreamingResolution("application/json") {
+                @Override
+                public void stream(HttpServletResponse response) throws Exception {
+                    response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                    IOUtils.copy(new StringReader("Endpoint not found"), response.getOutputStream(), StandardCharsets.UTF_8);
+                }
+            };
+        }
         EntityManager em = Stripersist.getEntityManager();
         URL theUrl = constructURL();
         HttpClientConfigured client = getHttpClient(theUrl, em);
         HttpUriRequest req = getHttpRequest(theUrl);
-        req.setHeader("tailormap-user", request.getUserPrincipal().getName());
+        req.setHeader("X-Remote-User", request.getUserPrincipal().getName());
         HttpResponse response;
         try {
             response = client.execute(req);
