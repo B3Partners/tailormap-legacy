@@ -37,16 +37,22 @@ import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
 
 @UrlBinding("/action/proxyrest")
 @StrictBinding
 public class ProxyRESTActionBean implements ActionBean, Auditable {
 
+    private Map<String, String> endpoints;
     private static final Log log = LogFactory.getLog(ProxyActionBean.class);
     private ActionBeanContext context;
     private AuditMessageObject auditMessageObject;
     @Validate
     private String url;
+
+    @Validate
+    private String endpoint = "0";
 
     private boolean unauthorized;
 
@@ -57,6 +63,22 @@ public class ProxyRESTActionBean implements ActionBean, Auditable {
         HttpSession sess = request.getSession(false);
         if (sess == null || url == null || request.getRemoteUser() == null) {
             unauthorized = true;
+        }
+    }
+
+    @Before(stages = LifecycleStage.EventHandling)
+    public void initEndpoints() {
+        endpoints = new HashMap<>();
+        String config = context.getServletContext().getInitParameter("tailormap.restproxy.endpoints");
+        String[] eps = config.split(";");
+        for (String ep : eps) {
+            if(!ep.isEmpty()){
+                int splitter = ep.indexOf("=");
+                String id = ep.substring(0, splitter);
+                String contextPath = ep.substring(splitter + 1);
+                endpoints.put(id, contextPath);
+            }
+
         }
     }
 
@@ -77,10 +99,20 @@ public class ProxyRESTActionBean implements ActionBean, Auditable {
                 }
             };
         }
+        if(!endpoints.containsKey(endpoint)){
+            return new StreamingResolution("application/json") {
+                @Override
+                public void stream(HttpServletResponse response) throws Exception {
+                    response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                    IOUtils.copy(new StringReader("Endpoint not found"), response.getOutputStream(), StandardCharsets.UTF_8);
+                }
+            };
+        }
         EntityManager em = Stripersist.getEntityManager();
         URL theUrl = constructURL();
         HttpClientConfigured client = getHttpClient(theUrl, em);
         HttpUriRequest req = getHttpRequest(theUrl);
+        req.setHeader("X-Remote-User", request.getUserPrincipal().getName());
         HttpResponse response;
         try {
             response = client.execute(req);
@@ -89,6 +121,7 @@ public class ProxyRESTActionBean implements ActionBean, Auditable {
             if (statusCode >= 200 && statusCode < 300) {
                 final HttpResponse finalResponse = response;
                 final HttpEntity entity = response.getEntity();
+
 
                 return new StreamingResolution(entity.getContentType() != null ?entity.getContentType().getValue() : "application/json") {
                     @Override
@@ -121,7 +154,7 @@ public class ProxyRESTActionBean implements ActionBean, Auditable {
         URL requestUrl = new URL(context.getRequest().getRequestURL().toString());
         String host = context.getServletContext().getInitParameter("flamingo.restproxy.host");
         String port = context.getServletContext().getInitParameter("flamingo.restproxy.port");
-        String constructedURL = "http://" + (host != null ? host : "localhost") + ":" + (port != null ? port : "8084") + "/feature-api" + url + parentId;
+        String constructedURL = "http://" + (host != null ? host : "localhost") + ":" + (port != null ? port : "8084") + "/" + endpoints.get(endpoint) + url + parentId;
         URL u = new URL(constructedURL);
         return u;
     }
@@ -193,4 +226,11 @@ public class ProxyRESTActionBean implements ActionBean, Auditable {
         this.url = url;
     }
 
+    public String getEndpoint() {
+        return endpoint;
+    }
+
+    public void setEndpoint(String endpoint) {
+        this.endpoint = endpoint;
+    }
 }
