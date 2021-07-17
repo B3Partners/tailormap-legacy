@@ -50,7 +50,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 const configEl = document.createElement('${actionBean.ngConfigComponent}');
                 configEl.setAttribute('application-id', '${actionBean.application.id}');
                 configEl.setAttribute('config', ${configObject});
-                configEl.addEventListener('configUpdated', function(config) {
+                configEl.addEventListener('configChanged', function(config) {
                     console.log(config);
                     document.querySelector('#configObject').value = JSON.stringify(config);
                 });
