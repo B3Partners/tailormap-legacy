@@ -23,7 +23,6 @@
                     <dialects>
                         <param>hsql</param>
                         <param>postgresql</param>
-                        <param>oracle12c</param>
                     </dialects>
                     <outputDirectory>${project.build.outputDirectory}/scripts</outputDirectory>
                     <outputFileNameSuffix>-schema-export</outputFileNameSuffix>
@@ -59,7 +58,6 @@
                         <configuration>
                             <target>
                                 <!-- run after schema gegeration -->
-                                <move file="target/classes/scripts/oracle12c-schema-export.sql" tofile="target/classes/scripts/oracle-schema-export.sql" />
                                 <move file="target/classes/scripts/hsql-schema-export.sql" tofile="target/classes/scripts/hsqldb-schema-export.sql" />
                             </target>
                         </configuration>
