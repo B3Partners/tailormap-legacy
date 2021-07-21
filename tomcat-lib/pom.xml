@@ -42,15 +42,7 @@
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.oracle.database.jdbc</groupId>
-            <artifactId>ojdbc11</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.microsoft.sqlserver</groupId>
-            <artifactId>mssql-jdbc</artifactId>
-        </dependency>
-        <!-- using provided scope to note the optional extra libs for Java 11, 
+        <!-- using provided scope to note the optional extra libs for Java 11,
              probably geotools pulls these in as well -->
         <!--  komt ook met iets anders mee en zit dus in de WEB-INF/lib als jaxb-api-2.4.0-b180830.0359.jar
         dependency>

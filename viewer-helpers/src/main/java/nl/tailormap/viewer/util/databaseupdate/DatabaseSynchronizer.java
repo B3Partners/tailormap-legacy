@@ -85,7 +85,7 @@ public class DatabaseSynchronizer implements Servlet {
     public static final LinkedHashMap<String, UpdateElement> updates = new LinkedHashMap<String, UpdateElement>();
     private static final String SCRIPT_PATH="/scripts";
     private String databaseProductName="postgresql";
-    private static final String[] SUPPORTED_DATABASE_PRODUCTS = {"postgresql", "oracle", "microsoft_sql_server"};
+    private static final String[] SUPPORTED_DATABASE_PRODUCTS = {"postgresql"};
     private ServletConfig sc;
     UpdateElement uel=    new UpdateElement(new ArrayList<String>(), String.class);
     //The updates definition
