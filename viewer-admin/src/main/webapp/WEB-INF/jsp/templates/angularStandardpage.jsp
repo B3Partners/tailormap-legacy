@@ -47,7 +47,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
         <c:set var="tailorMapComponentsConfigPath" value="${contextPath}/tailormap-admin-config"/>
         <c:if test="${param.debug == true}">
-            <c:set var="tailorMapComponentsConfigPath" value="http://localhost:3201"/>
+            <c:set var="tailorMapComponentsConfigPath" value="http://localhost:3202"/>
         </c:if>
         <script type="text/javascript">
             var tailorMapComponentsConfigPath = <js:quote value="${tailorMapComponentsConfigPath}"/>;
