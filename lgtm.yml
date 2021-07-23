@@ -1,6 +1,16 @@
 path_classifiers:
   test:
     - "*/src/test/*"
+  ci:
+    - "*.yml"
+    - ".github/*"
+    - ".lgtm/*"
+    - ".mvn/*"
+    - "Jenkinsfile"
+  documentation:
+    - "LICENSE*"
+    - "*.md"
+    - "*.html"
 extraction:
   javascript:
     index:
