@@ -1,0 +1,17 @@
+path_classifiers:
+  test:
+    - "*/src/test/*"
+extraction:
+  javascript:
+    index:
+      filters:
+        exclude: "**/ext-all.js"
+  java:
+    configure:
+      command:
+        - echo "-T1 -DskipTests -Dtest.skip.integrationtests=true -B -V -fae" > .mvn/maven.config
+    index:
+      maven:
+        version: "3.8.1"
+        settings_file: .lgtm/settings.xml
+      java_version: "11"
