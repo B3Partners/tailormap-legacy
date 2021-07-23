@@ -68,10 +68,28 @@ updates:
   - mtoonen
   - mprins
   labels:
-  - dependencies
   - javascript
   - build infrastructure
   - backport v5.8.x
+
+- package-ecosystem: npm
+  directory: "/tailormap-components"
+  schedule:
+    interval: weekly
+    day: wednesday
+    timezone: Europe/Amsterdam
+  open-pull-requests-limit: 25
+  reviewers:
+    - mtoonen
+    - geertplaisier
+  assignees:
+    - mtoonen
+    - geertplaisier
+  labels:
+    - dependencies
+    - javascript
+    - build infrastructure
+    - backport v5.8.x
 
 - package-ecosystem: "github-actions"
   directory: "/"
