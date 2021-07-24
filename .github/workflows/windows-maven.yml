@@ -44,7 +44,7 @@ jobs:
           mvn --% -e -fae clean test -B
           mvn --% -e verify -B
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v1
+        uses: codecov/codecov-action@v2
       - name: Cleanup build artifacts and snapshots
         run: |
           # mvn --% clean build-helper:remove-project-artifact
