@@ -15,7 +15,7 @@ extraction:
   javascript:
     index:
       filters:
-        exclude: "**/ext-all.js"
+        exclude: "**/ext-all*.js"
   java:
     after_prepare:
       - "echo '-T1 -DskipTests -Dtest.skip.integrationtests=true -B -V -fae' > .mvn/maven.config"
