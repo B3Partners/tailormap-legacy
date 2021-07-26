@@ -6,7 +6,7 @@ timestamps {
                 artifactNumToKeepStr: '5',
                 daysToKeepStr: '15',
                 numToKeepStr: '5']
-            ]]);cd 
+            ]]); 
 
         withEnv(["JAVA_HOME=${ tool 'OpenJDK11' }", "PATH+MAVEN=${tool 'Maven CURRENT'}/bin:${env.JAVA_HOME}/bin"]) {
             stage("Prepare") {
