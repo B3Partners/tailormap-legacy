@@ -22,6 +22,24 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
     <stripes:layout-component name="head">
         <title><fmt:message key="viewer_admin.configpage.0" /></title>
+        <style>
+            .config-page-wrapper {
+                height: 100%;
+                display: flex;
+                flex-direction: column;
+                align-items: stretch;
+            }
+            #component-container {
+                flex: 1;
+                padding: 16px;
+                overflow: auto;
+            }
+            #save-button {
+                justify-content: flex-end;
+                display: flex;
+                padding: 0 8px 8px 0;
+            }
+        </style>
     </stripes:layout-component>
 
     <stripes:layout-component name="header">
@@ -34,16 +52,21 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <stripes:hidden name="className" value="${actionBean.className}"/>
             <stripes:hidden name="name" value="${actionBean.name}"/>
             <stripes:hidden id="componentLayout" name="componentLayout"/>
-            <stripes:hidden name="configObject" id="configObject"/>
+            <stripes:hidden name="configObject" id="configObject" value="${actionBean.configObject}" />
             <stripes:hidden name="saveComponentConfig" value="Opslaan" />
             <stripes:hidden name="currentRegion" value="${param.currentRegion}" />
         </stripes:form>
         <app-root></app-root>
-        <div id="component-container"></div>
-        <button id="save-button">Opslaan</button>
+        <div class="config-page-wrapper">
+            <div id="component-container"></div>
+            <div id="save-button">
+                <tailormap-config-page-save-button></tailormap-config-page-save-button>
+            </div>
+        </div>
+
         <script type="text/javascript">
             window.addEventListener('DOMContentLoaded',function () {
-                <c:set var="configObject"><js:quote>${actionBean.component.config}</js:quote></c:set>
+                <c:set var="configObject"><js:quote>${"{}"}</js:quote></c:set>
                 <c:if test="${!empty actionBean.component.config}">
                 <c:set var="configObject"><js:quote>${actionBean.component.config}</js:quote></c:set>
                 </c:if>
@@ -51,13 +74,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 configEl.setAttribute('application-id', '${actionBean.application.id}');
                 configEl.setAttribute('config', ${configObject});
                 configEl.addEventListener('configChanged', function(config) {
-                    console.log(config);
-                    document.querySelector('#configObject').value = JSON.stringify(config);
+                    if (config.detail) {
+                        document.querySelector('#configObject').value = config.detail;
+                    }
                 });
                 document.querySelector('#component-container').appendChild(configEl);
-                document.querySelector('#save-button').addEventListener('click', function() {
-                    document.querySelector('#configForm').submit();
-                });
+                document.querySelector('#configObject').value = ${configObject};
             });
         </script>
     </stripes:layout-component>
