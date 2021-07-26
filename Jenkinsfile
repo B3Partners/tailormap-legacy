@@ -6,19 +6,19 @@ timestamps {
                 artifactNumToKeepStr: '5',
                 daysToKeepStr: '15',
                 numToKeepStr: '5']
-            ]]);
-        stage("Prepare") {
-            checkout scm
-            sh "wget http://cert.pkioverheid.nl/EVRootCA.cer"
-            try {
-                sh "keytool -importcert -file ./EVRootCA.cer -alias EVRootCA -keystore $JAVA_HOME/lib/security/cacerts -storepass 'changeit' -v -noprompt -trustcacerts"
-            } catch (err) {
-                /* possibly already imported cert */
-                echo err.getMessage()
-            }
-        }
+            ]]);cd 
 
         withEnv(["JAVA_HOME=${ tool 'OpenJDK11' }", "PATH+MAVEN=${tool 'Maven CURRENT'}/bin:${env.JAVA_HOME}/bin"]) {
+            stage("Prepare") {
+                checkout scm
+                sh "wget http://cert.pkioverheid.nl/EVRootCA.cer"
+                try {
+                    sh "keytool -importcert -file ./EVRootCA.cer -alias EVRootCA -keystore $JAVA_HOME/lib/security/cacerts -storepass 'changeit' -v -noprompt -trustcacerts"
+                } catch (err) {
+                    /* possibly already imported cert */
+                    echo err.getMessage()
+                }
+            }
             stage("Build") {
                 echo "Building branch: ${env.BRANCH_NAME}"
                 sh "mvn clean install -U -DskipTests -Dtest.skip.integrationtests=true -B -V -fae -q"
