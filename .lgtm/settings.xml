@@ -3,6 +3,12 @@
           xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.1.0 https://maven.apache.org/xsd/settings-1.1.0.xsd">
     <profiles>
         <profile>
+            <id>lgtm</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+        </profile>
+        <profile>
             <id>standard-with-extra-repos</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
