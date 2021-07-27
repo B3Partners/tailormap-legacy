@@ -54,6 +54,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             var contextPath = <js:quote value="${contextPath}"/>;
         </script>
         <link rel="stylesheet" type="text/css" href="${tailorMapComponentsConfigPath}/styles.css">
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
         <script src="${tailorMapComponentsConfigPath}/vendor.js" type="module"></script>
         <script src="${tailorMapComponentsConfigPath}/runtime.js" type="module"></script>
         <script src="${tailorMapComponentsConfigPath}/polyfills.js" type="module"></script>

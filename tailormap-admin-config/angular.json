@@ -14,7 +14,9 @@
       "sourceRoot": "src",
       "prefix": "app",
       "architect": {
+        "sourceMap": true,
         "build": {
+          "sourceMap": true,
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
             "outputPath": "dist/tailormap-admin-config",
@@ -68,8 +70,15 @@
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
+          "vendorSourceMap": true,
           "options": {
+            "sourceMap": {
+              "scripts": true,
+              "styles": true,
+              "vendor": true
+            },
             "port": 3202
+
           },
           "configurations": {
             "production": {

@@ -154,6 +154,8 @@ public class FormActionBean extends LocalizableActionBean {
     }
 
     public Resolution save() {
+        JSONObject res = new JSONObject();
+        res.put("success", false);
         EntityManager em = Stripersist.getEntityManager();
         try {
             form = processForm(form);
@@ -162,11 +164,23 @@ public class FormActionBean extends LocalizableActionBean {
             form.getReaders().addAll(groupsRead);
             em.persist(form);
             em.getTransaction().commit();
+            res.put("success", true);
         } catch (IOException e) {
-            log.error("Exception occured during processing of form json");
+            log.error("Exception occured during processing of form json", e);
+            res.put("message", e.getLocalizedMessage());
             context.getValidationErrors().add("json", new SimpleError(e.getLocalizedMessage()));
         }
-        return new ForwardResolution(EDITJSP);
+        return new StreamingResolution("application/json") {
+            @Override
+            public void stream(HttpServletResponse response) throws Exception {
+                if((boolean) res.get("success")){
+                    response.setStatus(HttpServletResponse.SC_OK);
+                }else{
+                    response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                }
+               response.getWriter().print(res.toString());
+            }
+        };
     }
 
     private Form processForm(Form f) throws IOException {

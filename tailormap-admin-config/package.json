@@ -22,7 +22,7 @@
     "@angular/cdk": "^12.1.2",
     "@angular/material": "^12.1.2",
     "angular-material-fileupload": "^3.0.2",
-    "@tailormap/admin-config": "0.0.2-12",
+    "@tailormap/admin-config": "0.0.2-44",
     "@tailormap/core-components": "0.0.12-1",
     "@tailormap/models": "0.0.2",
     "@tailormap/shared": "0.0.15-2",
