@@ -14,7 +14,7 @@
         <minify.outputdir>${project.name}-${project.version}/viewer-html</minify.outputdir>
         <viewerhtml.path>${basedir}/src/main/webapp/viewer-html</viewerhtml.path>
         <tailormap-components.source.dir>../tailormap-components</tailormap-components.source.dir>
-        <tailormap-components.dist.dir>${tailormap-components.source.dir}/dist/</tailormap-components.dist.dir>
+        <tailormap-components.dist.dir>${tailormap-components.source.dir}/dist</tailormap-components.dist.dir>
         <rest.api.outputdoc>${tailormap-components.source.dir}/projects/core/src/lib/shared/generated</rest.api.outputdoc>
     </properties>
     <dependencies>
@@ -237,6 +237,8 @@
                     <filesets>
                         <fileset>
                             <directory>${tailormap-components.dist.dir}</directory>
+                        </fileset>
+                        <fileset>
                             <directory>${tailormap-components.dist.dir}/../node_modules</directory>
                         </fileset>
                     </filesets>
@@ -294,7 +296,7 @@
                             <outputDirectory>${project.build.directory}/${project.artifactId}-${project.version}/tailormap-components</outputDirectory>
                             <resources>
                                 <resource>
-                                    <directory>${tailormap-components.dist.dir}/</directory>
+                                    <directory>${tailormap-components.dist.dir}</directory>
                                     <!--includes>
                                         <include>... misschien *.js</include>
                                     </includes-->
