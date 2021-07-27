@@ -78,7 +78,7 @@
     "eslint-plugin-prefer-arrow": "1.2.2",
     "eslint-plugin-rxjs": "^3.1.0",
     "jasmine-core": "~3.7.0",
-    "jasmine-spec-reporter": "~6.0.0",
+    "jasmine-spec-reporter": "~7.0.0",
     "karma": "~6.3.2",
     "karma-chrome-launcher": "~3.1.0",
     "karma-coverage-istanbul-reporter": "~3.0.3",
