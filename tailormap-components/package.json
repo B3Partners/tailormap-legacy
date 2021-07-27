@@ -73,7 +73,7 @@
     "@typescript-eslint/parser": "4.23.0",
     "codelyzer": "^6.0.2",
     "eslint": "^7.26.0",
-    "eslint-plugin-import": "2.22.1",
+    "eslint-plugin-import": "2.23.4",
     "eslint-plugin-jsdoc": "30.7.6",
     "eslint-plugin-prefer-arrow": "1.2.2",
     "eslint-plugin-rxjs": "^3.1.0",
