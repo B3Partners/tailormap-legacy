@@ -30,8 +30,6 @@ public class SimpleFeatureTypeHelper {
         if(removed > 0) {
             log.warn("Cleared " + removed + " references to " + typesToRemove.size() + " type names which are to be removed");
         }
-
-        // Ignore Layar references
     }
 
     public static void synchronizeFeaturetype(ApplicationLayer appLayer, EntityManager em, ActionBeanContext context,

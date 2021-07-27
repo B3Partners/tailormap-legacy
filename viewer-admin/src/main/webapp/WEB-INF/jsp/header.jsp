@@ -35,8 +35,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                             <li><stripes:link beanclass="nl.tailormap.viewer.admin.stripes.ConfigureSolrActionBean" id="menu_solrconfig"><fmt:message key="viewer_admin.header.5" /></stripes:link></li>
                             <li><stripes:link beanclass="nl.tailormap.viewer.admin.stripes.FeatureTypeRelationActionBean" id="menu_relation"><fmt:message key="viewer_admin.header.6" /></stripes:link></li>
                             <li><stripes:link beanclass="nl.tailormap.viewer.admin.stripes.CycloramaConfigurationActionBean" id="menu_cyclorama"><fmt:message key="viewer_admin.header.7" /></stripes:link></li>
-                            <li><stripes:link beanclass="nl.tailormap.viewer.admin.stripes.LayarServiceActionBean" id="menu_layarservices"><fmt:message key="viewer_admin.header.8" /></stripes:link></li>
-                            <li><stripes:link beanclass="nl.tailormap.viewer.admin.stripes.LayarSourceActionBean" id="menu_layarsource"><fmt:message key="viewer_admin.header.9" /></stripes:link></li>
                        </ul>
                     </li>
                     <li><stripes:link beanclass="nl.tailormap.viewer.admin.stripes.DocumentActionBean" id="menu_documenten"><fmt:message key="viewer_admin.header.10" /></stripes:link></li>
