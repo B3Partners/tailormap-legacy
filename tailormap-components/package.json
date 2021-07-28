@@ -69,7 +69,7 @@
     "@types/jasmine": "~3.6.4",
     "@types/jasminewd2": "~2.0.3",
     "@types/node": "^14.14.31",
-    "@typescript-eslint/eslint-plugin": "4.23.0",
+    "@typescript-eslint/eslint-plugin": "4.28.5",
     "@typescript-eslint/parser": "4.23.0",
     "codelyzer": "^6.0.2",
     "eslint": "^7.26.0",
