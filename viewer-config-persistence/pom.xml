@@ -23,8 +23,6 @@
                     <dialects>
                         <param>hsql</param>
                         <param>postgresql</param>
-                        <param>oracle12c</param>
-                        <param>sqlserver2012</param>
                     </dialects>
                     <outputDirectory>${project.build.outputDirectory}/scripts</outputDirectory>
                     <outputFileNameSuffix>-schema-export</outputFileNameSuffix>
@@ -60,11 +58,7 @@
                         <configuration>
                             <target>
                                 <!-- run after schema gegeration -->
-                                <move file="target/classes/scripts/sqlserver2012-schema-export.sql" tofile="target/classes/scripts/microsoft_sql_server-schema-export.sql" />
-                                <move file="target/classes/scripts/oracle12c-schema-export.sql" tofile="target/classes/scripts/oracle-schema-export.sql" />
                                 <move file="target/classes/scripts/hsql-schema-export.sql" tofile="target/classes/scripts/hsqldb-schema-export.sql" />
-                                <!-- replace token=" details_key varchar(255) null," value=" details_key varchar(255) not null," file="target/classes/scripts/microsoft_sql_server-schema-export.sql" summary="true" / -->
-                                <!-- replace token="crs varchar(255) null, primary key (layer, crs));" value="crs varchar(255) not null, primary key (layer, crs));" file="target/classes/scripts/microsoft_sql_server-schema-export.sql" summary="true" / -->
                             </target>
                         </configuration>
                         <goals>

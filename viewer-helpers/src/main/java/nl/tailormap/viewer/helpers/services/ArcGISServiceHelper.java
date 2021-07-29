@@ -542,10 +542,6 @@ public class ArcGISServiceHelper implements GeoServiceHelper {
                     .setParameter("ft", ft)
                     .executeUpdate();
 
-            Stripersist.getEntityManager().createQuery("update LayarSource set featureType = null where featureType = :ft")
-                    .setParameter("ft", ft)
-                    .executeUpdate();
-
             Stripersist.getEntityManager().createQuery("update SolrConf set simpleFeatureType = null where simpleFeatureType = :ft")
                     .setParameter("ft", ft)
                     .executeUpdate();

@@ -1,0 +1,28 @@
+path_classifiers:
+  test:
+    - "*/src/test/*"
+  ci:
+    - "*.yml"
+    - ".github/*"
+    - ".lgtm/*"
+    - ".mvn/*"
+    - "Jenkinsfile"
+  documentation:
+    - "LICENSE*"
+    - "*.md"
+    - "*.html"
+extraction:
+  javascript:
+    index:
+      exclude:
+        - "**/ext-all*.js"
+        - "*/extjs/"
+  java:
+    after_prepare:
+      - "echo '-T1 -DskipTests -Dtest.skip.integrationtests=true -B -V -fae -Plgtm' > .mvn/maven.config"
+      - "cat .mvn/maven.config"
+    index:
+      maven:
+        version: "3.8.1"
+        settings_file: ".lgtm/settings.xml"
+      java_version: "11"

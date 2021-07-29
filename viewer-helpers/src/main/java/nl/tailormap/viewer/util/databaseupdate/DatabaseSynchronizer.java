@@ -85,7 +85,7 @@ public class DatabaseSynchronizer implements Servlet {
     public static final LinkedHashMap<String, UpdateElement> updates = new LinkedHashMap<String, UpdateElement>();
     private static final String SCRIPT_PATH="/scripts";
     private String databaseProductName="postgresql";
-    private static final String[] SUPPORTED_DATABASE_PRODUCTS = {"postgresql", "oracle", "microsoft_sql_server"};
+    private static final String[] SUPPORTED_DATABASE_PRODUCTS = {"postgresql"};
     private ServletConfig sc;
     UpdateElement uel=    new UpdateElement(new ArrayList<String>(), String.class);
     //The updates definition
@@ -192,10 +192,12 @@ public class DatabaseSynchronizer implements Servlet {
         // 5.9.4
         updates.put("45", new UpdateElement(Collections.singletonList("add_featuretypePK.sql"), String.class, false));
 
+        // 5.9.9
+        updates.put("46", new UpdateElement(Collections.singletonList("drop_layar.sql"), String.class, true));
 
         // 
-        // NB when adding an update also update the metadata version in the testdata.sql file around line 348
-        // that is: /src/test/resources/nl/b3p/viewer/util/testdata.sql
+        // NB when adding an update also update the metadata version in the testdata.sql file around line 349
+        // that is: /src/test/resources/nl/b3p/viewer/util/testdata.sql in viewer-config-persistence
     }
 
     /**

@@ -50,7 +50,7 @@ jobs:
           mvn -e verify -B -Pgh-action -pl '!viewer-admin'
           mvn -e verify -B -Pgh-action -pl 'viewer-admin'
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v1
+        uses: codecov/codecov-action@v2
       - name: Build javadoc
         run: mvn javadoc:javadoc
       - name: Build test javadoc

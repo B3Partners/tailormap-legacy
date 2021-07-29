@@ -14,7 +14,7 @@
         <minify.outputdir>${project.name}-${project.version}/viewer-html</minify.outputdir>
         <viewerhtml.path>${basedir}/src/main/webapp/viewer-html</viewerhtml.path>
         <tailormap-components.source.dir>../tailormap-components</tailormap-components.source.dir>
-        <tailormap-components.dist.dir>${tailormap-components.source.dir}/dist/</tailormap-components.dist.dir>
+        <tailormap-components.dist.dir>${tailormap-components.source.dir}/dist</tailormap-components.dist.dir>
         <rest.api.outputdoc>${tailormap-components.source.dir}/projects/core/src/lib/shared/generated</rest.api.outputdoc>
     </properties>
     <dependencies>
@@ -188,16 +188,6 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.microsoft.sqlserver</groupId>
-            <artifactId>mssql-jdbc</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.oracle.database.jdbc</groupId>
-            <artifactId>ojdbc11</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
             <groupId>org.eclipse.emf</groupId>
             <artifactId>org.eclipse.emf.common</artifactId>
         </dependency>
@@ -247,6 +237,8 @@
                     <filesets>
                         <fileset>
                             <directory>${tailormap-components.dist.dir}</directory>
+                        </fileset>
+                        <fileset>
                             <directory>${tailormap-components.dist.dir}/../node_modules</directory>
                         </fileset>
                     </filesets>
@@ -304,7 +296,7 @@
                             <outputDirectory>${project.build.directory}/${project.artifactId}-${project.version}/tailormap-components</outputDirectory>
                             <resources>
                                 <resource>
-                                    <directory>${tailormap-components.dist.dir}/</directory>
+                                    <directory>${tailormap-components.dist.dir}</directory>
                                     <!--includes>
                                         <include>... misschien *.js</include>
                                     </includes-->
@@ -590,8 +582,8 @@
                 </executions>
             </plugin>
             <plugin>
-                <groupId>pl.project13.maven</groupId>
-                <artifactId>git-commit-id-plugin</artifactId>
+                <groupId>io.github.git-commit-id</groupId>
+                <artifactId>git-commit-id-maven-plugin</artifactId>
                 <executions>
                     <execution>
                         <goals>
@@ -769,6 +761,20 @@
                                 </goals>
                             </execution>
                         </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>lgtm</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.github.eirslett</groupId>
+                        <artifactId>frontend-maven-plugin</artifactId>
+                        <configuration>
+                            <skip>true</skip>
+                        </configuration>
                     </plugin>
                 </plugins>
             </build>

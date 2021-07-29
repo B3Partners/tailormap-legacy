@@ -178,7 +178,7 @@ public class SolrUpdateJob implements Job {
                     q.setMaxFeatures(max);
                     
                     status.setCurrentAction("Bezig met verwerken features " + start + " - " + ( start + max) + " van de " + total);
-                    currentProgress += percentagePerBatch;
+                    currentProgress += (int)percentagePerBatch;
                     status.setProgress(currentProgress);
                     fc = fs.getFeatures(q);
                     processFeatures(fc.features(), indexAttributesConfig, resultAttributesConfig, config.getId(),solrServer, status, percentagePerBatch);
