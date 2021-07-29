@@ -172,22 +172,6 @@
         </attributes>
     </entity>
 
-    <entity class="nl.tailormap.viewer.config.services.LayarService">
-        <attributes>
-            <id name="id">
-                <generated-value strategy="IDENTITY"/>
-            </id>
-        </attributes>
-    </entity>
-
-    <entity class="nl.tailormap.viewer.config.services.LayarSource">
-        <attributes>
-            <id name="id">
-                <generated-value strategy="IDENTITY"/>
-            </id>
-        </attributes>
-    </entity>
-
     <entity class="nl.tailormap.viewer.config.services.TileMatrix">
         <attributes>
             <id name="id">
