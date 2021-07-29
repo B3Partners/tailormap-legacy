@@ -199,6 +199,12 @@ input[type="submit"]:hover,
 .textcontent thead td, .textcontent thead th {
     font-weight: bold;
 }
+
+.formContent{
+    position: relative;
+    top: 50px;
+}
+
 #tree-container {
   width: 350px;
   float: left;

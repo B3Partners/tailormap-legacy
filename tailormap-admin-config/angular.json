@@ -72,6 +72,7 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "vendorSourceMap": true,
           "options": {
+
             "sourceMap": {
               "scripts": true,
               "styles": true,

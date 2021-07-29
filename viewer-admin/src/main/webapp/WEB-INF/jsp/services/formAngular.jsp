@@ -30,8 +30,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <stripes:errors/>
             <stripes:messages/>
             <h1><fmt:message key="viewer_admin.form.header" /><a href="#Soorten_Applicaties_Help" title="<fmt:message key="viewer_admin.form.helptext" />" class="helplink"></a></h1>
-            <br/>
-            <app-root></app-root>
+            <div class="formContent">
+                <app-root></app-root>
+            </div>
 
         <script type="text/javascript">
             vieweradmin.components.Menu.setActiveLink('menu_forms');
