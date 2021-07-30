@@ -70,6 +70,7 @@
         <hibernate.version>5.6.2.Final</hibernate.version>
         <jackson2.version>2.12.5</jackson2.version>
         <lucene.version>4.6.0</lucene.version>
+	<spring.boot.version>2.6.1</spring.boot.version>
         <test.junit-jupiter.version>5.8.2</test.junit-jupiter.version>
         <test.hamcrest.version>2.2</test.hamcrest.version>
         <!-- skip integration tests by default, override this property from commandline
@@ -631,6 +632,14 @@
                 <groupId>org.skyscreamer</groupId>
                 <artifactId>jsonassert</artifactId>
                 <version>1.5.0</version>
+                <exclusions>
+                    <exclusion>
+                        <!-- the F* vaadin team decided it would be a good idea to
+                        issue a lib packaged as org.json with incompatibe JSONArray -->
+                        <groupId>com.vaadin.external.google</groupId>
+                        <artifactId>android-json</artifactId>
+                    </exclusion>
+               </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.apache.tika</groupId>
@@ -656,6 +665,16 @@
                 <groupId>org.owasp.encoder</groupId>
                 <artifactId>encoder</artifactId>
                 <version>1.2.3</version>
+            </dependency>
+
+            <!-- spring boot BOM import voor viewer-ng -->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <!--  <artifactId>spring-boot-starter-parent</artifactId> overerft van onderstaande -->
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring.boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -832,6 +851,11 @@
                     <artifactId>docker-maven-plugin</artifactId>
                     <version>0.38.0</version>
                 </plugin>
+                <plugin>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-maven-plugin</artifactId>
+                    <version>${spring.boot.version}</version>
+                </plugin>
             </plugins>
         </pluginManagement>
         <plugins>
@@ -981,6 +1005,7 @@
         <module>solr-commons</module>
         <module>form</module>
         <module>viewer</module>
+        <module>viewer-ng</module>
         <module>viewer-admin</module>
         <module>docker</module>
     </modules>
