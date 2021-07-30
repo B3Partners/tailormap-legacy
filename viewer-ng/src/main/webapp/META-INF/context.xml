@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context antiResourceLocking="false" path="/viewer">
+    <ResourceLink global="jdbc/geo_viewer" name="jdbc/geo_viewer" type="javax.sql.DataSource"/>
+</Context>
