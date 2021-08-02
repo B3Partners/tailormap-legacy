@@ -1,18 +1,16 @@
 <?xml version="1.0"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
     <groupId>org.tailormap</groupId>
     <artifactId>web-commons</artifactId>
     <packaging>jar</packaging>
-
     <parent>
         <groupId>org.tailormap</groupId>
         <artifactId>tailormap</artifactId>
         <version>5.9.9-SNAPSHOT</version>
     </parent>
     <name>web-commons</name>
-
     <dependencies>
         <dependency>
             <groupId>org.tailormap</groupId>
@@ -21,16 +19,6 @@
         <dependency>
             <groupId>org.tailormap</groupId>
             <artifactId>viewer-commons</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-engine</artifactId>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.json</groupId>
@@ -44,7 +32,6 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
         </dependency>
-        <!-- Stripes -->
         <dependency>
             <groupId>net.sourceforge.stripes</groupId>
             <artifactId>stripes</artifactId>
