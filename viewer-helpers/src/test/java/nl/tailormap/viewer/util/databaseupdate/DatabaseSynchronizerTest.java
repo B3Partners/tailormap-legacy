@@ -19,26 +19,24 @@ package nl.tailormap.viewer.util.databaseupdate;
 import nl.tailormap.viewer.config.metadata.Metadata;
 import nl.tailormap.viewer.config.services.SolrConf;
 import nl.tailormap.viewer.util.TestUtil;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 /**
- *
  * @author Meine Toonen meinetoonen@b3partners.nl
  */
-public class DatabaseSynchronizerTest extends DatabaseSynchronizerTestInterface{
+public class DatabaseSynchronizerTest extends DatabaseSynchronizerTestInterface {
 
     @Test
-    public void testSQLScriptUpdate(){
+    public void testSQLScriptUpdate() {
 
         DatabaseSynchronizer ds = new DatabaseSynchronizer();
         LinkedHashMap<String, UpdateElement> updates = DatabaseSynchronizer.updates;
@@ -51,11 +49,11 @@ public class DatabaseSynchronizerTest extends DatabaseSynchronizerTestInterface{
 
         Metadata newMetadata = entityManager.createQuery("From Metadata where configKey = :v", Metadata.class).setParameter("v", Metadata.DATABASE_VERSION_KEY).getSingleResult();
         assertNotEquals(oldVersion, newMetadata.getConfigValue());
-        Assert.assertEquals(TestUtil.TEST_VERSION_NUMBER, Integer.parseInt(newMetadata.getConfigValue()));
+        assertEquals(TestUtil.TEST_VERSION_NUMBER, Integer.parseInt(newMetadata.getConfigValue()));
     }
-    
+
     @Test
-    public void testCodeUpdateWrongMethodname() throws NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
+    public void testCodeUpdateWrongMethodname() throws NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
         Metadata metadata = entityManager.createQuery("From Metadata where configKey = :v", Metadata.class).setParameter("v", Metadata.DATABASE_VERSION_KEY).getSingleResult();
         String oldVersion = metadata.getConfigValue();
 
@@ -68,7 +66,7 @@ public class DatabaseSynchronizerTest extends DatabaseSynchronizerTestInterface{
     }
 
     @Test
-    public void testConvertSolrConfigReferenceToValues(){
+    public void testConvertSolrConfigReferenceToValues() {
         DatabaseSynchronizer ds = new DatabaseSynchronizer();
         LinkedHashMap<String, UpdateElement> updates = DatabaseSynchronizer.updates;
 

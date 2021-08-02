@@ -20,17 +20,15 @@ import nl.tailormap.viewer.helpers.app.ApplicationHelper;
 import nl.tailormap.viewer.util.TestUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
- *
  * @author Meine Toonen meinetoonen@b3partners.nl
  */
 public class ApplicationTest extends TestUtil {
@@ -67,15 +65,15 @@ public class ApplicationTest extends TestUtil {
     }
 
     @Test
-    public void testDeepCopyReaders() throws Exception{
-       initData(true);
-       Application copy = ApplicationHelper.deepCopy(app);
-       assertEquals(2, copy.getReaders().size());
+    public void testDeepCopyReaders() throws Exception {
+        initData(true);
+        Application copy = ApplicationHelper.deepCopy(app);
+        assertEquals(2, copy.getReaders().size());
         for (String reader : app.getReaders()) {
             assertTrue(copy.getReaders().contains(reader));
         }
     }
-    
+
     @Test
     public void testDeleteApplications() throws Exception {
         initData(true);
@@ -96,7 +94,7 @@ public class ApplicationTest extends TestUtil {
             int expectedStartLevelSize = app.getStartLevels().size();
             int expectedRootStartLevelSize = app.getRoot().getStartLevels().size() * 2;
 
-            Application mashup = ApplicationHelper.createMashup(app, "mashup", entityManager,true);
+            Application mashup = ApplicationHelper.createMashup(app, "mashup", entityManager, true);
             entityManager.persist(mashup);
 
             entityManager.getTransaction().commit();
@@ -114,8 +112,8 @@ public class ApplicationTest extends TestUtil {
                 assertEquals(mashup.getId(), startLevel.getApplication().getId());
             }
 
-            Assert.assertEquals(expectedRootStartLevelSize, app.getRoot().getStartLevels().size());
-            Assert.assertEquals(app.getRoot(), mashup.getRoot());
+            assertEquals(expectedRootStartLevelSize, app.getRoot().getStartLevels().size());
+            assertEquals(app.getRoot(), mashup.getRoot());
 
             Application.TreeCache tc = mashup.loadTreeCache(entityManager);
             List<Level> levels = tc.getLevels();
@@ -125,7 +123,7 @@ public class ApplicationTest extends TestUtil {
             }
 
             for (Level level : levels) {
-                if(level.getParent() != null){
+                if (level.getParent() != null) {
                     assertTrue(level.getStartLevels().containsKey(mashup));
                 }
             }
@@ -134,18 +132,18 @@ public class ApplicationTest extends TestUtil {
             assert (false);
         }
     }
-    
+
     @Test
-    public void testMakeMashupDontDuplicateStartLayers(){
-         initData(true);
+    public void testMakeMashupDontDuplicateStartLayers() {
+        initData(true);
         try {
             int expectedStartLayerSize = app.getStartLayers().size();
-            
 
-            Application mashup = ApplicationHelper.createMashup(app, "mashup", entityManager,false);
+
+            Application mashup = ApplicationHelper.createMashup(app, "mashup", entityManager, false);
             entityManager.persist(mashup);
 
-            Application secondMashup = ApplicationHelper.createMashup(app, "mashup2", entityManager,false);
+            Application secondMashup = ApplicationHelper.createMashup(app, "mashup2", entityManager, false);
             entityManager.persist(secondMashup);
 
             entityManager.getTransaction().commit();
@@ -164,7 +162,7 @@ public class ApplicationTest extends TestUtil {
             for (ApplicationLayer appLayer : appLayers) {
                 assertTrue(appLayer.getStartLayers().containsKey(mashup));
             }
-            
+
             // second mashup
             assertFalse(app.getId().equals(secondMashup.getId()));
             assertEquals(expectedStartLayerSize, secondMashup.getStartLayers().size());
@@ -183,19 +181,19 @@ public class ApplicationTest extends TestUtil {
             assert (false);
         }
     }
-    
+
     @Test
-    public void testMakeMashupDontDuplicateStartLevels(){
-         initData(true);
+    public void testMakeMashupDontDuplicateStartLevels() {
+        initData(true);
         try {
             int expectedStartLevelSize = app.getStartLevels().size();
             int expectedRootStartLevelSize = app.getRoot().getStartLevels().size() * 2;
-            
 
-            Application mashup = ApplicationHelper.createMashup(app, "mashup", entityManager,false);
+
+            Application mashup = ApplicationHelper.createMashup(app, "mashup", entityManager, false);
             entityManager.persist(mashup);
 
-            Application secondMashup = ApplicationHelper.createMashup(app, "mashup2", entityManager,false);
+            Application secondMashup = ApplicationHelper.createMashup(app, "mashup2", entityManager, false);
             entityManager.persist(secondMashup);
 
             entityManager.getTransaction().commit();
@@ -204,8 +202,8 @@ public class ApplicationTest extends TestUtil {
             // Check first mashup
             assertFalse(app.getId().equals(mashup.getId()));
             assertEquals(expectedStartLevelSize, mashup.getStartLevels().size());
-            Assert.assertEquals(expectedRootStartLevelSize, app.getRoot().getStartLevels().size());
-            Assert.assertEquals(app.getRoot(), mashup.getRoot());
+            assertEquals(expectedRootStartLevelSize, app.getRoot().getStartLevels().size());
+            assertEquals(app.getRoot(), mashup.getRoot());
 
             for (StartLevel startLevel : mashup.getStartLevels()) {
                 assertEquals(mashup.getId(), startLevel.getApplication().getId());
@@ -214,15 +212,15 @@ public class ApplicationTest extends TestUtil {
             // second mashup
             assertFalse(app.getId().equals(secondMashup.getId()));
             assertEquals(expectedStartLevelSize, secondMashup.getStartLevels().size());
-            Assert.assertEquals(expectedRootStartLevelSize, app.getRoot().getStartLevels().size());
-            Assert.assertEquals(app.getRoot(), secondMashup.getRoot());
+            assertEquals(expectedRootStartLevelSize, app.getRoot().getStartLevels().size());
+            assertEquals(app.getRoot(), secondMashup.getRoot());
 
             for (StartLevel startLevel : secondMashup.getStartLevels()) {
                 assertEquals(secondMashup.getId(), startLevel.getApplication().getId());
             }
 
             Application.TreeCache tc2 = secondMashup.loadTreeCache(entityManager);
-            
+
         } catch (Exception e) {
             log.error("Fout", e);
             assert (false);
@@ -237,7 +235,7 @@ public class ApplicationTest extends TestUtil {
             int expectedStartLevelSize = app.getStartLevels().size();
             int expectedRootStartLevelSize = app.getRoot().getStartLevels().size() * 2;
 
-            Application mashup = ApplicationHelper.createMashup(app, "mashup", entityManager,false);
+            Application mashup = ApplicationHelper.createMashup(app, "mashup", entityManager, false);
             entityManager.persist(mashup);
 
             entityManager.getTransaction().commit();
@@ -255,8 +253,8 @@ public class ApplicationTest extends TestUtil {
                 assertEquals(mashup.getId(), startLevel.getApplication().getId());
             }
 
-            Assert.assertEquals(expectedRootStartLevelSize, app.getRoot().getStartLevels().size());
-            Assert.assertEquals(app.getRoot(), mashup.getRoot());
+            assertEquals(expectedRootStartLevelSize, app.getRoot().getStartLevels().size());
+            assertEquals(app.getRoot(), mashup.getRoot());
 
             Application.TreeCache tc = mashup.loadTreeCache(entityManager);
             List<Level> levels = tc.getLevels();
@@ -266,7 +264,7 @@ public class ApplicationTest extends TestUtil {
             }
 
             for (Level level : levels) {
-                if(level.getParent() != null){
+                if (level.getParent() != null) {
                     assertTrue(level.getStartLevels().containsKey(mashup));
                 }
             }
@@ -284,14 +282,14 @@ public class ApplicationTest extends TestUtil {
             int expectedStartLevelSize = app.getStartLevels().size();
             int expectedRootStartLevelSize = app.getRoot().getStartLevels().size() * 3;
 
-            Application mashup1 = ApplicationHelper.createMashup(app, "mashup", entityManager,false);
+            Application mashup1 = ApplicationHelper.createMashup(app, "mashup", entityManager, false);
             entityManager.persist(mashup1);
 
             entityManager.getTransaction().commit();
             entityManager.getTransaction().begin();
 
 
-            Application mashup = ApplicationHelper.createMashup(app, "mashup2", entityManager,false);
+            Application mashup = ApplicationHelper.createMashup(app, "mashup2", entityManager, false);
             entityManager.persist(mashup);
 
             entityManager.getTransaction().commit();
@@ -309,8 +307,8 @@ public class ApplicationTest extends TestUtil {
                 assertEquals(mashup.getId(), startLevel.getApplication().getId());
             }
 
-            Assert.assertEquals(expectedRootStartLevelSize, app.getRoot().getStartLevels().size());
-            Assert.assertEquals(app.getRoot(), mashup.getRoot());
+            assertEquals(expectedRootStartLevelSize, app.getRoot().getStartLevels().size());
+            assertEquals(app.getRoot(), mashup.getRoot());
 
             Application.TreeCache tc = mashup.loadTreeCache(entityManager);
             List<Level> levels = tc.getLevels();
@@ -320,7 +318,7 @@ public class ApplicationTest extends TestUtil {
             }
 
             for (Level level : levels) {
-                if(level.getParent() != null){
+                if (level.getParent() != null) {
                     assertTrue(level.getStartLevels().containsKey(mashup));
                 }
             }
