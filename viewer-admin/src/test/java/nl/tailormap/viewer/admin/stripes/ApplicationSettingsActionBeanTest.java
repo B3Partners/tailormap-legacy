@@ -22,14 +22,13 @@ import nl.tailormap.viewer.helpers.app.ApplicationHelper;
 import nl.tailormap.viewer.util.TestUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
- *
  * @author meine
  */
 public class ApplicationSettingsActionBeanTest extends TestUtil {
@@ -37,50 +36,49 @@ public class ApplicationSettingsActionBeanTest extends TestUtil {
 
     private ApplicationSettingsActionBean instance = null;
 
-    @Before
-    public void startup(){
+    @BeforeEach
+    public void startup() {
         instance = new ApplicationSettingsActionBean();
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
     }
 
     @Test
-    public void testCopyOfMashup(){
+    public void testCopyOfMashup() {
         try {
             initData(false);
             instance.setApplication(app);
             Application mashup = ApplicationHelper.createMashup(app, "mashup", entityManager, false);
             entityManager.persist(mashup);
-            
+
             instance.setApplication(mashup);
             instance.setName("kopie");
-            instance.setVersion( "13");
+            instance.setVersion("13");
             instance.copyApplication(entityManager);
-            
+
         } catch (Exception ex) {
-            log.error("Error creating copy of mashup: ",ex);
-            fail();
+            log.error("Error creating copy of mashup", ex);
+            fail("Error creating copy of mashup");
         }
     }
 
     @Test
-    public void testCopyOfApplication(){
+    public void testCopyOfApplication() {
         try {
             initData(false);
             instance.setApplication(app);
             instance.setName("kopie");
-            instance.setVersion( "13");
+            instance.setVersion("13");
             instance.copyApplication(entityManager);
         } catch (Exception ex) {
-            log.error("Error creating copy of mashup: ",ex);
-            fail();
+            log.error("Error creating copy of mashup", ex);
+            fail("Error creating copy of mashup");
         }
     }
-    
-       
-    
+
+
     @Test
     public void testMakeWorkVersionFromMashupApp() {
         /*
@@ -97,25 +95,24 @@ public class ApplicationSettingsActionBeanTest extends TestUtil {
             app.setVersion(null);
             entityManager.persist(app);
 
-            Application mashup = ApplicationHelper.createMashup(app,"mashup", entityManager, true);
+            Application mashup = ApplicationHelper.createMashup(app, "mashup", entityManager, true);
             entityManager.persist(mashup);
             entityManager.getTransaction().commit();
             entityManager.getTransaction().begin();
-            
+
             String version = "werkversie";
             Application workVersion = caab.createWorkversion(mashup, entityManager, version);
 
             entityManager.getTransaction().begin();
             entityManager.getTransaction().commit();
             entityManager.getTransaction().begin();
-           
+
             instance.setApplication(workVersion);
             instance.publish(entityManager);
-            int a = 0;
         } catch (Exception e) {
-            log.error("Fout", e);
-            assert (false);
+            log.error("Error creating work version", e);
+            fail("Error creating work version");
         }
     }
-    
+
 }

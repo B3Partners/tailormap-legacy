@@ -29,28 +29,27 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.client.LaxRedirectStrategy;
 import org.apache.http.util.EntityUtils;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.FixMethodOrder;
-import org.junit.Test;
-import org.junit.runners.MethodSorters;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Scanner;
 
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assume.assumeNotNull;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
 
 /**
  * test the tomcat lockout mechanism.
- *
+ * <p>
  * If you want to run this test standalone use the following command:
  * {@code mvn -e clean verify -Ptravis-ci -Dit.test=ViewerAdminLockoutIntegrationTest > mvn.log }
  * This will take care of spinning up a tomcat instance on a maven specified
@@ -58,14 +57,14 @@ import static org.junit.Assume.assumeNotNull;
  *
  * @author Mark Prins
  */
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@TestMethodOrder(MethodOrderer.Alphanumeric.class)
 public class ViewerAdminLockoutIntegrationTest extends LoggingTestUtil {
 
     private static final Log LOG = LogFactory.getLog(ViewerAdminLockoutIntegrationTest.class);
     /**
      * the viewer url. {@value}
      */
-    private static String BASE_TEST_URL = "http://localhost:9090/viewer-admin/";
+    private static final String BASE_TEST_URL = "http://localhost:9090/viewer-admin/";
 
     /**
      * our test client.
@@ -80,7 +79,7 @@ public class ViewerAdminLockoutIntegrationTest extends LoggingTestUtil {
     /**
      * initialize http client.
      */
-    @BeforeClass
+    @BeforeAll
     public static void setupClient() {
         client = HttpClients.custom()
                 .useSystemProperties()
@@ -95,7 +94,7 @@ public class ViewerAdminLockoutIntegrationTest extends LoggingTestUtil {
      *
      * @throws IOException if any occurs closing the http connection
      */
-    @AfterClass
+    @AfterAll
     public static void closeClient() throws IOException {
         client.close();
     }
@@ -104,25 +103,24 @@ public class ViewerAdminLockoutIntegrationTest extends LoggingTestUtil {
      * Test if the Flamingo viewer-admin application has started and can be
      * reached.
      *
-     * @throws UnsupportedEncodingException if any
-     * @throws IOException if any
+     * @throws IOException                  if any
      */
     @Test
-    public void testARequest() throws UnsupportedEncodingException, IOException {
+    public void testARequest() throws IOException {
         response = client.execute(new HttpGet(BASE_TEST_URL));
 
         final String body = EntityUtils.toString(response.getEntity());
-        assertNotNull("Response body should not be null.", body);
+        assertNotNull(body, "Response body should not be null.");
         assertThat("Response status is OK.", response.getStatusLine().getStatusCode(),
                 equalTo(HttpStatus.SC_OK));
-        assertTrue("Response moet 'Inloggen' title hebben.",
-                body.contains("<title>Inloggen</title>"));
+        assertTrue(
+                body.contains("<title>Inloggen</title>"), "Response moet 'Inloggen' title hebben.");
     }
 
     /**
      * Test login/index/about/logout sequentie.
      *
-     * @throws IOException mag niet optreden
+     * @throws IOException        mag niet optreden
      * @throws URISyntaxException mag niet optreden
      */
     @Test
@@ -144,30 +142,30 @@ public class ViewerAdminLockoutIntegrationTest extends LoggingTestUtil {
         // index
         response = client.execute(new HttpGet(BASE_TEST_URL + "action/index"));
         String body = EntityUtils.toString(response.getEntity());
-        assertNotNull("Response body mag niet null zijn.", body);
-        assertTrue("Response moet 'Beheeromgeving geo-viewers' title hebben.",
-                body.contains("<title>Beheeromgeving geo-viewers</title>"));
+        assertNotNull(body, "Response body mag niet null zijn.");
+        assertTrue(
+                body.contains("<title>Beheeromgeving geo-viewers</title>"), "Response moet 'Beheeromgeving geo-viewers' title hebben.");
 
         // about
         response = client.execute(new HttpGet(BASE_TEST_URL + "about.jsp"));
         body = EntityUtils.toString(response.getEntity());
-        assertNotNull("Response body mag niet null zijn.", body);
-        assertTrue("Response moet 'About' title hebben.", body.contains("<title>About</title>"));
+        assertNotNull(body, "Response body mag niet null zijn.");
+        assertTrue(body.contains("<title>About</title>"), "Response moet 'About' title hebben.");
 
         // logout
         response = client.execute(new HttpGet(BASE_TEST_URL + "logout.jsp"));
         body = EntityUtils.toString(response.getEntity());
         assertThat("Response status is OK.", response.getStatusLine().getStatusCode(),
                 equalTo(HttpStatus.SC_OK));
-        assertNotNull("Response body mag niet null zijn.", body);
-        assertTrue("Response moet 'Uitgelogd' heading hebben.", body.contains("<h1>Uitgelogd</h1>"));
+        assertNotNull(body, "Response body mag niet null zijn.");
+        assertTrue(body.contains("<h1>Uitgelogd</h1>"), "Response moet 'Uitgelogd' heading hebben.");
     }
 
     /**
      * This test work; but will be ignored because we need to catalina.out file
      * to check for the message and that does not seem te be generated.
      *
-     * @throws IOException if any
+     * @throws IOException        if any
      * @throws URISyntaxException if any
      */
     @Test
@@ -208,13 +206,13 @@ public class ViewerAdminLockoutIntegrationTest extends LoggingTestUtil {
         assertThat("Response status is OK.", response.getStatusLine().getStatusCode(),
                 equalTo(HttpStatus.SC_OK));
 
-        assertNotNull("Response body mag niet null zijn.", body);
-        assertTrue("Response moet 'Ongeldige logingegevens.' text hebben.", body.contains("Ongeldige logingegevens."));
+        assertNotNull(body, "Response body mag niet null zijn.");
+        assertTrue(body.contains("Ongeldige logingegevens."), "Response moet 'Ongeldige logingegevens.' text hebben.");
 
         // there will be a message in catalina.out similar to: `WARNING: An attempt was made to authenticate the locked user "admin"`
         // problem is this is output to the console so logging is broken in tomcat plugin, so below assumption will fail and mark this test as ignored
         InputStream is = ViewerAdminLockoutIntegrationTest.class.getClassLoader().getResourceAsStream("catalina.log");
-        assumeNotNull("The catalina.out should privide a valid inputstream.", is);
+        assumeFalse(null == is, "The catalina.out should privide a valid inputstream.");
 
         Scanner s = new Scanner(is);
         boolean lokkedOut = false;
@@ -225,6 +223,6 @@ public class ViewerAdminLockoutIntegrationTest extends LoggingTestUtil {
                 break;
             }
         }
-        assertTrue("gebruiker 'admin' is buitengesloten", lokkedOut);
+        assertTrue(lokkedOut, "gebruiker 'admin' is buitengesloten");
     }
 }

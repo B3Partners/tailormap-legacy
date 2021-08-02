@@ -23,25 +23,25 @@ import nl.tailormap.viewer.config.services.Layer;
 import nl.tailormap.viewer.util.TestUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
- *
  * @author Meine Toonen meinetoonen@b3partners.nl
  */
-public class GeoServiceActionBeanTest extends TestUtil{
+public class GeoServiceActionBeanTest extends TestUtil {
 
     private static final Log log = LogFactory.getLog(GeoServiceActionBeanTest.class);
+
     public GeoServiceActionBeanTest() {
     }
 
     @Test
-    public void addWMSService(){
+    public void addWMSService() {
         String url = "https://geodata.nationaalgeoregister.nl/au/wms?SERVICE=WMS&";
         try {
             Category cat = new Category();
@@ -58,9 +58,9 @@ public class GeoServiceActionBeanTest extends TestUtil{
 
             List<Layer> layers = service.loadLayerTree(entityManager);
             // hmmmp PDOK weirdness v1.1.0 caps file has 3 layers, v1.3.0 has 6
-            assertEquals("The number of layers should be the same", 3, layers.size());
+            assertEquals(3, layers.size(), "The number of layers should be the same");
             //assertEquals("The number of layers should be the same", 3, layers.size());
-            assertEquals("The url should be the same", url, service.getUrl());
+            assertEquals(url, service.getUrl(), "The url should be the same");
         } catch (Exception ex) {
             log.error("Error testing adding a geoservice: " + url, ex);
             fail("Error testing adding a geoservice:" + url);
@@ -68,7 +68,7 @@ public class GeoServiceActionBeanTest extends TestUtil{
     }
 
     @Test
-    public void addArcGISService(){
+    public void addArcGISService() {
         String url = "https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer";
         try {
             String protocol = "arcgis";
@@ -87,8 +87,8 @@ public class GeoServiceActionBeanTest extends TestUtil{
             GeoService service = ab.getService();
 
             List<Layer> layers = service.loadLayerTree(entityManager);
-             assertEquals("The number of layers should be the same", 2, layers.size());
-             assertEquals("The url should be the same", url, service.getUrl());
+            assertEquals(2, layers.size(), "The number of layers should be the same");
+            assertEquals(url, service.getUrl(), "The url should be the same");
         } catch (Exception ex) {
             log.error("Error testing adding a geoservice: " + url, ex);
             fail("Error testing adding a geoservice: " + url);

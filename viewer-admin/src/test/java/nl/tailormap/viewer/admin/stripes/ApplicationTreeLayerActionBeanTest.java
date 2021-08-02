@@ -21,18 +21,17 @@ import nl.tailormap.viewer.config.app.ConfiguredAttribute;
 import nl.tailormap.viewer.util.TestUtil;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
- *
  * @author meine
  */
 public class ApplicationTreeLayerActionBeanTest extends TestUtil {
@@ -41,12 +40,12 @@ public class ApplicationTreeLayerActionBeanTest extends TestUtil {
     private JSONArray attributeOrder = new JSONArray();
     private JSONArray attributesConfig = new JSONArray();
 
-    @Before
+    @BeforeEach
     public void setup() {
         initData(true);
         instance = new ApplicationTreeLayerActionBean();
         instance.setApplication(app);
-        
+
         JSONObject order2 = new JSONObject();
         order2.put("attribute_id", 2);
         order2.put("checked", false);
@@ -92,7 +91,7 @@ public class ApplicationTreeLayerActionBeanTest extends TestUtil {
         order7.put("checked", true);
         order7.put("order", 8);
         order7.put("longname", "begroeid_terreinvakonderdeel_bestaand.ident");
-        
+
         attributeOrder = new JSONArray();
         attributeOrder.put(order2);
         attributeOrder.put(order3);
@@ -126,7 +125,7 @@ public class ApplicationTreeLayerActionBeanTest extends TestUtil {
         attributesConfig.put(config);
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
     }
 
@@ -137,7 +136,7 @@ public class ApplicationTreeLayerActionBeanTest extends TestUtil {
         List<ConfiguredAttribute> attributes = appLayer.getAttributes();
         assertEquals(9, attributes.size());
 
-      
+
         List<ConfiguredAttribute> newOrder = instance.processAttributes(entityManager, attributeOrder, attributesConfig, attributes);
 
         long[] attrOrder = {2, 3, 4, 5, 6, 9, 8, 1, 7};
@@ -145,7 +144,7 @@ public class ApplicationTreeLayerActionBeanTest extends TestUtil {
         for (int i = 0; i < newOrder.size(); i++) {
             ConfiguredAttribute attr = newOrder.get(i);
             long id = attrOrder[i];
-            Assert.assertTrue("Order incorrect", id == attr.getId());
+            assertEquals(id, (long) attr.getId(), "Order incorrect");
         }
     }
 
@@ -155,7 +154,7 @@ public class ApplicationTreeLayerActionBeanTest extends TestUtil {
         ApplicationLayer appLayer = entityManager.find(ApplicationLayer.class, 2L);
         List<ConfiguredAttribute> attributes = appLayer.getAttributes();
         assertEquals(9, attributes.size());
-        
+
         List<ConfiguredAttribute> newOrder = instance.processAttributes(entityManager, attributeOrder, attributesConfig, attributes);
 
         boolean[] attrVisible = {false, true, true, true, true, true, true, true, true};
@@ -163,7 +162,7 @@ public class ApplicationTreeLayerActionBeanTest extends TestUtil {
         for (int i = 0; i < newOrder.size(); i++) {
             ConfiguredAttribute attr = newOrder.get(i);
             boolean visible = attrVisible[i];
-            Assert.assertTrue("Visibility incorrect", visible == attr.isVisible());
+            assertEquals(visible, attr.isVisible(), "Visibility incorrect");
         }
     }
 
@@ -173,53 +172,53 @@ public class ApplicationTreeLayerActionBeanTest extends TestUtil {
         ApplicationLayer appLayer = entityManager.find(ApplicationLayer.class, 2L);
         List<ConfiguredAttribute> attributes = appLayer.getAttributes();
         assertEquals(9, attributes.size());
-        
+
         List<ConfiguredAttribute> newAttrs = instance.processAttributes(entityManager, attributeOrder, attributesConfig, attributes);
-        assertEquals("Number of returned attributes incorrect",9, newAttrs.size());
+        assertEquals(9, newAttrs.size(), "Number of returned attributes incorrect");
         ConfiguredAttribute toCheck = null;
         for (ConfiguredAttribute next : newAttrs) {
-            if(next.getId()== 9){
+            if (next.getId() == 9) {
                 toCheck = next;
                 break;
             }
         }
-        assertNotNull("Attribute not present in processed list",toCheck);
-        assertEquals(true, toCheck.isEditable());
-        assertEquals(true, toCheck.getDisAllowNullValue());
+        assertNotNull(toCheck, "Attribute not present in processed list");
+        assertTrue(toCheck.isEditable());
+        assertTrue(toCheck.getDisAllowNullValue());
         assertEquals("pietje", toCheck.getEditAlias());
         assertEquals("10", toCheck.getEditHeight());
 
     }
-    
-     @Test
+
+    @Test
     public void testProcessAttributesPopulateComplete() {
         assertNotNull(app);
         ApplicationLayer appLayer = entityManager.find(ApplicationLayer.class, 2L);
         List<ConfiguredAttribute> attributes = appLayer.getAttributes();
         assertEquals(9, attributes.size());
-        
+
         List<ConfiguredAttribute> newAttrs = instance.processAttributes(entityManager, attributeOrder, attributesConfig, attributes);
-        assertEquals("Number of returned attributes incorrect",9, newAttrs.size());
+        assertEquals(9, newAttrs.size(), "Number of returned attributes incorrect");
         ConfiguredAttribute toCheck = null;
         for (ConfiguredAttribute next : newAttrs) {
-            if(next.getId()== 9){
+            if (next.getId() == 9) {
                 toCheck = next;
                 break;
             }
         }
-        assertNotNull("Attribute not present in processed list",toCheck);
-        
-        
-        assertEquals(true, toCheck.getAllowValueListOnly());
-        assertEquals( "puk", toCheck.getDefaultValue());
-        assertEquals( true, toCheck.isDisableUserEdit());
-        assertEquals(true, toCheck.getDisAllowNullValue());
+        assertNotNull(toCheck, "Attribute not present in processed list");
+
+
+        assertTrue(toCheck.getAllowValueListOnly());
+        assertEquals("puk", toCheck.getDefaultValue());
+        assertTrue(toCheck.isDisableUserEdit());
+        assertTrue(toCheck.getDisAllowNullValue());
         assertEquals("pietje", toCheck.getEditAlias());
         assertEquals("10", toCheck.getEditHeight());
-        assertEquals(true, toCheck.isEditable());
-        
-        assertEquals( "aap,nootmies", toCheck.getEditValues());
-        assertEquals( true, toCheck.isSelectable());
-        assertEquals( "static", toCheck.getValueList());
+        assertTrue(toCheck.isEditable());
+
+        assertEquals("aap,nootmies", toCheck.getEditValues());
+        assertTrue(toCheck.isSelectable());
+        assertEquals("static", toCheck.getValueList());
     }
 }

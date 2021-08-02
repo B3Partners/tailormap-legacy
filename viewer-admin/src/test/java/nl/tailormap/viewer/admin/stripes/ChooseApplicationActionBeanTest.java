@@ -13,13 +13,13 @@ import nl.tailormap.viewer.util.TestActionBeanContext;
 import nl.tailormap.viewer.util.TestUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  *
@@ -30,7 +30,7 @@ public class ChooseApplicationActionBeanTest extends TestUtil {
     private static final Log log = LogFactory.getLog(ChooseApplicationActionBeanTest.class);
 
     @Test
-    public void testMakeWorkVersion() throws Exception {
+    public void testMakeWorkVersion() {
         try {
             initData(true);
             ChooseApplicationActionBean caab = new ChooseApplicationActionBean();
@@ -131,7 +131,7 @@ public class ChooseApplicationActionBeanTest extends TestUtil {
             newMashup.loadTreeCache(entityManager);
 
             long newRootStartLevelId = newMashup.getStartLevels().get(0).getLevel().getId();
-            Assert.assertNotEquals(mashupStartLevelId, newRootStartLevelId);
+            assertNotEquals(mashupStartLevelId, newRootStartLevelId);
         } catch (Exception e) {
             log.error("Fout", e);
             fail(e.getLocalizedMessage());
@@ -211,7 +211,7 @@ public class ChooseApplicationActionBeanTest extends TestUtil {
           
             List origStartLayers = entityManager.createQuery("FROM StartLayer WHERE application = :app" , StartLayer.class).setParameter("app", app).getResultList();
             List workversionStartLayers = entityManager.createQuery("FROM StartLayer WHERE application = :app" , StartLayer.class).setParameter("app", workVersion).getResultList();
-            Assert.assertEquals("Rootlevel should be the same ", app.getRoot().getId(),workVersion.getRoot().getId());
+            assertEquals(app.getRoot().getId(),workVersion.getRoot().getId(), "Rootlevel should be the same ");
             assertEquals(origStartLayers.size(), workversionStartLayers.size());
         } catch (Exception e) {
             log.error("Fout", e);
@@ -268,8 +268,8 @@ public class ChooseApplicationActionBeanTest extends TestUtil {
             asab.setMashupMustPointToPublishedVersion(true);
             asab.publish(entityManager);
             
-            assertEquals("Rootlevel should be the same ", oldRootId, workVersion.getRoot().getId());
-            Assert.assertEquals("Rootlevel of original should remain the same", oldRootId, app.getRoot().getId());
+            assertEquals(oldRootId, workVersion.getRoot().getId(), "Rootlevel should be the same ");
+            assertEquals(oldRootId, app.getRoot().getId(), "Rootlevel of original should remain the same");
             
             List newAppStartLayers = entityManager.createQuery("FROM StartLayer WHERE application = :app" , StartLayer.class).setParameter("app", app).getResultList();
             
@@ -277,7 +277,7 @@ public class ChooseApplicationActionBeanTest extends TestUtil {
             
             List workversionStartLayers = entityManager.createQuery("FROM StartLayer WHERE application = :app" , StartLayer.class).setParameter("app", workVersion).getResultList();
             
-            Assert.assertEquals(app.getRoot().getId(),workVersion.getRoot().getId());
+            assertEquals(app.getRoot().getId(),workVersion.getRoot().getId());
         } catch (Exception e) {
             log.error("Fout", e);
             fail(e.getLocalizedMessage());

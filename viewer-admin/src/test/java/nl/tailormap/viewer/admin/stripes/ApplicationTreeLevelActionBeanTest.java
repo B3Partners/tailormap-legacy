@@ -15,15 +15,14 @@ import nl.tailormap.viewer.util.TestUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.json.JSONArray;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 /**
- *
  * @author Meine Toonen
  */
 public class ApplicationTreeLevelActionBeanTest extends TestUtil {
@@ -32,7 +31,7 @@ public class ApplicationTreeLevelActionBeanTest extends TestUtil {
 
     private ApplicationTreeLevelActionBean instance;
 
-    @Before
+    @BeforeEach
     public void setup() {
         instance = new ApplicationTreeLevelActionBean();
     }
@@ -72,55 +71,55 @@ public class ApplicationTreeLevelActionBeanTest extends TestUtil {
         String selectedLayer = "";
 
         instance.updateApplayersInLevel(selectedLayer, testLevel, entityManager);
-           try {
+        try {
             entityManager.getTransaction().commit();
         } catch (Exception e) {
             log.error("Fout bij verwijderen", e);
             assert (false);
         }
     }
-    
+
     @Test
-    public void testRemoveLevelUsedInMashup() throws Exception{
+    public void testRemoveLevelUsedInMashup() throws Exception {
         initData(false);
         instance.setApplication(app);
         Long id = testLevel.getId();
         Application mashup = ApplicationHelper.createMashup(app, "mashup", entityManager, false);
         entityManager.persist(mashup);
-        
+
         String error = instance.deleteLevel(entityManager, testLevel);
         assertNull(error);
         Level test = entityManager.find(Level.class, id);
-        assertNull(test);        
+        assertNull(test);
     }
-    
+
     @Test
-    public void testAddLayerToExistingLevel() throws Exception{
-        
+    public void testAddLayerToExistingLevel() {
+
         initData(true);
         int numStartLayers = app.getStartLayers().size();
-        Application.TreeCache cache =app.loadTreeCache(entityManager);
-        
+        Application.TreeCache cache = app.loadTreeCache(entityManager);
+
         int numAppLayers = cache.getApplicationLayers().size();
-        
+
         instance.setApplication(app);
         instance.setLevel(testLevel);
         instance.setSelectedlayers("l10,al6");
         assertNotNull(testAppLayer);
         assertNotNull(testLevel);
-        
+
         instance.saveLevel(entityManager);
-        
+
         Application application = entityManager.find(Application.class, app.getId());
         assertEquals(numStartLayers + 1, application.getStartLayers().size());
-        
+
         app.setTreeCache(null);
-        cache =app.loadTreeCache(entityManager);
+        cache = app.loadTreeCache(entityManager);
         assertEquals(numAppLayers + 1, cache.getApplicationLayers().size());
     }
-    
+
     @Test
-    public void testAddLayerToExistingLevelUsedInMashup() throws Exception{
+    public void testAddLayerToExistingLevelUsedInMashup() throws Exception {
          /*
          This test is for the situation:
          
@@ -133,17 +132,17 @@ public class ApplicationTreeLevelActionBeanTest extends TestUtil {
         Mashup shouldn't be affected
         */
         initData(true);
-        
+
         Application mashup = ApplicationHelper.createMashup(app, "mashup", entityManager, false);
         entityManager.persist(mashup);
-     
-        
+
+
         instance.setApplication(app);
         instance.setLevel(testLevel);
-        
+
         instance.setSelectedlayers("l8," + "al" + testAppLayer.getId()); //begroeid_terreinvakonderdeel_plan
         instance.saveLevel(entityManager);
-        
+
         ApplicationStartMapActionBean asm = new ApplicationStartMapActionBean();
         asm.setLevelId("n" + testLevel.getId());
         asm.setReaddedLayersString("[]");
@@ -151,10 +150,10 @@ public class ApplicationTreeLevelActionBeanTest extends TestUtil {
         JSONArray children = asm.loadSelectedLayers(entityManager);
         assertEquals(1, children.length());
     }
-    
-    
+
+
     @Test
-    public void testRemoveAndReaddLevelInMashup() throws Exception{
+    public void testRemoveAndReaddLevelInMashup() throws Exception {
          /*
          This test is for the situation:
          
@@ -170,11 +169,11 @@ public class ApplicationTreeLevelActionBeanTest extends TestUtil {
         Layer B and C should be present
         */
         initData(true);
-        
+
         Application mashup = ApplicationHelper.createMashup(app, "mashup", entityManager, false);
         entityManager.persist(mashup);
-     
-        
+
+
         // Add layer to mother app
         instance.setApplication(app);
         instance.setLevel(testLevel);
@@ -187,19 +186,19 @@ public class ApplicationTreeLevelActionBeanTest extends TestUtil {
         asm.setApplication(mashup);
         asm.setReaddedLayersString("[]");
         JSONArray children = asm.loadSelectedLayers(entityManager);
-        assertEquals(1, children.length()); 
-        
+        assertEquals(1, children.length());
+
         // remove level from mashup
         // save 
         asm = new ApplicationStartMapActionBean();
         asm.setApplication(mashup);
         entityManager.getTransaction().begin();
-        asm.setRemovedRecordsString(" [{\"id\":"+ testLevel.getId() + ",\"type\":\"level\"}]");
+        asm.setRemovedRecordsString(" [{\"id\":" + testLevel.getId() + ",\"type\":\"level\"}]");
         asm.setSelectedContent(" []");
         asm.setCheckedLayersString("[]");
         asm.setReaddedLayersString("[]");
         asm.saveStartMap(entityManager);
-        
+
         // check if still allright
         asm = new ApplicationStartMapActionBean();
         asm.setLevelId("n" + testLevel.getId());
@@ -207,18 +206,18 @@ public class ApplicationTreeLevelActionBeanTest extends TestUtil {
         asm.setApplication(mashup);
         children = asm.loadSelectedLayers(entityManager);
         assertEquals(0, children.length());
-        
+
         // add level to mashup
         entityManager.getTransaction().begin();
         asm = new ApplicationStartMapActionBean();
         asm.setApplication(mashup);
         asm.setCheckedLayersString("[]");
-        asm.setSelectedContent(" [{\"id\":"+ testLevel.getId() + ",\"type\":\"level\"}]");
+        asm.setSelectedContent(" [{\"id\":" + testLevel.getId() + ",\"type\":\"level\"}]");
         asm.setRemovedRecordsString(null);
         asm.setReaddedLayersString("[]");
         asm.saveStartMap(entityManager);
-        
-        
+
+
         asm = new ApplicationStartMapActionBean();
         asm.setReaddedLayersString("[]");
         asm.setApplication(mashup);
@@ -226,33 +225,33 @@ public class ApplicationTreeLevelActionBeanTest extends TestUtil {
         children = asm.loadSelectedLayers(entityManager);
         assertEquals(2, children.length());
     }
-    
+
     @Test
-    public void testAddLayerToNewLevel() throws Exception{
-        
+    public void testAddLayerToNewLevel() {
+
         initData(false);
         int numStartLayers = app.getStartLayers().size();
         int numStartLevels = app.getStartLevels().size();
-        Application.TreeCache cache =app.loadTreeCache(entityManager);
-        
+        Application.TreeCache cache = app.loadTreeCache(entityManager);
+
         Level newLevel = new Level();
         newLevel.setName("pietje");
         newLevel.setParent(testLevel);
-        
+
         int numAppLayers = cache.getApplicationLayers().size();
         int numLevels = cache.getLevels().size();
-        
+
         instance.setApplication(app);
         instance.setLevel(newLevel);
-        
+
         instance.saveLevel(entityManager);
-        
+
         Application application = entityManager.find(Application.class, app.getId());
-                
+
         application.setTreeCache(null);
-        cache =application.loadTreeCache(entityManager);
-        assertEquals(numLevels +1 ,cache.getLevels().size());
-        assertEquals(numStartLevels +1 ,application.getStartLevels().size());
+        cache = application.loadTreeCache(entityManager);
+        assertEquals(numLevels + 1, cache.getLevels().size());
+        assertEquals(numStartLevels + 1, application.getStartLevels().size());
         Level reloadedLevel = entityManager.find(Level.class, newLevel.getId());
         StartLevel sl = reloadedLevel.getStartLevels().get(app);
         assertNotNull(sl);

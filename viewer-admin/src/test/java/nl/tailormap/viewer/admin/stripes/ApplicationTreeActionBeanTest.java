@@ -22,108 +22,108 @@ import nl.tailormap.viewer.util.SelectedContentCache;
 import nl.tailormap.viewer.util.TestUtil;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
- *
  * @author Meine Toonen
  */
-public class ApplicationTreeActionBeanTest extends TestUtil{
+public class ApplicationTreeActionBeanTest extends TestUtil {
     private ApplicationTreeActionBean instance;
-    
+
     public ApplicationTreeActionBeanTest() {
     }
-    
-    @Before
-    public void init(){
+
+    @BeforeEach
+    public void init() {
         instance = new ApplicationTreeActionBean();
     }
-    
+
     @Test
-    public void testMoveLevels(){
+    public void testMoveLevels() {
         long themaIdLng = 4;
         long levelIdLng = 5;
         long targetIdLng = 6;
         String levelId = "n" + levelIdLng;
         String targetId = "n" + targetIdLng;
-        
+
         Level thema = entityManager.find(Level.class, themaIdLng);
         Level groen = entityManager.find(Level.class, levelIdLng);
         Level woonplaatsen = entityManager.find(Level.class, targetIdLng);
-        
-        assertEquals((Long)themaIdLng, groen.getParent().getId());
-        assertEquals((Long)themaIdLng, woonplaatsen.getParent().getId());
+
+        assertEquals((Long) themaIdLng, groen.getParent().getId());
+        assertEquals((Long) themaIdLng, woonplaatsen.getParent().getId());
         assertEquals(2, thema.getChildren().size());
-        
-        instance.moveLevel(levelId, targetId,entityManager);
+
+        instance.moveLevel(levelId, targetId, entityManager);
         entityManager.getTransaction().commit();
         entityManager.getTransaction().begin();
-        
+
         thema = entityManager.find(Level.class, themaIdLng);
         groen = entityManager.find(Level.class, levelIdLng);
         woonplaatsen = entityManager.find(Level.class, targetIdLng);
-        
-        assertEquals((Long)themaIdLng, woonplaatsen.getParent().getId());
-        assertEquals("Level not moved. id ", (Long)targetIdLng, groen.getParent().getId());
+
+        assertEquals((Long) themaIdLng, woonplaatsen.getParent().getId());
+        assertEquals((Long) targetIdLng, groen.getParent().getId(), "Level not moved. id ");
         assertEquals(1, thema.getChildren().size());
         assertEquals(1, woonplaatsen.getChildren().size());
-        
+
     }
-   
+
     @Test
-    public void testMoveLevelToSame(){
+    public void testMoveLevelToSame() {
         long themaIdLng = 4;
         long levelIdLng = 5;
         long targetIdLng = 6;
         String levelId = "n" + levelIdLng;
         String targetId = "n" + targetIdLng;
-        
+
         Level thema = entityManager.find(Level.class, themaIdLng);
         Level groen = entityManager.find(Level.class, levelIdLng);
         Level woonplaatsen = entityManager.find(Level.class, targetIdLng);
-        
-        assertEquals((Long)themaIdLng, groen.getParent().getId());
-        assertEquals((Long)themaIdLng, woonplaatsen.getParent().getId());
+
+        assertEquals((Long) themaIdLng, groen.getParent().getId());
+        assertEquals((Long) themaIdLng, woonplaatsen.getParent().getId());
         assertEquals(2, thema.getChildren().size());
-        
-        instance.moveLevel(levelId, "n" + themaIdLng ,entityManager);
+
+        instance.moveLevel(levelId, "n" + themaIdLng, entityManager);
         entityManager.getTransaction().commit();
         entityManager.getTransaction().begin();
-        
+
         thema = entityManager.find(Level.class, themaIdLng);
         groen = entityManager.find(Level.class, levelIdLng);
         woonplaatsen = entityManager.find(Level.class, targetIdLng);
-        
-        assertEquals((Long)themaIdLng, groen.getParent().getId());
-        assertEquals((Long)themaIdLng, woonplaatsen.getParent().getId());
+
+        assertEquals((Long) themaIdLng, groen.getParent().getId());
+        assertEquals((Long) themaIdLng, woonplaatsen.getParent().getId());
         assertEquals(2, thema.getChildren().size());
-        
+
         assertEquals(2, thema.getChildren().size());
         assertEquals(0, woonplaatsen.getChildren().size());
         assertEquals(0, groen.getChildren().size());
-        
+
     }
+
     @Test
-    public void testSelectedContentAfterMoveLevelToSame(){
+    public void testSelectedContentAfterMoveLevelToSame() {
         long levelIdLng = 5;
         long targetIdLng = 6;
         String levelId = "n" + levelIdLng;
         String targetId = "n" + targetIdLng;
-        
+
         Level groen = entityManager.find(Level.class, levelIdLng);
         Level woonplaatsen = entityManager.find(Level.class, targetIdLng);
-        
-        
-        instance.moveLevel(levelId, targetId ,entityManager);
+
+
+        instance.moveLevel(levelId, targetId, entityManager);
         entityManager.getTransaction().commit();
         entityManager.getTransaction().begin();
-        
+
         SelectedContentCache scc = new SelectedContentCache();
         Application application = entityManager.find(Application.class, applicationId);
-        
+
         JSONObject json = scc.createSelectedContent(application, false, false, false, entityManager);
         JSONArray selectedContent = json.getJSONArray("selectedContent");
         assertEquals(2, selectedContent.length());

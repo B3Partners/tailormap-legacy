@@ -31,22 +31,22 @@ import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.runners.Parameterized.Parameters;
+import org.hamcrest.MatcherAssert;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.opengis.feature.Feature;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
 
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 /**
  * testcases for
@@ -54,16 +54,13 @@ import static org.junit.Assert.fail;
  *
  * @author Mark Prins
  */
-//@RunWith(Parameterized.class)
 public class WFSTypeNamingTest extends TestUtil {
 
     private static final Log log = LogFactory.getLog(WFSTypeNamingTest.class);
-
     private ActionBeanContext context;
-
     private AttributeSourceActionBean sb;
-
     private GeoServiceActionBean gsb;
+
 
     /**
      * The parameter collection for this testcase. A paramet set consists of an
@@ -78,45 +75,15 @@ public class WFSTypeNamingTest extends TestUtil {
      * @return parameter collection that contains input and response values for
      * this test.
      */
-    @Parameters(name="naam: {1}")
-    public static Collection params() {
-        return Arrays.asList(new Object[][]{
-            // {"url","name","wfs",typecount},
-            {"https://flamingo5.b3p.nl:443/geoserver/Test_omgeving/wfs?SERVICE=WFS&", "geoserver-namespaced-wfsurl", "wfs", 4, 0},
-            {"https://flamingo5.b3p.nl:443/geoserver/Test_omgeving/wms?SERVICE=WMS&", "geoserver-namespaced-wmsurl", "wms", 5, 0}
-        });
+    static Stream<Arguments> argumentsProvider() {
+        return Stream.of(
+                // {"url","name","wfs",typecount},
+                arguments("https://flamingo5.b3p.nl/geoserver/Test_omgeving/wfs?SERVICE=WFS&", "geoserver-namespaced-wfsurl", "wfs", 5, 0),
+                arguments("https://flamingo5.b3p.nl/geoserver/Test_omgeving/wms?SERVICE=WMS&", "geoserver-namespaced-wmsurl", "wms", 6, 0)
+        );
     }
 
-    /**
-     * test parameter.
-     */
-    private final String serviceUrl;
-    /**
-     * test parameter.
-     */
-    private final String serviceName;
-    /**
-     * test parameter.
-     */
-    private final String serviceProtocol;
-    /**
-     * test expectation.
-     */
-    private final int serviceTypeCount;
-    /**
-     * test expectation.
-     */
-    private final int groupLayerCount;
-
-    public WFSTypeNamingTest(String serviceUrl, String serviceName, String serviceProtocol, int serviceTypeCount, int groupLayerCount) {
-        this.serviceUrl = serviceUrl;
-        this.serviceName = serviceName;
-        this.serviceProtocol = serviceProtocol;
-        this.serviceTypeCount = serviceTypeCount;
-        this.groupLayerCount = groupLayerCount;
-    }
-
-    @Before
+    @BeforeEach
     public void createContext() {
         context = new ActionBeanContext() {
             @Override
@@ -126,16 +93,17 @@ public class WFSTypeNamingTest extends TestUtil {
         };
     }
 
-    @After
+    @AfterEach
     public void cleanupContext() {
         context = null;
         sb = null;
     }
 
-  //  @Test
-    public void addWMSGeoservice() {
+    @ParameterizedTest(name = "{index}: name: {1}")
+    @MethodSource("argumentsProvider")
+    public void addWMSGeoservice(String serviceUrl, String serviceName, String serviceProtocol, int serviceTypeCount, int groupLayerCount) {
         if (serviceProtocol.equalsIgnoreCase("wms")) {
-            log.debug("Starting WMS test with: " + this.toString());
+            log.debug("Starting WMS test with: " + this.toString(serviceUrl, serviceName, serviceProtocol, serviceTypeCount, groupLayerCount));
             try {
                 Category cat = new Category();
                 cat.setId(1L);
@@ -149,34 +117,35 @@ public class WFSTypeNamingTest extends TestUtil {
                 gsb.addService(entityManager);
             } catch (Exception ex) {
                 log.error("adding WMS service  failed", ex);
-                fail("Saving WFS attribute source failed.");
+                Assertions.fail("Saving WFS attribute source failed.");
             }
             GeoService service = gsb.getService();
-            assertEquals("The url should be the same", serviceUrl, service.getUrl());
+            Assertions.assertEquals(serviceUrl, service.getUrl(), "The url should be the same");
 
             List<Layer> layers = service.loadLayerTree(entityManager);
-            assertEquals("The number of layers should be the same", serviceTypeCount + groupLayerCount, layers.size());
+            Assertions.assertEquals(serviceTypeCount + groupLayerCount, layers.size(), "The number of layers should be the same");
 
             for (Layer lyr : layers) {
                 if (!lyr.isVirtual()) {
                     log.debug("Inspecting layer, name: " + lyr.getName() + ", featuretype: " + lyr.getFeatureType().getDescription());
-                    assertTrue("Attribute type name does contain a colon", lyr.getFeatureType().getTypeName().contains(":"));
+                    Assertions.assertTrue(lyr.getFeatureType().getTypeName().contains(":"), "Attribute type name does contain a colon");
                     try {
                         FeatureSource fs2 = FeatureSourceFactoryHelper.openGeoToolsFeatureSource(lyr.getFeatureType());
-                        assertThat("No exception was thrown and featuresource not null", fs2, not(nullValue()));
+                        MatcherAssert.assertThat("No exception was thrown and featuresource not null", fs2, not(nullValue()));
                     } catch (Exception ex) {
                         log.error("Opening featuresource failed.", ex);
-                        fail("Opening featuresource failed.");
+                        Assertions.fail("Opening featuresource failed.");
                     }
                 }
             }
         }
     }
 
-   // @Test
-    public void addWFSService() {
+    @ParameterizedTest(name = "{index}: name: {1}")
+    @MethodSource("argumentsProvider")
+    public void addWFSService(String serviceUrl, String serviceName, String serviceProtocol, int serviceTypeCount, int groupLayerCount) {
         if (serviceProtocol.equalsIgnoreCase("wfs")) {
-            log.debug("Starting WFS test with: " + this.toString());
+            log.debug("Starting WFS test with: " + this.toString(serviceUrl, serviceName, serviceProtocol, serviceTypeCount, groupLayerCount));
             try {
                 sb = new AttributeSourceActionBean();
                 sb.setContext(context);
@@ -186,43 +155,43 @@ public class WFSTypeNamingTest extends TestUtil {
                 sb.addService(entityManager);
             } catch (Exception ex) {
                 log.error("Saving WFS attribute source failed", ex);
-                fail("Saving WFS attribute source failed.");
+                Assertions.fail("Saving WFS attribute source failed.");
             }
 
             WFSFeatureSource fs = (WFSFeatureSource) sb.getFeatureSource();
             List<SimpleFeatureType> types = fs.getFeatureTypes();
-            assertEquals("The number of layers should be the same", serviceTypeCount, types.size());
+            Assertions.assertEquals(serviceTypeCount, types.size(), "The number of layers should be the same");
             for (SimpleFeatureType type : types) {
                 log.debug("Testing type: " + type.getTypeName());
-                assertTrue("Type name does contain a colon", type.getTypeName().contains(":"));
+                Assertions.assertTrue(type.getTypeName().contains(":"), "Type name does contain a colon");
                 try {
                     FeatureSource fs2 = FeatureSourceFactoryHelper.openGeoToolsFeatureSource(type);
-                    assertThat("No exception was thrown and featuresource not null", fs2, not(nullValue()));
-                    
+                    MatcherAssert.assertThat("No exception was thrown and featuresource not null", fs2, not(nullValue()));
+
                     Query q = new Query(fs2.getName().toString());
                     q.setMaxFeatures(1);
                     FeatureCollection fc = fs2.getFeatures(q);
-                    assertThat("No exception was thrown and FeatureCollection not null", fc, not(nullValue()));
+                    MatcherAssert.assertThat("No exception was thrown and FeatureCollection not null", fc, not(nullValue()));
                     FeatureIterator it = fc.features();
-                    while(it.hasNext()){
+                    while (it.hasNext()) {
                         Feature feat = it.next();
-                        assertThat("No exception was thrown and Feature not null", feat, not(nullValue()));
-                        
+                        MatcherAssert.assertThat("No exception was thrown and Feature not null", feat, not(nullValue()));
+
                     }
                 } catch (Exception ex) {
                     log.error("Opening featuresource failed.", ex);
-                    fail("Opening featuresource failed.");
+                    Assertions.fail("Opening featuresource failed.");
                 }
             }
         }
     }
 
-    @Override
-    public final String toString() {
+    private final String toString(String serviceUrl, String serviceName, String serviceProtocol, int serviceTypeCount, int groupLayerCount) {
         return this.getClass().getCanonicalName()
-                + ", serviceUrl: " + this.serviceUrl
-                + ", serviceName: " + this.serviceName
-                + ", typeCount: " + this.serviceTypeCount
-                + ", groupLayerCount: " + this.groupLayerCount;
+                + ", serviceUrl: " + serviceUrl
+                + ", serviceName: " + serviceName
+                + ", serviceProtocol: " + serviceProtocol
+                + ", typeCount: " + serviceTypeCount
+                + ", groupLayerCount: " + groupLayerCount;
     }
 }
