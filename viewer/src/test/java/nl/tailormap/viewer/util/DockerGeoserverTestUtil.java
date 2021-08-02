@@ -1,14 +1,15 @@
 package nl.tailormap.viewer.util;
 
 import nl.tailormap.viewer.util.docker.DockerGeoserverHelper;
-import org.junit.After;
-import org.junit.Assume;
-import org.junit.Before;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assumptions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.TestInfo;
 
 public abstract class DockerGeoserverTestUtil extends TestUtil {
 
     private boolean isDockerRunning = false;
-    private DockerGeoserverHelper helper = new DockerGeoserverHelper();
+    private final DockerGeoserverHelper helper = new DockerGeoserverHelper();
 
     //<editor-fold defaultstate="collapsed" desc="getters and setters">
     public DockerGeoserverHelper getHelper() {
@@ -20,22 +21,22 @@ public abstract class DockerGeoserverTestUtil extends TestUtil {
     }
     //</editor-fold>
 
-    @Before
+    @BeforeEach
     @Override
-    public void setUp() throws Exception {
+    public void setUp(TestInfo testInfo) throws Exception {
         DockerGeoserverHelper helper = new DockerGeoserverHelper();
         url = helper.getOwsUri().toString();
         layerName = "flamingo:meaningless_unittest_table";
         geometryAttribute = "geom";
 
         isDockerRunning = (new DockerGeoserverHelper()).isRunning();
-        Assume.assumeTrue("skip test if dockerized geoserver is not running", isDockerRunning);
+        Assumptions.assumeTrue(isDockerRunning, "skip test if dockerized geoserver is not running");
 
-        super.setUp();
+        super.setUp(testInfo);
         initData(true);
     }
 
-    @After
+    @AfterEach
     @Override
     public void closeTransaction() {
         if (isDockerRunning) {

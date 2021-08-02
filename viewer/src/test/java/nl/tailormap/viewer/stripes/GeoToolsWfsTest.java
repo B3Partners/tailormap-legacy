@@ -25,7 +25,7 @@ import org.apache.commons.logging.LogFactory;
 import org.geotools.data.DataStore;
 import org.geotools.data.Query;
 import org.geotools.feature.FeatureIterator;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.type.PropertyDescriptor;
 
@@ -34,7 +34,7 @@ import java.util.Properties;
 
 /**
  * Unit test for simple testing of reading a single feature from a WFS using GeoTools.
- *
+ * <p>
  * Run from command line:
  * <pre>{@code
  * cat > ~/mycredentials.properties
@@ -42,11 +42,11 @@ import java.util.Properties;
  * password=mypassword
  * [Control-D]
  * }</pre>
- *
+ * <p>
  * {@code mvn -Durl=... -Dcredentials=/home/$USER/mycredentials.properties -Dtypename=... -DtrimStackTrace=false -Dtest=GeoToolsWfsTest test}
- *
+ * <p>
  * Example:
- *
+ * <p>
  * {@code mvn -Durl=https://flamingo5.b3p.nl:443/geoserver/Test_omgeving/wfs -Dtypename=Test_omgeving:cbs_gemeente_2014 -DtrimStackTrace=false -Dtest=GeoToolsWfsTest test}
  *
  * @author matthijsln
@@ -54,29 +54,30 @@ import java.util.Properties;
 public class GeoToolsWfsTest extends TestUtil {
 
     private static final Log log = LogFactory.getLog(GeoToolsWfsTest.class);
+
     @Test
     public void testWfs() throws Exception {
         String url = System.getProperty("url");
 
-        if(url == null) {
+        if (url == null) {
             log.info("Test not configured, passing");
             return;
         }
 
         String credentials = System.getProperty("credentials");
         String username = null, password = null, logPassword = null;
-        if(credentials != null) {
+        if (credentials != null) {
             Properties p = new Properties();
             p.load(new FileInputStream(credentials));
             username = p.getProperty("user");
             password = p.getProperty("password");
-            if(password != null) {
+            if (password != null) {
                 logPassword = new String(new char[password.length()]).replace("\0", "*");
             }
         }
         String typeName = System.getProperty("typename");
 
-        if(url == null || typeName == null) {
+        if (url == null || typeName == null) {
             throw new RuntimeException("url or typename properties must be specified!");
         }
 
@@ -91,7 +92,7 @@ public class GeoToolsWfsTest extends TestUtil {
         try {
             org.geotools.data.FeatureSource fs = ds.getFeatureSource(typeName);
 
-            for(PropertyDescriptor pd: fs.getSchema().getDescriptors()) {
+            for (PropertyDescriptor pd : fs.getSchema().getDescriptors()) {
                 log.info("Property " + pd.getName() + ": " + pd.getType().getBinding().toString());
             }
 
@@ -100,14 +101,14 @@ public class GeoToolsWfsTest extends TestUtil {
 
             it = fs.getFeatures(q).features();
             int featureIndex = 0;
-            while(it.hasNext()) {
+            while (it.hasNext()) {
                 SimpleFeature feature = it.next();
 
                 log.info(String.format("Feature #%d: %s", featureIndex, feature));
                 featureIndex++;
             }
         } finally {
-            if(it != null) {
+            if (it != null) {
                 it.close();
             }
             ds.dispose();

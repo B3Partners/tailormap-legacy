@@ -2,7 +2,7 @@ package nl.tailormap.viewer;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -16,9 +16,9 @@ import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import static junit.framework.TestCase.fail;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Check content of viewer war for duplicate versions of GeoTools by checking if there are mre than
@@ -42,8 +42,8 @@ public class MultipleGeoToolsVersionsInWarIntegrationTest {
                     .filter(f -> f.contains("gt-main"))
                     .collect(Collectors.toList());
 
-            assertFalse("No gt-main artifact in the war file build directory", result.isEmpty());
-            assertEquals("There are more than 1 gt-main artifacts in the viewer war file build directory", 1, result.size());
+            assertFalse(result.isEmpty(), "No gt-main artifact in the war file build directory");
+            assertEquals(1, result.size(), "There are more than 1 gt-main artifacts in the viewer war file build directory");
 
         } catch (IOException e) {
             LOG.error(e);
@@ -72,8 +72,8 @@ public class MultipleGeoToolsVersionsInWarIntegrationTest {
                 }
             }
 
-            assertFalse("No gt-main artifact in viewer the war file", result.isEmpty());
-            assertEquals("There are more than 1 gt-main artifacts in the viewer war file", 1, result.size());
+            assertFalse(result.isEmpty(), "No gt-main artifact in viewer the war file");
+            assertEquals(1, result.size(), "There are more than 1 gt-main artifacts in the viewer war file");
 
         } catch (IOException e) {
             LOG.error(e);

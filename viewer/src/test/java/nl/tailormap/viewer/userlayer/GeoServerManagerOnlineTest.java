@@ -1,17 +1,17 @@
 package nl.tailormap.viewer.userlayer;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class GeoServerManagerOnlineTest {
     private GeoServerManager serverManager;
     private String layerName;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         final String baseUrl = "http://localhost:8080/geoserver/";
         final String userName = "admin";
@@ -26,19 +26,19 @@ public class GeoServerManagerOnlineTest {
         );
     }
 
-    @After
+    @AfterEach
     public void cleanup() {
         serverManager.deleteLayer(layerName);
     }
 
     @Test
-    @Ignore("fails with non existing geoserver")
+    @Disabled("fails with non existing geoserver")
     public void createLayerTest() {
         assertTrue(serverManager.createLayer(layerName, "test", "gemeenten2020"));
     }
 
     @Test
-    @Ignore("fails with non existing geoserver")
+    @Disabled("fails with non existing geoserver")
     public void deleteLayerTest() {
         assertTrue(serverManager.createLayer("gemtest", "gemtest", "gemeenten2020"));
         assertTrue(serverManager.deleteLayer("gemtest"));

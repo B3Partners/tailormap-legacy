@@ -3,9 +3,8 @@ package nl.tailormap.viewer.util.docker;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -13,12 +12,16 @@ import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 public class DockerGeoserverHelperTest {
     private DockerGeoserverHelper instance;
     private InetSocketAddress address;
     private HttpServer mockServer;
 
-    @Before
+    @BeforeEach
     public void before() {
         instance = new DockerGeoserverHelper();
         instance.setPort(availableAddressSingleton().getPort());
@@ -27,19 +30,19 @@ public class DockerGeoserverHelperTest {
     @Test
     public void testReturnsTrueIfGeoserverRunning() throws IOException {
         mockServerSingleton().start();
-        Assert.assertTrue(instance.isRunning());
+        assertTrue(instance.isRunning());
         mockServerSingleton().stop(0);
     }
 
     @Test
     public void testReturnsFalseIfGeoserverIsNotRunning() {
-        Assert.assertFalse(instance.isRunning());
+        assertFalse(instance.isRunning());
     }
 
     @Test
     public void testCorrectOwsUrl() throws MalformedURLException, URISyntaxException {
         String expected = "http://localhost:"+instance.getPort()+"/geoserver/ows";
-        Assert.assertEquals(expected, instance.getOwsUri().toString());
+        assertEquals(expected, instance.getOwsUri().toString());
     }
 
     private HttpServer mockServerSingleton() throws IOException {

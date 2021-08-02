@@ -5,8 +5,8 @@
 package nl.tailormap.viewer;
 
 import com.sun.net.httpserver.HttpServer;
-import org.junit.After;
-import org.junit.Before;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -28,12 +28,12 @@ public class HttpTestSupport{
         }
     }
     
-    @Before
+    @BeforeEach
     public void setUpHttpServer() {
         httpServer.start();
     }
     
-    @After
+    @AfterEach
     public void tearDownHttpServer() {
         httpServer.stop(0);
     }

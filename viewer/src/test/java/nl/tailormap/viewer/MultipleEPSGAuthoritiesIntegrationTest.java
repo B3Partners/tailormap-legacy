@@ -16,10 +16,9 @@
  */
 package nl.tailormap.viewer;
 
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -33,10 +32,10 @@ import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import static junit.framework.TestCase.assertTrue;
-import static junit.framework.TestCase.fail;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Check content of viewer war for duplicate GeoTools EPSG authorities, there can be only one. Use
@@ -58,9 +57,9 @@ public class MultipleEPSGAuthoritiesIntegrationTest {
                     .filter(f -> f.contains("gt-epsg"))
                     .collect(Collectors.toList());
 
-            assertFalse("No gt-epsg artifact in the war file build directory", result.isEmpty());
-            assertEquals("There are more than 1 gt-epsg artifacts in the viewer war file build directory", 1, result.size());
-            assertTrue("The gt-epsg artifact is not gt-epsg-wkt", result.get(0).contains("gt-epsg-wkt"));
+            assertFalse(result.isEmpty(), "No gt-epsg artifact in the war file build directory");
+            assertEquals(1, result.size(), "There are more than 1 gt-epsg artifacts in the viewer war file build directory");
+            assertTrue(result.get(0).contains("gt-epsg-wkt"), "The gt-epsg artifact is not gt-epsg-wkt");
 
         } catch (IOException e) {
             LOG.error(e);
@@ -89,9 +88,9 @@ public class MultipleEPSGAuthoritiesIntegrationTest {
                 }
             }
 
-            assertFalse("No gt-epsg artifact in viewer the war file", result.isEmpty());
-            assertEquals("There are more than 1 gt-epsg artifacts in the viewer war file", 1, result.size());
-            assertTrue("The gt-epsg artifact is not gt-epsg-wkt", result.get(0).getName().contains("gt-epsg-wkt"));
+            assertFalse(result.isEmpty(), "No gt-epsg artifact in viewer the war file");
+            assertEquals(1, result.size(), "There are more than 1 gt-epsg artifacts in the viewer war file");
+            assertTrue(result.get(0).getName().contains("gt-epsg-wkt"), "The gt-epsg artifact is not gt-epsg-wkt");
 
         } catch (IOException e) {
             LOG.error(e);

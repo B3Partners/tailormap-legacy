@@ -88,8 +88,8 @@ public abstract class TestUtil extends LoggingTestUtil {
         final String persistenceUnit = System.getProperty("test.persistence.unit");
         Map config = new HashMap();
         String testname = testInfo.getDisplayName();
-        testname = testname.replaceAll(":", "-");
-        testname = testname.replaceAll(" ", "");
+        testname = testname.replaceAll(":", "-")
+                .replaceAll("[\\)\\(\\s]", "");
         String randomizer = RandomStringUtils.randomAlphabetic(8);
         // if you want to keep the database of each test in the target directory use this:
         config.put("javax.persistence.jdbc.url", "jdbc:hsqldb:file:./target/unittest-hsqldb_" + testname + "_" + randomizer + "/db;shutdown=true");
