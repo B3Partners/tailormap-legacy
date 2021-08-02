@@ -4,13 +4,15 @@
  */
 package nl.tailormap.viewer.image;
 
-import nl.tailormap.viewer.util.ServiceAvailableChecker;
+import org.apache.http.HttpStatus;
 import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -62,10 +64,17 @@ public class WMSTest {
             + "}";
 
     @BeforeEach
-    public void setUp() throws URISyntaxException {
-        ServiceAvailableChecker checker = new ServiceAvailableChecker();
-        checker.setURI(new URI(REQUEST_URL));
-        assumeTrue(checker.isHttpStatusOK(), "skip if mapproxy.b3p.nl is offline");
+    public void setUp() {
+        boolean isOnline = false;
+        try {
+            HttpURLConnection connection = (HttpURLConnection) new URI(REQUEST_URL).toURL().openConnection();
+            connection.setRequestMethod("GET");
+            connection.connect();
+            isOnline = (connection.getResponseCode() == HttpStatus.SC_OK);
+        } catch (IOException | URISyntaxException e) {
+            // ignore..
+        }
+        assumeTrue(isOnline, "skip if mapproxy.b3p.nl is offline");
 
         File destDir = new File(DEST_DIR);
         if (!destDir.exists()) {
