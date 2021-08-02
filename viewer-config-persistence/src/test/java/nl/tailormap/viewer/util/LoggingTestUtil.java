@@ -36,7 +36,7 @@ public class LoggingTestUtil {
      */
     @BeforeEach
     public void startTest(TestInfo testInfo) {
-        LOG.info("==== Start test methode: " + testInfo.getDisplayName());
+        LOG.info("==== Starting test method: " + testInfo.getDisplayName());
     }
 
     /**
@@ -44,6 +44,6 @@ public class LoggingTestUtil {
      */
     @AfterEach
     public void endTest(TestInfo testInfo) {
-        LOG.info("==== Einde test methode: " + testInfo.getDisplayName());
+        LOG.info("==== Ending test methode: " + testInfo.getDisplayName());
     }
 }
