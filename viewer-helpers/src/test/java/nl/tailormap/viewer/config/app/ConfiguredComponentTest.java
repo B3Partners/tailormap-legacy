@@ -20,12 +20,10 @@ import nl.tailormap.viewer.helpers.app.ApplicationHelper;
 import nl.tailormap.viewer.util.TestUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  *
@@ -45,7 +43,7 @@ public class ConfiguredComponentTest extends TestUtil {
             entityManager.getTransaction().commit();
             entityManager.getTransaction().begin();
             ConfiguredComponent cc = entityManager.find(ConfiguredComponent.class, cId);
-            assertNull(cc);
+            assertEquals(null, cc);
         } catch (Exception e) {
             log.error("Error:", e);
             assert (false);
@@ -72,7 +70,7 @@ public class ConfiguredComponentTest extends TestUtil {
             entityManager.getTransaction().commit();
             entityManager.getTransaction().begin();
 
-            Assert.assertEquals(1, app.getComponents().size());
+            assertEquals(1, app.getComponents().size());
             assertNotNull(entityManager.find(ConfiguredComponent.class, cId));
         } catch (Exception e) {
             log.error("Error:", e);

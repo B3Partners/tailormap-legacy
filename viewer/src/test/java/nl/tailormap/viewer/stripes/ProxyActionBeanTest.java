@@ -21,20 +21,18 @@ import nl.tailormap.commons.HttpClientConfigured;
 import nl.tailormap.viewer.config.security.User;
 import nl.tailormap.viewer.util.TestActionBeanContext;
 import nl.tailormap.viewer.util.TestUtil;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
-import java.net.URISyntaxException;
 import java.net.URL;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
- *
  * @author Mark Prins
  */
 public class ProxyActionBeanTest extends TestUtil {
@@ -42,12 +40,12 @@ public class ProxyActionBeanTest extends TestUtil {
     private ActionBeanContext context;
     private ProxyActionBean ab;
 
-    public ProxyActionBeanTest(){
+    public ProxyActionBeanTest() {
     }
-        
+
     // test of beveiligde service met gebruiker met onvoldoende rechten geen user/pass heeft
     @Test
-    public void testSecureServiceNoRights() throws MalformedURLException{
+    public void testSecureServiceNoRights() throws MalformedURLException {
         User geb = null;
         String url = "http://x12.b3p.nl/cgi-bin/mapserv?map=/srv/maps/solparc/groen_productie.map&";
         context = new TestActionBeanContext(geb);
@@ -56,17 +54,17 @@ public class ProxyActionBeanTest extends TestUtil {
         ab.setUrl(url);
         ab.setMustLogin(true);
         ab.setServiceId(2L);
-        
+
         HttpClientConfigured client = ab.getHttpClient(new URL(url), entityManager);
-        
+
         assertNull(client.getPassword());
         assertNull(client.getUsername());
     }
-    
+
     // test of beveiligde service met gebruiker met onvoldoende rechten geen user/pass heeft
     @Test
-    @Ignore(value = "lalal, stupid refactoring")
-    public void testSecureServiceWrongRights() throws MalformedURLException{
+    @Disabled(value = "lalal, stupid refactoring")
+    public void testSecureServiceWrongRights() throws MalformedURLException {
         User geb = entityManager.find(User.class, "pietje");
         String url = "http://x12.b3p.nl/cgi-bin/mapserv?map=/srv/maps/solparc/groen_productie.map&";
         context = new TestActionBeanContext(geb);
@@ -75,17 +73,17 @@ public class ProxyActionBeanTest extends TestUtil {
         ab.setUrl(url);
         ab.setMustLogin(true);
         ab.setServiceId(2L);
-        
+
         HttpClientConfigured client = ab.getHttpClient(new URL(url), entityManager);
-        
+
         assertNull(client.getPassword());
         assertNull(client.getUsername());
     }
-    
-    
+
+
     // test of beveiligde service met voloende rechten wel user pass heeft
     @Test
-    @Ignore(value = "lalal, stupid refactoring")
+    @Disabled(value = "lalal, stupid refactoring")
     public void testSecureServiceRights() throws MalformedURLException{
         User geb = entityManager.find(User.class, "admin");
         String url = "http://x12.b3p.nl/cgi-bin/mapserv?map=/srv/maps/solparc/groen_productie.map&";
@@ -95,16 +93,16 @@ public class ProxyActionBeanTest extends TestUtil {
         ab.setUrl(url);
         ab.setMustLogin(true);
         ab.setServiceId(2L);
-        
+
         HttpClientConfigured client = ab.getHttpClient(new URL(url), entityManager);
-        
+
         assertNotNull(client.getPassword());
         assertNotNull(client.getUsername());
     }
-    
+
     // test of url van service uit db gebruikt wordt (en dus niet aangepast kan worden)
     @Test
-    public void testModifiedServiceUrl() throws MalformedURLException, URISyntaxException, UnsupportedEncodingException, IllegalAccessException{
+    public void testModifiedServiceUrl() throws MalformedURLException, UnsupportedEncodingException, IllegalAccessException {
         User geb = entityManager.find(User.class, "admin");
         String url = "http://fakeurl.com?map=/srv/maps/solparc/groen_productie.map&";
         String originalUrl = "http://x12.b3p.nl/cgi-bin/mapserv?map=/srv/maps/solparc/groen_productie.map&";
@@ -136,6 +134,6 @@ public class ProxyActionBeanTest extends TestUtil {
         ab.setServiceId(4L);
         URL u = ab.getRequestRL(entityManager);
         String real = u.toString();
-        assertTrue("The url must contain the SCALE param", real.contains("SCALE"));
+        assertTrue(real.contains("SCALE"), "The url must contain the SCALE param");
     }
 }

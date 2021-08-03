@@ -2,42 +2,31 @@ package nl.tailormap.viewer.userlayer;
 
 import nl.tailormap.viewer.audit.AuditMessageObject;
 import nl.tailormap.viewer.util.TestUtil;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
-import java.util.Arrays;
-import java.util.Collection;
+import java.util.stream.Stream;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 
-@RunWith(Parameterized.class)
 public class UserLayerHandlerIntegrationTest extends TestUtil {
-
-
-    private final String serviceUrl;
-    private final String expected;
-
-    public UserLayerHandlerIntegrationTest(String expected, String serviceUrl) {
-        this.serviceUrl = serviceUrl;
-        this.expected = expected;
-    }
-
-    @Parameterized.Parameters
-    public static Collection primeNumbers() {
-        return Arrays.asList(new Object[][]{
+    static Stream<Arguments> argumentsProvider() {
+        return Stream.of(
                 // expected / given serviceUrl
-                {"http://localhost:8080/geoserver/", "http://localhost:8080/geoserver/geoserver/wms?SERVICE=WMS"},
-                {"http://localhost:8080/geoserver/", "http://localhost:8080/geoserver/wms?SERVICE=WMS"},
-                {"http://localhost:8080/geoserver/", "http://localhost:8080/geoserver/ows"},
-        });
+                arguments("http://localhost:8080/geoserver/", "http://localhost:8080/geoserver/geoserver/wms?SERVICE=WMS"),
+                arguments("http://localhost:8080/geoserver/", "http://localhost:8080/geoserver/wms?SERVICE=WMS"),
+                arguments("http://localhost:8080/geoserver/", "http://localhost:8080/geoserver/ows")
+        );
     }
 
     @Test
-    @Ignore("fails with NPE on getting service, needs more setup")
+    @Disabled("fails with NPE on getting service, needs more setup")
     public void testValidate() {
         UserLayerHandler ulh = new UserLayerHandler(new AuditMessageObject(), entityManager, app, testAppLayer,
                 "id > 0", "testlayer", "geoserverWorkspace", "geoserverStorename");
@@ -45,7 +34,7 @@ public class UserLayerHandlerIntegrationTest extends TestUtil {
     }
 
     @Test
-    @Ignore("fails with NPE on getting service, needs more setup")
+    @Disabled("fails with NPE on getting service, needs more setup")
     public void testAdd() {
         UserLayerHandler ulh = new UserLayerHandler(new AuditMessageObject(), entityManager, app, testAppLayer,
                 "id > 0", "testlayer", "geoserverWorkspace", "geoserverStorename");
@@ -53,9 +42,10 @@ public class UserLayerHandlerIntegrationTest extends TestUtil {
     }
 
 
-    @Test
-    @Ignore("fails with NPE on getting service, needs more setup")
-    public void testGetBaseUrl() {
+    @Disabled("fails with NPE on getting service, needs more setup")
+    @MethodSource("argumentsProvider")
+    @ParameterizedTest(name = "{index}: type: {0}, bestand: {1}")
+    public void testGetBaseUrl(String expected, String serviceUrl) {
         UserLayerHandler ulh = new UserLayerHandler(new AuditMessageObject(), entityManager, app, testAppLayer,
                 "id > 0", "testlayer", "geoserverWorkspace", "geoserverStorename");
 

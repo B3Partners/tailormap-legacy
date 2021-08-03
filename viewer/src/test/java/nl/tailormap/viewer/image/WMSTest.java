@@ -4,76 +4,83 @@
  */
 package nl.tailormap.viewer.image;
 
-import nl.tailormap.viewer.util.ServiceAvailableChecker;
+import org.apache.http.HttpStatus;
 import org.json.JSONObject;
-import org.junit.Assume;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
+
 /**
- *
  * @author Roy Braam
  */
 public class WMSTest {
 
-    @Before
-    public void setUp() throws URISyntaxException {
-        ServiceAvailableChecker checker = new ServiceAvailableChecker();
-        checker.setURI(new URI(REQUEST_URL));
-        Assume.assumeTrue("skip if kaartenbalie.nl is offline", checker.isHttpStatusOK());
-
-        File destDir = new File(DEST_DIR);
-        if(!destDir.exists()) {
-            destDir.mkdir();
-        }
-    }
-
     private static final String DEST_DIR = "target" + File.separator + "test-output";
-
-    private static final String REQUEST_URL = "http://osm.kaartenbalie.nl/wms/mapserver?REQUEST=GetMap&ID=layer1&STYLES=&TRANSPARENT=TRUE&SRS=EPSG:28992&VERSION=1.1.1&EXCEPTIONS=application/vnd.ogc.se_xml&LAYERS=OpenStreetMap,bron_osm,railways,highways50_4000,highways0_50,primaryroads50_400,roads50_100,roads0_50,streets30_70,streets0_30,provinciegrens,greens,waterwood,residentialandindustry,basislaag,places&FORMAT=image/png&HEIGHT=783&WIDTH=1264&BBOX=16048.5312899105,392484.035759898,271108.556832695,550484.035759898";
-
-     /**
-     * @settings a JSONObject in the following format:
-     * {            
-     *      requests: [
-     *          {
-     *              protocol: "",
-     *              extent: "", //if extent is other then the given bbox.
-     *              url: "",
-     *              alpha: "",
-     *              body: "",
-     *              tileWidth: "", //default 256, for tiling
-     *              tileHeight: "", //default 256, for tiling
-     *              serverExtent: "" //server extent, for tiling
-     *          }
-     *      ],
-     *      geometries: [
-     *          wktgeom: "",
-     *          color: ""
-     *      ],
-     *      bbox: "",
-     *      width: "",
-     *      height: "",
-     *      srid: "",
-     *      angle: "",
-     *      quality: ""
-     *  }
+    private static final String REQUEST_URL = "https://mapproxy.b3p.nl/service?request=GetMap&Service=WMS&Format=image/png&srs=epsg:28992&version=1.1.1&styles=&layers=brtachtergrondkaart&width=1024&height=1024&bbox=0,300000,300000,600000";
+    /**
+     * {@code settings} a JSONObject in the following format:
+     * {
+     * requests: [
+     * {
+     * protocol: "",
+     * extent: "", //if extent is other then the given bbox.
+     * url: "",
+     * alpha: "",
+     * body: "",
+     * tileWidth: "", //default 256, for tiling
+     * tileHeight: "", //default 256, for tiling
+     * serverExtent: "" //server extent, for tiling
+     * }
+     * ],
+     * geometries: [
+     * wktgeom: "",
+     * color: ""
+     * ],
+     * bbox: "",
+     * width: "",
+     * height: "",
+     * srid: "",
+     * angle: "",
+     * quality: ""
+     * }
      */
     private static final String JSONCONFIG = "{"
             + "requests: [{"
             + "     protocol: 'WMS',"
-            + "     url: '"+ REQUEST_URL +"',"
+            + "     url: '" + REQUEST_URL + "',"
             + "}],"
-            + "bbox: '16048.5312899105,392484.035759898,271108.556832695,550484.035759898',"
-            + "width: 3000,"
-            + "height: 3000,"
-            + "srid: 28992"          
+            + "bbox: '0,300000,300000,600000',"
+            + "width: 1024,"
+            + "height: 1024,"
+            + "srid: 28992"
             + "}";
+
+    @BeforeEach
+    public void setUp() {
+        boolean isOnline = false;
+        try {
+            HttpURLConnection connection = (HttpURLConnection) new URI(REQUEST_URL).toURL().openConnection();
+            connection.setRequestMethod("GET");
+            connection.connect();
+            isOnline = (connection.getResponseCode() == HttpStatus.SC_OK);
+        } catch (IOException | URISyntaxException e) {
+            // ignore..
+        }
+        assumeTrue(isOnline, "skip if mapproxy.b3p.nl is offline");
+
+        File destDir = new File(DEST_DIR);
+        if (!destDir.exists()) {
+            destDir.mkdir();
+        }
+    }
 
     @Test
     public void wmsTest() throws Exception {

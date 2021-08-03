@@ -25,13 +25,11 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -39,22 +37,22 @@ import java.sql.SQLException;
 import java.util.Properties;
 
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assume.assumeNotNull;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
 
 /**
- *
  * @author Mark Prins
  */
 public class ViewerIntegrationTest {
 
-    private static final Log LOG = LogFactory.getLog(ViewerIntegrationTest.class);
     /**
      * the viewer url. {@value}
      */
     public static final String BASE_TEST_URL = "http://localhost:9090/viewer/";
-
+    protected static final Properties databaseprop = new Properties();
+    private static final Log LOG = LogFactory.getLog(ViewerIntegrationTest.class);
     /**
      * our test client.
      */
@@ -64,18 +62,16 @@ public class ViewerIntegrationTest {
      */
     private HttpResponse response;
 
-    protected static final Properties databaseprop = new Properties();
-
     /**
      * initialize database props.
      *
-     * @throws java.io.IOException if loading the property file fails
+     * @throws java.io.IOException              if loading the property file fails
      * @throws java.lang.ClassNotFoundException if the database driver class
-     * cannot be found
+     *                                          cannot be found
      */
-    @BeforeClass
+    @BeforeAll
     public static void loadDBprop() throws IOException, ClassNotFoundException {
-        assumeNotNull("Database environment must be defined.", System.getProperty("database.properties.file"));
+        assumeFalse(null == System.getProperty("database.properties.file"), "Database environment must be defined.");
         databaseprop.load(ViewerIntegrationTest.class.getClassLoader().getResourceAsStream(System.getProperty("database.properties.file")));
         LOG.debug("database props: " + databaseprop);
         Class.forName("org.postgresql.Driver");
@@ -84,7 +80,7 @@ public class ViewerIntegrationTest {
     /**
      * initialize http client.
      */
-    @BeforeClass
+    @BeforeAll
     public static void setUpClass() {
         client = HttpClientBuilder.create().build();
     }
@@ -94,7 +90,7 @@ public class ViewerIntegrationTest {
      *
      * @throws IOException if any occurs closing th ehttp connection
      */
-    @AfterClass
+    @AfterAll
     public static void tearDownClass() throws IOException {
         if (client != null) {
             client.close();
@@ -104,27 +100,24 @@ public class ViewerIntegrationTest {
     /**
      * Test if the Flaming viewer application has started.
      *
-     * @throws UnsupportedEncodingException if any
      * @throws IOException if any
      */
     @Test
-    public void request() throws UnsupportedEncodingException, IOException {
+    public void request() throws IOException {
         response = client.execute(new HttpGet(BASE_TEST_URL));
 
         final String body = EntityUtils.toString(response.getEntity());
-        assertNotNull("Response body should not be null.", body);
-        assertThat("Response status is OK.", response.getStatusLine().getStatusCode(),
-                equalTo(HttpStatus.SC_OK));
+        assertNotNull(body, "Response body should not be null.");
+        assertThat("Response status is OK.", response.getStatusLine().getStatusCode(), equalTo(HttpStatus.SC_OK));
     }
 
     /**
      * test if the database has the right metadata version.
      *
      * @throws SQLException if something goes wrong executing the query
-     * @throws ClassNotFoundException if the postgres driver cannot be found.
      */
     @Test
-    public void testMetadataVersion() throws SQLException, ClassNotFoundException {
+    public void testMetadataVersion() throws SQLException {
         // get 'database_version' from table metadata and check that is has the value of 'n'
         Connection connection = DriverManager.getConnection(databaseprop.getProperty("testdb.url"),
                 databaseprop.getProperty("testdb.username"),
@@ -144,6 +137,6 @@ public class ViewerIntegrationTest {
         rs.close();
         connection.close();
 
-        Assert.assertEquals("The database version should be the same.", DatabaseSynchronizer.getUpdateNumber(), actual_config_value);
+        assertEquals(DatabaseSynchronizer.getUpdateNumber(), actual_config_value, "The database version should be the same.");
     }
 }

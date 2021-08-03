@@ -53,7 +53,6 @@
         <geotools.version>25.2</geotools.version>
         <jts.version>1.18.1</jts.version>
         <b3p-commons-csw.version>6.6</b3p-commons-csw.version>
-        <powermock.version>2.0.9</powermock.version>
         <hsqldb.version>2.6.0</hsqldb.version>
         <test.persistence.unit>viewer-config-hsqldb</test.persistence.unit>
         <postgresql.version>42.2.23</postgresql.version>
@@ -68,6 +67,8 @@
         <slf4j.version>1.7.32</slf4j.version>
         <hibernate.version>5.5.5.Final</hibernate.version>
         <jackson2.version>2.12.4</jackson2.version>
+        <test.junit-jupiter.version>5.7.2</test.junit-jupiter.version>
+        <test.hamcrest.version>2.2</test.hamcrest.version>
         <!-- skip integration tests by default, override this property from commandline
         or as part of a profile, see eg. 'gh-action' profile in viewer -->
         <test.skip.integrationtests>false</test.skip.integrationtests>
@@ -327,12 +328,33 @@
                 <version>4.6.0</version>
                 <scope>compile</scope>
             </dependency>
-            <!-- viewer-commons -->
             <dependency>
+                <groupId>org.junit</groupId>
+                <artifactId>junit-bom</artifactId>
+                <version>${test.junit-jupiter.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.hamcrest</groupId>
+                <artifactId>hamcrest</artifactId>
+                <version>${test.hamcrest.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <!-- override voor versies die met sommige dependencies meekomen
+                en de OWASP dependency scanner triggeren -->
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
                 <version>4.13.2</version>
                 <scope>test</scope>
+                <exclusions>
+                    <exclusion>
+                        <!-- zou 1.3 zijn... -->
+                        <groupId>org.hamcrest</groupId>
+                        <artifactId>hamcrest-core</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>commons-logging</groupId>
@@ -348,18 +370,6 @@
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-core</artifactId>
                 <version>3.11.2</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.powermock</groupId>
-                <artifactId>powermock-module-junit4</artifactId>
-                <version>${powermock.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.powermock</groupId>
-                <artifactId>powermock-api-mockito2</artifactId>
-                <version>${powermock.version}</version>
                 <scope>test</scope>
             </dependency>
             <dependency>

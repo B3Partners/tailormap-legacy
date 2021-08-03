@@ -1,22 +1,22 @@
 package nl.tailormap.viewer.audit.impl;
 
 import nl.tailormap.viewer.audit.LoggingServiceFactory;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.RandomAccessFile;
 import java.nio.file.Paths;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 public class DefaultLoggingServiceTest {
 
     @Test
     public void testDefaultInstance() {
-        Assert.assertEquals("We should have gotten the default logging implementation", DefaultLoggingService.class, LoggingServiceFactory.getInstance().getClass());
+        assertEquals(DefaultLoggingService.class, LoggingServiceFactory.getInstance().getClass(), "We should have gotten the default logging implementation");
     }
 
     @Test
@@ -24,8 +24,8 @@ public class DefaultLoggingServiceTest {
         LoggingServiceFactory.getInstance().logMessage("some user", "Something we want in the audit trail");
 
         File auditLog = Paths.get(getClass().getClassLoader().getResource("audit.log").toURI()).toFile();
-        assertNotNull("The logfile must exist", auditLog);
-        assertTrue("Audit rule not as expected.", tail(auditLog).endsWith("some user - Something we want in the audit trail"));
+        assertNotNull(auditLog, "The logfile must exist");
+        assertTrue(tail(auditLog).endsWith("some user - Something we want in the audit trail"), "Audit rule not as expected.");
     }
 
     private String tail(File file) {

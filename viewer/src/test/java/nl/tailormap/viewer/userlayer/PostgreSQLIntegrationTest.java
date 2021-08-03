@@ -1,20 +1,20 @@
 package nl.tailormap.viewer.userlayer;
 
 import nl.tailormap.viewer.ViewerIntegrationTest;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assumptions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
 import static nl.tailormap.viewer.userlayer.DataBase.INVALID_MSG;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assume.assumeTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * run: {@code mvn verify -Pgh-action -pl :viewer -Dit.test=PostgreSQLIntegrationTest} with a PG database setup as in
@@ -30,10 +30,10 @@ public class PostgreSQLIntegrationTest extends ViewerIntegrationTest {
     private final String comments = "";
     private PostgreSQL db;
 
-    @Before
+    @BeforeEach
     public void setUp() throws SQLException {
-        assumeTrue("Configuratie fout voor database properties",
-                "org.postgresql.Driver".equals(databaseprop.getProperty("testdb.driverClassName")));
+        Assumptions.assumeTrue(
+                "org.postgresql.Driver".equals(databaseprop.getProperty("testdb.driverClassName")), "Configuratie fout voor database properties");
         Connection connection = DriverManager.getConnection(databaseprop.getProperty("testdb.url"),
                 databaseprop.getProperty("testdb.username"),
                 databaseprop.getProperty("testdb.password")
@@ -41,7 +41,7 @@ public class PostgreSQLIntegrationTest extends ViewerIntegrationTest {
         db = new PostgreSQL(connection);
     }
 
-    @After
+    @AfterEach
     public void cleanup() {
         if (db != null) {
             db.close();

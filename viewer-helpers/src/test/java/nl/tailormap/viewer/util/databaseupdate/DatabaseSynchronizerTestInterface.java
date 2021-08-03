@@ -18,7 +18,7 @@ package nl.tailormap.viewer.util.databaseupdate;
 
 import nl.tailormap.viewer.config.metadata.Metadata;
 import nl.tailormap.viewer.util.TestUtil;
-import org.junit.After;
+import org.junit.jupiter.api.AfterEach;
 
 /**
  *
@@ -26,7 +26,7 @@ import org.junit.After;
  */
 public abstract class DatabaseSynchronizerTestInterface extends TestUtil {
 
-    @After
+    @AfterEach
     public void removeUpdates(){
         revertDBVersion();
         DatabaseSynchronizer.updates.remove("" + TEST_VERSION_NUMBER);

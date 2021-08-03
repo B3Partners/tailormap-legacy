@@ -21,9 +21,8 @@ import nl.tailormap.viewer.util.TestUtil;
 import nl.tailormap.web.WaitPageStatus;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.junit.Assert;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -38,30 +37,28 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
- *
  * @author Meine Toonen meinetoonen@b3partners.nl
  */
 public class TileServiceTest extends TestUtil {
-    
-    private TileService instance = new TileService();
 
     private static final String PDOK_WMTS = "http://geodata.nationaalgeoregister.nl/tiles/service/wmts?request=getcapabilities";
     private static final int PDOK_WMTS_LAYERCOUNT = 41;
-
     DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
     DocumentBuilder builder = null;
     XPathFactory xPathfactory = XPathFactory.newInstance();
     XPath xpath = xPathfactory.newXPath();
-        
+    private final TileService instance = new TileService();
+
     public TileServiceTest() throws ParserConfigurationException {
         builder = factory.newDocumentBuilder();
     }
-    
+
 
     /**
      * Test of loadFromUrl method, of class TileService.
@@ -78,30 +75,30 @@ public class TileServiceTest extends TestUtil {
         params.put(TileService.PARAM_TILESIZE, 256);
         params.put(TileService.PARAM_TILINGPROTOCOL, "TMS");
         WaitPageStatus status = new WaitPageStatus();
-        
+
         GeoService result = TilingServiceHelper.loadFromURL(url, params, status, entityManager);
         assertEquals("tiled", result.getProtocol());
         assertEquals(url, result.getUrl());
-        
-        TileService ts =(TileService)result;
+
+        TileService ts = (TileService) result;
         assertEquals("osm", ts.getTilingLayer().getName());
         assertEquals("TMS", ts.getTilingProtocol());
         assertEquals(ts.getUrl(), url);
         Layer l = ts.getTilingLayer();
-        TileSet tileSet =l.getTileset();
+        TileSet tileSet = l.getTileset();
         assertEquals(3, tileSet.getResolutions().size());
         assertEquals(256, tileSet.getHeight());
         assertEquals("osm", tileSet.getName());
-        Assert.assertEquals("png",l.getDetails().get("image_extension").getValue());
+        assertEquals("png", l.getDetails().get("image_extension").getValue());
         assertEquals(0, ts.getMatrixSets().size());
         JSONObject serviceObj = ts.toJSONObject(false, entityManager);
         assertTrue(serviceObj.has("matrixSets"));
         JSONArray matrixSets = serviceObj.getJSONArray("matrixSets");
         assertEquals(0, matrixSets.length());
-        
+
     }
 
-    
+
     @Test
     public void testLoadBRTWMTSFromURL() throws Exception {
         URL u = new URL(PDOK_WMTS);
@@ -110,17 +107,17 @@ public class TileServiceTest extends TestUtil {
         params.put(TileService.PARAM_TILINGPROTOCOL, "WMTS");
         params.put(TileService.PARAM_SERVICENAME, "Web Map Tile Service - GeoWebCache");
         WaitPageStatus status = new WaitPageStatus();
-        
+
         GeoService result = TilingServiceHelper.loadFromURL(url, params, status, entityManager);
-        assertEquals("https://geodata.nationaalgeoregister.nl/tiles/service/wmts?",result.getUrl());
+        assertEquals("https://geodata.nationaalgeoregister.nl/tiles/service/wmts?", result.getUrl());
         Layer topLayer = result.getTopLayer();
         assertEquals(PDOK_WMTS_LAYERCOUNT, topLayer.getChildren().size());
-        
+
         Layer brt = topLayer.getChildren().get(0);
         assertEquals("brtachtergrondkaart", brt.getName());
         JSONArray styles = new JSONArray(brt.getDetails().get(Layer.DETAIL_WMS_STYLES).getValue());
-        JSONObject style = (JSONObject)styles.get(0);
-        assertEquals("",  style.getString("identifier"));
+        JSONObject style = (JSONObject) styles.get(0);
+        assertEquals("", style.getString("identifier"));
         assertEquals(1, brt.getBoundingBoxes().size());
 
         BoundingBox bbox = brt.getBoundingBoxes().get(new CoordinateReferenceSystem("urn:ogc:def:crs:EPSG::28992"));
@@ -128,7 +125,7 @@ public class TileServiceTest extends TestUtil {
         assertEquals(903401.9, bbox.getMaxy(), 0.1);
         assertEquals(-370406.0, bbox.getMinx(), 0.1);
         assertEquals(5328.8, bbox.getMiny(), 0.1);
-        
+
         JSONObject serviceObj = result.toJSONObject(false, entityManager);
         assertTrue(serviceObj.has("matrixSets"));
         JSONArray matrixSets = serviceObj.getJSONArray("matrixSets");
@@ -142,26 +139,26 @@ public class TileServiceTest extends TestUtil {
         assertNotNull(jsonLayer);
         assertTrue(jsonLayer.has("bbox"));
     }
-    
+
     @Test
     public void testLoadArcGisWMTSFromURL() throws Exception {
         URL u = new URL("https://tiles.arcgis.com/tiles/nSZVuSZjHpEZZbRo/arcgis/rest/services/Historische_tijdreis_1950/MapServer/WMTS?request=getcapabilities");
         String url = u.toString();
         Map params = new HashMap();
         params.put(TileService.PARAM_TILINGPROTOCOL, "WMTS");
-        
+
         WaitPageStatus status = new WaitPageStatus();
-        
+
         GeoService result = TilingServiceHelper.loadFromURL(url, params, status, entityManager);
-        assertEquals("https://tiles.arcgis.com/tiles/nSZVuSZjHpEZZbRo/arcgis/rest/services/Historische_tijdreis_1950/MapServer/WMTS?",result.getUrl());
+        assertEquals("https://tiles.arcgis.com/tiles/nSZVuSZjHpEZZbRo/arcgis/rest/services/Historische_tijdreis_1950/MapServer/WMTS?", result.getUrl());
         Layer topLayer = result.getTopLayer();
         assertEquals(1, topLayer.getChildren().size());
-        
+
         Layer tijdreis = topLayer.getChildren().get(0);
         assertEquals("Historische_tijdreis_1950", tijdreis.getName());
         JSONArray styles = new JSONArray(tijdreis.getDetails().get(Layer.DETAIL_WMS_STYLES).getValue());
-        JSONObject style = (JSONObject)styles.get(0);
-        assertEquals("default",  style.getString("identifier"));
+        JSONObject style = (JSONObject) styles.get(0);
+        assertEquals("default", style.getString("identifier"));
         assertEquals(1, tijdreis.getBoundingBoxes().size());
 
         BoundingBox bbox = tijdreis.getBoundingBoxes().get(new CoordinateReferenceSystem("urn:ogc:def:crs:EPSG::28992"));
@@ -169,7 +166,7 @@ public class TileServiceTest extends TestUtil {
         assertEquals(-22869.1, bbox.getMinx(), 0.1);
         assertEquals(312667.7, bbox.getMaxx(), 0.1);
         assertEquals(662419.8, bbox.getMaxy(), 0.1);
-        
+
         JSONObject serviceObj = result.toJSONObject(false, entityManager);
         assertTrue(serviceObj.has("matrixSets"));
         JSONArray matrixSets = serviceObj.getJSONArray("matrixSets");
@@ -183,7 +180,7 @@ public class TileServiceTest extends TestUtil {
         assertNotNull(jsonLayer);
         assertTrue(jsonLayer.has("bbox"));
     }
-    
+
     @Test
     public void testLoadTopoWMTSFromURL() throws Exception {
         URL u = new URL(PDOK_WMTS);
@@ -192,12 +189,12 @@ public class TileServiceTest extends TestUtil {
         params.put(TileService.PARAM_TILINGPROTOCOL, "WMTS");
         params.put(TileService.PARAM_SERVICENAME, "Web Map Tile Service - GeoWebCache");
         WaitPageStatus status = new WaitPageStatus();
-        
+
         GeoService result = TilingServiceHelper.loadFromURL(url, params, status, entityManager);
         Layer topLayer = result.getTopLayer();
         assertEquals(PDOK_WMTS_LAYERCOUNT, topLayer.getChildren().size());
         assertEquals("https://geodata.nationaalgeoregister.nl/tiles/service/wmts?", result.getUrl());
-        
+
         Layer brt = topLayer.getChildren().get(0);
         assertEquals("brtachtergrondkaart", brt.getName());
         assertEquals(1, brt.getBoundingBoxes().size());
@@ -207,7 +204,7 @@ public class TileServiceTest extends TestUtil {
         assertEquals(903402.0, bbox.getMaxy(), 0.01);
         assertEquals(-285401.92, bbox.getMinx(), 0.01);
         assertEquals(22598.16, bbox.getMiny(), 0.01);
-        
+
         JSONObject serviceObj = result.toJSONObject(false, entityManager);
         assertTrue(serviceObj.has("matrixSets"));
         JSONArray matrixSets = serviceObj.getJSONArray("matrixSets");
@@ -224,7 +221,7 @@ public class TileServiceTest extends TestUtil {
     }
 
     @Test
-    @Ignore("Meine knows why..")
+    @Disabled("Meine knows why..")
     public void testLoadLufoWMTSFromURL() throws Exception {
         URL u = new URL("http://webservices.gbo-provincies.nl/lufo/services/wmts?request=GetCapabilities");
         String url = u.toString();
@@ -232,12 +229,12 @@ public class TileServiceTest extends TestUtil {
         params.put(TileService.PARAM_TILINGPROTOCOL, "WMTS");
         params.put(TileService.PARAM_SERVICENAME, "luchtfoto");
         WaitPageStatus status = new WaitPageStatus();
-        
+
         GeoService result = TilingServiceHelper.loadFromURL(url, params, status, entityManager);
         Layer topLayer = result.getTopLayer();
         assertEquals(12, topLayer.getChildren().size());
         assertEquals("http://webservices.gbo-provincies.nl/lufo/services/wmts?", result.getUrl());
-        
+
         Layer actueelWinter = topLayer.getChildren().get(0);
         assertEquals("actueel_winter", actueelWinter.getName());
         assertEquals(1, actueelWinter.getBoundingBoxes().size());
@@ -247,7 +244,7 @@ public class TileServiceTest extends TestUtil {
         assertEquals(903401.92, bbox.getMaxy(), 0.01);
         assertEquals(-285401.92, bbox.getMinx(), 0.01);
         assertEquals(22598.08, bbox.getMiny(), 0.01);
-        
+
         JSONObject serviceObj = result.toJSONObject(false, entityManager);
         assertTrue(serviceObj.has("matrixSets"));
         JSONArray matrixSets = serviceObj.getJSONArray("matrixSets");
@@ -262,32 +259,32 @@ public class TileServiceTest extends TestUtil {
         assertTrue(jsonLayer.has("bbox"));
     }
 
-    private void compareWMTS(GeoService result, String url){
-            
+    private void compareWMTS(GeoService result, String url) {
+
         assertEquals("tiled", result.getProtocol());
         assertEquals("http://localhost:8084/geoserver/gwc/service/wmts?", result.getUrl());
-        
-        TileService ts =(TileService)result;
+
+        TileService ts = (TileService) result;
         assertEquals("Web Map Tile Service - GeoWebCache", ts.getName());
-        
+
         assertEquals("WMTS", ts.getTilingProtocol());
         Layer l = ts.getTilingLayer();
-        Assert.assertEquals("image/png",l.getDetails().get("image_extension").getValue());
-        
+        assertEquals("image/png", l.getDetails().get("image_extension").getValue());
+
         Layer topLayer = ts.getTopLayer();
-        assertEquals(1,topLayer.getChildren().size());
-        
+        assertEquals(1, topLayer.getChildren().size());
+
         Layer layer = topLayer.getChildren().get(0);
         assertEquals("test:gemeente", layer.getName());
         assertEquals("gem_2014_new", layer.getTitle());
         JSONArray styles = new JSONArray(layer.getDetails().get(Layer.DETAIL_WMS_STYLES).getValue());
-        JSONObject style = (JSONObject)styles.get(0);
-        assertEquals("",  style.getString("identifier"));
+        JSONObject style = (JSONObject) styles.get(0);
+        assertEquals("", style.getString("identifier"));
         assertNotNull(ts.getMatrixSets());
-        assertEquals(6,ts.getMatrixSets().size());
-        assertEquals(16,ts.getMatrixSets().get(1).getMatrices().size());
-        assertEquals("epsg:28992",layer.getMatrixSets().get(0).getIdentifier());
-        assertEquals(16,layer.getMatrixSets().get(0).getMatrices().size());
+        assertEquals(6, ts.getMatrixSets().size());
+        assertEquals(16, ts.getMatrixSets().get(1).getMatrices().size());
+        assertEquals("epsg:28992", layer.getMatrixSets().get(0).getIdentifier());
+        assertEquals(16, layer.getMatrixSets().get(0).getMatrices().size());
         JSONObject serviceObj = ts.toJSONObject(false, entityManager);
         assertTrue(serviceObj.has("matrixSets"));
         JSONArray matrixSets = serviceObj.getJSONArray("matrixSets");
@@ -299,44 +296,44 @@ public class TileServiceTest extends TestUtil {
         JSONObject layers = serviceObj.getJSONObject("layers");
         JSONObject jsonLayer = layers.getJSONObject("test:gemeente");
         assertNotNull(jsonLayer);
-        assertTrue(!jsonLayer.has("bbox"));
+        assertFalse(jsonLayer.has("bbox"));
     }
-    
+
     @Test
-    public void testParseMultipleTileMatrixSets() throws ParserConfigurationException, SAXException, IOException, XPathExpressionException{
-        
+    public void testParseMultipleTileMatrixSets() throws ParserConfigurationException, SAXException, IOException, XPathExpressionException {
+
         URL u = TileServiceTest.class.getResource("singleLayer.xml");
-        String url = u.toString();        
+        String url = u.toString();
         org.w3c.dom.Document doc = builder.parse(url);
-        
+
         List<TileMatrixSet> sets = TilingServiceHelper.parseMatrixSets(xpath, doc);
         assertNotNull(sets);
         assertEquals(6, sets.size());
     }
-    
+
     @Test
-    public void testParseTileMatrixSet() throws ParserConfigurationException, SAXException, IOException, XPathExpressionException{
-        
+    public void testParseTileMatrixSet() throws ParserConfigurationException, SAXException, IOException, XPathExpressionException {
+
         URL u = TileServiceTest.class.getResource("tilematrixset.xml");
         String url = u.toString();
         org.w3c.dom.Document doc = builder.parse(url);
-        
+
         TileMatrixSet tms = TilingServiceHelper.parseTileMatrixSet(xpath, doc.getChildNodes().item(0));
         assertNotNull(tms);
         assertEquals("GlobalCRS84Pixel", tms.getIdentifier());
         assertEquals("urn:ogc:def:crs:EPSG::4326", tms.getCrs());
-        
+
         assertNotNull(tms.getBbox());
         assertEquals("urn:ogc:def:crs:EPSG::4326", tms.getBbox().getCrs().getName());
-        assertEquals(-180.0, tms.getBbox().getMaxy(),0.01);
-        assertEquals(new Double(90), tms.getBbox().getMinx(),0.01);
-        assertEquals(-20037688.34, tms.getBbox().getMiny(),0.01);
-        assertEquals(40075106.68, tms.getBbox().getMaxx(),0.01);
-        
+        assertEquals(-180.0, tms.getBbox().getMaxy(), 0.01);
+        assertEquals(90.0, tms.getBbox().getMinx(), 0.01);
+        assertEquals(-20037688.34, tms.getBbox().getMiny(), 0.01);
+        assertEquals(40075106.68, tms.getBbox().getMaxx(), 0.01);
+
         List<TileMatrix> matrices = tms.getMatrices();
         assertNotNull(matrices);
         assertEquals(18, matrices.size());
-        
+
         TileMatrix first = matrices.get(0);
         assertNotNull(first);
         assertEquals("GlobalCRS84Pixel:0", first.getIdentifier());
@@ -346,7 +343,7 @@ public class TileServiceTest extends TestUtil {
         assertEquals(256, first.getTileWidth());
         assertEquals(1, first.getMatrixHeight());
         assertEquals(1, first.getMatrixWidth());
-        assertEquals("",first.getTitle());
-        assertEquals("",first.getDescription());
+        assertEquals("", first.getTitle());
+        assertEquals("", first.getDescription());
     }
 }

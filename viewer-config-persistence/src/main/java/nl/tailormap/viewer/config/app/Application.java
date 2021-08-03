@@ -564,7 +564,7 @@ public class Application implements Comparable<Application>{
         if (this.isMashup_cached == null) {
             this.isMashup_cached = Boolean.FALSE;
             List<Map<String, Object>> items = sess.createSQLQuery("select d.value from application_details d where d.details_key = '" + Application.DETAIL_IS_MASHUP + "' and d.application =  :appId")
-                    .setLong("appId", this.getId())
+                    .setParameter("appId", this.getId())
                     .setResultTransformer(ApplicationDetailsValueTransformer.INSTANCE)
                     .list();
             if (items.size() > 0) {

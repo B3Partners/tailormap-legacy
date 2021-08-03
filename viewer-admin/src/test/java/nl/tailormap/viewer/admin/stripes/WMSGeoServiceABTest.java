@@ -27,33 +27,35 @@ import nl.tailormap.viewer.util.TestUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.geotools.data.FeatureSource;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.runners.Parameterized;
+import org.hamcrest.MatcherAssert;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.Stream;
 
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 /**
- *
  * @author mprins
  */
-//@RunWith(Parameterized.class)
 public class WMSGeoServiceABTest extends TestUtil {
 
     private static final Log log = LogFactory.getLog(WMSGeoServiceABTest.class);
+    private ActionBeanContext context;
+    private GeoServiceActionBean gsb;
 
     /**
      * The parameter collection for this testcase. A paramet set consists of an
@@ -64,56 +66,16 @@ public class WMSGeoServiceABTest extends TestUtil {
      * <li>(String) service type</li>
      * <li>(int) expected number of feature types</li>
      * </ol>
-     *
-     * @return parameter collection that contains input and response values for
-     * this test.
      */
-    @Parameterized.Parameters(name = "skip WFS discovery: {1}")
-    public static Collection params() {
-        return Arrays.asList(new Object[][]{
-            // {"url",skipWFS,"serviceProtocol", "attrServiceProtocol",serviceTypecount,groupLayerCount},
-            {"https://flamingo5.b3p.nl:443/geoserver/Test_omgeving/wms?SERVICE=WMS&", true, "wms", null, 5, 0},
-            {"https://flamingo5.b3p.nl:443/geoserver/Test_omgeving/wms?SERVICE=WMS&", false, "wms", "wfs", 5, 0}
-        });
-    }
-    private ActionBeanContext context;
-
-    private GeoServiceActionBean gsb;
-    /**
-     * test parameter.
-     */
-    private final String serviceUrl;
-    /**
-     * test parameter.
-     */
-    private final boolean skipWFS;
-    /**
-     * test parameter.
-     */
-    private final String serviceProtocol;
-    /**
-     * test parameter.
-     */
-    private final String attrServiceProtocol;
-    /**
-     * test expectation.
-     */
-    private final int serviceTypeCount;
-    /**
-     * test expectation.
-     */
-    private final int groupLayerCount;
-
-    public WMSGeoServiceABTest(String serviceUrl, boolean skipWFS, String serviceProtocol, String attrServiceProtocol, int serviceTypeCount, int groupLayerCount) {
-        this.serviceUrl = serviceUrl;
-        this.skipWFS = skipWFS;
-        this.serviceProtocol = serviceProtocol;
-        this.attrServiceProtocol = attrServiceProtocol;
-        this.serviceTypeCount = serviceTypeCount;
-        this.groupLayerCount = groupLayerCount;
+    static Stream<Arguments> argumentsProvider() {
+        return Stream.of(
+                // {"url",skipWFS,"serviceProtocol", "attrServiceProtocol",serviceTypecount,groupLayerCount},
+                arguments("https://flamingo5.b3p.nl/geoserver/Test_omgeving/wms?SERVICE=WMS&", true, "wms", null, 6, 0),
+                arguments("https://flamingo5.b3p.nl/geoserver/Test_omgeving/wms?SERVICE=WMS&", false, "wms", "wfs", 6, 0)
+        );
     }
 
-    @Before
+    @BeforeEach
     public void createContext() {
         context = new ActionBeanContext() {
             @Override
@@ -123,24 +85,25 @@ public class WMSGeoServiceABTest extends TestUtil {
         };
     }
 
-    @After
+    @AfterEach
     public void cleanupContext() {
         context = null;
         gsb = null;
     }
 
-  //  @Test
-    public void addWMSService() throws Exception {
+    @ParameterizedTest(name = "skip WFS discovery voor testUrl: {1}")
+    @MethodSource("argumentsProvider")
+    public void addWMSService(String serviceUrl, boolean skipWFS, String serviceProtocol, String attrServiceProtocol, int serviceTypeCount, int groupLayerCount) throws Exception {
         Category cat = new Category();
         cat.setId(1L);
 
         gsb = new GeoServiceActionBean();
-        gsb.setUrl(this.serviceUrl);
-        gsb.setProtocol(this.serviceProtocol);
+        gsb.setUrl(serviceUrl);
+        gsb.setProtocol(serviceProtocol);
         gsb.setOverrideUrl(false);
         gsb.setCategory(cat);
         gsb.setContext(this.context);
-        gsb.setSkipDiscoverWFS(this.skipWFS);
+        gsb.setSkipDiscoverWFS(skipWFS);
         gsb.addService(this.entityManager);
         GeoService service = gsb.getService();
 
@@ -148,26 +111,24 @@ public class WMSGeoServiceABTest extends TestUtil {
             log.debug(m.getMessage(Locale.ROOT));
         });
 
-        assertTrue("Service should be a WMS", service instanceof WMSService);
-
-
-        assertEquals("The url should be as expected", serviceUrl, service.getUrl());
+        assertTrue(service instanceof WMSService, "Service should be a WMS");
+        assertEquals(serviceUrl, service.getUrl(), "The url should be as expected");
 
         List<Layer> layers = service.loadLayerTree(entityManager);
-        assertEquals("The number of layers should be as expected", serviceTypeCount + groupLayerCount, layers.size());
+        assertEquals(serviceTypeCount + groupLayerCount, layers.size(), "The number of layers should be as expected");
 
         layers.stream().filter((lyr) -> (!lyr.isVirtual())).forEachOrdered((lyr) -> {
-            if (this.skipWFS) {
-                assertNull("Layer should not have a featuretype", lyr.getFeatureType());
+            if (skipWFS) {
+                assertNull(lyr.getFeatureType(), "Layer should not have a featuretype");
             } else {
                 if (!lyr.isVirtual()) {
-                    assertNotNull("Layer should have a featuretype", lyr.getFeatureType());
+                    assertNotNull(lyr.getFeatureType(), "Layer should have a featuretype");
                     log.debug("Inspecting layer, name: " + lyr.getName() + ", featuretype: " + lyr.getFeatureType().getDescription());
-                    assertEquals("Attribute service protocol should be as expected", attrServiceProtocol, lyr.getFeatureType().getFeatureSource().getProtocol());
+                    assertEquals(attrServiceProtocol, lyr.getFeatureType().getFeatureSource().getProtocol(), "Attribute service protocol should be as expected");
                     try {
 
                         FeatureSource fs2 = FeatureSourceFactoryHelper.openGeoToolsFeatureSource(lyr.getFeatureType());
-                        assertThat("No exception was thrown and featuresource is not null", fs2, not(nullValue()));
+                        MatcherAssert.assertThat("No exception was thrown and featuresource is not null", fs2, not(nullValue()));
                     } catch (Exception ex) {
                         log.error("Opening featuresource failed.", ex);
                         fail("Opening featuresource failed.");
@@ -175,6 +136,5 @@ public class WMSGeoServiceABTest extends TestUtil {
                 }
             }
         });
-
     }
 }

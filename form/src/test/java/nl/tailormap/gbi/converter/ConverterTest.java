@@ -1,7 +1,8 @@
 package nl.tailormap.gbi.converter;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
@@ -11,12 +12,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assume.assumeNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 public class ConverterTest {
 
@@ -24,22 +24,22 @@ public class ConverterTest {
     private Paspoort paspoort;
 
 
-    @Before
+    @BeforeEach
     public void init() throws IOException {
         instance = new Converter(null);
 
         String filename = "paspoorten" + File.separator + "Wegvakonderdeelplanning.txt";
         URL u = this.getClass().getResource(filename);
-        assumeNotNull("Het test bestand moet er zijn.", u);
+        assumeTrue(null != u, "Het test bestand moet er zijn.");
         File element = new File(u.getFile());
 
         Parser p = new Parser();
         paspoort = p.parse(element).get(0);
-        assertNotNull (paspoort);
+        assertNotNull(paspoort);
     }
 
     @Test
-    public void testConvertSingleFileFormulier(){
+    public void testConvertSingleFileFormulier() {
         Formulier form = instance.convert(paspoort);
         assertNotNull(form);
 
@@ -47,10 +47,11 @@ public class ConverterTest {
         assertEquals("wegvakonderdeel_planning", form.getFeatureType());
         assertEquals("maatregel_wvko", form.getTreeNodeColumn());
         //assertEquals(2, form.getFields().size());
-        assertEquals(null, form.getRelation());
+        assertNull(form.getRelation());
         assertEquals(1, form.getTabs());
-        assertEquals(false, form.isNewPossible());
+        assertFalse(form.isNewPossible());
     }
+
 
     @Test
     public void testConvertSingleFileFormulierMultiColumns() throws IOException {
@@ -62,29 +63,28 @@ public class ConverterTest {
         Parser p = new Parser();
         paspoort = p.parse(element).get(0);
 
-        assertNotNull (paspoort);
+        assertNotNull(paspoort);
         Formulier form = instance.convert(paspoort);
         assertNotNull(form);
 
         //assertEquals(2, form.getFields().size());
-        assertEquals(null, form.getRelation());
+        assertNull(form.getRelation());
         assertEquals(3, form.getTabs());
-        assertEquals(false, form.isNewPossible());
+        assertFalse(form.isNewPossible());
         form.getFields().sort(Comparator.comparingInt(FormulierField::getColumn));
         AtomicInteger prev = new AtomicInteger();
 
-        form.getFields().forEach(f->{
-            assertTrue(f.getColumn() >= prev.get());
+        form.getFields().forEach(f -> {
+            Assertions.assertTrue(f.getColumn() >= prev.get());
             assertFalse(f.getMandatory());
-            assertNotEquals(0, f.getColumn());
+            Assertions.assertNotEquals(0, f.getColumn());
             prev.set(f.getColumn());
         });
         assertEquals(2, prev.get());
-        int a = 0;
     }
 
     @Test
-    public void testConvertSingleFileField(){
+    public void testConvertSingleFileField() {
         Formulier form = instance.convert(paspoort);
         assertNotNull(form);
 
@@ -101,7 +101,7 @@ public class ConverterTest {
     }
 
     @Test
-    public void testConvertSingleFileTabConfig(){
+    public void testConvertSingleFileTabConfig() {
         Formulier form = instance.convert(paspoort);
         assertNotNull(form);
 
@@ -114,15 +114,15 @@ public class ConverterTest {
 
     @Test
     public void testConvertDirectory() throws IOException {
-        String filename = "paspoorten" + File.separator ;
+        String filename = "paspoorten" + File.separator;
         URL u = this.getClass().getResource(filename);
         File dir = new File(u.getFile());
 
         Parser p = new Parser();
         List<Paspoort> ps = p.parse(dir);
-        assertEquals(22 ,ps.size());
+        assertEquals(22, ps.size());
         List<Formulier> forms = instance.convert(ps);
         assertNotNull(forms);
-        assertEquals(22 ,forms.size());
+        assertEquals(22, forms.size());
     }
 }

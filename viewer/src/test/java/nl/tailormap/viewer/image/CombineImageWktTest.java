@@ -1,29 +1,28 @@
 package nl.tailormap.viewer.image;
 
 import org.json.JSONObject;
-import org.junit.After;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 
 import java.awt.*;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
- *
  * @author mprins
  */
 public class CombineImageWktTest {
 
-    private CombineImageWkt c = null;
     private final String WKT = "POINT(167465.36 464237.2)";
     private final String LABEL = "my label";
     // cyan
     private final String COLORSTRING = "00FFFF";
     private final Color COLOR = Color.CYAN;
     private final Float STROKEWIDTH = 1.1f;
+    private CombineImageWkt c = null;
 
-    @After
+    @AfterEach
     public void tearDown() {
         c = null;
     }
@@ -31,7 +30,7 @@ public class CombineImageWktTest {
     @Test
     public void testCombineImageWktString() {
         c = new CombineImageWkt(WKT);
-        assertEquals("wkt is niet gelijk", WKT, c.getWktGeom());
+        assertEquals(WKT, c.getWktGeom(), "wkt is niet gelijk");
     }
 
     @Test

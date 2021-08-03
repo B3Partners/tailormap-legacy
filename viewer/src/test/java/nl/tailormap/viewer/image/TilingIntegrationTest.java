@@ -8,18 +8,17 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.tika.Tika;
 import org.json.JSONObject;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import javax.swing.*;
 import java.io.File;
 import java.io.FileOutputStream;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
- *
  * @author Roy Braam
  * @author mprins
  */
@@ -27,33 +26,33 @@ public class TilingIntegrationTest {
 
     private static final Log log = LogFactory.getLog(TilingIntegrationTest.class);
     private static final String DEST_DIR = "target" + File.separator + "test-output";
-    
-     /**
-     * @settings a JSONObject in the following format:
-     * {            
-     *      requests: [
-     *          {
-     *              protocol: "",
-     *              extent: "", //if extent is other then the given bbox.
-     *              url: "",
-     *              alpha: "",
-     *              body: "",
-     *              tileWidth: "", //default 256, for tiling
-     *              tileHeight: "", //default 256, for tiling
-     *              serverExtent: "" //server extent, for tiling
-     *          }
-     *      ],
-     *      geometries: [
-     *          wktgeom: "",
-     *          color: ""
-     *      ],
-     *      bbox: "",
-     *      width: "",
-     *      height: "",
-     *      srid: "",
-     *      angle: "",
-     *      quality: ""
-     *  }
+
+    /**
+     * {@code settings} a JSONObject in the following format:
+     * {
+     * requests: [
+     * {
+     * protocol: "",
+     * extent: "", //if extent is other then the given bbox.
+     * url: "",
+     * alpha: "",
+     * body: "",
+     * tileWidth: "", //default 256, for tiling
+     * tileHeight: "", //default 256, for tiling
+     * serverExtent: "" //server extent, for tiling
+     * }
+     * ],
+     * geometries: [
+     * wktgeom: "",
+     * color: ""
+     * ],
+     * bbox: "",
+     * width: "",
+     * height: "",
+     * srid: "",
+     * angle: "",
+     * quality: ""
+     * }
      */
     private static final String JSONCONFIG = "{"
             + "requests: [{"
@@ -67,10 +66,10 @@ public class TilingIntegrationTest {
             + "bbox: '0,300000,300000,600000',"
             + "width: 1024,"
             + "height: 1024,"
-            + "srid: 28992"          
+            + "srid: 28992"
             + "}";
 
-    @BeforeClass
+    @BeforeAll
     public static void setUp() {
         File destDir = new File(DEST_DIR);
         if (!destDir.exists()) {
@@ -79,8 +78,6 @@ public class TilingIntegrationTest {
     }
 
     @Test
-    /* Test WMSc
-     */
     public void wmscTest() throws Exception {
         CombineImageSettings settings = CombineImageSettings.fromJson(new JSONObject(JSONCONFIG));
         // this will produce a png because CombineImagesHandler#defaultReturnMime is image/png
@@ -96,6 +93,6 @@ public class TilingIntegrationTest {
             fail("Image may not be a valid png");
         }
         Tika tika = new Tika();
-        assertEquals("Image is not a valid png", "image/png", tika.detect(f));
+        assertEquals("image/png", tika.detect(f), "Image is not a valid png");
     }
 }

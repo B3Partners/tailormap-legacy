@@ -1,49 +1,51 @@
 package nl.tailormap.gbi.converter;
 
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assume.assumeNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 public class ParserTest {
 
     private Parser parser;
 
     private File element;
-    public ParserTest(){
+
+    public ParserTest() {
 
     }
 
-    @Before
-    public void init(){
+    @BeforeEach
+    public void init() {
         this.parser = new Parser();
 
         String filename = "paspoorten" + File.separator + "Wegvakonderdeelplanning.txt";
         URL u = this.getClass().getResource(filename);
-        assumeNotNull("Het test bestand moet er zijn.", u);
+
+        assumeTrue(null != u, "Het test bestand moet er zijn.");
         element = new File(u.getFile());
     }
 
     @Test
     public void testParseSinglefile() throws IOException {
-        assert(element.exists());
+        assert (element.exists());
         List<Paspoort> ps = this.parser.parse(element);
         assertEquals(1, ps.size());
     }
 
     @Test
     public void testParseDirectoryOfPaspoorten() throws IOException {
-        String d = "paspoorten" + File.separator ;
+        String d = "paspoorten" + File.separator;
         URL u = this.getClass().getResource(d);
         File dir = new File(u.getFile());
-        assert(dir.exists());
+        assert (dir.exists());
         List<Paspoort> ps = this.parser.parse(dir);
         assertEquals(22, ps.size());
     /*    Set<String> types = new HashSet<>();
@@ -79,6 +81,7 @@ public class ParserTest {
         assertEquals(0, t.getIndex());
         assertEquals(8, t.getControls().size());
     }
+
     @Test
     public void testParseElementControl() throws IOException {
         List<Paspoort> ps = this.parser.parse(element);
