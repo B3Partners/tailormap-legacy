@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.tailormap</groupId>
     <artifactId>tailormap</artifactId>
@@ -176,32 +177,32 @@
             <dependency>
                 <groupId>org.tailormap</groupId>
                 <artifactId>viewer-commons</artifactId>
-                <version>${project.version} </version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.tailormap</groupId>
                 <artifactId>geotools-commons</artifactId>
-                <version>${project.version} </version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.tailormap</groupId>
                 <artifactId>web-commons</artifactId>
-                <version>${project.version} </version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.tailormap</groupId>
                 <artifactId>viewer</artifactId>
-                <version>${project.version} </version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.tailormap</groupId>
                 <artifactId>viewer-admin</artifactId>
-                <version>${project.version} </version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.tailormap</groupId>
                 <artifactId>docker</artifactId>
-                <version>${project.version} </version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.xmlgraphics</groupId>
@@ -342,21 +343,6 @@
                 <scope>test</scope>
             </dependency>
             <dependency>
-                <!-- override voor versies die met sommige dependencies meekomen
-                en de OWASP dependency scanner triggeren -->
-                <groupId>junit</groupId>
-                <artifactId>junit</artifactId>
-                <version>4.13.2</version>
-                <scope>test</scope>
-                <exclusions>
-                    <exclusion>
-                        <!-- zou 1.3 zijn... -->
-                        <groupId>org.hamcrest</groupId>
-                        <artifactId>hamcrest-core</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
                 <groupId>commons-logging</groupId>
                 <artifactId>commons-logging</artifactId>
                 <version>1.2</version>
@@ -365,6 +351,12 @@
                 <groupId>com.googlecode.json-simple</groupId>
                 <artifactId>json-simple</artifactId>
                 <version>1.1.1</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>junit</groupId>
+                        <artifactId>junit</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.mockito</groupId>
@@ -716,7 +708,6 @@
                 </plugin>
                 <plugin>
                     <artifactId>maven-war-plugin</artifactId>
-                    <!-- 3.3.0 is "broken" see: https://issues.apache.org/jira/browse/MWAR-433  -->
                     <version>3.3.1</version>
                 </plugin>
                 <plugin>
@@ -835,6 +826,12 @@
                                 <requireJavaVersion>
                                     <version>${java.version}</version>
                                 </requireJavaVersion>
+                                <bannedDependencies>
+                                    <excludes>
+                                        <exclude>junit:junit</exclude>
+                                        <exclude>org.hamcrest:hamcrest-core</exclude>
+                                    </excludes>
+                                </bannedDependencies>
                             </rules>
                         </configuration>
                     </execution>
@@ -863,7 +860,7 @@
                             <propertyName>failsafeArgLine</propertyName>
                         </configuration>
                     </execution>
-                   <execution>
+                    <execution>
                         <id>post-unit-test</id>
                         <phase>test</phase>
                         <goals>
