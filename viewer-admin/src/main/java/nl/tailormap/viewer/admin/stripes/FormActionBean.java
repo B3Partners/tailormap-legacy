@@ -1,20 +1,8 @@
 package nl.tailormap.viewer.admin.stripes;
 
-import net.sourceforge.stripes.action.ActionBeanContext;
-import net.sourceforge.stripes.action.After;
-import net.sourceforge.stripes.action.Before;
-import net.sourceforge.stripes.action.DefaultHandler;
-import net.sourceforge.stripes.action.DontValidate;
-import net.sourceforge.stripes.action.FileBean;
-import net.sourceforge.stripes.action.ForwardResolution;
-import net.sourceforge.stripes.action.Resolution;
-import net.sourceforge.stripes.action.StreamingResolution;
-import net.sourceforge.stripes.action.StrictBinding;
-import net.sourceforge.stripes.action.UrlBinding;
+import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.controller.LifecycleStage;
-import net.sourceforge.stripes.validation.SimpleError;
-import net.sourceforge.stripes.validation.Validate;
-import net.sourceforge.stripes.validation.ValidateNestedProperties;
+import net.sourceforge.stripes.validation.*;
 import nl.tailormap.gbi.converter.Attribuut;
 import nl.tailormap.gbi.converter.Converter;
 import nl.tailormap.gbi.converter.Formulier;
@@ -61,11 +49,11 @@ import java.util.Set;
 @UrlBinding("/action/form/{$event}")
 @StrictBinding
 @RolesAllowed({Group.ADMIN, Group.REGISTRY_ADMIN})
-public class FormActionBean extends LocalizableActionBean {
+public class FormActionBean extends LocalizableActionBean implements ValidationErrorHandler {
 
     private static final Log log = LogFactory.getLog(FormActionBean.class);
     public ActionBeanContext context;
-    private static final String JSP = "/WEB-INF/jsp/services/form.jsp";
+    private static final String JSP = "/WEB-INF/jsp/services/formAngular.jsp";
     private static final String EDITJSP = "/WEB-INF/jsp/services/editform.jsp";
 
     private Set<String> featureTypes = new HashSet<>();
@@ -98,12 +86,16 @@ public class FormActionBean extends LocalizableActionBean {
     @Validate
     private String dir;
 
-    @Validate(on = {"save", "edit","cancel", "delete"})
-    @ValidateNestedProperties({
-            @Validate(field="name", required=true, maxlength=255, label="Naam", on = {"save"}),
-            @Validate(field="featureTypeName", maxlength=255, label="Feature Type Name", on = {"save"}),
-            @Validate(field="json", required=true, label="JSON", on = {"save"})
-    })
+    @Validate
+    private String id;
+    @Validate
+    private String json;
+    @Validate
+    private String name;
+    @Validate
+    private String featureTypeName;
+
+    @Validate(on = {"delete"})
     private Form form;
 
     @Validate
@@ -156,6 +148,7 @@ public class FormActionBean extends LocalizableActionBean {
     public Resolution save() {
         EntityManager em = Stripersist.getEntityManager();
         try {
+            form = parseForm();
             form = processForm(form);
 
             form.getReaders().clear();
@@ -163,10 +156,23 @@ public class FormActionBean extends LocalizableActionBean {
             em.persist(form);
             em.getTransaction().commit();
         } catch (IOException e) {
-            log.error("Exception occured during processing of form json");
+            log.error("Exception occured during processing of form json", e);
             context.getValidationErrors().add("json", new SimpleError(e.getLocalizedMessage()));
+            return new ErrorResolution(HttpServletResponse.SC_BAD_REQUEST);
         }
-        return new ForwardResolution(EDITJSP);
+        return view();
+    }
+
+    private Form parseForm() {
+        Form f = new Form();
+        EntityManager em = Stripersist.getEntityManager();
+        if (id != null) {
+            f = em.find(Form.class, Long.parseLong(id));
+        }
+        f.setFeatureTypeName(featureTypeName);
+        f.setJson(json);
+        f.setName(name);
+        return f;
     }
 
     private Form processForm(Form f) throws IOException {
@@ -365,6 +371,7 @@ public class FormActionBean extends LocalizableActionBean {
         j.put("id", form.getId());
         j.put("name", form.getName());
         j.put("featureTypeName", form.getFeatureTypeName());
+        j.put("json", form.getJson());
         return j;
     }
 
@@ -494,5 +501,42 @@ public class FormActionBean extends LocalizableActionBean {
 
     public void setGroupsRead(List<String> groupsRead) {
         this.groupsRead = groupsRead;
+    }
+
+    public String getJson() {
+        return json;
+    }
+
+    public void setJson(String json) {
+        this.json = json;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getFeatureTypeName() {
+        return featureTypeName;
+    }
+
+    public void setFeatureTypeName(String featureTypeName) {
+        this.featureTypeName = featureTypeName;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    @Override
+    public Resolution handleValidationErrors(ValidationErrors validationErrors) throws Exception {
+        return view();
     }
 }

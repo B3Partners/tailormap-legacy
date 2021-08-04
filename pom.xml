@@ -43,7 +43,7 @@
         <!-- https://nodejs.org/dist/latest-v14.x/ -->
         <node.version>v14.17.3</node.version>
         <!-- https://www.npmjs.com/package/npm -->
-        <npm.version>7.20.1</npm.version>
+        <npm.version>6.14.13</npm.version>
         <project.build.sourceVersion>${java.version}</project.build.sourceVersion>
         <project.build.targetVersion>${java.version}</project.build.targetVersion>
         <maven.compiler.source>${java.version}</maven.compiler.source>
