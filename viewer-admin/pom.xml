@@ -294,7 +294,7 @@
                         </goals>
                         <phase>generate-sources</phase>
                         <configuration>
-                            <arguments>run build-prod</arguments>
+                            <arguments>install</arguments>
                             <workingDirectory>${tailormap-admin-config.source.dir}</workingDirectory>
                         </configuration>
                     </execution>
