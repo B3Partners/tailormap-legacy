@@ -117,7 +117,7 @@ import java.util.Set;
  * container. Currently only viewer-admin checks roles this way.
  * @author Matthijs Laan
  */
-public class Authorizations {
+public final class Authorizations {
     /** Humongous lock for everything, but should be locked for only short times */
     private static final Object LOCK = new Object();
     public static final String AUTHORIZATIONS_KEY = "authorizations";
@@ -130,12 +130,12 @@ public class Authorizations {
      * The set of role names which mean nobody has access; a set which only contains
      * null.
      */
-    public static final Set<String> NOBODY = new HashSet<String>(Arrays.asList(new String[] { null }));
+    public static final Set<String> NOBODY = new HashSet<>(Arrays.asList(new String[]{null}));
     
     /**
      * The empty set of role names which mean everybody has access.
      */
-    public static final Set<String> EVERYBODY = Collections.EMPTY_SET;    
+    public static final Set<String> EVERYBODY = Collections.emptySet();
     
     public static class GeoServiceCache {
         Date modified;
@@ -219,28 +219,28 @@ public class Authorizations {
      * Map of protected Layers per GeoService. Only public for UserAction to 
      * display all authorizations.
      */
-    public static final Map<Long, GeoServiceCache> serviceCache = new HashMap();
+    public static final Map<Long, GeoServiceCache> serviceCache = new HashMap<>();
     
     /**
      * Map of protected Levels and ApplicationLayers per Application
      */
-    private static final Map<Long, ApplicationCache> applicationCache = new HashMap();
+    private static final Map<Long, ApplicationCache> applicationCache = new HashMap<>();
     
     /**
      * Map of reader role names per ConfiguredComponent per Application
      */
-    private static final Map<Long, AppConfiguredComponentsReadersCache> appConfiguredComponentsReadersCache = new HashMap();
+    private static final Map<Long, AppConfiguredComponentsReadersCache> appConfiguredComponentsReadersCache = new HashMap<>();
     
     public static Set<String> getRoles(HttpServletRequest request, EntityManager em) {
 
         if(request.getRemoteUser() == null) {
-            return Collections.EMPTY_SET;
+            return Collections.emptySet();
         }
         
         Set<String> roles = (Set<String>)request.getAttribute(ROLES_ATTRIBUTE);
         
         if(roles == null) {
-            roles = new HashSet<String>();
+            roles = new HashSet<>();
             List<String> groups = em.createQuery("select name FROM Group").getResultList();
             for (String group : groups) {
                 if(request.isUserInRole(group)){
@@ -253,7 +253,7 @@ public class Authorizations {
         return roles;
     }
     
-    private static boolean isReadAuthorized(HttpServletRequest request, Read auths, EntityManager em) {
+    private static boolean isReadAuthorized(Set<String> roles, Read auths) {
        
         if(auths == null  || auths.readers.equals(EVERYBODY)) {
             return true;
@@ -262,9 +262,7 @@ public class Authorizations {
         if(auths.readers.equals(NOBODY)) {
             return false;
         }
-        
-        Set<String> roles = getRoles(request,em);
-        
+
         if(roles.isEmpty()) {
             return false;
         }
@@ -273,7 +271,7 @@ public class Authorizations {
     }
     
     private static boolean isWriteAuthorized(HttpServletRequest request, ReadWrite auths, EntityManager em) {
-        if(!isReadAuthorized(request, auths,em)) {
+        if(!isReadAuthorized(getRoles(request, em), auths)) {
             return false;
         }
         if(auths == null || auths.writers.equals(EVERYBODY)) {
@@ -296,23 +294,11 @@ public class Authorizations {
     }
     
     public static boolean isLayerReadAuthorized(Layer l, HttpServletRequest request, EntityManager em) {
-        return isReadAuthorized(request, getLayerAuthorizations(l,em),em);
+        return isReadAuthorized(getRoles(request, em), getLayerAuthorizations(l,em));
     }
-    
-    public static void checkLayerReadAuthorized(Layer l, HttpServletRequest request, EntityManager em) throws Exception {
-        if(!isLayerReadAuthorized(l, request,em)) {
-            throw new Exception(unauthMsg(request,false) + " layer #" + l.getId());
-        }
-    }
-    
+
     public static boolean isLayerWriteAuthorized(Layer l, HttpServletRequest request, EntityManager em) {
         return isWriteAuthorized(request, getLayerAuthorizations(l,em),em);
-    }
-    
-    public static void checkLayerWriteAuthorized(Layer l, HttpServletRequest request, EntityManager em) throws Exception {
-        if(!isLayerWriteAuthorized(l, request,em)) {
-            throw new Exception(unauthMsg(request,true) + " layer #" + l.getId());
-        }
     }
 
     /**
@@ -356,9 +342,9 @@ public class Authorizations {
         // It is requested once per request, so the applicationCache is still
         // immediately refreshed once authorizations change for new requests
         
-        Map<Long,ApplicationCache> requestCache = (Map)request.getAttribute(REQUEST_APP_CACHE);
+        Map<Long, ApplicationCache> requestCache = (Map<Long, ApplicationCache>)request.getAttribute(REQUEST_APP_CACHE);
         if(requestCache == null) {
-            requestCache = new HashMap();
+            requestCache = new HashMap<>();
             request.setAttribute(REQUEST_APP_CACHE, requestCache);
         }
         ApplicationCache appCache = requestCache.get(app.getId());
@@ -372,7 +358,7 @@ public class Authorizations {
     public static boolean isApplicationReadAuthorized(Application app, HttpServletRequest request, EntityManager em) {
         Read auths = new Read(app.getReaders());
 
-        return isReadAuthorized(request, auths,em);
+        return isReadAuthorized(getRoles(request, em), auths);
     }
     
     public static boolean isLevelReadAuthorized(Application app, Level l, HttpServletRequest request, EntityManager em) {
@@ -388,37 +374,29 @@ public class Authorizations {
             appCache = getApplicationCache(app, em);
         }
         Read auths = appCache.protectedLevels.get(l.getId());       
-        return isReadAuthorized(request, auths,em);
-    }
-
-    public static void checkLevelReadAuthorized(Application app, Level l, HttpServletRequest request, EntityManager em) throws Exception {
-        if(!isLevelReadAuthorized(app, l, request, em)) {
-            throw new Exception(unauthMsg(request,false) + " level #" + l.getId());
-        }
+        return isReadAuthorized(getRoles(request, em), auths);
     }
 
     public static boolean isAppLayerReadAuthorized(Application app, ApplicationLayer al, HttpServletRequest request, EntityManager em) {
         return isAppLayerReadAuthorized(app, al, request, getApplicationCacheFromRequest(app, request,em), em);
     }
-    
+
+    @Deprecated(since = "5.9.9")
     public static boolean isAppLayerReadAuthorized(Application app, ApplicationLayer al, HttpServletRequest request, ApplicationCache appCache, EntityManager em) {
-        if(app == null || app.isAuthenticatedRequired() && request.getRemoteUser() == null) {
+        return isAppLayerReadAuthorized( app,  al, getRoles(request, em),  appCache,  em);
+    }
+
+    public static boolean isAppLayerReadAuthorized(Application app, ApplicationLayer al, Set<String> roles, ApplicationCache appCache, EntityManager em) {
+        if(app == null || app.isAuthenticatedRequired() && (roles == null || roles.isEmpty())) {
             return false;
         }
-        
         if(appCache == null) {
             appCache = getApplicationCache(app,em);
         }
         ReadWrite auths = appCache.protectedAppLayers.get(al.getId());
-        return isReadAuthorized(request, auths,em);
+        return isReadAuthorized(roles, auths);
     }
-    
-    public static void checkAppLayerReadAuthorized(Application app, ApplicationLayer al, HttpServletRequest request, EntityManager em) throws Exception {
-        if(!isAppLayerReadAuthorized(app, al, request, em)) {
-            throw new Exception(unauthMsg(request,false) + " application layer #" + al.getId());
-        }
-    }    
-    
+
     public static boolean isAppLayerWriteAuthorized(Application app, ApplicationLayer al, HttpServletRequest request, EntityManager em) {
         return isAppLayerWriteAuthorized(app, al, request, getApplicationCacheFromRequest(app, request, em), em);
     }
@@ -434,15 +412,13 @@ public class Authorizations {
         ReadWrite auths = appCache.protectedAppLayers.get(al.getId());
         return isWriteAuthorized(request, auths,em);
     }
-    
-    public static void checkAppLayerWriteAuthorized(Application app, ApplicationLayer al, HttpServletRequest request, EntityManager em) throws Exception {
-        if(!isAppLayerWriteAuthorized(app, al, request, em)) {
-            throw new Exception(unauthMsg(request,true) + " application layer #" + al.getId());
-        }
-    }   
-        
+
+    @Deprecated(forRemoval = true, since = "5.9.9")
     public static boolean isConfiguredComponentAuthorized(ConfiguredComponent component, HttpServletRequest request, EntityManager em) {
-        
+        return Authorizations.isConfiguredComponentAuthorized(component, getRoles(request, em), em);
+    }
+
+    public static boolean isConfiguredComponentAuthorized(ConfiguredComponent component, Set<String> userRoles, EntityManager em) {
         Application app = component.getApplication();
         Long appId = app.getId();
         
@@ -456,7 +432,7 @@ public class Authorizations {
                 appCache = new AppConfiguredComponentsReadersCache();
                 appConfiguredComponentsReadersCache.put(appId, appCache);
                 appCache.modified = component.getApplication().getAuthorizationsModified();
-                appCache.readersByConfiguredComponentId = new HashMap();
+                appCache.readersByConfiguredComponentId = new HashMap<>();
 
                 List<Object[]> readers = em.createQuery(
                           "select cc.id, r "
@@ -468,11 +444,7 @@ public class Authorizations {
                 for(Object[] row: readers) {
                     Long ccId = (Long)row[0];
                     String role = (String)row[1];
-                    Set<String> roles = appCache.readersByConfiguredComponentId.get(ccId);
-                    if(roles == null) {
-                        roles = new HashSet<String>();
-                        appCache.readersByConfiguredComponentId.put(ccId, roles);
-                    }
+                    Set<String> roles = appCache.readersByConfiguredComponentId.computeIfAbsent(ccId, k -> new HashSet<>());
                     roles.add(role);
                 }
             }
@@ -483,11 +455,11 @@ public class Authorizations {
             componentReaders = EVERYBODY;
         }
         
-        return isReadAuthorized(request, new Read(componentReaders), em);
+        return isReadAuthorized(userRoles, new Read(componentReaders));
     }
     
     public static void checkConfiguredComponentAuthorized(ConfiguredComponent component, HttpServletRequest request, EntityManager em) throws Exception {
-        if(!isReadAuthorized(request, new Read(component.getReaders()),em)) {
+        if(!isReadAuthorized(getRoles(request, em), new Read(component.getReaders()))) {
             throw new Exception(unauthMsg(request,true) + " configured component #" + component.getName() + " of app #" + component.getApplication().getId());
         }
     }    
@@ -516,7 +488,7 @@ public class Authorizations {
             cache = new GeoServiceCache();
             serviceCache.put(l.getService().getId(), cache);
             cache.modified = l.getService().getAuthorizationsModified();
-            cache.protectedLayers = new HashMap();
+            cache.protectedLayers = new HashMap<>();
             
             List<Layer> layers = l.getService().loadLayerTree(em);
             if(!layers.isEmpty()) {
@@ -544,8 +516,8 @@ public class Authorizations {
         if(u == null){
             return false;
         }
-        Date today = null;
-        Date expire = null;
+        Date today;
+        Date expire;
         try {
             DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
             expire = formatter.parse(u.getDetails().getOrDefault("expiry_date",formatter.format(new Date())));
@@ -568,9 +540,9 @@ public class Authorizations {
         } else {
             
             if(current.equals(EVERYBODY)) {
-                return new HashSet<String>(_new);
+                return new HashSet<>(_new);
             } else {
-                HashSet<String> copy = new HashSet<String>(current);
+                HashSet<String> copy = new HashSet<>(current);
                 copy.retainAll(_new);
                 if(copy.isEmpty()) {
                     return NOBODY;
@@ -581,7 +553,7 @@ public class Authorizations {
         }
     }      
         
-    private static void walkLayer(Layer l, Set<String> currentReaders, Set<String> currentWriters, Map serviceProtectedLayers, EntityManager em) {
+    private static void walkLayer(Layer l, Set<String> currentReaders, Set<String> currentWriters, Map<Long, ReadWrite> serviceProtectedLayers, EntityManager em) {
         
         currentReaders = inheritAuthorizations(currentReaders, l.getReaders());
         currentWriters = inheritAuthorizations(currentWriters, l.getWriters());
@@ -630,8 +602,8 @@ public class Authorizations {
             }else{
                 cache.modified = app.getAuthorizationsModified();
             }
-            cache.protectedLevels = new HashMap();
-            cache.protectedAppLayers = new HashMap();
+            cache.protectedLevels = new HashMap<>();
+            cache.protectedAppLayers = new HashMap<>();
                         
             Application.TreeCache treeCache = app.loadTreeCache(em);
             treeCache.initializeLevels("left join fetch l.readers",em);
@@ -681,5 +653,7 @@ public class Authorizations {
         if(!currentReaders.equals(EVERYBODY) || !currentWriters.equals(EVERYBODY)) {
             cache.protectedAppLayers.put(al.getId(), new ReadWrite(currentReaders, currentWriters));
         }
-    }       
+    }
+
+    private Authorizations(){}
 }

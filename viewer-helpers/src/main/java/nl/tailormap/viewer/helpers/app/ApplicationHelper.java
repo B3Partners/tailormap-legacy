@@ -20,6 +20,7 @@ import org.json.JSONObject;
 
 import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletRequest;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -34,7 +35,6 @@ public class ApplicationHelper {
     // <editor-fold desc="workversion" default-state="collapsed">
 
     public static Application createWorkVersion(Application app, EntityManager em, String version, ActionBeanContext context) throws Exception {
-        Application base = app;
         Application copy = deepCopyAllButLevels(false, app);
         copy.setVersion(version);
         copy.setRoot(null);
@@ -47,14 +47,11 @@ public class ApplicationHelper {
         if (app.getRoot() != null) {
             copy.setRoot(app.getRoot().deepCopy(null, copy.originalToCopy, copy, false));
             // reverse originalToCopy
-            Map reverse = reverse(copy.originalToCopy);
-
-            copy.originalToCopy = reverse;
-
-            copy.getRoot().processForWorkversion(copy, base);
+            copy.originalToCopy = reverse(copy.originalToCopy);
+            copy.getRoot().processForWorkversion(copy, app);
         }
 
-        Set<Application> apps = LevelHelper.findApplications(base.getRoot(), em);
+        Set<Application> apps = LevelHelper.findApplications(app.getRoot(), em);
         for (Application application : apps) {
             em.detach(application);
         }
@@ -62,7 +59,7 @@ public class ApplicationHelper {
 
         em.persist(copy);
         em.flush();
-        Application prev = em.createQuery("FROM Application where id = :id", Application.class).setParameter("id", base.getId()).getSingleResult();
+        Application prev = em.createQuery("FROM Application where id = :id", Application.class).setParameter("id", app.getId()).getSingleResult();
         processBookmarks(copy, prev, context, em);
         SelectedContentCache.setApplicationCacheDirty(copy, Boolean.TRUE, false, em);
         em.getTransaction().commit();
@@ -211,7 +208,7 @@ public class ApplicationHelper {
             if (param.getString("name").equals("layers")) {
                 JSONArray newLayers = new JSONArray();
                 for (int j = 0; j < value.length(); j++) {
-                    Integer layerId = value.getInt(j);
+                    int layerId = value.getInt(j);
                     Long newId = idMap.get(ApplicationLayer.class + "_" + layerId);
                     newLayers.put(newId);
                 }
@@ -219,7 +216,7 @@ public class ApplicationHelper {
             } else if (param.getString("name").equals("levelOrder")) {
                 JSONArray newLevels = new JSONArray();
                 for (int j = 0; j < value.length(); j++) {
-                    Integer levelId = value.getInt(j);
+                    int levelId = value.getInt(j);
                     Long newId = idMap.get(Level.class + "_" + levelId);
                     newLevels.put(newId);
                 }
@@ -347,10 +344,7 @@ public class ApplicationHelper {
             visitLevelForMashuptransfer(app, oldChild, originalToCopy);
         }
     }
-    // </editor-fold>
 
-
-    //<editor-fold desc="toJSON" default-state="collapsed">
     /**
      * Create a JSON representation for use in browser to start this application.
      *
@@ -365,44 +359,61 @@ public class ApplicationHelper {
      * @deprecated gebruik {@link #toJSON(Application, HttpServletRequest, boolean, boolean, boolean, boolean,
      * EntityManager, boolean)}
      */
-    @Deprecated
+    @Deprecated(since = "5.9.x",forRemoval = true)
     public static JSONObject toJSON(Application app,HttpServletRequest request, boolean validXmlTags, boolean onlyServicesAndLayers, EntityManager em) throws JSONException {
         return toJSON(app, request, validXmlTags, onlyServicesAndLayers, false, false, em, true);
     }
 
+    @Deprecated(since = "5.9.9",forRemoval = true)
     public static JSONObject toJSON(Application app,HttpServletRequest request, boolean validXmlTags, boolean onlyServicesAndLayers, EntityManager em, boolean hideAdminOnly) throws JSONException {
         return toJSON(app, request, validXmlTags, onlyServicesAndLayers, false, false, em, true, hideAdminOnly);
     }
 
+    @Deprecated(since = "5.9.9",forRemoval = true)
     public static JSONObject toJSON(Application app,HttpServletRequest request, boolean validXmlTags, boolean onlyServicesAndLayers,
                              boolean includeAppLayerAttributes, boolean includeRelations,
                              EntityManager em, boolean shouldProcessCache) throws JSONException {
         return toJSON(app, request, validXmlTags, onlyServicesAndLayers, includeAppLayerAttributes, includeRelations, em,
                 shouldProcessCache, false);
     }
+
+    @Deprecated(since = "5.9.9",forRemoval = true)
+    public static JSONObject toJSON(Application app, HttpServletRequest request, boolean validXmlTags, boolean onlyServicesAndLayers, boolean includeAppLayerAttributes, boolean includeRelations,
+                                    EntityManager em, boolean shouldProcessCache, boolean hideAdminOnly) throws JSONException {
+
+        return toJSON( app,  Authorizations.getRoles(request, em),
+                URI.create(request.getRequestURI()),
+                request.getServletContext().getInitParameter("proxy"),  validXmlTags,  onlyServicesAndLayers,  includeAppLayerAttributes,  includeRelations,
+         em,  shouldProcessCache,  hideAdminOnly);
+    }
+
     /**
      * Create a JSON representation for use in browser to start this
      * application.
      *
-     * @param app  Application for which the jsonobject should be created
-     * @param request servlet request to check authorisation
-     * @param validXmlTags {@code true} if valid xml names should be produced
-     * @param onlyServicesAndLayers {@code true} if only services and layers
-     * should be returned
+     * @param app                       Application for which the jsonobject should be created
+     * @param roles                     user roles
+     * @param requestURI                original request uri
+     * @param proxyPath                 path for proxy, may be {@code null}, defaults to {@code /action/proxy/wms} in {@link nl.tailormap.viewer.util.SelectedContentCache}
+     * @param validXmlTags              {@code true} if valid xml names should be produced
+     * @param onlyServicesAndLayers     {@code true} if only services and layers
+     *                                  should be returned
      * @param includeAppLayerAttributes {@code true} if applayer attributes
-     * should be included
-     * @param includeRelations {@code true} if relations should be included
-     * @param em the entity manager to use
-     * @param shouldProcessCache Flag if the cache should be processed (filtering the layers/levels according to the logged in user)
-     * @param hideAdminOnly True to prevent adminOnly config items from showing up in the output
+     *                                  should be included
+     * @param includeRelations          {@code true} if relations should be included
+     * @param em                        the entity manager to use
+     * @param shouldProcessCache        Flag if the cache should be processed (filtering the layers/levels according to the logged in user)
+     * @param hideAdminOnly             True to prevent adminOnly config items from showing up in the output
      * @return a json representation of this object
      * @throws JSONException if transforming to json fails
      */
-    public static JSONObject toJSON(Application app, HttpServletRequest request, boolean validXmlTags, boolean onlyServicesAndLayers, boolean includeAppLayerAttributes, boolean includeRelations,
-                             EntityManager em, boolean shouldProcessCache, boolean hideAdminOnly) throws JSONException {
-        JSONObject o = null;
+    public static JSONObject toJSON(Application app, Set<String> roles, URI requestURI, String proxyPath, boolean validXmlTags, boolean onlyServicesAndLayers, boolean includeAppLayerAttributes, boolean includeRelations,
+                                    EntityManager em, boolean shouldProcessCache, boolean hideAdminOnly) throws JSONException {
+        JSONObject o;
         SelectedContentCache cache = new SelectedContentCache();
-        o = cache.getSelectedContent(request, app, validXmlTags, includeAppLayerAttributes, includeRelations, em, shouldProcessCache);
+        o = cache.getSelectedContent(
+                roles, requestURI, proxyPath, app, validXmlTags, includeAppLayerAttributes, includeRelations, em, shouldProcessCache
+        );
 
         o.put("id", app.getId());
         o.put("name", app.getName());
@@ -442,7 +453,7 @@ public class ApplicationHelper {
             JSONObject c = new JSONObject();
             o.put("components", c);
             for (ConfiguredComponent comp : app.getComponents()) {
-                if (Authorizations.isConfiguredComponentAuthorized(comp, request, em)) {
+                if (Authorizations.isConfiguredComponentAuthorized(comp, roles, em)) {
                     c.put(comp.getName(), comp.toJSON(hideAdminOnly));
                 }
             }
@@ -450,5 +461,4 @@ public class ApplicationHelper {
 
         return o;
     }
-    //</editor-fold>
 }

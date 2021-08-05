@@ -17,10 +17,8 @@
 package nl.tailormap.viewer.config.app;
 
 import nl.tailormap.viewer.config.ClobElement;
-import nl.tailormap.viewer.config.security.Authorizations;
 import nl.tailormap.viewer.config.security.User;
 import nl.tailormap.viewer.config.services.BoundingBox;
-import nl.tailormap.viewer.config.services.GeoService;
 import nl.tailormap.viewer.util.ApplicationDetailsValueTransformer;
 import nl.tailormap.viewer.util.DB;
 import org.apache.commons.logging.Log;
@@ -56,7 +54,6 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
-import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -448,85 +445,6 @@ public class Application implements Comparable<Application>{
 
     public void authorizationsModified() {
         authorizationsModified = new Date();
-    }
-
-
-
-    private void walkAppTreeForJSON(JSONObject levels, JSONObject appLayers, List selectedContent, Level l, boolean parentIsBackground, HttpServletRequest request, boolean validXmlTags, boolean includeAppLayerAttributes, boolean includeRelations, EntityManager em) throws JSONException {
-        JSONObject o = l.toJSONObject(false, this, request, em);
-        o.put("background", l.isBackground() || parentIsBackground);
-        String levelId = l.getId().toString();
-        if (validXmlTags) {
-            levelId = "level_" + levelId;
-        }
-        levels.put(levelId, o);
-
-        StartLevel sl = l.getStartLevels().get(this);
-        if (sl != null && sl.getSelectedIndex() != null) {
-            selectedContent.add(l);
-        }
-
-        for (ApplicationLayer al : l.getLayers()) {
-            if (!Authorizations.isAppLayerReadAuthorized(this, al, request, em)) {
-                //System.out.printf("Application layer %d (service #%s %s layer %s) in level %d %s unauthorized\n", al.getId(), al.getService().getId(), al.getService().getName(), al.getLayerName(), l.getId(), l.getName());
-                continue;
-            }
-            JSONObject p = al.toJSONObject(includeAppLayerAttributes, includeRelations, em, this);
-            p.put("background", l.isBackground() || parentIsBackground);
-            p.put("editAuthorized", Authorizations.isAppLayerWriteAuthorized(this, al, request, em));
-            String alId = al.getId().toString();
-            if (validXmlTags) {
-                alId = "appLayer_" + alId;
-            }
-            appLayers.put(alId, p);
-            StartLayer startLayer = al.getStartLayers().get(this);
-            if (startLayer != null && startLayer.getSelectedIndex() != null) {
-                selectedContent.add(al);
-            }
-        }
-
-        List<Level> children = treeCache.childrenByParent.get(l);
-        if (children != null) {
-            Collections.sort(children);
-            JSONArray jsonChildren = new JSONArray();
-            o.put("children", jsonChildren);
-            for (Level child : children) {
-                if (Authorizations.isLevelReadAuthorized(this, child, request, em)) {
-                    String childId = child.getId().toString();
-                    if (validXmlTags) {
-                        childId = "level_" + childId;
-                    }
-                    jsonChildren.put(childId);
-                    walkAppTreeForJSON(levels, appLayers, selectedContent, child, l.isBackground(), request, validXmlTags, includeAppLayerAttributes, includeRelations, em);
-                }
-            }
-        }
-    }
-
-    private void visitLevelForUsedServicesLayers(Level l, Map<GeoService, Set<String>> usedLayersByService, HttpServletRequest request, EntityManager em) {
-        if (!Authorizations.isLevelReadAuthorized(this, l, request, em)) {
-            return;
-        }
-
-        for (ApplicationLayer al : l.getLayers()) {
-            if (!Authorizations.isAppLayerReadAuthorized(this, al, request, em)) {
-                continue;
-            }
-            GeoService gs = al.getService();
-
-            Set<String> usedLayers = usedLayersByService.get(gs);
-            if (usedLayers == null) {
-                usedLayers = new HashSet<>();
-                usedLayersByService.put(gs, usedLayers);
-            }
-            usedLayers.add(al.getLayerName());
-        }
-        List<Level> children = treeCache.childrenByParent.get(l);
-        if (children != null) {
-            for (Level child : children) {
-                visitLevelForUsedServicesLayers(child, usedLayersByService, request, em);
-            }
-        }
     }
 
     /**

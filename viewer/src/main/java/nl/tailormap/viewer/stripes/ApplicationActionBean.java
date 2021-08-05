@@ -58,6 +58,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
+import java.net.URI;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -323,7 +324,19 @@ public class ApplicationActionBean extends LocalizableApplicationActionBean impl
         EntityManager em = Stripersist.getEntityManager();
         JSONObject response = new JSONObject();
         response.put("success", false);
-        JSONObject obj = ApplicationHelper.toJSON(application, context.getRequest(), false, false, em, true);
+        JSONObject obj = ApplicationHelper.toJSON(
+                application,
+                Authorizations.getRoles(context.getRequest(), em),
+                URI.create(context.getRequest().getRequestURI()),
+                context.getRequest().getServletContext().getInitParameter("proxy"),
+                false,
+                false,
+                false,
+                false,
+                em,
+                true,
+                true
+        );
         JSONObject details = obj.optJSONObject("details");
         if (details != null) {
             details.remove(SelectedContentCache.DETAIL_CACHED_EXPANDED_SELECTED_CONTENT);
@@ -391,7 +404,11 @@ public class ApplicationActionBean extends LocalizableApplicationActionBean impl
 
         buildComponentSourceHTML(em);
 
-        appConfigJSON = ApplicationHelper.toJSON(application, context.getRequest(),false, false,em).toString();
+        appConfigJSON = ApplicationHelper.toJSON( application,  Authorizations.getRoles(context.getRequest(), em),
+                URI.create(context.getRequest().getRequestURI()),
+                context.getRequest().getServletContext().getInitParameter("proxy"),  false,  false,  false,  false,
+                em,  true,  false).toString();
+
         this.viewerType = retrieveViewerType();
         if(StringUtils.isBlank(title)) {
             this.title = application.getName();

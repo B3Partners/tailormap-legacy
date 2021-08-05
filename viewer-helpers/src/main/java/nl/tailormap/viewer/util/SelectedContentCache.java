@@ -26,16 +26,15 @@ import nl.tailormap.viewer.config.security.Authorizations;
 import nl.tailormap.viewer.config.services.GeoService;
 import nl.tailormap.viewer.helpers.app.ApplicationLayerHelper;
 import nl.tailormap.viewer.helpers.app.LevelHelper;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletRequest;
-import java.io.UnsupportedEncodingException;
+import java.net.URI;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -49,37 +48,50 @@ import java.util.Set;
 import static nl.tailormap.viewer.config.security.Authorizations.AUTHORIZATIONS_KEY;
 
 /**
- *
  * @author Meine Toonen
  */
 public class SelectedContentCache {
 
-    private static final Log log = LogFactory.getLog(SelectedContentCache.class);
     public static final String DETAIL_CACHED_SELECTED_CONTENT = "cachedSelectedContent";
     public static final String DETAIL_CACHED_SELECTED_CONTENT_DIRTY = "cachedSelectedContentDirty";
     public static final String DETAIL_CACHED_EXPANDED_SELECTED_CONTENT = "cachedExpandedSelectedContent";
     public static final String DETAIL_CACHED_EXPANDED_SELECTED_CONTENT_DIRTY = "cachedExpandedSelectedContentDirty";
 
-    
-    public JSONObject getSelectedContent(HttpServletRequest request, Application app, boolean validXmlTags, boolean includeAppLayerAttributes, boolean includeRelations,
-                                         EntityManager em) throws JSONException {
-        return getSelectedContent(request, app, validXmlTags, includeAppLayerAttributes, includeRelations, em, true);
+
+    public static void setApplicationCacheDirty(Application app, Boolean dirty, Boolean expanded, EntityManager em) {
+        setApplicationCacheDirty(app, dirty, expanded, false, em);
     }
-    
-    public JSONObject getSelectedContent(HttpServletRequest request, Application app, boolean validXmlTags, boolean includeAppLayerAttributes, boolean includeRelations, 
-            EntityManager em, boolean shouldProcessCache) throws JSONException {
+
+    @Deprecated(forRemoval = true, since = "5.9.9")
+    public JSONObject getSelectedContent(HttpServletRequest request, Application app, boolean validXmlTags, boolean includeAppLayerAttributes, boolean includeRelations,
+                                         EntityManager em, boolean shouldProcessCache) throws JSONException {
+        return getSelectedContent(
+                Authorizations.getRoles(request, em),
+                URI.create(request.getRequestURI()),
+                request.getServletContext().getInitParameter("proxy"),
+                app,
+                validXmlTags,
+                includeAppLayerAttributes,
+                includeRelations,
+                em,
+                shouldProcessCache
+        );
+    }
+
+    public JSONObject getSelectedContent(Set<String> roles, URI requestURI, String proxyPath, Application app, boolean validXmlTags, boolean includeAppLayerAttributes, boolean includeRelations,
+                                         EntityManager em, boolean shouldProcessCache) throws JSONException {
 
         // Don't use cache when any of these parameters is true, cache only
         // the JSON variant used when starting up the viewer
         boolean useExpanded = includeAppLayerAttributes || includeRelations;
 
-        JSONObject cached = null;
+        JSONObject cached;
         if (mustCreateNewCache(app, validXmlTags, useExpanded)) {
-            cached = createSelectedContent(app, validXmlTags, includeAppLayerAttributes, includeRelations,em);
+            cached = createSelectedContent(app, validXmlTags, includeAppLayerAttributes, includeRelations, em);
             if (!validXmlTags) {
                 ClobElement el = new ClobElement(cached.toString());
                 app.getDetails().put(useExpanded ? DETAIL_CACHED_EXPANDED_SELECTED_CONTENT : DETAIL_CACHED_SELECTED_CONTENT, el);
-                setApplicationCacheDirty(app, false, useExpanded,em);
+                setApplicationCacheDirty(app, false, useExpanded, em);
                 em.getTransaction().commit();
             }
         } else {
@@ -87,107 +99,10 @@ public class SelectedContentCache {
             cached = new JSONObject(el.getValue());
         }
         if (shouldProcessCache) {
-            JSONObject selectedContent = processCache(request, cached, em);
-            return selectedContent;
+            return processCache(roles, requestURI, proxyPath, cached);
         } else {
             return cached;
         }
-    }
-
-    private JSONObject processCache(HttpServletRequest request, JSONObject cached, EntityManager em) throws JSONException {
-        Set<String> roles = Authorizations.getRoles(request, em);
-
-        JSONObject levels = cached.getJSONObject("levels");
-        JSONObject appLayers = cached.getJSONObject("appLayers");
-        JSONArray selectedContent = cached.getJSONArray("selectedContent");
-        JSONObject services = cached.has("services") ? cached.getJSONObject("services") : new JSONObject();
-
-        // sortedKeys() was removed form the api in https://github.com/stleary/JSON-java/commit/9a0471d5a100f6cfb253db52353a2595f5866582
-        // not sure if sorting is relevant here, but it was doing 
-        // TreeSet keySet = new TreeSet(appLayers.keySet());
-        // so if sorting is required we can do
-        // for (Iterator<String> it = new TreeSet(appLayers.keySet()).iterator(); it.hasNext();) {
-        for (Iterator<String> it = appLayers.keys(); it.hasNext();) {
-            String key = it.next();
-            JSONObject appLayer = appLayers.getJSONObject(key);
-            boolean allowed = isAppLayerAllowed(appLayer, roles);
-            if (!allowed) {
-                it.remove();
-            }
-        }
-
-        for (Iterator it = levels.keys(); it.hasNext();) {
-            String key = (String) it.next();
-            JSONObject level = levels.getJSONObject(key);
-            boolean allowed = isLevelAllowed(level, roles);
-            if (!allowed) {
-                it.remove();
-            }
-            JSONArray newLayers = new JSONArray();
-            if (level.has("layers")) {
-                JSONArray layers = level.getJSONArray("layers");
-                for (int i = 0; i < layers.length(); i++) {
-                    String layerId = layers.getString(i);
-                    if (appLayers.has(layerId)) {
-                        newLayers.put(layerId);
-                    }
-                }
-                level.put("layers", newLayers);
-            }
-        }
-
-        String scheme = request.getScheme();
-        String serverName = request.getServerName();
-        int serverPort = request.getServerPort();
-        String contextPath = request.getContextPath();
-        StringBuilder url = new StringBuilder();
-        String servletPath = (request.getServletContext().getInitParameter("proxy") == null
-                ? "/action/proxy/wms"
-                : request.getServletContext().getInitParameter("proxy"));
-        url.append(scheme).append("://").append(serverName);
-
-        if ((serverPort != 80) && (serverPort != 443)) {
-            url.append(":").append(serverPort);
-        }
-
-        url.append(contextPath).append(servletPath);
-        final String proxyUrl = url.toString();
-        for (Iterator<String> it = services.keys(); it.hasNext();) {
-
-            String key = it.next();
-            JSONObject service = services.getJSONObject(key);
-            if (service.has(GeoService.DETAIL_USE_PROXY) && service.getBoolean(GeoService.DETAIL_USE_PROXY)) {
-                try {
-                    String actualURL = service.getString("url");
-                    String param = URLEncoder.encode(actualURL, "UTF-8");
-                    StringBuilder newUrl = new StringBuilder(proxyUrl);
-                    newUrl.append("?url=");
-                    newUrl.append(param);
-                    if (service.has(GeoService.PARAM_MUST_LOGIN) && service.getBoolean(GeoService.PARAM_MUST_LOGIN)) {
-                        newUrl.append("&mustLogin=true&serviceId=");
-                        newUrl.append(service.get("id"));
-                    }
-                    service.put("url", newUrl);
-                } catch (UnsupportedEncodingException ex) {
-                    log.error("Cannot add proxy url for service: ", ex);
-                }
-            }
-        }
-
-        JSONArray newSelectedContent = new JSONArray();
-        for (int i = 0; i < selectedContent.length(); i++) {
-            JSONObject obj = selectedContent.getJSONObject(i);
-            String type = obj.getString("type");
-            String id = obj.getString("id");
-            if (type.equalsIgnoreCase("level")) {
-                if (isLevelAllowed(id, levels)) {
-                    newSelectedContent.put(obj);
-                }
-            }
-        }
-
-        cached.put("selectedContent", newSelectedContent);
-        return cached;
     }
 
     private boolean isLevelAllowed(String id, JSONObject levels) {
@@ -230,15 +145,105 @@ public class SelectedContentCache {
         return isAuthorized(obj, roles, alsoWriters, AUTHORIZATIONS_KEY);
     }
 
+    private JSONObject processCache(Set<String> roles, URI requestURI, String proxyPath, JSONObject cached) throws JSONException {
+        JSONObject levels = cached.getJSONObject("levels");
+        JSONObject appLayers = cached.getJSONObject("appLayers");
+        JSONArray selectedContent = cached.getJSONArray("selectedContent");
+        JSONObject services = cached.has("services") ? cached.getJSONObject("services") : new JSONObject();
+
+        // sortedKeys() was removed form the api in https://github.com/stleary/JSON-java/commit/9a0471d5a100f6cfb253db52353a2595f5866582
+        // not sure if sorting is relevant here, but it was doing
+        // TreeSet keySet = new TreeSet(appLayers.keySet());
+        // so if sorting is required we can do
+        // for (Iterator<String> it = new TreeSet(appLayers.keySet()).iterator(); it.hasNext();) {
+        for (Iterator<String> it = appLayers.keys(); it.hasNext(); ) {
+            String key = it.next();
+            JSONObject appLayer = appLayers.getJSONObject(key);
+            boolean allowed = isAppLayerAllowed(appLayer, roles);
+            if (!allowed) {
+                it.remove();
+            }
+        }
+
+        for (Iterator<String> it = levels.keys(); it.hasNext(); ) {
+            String key = it.next();
+            JSONObject level = levels.getJSONObject(key);
+            boolean allowed = isLevelAllowed(level, roles);
+            if (!allowed) {
+                it.remove();
+            }
+            JSONArray newLayers = new JSONArray();
+            if (level.has("layers")) {
+                JSONArray layers = level.getJSONArray("layers");
+                for (int i = 0; i < layers.length(); i++) {
+                    String layerId = layers.getString(i);
+                    if (appLayers.has(layerId)) {
+                        newLayers.put(layerId);
+                    }
+                }
+                level.put("layers", newLayers);
+            }
+        }
+
+        String scheme = requestURI.getScheme();
+        String serverName = requestURI.getHost();
+        int serverPort = requestURI.getPort();
+        String contextPath = requestURI.getPath();
+        StringBuilder url = new StringBuilder();
+        String servletPath = proxyPath == null
+                ? "/action/proxy/wms"
+                : proxyPath;
+        url.append(scheme).append("://").append(serverName);
+
+        if ((serverPort != 80) && (serverPort != 443)) {
+            url.append(":").append(serverPort);
+        }
+
+        url.append(contextPath).append(servletPath);
+        final String proxyUrl = url.toString();
+        for (Iterator<String> it = services.keys(); it.hasNext(); ) {
+
+            String key = it.next();
+            JSONObject service = services.getJSONObject(key);
+            if (service.has(GeoService.DETAIL_USE_PROXY) && service.getBoolean(GeoService.DETAIL_USE_PROXY)) {
+                String actualURL = service.getString("url");
+                String param = URLEncoder.encode(actualURL, StandardCharsets.UTF_8);
+                StringBuilder newUrl = new StringBuilder(proxyUrl);
+                newUrl.append("?url=");
+                newUrl.append(param);
+                if (service.has(GeoService.PARAM_MUST_LOGIN) && service.getBoolean(GeoService.PARAM_MUST_LOGIN)) {
+                    newUrl.append("&mustLogin=true&serviceId=");
+                    newUrl.append(service.get("id"));
+                }
+                service.put("url", newUrl);
+            }
+        }
+
+        JSONArray newSelectedContent = new JSONArray();
+        for (int i = 0; i < selectedContent.length(); i++) {
+            JSONObject obj = selectedContent.getJSONObject(i);
+            String type = obj.getString("type");
+            String id = obj.getString("id");
+            if (type.equalsIgnoreCase("level")) {
+                if (isLevelAllowed(id, levels)) {
+                    newSelectedContent.put(obj);
+                }
+            }
+        }
+
+        cached.put("selectedContent", newSelectedContent);
+        return cached;
+    }
+
     private boolean isAuthorized(JSONObject obj, Set<String> roles, boolean alsoWriters, String authString) throws JSONException {
 
         if (obj.has(authString) && obj.getJSONObject(authString).length() != 0) {
             // Levels only have readers
             JSONArray readers = obj.getJSONObject(authString).getJSONArray("readers");
             if (readers.length() > 0) {
-                Set<String> allowedRoles = new HashSet();
+                Set<String> allowedRoles = new HashSet<>();
                 for (int i = 0; i < readers.length(); i++) {
-                    if(!readers.isNull(i)){
+                    if (!readers.isNull(i)) {
                         String reader = readers.getString(i);
                         allowedRoles.add(reader);
                     }
@@ -252,7 +257,7 @@ public class SelectedContentCache {
             if (alsoWriters) {
                 JSONArray writers = obj.getJSONObject(authString).getJSONArray("writers");
                 if (writers.length() > 0) {
-                    Set<String> allowedRoles = new HashSet();
+                    Set<String> allowedRoles = new HashSet<>();
                     for (int i = 0; i < writers.length(); i++) {
                         String writer = writers.getString(i);
                         allowedRoles.add(writer);
@@ -275,8 +280,8 @@ public class SelectedContentCache {
             o.put("rootLevel", root.getId().toString());
 
             Application.TreeCache treeCache = app.loadTreeCache(em);
-            treeCache.initializeLevels("left join fetch l.documents",em);
-            treeCache.initializeApplicationLayers("left join fetch al.details",em);
+            treeCache.initializeLevels("left join fetch l.documents", em);
+            treeCache.initializeApplicationLayers("left join fetch al.details", em);
             Authorizations.ApplicationCache appCache = Authorizations.getApplicationCache(app, em);
 
             JSONObject levels = new JSONObject();
@@ -299,7 +304,7 @@ public class SelectedContentCache {
                         lhsIndex = ((StartLayer) lhs).getSelectedIndex();
                     }
                     if (rhs instanceof StartLevel) {
-                    rhsIndex = ((StartLevel) rhs).getSelectedIndex();
+                        rhsIndex = ((StartLevel) rhs).getSelectedIndex();
                     } else {
                         rhsIndex = ((StartLayer) rhs).getSelectedIndex();
                     }
@@ -318,7 +323,7 @@ public class SelectedContentCache {
                 selectedContent.put(j);
             }
 
-            Map<GeoService, Set<String>> usedLayersByService = new HashMap<GeoService, Set<String>>();
+            Map<GeoService, Set<String>> usedLayersByService = new HashMap<>();
             visitLevelForUsedServicesLayers(root, usedLayersByService, app, treeCache);
 
             if (!usedLayersByService.isEmpty()) {
@@ -331,17 +336,46 @@ public class SelectedContentCache {
                     if (validXmlTags) {
                         serviceId = "service_" + serviceId;
                     }
-                    services.put(serviceId, gs.toJSONObject(false, usedLayers, validXmlTags, true,em));
+                    services.put(serviceId, gs.toJSONObject(false, usedLayers, validXmlTags, true, em));
                 }
             }
         }
         return o;
     }
 
-    private void walkAppTreeForJSON(JSONObject levels, JSONObject appLayers, List selectedContent, Level l, boolean parentIsBackground, 
-            boolean validXmlTags, boolean includeAppLayerAttributes, boolean includeRelations, Application app, 
-            Application.TreeCache treeCache, Authorizations.ApplicationCache appCache, EntityManager em, boolean previouslySelected) throws JSONException {
-        
+    private void visitLevelForUsedServicesLayers(Level l, Map<GeoService, Set<String>> usedLayersByService, Application app, Application.TreeCache treeCache) {
+        for (ApplicationLayer al : l.getLayers()) {
+            GeoService gs = al.getService();
+
+            Set<String> usedLayers = usedLayersByService.get(gs);
+            if (usedLayers == null) {
+                usedLayers = new HashSet<>();
+                usedLayersByService.put(gs, usedLayers);
+            }
+            usedLayers.add(al.getLayerName());
+        }
+        List<Level> children = treeCache.getChildrenByParent().get(l);
+        if (children != null) {
+            for (Level child : children) {
+                visitLevelForUsedServicesLayers(child, usedLayersByService, app, treeCache);
+            }
+        }
+    }
+
+    private boolean mustCreateNewCache(Application app, boolean validXmlTags, boolean expanded) {
+        ClobElement cache = expanded ? app.getDetails().get(DETAIL_CACHED_EXPANDED_SELECTED_CONTENT) : app.getDetails().get(DETAIL_CACHED_SELECTED_CONTENT);
+        if (cache == null || validXmlTags) {
+            return true;
+        } else {
+            ClobElement dirtyClob = expanded ? app.getDetails().get(DETAIL_CACHED_EXPANDED_SELECTED_CONTENT_DIRTY) : app.getDetails().get(DETAIL_CACHED_SELECTED_CONTENT_DIRTY);
+            return Boolean.parseBoolean(dirtyClob.getValue());
+        }
+    }
+
+    private void walkAppTreeForJSON(JSONObject levels, JSONObject appLayers, List selectedContent, Level l, boolean parentIsBackground,
+                                    boolean validXmlTags, boolean includeAppLayerAttributes, boolean includeRelations, Application app,
+                                    Application.TreeCache treeCache, Authorizations.ApplicationCache appCache, EntityManager em, boolean previouslySelected) throws JSONException {
+
         StartLevel sl = l.getStartLevels().get(app);
         JSONObject o = l.toJSONObject(false, app, null, em);
 
@@ -365,7 +399,7 @@ public class SelectedContentCache {
             StartLayer startLayer = al.getStartLayers().get(app);
             JSONObject p = ApplicationLayerHelper.toJSONObject(al, includeAppLayerAttributes, includeRelations, em, app);
             p.put("background", l.isBackground() || parentIsBackground);
-            p.put("removed", startLayer == null ||startLayer.isRemoved());
+            p.put("removed", startLayer == null || startLayer.isRemoved());
 
             Authorizations.ReadWrite rw = appCache.getProtectedAppLayers().get(al.getId());
             p.put("editAuthorizations", rw != null ? rw.toJSON() : new JSONObject());
@@ -399,48 +433,14 @@ public class SelectedContentCache {
                 Authorizations.Read levelAuths = appCache.getProtectedLevels().get(child.getId());
                 childObject.put(AUTHORIZATIONS_KEY, levelAuths != null ? levelAuths.toJSON() : new JSONObject());
                 jsonChildren.put(childObject);
-                walkAppTreeForJSON(levels, appLayers, selectedContent, child, l.isBackground(), validXmlTags, includeAppLayerAttributes, 
+                walkAppTreeForJSON(levels, appLayers, selectedContent, child, l.isBackground(), validXmlTags, includeAppLayerAttributes,
                         includeRelations, app, treeCache, appCache, em, selected);
             }
         }
     }
 
-    private void visitLevelForUsedServicesLayers(Level l, Map<GeoService, Set<String>> usedLayersByService, Application app, Application.TreeCache treeCache) {
-        for (ApplicationLayer al : l.getLayers()) {
-            GeoService gs = al.getService();
-
-            Set<String> usedLayers = usedLayersByService.get(gs);
-            if (usedLayers == null) {
-                usedLayers = new HashSet<String>();
-                usedLayersByService.put(gs, usedLayers);
-            }
-            usedLayers.add(al.getLayerName());
-        }
-        List<Level> children = treeCache.getChildrenByParent().get(l);
-        if (children != null) {
-            for (Level child : children) {
-                visitLevelForUsedServicesLayers(child, usedLayersByService, app, treeCache);
-            }
-        }
-    }
-
-    private boolean mustCreateNewCache(Application app, boolean validXmlTags, boolean expanded) {
-        ClobElement cache = expanded ? app.getDetails().get(DETAIL_CACHED_EXPANDED_SELECTED_CONTENT) : app.getDetails().get(DETAIL_CACHED_SELECTED_CONTENT);
-        if (cache == null || validXmlTags) {
-            return true;
-        } else {
-            ClobElement dirtyClob = expanded ? app.getDetails().get(DETAIL_CACHED_EXPANDED_SELECTED_CONTENT_DIRTY) : app.getDetails().get(DETAIL_CACHED_SELECTED_CONTENT_DIRTY);
-            boolean dirty = Boolean.valueOf(dirtyClob.getValue());
-            return dirty;
-        }
-    }
-
-    public static void setApplicationCacheDirty(Application app, Boolean dirty, Boolean expanded, EntityManager em) {
-        setApplicationCacheDirty(app, dirty, expanded, false,em);
-    }
-
     public static void setApplicationCacheDirty(Application app, Boolean dirty, Boolean expanded, Boolean onlyThisApplication, EntityManager em) {
-        Set<Application> apps = new HashSet<Application>();
+        Set<Application> apps = new HashSet<>();
         if (dirty && !onlyThisApplication) {
             apps = LevelHelper.findApplications(app.getRoot(), em);
         } else {

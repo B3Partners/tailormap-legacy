@@ -28,6 +28,7 @@ import nl.tailormap.i18n.LocalizableActionBean;
 import nl.tailormap.viewer.config.app.Application;
 import nl.tailormap.viewer.config.app.ApplicationLayer;
 import nl.tailormap.viewer.config.app.Level;
+import nl.tailormap.viewer.config.security.Authorizations;
 import nl.tailormap.viewer.config.security.Group;
 import nl.tailormap.viewer.config.services.FeatureSource;
 import nl.tailormap.viewer.config.services.SimpleFeatureType;
@@ -67,6 +68,7 @@ import javax.xml.xpath.XPathFactoryConfigurationException;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.net.URI;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -106,7 +108,11 @@ public class ServiceUsageMatrixActionBean extends LocalizableActionBean {
         JSONArray jsonApps = new JSONArray();
         EntityManager em = Stripersist.getEntityManager();
         for (Application app: applications) {
-            JSONObject json = new JSONObject(ApplicationHelper.toJSON(app, this.context.getRequest(),true,true,em, true));
+            JSONObject json = new JSONObject(
+                    ApplicationHelper.toJSON(app, Authorizations.getRoles(this.context.getRequest(), em), URI.create(this.context.getRequest().getRequestURI()),
+                            this.context.getRequest().getServletContext().getInitParameter("proxy"), true, true, false, false,
+                            em, true, true)
+            );
             jsonApps.put(json);
         }
         //add the featureSources to the JSON.
