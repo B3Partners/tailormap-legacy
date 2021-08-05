@@ -1,0 +1,10 @@
+{
+  "watch": {
+    "serve": {
+      "patterns": [
+        "../../tailormap-frontend/projects",
+        "../../tailormap-frontend/projects"
+      ]
+    }
+  }
+}

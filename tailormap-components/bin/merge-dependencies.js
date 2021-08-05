@@ -1,5 +1,7 @@
 const fs = require('fs');
 const path = require('path');
+const packageJson = require('../package.json');
+const packageJsonOverrides = require('../projects/third-party-components/third-party-components-package-json-overrides.json');
 
 const merge = (...arguments) => {
   // create a new object
@@ -25,9 +27,6 @@ const merge = (...arguments) => {
   }
   return target;
 };
-
-const packageJson = require('../package.json');
-const packageJsonOverrides = require('../src/config/package-json-overrides.json');
 
 const updatedPackageJson = merge({}, packageJson, packageJsonOverrides);
 

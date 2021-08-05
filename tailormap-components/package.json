@@ -3,12 +3,13 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "npm-watch serve",
+    "serve": "ng serve",
     "build": "ng build",
     "install-all": "npm run merge-third-party-dependencies && npm install",
-    "merge-third-party-dependencies": "cd projects/third-party-components && node bin/merge-dependencies.js && cd ../..",
+    "merge-third-party-dependencies": "node bin/merge-dependencies.js",
     "build-prod": "npm run merge-third-party-assets && npm run ng -- build --configuration production --output-hashing=none",
-    "merge-third-party-assets": "cd projects/third-party-components && node bin/merge-assets-angular.js && cd ../..",
+    "merge-third-party-assets": "node bin/merge-assets-angular.js",
     "test": "ng test --project=core",
     "test:ci": "ng test --project=core --code-coverage --no-watch --browsers=ChromeHeadless",
     "lint": "ng lint",
@@ -24,6 +25,14 @@
     "generate-component": "ng g cs --project=core",
     "generate-service": "ng g ss --project=core",
     "generate-http-service": "ng g ss --project=core --isDataService=true"
+  },
+  "watch": {
+    "serve": {
+      "patterns": [
+        "../../tailormap-frontend/projects"
+      ],
+      "extensions": "ts,css,html"
+    }
   },
   "private": true,
   "dependencies": {
@@ -86,6 +95,7 @@
     "karma-jasmine": "~4.0.1",
     "karma-jasmine-html-reporter": "^1.7.0",
     "ng-packagr": "^12.1.2",
+    "npm-watch": "0.11.0",
     "protractor": "~7.0.0",
     "stylelint": "^13.13.1",
     "stylelint-config-standard": "^22.0.0",
