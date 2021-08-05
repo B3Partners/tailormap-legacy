@@ -16,20 +16,15 @@
  */
 package nl.tailormap.viewer.config.app;
 
-import nl.tailormap.viewer.config.security.Authorizations;
 import nl.tailormap.viewer.config.services.Document;
 import org.apache.commons.beanutils.BeanUtils;
 import org.hibernate.annotations.Type;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
-import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -42,7 +37,6 @@ import javax.persistence.MapKey;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderColumn;
 import javax.persistence.Table;
-import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -204,49 +198,6 @@ public class Level implements Comparable{
     //</editor-fold>
 
     
-    public JSONObject toJSONObject(boolean includeChildrenIds, Application app, HttpServletRequest request, EntityManager em) throws JSONException {
-        JSONObject o = new JSONObject();
- 
-        /* TODO check readers */
-        
-        o.put("id", id);
-        o.put("name", name);
-        o.put("background", background);
-        o.put("info", info);
-        o.put("url",url);
-        
-        if(!documents.isEmpty()) {
-            JSONArray docs = new JSONArray();
-            o.put("documents", docs);
-            for(Document d: documents) {
-                docs.put(d.toJSONObject());
-            }
-        }
-        
-        if(!layers.isEmpty()) {
-            JSONArray ls = new JSONArray();
-            o.put("layers", ls);
-            for(ApplicationLayer l: layers) {
-                if((request == null || Authorizations.isAppLayerReadAuthorized(app, l, request, em)) && l.getStartLayers().containsKey(app)) {
-                    ls.put(l.getId().toString());
-                }
-            }            
-        }
-        
-        if(includeChildrenIds) {
-            if(!children.isEmpty()) {
-                JSONArray cs = new JSONArray();
-                o.put("children", cs);
-                for(Level l: children) {
-                    if(request == null || Authorizations.isLevelReadAuthorized(app, l, request, em)) {
-                        cs.put(l.getId().toString());
-                    }
-                }
-            }
-        }
-        
-        return o;
-    }    
 
     public String getPath() {
         Level l = this;

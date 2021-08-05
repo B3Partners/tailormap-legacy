@@ -91,7 +91,7 @@ public class TileServiceTest extends TestUtil {
         assertEquals("osm", tileSet.getName());
         assertEquals("png", l.getDetails().get("image_extension").getValue());
         assertEquals(0, ts.getMatrixSets().size());
-        JSONObject serviceObj = ts.toJSONObject(false, entityManager);
+        JSONObject serviceObj = TilingServiceHelper.toJSONObject(ts, false, null, false, false, entityManager);
         assertTrue(serviceObj.has("matrixSets"));
         JSONArray matrixSets = serviceObj.getJSONArray("matrixSets");
         assertEquals(0, matrixSets.length());
@@ -126,7 +126,7 @@ public class TileServiceTest extends TestUtil {
         assertEquals(-370406.0, bbox.getMinx(), 0.1);
         assertEquals(5328.8, bbox.getMiny(), 0.1);
 
-        JSONObject serviceObj = result.toJSONObject(false, entityManager);
+        JSONObject serviceObj = TilingServiceHelper.toJSONObject((TileService) result, false, null, false, false, entityManager);
         assertTrue(serviceObj.has("matrixSets"));
         JSONArray matrixSets = serviceObj.getJSONArray("matrixSets");
         assertEquals(4, matrixSets.length());
@@ -167,7 +167,7 @@ public class TileServiceTest extends TestUtil {
         assertEquals(312667.7, bbox.getMaxx(), 0.1);
         assertEquals(662419.8, bbox.getMaxy(), 0.1);
 
-        JSONObject serviceObj = result.toJSONObject(false, entityManager);
+        JSONObject serviceObj = TilingServiceHelper.toJSONObject((TileService) result, false, null, false, false, entityManager);
         assertTrue(serviceObj.has("matrixSets"));
         JSONArray matrixSets = serviceObj.getJSONArray("matrixSets");
         assertEquals(1, matrixSets.length());
@@ -205,7 +205,7 @@ public class TileServiceTest extends TestUtil {
         assertEquals(-285401.92, bbox.getMinx(), 0.01);
         assertEquals(22598.16, bbox.getMiny(), 0.01);
 
-        JSONObject serviceObj = result.toJSONObject(false, entityManager);
+        JSONObject serviceObj = TilingServiceHelper.toJSONObject((TileService) result, false, null, false, false, entityManager);
         assertTrue(serviceObj.has("matrixSets"));
         JSONArray matrixSets = serviceObj.getJSONArray("matrixSets");
         assertEquals(4, matrixSets.length());
@@ -245,7 +245,7 @@ public class TileServiceTest extends TestUtil {
         assertEquals(-285401.92, bbox.getMinx(), 0.01);
         assertEquals(22598.08, bbox.getMiny(), 0.01);
 
-        JSONObject serviceObj = result.toJSONObject(false, entityManager);
+        JSONObject serviceObj = TilingServiceHelper.toJSONObject((TileService) result, false, null, false, false, entityManager);
         assertTrue(serviceObj.has("matrixSets"));
         JSONArray matrixSets = serviceObj.getJSONArray("matrixSets");
         assertEquals(1, matrixSets.length());
@@ -285,7 +285,7 @@ public class TileServiceTest extends TestUtil {
         assertEquals(16, ts.getMatrixSets().get(1).getMatrices().size());
         assertEquals("epsg:28992", layer.getMatrixSets().get(0).getIdentifier());
         assertEquals(16, layer.getMatrixSets().get(0).getMatrices().size());
-        JSONObject serviceObj = ts.toJSONObject(false, entityManager);
+        JSONObject serviceObj = TilingServiceHelper.toJSONObject(ts, false, null, false, false, entityManager);
         assertTrue(serviceObj.has("matrixSets"));
         JSONArray matrixSets = serviceObj.getJSONArray("matrixSets");
         assertEquals(6, matrixSets.length());

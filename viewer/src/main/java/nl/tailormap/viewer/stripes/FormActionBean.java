@@ -13,6 +13,7 @@ import net.sourceforge.stripes.validation.Validate;
 import nl.tailormap.viewer.config.app.Application;
 import nl.tailormap.viewer.config.forms.Form;
 import nl.tailormap.viewer.config.security.Authorizations;
+import nl.tailormap.viewer.helpers.AuthorizationsHelper;
 import nl.tailormap.web.stripes.ErrorMessageResolution;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -38,7 +39,7 @@ public class FormActionBean implements ActionBean {
     @Before(stages= LifecycleStage.EventHandling)
     public void checkAuthorization() {
         EntityManager em = Stripersist.getEntityManager();
-        if(application == null|| !Authorizations.isApplicationReadAuthorized(application, context.getRequest(), em)) {
+        if(application == null|| !AuthorizationsHelper.isApplicationReadAuthorized(application, AuthorizationsHelper.getRoles(context.getRequest(), em), em)) {
             unauthorized = true;
         }
     }
@@ -54,7 +55,7 @@ public class FormActionBean implements ActionBean {
         HttpServletRequest request = context.getRequest();
         for (Form form : forms) {
             if(form.getJson() != null && !form.getJson().isEmpty()){
-                if (Authorizations.isFormAuthorized(form, request, em)) {
+                if (Authorizations.isFormAuthorized(form, AuthorizationsHelper.getRoles(request, em), em)) {
                     fts.put(form.getFeatureTypeName(), new JSONObject(form.getJson()));
                 }
             }

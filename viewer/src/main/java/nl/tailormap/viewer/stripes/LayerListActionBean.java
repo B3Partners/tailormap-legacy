@@ -25,7 +25,7 @@ import net.sourceforge.stripes.action.UrlBinding;
 import net.sourceforge.stripes.validation.Validate;
 import nl.tailormap.viewer.config.app.Application;
 import nl.tailormap.viewer.config.app.ApplicationLayer;
-import nl.tailormap.viewer.config.security.Authorizations;
+import nl.tailormap.viewer.helpers.AuthorizationsHelper;
 import nl.tailormap.viewer.helpers.app.ApplicationLayerHelper;
 import nl.tailormap.viewer.util.LayerListHelper;
 import org.apache.commons.logging.Log;
@@ -176,7 +176,7 @@ public class LayerListActionBean implements ActionBean {
             HttpServletRequest request = context.getRequest();
             List<ApplicationLayer> filteredLayers = LayerListHelper.getLayers(app, filterable, bufferable, editable, influence, arc, wfs, attribute,hasConfiguredLayers,layers,em);
             for (ApplicationLayer layer : filteredLayers) {
-                if (Authorizations.isAppLayerReadAuthorized(app, layer, request, em)) {
+                if (AuthorizationsHelper.isAppLayerReadAuthorized(app, layer, request, em)) {
                     try {
                         jsonArray.put(ApplicationLayerHelper.toJSONObject(layer, em));
                     } catch (JSONException je) {

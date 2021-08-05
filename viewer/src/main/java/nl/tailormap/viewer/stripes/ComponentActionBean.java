@@ -36,7 +36,7 @@ import nl.tailormap.viewer.components.ComponentRegistryInitializer;
 import nl.tailormap.viewer.components.ViewerComponent;
 import nl.tailormap.viewer.config.app.Application;
 import nl.tailormap.viewer.config.app.ConfiguredComponent;
-import nl.tailormap.viewer.config.security.Authorizations;
+import nl.tailormap.viewer.helpers.AuthorizationsHelper;
 import nl.tailormap.viewer.helpers.app.ComponentHelper;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
@@ -166,7 +166,7 @@ public class ComponentActionBean implements ActionBean {
             List<File> fileList = new ArrayList<File>();
             EntityManager em = Stripersist.getEntityManager();
             for(ConfiguredComponent cc: comps) {
-                if(!Authorizations.isConfiguredComponentAuthorized(cc, context.getRequest(), em)) {
+                if(!AuthorizationsHelper.isConfiguredComponentAuthorized(cc, AuthorizationsHelper.getRoles(context.getRequest(), em), em)) {
                     continue;
                 }
                 if(!classNamesDone.contains(cc.getClassName())) {

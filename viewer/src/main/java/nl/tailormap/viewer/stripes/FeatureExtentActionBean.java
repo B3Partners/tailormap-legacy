@@ -28,8 +28,8 @@ import net.sourceforge.stripes.controller.LifecycleStage;
 import net.sourceforge.stripes.validation.Validate;
 import nl.tailormap.i18n.LocalizableActionBean;
 import nl.tailormap.viewer.config.app.ApplicationLayer;
-import nl.tailormap.viewer.config.security.Authorizations;
 import nl.tailormap.viewer.config.services.Layer;
+import nl.tailormap.viewer.helpers.AuthorizationsHelper;
 import nl.tailormap.viewer.helpers.featuresources.FeatureSourceFactoryHelper;
 import nl.tailormap.viewer.util.FeatureToJson;
 import nl.tailormap.viewer.util.TailormapCQL;
@@ -98,7 +98,7 @@ public class FeatureExtentActionBean extends LocalizableActionBean implements Ac
     @Before(stages = LifecycleStage.EventHandling)
     public void checkAuthorization() {
         if (appLayer == null
-                || !Authorizations.isLayerReadAuthorized(layer, context.getRequest(), Stripersist.getEntityManager())) {
+                || !AuthorizationsHelper.isLayerReadAuthorized(layer, context.getRequest(), Stripersist.getEntityManager())) {
             unauthorized = true;
         }
     }

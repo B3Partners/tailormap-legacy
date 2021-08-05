@@ -30,11 +30,11 @@ import nl.tailormap.geotools.filter.visitor.RemoveDistanceUnit;
 import nl.tailormap.viewer.config.app.Application;
 import nl.tailormap.viewer.config.app.ApplicationLayer;
 import nl.tailormap.viewer.config.app.ConfiguredAttribute;
-import nl.tailormap.viewer.config.security.Authorizations;
 import nl.tailormap.viewer.config.services.GeoService;
 import nl.tailormap.viewer.config.services.Layer;
 import nl.tailormap.viewer.config.services.SimpleFeatureType;
 import nl.tailormap.viewer.config.services.WFSFeatureSource;
+import nl.tailormap.viewer.helpers.AuthorizationsHelper;
 import nl.tailormap.viewer.helpers.app.ApplicationLayerHelper;
 import nl.tailormap.viewer.helpers.featuresources.FeatureSourceFactoryHelper;
 import nl.tailormap.viewer.helpers.featuresources.WFSFeatureSourceHelper;
@@ -142,7 +142,7 @@ public class AttributesActionBean extends LocalizableApplicationActionBean imple
      *
      * @see Layer#getPreventGeomEditors()
      * @see
-     * Authorizations#isLayerGeomWriteAuthorized(Layer,
+     * AuthorizationsHelper#isLayerGeomWriteAuthorized(Layer,
      * javax.servlet.http.HttpServletRequest, EntityManager)
      * 
      */
@@ -330,11 +330,11 @@ public class AttributesActionBean extends LocalizableApplicationActionBean imple
     public void checkAuthorization() {
         EntityManager em = Stripersist.getEntityManager();
         if(application == null || appLayer == null
-                || !Authorizations.isApplicationReadAuthorized(application, context.getRequest(), em)
-                || !Authorizations.isAppLayerReadAuthorized(application, appLayer, context.getRequest(), em)) {
+                || !AuthorizationsHelper.isApplicationReadAuthorized(application, AuthorizationsHelper.getRoles(context.getRequest(), em), em)
+                || !AuthorizationsHelper.isAppLayerReadAuthorized(application, appLayer, context.getRequest(), em)) {
             unauthorized = true;
         }
-        userAllowedToEditGeom = Authorizations.isLayerGeomWriteAuthorized(layer, context.getRequest(),em);
+        userAllowedToEditGeom = AuthorizationsHelper.isLayerGeomWriteAuthorized(layer, context.getRequest(),em);
      }
 
     public Resolution attributes() throws JSONException {

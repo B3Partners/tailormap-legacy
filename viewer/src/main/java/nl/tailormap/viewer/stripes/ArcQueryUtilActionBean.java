@@ -32,8 +32,8 @@ import nl.tailormap.geotools.data.arcgis.ArcGISFeatureSource;
 import nl.tailormap.geotools.filter.visitor.RemoveDistanceUnit;
 import nl.tailormap.viewer.config.app.Application;
 import nl.tailormap.viewer.config.app.ApplicationLayer;
-import nl.tailormap.viewer.config.security.Authorizations;
 import nl.tailormap.viewer.config.services.Layer;
+import nl.tailormap.viewer.helpers.AuthorizationsHelper;
 import nl.tailormap.viewer.helpers.featuresources.FeatureSourceFactoryHelper;
 import nl.tailormap.viewer.util.TailormapCQL;
 import org.apache.commons.logging.Log;
@@ -125,8 +125,8 @@ public class ArcQueryUtilActionBean extends LocalizableApplicationActionBean imp
     @Before(stages = LifecycleStage.EventHandling)
     public void checkAuthorization() {
         EntityManager em =Stripersist.getEntityManager();
-        if (application == null || appLayer == null || !Authorizations.isApplicationReadAuthorized(application, context.getRequest(), em)
-                || !Authorizations.isAppLayerReadAuthorized(application, appLayer, context.getRequest(), em)) {
+        if (application == null || appLayer == null || !AuthorizationsHelper.isApplicationReadAuthorized(application, AuthorizationsHelper.getRoles(context.getRequest(), em), em)
+                || !AuthorizationsHelper.isAppLayerReadAuthorized(application, appLayer, context.getRequest(), em)) {
             unauthorized = true;
         }
     }

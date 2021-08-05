@@ -25,6 +25,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 <%@page import="nl.tailormap.viewer.config.app.Level"%>
 <%@page import="nl.tailormap.viewer.config.services.Layer"%>
 <%@page import="nl.tailormap.viewer.admin.stripes.UserActionBean"%>
+<%@ page import="nl.tailormap.viewer.helpers.AuthorizationsHelper" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@include file="/WEB-INF/jsp/taglibs.jsp"%>
 
@@ -49,7 +50,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             <table class="formtable" border="1">
                 <thead><tr><th><fmt:message key="viewer_admin.authorizations.5" /></th><th><fmt:message key="viewer_admin.authorizations.6" /></th></th><th><fmt:message key="viewer_admin.authorizations.7" /> <c:out value="${actionBean.user.username}"/></th><th><fmt:message key="viewer_admin.authorizations.8" /></th><th><fmt:message key="viewer_admin.authorizations.9" /></th></thead>
                 <tnody>
-                    <c:forEach var="e" items="<%= Authorizations.serviceCache.entrySet()%>">
+                    <c:forEach var="e" items="<%= AuthorizationsHelper.serviceCache.entrySet()%>">
                         <c:set var="gsId" value="${e.key}"/>
                         <c:set var="protectedLayers" value="${e.value.protectedLayers}"/>
 

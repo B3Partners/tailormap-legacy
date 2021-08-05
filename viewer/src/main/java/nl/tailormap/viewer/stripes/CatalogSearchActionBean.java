@@ -46,6 +46,7 @@ import nl.tailormap.viewer.config.app.ApplicationLayer;
 import nl.tailormap.viewer.config.app.Level;
 import nl.tailormap.viewer.config.services.GeoService;
 import nl.tailormap.viewer.config.services.Layer;
+import nl.tailormap.viewer.helpers.app.LevelHelper;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.analysis.TokenStream;
@@ -243,13 +244,13 @@ public class CatalogSearchActionBean extends LocalizableApplicationActionBean im
             
             JSONArray found = new JSONArray();
             for (Level level : levels) {
-                JSONObject obj = level.toJSONObject(false, application, context.getRequest(), em);
+                JSONObject obj = LevelHelper.toJSONObject( level,false, application, context.getRequest(), em);
                 found.put(obj);
             }            
             List <Level> children = application.getRoot().getChildren();
             JSONArray childs = new JSONArray();
             for (Level child : children) {
-                childs.put(child.toJSONObject(false, application, context.getRequest(), em));
+                childs.put(LevelHelper.toJSONObject( child,false, application, context.getRequest(), em));
             }
 
             Set<Level> levelDesc = descriptionsByLevel.keySet();

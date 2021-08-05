@@ -29,8 +29,8 @@ import nl.tailormap.viewer.audit.AuditMessageObject;
 import nl.tailormap.viewer.audit.Auditable;
 import nl.tailormap.viewer.config.app.Application;
 import nl.tailormap.viewer.config.app.ApplicationLayer;
-import nl.tailormap.viewer.config.security.Authorizations;
 import nl.tailormap.viewer.config.services.Layer;
+import nl.tailormap.viewer.helpers.AuthorizationsHelper;
 import nl.tailormap.viewer.helpers.featuresources.FeatureSourceFactoryHelper;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -125,7 +125,7 @@ public class SplitFeatureActionBean extends LocalizableApplicationActionBean imp
     @Before(stages = LifecycleStage.EventHandling)
     public void checkAuthorization() {
         if (application == null || appLayer == null
-                || !Authorizations.isLayerGeomWriteAuthorized(layer, context.getRequest(), Stripersist.getEntityManager())) {
+                || !AuthorizationsHelper.isLayerGeomWriteAuthorized(layer, context.getRequest(), Stripersist.getEntityManager())) {
             unauthorized = true;
         }
         auditMessageObject = new AuditMessageObject();

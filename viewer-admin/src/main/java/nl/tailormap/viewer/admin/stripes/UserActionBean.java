@@ -38,12 +38,12 @@ import nl.tailormap.viewer.config.app.Application;
 import nl.tailormap.viewer.config.app.ApplicationLayer;
 import nl.tailormap.viewer.config.app.ConfiguredComponent;
 import nl.tailormap.viewer.config.app.Level;
-import nl.tailormap.viewer.config.security.Authorizations;
-import nl.tailormap.viewer.config.security.Authorizations.ApplicationCache;
+import nl.tailormap.viewer.helpers.AuthorizationsHelper.ApplicationCache;
 import nl.tailormap.viewer.config.security.Group;
 import nl.tailormap.viewer.config.security.User;
 import nl.tailormap.viewer.config.services.GeoService;
 import nl.tailormap.viewer.config.services.Layer;
+import nl.tailormap.viewer.helpers.AuthorizationsHelper;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
@@ -483,7 +483,7 @@ public class UserActionBean extends LocalizableActionBean {
     List<Application> applications;
     Set<Layer> authorizedLayers = Collections.EMPTY_SET;
     Set<Layer> authorizedEditableLayers = Collections.EMPTY_SET;
-    Authorizations.ApplicationCache applicationCache;
+    ApplicationCache applicationCache;
     Set<Level> authorizedLevels = Collections.EMPTY_SET;
     Set<ApplicationLayer> authorizedAppLayers = Collections.EMPTY_SET;
     Set<ApplicationLayer> authorizedEditableAppLayers = Collections.EMPTY_SET;
@@ -541,7 +541,7 @@ public class UserActionBean extends LocalizableActionBean {
 
         List<GeoService> services = em.createQuery("from GeoService").getResultList();
         for (GeoService service : services) {
-            Authorizations.getLayerAuthorizations(service.getTopLayer(),em);
+            AuthorizationsHelper.getLayerAuthorizations(service.getTopLayer(),em);
         }
 
         Set<String> roles = new HashSet<String>();
@@ -558,17 +558,17 @@ public class UserActionBean extends LocalizableActionBean {
             authorizedLayers = new HashSet<Layer>();
             authorizedEditableLayers = new HashSet<Layer>();
 
-            for (Map.Entry<Long, Authorizations.GeoServiceCache> e : Authorizations.serviceCache.entrySet()) {
+            for (Map.Entry<Long, AuthorizationsHelper.GeoServiceCache> e : AuthorizationsHelper.serviceCache.entrySet()) {
 
-                for (Map.Entry<Long, Authorizations.ReadWrite> e2 : e.getValue().getProtectedLayers().entrySet()) {
+                for (Map.Entry<Long, AuthorizationsHelper.ReadWrite> e2 : e.getValue().getProtectedLayers().entrySet()) {
                     Layer l = Stripersist.getEntityManager().find(Layer.class, e2.getKey());
                     Set<String> readers = e2.getValue().getReaders();
                     Set<String> writers = e2.getValue().getWriters();
 
-                    if (readers.equals(Authorizations.EVERYBODY) || !Collections.disjoint(readers, roles)) {
+                    if (readers.equals(AuthorizationsHelper.EVERYBODY) || !Collections.disjoint(readers, roles)) {
                         authorizedLayers.add(l);
                     }
-                    if (writers.equals(Authorizations.EVERYBODY) || !Collections.disjoint(writers, roles)) {
+                    if (writers.equals(AuthorizationsHelper.EVERYBODY) || !Collections.disjoint(writers, roles)) {
                         authorizedEditableLayers.add(l);
                     }
                 }
@@ -578,38 +578,38 @@ public class UserActionBean extends LocalizableActionBean {
         applications = em.createQuery("from Application order by name, version").getResultList();
         if (application != null) {
 
-            applicationCache = Authorizations.getApplicationCache(application,em);
+            applicationCache = AuthorizationsHelper.getApplicationCache(application,em);
 
             if (!roles.isEmpty()) {
                 authorizedLevels = new HashSet<Level>();
 
-                for (Map.Entry<Long, Authorizations.Read> e : applicationCache.getProtectedLevels().entrySet()) {
+                for (Map.Entry<Long, AuthorizationsHelper.Read> e : applicationCache.getProtectedLevels().entrySet()) {
                     Level l = Stripersist.getEntityManager().find(Level.class, e.getKey());
                     Set<String> readers = e.getValue().getReaders();
-                    if (readers.equals(Authorizations.EVERYBODY) || !Collections.disjoint(readers, roles)) {
+                    if (readers.equals(AuthorizationsHelper.EVERYBODY) || !Collections.disjoint(readers, roles)) {
                         authorizedLevels.add(l);
                     }
                 }
                 authorizedAppLayers = new HashSet<ApplicationLayer>();
                 authorizedEditableAppLayers = new HashSet<ApplicationLayer>();
 
-                for (Map.Entry<Long, Authorizations.ReadWrite> e : applicationCache.getProtectedAppLayers().entrySet()) {
+                for (Map.Entry<Long, AuthorizationsHelper.ReadWrite> e : applicationCache.getProtectedAppLayers().entrySet()) {
                     ApplicationLayer al = Stripersist.getEntityManager().find(ApplicationLayer.class, e.getKey());
 
                     Set<String> readers = e.getValue().getReaders();
                     Set<String> writers = e.getValue().getWriters();
 
-                    if (readers.equals(Authorizations.EVERYBODY) || !Collections.disjoint(readers, roles)) {
+                    if (readers.equals(AuthorizationsHelper.EVERYBODY) || !Collections.disjoint(readers, roles)) {
                         authorizedAppLayers.add(al);
                     }
-                    if (writers.equals(Authorizations.EVERYBODY) || !Collections.disjoint(writers, roles)) {
+                    if (writers.equals(AuthorizationsHelper.EVERYBODY) || !Collections.disjoint(writers, roles)) {
                         authorizedEditableAppLayers.add(al);
                     }
                 }
                 
                 authorizedComponents = new HashSet();
                 for(ConfiguredComponent cc: application.getComponents()) {
-                    if(cc.getReaders().equals(Authorizations.EVERYBODY) || !Collections.disjoint(cc.getReaders(), roles)) {
+                    if(cc.getReaders().equals(AuthorizationsHelper.EVERYBODY) || !Collections.disjoint(cc.getReaders(), roles)) {
                         authorizedComponents.add(cc);
                     }                    
                 }

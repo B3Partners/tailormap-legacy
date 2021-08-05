@@ -22,10 +22,15 @@ import nl.tailormap.viewer.config.app.ApplicationLayer;
 import nl.tailormap.viewer.config.app.Level;
 import nl.tailormap.viewer.config.app.StartLayer;
 import nl.tailormap.viewer.config.app.StartLevel;
-import nl.tailormap.viewer.config.security.Authorizations;
+import nl.tailormap.viewer.config.services.ArcGISService;
 import nl.tailormap.viewer.config.services.GeoService;
+import nl.tailormap.viewer.config.services.TileService;
+import nl.tailormap.viewer.helpers.AuthorizationsHelper;
 import nl.tailormap.viewer.helpers.app.ApplicationLayerHelper;
 import nl.tailormap.viewer.helpers.app.LevelHelper;
+import nl.tailormap.viewer.helpers.services.ArcGISServiceHelper;
+import nl.tailormap.viewer.helpers.services.GeoServiceHelper;
+import nl.tailormap.viewer.helpers.services.TilingServiceHelper;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -66,7 +71,7 @@ public class SelectedContentCache {
     public JSONObject getSelectedContent(HttpServletRequest request, Application app, boolean validXmlTags, boolean includeAppLayerAttributes, boolean includeRelations,
                                          EntityManager em, boolean shouldProcessCache) throws JSONException {
         return getSelectedContent(
-                Authorizations.getRoles(request, em),
+                AuthorizationsHelper.getRoles(request, em),
                 URI.create(request.getRequestURI()),
                 request.getServletContext().getInitParameter("proxy"),
                 app,
@@ -282,7 +287,7 @@ public class SelectedContentCache {
             Application.TreeCache treeCache = app.loadTreeCache(em);
             treeCache.initializeLevels("left join fetch l.documents", em);
             treeCache.initializeApplicationLayers("left join fetch al.details", em);
-            Authorizations.ApplicationCache appCache = Authorizations.getApplicationCache(app, em);
+            AuthorizationsHelper.ApplicationCache appCache = AuthorizationsHelper.getApplicationCache(app, em);
 
             JSONObject levels = new JSONObject();
             o.put("levels", levels);
@@ -336,7 +341,14 @@ public class SelectedContentCache {
                     if (validXmlTags) {
                         serviceId = "service_" + serviceId;
                     }
-                    services.put(serviceId, gs.toJSONObject(false, usedLayers, validXmlTags, true, em));
+                    if (gs instanceof TileService){
+                        services.put(serviceId, TilingServiceHelper.toJSONObject((TileService)gs, false, usedLayers, validXmlTags, true, em));
+                    } else if (gs instanceof ArcGISService){
+                        services.put(serviceId, ArcGISServiceHelper.toJSONObject((ArcGISService)gs, false, usedLayers, validXmlTags, true, em));
+                    }
+                    else {
+                        services.put(serviceId, GeoServiceHelper.toJSONObject(gs,false, usedLayers, validXmlTags, true, em));
+                    }
                 }
             }
         }
@@ -374,12 +386,12 @@ public class SelectedContentCache {
 
     private void walkAppTreeForJSON(JSONObject levels, JSONObject appLayers, List selectedContent, Level l, boolean parentIsBackground,
                                     boolean validXmlTags, boolean includeAppLayerAttributes, boolean includeRelations, Application app,
-                                    Application.TreeCache treeCache, Authorizations.ApplicationCache appCache, EntityManager em, boolean previouslySelected) throws JSONException {
+                                    Application.TreeCache treeCache, AuthorizationsHelper.ApplicationCache appCache, EntityManager em, boolean previouslySelected) throws JSONException {
 
         StartLevel sl = l.getStartLevels().get(app);
-        JSONObject o = l.toJSONObject(false, app, null, em);
+        JSONObject o =  LevelHelper.toJSONObject( l, false, app, null, em);
 
-        Authorizations.Read auths = appCache.getProtectedLevels().get(l.getId());
+        AuthorizationsHelper.Read auths = appCache.getProtectedLevels().get(l.getId());
         o.put(AUTHORIZATIONS_KEY, auths != null ? auths.toJSON() : new JSONObject());
         o.put("background", l.isBackground() || parentIsBackground);
         o.put("removed", sl == null || sl.isRemoved());
@@ -401,14 +413,14 @@ public class SelectedContentCache {
             p.put("background", l.isBackground() || parentIsBackground);
             p.put("removed", startLayer == null || startLayer.isRemoved());
 
-            Authorizations.ReadWrite rw = appCache.getProtectedAppLayers().get(al.getId());
+            AuthorizationsHelper.ReadWrite rw = appCache.getProtectedAppLayers().get(al.getId());
             p.put("editAuthorizations", rw != null ? rw.toJSON() : new JSONObject());
             String alId = al.getId().toString();
             if (validXmlTags) {
                 alId = "appLayer_" + alId;
             }
 
-            Authorizations.ReadWrite applayerAuths = appCache.getProtectedAppLayers().get(al.getId());
+            AuthorizationsHelper.ReadWrite applayerAuths = appCache.getProtectedAppLayers().get(al.getId());
             p.put(AUTHORIZATIONS_KEY, applayerAuths != null ? applayerAuths.toJSON() : new JSONObject());
 
             appLayers.put(alId, p);
@@ -430,7 +442,7 @@ public class SelectedContentCache {
                     childId = "level_" + childId;
                 }
                 childObject.put("child", childId);
-                Authorizations.Read levelAuths = appCache.getProtectedLevels().get(child.getId());
+                AuthorizationsHelper.Read levelAuths = appCache.getProtectedLevels().get(child.getId());
                 childObject.put(AUTHORIZATIONS_KEY, levelAuths != null ? levelAuths.toJSON() : new JSONObject());
                 jsonChildren.put(childObject);
                 walkAppTreeForJSON(levels, appLayers, selectedContent, child, l.isBackground(), validXmlTags, includeAppLayerAttributes,

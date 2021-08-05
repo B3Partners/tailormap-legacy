@@ -28,10 +28,10 @@ import nl.tailormap.viewer.audit.Auditable;
 import nl.tailormap.viewer.config.app.Application;
 import nl.tailormap.viewer.config.app.ApplicationLayer;
 import nl.tailormap.viewer.config.app.ConfiguredComponent;
-import nl.tailormap.viewer.config.security.Authorizations;
 import nl.tailormap.viewer.config.services.Layer;
 import nl.tailormap.viewer.config.services.SimpleFeatureType;
 import nl.tailormap.viewer.config.services.SolrConf;
+import nl.tailormap.viewer.helpers.AuthorizationsHelper;
 import nl.tailormap.viewer.helpers.featuresources.FeatureSourceFactoryHelper;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -243,7 +243,7 @@ public class SimplifyFeatureActionBean extends LocalizableApplicationActionBean 
         }
         EntityManager em = Stripersist.getEntityManager();
         if (appLayer != null) {
-            if (!Authorizations.isAppLayerWriteAuthorized(application, appLayer, context.getRequest(), em)) {
+            if (!AuthorizationsHelper.isAppLayerWriteAuthorized(application, appLayer, context.getRequest(), em)) {
                 result.put("message", getBundle().getString("viewer.simplifyfeatureactionbean.2"));
                 return false;
             }

@@ -560,4 +560,32 @@ public class ArcGISServiceHelper implements GeoServiceHelper {
         return new JSONObject(IOUtils.toString(client.get(new URL(url)).getResponseStream(), "UTF-8"));
     }
 
+    public static JSONObject toJSONObject(ArcGISService geoService, boolean flatten, Set<String> layersToInclude, boolean validXmlTags, boolean includeAuthorizations, EntityManager em) throws JSONException {
+        JSONObject o = GeoServiceHelper.toJSONObject(geoService, flatten, layersToInclude, validXmlTags, includeAuthorizations, em);
+
+        // Add currentVersion info to service info
+
+        // Assume 9.x by default
+
+        JSONObject json = new JSONObject();
+        o.put("arcGISVersion", json);
+        json.put("s", "9.x");    // complete currentVersion string
+        json.put("major", 9L);   // major version, integer
+        json.put("number", 9.0); // version as as Number
+
+        String cv = geoService.getCurrentVersion();
+
+        if (cv != null) {
+            json.put("s", cv);
+            try {
+                String[] parts = cv.split("\\.");
+                json.put("major", Integer.parseInt(parts[0]));
+                json.put("number", Double.parseDouble(cv));
+            } catch (Exception e) {
+                // keep defaults
+            }
+        }
+
+        return o;
+    }
 }

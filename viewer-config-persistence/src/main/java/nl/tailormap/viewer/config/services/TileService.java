@@ -18,9 +18,6 @@ package nl.tailormap.viewer.config.services;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import javax.persistence.CascadeType;
 import javax.persistence.DiscriminatorValue;
@@ -30,7 +27,6 @@ import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 /**
  *
@@ -70,25 +66,7 @@ public class TileService extends GeoService {
         return null;
     }
     
-    @Override
-    public JSONObject toJSONObject(boolean flatten, Set<String> layersToInclude, boolean validXmlTags, EntityManager em) throws JSONException {
-        return toJSONObject(flatten, layersToInclude,validXmlTags, false,em);
-    }    
-    
-    @Override
-    public JSONObject toJSONObject(boolean flatten, Set<String> layersToInclude,boolean validXmlTags, boolean includeAuthorizations, EntityManager em) throws JSONException {
-        JSONObject o = super.toJSONObject(flatten, layersToInclude,validXmlTags, includeAuthorizations,em);
-        if(tilingProtocol != null) {
-            o.put("tilingProtocol", tilingProtocol);
-        }
-        JSONArray matrixSetsArray = new JSONArray();
-        for (TileMatrixSet matrixSet : matrixSets) {
-            matrixSetsArray.put(matrixSet.toJSONObject());
-        }
-        o.put("matrixSets", matrixSetsArray);
-        
-        return o;
-    }    
+
     
     // <editor-fold desc="Getters and setters"  defaultstate="collapsed">
     

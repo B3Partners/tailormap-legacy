@@ -9,7 +9,7 @@ import nl.tailormap.viewer.config.app.ConfiguredComponent;
 import nl.tailormap.viewer.config.app.Level;
 import nl.tailormap.viewer.config.app.StartLayer;
 import nl.tailormap.viewer.config.app.StartLevel;
-import nl.tailormap.viewer.config.security.Authorizations;
+import nl.tailormap.viewer.helpers.AuthorizationsHelper;
 import nl.tailormap.viewer.util.SelectedContentCache;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.logging.Log;
@@ -381,7 +381,7 @@ public class ApplicationHelper {
     public static JSONObject toJSON(Application app, HttpServletRequest request, boolean validXmlTags, boolean onlyServicesAndLayers, boolean includeAppLayerAttributes, boolean includeRelations,
                                     EntityManager em, boolean shouldProcessCache, boolean hideAdminOnly) throws JSONException {
 
-        return toJSON( app,  Authorizations.getRoles(request, em),
+        return toJSON( app,  AuthorizationsHelper.getRoles(request, em),
                 URI.create(request.getRequestURI()),
                 request.getServletContext().getInitParameter("proxy"),  validXmlTags,  onlyServicesAndLayers,  includeAppLayerAttributes,  includeRelations,
          em,  shouldProcessCache,  hideAdminOnly);
@@ -453,7 +453,7 @@ public class ApplicationHelper {
             JSONObject c = new JSONObject();
             o.put("components", c);
             for (ConfiguredComponent comp : app.getComponents()) {
-                if (Authorizations.isConfiguredComponentAuthorized(comp, roles, em)) {
+                if (AuthorizationsHelper.isConfiguredComponentAuthorized(comp, roles, em)) {
                     c.put(comp.getName(), comp.toJSON(hideAdminOnly));
                 }
             }

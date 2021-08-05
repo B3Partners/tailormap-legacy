@@ -32,13 +32,13 @@ import nl.tailormap.viewer.config.ClobElement;
 import nl.tailormap.viewer.config.app.Application;
 import nl.tailormap.viewer.config.app.ApplicationLayer;
 import nl.tailormap.viewer.config.app.ConfiguredAttribute;
-import nl.tailormap.viewer.config.security.Authorizations;
 import nl.tailormap.viewer.config.services.FeatureTypeRelation;
 import nl.tailormap.viewer.config.services.FeatureTypeRelationKey;
 import nl.tailormap.viewer.config.services.GeoService;
 import nl.tailormap.viewer.config.services.JDBCFeatureSource;
 import nl.tailormap.viewer.config.services.Layer;
 import nl.tailormap.viewer.config.services.SimpleFeatureType;
+import nl.tailormap.viewer.helpers.AuthorizationsHelper;
 import nl.tailormap.viewer.helpers.featuresources.FeatureSourceFactoryHelper;
 import nl.tailormap.viewer.util.ChangeMatchCase;
 import nl.tailormap.viewer.util.FeatureToJson;
@@ -276,7 +276,7 @@ public class FeatureInfoActionBean extends LocalizableApplicationActionBean impl
                         error = getBundle().getString("viewer.featureinfoactionbean.1");
                         break;
                     }
-                    if(!Authorizations.isAppLayerReadAuthorized(application, al, context.getRequest(), em)) {
+                    if(!AuthorizationsHelper.isAppLayerReadAuthorized(application, al, context.getRequest(), em)) {
                         error = getBundle().getString("viewer.featureinfoactionbean.2");
                         break;
                     }
@@ -415,7 +415,7 @@ public class FeatureInfoActionBean extends LocalizableApplicationActionBean impl
                         error = getBundle().getString("viewer.featureinfoactionbean.4");
                         break;
                     }
-                    if (!Authorizations.isAppLayerReadAuthorized(application, al, context.getRequest(), em)) {
+                    if (!AuthorizationsHelper.isAppLayerReadAuthorized(application, al, context.getRequest(), em)) {
                         error = getBundle().getString("viewer.featureinfoactionbean.5");
                         break;
                     }

@@ -28,10 +28,10 @@ import nl.tailormap.i18n.LocalizableActionBean;
 import nl.tailormap.viewer.config.app.Application;
 import nl.tailormap.viewer.config.app.ApplicationLayer;
 import nl.tailormap.viewer.config.app.Level;
-import nl.tailormap.viewer.config.security.Authorizations;
 import nl.tailormap.viewer.config.security.Group;
 import nl.tailormap.viewer.config.services.FeatureSource;
 import nl.tailormap.viewer.config.services.SimpleFeatureType;
+import nl.tailormap.viewer.helpers.AuthorizationsHelper;
 import nl.tailormap.viewer.helpers.app.ApplicationHelper;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -109,7 +109,7 @@ public class ServiceUsageMatrixActionBean extends LocalizableActionBean {
         EntityManager em = Stripersist.getEntityManager();
         for (Application app: applications) {
             JSONObject json = new JSONObject(
-                    ApplicationHelper.toJSON(app, Authorizations.getRoles(this.context.getRequest(), em), URI.create(this.context.getRequest().getRequestURI()),
+                    ApplicationHelper.toJSON(app, AuthorizationsHelper.getRoles(this.context.getRequest(), em), URI.create(this.context.getRequest().getRequestURI()),
                             this.context.getRequest().getServletContext().getInitParameter("proxy"), true, true, false, false,
                             em, true, true)
             );
