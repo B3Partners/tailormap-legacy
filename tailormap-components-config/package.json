@@ -3,13 +3,22 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "npm-watch serve",
+    "serve": "ng serve",
     "build": "ng build",
     "install-all": "npm run merge-dependencies && npm install",
     "build-prod": "ng build --configuration=production --output-hashing=none",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "merge-dependencies": "node bin/merge-dependencies.js"
+  },
+  "watch": {
+    "serve": {
+      "patterns": [
+        "../../tailormap-frontend/projects"
+      ],
+      "extensions": "ts,css,html"
+    }
   },
   "private": true,
   "dependencies": {
@@ -28,8 +37,6 @@
     "@ngrx/effects": "^12.0.0",
     "@ngrx/store": "^12.0.0",
     "@ngrx/store-devtools": "^12.0.0",
-    "@b3partners/gbi-maps-components": "0.0.11",
-    "@b3partners/gbi-maps-components-config": "0.0.14",
     "@tailormap/config": "0.0.12",
     "@tailormap/core-components": "^0.0.10",
     "@tailormap/models": "0.0.2",
@@ -52,6 +59,7 @@
     "karma-coverage": "~2.0.3",
     "karma-jasmine": "~4.0.0",
     "karma-jasmine-html-reporter": "^1.5.0",
+    "npm-watch": "0.11.0",
     "typescript": "~4.3.2"
   }
 }

@@ -1,6 +1,6 @@
 const fs = require('fs');
-const assets = require('../third-party-components-assets.json');
-const angular = require('../../../angular.json');
+const assets = require('../projects/third-party-components/third-party-components-assets.json');
+const angular = require('../angular.json');
 
 function mergeAssets(angularAssets) {
   assets.forEach(asset => {
@@ -23,7 +23,7 @@ for (const project in angular.projects) if(angular.projects.hasOwnProperty(proje
   }
 }
 
-fs.writeFile('../../angular.json', JSON.stringify(angular, null, 2), function(err) {
+fs.writeFile('../angular.json', JSON.stringify(angular, null, 2), function(err) {
   if(err) {
     console.log(err);
   } else {
