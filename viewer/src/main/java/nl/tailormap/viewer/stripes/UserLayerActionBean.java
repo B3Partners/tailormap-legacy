@@ -20,6 +20,7 @@ import nl.tailormap.viewer.audit.Auditable;
 import nl.tailormap.viewer.config.app.Application;
 import nl.tailormap.viewer.config.app.ApplicationLayer;
 import nl.tailormap.viewer.helpers.app.ApplicationLayerHelper;
+import nl.tailormap.viewer.helpers.services.GeoServiceHelper;
 import nl.tailormap.viewer.userlayer.UserLayerHandler;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
@@ -201,8 +202,7 @@ public class UserLayerActionBean extends LocalizableActionBean implements Action
                     message.put("appLayerId", ulh.getAppLayerId());
                     message.put("layerName", ulh.getLayerName());
                     message.put("appLayer", ApplicationLayerHelper.toJSONObject(ulh.getCreatedAppLayer(), Stripersist.getEntityManager()));
-                    message.put("service",
-                            ulh.getCreatedAppLayer().getService().toJSONObject(false, Stripersist.getEntityManager()));
+                    message.put("service", GeoServiceHelper.toJSONObject(ulh.getCreatedAppLayer().getService(), false, null, false, false, Stripersist.getEntityManager()));
                     this.auditMessageObject.addMessage(
                             "UserLayer " + ulh.getLayerName() + " aangemaakt met id " + ulh.getAppLayerId());
                 }

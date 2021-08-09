@@ -33,7 +33,6 @@ import nl.tailormap.viewer.config.app.Application;
 import nl.tailormap.viewer.config.app.ApplicationLayer;
 import nl.tailormap.viewer.config.app.ConfiguredAttribute;
 import nl.tailormap.viewer.config.app.ConfiguredComponent;
-import nl.tailormap.viewer.config.security.Authorizations;
 import nl.tailormap.viewer.config.services.AttributeDescriptor;
 import nl.tailormap.viewer.config.services.FeatureTypeRelation;
 import nl.tailormap.viewer.config.services.Layer;
@@ -44,6 +43,7 @@ import nl.tailormap.viewer.features.ExcelDownloader;
 import nl.tailormap.viewer.features.FeatureDownloader;
 import nl.tailormap.viewer.features.GeoJSONDownloader;
 import nl.tailormap.viewer.features.ShapeDownloader;
+import nl.tailormap.viewer.helpers.AuthorizationsHelper;
 import nl.tailormap.viewer.helpers.featuresources.FeatureSourceFactoryHelper;
 import nl.tailormap.viewer.helpers.featuresources.WFSFeatureSourceHelper;
 import nl.tailormap.viewer.util.ChangeMatchCase;
@@ -223,7 +223,7 @@ public class DownloadFeaturesActionBean extends LocalizableApplicationActionBean
     @Before(stages=LifecycleStage.EventHandling)
     public void checkAuthorization() {
         if(application == null || appLayer == null
-                || !Authorizations.isAppLayerReadAuthorized(application, appLayer, context.getRequest(),Stripersist.getEntityManager())) {
+                || !AuthorizationsHelper.isAppLayerReadAuthorized(application, appLayer, context.getRequest(),Stripersist.getEntityManager())) {
             unauthorized = true;
         }
         auditMessageObject = new AuditMessageObject();

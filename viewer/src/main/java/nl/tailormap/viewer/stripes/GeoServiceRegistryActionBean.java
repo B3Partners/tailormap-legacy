@@ -24,10 +24,15 @@ import net.sourceforge.stripes.action.StreamingResolution;
 import net.sourceforge.stripes.action.StrictBinding;
 import net.sourceforge.stripes.action.UrlBinding;
 import net.sourceforge.stripes.validation.Validate;
-import nl.tailormap.viewer.config.security.Authorizations;
+import nl.tailormap.viewer.config.services.ArcGISService;
 import nl.tailormap.viewer.config.services.Category;
 import nl.tailormap.viewer.config.services.GeoService;
 import nl.tailormap.viewer.config.services.Layer;
+import nl.tailormap.viewer.config.services.TileService;
+import nl.tailormap.viewer.helpers.AuthorizationsHelper;
+import nl.tailormap.viewer.helpers.services.ArcGISServiceHelper;
+import nl.tailormap.viewer.helpers.services.GeoServiceHelper;
+import nl.tailormap.viewer.helpers.services.TilingServiceHelper;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -108,7 +113,7 @@ public class GeoServiceRegistryActionBean implements ActionBean {
             for(GeoService service: c.getServices()) {
                 JSONObject j = new JSONObject();
                 j.put("id", "s" + service.getId());
-                j.put("service", service.toJSONObject(false, em));
+                j.put("service", serviceToJSONObject(service,em));
                 j.put("name", service.getName());
                 j.put("type", "service");
                 j.put("isLeaf", service.getTopLayer() == null);
@@ -121,10 +126,10 @@ public class GeoServiceRegistryActionBean implements ActionBean {
             
             GeoService gs = em.find(GeoService.class, new Long(id));
             // GeoService may be invalid and not have a top layer
-            if(gs.getTopLayer() != null && Authorizations.isLayerReadAuthorized(gs.getTopLayer(), context.getRequest(), em)) {
+            if(gs.getTopLayer() != null && AuthorizationsHelper.isLayerReadAuthorized(gs.getTopLayer(), context.getRequest(), em)) {
                 
                 for(Layer sublayer: gs.getTopLayer().getChildren()) {
-                    if(Authorizations.isLayerReadAuthorized(sublayer, context.getRequest(), em)) {
+                    if(AuthorizationsHelper.isLayerReadAuthorized(sublayer, context.getRequest(), em)) {
                         JSONObject j = layerJSON(sublayer);
                         j.put("parentid", nodeId);
                         children.put(j);
@@ -133,10 +138,10 @@ public class GeoServiceRegistryActionBean implements ActionBean {
             }
         } else if(type.equals("l")) {
             Layer layer = em.find(Layer.class, new Long(id));
-            if(Authorizations.isLayerReadAuthorized(layer, context.getRequest(), em)) {
+            if(AuthorizationsHelper.isLayerReadAuthorized(layer, context.getRequest(), em)) {
                 for(Layer sublayer: layer.getChildren()) {
 
-                    if(Authorizations.isLayerReadAuthorized(sublayer, context.getRequest(), em)) {
+                    if(AuthorizationsHelper.isLayerReadAuthorized(sublayer, context.getRequest(), em)) {
                         JSONObject j = layerJSON(sublayer);
                         j.put("parentid", nodeId);
                         children.put(j);
@@ -184,7 +189,7 @@ public class GeoServiceRegistryActionBean implements ActionBean {
         for(GeoService service: results) {
             JSONObject j = new JSONObject();
             j.put("id", "s" + service.getId());
-            j.put("service", service.toJSONObject(false, em));
+            j.put("service", serviceToJSONObject(service,em));
             j.put("name", service.getName());
             j.put("type", "service");
             j.put("isLeaf", service.getTopLayer() == null);
@@ -193,5 +198,16 @@ public class GeoServiceRegistryActionBean implements ActionBean {
         }
         
         return new StreamingResolution("application/json", new StringReader(jresults.toString(4)));          
+    }
+
+    private JSONObject serviceToJSONObject(GeoService service, EntityManager em){
+        if (service instanceof TileService) {
+            return TilingServiceHelper.toJSONObject((TileService) service, false, null,false,false, em);
+        } else if (service instanceof ArcGISService) {
+            return ArcGISServiceHelper.toJSONObject((ArcGISService) service, false, null,false,false, em);
+        } else {
+            return GeoServiceHelper.toJSONObject(service, false, null,false,false, em);
+        }
+
     }
 }

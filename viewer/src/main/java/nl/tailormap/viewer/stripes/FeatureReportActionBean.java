@@ -31,11 +31,11 @@ import net.sourceforge.stripes.validation.Validate;
 import nl.tailormap.viewer.config.app.Application;
 import nl.tailormap.viewer.config.app.ApplicationLayer;
 import nl.tailormap.viewer.config.app.ConfiguredAttribute;
-import nl.tailormap.viewer.config.security.Authorizations;
 import nl.tailormap.viewer.config.services.FeatureTypeRelation;
 import nl.tailormap.viewer.config.services.FeatureTypeRelationKey;
 import nl.tailormap.viewer.config.services.Layer;
 import nl.tailormap.viewer.config.services.SimpleFeatureType;
+import nl.tailormap.viewer.helpers.AuthorizationsHelper;
 import nl.tailormap.viewer.helpers.featuresources.FeatureSourceFactoryHelper;
 import nl.tailormap.viewer.util.FeaturePropertiesArrayHelper;
 import nl.tailormap.viewer.util.FeatureToJson;
@@ -112,7 +112,7 @@ public class FeatureReportActionBean extends LocalizableApplicationActionBean im
     @Before(stages = LifecycleStage.EventHandling)
     public void checkAuthorization() {
         if (appLayer == null
-                || !Authorizations.isLayerReadAuthorized(layer, context.getRequest(), Stripersist.getEntityManager())) {
+                || !AuthorizationsHelper.isLayerReadAuthorized(layer, context.getRequest(), Stripersist.getEntityManager())) {
             unauthorized = true;
         }
     }

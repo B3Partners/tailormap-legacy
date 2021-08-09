@@ -36,6 +36,8 @@ public class LayerHelper {
     /**
      * Clone this layer and remove it from the tree of the GeoService this Layer
      * is part of. Used for updating service, call only on non-persistent objects.
+     *
+     * @param l layer to clone
      * @return a clone of this Layer with its parent and service set to null and
      * children set to a new, empty list.
      */

@@ -40,6 +40,7 @@ import nl.tailormap.viewer.config.app.ConfiguredComponent;
 import nl.tailormap.viewer.config.metadata.Metadata;
 import nl.tailormap.viewer.config.security.Authorizations;
 import nl.tailormap.viewer.config.security.User;
+import nl.tailormap.viewer.helpers.AuthorizationsHelper;
 import nl.tailormap.viewer.helpers.app.ApplicationHelper;
 import nl.tailormap.viewer.helpers.app.ComponentHelper;
 import nl.tailormap.viewer.util.SelectedContentCache;
@@ -58,6 +59,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
+import java.net.URI;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -323,7 +325,19 @@ public class ApplicationActionBean extends LocalizableApplicationActionBean impl
         EntityManager em = Stripersist.getEntityManager();
         JSONObject response = new JSONObject();
         response.put("success", false);
-        JSONObject obj = ApplicationHelper.toJSON(application, context.getRequest(), false, false, em, true);
+        JSONObject obj = ApplicationHelper.toJSON(
+                application,
+                AuthorizationsHelper.getRoles(context.getRequest(), em),
+                URI.create(context.getRequest().getRequestURI()),
+                context.getRequest().getServletContext().getInitParameter("proxy"),
+                false,
+                false,
+                false,
+                false,
+                em,
+                true,
+                true
+        );
         JSONObject details = obj.optJSONObject("details");
         if (details != null) {
             details.remove(SelectedContentCache.DETAIL_CACHED_EXPANDED_SELECTED_CONTENT);
@@ -384,14 +398,18 @@ public class ApplicationActionBean extends LocalizableApplicationActionBean impl
             user.put("name", username);
             JSONObject roles = new JSONObject();
             user.put("roles", roles);
-            for(String role: Authorizations.getRoles(context.getRequest(),em)) {
+            for(String role: AuthorizationsHelper.getRoles(context.getRequest(),em)) {
                 roles.put(role, Boolean.TRUE);
             }
         }
 
         buildComponentSourceHTML(em);
 
-        appConfigJSON = ApplicationHelper.toJSON(application, context.getRequest(),false, false,em).toString();
+        appConfigJSON = ApplicationHelper.toJSON( application,  AuthorizationsHelper.getRoles(context.getRequest(), em),
+                URI.create(context.getRequest().getRequestURI()),
+                context.getRequest().getServletContext().getInitParameter("proxy"),  false,  false,  false,  false,
+                em,  true,  false).toString();
+
         this.viewerType = retrieveViewerType();
         if(StringUtils.isBlank(title)) {
             this.title = application.getName();
@@ -433,14 +451,14 @@ public class ApplicationActionBean extends LocalizableApplicationActionBean impl
             context.getRequest().getSession().invalidate();
             return new ForwardResolution("/WEB-INF/jsp/error.jsp");
         }
-        else if (!Authorizations.isApplicationReadAuthorized(application, context.getRequest(), em) && (username == null || u != null && u.isAuthenticatedByIp())) {
+        else if (!AuthorizationsHelper.isApplicationReadAuthorized(application, AuthorizationsHelper.getRoles(context.getRequest(), em), em) && (username == null || u != null && u.isAuthenticatedByIp())) {
             RedirectResolution login = new RedirectResolution(LoginActionBean.class)
                     .addParameter("name", application.getName()) // binded parameters not included ?
                     .addParameter("version", application.getVersion())
                     .includeRequestParameters(true);
             context.getRequest().getSession().invalidate();
             return login;
-        } else if (!Authorizations.isApplicationReadAuthorized(application, context.getRequest(), em) && username != null) {
+        } else if (!AuthorizationsHelper.isApplicationReadAuthorized(application, AuthorizationsHelper.getRoles(context.getRequest(), em), em) && username != null) {
             ResourceBundle bundle = ResourceBundleProvider.getResourceBundle(determineLocaleForBundle(context, application));
             String msg = bundle.getString("viewer.applicationactionbean.norights");
             context.getValidationErrors().addGlobalError(new SimpleError(msg));
@@ -460,7 +478,7 @@ public class ApplicationActionBean extends LocalizableApplicationActionBean impl
      * @return a key to use as a cache identifyer
      */
     public static int getRolesCachekey(HttpServletRequest request, EntityManager em) {
-        Set<String> roles = Authorizations.getRoles(request, em);
+        Set<String> roles = AuthorizationsHelper.getRoles(request, em);
 
         if(roles.isEmpty()) {
             return 0;
@@ -528,7 +546,7 @@ public class ApplicationActionBean extends LocalizableApplicationActionBean impl
             Set<String> classNamesDone = new HashSet<String>();
             for(ConfiguredComponent cc: comps) {
 
-                if(!Authorizations.isConfiguredComponentAuthorized(cc, context.getRequest(), em)) {
+                if(!AuthorizationsHelper.isConfiguredComponentAuthorized(cc, context.getRequest(), em)) {
                     continue;
                 }
                 if(!classNamesDone.contains(cc.getClassName())) {
@@ -564,7 +582,7 @@ public class ApplicationActionBean extends LocalizableApplicationActionBean impl
             int hash = 0;
             Set<String> classNamesDone = new HashSet<String>();
             for (ConfiguredComponent cc : comps) {
-                if (!Authorizations.isConfiguredComponentAuthorized(cc, context.getRequest(), em)) {
+                if (!AuthorizationsHelper.isConfiguredComponentAuthorized(cc, context.getRequest(), em)) {
                     continue;
                 }
 

@@ -17,12 +17,10 @@
 package nl.tailormap.viewer.config.services;
 
 import nl.tailormap.viewer.config.ClobElement;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
-import javax.persistence.EntityManager;
 import javax.persistence.Transient;
 import java.util.Arrays;
 import java.util.Collections;
@@ -111,47 +109,5 @@ public class ArcGISService extends GeoService{
         return cv;
     }
 
-    //<editor-fold desc="Add currentVersion to toJSONObject()">
-
-    @Override
-    public JSONObject toJSONObject(boolean flatten, Set<String> layersToInclude, boolean validXmlTags, EntityManager em) throws JSONException {
-        return toJSONObject(validXmlTags, layersToInclude, validXmlTags, false, em);
-    }
-
-    @Override
-    public JSONObject toJSONObject(boolean flatten, Set<String> layersToInclude, boolean validXmlTags, boolean includeAuthorizations, EntityManager em) throws JSONException {
-        JSONObject o = super.toJSONObject(flatten, layersToInclude,validXmlTags,includeAuthorizations, em);
-
-        // Add currentVersion info to service info
-
-        // Assume 9.x by default
-
-        JSONObject json = new JSONObject();
-        o.put("arcGISVersion", json);
-        json.put("s", "9.x");    // complete currentVersion string
-        json.put("major", 9L);   // major version, integer
-        json.put("number", 9.0); // version as as Number
-
-        String cv = getCurrentVersion();
-
-        if(cv != null) {
-            json.put("s", cv);
-            try {
-                String[] parts = cv.split("\\.");
-                json.put("major", Integer.parseInt(parts[0]));
-                json.put("number", Double.parseDouble(cv));
-            } catch(Exception e) {
-                // keep defaults
-            }
-        }
-
-        return o;
-    }
-
-    @Override
-    public JSONObject toJSONObject(boolean flatten, EntityManager em) throws JSONException {
-        return toJSONObject(flatten, null,false, em);
-    }
-    //</editor-fold>
 
 }

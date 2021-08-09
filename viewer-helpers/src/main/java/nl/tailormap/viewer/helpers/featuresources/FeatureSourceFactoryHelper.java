@@ -81,6 +81,7 @@ public class FeatureSourceFactoryHelper {
      * Update this featuresource.
      *
      * @param em the entity manager to use
+     * @param fs featuresource to update
      * @return the result of the update
      * @throws Exception if any
      */

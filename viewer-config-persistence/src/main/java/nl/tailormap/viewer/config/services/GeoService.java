@@ -17,14 +17,8 @@
 package nl.tailormap.viewer.config.services;
 
 import nl.tailormap.viewer.config.ClobElement;
-import nl.tailormap.viewer.config.security.Authorizations;
-import nl.tailormap.viewer.config.security.Authorizations.ReadWrite;
-import nl.tailormap.viewer.util.DB;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.mutable.MutableObject;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -364,145 +358,8 @@ public abstract class GeoService implements Serializable {
             return l.getChildren();
         }
     }
-    
-    public JSONObject toJSONObject(boolean includeLayerTree, Set<String> layersToInclude,boolean validXmlTags, EntityManager em) throws JSONException {
-        return toJSONObject(includeLayerTree, layersToInclude, validXmlTags, false, em);
-    }
-    
-    public JSONObject toJSONObject(boolean includeLayerTree, Set<String> layersToInclude,boolean validXmlTags, boolean includeAuthorizations, EntityManager em) throws JSONException {
-        JSONObject o = new JSONObject();
-        o.put("id", id);
-        o.put("name", name);
-        o.put("url", url);
-        o.put("protocol", getProtocol());
-        o.put("readers",getReaders());
-        o.put("version",getVersion());
 
-        if (details.containsKey(GeoService.DETAIL_USE_PROXY)) {
-            ClobElement ce = details.get(GeoService.DETAIL_USE_PROXY);
-            boolean useProxy = Boolean.parseBoolean(ce.getValue());
-            o.put(GeoService.DETAIL_USE_PROXY, useProxy);
-            if(getPassword() != null && getUsername() != null){
-                o.put(PARAM_MUST_LOGIN, true);
-            }
-        }else{
-            o.put(GeoService.DETAIL_USE_PROXY, false);
-        }
-        if(this instanceof WMSService){
-            WMSExceptionType extype = ((WMSService)this).getException_type() != null ? ((WMSService)this).getException_type() : WMSExceptionType.Inimage;
-            o.put("exception_type", extype.getDescription());
-        }
-        
-        if (!validXmlTags){
-            JSONObject jStyleLibraries = new JSONObject();
-            for(StyleLibrary sld: getStyleLibraries()) {
-                JSONObject jsld = new JSONObject();
-                String styleName=sld.getId().toString();                
-                jStyleLibraries.put("sld:" +styleName ,jsld);
-                jsld.put("id", sld.getId());
-                jsld.put("title", sld.getTitle());
-                jsld.put("default", sld.isDefaultStyle());
-                if(sld.isDefaultStyle()) {
-                    o.put("defaultStyleLibrary", jsld);
-                }
-                if(sld.getExternalUrl() != null) {
-                    jsld.put("externalUrl", sld.getExternalUrl());
-                } 
-                JSONObject userStylesPerNamedLayer = new JSONObject();
-                if(sld.getNamedLayerUserStylesJson() != null) {
-                    userStylesPerNamedLayer = new JSONObject(sld.getNamedLayerUserStylesJson());
-                }
-                jsld.put("userStylesPerNamedLayer", userStylesPerNamedLayer);
-                if(sld.getExtraLegendParameters() != null) {
-                    jsld.put("extraLegendParameters", sld.getExtraLegendParameters());
-                }
-                jsld.put("hasBody", sld.getExternalUrl() == null);
-            }
-            o.put("styleLibraries", jStyleLibraries);
-        }
-        
-        if(topLayer != null) {
-            
-            if(em.contains(this)) {
-                   
-                List<Layer> layerEntities = loadLayerTree(em);
 
-                if(!layerEntities.isEmpty()) {
-                    // Prevent n+1 queries
-                    int i = 0;
-                    do {
-                        List<Layer> subList = layerEntities.subList(i, Math.min(layerEntities.size(), i+ DB.MAX_LIST_EXPRESSIONS));
-                        em.createQuery("from Layer l "
-                                + "left join fetch l.details "
-                                + "where l in (:layers)")
-                                .setParameter("layers", subList)
-                                .getResultList();
-                        i += subList.size();
-                    } while(i < layerEntities.size());
-                }
-            }
-
-            JSONObject layers = new JSONObject();
-            o.put("layers", layers);
-            walkLayerJSONFlatten(topLayer, layers, layersToInclude,validXmlTags, includeAuthorizations, em);
-            
-            if(includeLayerTree) {
-                o.put("topLayer", walkLayerJSONTree(topLayer, em));
-            }
-            
-        }
-        return o;
-    }
-    
-    private static void walkLayerJSONFlatten(Layer l, JSONObject layers, Set<String> layersToInclude,boolean validXmlTags, boolean includeAuthorizations, EntityManager em) throws JSONException {
-
-        /* TODO check readers (and include readers in n+1 prevention query */
-        
-        /* Flatten tree structure, currently depth-first - later traversed layers
-        * do not overwrite earlier layers with the same name - do not include
-        * virtual layers
-        */
-
-        if(layersToInclude == null || layersToInclude.contains(l.getName())) {
-            if(!l.isVirtual() && l.getName() != null && !layers.has(l.getName())) {
-                String name = l.getName();
-                if (validXmlTags){
-                    /*name="layer_"+name;
-                    name=name.replaceAll(" ", "_");*/
-                    name="layer"+layers.length();
-                }
-                JSONObject layer = l.toJSONObject();
-                if(includeAuthorizations){
-                    ReadWrite rw = Authorizations.getLayerAuthorizations(l, em);
-                    layer.put(Authorizations.AUTHORIZATIONS_KEY, rw != null ? rw.toJSON() : new JSONObject());
-                }
-                layers.put(name, layer);
-            }
-        }
-
-        for(Layer child: l.getCachedChildren(em)) {                
-            walkLayerJSONFlatten(child, layers, layersToInclude,validXmlTags,includeAuthorizations, em);
-        }
-    }
-    
-    private static JSONObject walkLayerJSONTree(Layer l, EntityManager em) throws JSONException {
-        JSONObject j = l.toJSONObject();
-        
-        List<Layer> children = l.getCachedChildren(em);
-        if(!children.isEmpty()) {        
-            JSONArray jc = new JSONArray();
-            j.put("children", jc);
-            for(Layer child: children) {                
-                jc.put(walkLayerJSONTree(child, em));
-            }
-        }
-        return j;
-    }
-    
-    public JSONObject toJSONObject(boolean includeLayerTree, EntityManager em) throws JSONException {
-        return toJSONObject(includeLayerTree, null,false,false,em);
-    }
-    
     /**
      * Gets a single layer without loading all layers. If multiple layers exist
      * with the same name, a random non-virtual layer is returned.

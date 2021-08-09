@@ -30,11 +30,11 @@ import net.sourceforge.stripes.validation.Validate;
 import nl.tailormap.commons.HttpClientConfigured;
 import nl.tailormap.viewer.audit.AuditMessageObject;
 import nl.tailormap.viewer.audit.Auditable;
-import nl.tailormap.viewer.config.security.Authorizations;
 import nl.tailormap.viewer.config.security.Group;
 import nl.tailormap.viewer.config.security.User;
 import nl.tailormap.viewer.config.services.GeoService;
 import nl.tailormap.viewer.config.services.WMSService;
+import nl.tailormap.viewer.helpers.AuthorizationsHelper;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpEntity;
@@ -294,7 +294,7 @@ public class ProxyActionBean implements ActionBean, Auditable {
         if (mustLogin && serviceId != null) {
             GeoService gs = em.find(GeoService.class, serviceId);
             Set<String> readers = gs.getReaders();
-            Set<String> userroles = Authorizations.getRoles(context.getRequest(), em);
+            Set<String> userroles = AuthorizationsHelper.getRoles(context.getRequest(), em);
 
             boolean allowed = false;
             for (String userrole : userroles) {

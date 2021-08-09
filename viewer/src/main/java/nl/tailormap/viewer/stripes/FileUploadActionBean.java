@@ -16,8 +16,8 @@ import nl.tailormap.viewer.audit.Auditable;
 import nl.tailormap.viewer.config.app.Application;
 import nl.tailormap.viewer.config.app.ApplicationLayer;
 import nl.tailormap.viewer.config.app.FileUpload;
-import nl.tailormap.viewer.config.security.Authorizations;
 import nl.tailormap.viewer.config.services.Layer;
+import nl.tailormap.viewer.helpers.AuthorizationsHelper;
 import nl.tailormap.web.stripes.ErrorMessageResolution;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -146,7 +146,7 @@ public class FileUploadActionBean extends LocalizableApplicationActionBean imple
         }
 
         if (error == null) {
-            if (!Authorizations.isAppLayerWriteAuthorized(application, appLayer, context.getRequest(), Stripersist.getEntityManager())) {
+            if (!AuthorizationsHelper.isAppLayerWriteAuthorized(application, appLayer, context.getRequest(), Stripersist.getEntityManager())) {
                 error = getBundle().getString("viewer.general.noauth");
             }
         }
@@ -211,7 +211,7 @@ public class FileUploadActionBean extends LocalizableApplicationActionBean imple
         }
 
         if (error == null) {
-            if (!Authorizations.isAppLayerReadAuthorized(application, appLayer, request, Stripersist.getEntityManager())) {
+            if (!AuthorizationsHelper.isAppLayerReadAuthorized(application, appLayer, request, Stripersist.getEntityManager())) {
                 error = bundle.getString("viewer.fileuploadactionbean.2");
             }
         }
@@ -241,7 +241,7 @@ public class FileUploadActionBean extends LocalizableApplicationActionBean imple
         }
 
         if (error == null) {
-            if (!Authorizations.isAppLayerReadAuthorized(application, appLayer, context.getRequest(), Stripersist.getEntityManager())) {
+            if (!AuthorizationsHelper.isAppLayerReadAuthorized(application, appLayer, context.getRequest(), Stripersist.getEntityManager())) {
                 error = getBundle().getString("viewer.general.noauth");
             }
         }
@@ -287,7 +287,7 @@ public class FileUploadActionBean extends LocalizableApplicationActionBean imple
         }
 
         if (error == null) {
-            if (!Authorizations.isAppLayerWriteAuthorized(application, appLayer, context.getRequest(), Stripersist.getEntityManager())) {
+            if (!AuthorizationsHelper.isAppLayerWriteAuthorized(application, appLayer, context.getRequest(), Stripersist.getEntityManager())) {
                 error = getBundle().getString("viewer.general.noauth");
             }
         }

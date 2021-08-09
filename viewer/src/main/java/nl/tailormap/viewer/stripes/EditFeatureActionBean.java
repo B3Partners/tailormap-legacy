@@ -29,10 +29,10 @@ import nl.tailormap.viewer.audit.AuditMessageObject;
 import nl.tailormap.viewer.audit.Auditable;
 import nl.tailormap.viewer.config.app.Application;
 import nl.tailormap.viewer.config.app.ApplicationLayer;
-import nl.tailormap.viewer.config.security.Authorizations;
 import nl.tailormap.viewer.config.services.FeatureTypeRelation;
 import nl.tailormap.viewer.config.services.Layer;
 import nl.tailormap.viewer.config.services.SimpleFeatureType;
+import nl.tailormap.viewer.helpers.AuthorizationsHelper;
 import nl.tailormap.viewer.helpers.featuresources.FeatureSourceFactoryHelper;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
@@ -179,7 +179,7 @@ public class EditFeatureActionBean extends LocalizableApplicationActionBean impl
                     error = getBundle().getString("viewer.editfeatureactionbean.1");
                     break;
                 }
-                if(!Authorizations.isAppLayerWriteAuthorized(application, appLayer, context.getRequest(), em)) {
+                if(!AuthorizationsHelper.isAppLayerWriteAuthorized(application, appLayer, context.getRequest(), em)) {
                     error = getBundle().getString("viewer.editfeatureactionbean.2");
                     break;
                 }
@@ -261,7 +261,7 @@ public class EditFeatureActionBean extends LocalizableApplicationActionBean impl
             error = getBundle().getString("viewer.editfeatureactionbean.7");
 
         }
-        if (!Authorizations.isAppLayerWriteAuthorized(application, appLayer, context.getRequest(), em)) {
+        if (!AuthorizationsHelper.isAppLayerWriteAuthorized(application, appLayer, context.getRequest(), em)) {
             error = getBundle().getString("viewer.editfeatureactionbean.8");
 
         }
@@ -359,7 +359,7 @@ public class EditFeatureActionBean extends LocalizableApplicationActionBean impl
                     error = getBundle().getString("viewer.editfeatureactionbean.9");
                     break;
                 }
-                if(!Authorizations.isAppLayerWriteAuthorized(application, appLayer, context.getRequest(), em)) {
+                if(!AuthorizationsHelper.isAppLayerWriteAuthorized(application, appLayer, context.getRequest(), em)) {
                     error = getBundle().getString("viewer.editfeatureactionbean.10");
                     break;
                 }
@@ -370,7 +370,7 @@ public class EditFeatureActionBean extends LocalizableApplicationActionBean impl
                     error = getBundle().getString("viewer.editfeatureactionbean.11");
                     break;
                 }
-                if (!Authorizations.isLayerGeomWriteAuthorized(layer, context.getRequest(), em)) {
+                if (!AuthorizationsHelper.isLayerGeomWriteAuthorized(layer, context.getRequest(), em)) {
                     error = getBundle().getString("viewer.editfeatureactionbean.12");
                     break;
                 }
@@ -440,7 +440,7 @@ public class EditFeatureActionBean extends LocalizableApplicationActionBean impl
         if (appLayer == null) {
             error = getBundle().getString("viewer.editfeatureactionbean.16");
         }
-        if (!Authorizations.isAppLayerWriteAuthorized(application, appLayer, context.getRequest(), em)) {
+        if (!AuthorizationsHelper.isAppLayerWriteAuthorized(application, appLayer, context.getRequest(), em)) {
             error = getBundle().getString("viewer.editfeatureactionbean.17");
         }
 

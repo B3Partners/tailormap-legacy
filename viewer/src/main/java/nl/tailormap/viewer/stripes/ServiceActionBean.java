@@ -26,8 +26,11 @@ import net.sourceforge.stripes.validation.Validate;
 import nl.tailormap.i18n.LocalizableActionBean;
 import nl.tailormap.viewer.config.services.ArcGISService;
 import nl.tailormap.viewer.config.services.GeoService;
+import nl.tailormap.viewer.config.services.TileService;
 import nl.tailormap.viewer.config.services.WMSService;
 import nl.tailormap.viewer.helpers.services.ArcGISServiceHelper;
+import nl.tailormap.viewer.helpers.services.GeoServiceHelper;
+import nl.tailormap.viewer.helpers.services.TilingServiceHelper;
 import nl.tailormap.viewer.helpers.services.WMSServiceHelper;
 import nl.tailormap.web.WaitPageStatus;
 import org.json.JSONException;
@@ -121,15 +124,21 @@ public class ServiceActionBean extends LocalizableActionBean implements ActionBe
                 }
             }
         }
-        
-        if(service != null) {
+
+        if (service != null) {
             json.put("success", Boolean.TRUE);
-            json.put("service", service.toJSONObject(true, em));
+            if (service instanceof TileService) {
+                json.put("service", TilingServiceHelper.toJSONObject((TileService) service, true, null, false, false, em));
+            } else if (service instanceof ArcGISService) {
+                json.put("service", ArcGISServiceHelper.toJSONObject((ArcGISService) service, true, null, false, false, em));
+            } else {
+                json.put("service", GeoServiceHelper.toJSONObject(service, true, null, false, false, em));
+            }
         } else {
             json.put("success", Boolean.FALSE);
             json.put("error", error);
-        }      
-        
+        }
+
         return new StreamingResolution("application/json", new StringReader(json.toString()));        
     }
 }

@@ -23,6 +23,7 @@ import org.geotools.geometry.jts.JTS;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.locationtech.jts.geom.Envelope;
 import org.opengis.referencing.FactoryException;
@@ -47,6 +48,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static nl.tailormap.viewer.config.services.TileService.PARAM_CRS;
 import static nl.tailormap.viewer.config.services.TileService.PARAM_IMAGEEXTENSION;
@@ -474,4 +476,19 @@ public class TilingServiceHelper implements GeoServiceHelper {
     public UpdateResult updateService(EntityManager em, GeoService service) throws Exception {
         throw new OperationNotSupportedException("Updating tiling services not implemented");
     }
+
+    public static JSONObject toJSONObject(TileService geoService, boolean flatten, Set<String> layersToInclude, boolean validXmlTags, boolean includeAuthorizations, EntityManager em) throws JSONException {
+        JSONObject o = GeoServiceHelper.toJSONObject(geoService, flatten, layersToInclude, validXmlTags, includeAuthorizations, em);
+        if (geoService.getTilingProtocol() != null) {
+            o.put("tilingProtocol", geoService.getTilingProtocol());
+        }
+        JSONArray matrixSetsArray = new JSONArray();
+        for (TileMatrixSet matrixSet : geoService.getMatrixSets()) {
+            matrixSetsArray.put(matrixSet.toJSONObject());
+        }
+        o.put("matrixSets", matrixSetsArray);
+
+        return o;
+    }
+
 }
