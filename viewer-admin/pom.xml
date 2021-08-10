@@ -283,39 +283,6 @@
                             <workingDirectory>${tailormap-components-config.source.dir}</workingDirectory>
                         </configuration>
                     </execution>
-                    <!-- Admin config install -->
-                    <execution>
-                        <id>install node and npm -adminconfig</id>
-                        <goals>
-                            <goal>install-node-and-npm</goal>
-                        </goals>
-                        <phase>initialize</phase>
-                        <configuration>
-                            <workingDirectory>${tailormap-admin-config.source.dir}</workingDirectory>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>Run npm install -adminconfig</id>
-                        <goals>
-                            <goal>npm</goal>
-                        </goals>
-                        <phase>generate-sources</phase>
-                        <configuration>
-                            <arguments>install</arguments>
-                            <workingDirectory>${tailormap-admin-config.source.dir}</workingDirectory>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>Build tailormap-admin-config artifacts</id>
-                        <goals>
-                            <goal>npm</goal>
-                        </goals>
-                        <phase>process-resources</phase>
-                        <configuration>
-                            <arguments>run build-prod</arguments>
-                            <workingDirectory>${tailormap-admin-config.source.dir}</workingDirectory>
-                        </configuration>
-                    </execution>
                 </executions>
             </plugin>
             <plugin>

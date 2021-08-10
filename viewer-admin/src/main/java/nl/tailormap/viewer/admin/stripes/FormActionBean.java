@@ -195,9 +195,12 @@ public class FormActionBean extends LocalizableActionBean implements ValidationE
 
     public Resolution delete() {
         EntityManager em = Stripersist.getEntityManager();
-        em.remove(form);
-        em.getTransaction().commit();
-        return new ForwardResolution(EDITJSP);
+        if (id != null && Long.parseLong(id) != -1) {
+            form = em.find(Form.class, Long.parseLong(id));
+            em.remove(form);
+            em.getTransaction().commit();
+        }
+        return view();
     }
 
     public Resolution edit() {
