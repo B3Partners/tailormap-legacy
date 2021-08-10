@@ -133,7 +133,7 @@ public class FormActionBean extends LocalizableActionBean implements ValidationE
     @DefaultHandler
     @DontValidate
     public Resolution view() {
-        return new ForwardResolution(JSP);
+        return new ForwardResolution(JSP).addParameter("debug",context.getRequest().getParameter("debug"));
     }
 
     public Resolution cancel() {
@@ -166,7 +166,7 @@ public class FormActionBean extends LocalizableActionBean implements ValidationE
     private Form parseForm() {
         Form f = new Form();
         EntityManager em = Stripersist.getEntityManager();
-        if (id != null) {
+        if (id != null && Long.parseLong(id) != -1) {
             f = em.find(Form.class, Long.parseLong(id));
         }
         f.setFeatureTypeName(featureTypeName);
