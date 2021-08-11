@@ -38,7 +38,7 @@
     "@ngrx/effects": "^12.0.0",
     "@ngrx/store": "^12.0.0",
     "@ngrx/store-devtools": "^12.0.0",
-    "@tailormap/config": "0.0.12",
+    "@tailormap/config": "0.0.13",
     "@tailormap/core-components": "^0.0.10",
     "@tailormap/models": "0.0.2",
     "@tailormap/shared": "0.0.15-2",
