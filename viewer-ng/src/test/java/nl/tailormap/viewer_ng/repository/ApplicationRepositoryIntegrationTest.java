@@ -31,7 +31,7 @@ public class ApplicationRepositoryIntegrationTest extends LoggingTestUtil {
     @Test
     public void it_should_findByName() {
         final Application a = applicationRepository.findByName("test");
-        assertNotNull(a);
+        assertNotNull(a, "we should have found something");
         assertEquals(1, a.getId());
         assertEquals("test", a.getName());
         assertEquals("1", a.getVersion());
@@ -40,7 +40,7 @@ public class ApplicationRepositoryIntegrationTest extends LoggingTestUtil {
     @Test
     public void it_should_findByNameAndVersion() {
         final Application a = applicationRepository.findByNameAndVersion("test", "1");
-        assertNotNull(a);
+        assertNotNull(a, "we should have found something");
         assertEquals(1, a.getId());
         assertEquals("test", a.getName());
         assertEquals("1", a.getVersion());

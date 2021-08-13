@@ -6,7 +6,7 @@
         <!-- would have org.springframework.bootspring-boot-starter-parent as parent, but we need TM as a parent -->
         <groupId>org.tailormap</groupId>
         <artifactId>tailormap</artifactId>
-        <version>5.9.9-SNAPSHOT</version>
+        <version>5.9.12-SNAPSHOT</version>
     </parent>
     <groupId>org.tailormap</groupId>
     <artifactId>viewer-ng</artifactId>
