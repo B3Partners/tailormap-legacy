@@ -99,7 +99,7 @@
     "protractor": "~7.0.0",
     "stylelint": "^13.13.1",
     "stylelint-config-standard": "^22.0.0",
-    "ts-node": "~10.1.0",
+    "ts-node": "~10.2.0",
     "typescript": "~4.3.5"
   }
 }
