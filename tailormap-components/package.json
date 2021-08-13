@@ -56,7 +56,7 @@
     "@tailormap/shared": "0.0.14",
     "@types/wellknown": "^0.5.1",
     "document-register-element": "^1.14.10",
-    "dpdm": "^3.7.0",
+    "dpdm": "^3.7.1",
     "material-design-icons": "^3.0.1",
     "moment": "^2.29.1",
     "ng-openapi-gen": "^0.17.2",
