@@ -95,7 +95,7 @@ public class FormActionBean extends LocalizableActionBean implements ValidationE
     @Validate
     private String featureTypeName;
 
-    @Validate(on = {"delete"})
+    @Validate(on = {"delete", "save"})
     private Form form;
 
     @Validate
