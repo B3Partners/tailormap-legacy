@@ -95,7 +95,13 @@ public class FormActionBean extends LocalizableActionBean implements ValidationE
     @Validate
     private String featureTypeName;
 
-    @Validate(on = {"delete"})
+    @Validate(on = {"delete", "save"})
+    @ValidateNestedProperties({
+            @Validate(field="id", on = {"save", "delete"}),
+            @Validate(field="json",on = "save"),
+            @Validate(field="name", on = "save"),
+            @Validate(field="featureTypeName", on = "save")
+    })
     private Form form;
 
     @Validate
@@ -133,7 +139,7 @@ public class FormActionBean extends LocalizableActionBean implements ValidationE
     @DefaultHandler
     @DontValidate
     public Resolution view() {
-        return new ForwardResolution(JSP);
+        return new ForwardResolution(JSP).addParameter("debug",context.getRequest().getParameter("debug"));
     }
 
     public Resolution cancel() {
@@ -148,7 +154,15 @@ public class FormActionBean extends LocalizableActionBean implements ValidationE
     public Resolution save() {
         EntityManager em = Stripersist.getEntityManager();
         try {
-            form = parseForm();
+            if(form.getId() != null && form.getId() != -1){
+                Form old = em.find(Form.class, form.getId());
+                old.setJson(form.getJson());
+                old.setFeatureTypeName(form.getFeatureTypeName());
+                old.setName(form.getName());
+                form = old;
+            }else{
+                form.setId(null);
+            }
             form = processForm(form);
 
             form.getReaders().clear();
@@ -161,18 +175,6 @@ public class FormActionBean extends LocalizableActionBean implements ValidationE
             return new ErrorResolution(HttpServletResponse.SC_BAD_REQUEST);
         }
         return view();
-    }
-
-    private Form parseForm() {
-        Form f = new Form();
-        EntityManager em = Stripersist.getEntityManager();
-        if (id != null) {
-            f = em.find(Form.class, Long.parseLong(id));
-        }
-        f.setFeatureTypeName(featureTypeName);
-        f.setJson(json);
-        f.setName(name);
-        return f;
     }
 
     private Form processForm(Form f) throws IOException {
@@ -195,9 +197,12 @@ public class FormActionBean extends LocalizableActionBean implements ValidationE
 
     public Resolution delete() {
         EntityManager em = Stripersist.getEntityManager();
-        em.remove(form);
-        em.getTransaction().commit();
-        return new ForwardResolution(EDITJSP);
+        if (id != null && Long.parseLong(id) != -1) {
+            form = em.find(Form.class, Long.parseLong(id));
+            em.remove(form);
+            em.getTransaction().commit();
+        }
+        return view();
     }
 
     public Resolution edit() {

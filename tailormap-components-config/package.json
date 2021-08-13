@@ -14,6 +14,7 @@
   },
   "watch": {
     "serve": {
+      "verbose": true,
       "patterns": [
         "../../tailormap-frontend/projects"
       ],
@@ -37,11 +38,12 @@
     "@ngrx/effects": "^12.0.0",
     "@ngrx/store": "^12.0.0",
     "@ngrx/store-devtools": "^12.0.0",
-    "@tailormap/config": "0.0.12",
+    "@tailormap/config": "0.0.13",
     "@tailormap/core-components": "^0.0.10",
     "@tailormap/models": "0.0.2",
     "@tailormap/shared": "0.0.15-2",
     "material-design-icons": "^3.0.1",
+    "angular-material-fileupload": "^3.0.2",
     "moment": "^2.29.1",
     "rxjs": "~6.6.0",
     "tslib": "^2.2.0",
