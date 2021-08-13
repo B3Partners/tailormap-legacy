@@ -9,15 +9,11 @@ updates:
   open-pull-requests-limit: 25
   reviewers:
   - mprins
-  - mtoonen
   assignees:
   - mprins
-  - mtoonen
   labels:
   - build infrastructure
   - dependencies
-  - backport v5.6.x
-  - backport v5.8.x
   ignore:
   - dependency-name: javax.servlet:javax.servlet-api
     versions:
@@ -63,33 +59,12 @@ updates:
   open-pull-requests-limit: 25
   reviewers:
   - mprins
-  - mtoonen
   assignees:
-  - mtoonen
   - mprins
   labels:
   - javascript
   - build infrastructure
-  - backport v5.8.x
 
-- package-ecosystem: npm
-  directory: "/tailormap-components"
-  schedule:
-    interval: weekly
-    day: wednesday
-    timezone: Europe/Amsterdam
-  open-pull-requests-limit: 25
-  reviewers:
-    - mtoonen
-    - geertplaisier
-  assignees:
-    - mtoonen
-    - geertplaisier
-  labels:
-    - dependencies
-    - javascript
-    - build infrastructure
-    - backport v5.8.x
 
 - package-ecosystem: "github-actions"
   directory: "/"
@@ -114,4 +89,3 @@ updates:
   - mprins
   labels:
   - build infrastructure
-  - backport v5.8.x
