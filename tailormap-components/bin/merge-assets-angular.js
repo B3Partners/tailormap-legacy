@@ -1,4 +1,5 @@
 const fs = require('fs');
+const path = require('path');
 const assets = require('../projects/third-party-components/third-party-components-assets.json');
 const angular = require('../angular.json');
 
@@ -23,7 +24,7 @@ for (const project in angular.projects) if(angular.projects.hasOwnProperty(proje
   }
 }
 
-fs.writeFile('../angular.json', JSON.stringify(angular, null, 2), function(err) {
+fs.writeFile(path.resolve(__dirname, '../angular.json'), JSON.stringify(angular, null, 2), function(err) {
   if(err) {
     console.log(err);
   } else {
