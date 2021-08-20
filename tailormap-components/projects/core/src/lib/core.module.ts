@@ -20,6 +20,7 @@ import { IconService, ICON_SERVICE_ICON_LOCATION } from '@tailormap/shared';
 import { environment } from '../../../bridge/src/environments/environment';
 import { registerLocaleData } from '@angular/common';
 import localenl from '@angular/common/locales/nl';
+import { API_BASE_URL } from '@tailormap/models';
 
 registerLocaleData(localenl, 'nl');
 
@@ -42,6 +43,7 @@ registerLocaleData(localenl, 'nl');
   exports: [],
   providers: [
     { provide: ICON_SERVICE_ICON_LOCATION, useValue: `${environment.basePath}/assets/core/imgs/` || '' },
+    { provide: API_BASE_URL, useValue: environment.contextPath },
     { provide: APPLICATION_SERVICE, useClass: ApplicationService },
     { provide: ATTRIBUTE_SERVICE, useClass: AttributeService },
     { provide: HIGHLIGHT_SERVICE, useClass: HighlightService },

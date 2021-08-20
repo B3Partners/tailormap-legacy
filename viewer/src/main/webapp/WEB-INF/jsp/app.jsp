@@ -340,6 +340,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 };
             </c:if>
 
+            var contextPath = "${contextPath}";
             var FlamingoAppLoader = Ext.create("viewer.AppLoader", {
                 appId: "${actionBean.application.id}",
                 viewerType: <js:quote value="${actionBean.viewerType}"/>,
