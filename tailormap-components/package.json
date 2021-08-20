@@ -52,7 +52,7 @@
     "@ngrx/store": "^12.3.0",
     "@ngrx/store-devtools": "^12.3.0",
     "@tailormap/core-components": "0.0.13",
-    "@tailormap/models": "0.0.3",
+    "@tailormap/models": "0.0.4",
     "@tailormap/shared": "0.0.16",
     "@types/wellknown": "^0.5.1",
     "document-register-element": "^1.14.10",
