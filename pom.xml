@@ -52,7 +52,7 @@
         <b3p-commons-csw.version>6.6</b3p-commons-csw.version>
         <jts.version>1.18.1</jts.version>
         <powermock.version>2.0.9</powermock.version>
-        <hsqldb.version>2.6.0</hsqldb.version>
+        <hsqldb.version>2.5.2</hsqldb.version>
         <test.persistence.unit>viewer-config-hsqldb</test.persistence.unit>
         <postgresql.version>42.2.23</postgresql.version>
         <mssql.version>9.4.0.jre8</mssql.version>
