@@ -40,7 +40,7 @@
     <properties>
         <flamingo.version>5.8.1-SNAPSHOT</flamingo.version>
         <java.version>1.8</java.version>
-        <node.version>v14.17.3</node.version>
+        <node.version>v14.17.5</node.version>
         <project.build.sourceVersion>${java.version}</project.build.sourceVersion>
         <project.build.targetVersion>${java.version}</project.build.targetVersion>
         <maven.compiler.source>${java.version}</maven.compiler.source>
@@ -52,10 +52,10 @@
         <b3p-commons-csw.version>6.6</b3p-commons-csw.version>
         <jts.version>1.18.1</jts.version>
         <powermock.version>2.0.9</powermock.version>
-        <hsqldb.version>2.5.1</hsqldb.version>
+        <hsqldb.version>2.5.2</hsqldb.version>
         <test.persistence.unit>viewer-config-hsqldb</test.persistence.unit>
         <postgresql.version>42.2.23</postgresql.version>
-        <mssql.version>9.2.1.jre8</mssql.version>
+        <mssql.version>9.4.0.jre8</mssql.version>
         <oracle.version>21.1.0.0</oracle.version>
         <apache.poi.version>5.0.0</apache.poi.version>
         <jakarta.mail.version>1.6.6</jakarta.mail.version>
@@ -290,7 +290,7 @@
             <dependency>
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-core</artifactId>
-                <version>3.11.2</version>
+                <version>3.12.1</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
