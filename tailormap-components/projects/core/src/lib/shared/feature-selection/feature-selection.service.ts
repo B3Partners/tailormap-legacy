@@ -6,7 +6,7 @@ import { Observable, of, Subject } from 'rxjs';
 import { selectFormConfigFeatureTypeNames, selectFormConfigs } from '../../application/state/application.selectors';
 import { concatMap, map, take } from 'rxjs/operators';
 import { ApplicationService } from '../../application/services/application.service';
-import { APPLICATION_SERVICE } from '@tailormap/models';
+import { APPLICATION_SERVICE } from '@tailormap/api';
 import { FeatureSelectionComponent } from './feature-selection.component';
 import { MatDialog } from '@angular/material/dialog';
 import { LayerUtils } from '../layer-utils/layer-utils.service';

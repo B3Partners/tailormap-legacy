@@ -8,7 +8,7 @@ import {
 } from './export-models';
 import { TailorMapService } from '../../../../../bridge/src/tailor-map.service';
 import { Observable } from 'rxjs';
-import { ExportServiceModel } from '@tailormap/models';
+import { ExportServiceModel } from '@tailormap/api';
 
 @Injectable({
   providedIn: 'root',

@@ -9,7 +9,7 @@ import {
 } from './statistic-models';
 import { TailorMapService } from '../../../../../bridge/src/tailor-map.service';
 import { Observable } from 'rxjs';
-import { StatisticServiceModel } from '@tailormap/models';
+import { StatisticServiceModel } from '@tailormap/api';
 
 @Injectable({
   providedIn: 'root',

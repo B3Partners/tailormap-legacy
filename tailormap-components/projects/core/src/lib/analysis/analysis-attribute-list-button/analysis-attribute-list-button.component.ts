@@ -1,5 +1,5 @@
 import { Component, Inject, OnDestroy } from '@angular/core';
-import { METADATA_SERVICE } from '@tailormap/models';
+import { METADATA_SERVICE } from '@tailormap/api';
 import { TailorMapService } from '../../../../../bridge/src/tailor-map.service';
 import { filter, switchMap, takeUntil } from 'rxjs/operators';
 import { forkJoin, of, Subject } from 'rxjs';

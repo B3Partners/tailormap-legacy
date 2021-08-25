@@ -11,7 +11,7 @@ import { AnalysisSourceModel } from '../../models/analysis-source.model';
 import { CriteriaConditionModel } from '../../models/criteria-condition.model';
 import { AttributeTypeEnum } from '../../../shared/models/attribute-type.enum';
 import { ExtendedAttributeModel } from '../../../application/models/extended-attribute.model';
-import { METADATA_SERVICE } from '@tailormap/models';
+import { METADATA_SERVICE } from '@tailormap/api';
 
 type AttributeSource = Omit<AnalysisSourceModel, 'geometryType' | 'geometryAttribute'>;
 

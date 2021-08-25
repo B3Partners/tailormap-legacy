@@ -6,7 +6,7 @@ import { FormControl } from '@angular/forms';
 import { AttributeTypeHelper } from '../../application/helpers/attribute-type.helper';
 import { AttributeTypeEnum } from '../../shared/models/attribute-type.enum';
 import { ExtendedAttributeModel } from '../../application/models/extended-attribute.model';
-import { METADATA_SERVICE } from '@tailormap/models';
+import { METADATA_SERVICE } from '@tailormap/api';
 
 @Component({
   selector: 'tailormap-attribute-selector',

@@ -7,7 +7,7 @@ import { StoreModule } from '@ngrx/store';
 import { reducers } from './state/root.reducer';
 import { ApplicationModule } from './application/application.module';
 import { EffectsModule } from '@ngrx/effects';
-import { APPLICATION_SERVICE, ATTRIBUTE_SERVICE, EXPORT_SERVICE, HIGHLIGHT_SERVICE, METADATA_SERVICE, STATISTIC_SERVICE } from '@tailormap/models';
+import { APPLICATION_SERVICE, ATTRIBUTE_SERVICE, EXPORT_SERVICE, HIGHLIGHT_SERVICE, METADATA_SERVICE, STATISTIC_SERVICE } from '@tailormap/api';
 import { ExportService } from './shared/export-service/export.service';
 import { MetadataService } from './application/services/metadata.service';
 import { HighlightService } from './shared/highlight-service/highlight.service';
@@ -20,7 +20,7 @@ import { IconService, ICON_SERVICE_ICON_LOCATION } from '@tailormap/shared';
 import { environment } from '../../../bridge/src/environments/environment';
 import { registerLocaleData } from '@angular/common';
 import localenl from '@angular/common/locales/nl';
-import { API_BASE_URL } from '@tailormap/models';
+import { API_BASE_URL } from '@tailormap/api';
 
 registerLocaleData(localenl, 'nl');
 

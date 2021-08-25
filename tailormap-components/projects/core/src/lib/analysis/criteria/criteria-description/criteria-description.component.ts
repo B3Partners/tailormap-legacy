@@ -24,7 +24,7 @@ import { AttributeTypeEnum } from '../../../shared/models/attribute-type.enum';
 import * as moment from 'moment';
 import { MetadataService } from '../../../application/services/metadata.service';
 import { AttributeFilterHelper } from '../../../shared/helpers/attribute-filter.helper';
-import { METADATA_SERVICE } from '@tailormap/models';
+import { METADATA_SERVICE } from '@tailormap/api';
 
 @Component({
   selector: 'tailormap-criteria-description',

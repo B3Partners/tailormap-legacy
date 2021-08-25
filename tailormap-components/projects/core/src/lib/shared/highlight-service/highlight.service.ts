@@ -10,7 +10,7 @@ import {
 } from './highlight-models';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { FeatureExtentService } from '../feature-extent-service/feature-extent.service';
-import { HighlightServiceModel } from '@tailormap/models';
+import { HighlightServiceModel } from '@tailormap/api';
 
 @Injectable({
   providedIn: 'root',
