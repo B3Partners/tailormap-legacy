@@ -11,7 +11,7 @@ import {
 } from './attribute-models';
 import { Observable } from 'rxjs';
 import { TailorMapService } from '../../../../../bridge/src/tailor-map.service';
-import { AttributeServiceModel } from '@tailormap/models';
+import { AttributeServiceModel } from '@tailormap/api';
 
 @Injectable({
   providedIn: 'root',
