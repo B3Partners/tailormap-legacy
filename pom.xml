@@ -66,7 +66,7 @@
         <jaxb.impl.version>2.3.3</jaxb.impl.version>
         <activation.api.version>1.2.2</activation.api.version>
         <slf4j.version>1.7.32</slf4j.version>
-        <hibernate.version>5.5.6</hibernate.version>
+        <hibernate.version>5.5.7.Final</hibernate.version>
         <jackson2.version>2.12.4</jackson2.version>
         <test.junit-jupiter.version>5.7.2</test.junit-jupiter.version>
         <test.hamcrest.version>2.2</test.hamcrest.version>
@@ -361,7 +361,7 @@
             <dependency>
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-core</artifactId>
-                <version>3.12.3</version>
+                <version>3.12.4</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
