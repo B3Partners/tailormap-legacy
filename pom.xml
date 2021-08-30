@@ -67,7 +67,7 @@
         <activation.api.version>1.2.2</activation.api.version>
         <slf4j.version>1.7.32</slf4j.version>
         <hibernate.version>5.5.7.Final</hibernate.version>
-        <jackson2.version>2.12.4</jackson2.version>
+        <jackson2.version>2.12.5</jackson2.version>
         <test.junit-jupiter.version>5.7.2</test.junit-jupiter.version>
         <test.hamcrest.version>2.2</test.hamcrest.version>
         <!-- skip integration tests by default, override this property from commandline
