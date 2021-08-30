@@ -510,7 +510,7 @@
                 <version>${mssql.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.oracle.database.jdbc</groupId>
+                <groupId>com.oracle.database.jdbc.debug</groupId>
                 <artifactId>ojdbc8_g</artifactId>
                 <version>${oracle.version}</version>
             </dependency>
