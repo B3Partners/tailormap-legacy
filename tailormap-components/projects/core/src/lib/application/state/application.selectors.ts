@@ -150,7 +150,7 @@ export const selectFormConfigFeatureTypeNames = createSelector(
 export const selectVisibleLayersWithFormConfig = createSelector(
   selectFormConfigFeatureTypeNames,
   selectVisibleLayers,
-  (formConfigFeatureTypeNames, visibleLayers): string[] => {
+  (formConfigFeatureTypeNames, visibleLayers): TailormapAppLayer[] => {
     if (!visibleLayers || visibleLayers.length === 0) {
       return [];
     }
@@ -158,8 +158,7 @@ export const selectVisibleLayersWithFormConfig = createSelector(
     return visibleLayers
       .filter(layer => {
         return formFeatureTypeNamesSet.has(layer.featureTypeName);
-      })
-      .map(layer => (layer.alias || layer.layerName));
+      });
   },
 );
 

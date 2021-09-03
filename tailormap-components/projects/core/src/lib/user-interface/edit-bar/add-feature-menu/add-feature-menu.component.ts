@@ -10,6 +10,7 @@ import { WORKFLOW_ACTION } from '../../../workflow/state/workflow-models';
 import { WorkflowState } from '../../../workflow/state/workflow.state';
 import * as WorkflowActions from '../../../workflow/state/workflow.actions';
 import { selectFormConfigForFeatureTypeName, selectVisibleLayersWithFormConfig } from '../../../application/state/application.selectors';
+import { TailormapAppLayer } from '../../../application/models/tailormap-app-layer.model';
 
 @Component({
   selector: 'tailormap-add-feature-menu',
@@ -21,8 +22,8 @@ export class AddFeatureMenuComponent implements OnInit, OnDestroy {
   @Output()
   public closeMenu = new EventEmitter();
 
-  public layer = '-1';
-  public layers: string[];
+  public layer: TailormapAppLayer = null;
+  public layers: TailormapAppLayer[];
 
   private selectedConfig: FormConfiguration;
   private destroyed = new Subject();
@@ -47,7 +48,7 @@ export class AddFeatureMenuComponent implements OnInit, OnDestroy {
 
   public layerSelected(event: MatSelectChange): void {
     this.layer = event.value;
-    this.store$.select(selectFormConfigForFeatureTypeName, this.layer)
+    this.store$.select(selectFormConfigForFeatureTypeName, this.layer.featureTypeName)
       .pipe(take(1))
       .subscribe(formConfig => this.selectedConfig = formConfig);
   }
@@ -60,7 +61,7 @@ export class AddFeatureMenuComponent implements OnInit, OnDestroy {
     this.store$.dispatch(WorkflowActions.setTypes({
       action: WORKFLOW_ACTION.ADD_FEATURE,
       geometryType: type,
-      featureType: this.layer,
+      featureType: this.layer.featureTypeName,
     }));
     this.closeMenu.emit();
   }
