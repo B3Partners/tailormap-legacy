@@ -49,6 +49,9 @@ export class FeatureSelectionService implements OnDestroy {
           const filteredFeatureTypes = allowedFeatureTypes
             ? featureTypes.filter(f => allowedFeatureTypes.includes(f))
             : featureTypes;
+          if (filteredFeatureTypes.length === 0) {
+            return of([]);
+          }
           return this.featureControllerService.featuretypeOnPoint({
             application: this.applicationService.getApplicationId(),
             featureTypes: filteredFeatureTypes,

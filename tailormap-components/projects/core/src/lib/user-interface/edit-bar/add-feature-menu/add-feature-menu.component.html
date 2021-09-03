@@ -4,7 +4,7 @@
     <mat-form-field>
       <mat-label>Selecteer kaartlaag</mat-label>
       <mat-select [value]="this.layer" (selectionChange)="layerSelected($event)">
-        <mat-option *ngFor="let layer of layers" [value]="layer">{{layer}}</mat-option>
+        <mat-option *ngFor="let layer of layers" [value]="layer">{{ layer.alias || layer.layerName }}</mat-option>
       </mat-select>
     </mat-form-field>
   </div>

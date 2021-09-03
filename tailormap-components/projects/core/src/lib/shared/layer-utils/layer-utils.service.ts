@@ -15,19 +15,13 @@ export class LayerUtils {
     let allowedFeaturesTypes = [];
     const sl = this.tailorMap.selectedLayer;
     if (sl && useSelectedLayerFilter) {
-      allowedFeaturesTypes.push( this.getLayerName(sl));
+      allowedFeaturesTypes.push(this.getLayerName(sl));
     } else {
       allowedFeaturesTypes = allFeatureTypes;
     }
-    const visibleLayers = this.getVisibleLayers(false).map(layer => {
-      const idx = layer.indexOf(':');
-      if (idx !== -1) {
-        return layer.slice(idx + 1);
-      }
-      return layer;
-    });
+    const visibleLayers = this.getVisibleLayerFeatureTypes(false).map(LayerUtils.convertLayerToFeatureType);
     let newAr = allowedFeaturesTypes.filter(value => visibleLayers.includes(value));
-    const visibleUserLayers = this.getVisibleLayers(true);
+    const visibleUserLayers = this.getVisibleLayerFeatureTypes(true).map(LayerUtils.convertLayerToFeatureType);
 
     newAr = [...newAr, ...visibleUserLayers];
     return newAr;
@@ -44,7 +38,7 @@ export class LayerUtils {
   }
 
 
-  private getVisibleLayers(userLayers: boolean): string[] {
+  private getVisibleLayerFeatureTypes(userLayers: boolean): string[] {
     const visibleLayers = [];
 
     const appLayers = this.tailorMap.getViewerController().getVisibleLayers();
@@ -57,4 +51,13 @@ export class LayerUtils {
     });
     return visibleLayers;
   }
+
+  private static convertLayerToFeatureType(layer: string) {
+    const idx = layer.indexOf(':');
+    if (idx !== -1) {
+      return layer.slice(idx + 1);
+    }
+    return layer;
+  }
+
 }
