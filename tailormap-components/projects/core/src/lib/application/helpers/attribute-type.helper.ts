@@ -56,28 +56,32 @@ export class AttributeTypeHelper {
     if (!attribute) {
       return undefined;
     }
-    if (attribute.type === 'string') {
+    let type = attribute.type;
+    if (attribute.editValues && attribute.editValues.length > 0) {
+      type = attribute.editValues[0];
+    }
+    if (type === 'string') {
       return AttributeTypeEnum.STRING;
     }
-    if (attribute.type === 'double' || attribute.type === 'integer') {
+    if (type === 'double' || type === 'integer') {
       return AttributeTypeEnum.NUMBER;
     }
-    if (attribute.type === 'boolean') {
+    if (type === 'boolean') {
       return AttributeTypeEnum.BOOLEAN;
     }
-    if (attribute.type === 'date' || attribute.type === 'timestamp') {
+    if (type === 'date' || type === 'timestamp') {
       return AttributeTypeEnum.DATE;
     }
-    if (attribute.type === 'point' || attribute.type === 'multipoint') {
+    if (type === 'point' || type === 'multipoint') {
       return AttributeTypeEnum.GEOMETRY_POINT;
     }
-    if (attribute.type === 'linestring' || attribute.type === 'multilinestring') {
+    if (type === 'linestring' || type === 'multilinestring') {
       return AttributeTypeEnum.GEOMETRY_LINESTRING;
     }
-    if (attribute.type === 'polygon' || attribute.type === 'multipolygon') {
+    if (type === 'polygon' || type === 'multipolygon') {
       return AttributeTypeEnum.GEOMETRY_POLYGON;
     }
-    if (attribute.type === 'geometry') {
+    if (type === 'geometry') {
       return AttributeTypeEnum.GEOMETRY;
     }
     return undefined;

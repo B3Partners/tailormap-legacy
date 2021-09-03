@@ -66,6 +66,7 @@ export interface Attribute {
   editAlias: string;
   editHeight: string;
   editable: boolean;
+  editValues?: string[];
   featureType: number;
   filterable: boolean;
   folder_label: string;
