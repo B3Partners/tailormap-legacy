@@ -9,7 +9,7 @@ import * as FormActions from '../../feature-form/state/form.actions';
 import { selectFormClosed } from '../../feature-form/state/form.state-helpers';
 import { selectFormConfigForFeatureTypeName } from '../../application/state/application.selectors';
 import { selectFeatureType, selectGeometryType, selectWorkflowConfig } from '../state/workflow.selectors';
-import { combineLatest } from 'rxjs';
+import { combineLatest, of } from 'rxjs';
 
 
 export class StandardFormWorkflow extends Workflow {
@@ -104,10 +104,14 @@ export class StandardFormWorkflow extends Workflow {
       .pipe(
         take(1),
         concatMap(workFlowConfig => this.featureSelectionService.selectFeatureForClick$(data, workFlowConfig.useSelectedLayerFilter)),
+        concatMap(feature => combineLatest([
+          of(feature),
+          this.store$.select(selectFormConfigForFeatureTypeName, feature.tableName),
+        ])),
       )
-      .subscribe(feature => {
+      .subscribe(([ feature, formConfig ]) => {
         this.featureSelectionPopupOpen = false;
-        if (!feature) {
+        if (!feature || !formConfig) {
           return;
         }
         this.afterEditing();
