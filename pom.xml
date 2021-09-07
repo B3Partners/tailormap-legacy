@@ -936,33 +936,45 @@
     </modules>
     <developers>
         <developer>
+            <id>matthijsln</id>
             <name>Matthijs Laan</name>
             <email>matthijslaan@b3partners.nl</email>
             <organization>B3Partners B.V.</organization>
             <organizationUrl>https://www.b3partners.nl</organizationUrl>
         </developer>
         <developer>
-            <name>Meine Toonen</name>
-            <email>meinetoonen@b3partners.nl</email>
-            <organization>B3Partners B.V.</organization>
-            <organizationUrl>https://www.b3partners.nl</organizationUrl>
-        </developer>
-        <developer>
-            <name>Roy Braam</name>
-            <organization>B3Partners B.V.</organization>
-            <organizationUrl>https://www.b3partners.nl</organizationUrl>
-        </developer>
-        <developer>
+            <id>mprins</id>
             <name>Mark Prins</name>
-            <email>markprins@b3partners.nl</email>
+            <email>mark@b3partners.nl</email>
             <organization>B3Partners B.V.</organization>
             <organizationUrl>https://www.b3partners.nl</organizationUrl>
         </developer>
         <developer>
+            <id>mvdstruijk</id>
             <name>Martijn van de Struijk</name>
             <email>martijn@b3partners.nl</email>
             <organization>B3Partners B.V.</organization>
             <organizationUrl>https://www.b3partners.nl</organizationUrl>
         </developer>
+        <developer>
+            <id>geertplaisier</id>
+            <name>Geert Plaisier</name>
+            <email>geert@b3partners.nl</email>
+            <organization>Gnamic</organization>
+            <organizationUrl>https://www.gnamic.nl/</organizationUrl>
+        </developer>
     </developers>
+    <contributors>
+        <contributor>
+            <name>Roy Braam</name>
+            <organization>B3Partners B.V.</organization>
+        </contributor>
+        <contributor>
+            <name>Meine Toonen</name>
+            <organization>B3Partners B.V.</organization>
+            <roles>
+                <role>former lead developer</role>
+            </roles>
+        </contributor>
+    </contributors>
 </project>
