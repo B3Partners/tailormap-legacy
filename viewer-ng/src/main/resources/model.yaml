@@ -1,0 +1,263 @@
+openapi: 3.0.3
+info:
+  title: 'models'
+  description: 'Tailormap API models'
+  version: '1.0'
+  license:
+    name: 'MIT'
+    url: 'https://mit-license.org/'
+  contact:
+    name: 'B3Partners BV'
+    url: 'https://www.b3partners.nl/'
+    email: 'info@b3partners.nl'
+
+# none
+servers: []
+# none
+paths: {}
+
+components:
+  schemas:
+
+    Bounds:
+      description: 'Describes an extent within a Coordinate Reference System'
+      type: object
+      properties:
+        miny:
+          description: 'lower bottom'
+          type: number
+        minx:
+          description: 'lower left'
+          type: number
+        maxy:
+          description: 'upper top'
+          type: number
+        maxx:
+          description: 'upper right'
+          type: number
+        crs:
+          type: string
+          default: 'EPSG:28992'
+      example:
+        miny: 400000
+        minx: 105000
+        maxy: 530000
+        maxx: 275000
+        crs: 'EPSG:28992'
+
+
+    AppLayer:
+      description: 'a map layer, but only enough information to draw the layer.
+      For advanced functionality that required access to attributes the LayerDetails should be requested.'
+      type: object
+      properties:
+        # TODO aanvullen?
+        id:
+          type: integer
+          format: int64
+        url:
+          type: string
+        visible:
+          type: boolean
+        projection:
+          type: string
+          default: 'EPSG:28992'
+        isBaseLayer:
+          type: boolean
+          default: false
+
+    LayerDetails:
+      description: 'All details of an app layer.'
+      type: object
+      properties:
+        # TODO aanvullen
+        id:
+          type: integer
+          format: int64
+        featuretypeName:
+          type: string
+        serviceId:
+          type: integer
+          format: int64
+        geometryAttribute:
+          type: string
+        geometryAttributeIndex:
+          description: 'index of the geometryAttribute in the array of attributes.'
+          type: integer
+          format: int32
+        geometryType:
+          description: '(editable) geometry type of this layer.
+        We can have multiple geometry attributes in a layer, but only one is rendered and
+        optionally editable) see also see also: nl.tailormap.viewer.config.services.AttributeDescriptor'
+          type: string
+          enum:
+            - 'linestring'
+            - 'multilinestring'
+            - 'point'
+            - 'multipoint'
+            - 'polygon'
+            - 'multipolygon'
+            - 'geometry'
+        editable:
+          type: boolean
+          default: false
+        metadata:
+          type: string
+          nullable: true
+        relations:
+          type: array
+          minLength: 0
+          items:
+            type: object
+            properties:
+              featureType:
+                type: integer
+                format: int64
+              foreignFeatureType:
+                type: integer
+                format: int64
+              type:
+                type: string
+                enum:
+                  - 'relate'
+                  - 'join'
+        attributes:
+          description: 'Array with attributes.
+        **note** that the ordering of this array is determined in the backend and does not need to coincide with the actual data.'
+          type: array
+          items:
+            $ref: '#/components/schemas/Attribute'
+
+    Attribute:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        featureType:
+          type: integer
+          format: int64
+        name:
+          type: string
+        longname:
+          description: 'has featuretype name and name combined with a dot.'
+          example: 'v_factsheet_terrein_info.b_minhuur'
+          type: string
+        editAlias:
+          type: string
+        type:
+          description: 'data type. eg "date" or "string".
+          see also: nl.tailormap.viewer.config.services.AttributeDescriptor'
+          type: string
+          enum:
+            - 'date'
+            - 'timestamp'
+            - 'string'
+            - 'double'
+            - 'integer'
+            - 'boolean'
+            - 'linestring'
+            - 'multilinestring'
+            - 'point'
+            - 'multipoint'
+            - 'polygon'
+            - 'multipolygon'
+            - 'geometry'
+        visible:
+          type: boolean
+        selectable:
+          type: boolean
+        filterable:
+          type: boolean
+        folder_label:
+          type: string
+        # editing: TODO needs work / ook integratie met feature API
+        editable:
+          type: boolean
+        defaultValue:
+          type: string
+        disallowNullValue:
+          type: boolean
+        disableUserEdit:
+          type: boolean
+        allowValueListOnly:
+          type: boolean
+        automaticValue:
+          type: boolean
+        valueList:
+          type: string
+          example: 'static'
+        editValues:
+          type: array
+          items:
+            oneOf:
+              - type: string
+              - type: boolean
+              - type: number
+
+
+    Service:
+      description: 'A service provides one or more applayers'
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+          nullable: false
+        url:
+          type: string
+          nullable: false
+        useProxy:
+          type: boolean
+        styleLibraries:
+          type: object
+        protocol:
+          type: string
+          enum:
+            - tiled
+            - wms
+            - arcgis
+        tilingProtocol:
+          type: string
+          enum:
+            - WMTS
+            - TMS
+        # in de huidige TM gaan alle matrixsets naar de client,
+        # dat lijkt mij teveel van het goede; er kan er immers maar 1 gebruikt worden.
+        # TODO uitzoeken of openlayers meer dan 1 matrixset per map kan gebruiken,
+        #      anders kan deze hier weg en moet die naar de "map"
+        matrixSet:
+          type: object
+
+    Component:
+      description: 'a component to be used in the application'
+      type: object
+      properties:
+        type:
+          description: 'component type eg. featurereport or print'
+          type: string
+          required: true
+        config:
+          type: object
+          properties:
+            label:
+              type: string
+            title:
+              type: string
+            tooltip:
+              type: string
+          additionalProperties: true
+      example:
+        type: 'featurereport'
+        config: {
+          template: 'FeatureReport.xsl',
+          legendLayers: [ ],
+          numOfRelatedFeatures: 10,
+          reportLayers: [ ],
+          label: '',
+          title: 'FeatureReport',
+          subTitle: 'detail about parcel $1',
+          layers: [ ]
+        }

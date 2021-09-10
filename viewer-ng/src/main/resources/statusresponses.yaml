@@ -1,0 +1,55 @@
+openapi: 3.0.3
+
+info:
+  title: 'status responses'
+  description: 'Tailormap status API decribes generic responses'
+  contact:
+    name: 'B3Partners BV'
+    url: 'https://www.b3partners.nl/'
+    email: 'info@b3partners.nl'
+  license:
+    name: 'MIT'
+    url: 'https://mit-license.org/'
+  version: '1.0'
+
+# none
+servers: [ ]
+# none
+paths: { }
+
+components:
+  schemas:
+    RedirectResponse:
+      description: 'login required response, but can also be used for other response that require redirection.
+      Does not include a HTTP header to force redirection, but a url that the client can use.'
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+          default: 401
+        url:
+          description: 'redirect url'
+          type: string
+          default: '/login'
+      example:
+        code: 401
+        message: 'login required'
+        url: '/login'
+
+
+    ErrorResponse:
+      description: 'General server error response'
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+          default: 500
+        message:
+          description: 'diagnostic message'
+          type: string
+          default: 'Internal server error'
+      example:
+        code: 500
+        message: 'Internal server error'

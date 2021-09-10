@@ -1,0 +1,284 @@
+openapi: 3.0.3
+
+info:
+  title: 'tailormap-api'
+  description: 'Tailormap API'
+  contact:
+    name: 'B3Partners BV'
+    url: 'https://www.b3partners.nl/'
+    email: 'info@b3partners.nl'
+  license:
+    name: 'MIT'
+    url: 'https://mit-license.org/'
+  version: '1.0'
+
+servers:
+  - description: 'development server'
+    url: 'http://localhost:{port}/tailormap-api/{basePath}/'
+    variables:
+      port:
+        enum:
+          - '8080'
+          - '443'
+          - '8443'
+        default: '8080'
+        description: 'port number'
+      basePath:
+        default: 'v1'
+
+components:
+  schemas:
+    MapResponse:
+      description: 'Any information needed to draw a basic map on a page. May include base layers.'
+      type: object
+      properties:
+        # mostly properties from table "application"
+        projection:
+          # TODO Ik denk niet dat we de hele Proj4j string nodig hebben?
+          description: 'A well-known EPSG code.'
+          type: string
+          default: 'EPSG:28992'
+          enum:
+            - 'EPSG:28992'
+            - 'EPSG:4236'
+        initialExtent:
+          description: 'initial bounds for the map'
+          type: object
+          properties:
+            schema:
+              $ref: './model.yaml#/components/schemas/Bounds'
+          nullable: true
+        maxExtent:
+          description: 'maximum bounds for the map'
+          type: object
+          properties:
+            schema:
+              $ref: './model.yaml#/components/schemas/Bounds'
+          nullable: true
+        services:
+          # TODO in de huidige implementatie is dit een object met de id van de service als element
+          #      bijv. "1": {"protocol": "tiled", "matrixSets":[], "id": 1
+          #      een array lijkt me een betere optie
+          type: array
+          items:
+            $ref: './model.yaml#/components/schemas/Service'
+
+    Layers:
+      description: 'An array of app layers.'
+      type: array
+      minLength: 0
+      items:
+        $ref: './model.yaml#/components/schemas/AppLayer'
+
+
+    ComponentsResponse:
+      description: 'Provides the collection of configured components for the application'
+      type: array
+      # 0, because there are a number of default components always loaded eg. mapcomponent, zoom, pan...
+      # also, since layout is fixed, that information is no longer needed
+      minLength: 0
+      items:
+        $ref: './model.yaml#/components/schemas/Component'
+
+    CheckResponse:
+      description: 'Answers API version and (default|requested) application id.'
+      type: object
+      properties:
+        id:
+          description: 'application id'
+          type: integer
+          format: int64
+          example: 7
+        api_version:
+          type: string
+          default: 'v1'
+        name:
+          type: string
+        title:
+          type: string
+        lang:
+          description: 'language code'
+          type: string
+          enum:
+            - 'nl_NL'
+            - 'en_US'
+          default: 'nl_NL'
+
+paths:
+  /app/:
+    summary: 'Use this endpoint to get the id of the requested or default application.
+    Either call this with `name` and optional `version` or `appid` alone.
+    '
+    get:
+      parameters:
+        - description: 'app name from applications list'
+          in: query
+          name: name
+          required: false
+          schema:
+            type: string
+        - description: 'version from applications list'
+          in: query
+          name: version
+          required: false
+          schema:
+            type: string
+        - description: 'app id from application table'
+          in: query
+          name: appid
+          required: false
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: 'OK. Application exists.'
+          content:
+            application/json:
+              example:
+                id: 7
+                api_version: 'v1'
+                name: 'cool app'
+                title: 'This is a cool mapping app'
+                lang: 'nl_NL'
+              schema:
+                $ref: '#/components/schemas/CheckResponse'
+        '401':
+          description: 'Authentication required.'
+          content:
+            application/json:
+              schema:
+                # not an actual redirect, but  provides login url
+                # we need to rethink login mechanism eg a login form popover in the
+                # application that is shown on this status
+                $ref: './statusresponses.yaml#/components/schemas/RedirectResponse'
+              example:
+                code: 401
+                message: 'login required'
+                url: '/login'
+        '403':
+          description: 'Access denied'
+          content:
+            application/json:
+              example:
+                code: 403
+                message: 'Access denied'
+              schema:
+                $ref: './statusresponses.yaml#/components/schemas/ErrorResponse'
+        '404':
+          description: 'The specified application was not found,
+          use the url from the response to get the default application.
+          '
+          content:
+            application/json:
+              example:
+                code: 404
+                message: 'Application not found'
+                url: /app/1
+              schema:
+                $ref: './statusresponses.yaml#/components/schemas/RedirectResponse'
+        '500':
+          description: 'Internal server error'
+          content:
+            application/json:
+              schema:
+                $ref: './statusresponses.yaml#/components/schemas/ErrorResponse'
+
+
+  /map/{appid}:
+    summary: 'Retrieve the map''s bounding box, projection, language and (optional) base layers.
+    This document provides all that is necessary to draw a map with (optional) baselayers.'
+    get:
+      parameters:
+        - description: 'application id'
+          in: path
+          name: appid
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            application/json:
+              # TODO
+              # example:
+              schema:
+                $ref: '#/components/schemas/MapResponse'
+        '500':
+          description: 'Error'
+          content:
+            application/json:
+              example:
+                code: 500
+                message: 'Internal server error'
+              schema:
+                $ref: './statusresponses.yaml#/components/schemas/ErrorResponse'
+
+  /components/{appid}:
+    summary: 'Retrieve all configured components'
+    get:
+      parameters:
+        - description: 'application id'
+          in: path
+          name: appid
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              # TODO
+              # example:
+              schema:
+                $ref: '#/components/schemas/ComponentsResponse'
+
+  /layers/{appid}:
+    summary: 'Retrieve all configured layers.
+    Provides all information to add foreground layers to the map and draw them.
+    '
+    get:
+      parameters:
+        - description: 'application id'
+          in: path
+          name: appid
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Layers'
+
+  /describelayer/{appid}/{layerid}:
+    summary: 'Returns metadata and featuretype on the requested app layer, aka. layer details'
+    get:
+      parameters:
+        - description: 'application id'
+          in: path
+          name: appid
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - description: 'layer id'
+          in: path
+          name: layerid
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: './model.yaml#/components/schemas/LayerDetails'
