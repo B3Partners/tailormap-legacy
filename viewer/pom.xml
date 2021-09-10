@@ -276,15 +276,6 @@
             </plugin>
             <plugin>
                 <artifactId>maven-resources-plugin</artifactId>
-                <configuration>
-                    <nonFilteredFileExtensions>
-                        <nonFilteredFileExtension>ttf</nonFilteredFileExtension>
-                        <nonFilteredFileExtension>woff</nonFilteredFileExtension>
-                        <nonFilteredFileExtension>woff2</nonFilteredFileExtension>
-                        <nonFilteredFileExtension>eot</nonFilteredFileExtension>
-                        <nonFilteredFileExtension>svg</nonFilteredFileExtension>
-                    </nonFilteredFileExtensions>
-                </configuration>
                 <executions>
                     <execution>
                         <id>copy-resources</id>
@@ -297,6 +288,7 @@
                             <resources>
                                 <resource>
                                     <directory>${tailormap-components.dist.dir}</directory>
+				    <filtering>false</filtering>
                                     <!--includes>
                                         <include>... misschien *.js</include>
                                     </includes-->
