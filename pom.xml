@@ -61,6 +61,7 @@
         <apache.poi.version>5.0.0</apache.poi.version>
         <jakarta.mail.version>1.6.6</jakarta.mail.version>
         <apache.httpcomponents.version>4.5.13</apache.httpcomponents.version>
+        <apache.commons-httpclient.version>3.1</apache.commons-httpclient.version>
         <jaxb.api.version>2.3.3</jaxb.api.version>
         <jaxb.impl.version>2.3.3</jaxb.impl.version>
         <activation.api.version>1.2.2</activation.api.version>
@@ -380,6 +381,11 @@
             </dependency>
             <dependency>
                 <groupId>org.geotools</groupId>
+                <artifactId>gt-http</artifactId>
+                <version>${geotools.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.geotools</groupId>
                 <artifactId>gt-wmts</artifactId>
                 <version>${geotools.version}</version>
             </dependency>
@@ -543,6 +549,11 @@
                 <groupId>org.apache.httpcomponents</groupId>
                 <artifactId>httpmime</artifactId>
                 <version>${apache.httpcomponents.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-httpclient</groupId>
+                <artifactId>commons-httpclient</artifactId>
+                <version>${apache.commons-httpclient.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.eclipse.emf</groupId>
