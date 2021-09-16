@@ -21,6 +21,20 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 <stripes:layout-render name="/WEB-INF/jsp/templates/angularStandardpage.jsp">
     <stripes:layout-component name="head">
         <title><fmt:message key="viewer_admin.form.title" /></title>
+        <style>
+            #content {
+                display: flex;
+                flex-direction: column;
+            }
+            #content > h1 {
+                position: static;
+            }
+            .formContent {
+                flex: 1;
+                position: static;
+                overflow: auto;
+            }
+        </style>
     </stripes:layout-component>
     <stripes:layout-component name="header">
         <jsp:include page="/WEB-INF/jsp/header.jsp"/>
