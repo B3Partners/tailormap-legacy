@@ -53,7 +53,7 @@ public class FormActionBean extends LocalizableActionBean implements ValidationE
 
     private static final Log log = LogFactory.getLog(FormActionBean.class);
     public ActionBeanContext context;
-    private static final String JSP = "/WEB-INF/jsp/services/formAngular.jsp";
+    private static final String JSP = "/WEB-INF/jsp/services/form.jsp";
     private static final String EDITJSP = "/WEB-INF/jsp/services/editform.jsp";
 
     private Set<String> featureTypes = new HashSet<>();
@@ -174,7 +174,7 @@ public class FormActionBean extends LocalizableActionBean implements ValidationE
             context.getValidationErrors().add("json", new SimpleError(e.getLocalizedMessage()));
             return new ErrorResolution(HttpServletResponse.SC_BAD_REQUEST);
         }
-        return view();
+        return new ForwardResolution(EDITJSP);
     }
 
     private Form processForm(Form f) throws IOException {
@@ -376,7 +376,7 @@ public class FormActionBean extends LocalizableActionBean implements ValidationE
         j.put("id", form.getId());
         j.put("name", form.getName());
         j.put("featureTypeName", form.getFeatureTypeName());
-        j.put("json", form.getJson());
+        // j.put("json", form.getJson());
         return j;
     }
 
