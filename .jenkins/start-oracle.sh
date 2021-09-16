@@ -5,7 +5,8 @@ docker version
 # this docker image has the following users/credentials (user/password = system/oracle)
 #docker pull larmic/oracle-xe:18.4.0
 # docker pull pvargacl/oracle-xe-18.4.0:latest
-docker pull imnotjames/oracle-xe:18c
+# docker pull imnotjames/oracle-xe:18c
+docker pull gvenzl/oracle-xe:slim
 
 # start the dockerized oracle-xe instance
 # this container can be stopped using:
@@ -14,7 +15,8 @@ docker pull imnotjames/oracle-xe:18c
 #
 # docker run --rm -p 15211:1521 --cpus=2 --name oracle-flamingo -h oracle-flamingo -d larmic/oracle-xe:18.4.0
 #docker run --rm -p 15211:1521 --cpus=2 --name oracle-flamingo -h oracle-flamingo -d pvargacl/oracle-xe-18.4.0:latest
-docker run --rm -p 15211:1521 --cpus=2 --name oracle-flamingo -h oracle-flamingo -d imnotjames/oracle-xe:18c
+#docker run --rm -p 15211:1521 --cpus=2 --name oracle-flamingo -h oracle-flamingo -d imnotjames/oracle-xe:18c
+docker run --rm -p 15211:1521 --cpus=2 --name oracle-flamingo -h oracle-flamingo -e ORACLE_PASSWORD=oracle -d gvenzl/oracle-xe:slim
 
 
 printf "\n\nStarting Oracle XE container, this could take a few minutes..."
