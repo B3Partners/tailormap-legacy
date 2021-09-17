@@ -102,8 +102,11 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
           value =  typeof compVal !== 'undefined' && compVal !== null ? compVal.val : featureAttribute.value;
         }
       }
-      formControls[attr.key] = new FormControl(value, [FormFieldHelpers.nonExistingValueValidator(featureAttribute)]);
-
+      const control = new FormControl(value, [FormFieldHelpers.nonExistingValueValidator(featureAttribute)]);
+      if (attr.isReadOnly) {
+        control.disable({ emitEvent: false });
+      }
+      formControls[attr.key] = control;
     }
     this.formgroep = new FormGroup(formControls);
     this.formgroep.markAllAsTouched();

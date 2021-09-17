@@ -27,6 +27,8 @@ export interface Attribute {
   label?: string;
   column: number;
   tab: number;
+  isReadOnly?: boolean;
+  mandatory?: boolean;
   valueTrue?: string;
   valueFalse?: string;
   dateFormat?: string;

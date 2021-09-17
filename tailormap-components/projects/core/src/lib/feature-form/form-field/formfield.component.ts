@@ -60,6 +60,12 @@ export class FormfieldComponent implements AfterViewInit, OnInit {
 
   public ngAfterViewInit(): void {
     this.control = this.groep.controls[this.attribute.key];
+    if (this.attribute.isReadOnly && this.control.enabled) {
+      this.control.disable({ emitEvent: false });
+    }
+    if (!this.attribute.isReadOnly && this.control.disabled) {
+      this.control.enable({ emitEvent: false });
+    }
     if (!this.isBulk) {
       if (FormFieldHelpers.hasNonValidValue(this.attribute)) {
         this.control.setValidators([FormFieldHelpers.nonExistingValueValidator(this.attribute)]);
