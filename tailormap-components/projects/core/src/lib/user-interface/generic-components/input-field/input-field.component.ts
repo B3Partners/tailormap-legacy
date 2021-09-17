@@ -18,7 +18,13 @@ export class InputFieldComponent extends BaseFieldComponent implements OnInit {
   }
 
   public getInputType() {
-    return this.fieldType === FormFieldType.HYPERLINK ? 'url' : this.fieldType === FormFieldType.CHECKBOX ? 'checkbox' : 'text';
+    if (this.fieldType === FormFieldType.HIDDEN) {
+      return 'hidden';
+    }
+    if (this.fieldType === FormFieldType.HYPERLINK) {
+      return 'url';
+    }
+    return 'text';
   }
 
 }

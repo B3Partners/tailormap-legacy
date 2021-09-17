@@ -34,6 +34,7 @@ export class FormConfigRepositoryService {
           }
           return forkJoin([
             of(formConfigs),
+            // @TODO: we need to check this... this loads feature type info from an application but with feature types from the form configs which are global
             this.featureController.featuretypeInformation({appId: this.tailorMap.getApplicationId(),featureTypes})
               .pipe(catchError((): Observable<Array<FeaturetypeMetadata>> => of([]))),
           ]);
