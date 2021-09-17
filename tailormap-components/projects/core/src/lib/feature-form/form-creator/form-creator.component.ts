@@ -98,7 +98,7 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
         this.registry.registerDomainField(attr.linkedList, featureAttribute);
         if (!this.isBulk && featureAttribute.value && featureAttribute.value !== '-1') {
           this.domainValues.set(attr, featureAttribute.value);
-          const compVal = FormFieldHelpers.getComparableValue(featureAttribute);
+          const compVal = FormFieldHelpers.findSelectedOption(featureAttribute.options, featureAttribute.value);
           value =  typeof compVal !== 'undefined' && compVal !== null ? compVal.val : featureAttribute.value;
         }
       }

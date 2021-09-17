@@ -66,14 +66,12 @@ export class FormTreeHelpers {
     if (!attr) {
       return `${feat[featureKey] || ''}`;
     }
-    let value = FormHelpers.getValue(feat, attr);
-
+    const value = FormHelpers.getValue(feat, attr);
     if (attr.type === FormFieldType.DOMAIN && attr.options) {
-      attr.options.forEach(option => {
-        if ((FormFieldHelpers.isNumber(value) && option.val === parseInt('' + value, 10))) {
-          value = option.label;
-        }
-      });
+      const option = FormFieldHelpers.findSelectedOption(attr.options, value);
+      if (option) {
+        return option.label;
+      }
     }
     return '' + value;
   }

@@ -1,0 +1,5 @@
+<div [formGroup]="groep" class="form-field">
+  <div class="label">{{attribute.label}}</div>
+  <mat-checkbox [checked]="checkboxValue()"
+                (change)="onCheckboxChange($event)"></mat-checkbox>
+</div>
