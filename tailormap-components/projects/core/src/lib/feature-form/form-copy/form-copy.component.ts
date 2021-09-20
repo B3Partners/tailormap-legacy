@@ -1,23 +1,23 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Feature } from '../../shared/generated';
-import { FormConfiguration } from '../form/form-models';
-import { FormActionsService } from '../form-actions/form-actions.service';
+import { Attribute, FormConfiguration } from '../form/form-models';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { FeatureInitializerService } from '../../shared/feature-initializer/feature-initializer.service';
 import { FormCopyService } from './form-copy.service';
-import { ConfirmDialogService } from '@tailormap/shared';
-import { filter, take, takeUntil } from 'rxjs/operators';
-import { combineLatest, Subject } from 'rxjs';
-import {
-  selectCopyDestinationFeatures,
-  selectCurrentSelectedCopyFeature, selectParentCopyFeature,
-} from '../state/form.selectors';
+import { ConfirmDialogService, TreeService } from '@tailormap/shared';
+import { concatMap, filter, take, takeUntil } from 'rxjs/operators';
+import { forkJoin, of, Subject } from 'rxjs';
+import { selectCopyDestinationFeatures, selectCurrentSelectedCopyFeatureAndFormConfig, selectParentCopyFeature } from '../state/form.selectors';
 import { Store } from '@ngrx/store';
 import { FormState } from '../state/form.state';
-import {  selectFormConfigs } from '../../application/state/application.selectors';
 import { closeCopyForm } from '../state/form.actions';
 import { ExtendedFormConfigurationModel } from '../../application/models/extended-form-configuration.model';
-import { TreeService } from '@tailormap/shared';
+import { MatCheckboxChange } from '@angular/material/checkbox';
+
+interface Tab {
+  id: number;
+  label: string;
+  fields: Attribute[];
+}
 
 @Component({
   providers: [TreeService],
@@ -27,28 +27,24 @@ import { TreeService } from '@tailormap/shared';
 })
 export class FormCopyComponent implements OnInit, OnDestroy {
 
-  private destroyed = new Subject();
-
-  public currentFeature: Feature;
-
-  public parentFeature: Feature;
-
-  public allFormConfigs2: Map<string, ExtendedFormConfigurationModel>;
-
+  public baseCopyFeature: Feature;
+  public tabs: Tab[] = [];
   public deleteRelated = false;
-
   public currentFormConfig: FormConfiguration;
-
-  public relatedFeatures = [];
-
   public destinationFeatures: Feature[] = [];
+  public trackByTabId = (idx: number, tab: Tab) => tab.id;
 
-  constructor(private actionService: FormActionsService,
-              private _snackBar: MatSnackBar,
-              private featureInitializer: FeatureInitializerService,
-              private formCopyService: FormCopyService,
-              private store$: Store<FormState>,
-              private confirmDialogService: ConfirmDialogService) {
+  private destroyed = new Subject();
+  private currentlySelectedFeatureFeatureType: string;
+  private relatedFeatures = [];
+  private allCheckedCache = new Map<string, boolean>();
+
+  constructor(
+    private _snackBar: MatSnackBar,
+    private formCopyService: FormCopyService,
+    private store$: Store<FormState>,
+    private confirmDialogService: ConfirmDialogService,
+  ) {
   }
 
   public ngOnDestroy() {
@@ -57,59 +53,24 @@ export class FormCopyComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
-    this.store$.select(selectCurrentSelectedCopyFeature)
+    this.store$.select(selectCurrentSelectedCopyFeatureAndFormConfig)
       .pipe(
         takeUntil(this.destroyed),
-        filter(feature => !!feature))
-          .subscribe(feature => {
-            this.currentFeature = feature;
-            if(this.allFormConfigs2) {
-              this.currentFormConfig = this.allFormConfigs2.get(feature.tableName);
-            }
+        filter(featureAndConfig => !!featureAndConfig),
+      )
+      .subscribe(featureAndConfig => {
+        this.currentlySelectedFeatureFeatureType = featureAndConfig.feature.tableName;
+        this.tabs = this.createTabs(featureAndConfig.formConfig);
+        this.currentFormConfig = featureAndConfig.formConfig;
       });
 
-    this.store$.select(selectCopyDestinationFeatures).pipe(takeUntil(this.destroyed)).subscribe(
-      features => {
-        this.destinationFeatures = features;
-      },
-    );
+    this.store$.select(selectCopyDestinationFeatures)
+      .pipe(takeUntil(this.destroyed))
+      .subscribe(features => this.destinationFeatures = features);
 
-    combineLatest([
-      this.store$.select(selectParentCopyFeature),
-      this.store$.select(selectFormConfigs),
-    ]).pipe(take(1)).subscribe(([parentFeature, allFormConfigs]) => {
-      this.parentFeature = parentFeature;
-      this.currentFormConfig = allFormConfigs.get(parentFeature.tableName);
-      this.allFormConfigs2 = allFormConfigs;
-      this.initAttributesToCopy(parentFeature, allFormConfigs);
-    });
-  }
-
-  private initAttributesToCopy(parentFeature: Feature, allFormConfigs: Map<string, ExtendedFormConfigurationModel>) {
-    let fieldsToCopy = new Map<string, string>();
-    if (this.formCopyService.parentFeature != null && this.formCopyService.parentFeature.tableName === parentFeature.tableName) {
-      // Er is al een parentFeature is (dit is er op het moment dat er al een keer eerder is gekopieerd)
-      // De nieuw geselecteerde feature is van hetzelfde type, dus zet vorige geselecteerde velden terug
-      fieldsToCopy = this.formCopyService.featuresToCopy.get(this.formCopyService.parentFeature.fid);
-    }
-    this.formCopyService.parentFeature = parentFeature;
-    this.formCopyService.featuresToCopy.set(parentFeature.fid, fieldsToCopy);
-    if (parentFeature.children) {
-      for (const child of parentFeature.children) {
-        const config = allFormConfigs.get(child.tableName);
-        if (config) {
-          let childFieldsToCopy = new Map<string, string>();
-          // zet velden terug die hiervoor geselecteerd waren.
-          this.formCopyService.featuresToCopy.forEach((oldfieldsToCopy) => {
-            if (oldfieldsToCopy.get('tableName') === child.tableName) {
-              childFieldsToCopy = oldfieldsToCopy;
-            }
-          });
-          childFieldsToCopy.set('tableName', child.tableName);
-          this.formCopyService.featuresToCopy.set(child.fid, childFieldsToCopy);
-        }
-      }
-    }
+    this.store$.select(selectParentCopyFeature)
+      .pipe(takeUntil(this.destroyed))
+      .subscribe(parentFeature => this.baseCopyFeature = parentFeature);
   }
 
   public cancel() {
@@ -117,219 +78,131 @@ export class FormCopyComponent implements OnInit, OnDestroy {
   }
 
   public beforeCopy(): void {
-    this.confirmDialogService.confirm$('Opslaan', 'Weet je het zeker?', true)
-      .pipe(takeUntil(this.destroyed)).subscribe(
-      (result) => {
-        if (result) {
-          this.copy();
-        }
-      });
-  }
-
-  public copy() {
-    let successCopied = 0;
-    const destinationFeatures = this.destinationFeatures;
-    if (destinationFeatures.length > 0) {
-      if (this.deleteRelated) {
-        this.deleteRelatedFeatures();
-      }
-      const valuesToCopy = this.getPropertiesToMerge();
-      const childsToCopy = this.getNewChildFeatures();
-      for (let i  = 0; i <= destinationFeatures.length - 1; i++) {
-        const copydest = {...destinationFeatures[i]};
-        valuesToCopy.forEach((value, key) => {
-          const index = copydest.attributes.findIndex(field => field.key ===key);
-          copydest.attributes =[
-            ...copydest.attributes.slice(0, index),
-            {
-              key,
-              value,
-              type: copydest.attributes[index].type,
-            },
-            ...copydest.attributes.slice(index+1),
-          ];
-        });
-        for (let n = 0; n <= childsToCopy.length - 1; n++) {
-          this.actionService.save$(false, [childsToCopy[n]], copydest).subscribe(() => {
-            console.log('child saved');
-          });
-        }
-        this.actionService.save$(false, [copydest], copydest).subscribe(() => {
-            successCopied++;
-            if (successCopied === destinationFeatures.length) {
-              this._snackBar.open('Er zijn ' + successCopied + ' features gekopieerd', '', {
-                duration: 5000,
-              });
-              this.cancel();
-            }
-          },
-          error => {
-            this._snackBar.open('Fout: Feature niet kunnen opslaan: ' + error.error.message, '', {
-              duration: 5000,
-            });
-          });
-      }
-    } else {
-      this._snackBar.open('Er zijn geen objecten geselecteerd!', '', {
-        duration: 5000,
-      });
-    }
-  }
-
-  public deleteRelatedFeatures() {
-    for (let i  = 0; i <= this.destinationFeatures.length - 1; i++) {
-      const feature = this.destinationFeatures[i];
-      const children = feature.children;
-      for (let c  = 0; c <= children.length - 1; c++) {
-        const child = children[c];
-        this.actionService.removeFeature$(child).subscribe(() => {
-          console.log('child removed');
-        });
-      }
-    }
-  }
-
-  public stringToNumber(key: string) {
-    return Number(key);
-  }
-
-  public isFieldChecked(event: any) {
-    const fieldsToCopy = this.formCopyService.featuresToCopy.get(this.currentFeature.fid);
-    return fieldsToCopy.has(event);
-  }
-
-  public isEverythingChecked(tab: number): boolean {
-    const fieldsToCopy = this.formCopyService.featuresToCopy.get(this.currentFeature.fid);
-    for (let i  = 0; i <= this.currentFormConfig.fields.length - 1; i++) {
-      const config = this.currentFormConfig.fields[i];
-      if (config.tab.toString() === tab.toString()) {
-        if (!fieldsToCopy.has(config.key)) {
-            return false;
-        }
-      }
-    }
-    return true;
-  }
-
-  // zet alles aan of uit voor de geselecteerde tab
-  public toggle(event: any, tab: number) {
-    if (!event.checked) {
-      const fieldsToCopy = this.formCopyService.featuresToCopy.get(this.currentFeature.fid);
-      for (let i  = 0; i <= this.currentFormConfig.fields.length - 1; i++) {
-        const config = this.currentFormConfig.fields[i];
-        if (config.tab.toString() === tab.toString()) {
-          fieldsToCopy.delete(config.key);
-        }
-      }
-    } else {
-      const fieldsToCopy = this.formCopyService.featuresToCopy.get(this.currentFeature.fid);
-      for (let i  = 0; i <= this.currentFormConfig.fields.length - 1; i++) {
-        const config = this.currentFormConfig.fields[i];
-        if (config.tab.toString() === tab.toString()) {
-          fieldsToCopy.set(config.key, config.label);
-        }
-      }
-    }
-  }
-
-  public updateFieldToCopy(event: any) {
-    if (!event.checked) {
-      if (this.formCopyService.featuresToCopy.has(this.currentFeature.fid)) {
-        const fieldsToCopy = this.formCopyService.featuresToCopy.get(this.currentFeature.fid);
-        if (fieldsToCopy.has(event.source.id)) {
-          fieldsToCopy.delete(event.source.id);
-        }
-      }
-    } else {
-      if (this.formCopyService.featuresToCopy.has(this.currentFeature.fid)) {
-        const fieldsToCopy = this.formCopyService.featuresToCopy.get(this.currentFeature.fid);
-        fieldsToCopy.set(event.source.id, event.source.name);
-        this.formCopyService.featuresToCopy.set(this.currentFeature.fid, fieldsToCopy);
-      }
-    }
-  }
-
-  // alleen de properties voor main feature
-  private getPropertiesToMerge(): Map<string, string> {
-    const valuesToCopy = new Map<string, string>();
-    const fieldsToCopy = this.formCopyService.featuresToCopy.get(this.formCopyService.parentFeature.fid);
-    fieldsToCopy.forEach((value, key) => {
-      const val = this.parentFeature.attributes.find(field => field.key === key );
-      valuesToCopy.set(key, ''+val.value);
-    });
-    return valuesToCopy;
-  }
-
-  private getNewChildFeatures(): Feature[] {
-    const newChilds = [];
-    const relatedFeatures = this.relatedFeatures;
-    const parentFeature = this.formCopyService.parentFeature;
-    this.formCopyService.featuresToCopy.forEach((fieldsToCopy, key) => {
-      if (fieldsToCopy.get('tableName')) {
-        let newChild = {};
-        if (key !== this.formCopyService.parentFeature.fid) {
-          const valuesToCopy = {};
-          for (let i = 0; i <= parentFeature.children.length - 1; i++) {
-            const child = parentFeature.children[i];
-            if (child.fid === key) {
-              fieldsToCopy.forEach((value, key1) => {
-                valuesToCopy[key1] = child[key1];
-              });
-            }
+    this.confirmDialogService.confirm$('Opslaan', 'Weet je het zeker?')
+      .pipe(
+        take(1),
+        filter(result => !!result),
+        concatMap(() => {
+          const copyRequests$ = this.formCopyService.copy(
+            this.baseCopyFeature,
+            this.destinationFeatures,
+            this.deleteRelated,
+            this.relatedFeatures,
+          );
+          return forkJoin([
+            forkJoin(copyRequests$),
+            of(copyRequests$.length),
+          ]);
+        }),
+      )
+      .subscribe(
+        ([ results, totalResults ]) => {
+          if (results.filter(result => result.success).length === totalResults) {
+            this._snackBar.open(`Er zijn ${this.destinationFeatures.length} features gekopieerd`, '', {duration: 5000});
+          } else {
+            this._snackBar.open(`Er zijn fouten opgetreden tijdens het kopieren van de objecten. Controleer het resultaat en kopieer zo nodig opnieuw`, '', {duration: 5000});
           }
-          newChild = this.featureInitializer.create$(fieldsToCopy.get('tableName'), valuesToCopy);
-          // eslint-disable-next-line @typescript-eslint/prefer-for-of
-          for (let i = 0; i < relatedFeatures.length; i++) {
-            if (relatedFeatures[i] === key) {
-              newChilds.push(newChild);
-            }
-          }
-        }
+          this.cancel();
+        },
+        (_error) => this._snackBar.open('Fout: Objecten niet kunnen kopieren', '', { duration: 5000 }),
+      );
+  }
+
+  public isFieldChecked(fieldKey: string) {
+    const fieldsToCopy = this.formCopyService.featuresToCopy.get(this.currentlySelectedFeatureFeatureType);
+    return fieldsToCopy && fieldsToCopy.has(fieldKey);
+  }
+
+  public isEverythingChecked(tabId: number): boolean {
+    const key = `${this.currentlySelectedFeatureFeatureType}_${tabId}`;
+    if (!this.allCheckedCache.has(key)) {
+      this.updateAllCheckedCache(tabId, this.isAllChecked(tabId));
+    }
+    return this.allCheckedCache.get(key);
+  }
+
+  private updateAllCheckedCache(tabId: number, checked: boolean) {
+    const key = `${this.currentlySelectedFeatureFeatureType}_${tabId}`;
+    this.allCheckedCache.set(key, checked);
+  }
+
+  private isAllChecked(tabId: number) {
+    const fieldsToCopy = this.formCopyService.featuresToCopy.get(this.currentlySelectedFeatureFeatureType);
+    const tab = this.tabs.find(t => t.id === tabId);
+    if (!tab || !fieldsToCopy) {
+      return false;
+    }
+    return tab.fields.findIndex(f => !fieldsToCopy.has(f.key)) === -1;
+  }
+
+  public toggleAll(event: MatCheckboxChange, tabId: number) {
+    const tab = this.tabs.find(t => t.id === tabId);
+    if (!tab) {
+      return;
+    }
+    tab.fields.forEach(field => {
+      if (event.checked) {
+        this.formCopyService.enableField(this.currentlySelectedFeatureFeatureType, field.key);
+      } else {
+        this.formCopyService.disableField(this.currentlySelectedFeatureFeatureType, field.key);
       }
     });
-    return newChilds;
+    this.updateAllCheckedCache(tabId, event.checked);
   }
 
-  public setDeleteRelated() {
-    this.deleteRelated = !this.deleteRelated;
+  public updateFieldToCopy(event: MatCheckboxChange, tabId: number, fieldKey: string) {
+    if (event.checked) {
+      this.formCopyService.enableField(this.currentlySelectedFeatureFeatureType, fieldKey);
+    } else {
+      this.formCopyService.disableField(this.currentlySelectedFeatureFeatureType, fieldKey);
+    }
+    this.updateAllCheckedCache(tabId, this.isAllChecked(tabId));
+  }
+
+  public setDeleteRelated($event: MatCheckboxChange) {
+    this.deleteRelated = $event.checked;
   }
 
   public setCopyAllRelatedFeatures() {
-    if (this.formCopyService.parentFeature.children) {
-      this.relatedFeatures = [];
-      // eslint-disable-next-line @typescript-eslint/prefer-for-of
-      for (let i = 0; i < this.formCopyService.parentFeature.children.length; i++) {
-        this.relatedFeatures.push(this.formCopyService.parentFeature.children[i].fid);
-      }
-    }
+    this.relatedFeatures = (this.baseCopyFeature.children || []).map(child => child.fid);
   }
 
   public isAllRelatedFeaturesSet(): boolean {
-    if (this.formCopyService.parentFeature.children) {
-      return this.formCopyService.parentFeature.children.length === this.relatedFeatures.length;
-    } else {
-      return false;
-    }
+    return this.baseCopyFeature.children
+      ? this.baseCopyFeature.children.length === this.relatedFeatures.length
+      : false;
   }
 
   public relatedFeaturesCheckedChanged(relFeatures: Map<string, boolean>) {
+    const relatedFeatures = [ ...this.relatedFeatures ];
     relFeatures.forEach((checked, id) => {
       if (checked) {
-        if (!this.relatedFeatures.includes(id) && id !== this.parentFeature.fid) {
-          this.relatedFeatures.push(id);
+        if (!relatedFeatures.includes(id) && id !== this.baseCopyFeature.fid) {
+          relatedFeatures.push(id);
         }
       } else {
-        for (let i = 0; i < this.relatedFeatures.length; i++) {
-          if (id === this.relatedFeatures[i]) {
-            this.relatedFeatures.splice(i, 1);
-          }
+        const idx = relatedFeatures.findIndex(rf => rf === id);
+        if (idx !== -1) {
+          relatedFeatures.splice(idx, 1);
         }
       }
     });
+    return relatedFeatures;
   }
 
-  public isSelectedTab(tab: number, key: number) {
-    return `${tab}` === `${key}`;
+  private createTabs(formConfig: ExtendedFormConfigurationModel): Tab[] {
+    if (!formConfig) {
+      return [];
+    }
+    const tabbedFields: Tab[] = [];
+    for (let tabNr = 1; tabNr <= formConfig.tabs; tabNr++) {
+      tabbedFields.push({
+        id: tabNr,
+        label: formConfig.tabConfig[tabNr],
+        fields: formConfig.fields.filter(attr => attr.tab === tabNr),
+      });
+    }
+    return tabbedFields;
   }
 
 }

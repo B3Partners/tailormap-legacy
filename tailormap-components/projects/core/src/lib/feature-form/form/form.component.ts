@@ -225,7 +225,6 @@ export class FormComponent implements OnDestroy, OnInit {
 
   public copy() {
     const copyFeature = { ...this.features[0] };
-    this.closeForm();
     this.store$.dispatch(WorkflowActions.setFeature({
       feature: copyFeature,
       action: WORKFLOW_ACTION.COPY,

@@ -87,6 +87,7 @@ const onOpenCopyForm = (state: FormState, payload: ReturnType<typeof FormActions
   copyFeature: payload.feature,
   copyFormOpen: true,
   copySelectedFeature: payload.feature,
+  copyOptionsOpen: true,
 });
 
 const onSetCopySelectedFeature = (state: FormState, payload: ReturnType<typeof FormActions.setCopySelectedFeature>): FormState => ({

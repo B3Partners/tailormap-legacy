@@ -41,5 +41,17 @@ export const selectFeatureLabel = createSelector(
 export const selectCopyFormOpen = createSelector(selectFormState, state => state.copyFormOpen);
 export const selectCopyFormOptionsOpen = createSelector(selectFormState, state => state.copyOptionsOpen);
 export const selectParentCopyFeature = createSelector(selectFormState, state => state.copyFeature);
-export const selectCurrentSelectedCopyFeature = createSelector(selectFormState, state => state.copySelectedFeature);
+export const selectCurrentSelectedCopyFeatureAndFormConfig = createSelector(
+  selectFormState,
+  selectFormConfigs,
+  (state, formConfigs) => {
+    if (!state.copySelectedFeature) {
+      return null;
+    }
+    return {
+      feature: state.copySelectedFeature,
+      formConfig: formConfigs.get(state.copySelectedFeature.tableName),
+    };
+  },
+);
 export const selectCopyDestinationFeatures = createSelector(selectFormState, state => state.copyDestinationFeatures);
