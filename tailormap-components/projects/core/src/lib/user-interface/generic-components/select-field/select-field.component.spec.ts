@@ -15,7 +15,7 @@ describe('SelectFieldComponent', () => {
   beforeEach(() => {
     spectator = createComponent({props: {
         attribute: { key: 'att', tab: 1, column: 1, label: 'test', type: FormFieldType.SELECT, value: null, options: [] },
-        groep: new FormGroup({ test: new FormControl('the value') }),
+        groep: new FormGroup({ att: new FormControl('the value') }),
       }});
     spectator.detectChanges();
   });
