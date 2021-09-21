@@ -24,13 +24,9 @@ export class FormFieldHelpers {
     if (attribute.value && (!attribute.options || attribute.options.length === 0)) {
       return true;
     } else {
-      if (attribute.options && attribute.options?.length !== 0 &&
-        attribute.options.findIndex(value => {
-          const attributeValue = attribute.value;
-          return (!FormFieldHelpers.isNumber(attributeValue) && attributeValue === value.label)
-            || (FormFieldHelpers.isNumber(attributeValue) && value.val === parseInt( '' + attributeValue, 10));
-        }) === -1) {
-        return true;
+      if (attribute.options && attribute.options?.length !== 0) {
+        const optionValue = FormFieldHelpers.getComparableValue(attribute);
+        return !!optionValue;
       }
     }
     return false;
@@ -40,14 +36,17 @@ export class FormFieldHelpers {
     return !isNaN(parseFloat(n)) && isFinite(n);
   }
 
-  public static getComparableValue(attribute: FeatureAttribute): SelectOption {
+  public static getComparableValue(attribute: FeatureAttribute): SelectOption | undefined {
     if (attribute.options && attribute.options?.length !== 0 ) {
-      const ret = attribute.options.find(value => {
+      return attribute.options.find(value => {
         const attributeValue = attribute.value;
-        return (!FormFieldHelpers.isNumber(attributeValue) && attributeValue === value.label)
-          || (FormFieldHelpers.isNumber(attributeValue) && value.val === parseInt( '' + attributeValue, 10));
+        const isNumberValue = FormFieldHelpers.isNumber(attributeValue);
+        return (attributeValue === value.val)
+          || (isNumberValue && +(value.val) === +(attributeValue))
+          || (isNumberValue && value.id === +(attributeValue));
       });
-      return ret;
     }
+    return undefined;
   }
+
 }

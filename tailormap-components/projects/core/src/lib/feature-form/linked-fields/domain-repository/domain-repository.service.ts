@@ -55,8 +55,9 @@ export class DomainRepositoryService implements OnDestroy {
                 for (const domeinwaarde of domeinwaardes) {
                   options.push({
                     label: domeinwaarde.synoniem || domeinwaarde.waarde,
-                    val: domeinwaarde.id,
+                    val: domeinwaarde.waarde,
                     disabled: false,
+                    id: domeinwaarde.id,
                   });
                 }
                 field.options = options;
