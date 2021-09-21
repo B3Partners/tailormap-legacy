@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: 'models'
-  description: 'Tailormap API models'
+  description: 'Tailormap API models has all the models for the Tailormap API.'
   version: '1.0'
   license:
     name: 'MIT'
@@ -11,13 +11,24 @@ info:
     url: 'https://www.b3partners.nl/'
     email: 'info@b3partners.nl'
 
-# none
-servers: []
-# none
-paths: {}
+# none; specified in tailormap-api.yaml
+servers: [ ]
+# none; specified in tailormap-api.yaml
+paths: { }
 
 components:
   schemas:
+    CoordinateReferenceSystem:
+      description: '
+      Well-known and client-supported EPSG code.
+      Currently Rijksdriehoek/WGS84, new/TODO Web Mercator.
+      '
+      type: string
+      default: 'EPSG:28992'
+      enum:
+        - 'EPSG:28992'
+        - 'EPSG:4236'
+        - 'EPSG:3857'
 
     Bounds:
       description: 'Describes an extent within a Coordinate Reference System'
@@ -36,8 +47,7 @@ components:
           description: 'upper right'
           type: number
         crs:
-          type: string
-          default: 'EPSG:28992'
+          $ref: '#/components/schemas/CoordinateReferenceSystem'
       example:
         miny: 400000
         minx: 105000
@@ -47,8 +57,10 @@ components:
 
 
     AppLayer:
-      description: 'a map layer, but only enough information to draw the layer.
-      For advanced functionality that required access to attributes the LayerDetails should be requested.'
+      description: '
+      A map layer, but only enough information to draw the layer.
+      For advanced functionality that required access to attributes the LayerDetails should be requested.
+      '
       type: object
       properties:
         # TODO aanvullen?
@@ -57,11 +69,14 @@ components:
           format: int64
         url:
           type: string
+        serviceId:
+          type: integer
+          format: int64
         visible:
           type: boolean
-        projection:
-          type: string
-          default: 'EPSG:28992'
+        crs:
+          # Since at some point in time we may support client-side reprojection eg. for vector-tiles'
+          $ref: '#/components/schemas/CoordinateReferenceSystem'
         isBaseLayer:
           type: boolean
           default: false
@@ -122,8 +137,11 @@ components:
                   - 'relate'
                   - 'join'
         attributes:
-          description: 'Array with attributes.
-        **note** that the ordering of this array is determined in the backend and does not need to coincide with the actual data.'
+          description: '
+          Array with attributes.
+          **note** that the ordering of this array is determined in the backend and does not need
+          to coincide with the actual data in the data source.
+          '
           type: array
           items:
             $ref: '#/components/schemas/Attribute'
@@ -211,6 +229,7 @@ components:
           nullable: false
         useProxy:
           type: boolean
+          default: false
         styleLibraries:
           type: object
         protocol:
@@ -230,6 +249,7 @@ components:
         #      anders kan deze hier weg en moet die naar de "map"
         matrixSet:
           type: object
+
 
     Component:
       description: 'a component to be used in the application'

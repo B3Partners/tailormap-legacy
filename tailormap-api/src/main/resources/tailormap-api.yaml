@@ -1,8 +1,12 @@
 openapi: 3.0.3
 
 info:
-  title: 'tailormap-api'
-  description: 'Tailormap API'
+  title: 'Tailormap API'
+  description: '
+  Tailormap API contains the calls necessary to draw a basic map on the screen.
+  This API will be augmented with component specific API calls that can retrieve
+  and or manipulate data.
+  '
   contact:
     name: 'B3Partners BV'
     url: 'https://www.b3partners.nl/'
@@ -28,19 +32,14 @@ servers:
 
 components:
   schemas:
+
     MapResponse:
-      description: 'Any information needed to draw a basic map on a page. May include base layers.'
+      description: '
+      Any information needed to draw a basic map on a page. May include base layers.
+      '
       type: object
       properties:
         # mostly properties from table "application"
-        projection:
-          # TODO Ik denk niet dat we de hele Proj4j string nodig hebben?
-          description: 'A well-known EPSG code.'
-          type: string
-          default: 'EPSG:28992'
-          enum:
-            - 'EPSG:28992'
-            - 'EPSG:4236'
         initialExtent:
           description: 'initial bounds for the map'
           type: object
@@ -56,12 +55,20 @@ components:
               $ref: './model.yaml#/components/schemas/Bounds'
           nullable: true
         services:
-          # TODO in de huidige implementatie is dit een object met de id van de service als element
-          #      bijv. "1": {"protocol": "tiled", "matrixSets":[], "id": 1
-          #      een array lijkt me een betere optie
+          # TODO in the current implementation this is an object with the id of a service as elemnt
+          #      eg. "1": {"protocol": "tiled", "matrixSets":[], "id": 1
+          #      an array seems the better option
+          # TODO Not sure we actually/still need this...
           type: array
           items:
             $ref: './model.yaml#/components/schemas/Service'
+        baseLayers:
+          type: array
+          items:
+            $ref: './model.yaml#/components/schemas/AppLayer'
+        crs:
+          $ref: './model.yaml#/components/schemas/CoordinateReferenceSystem'
+
 
     Layers:
       description: 'An array of app layers.'
@@ -72,7 +79,10 @@ components:
 
 
     ComponentsResponse:
-      description: 'Provides the collection of configured components for the application'
+      description: '
+      Provides the collection of configured components (controls) for the application.
+      Note that default/built-in components do not have to be retrieved.
+      '
       type: array
       # 0, because there are a number of default components always loaded eg. mapcomponent, zoom, pan...
       # also, since layout is fixed, that information is no longer needed
@@ -80,7 +90,7 @@ components:
       items:
         $ref: './model.yaml#/components/schemas/Component'
 
-    CheckResponse:
+    AppResponse:
       description: 'Answers API version and (default|requested) application id.'
       type: object
       properties:
@@ -103,11 +113,17 @@ components:
             - 'nl_NL'
             - 'en_US'
           default: 'nl_NL'
+        styling:
+          description: 'styling information such as support- and backing colours etc.'
+          type: object
+          required: false
 
 paths:
   /app/:
-    summary: 'Use this endpoint to get the id of the requested or default application.
+    summary: '
+    Use this endpoint to get the id of the requested or default application.
     Either call this with `name` and optional `version` or `appid` alone.
+    Will return general setup information such as name, appid, language, but not map specific infrmation
     '
     get:
       parameters:
@@ -142,14 +158,14 @@ paths:
                 title: 'This is a cool mapping app'
                 lang: 'nl_NL'
               schema:
-                $ref: '#/components/schemas/CheckResponse'
+                $ref: '#/components/schemas/AppResponse'
         '401':
           description: 'Authentication required.'
           content:
             application/json:
               schema:
-                # not an actual redirect, but  provides login url
-                # we need to rethink login mechanism eg a login form popover in the
+                # not an actual HTTP redirect, but  provides login url
+                # we need to rethink login mechanism eg. a login form popover in the
                 # application that is shown on this status
                 $ref: './statusresponses.yaml#/components/schemas/RedirectResponse'
               example:
@@ -166,15 +182,16 @@ paths:
               schema:
                 $ref: './statusresponses.yaml#/components/schemas/ErrorResponse'
         '404':
-          description: 'The specified application was not found,
-          use the url from the response to get the default application.
+          description: '
+          The specified application was not found,
+          Use the `url` from the response to get the default application.
           '
           content:
             application/json:
               example:
                 code: 404
                 message: 'Application not found'
-                url: /app/1
+                url: /app/?appid=1
               schema:
                 $ref: './statusresponses.yaml#/components/schemas/RedirectResponse'
         '500':
@@ -238,7 +255,8 @@ paths:
                 $ref: '#/components/schemas/ComponentsResponse'
 
   /layers/{appid}:
-    summary: 'Retrieve all configured layers.
+    summary: '
+    Retrieve all configured layers.
     Provides all information to add foreground layers to the map and draw them.
     '
     get:
@@ -259,7 +277,9 @@ paths:
                 $ref: '#/components/schemas/Layers'
 
   /describelayer/{appid}/{layerid}:
-    summary: 'Returns metadata and featuretype on the requested app layer, aka. layer details'
+    summary: '
+    Returns metadata and featuretype of the requested app layer, aka. layer details
+    '
     get:
       parameters:
         - description: 'application id'

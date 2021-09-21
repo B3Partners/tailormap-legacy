@@ -980,7 +980,7 @@
         <module>solr-commons</module>
         <module>form</module>
         <module>viewer</module>
-        <module>viewer-ng</module>
+        <module>tailormap-api</module>
         <module>viewer-admin</module>
         <module>docker</module>
     </modules>

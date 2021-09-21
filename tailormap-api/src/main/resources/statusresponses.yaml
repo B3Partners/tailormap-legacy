@@ -2,7 +2,7 @@ openapi: 3.0.3
 
 info:
   title: 'status responses'
-  description: 'Tailormap status API decribes generic responses'
+  description: 'Tailormap status API decribes generic responses.'
   contact:
     name: 'B3Partners BV'
     url: 'https://www.b3partners.nl/'
@@ -12,16 +12,18 @@ info:
     url: 'https://mit-license.org/'
   version: '1.0'
 
-# none
+# none; specified in tailormap-api.yaml
 servers: [ ]
-# none
+# none; specified in tailormap-api.yaml
 paths: { }
 
 components:
   schemas:
     RedirectResponse:
-      description: 'login required response, but can also be used for other response that require redirection.
-      Does not include a HTTP header to force redirection, but a url that the client can use.'
+      description: '
+      login required response, but can also be used for other response that require redirection.
+      Does not include a HTTP header to force redirection, but a url that the client can use.
+      '
       type: object
       properties:
         code:
@@ -39,7 +41,11 @@ components:
 
 
     ErrorResponse:
-      description: 'General server error response'
+      description: '
+      General server error response.
+      Can be returned when something goes terribly wrong in the backend.
+      Note that the diagnostic message may be of a general character to prevent disclosure of information about the backend.
+      '
       type: object
       properties:
         code:

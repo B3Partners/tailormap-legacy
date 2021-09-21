@@ -7,7 +7,8 @@
         <artifactId>tailormap</artifactId>
         <version>5.9.9-SNAPSHOT</version>
     </parent>
-    <artifactId>viewer-ng</artifactId>
+    <artifactId>tailormap-api</artifactId>
     <packaging>pom</packaging>
-    <name>viewer-ng</name>
+    <name>Tailormap API</name>
+    <description>Tailormap API provides the OpenAPI for Tailormap</description>
 </project>
