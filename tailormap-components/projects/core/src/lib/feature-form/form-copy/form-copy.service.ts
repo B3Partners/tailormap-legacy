@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Feature, Field } from '../../shared/generated';
+import { Feature } from '../../shared/generated';
 import { FormActionsService } from '../form-actions/form-actions.service';
 import { FeatureInitializerService } from '../../shared/feature-initializer/feature-initializer.service';
 import { Observable, of } from 'rxjs';
