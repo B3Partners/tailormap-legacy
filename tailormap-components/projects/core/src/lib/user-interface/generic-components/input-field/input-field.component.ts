@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { BaseFieldComponent } from '../base-field/base-field.component';
 import { FormFieldType } from '../../../feature-form/form/form-models';
 
@@ -6,6 +6,7 @@ import { FormFieldType } from '../../../feature-form/form/form-models';
   selector: 'tailormap-input-field',
   templateUrl: './input-field.component.html',
   styleUrls: ['./input-field.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class InputFieldComponent extends BaseFieldComponent implements OnInit {
 

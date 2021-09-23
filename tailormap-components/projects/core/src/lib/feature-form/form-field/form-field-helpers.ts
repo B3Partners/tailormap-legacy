@@ -23,11 +23,9 @@ export class FormFieldHelpers {
     }
     if (attribute.value && (!attribute.options || attribute.options.length === 0)) {
       return true;
-    } else {
-      if (attribute.options && attribute.options?.length !== 0) {
-        const optionValue = FormFieldHelpers.getComparableValue(attribute);
-        return !!optionValue;
-      }
+    }
+    if (attribute.options && attribute.options?.length !== 0) {
+      return !FormFieldHelpers.findSelectedOption(attribute.options, attribute.value);
     }
     return false;
   }
@@ -36,10 +34,9 @@ export class FormFieldHelpers {
     return !isNaN(parseFloat(n)) && isFinite(n);
   }
 
-  public static getComparableValue(attribute: FeatureAttribute): SelectOption | undefined {
-    if (attribute.options && attribute.options?.length !== 0 ) {
-      return attribute.options.find(value => {
-        const attributeValue = attribute.value;
+  public static findSelectedOption(options: SelectOption[], attributeValue: string | number): SelectOption | undefined {
+    if (options && options?.length !== 0 ) {
+      return options.find(value => {
         const isNumberValue = FormFieldHelpers.isNumber(attributeValue);
         return (attributeValue === value.val)
           || (isNumberValue && +(value.val) === +(attributeValue))

@@ -1,14 +1,13 @@
-import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { AbstractControl, FormGroup } from '@angular/forms';
 import { Attribute, FeatureAttribute, FormFieldType } from '../form/form-models';
-import { LinkedAttributeRegistryService } from '../linked-fields/registry/linked-attribute-registry.service';
 import { FormFieldHelpers } from './form-field-helpers';
 import { FormTreeHelpers } from '../form-tree/form-tree-helpers';
-import { combineLatest, Observable, Subject } from 'rxjs';
+import { combineLatest, Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { FormState } from '../state/form.state';
 import { selectCurrentFeature, selectFormConfigForFeature } from '../state/form.selectors';
-import { filter, map, take, takeUntil } from 'rxjs/operators';
+import { filter, map } from 'rxjs/operators';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 
 @Component({
@@ -16,7 +15,7 @@ import { MatDatepickerInputEvent } from '@angular/material/datepicker';
   templateUrl: './formfield.component.html',
   styleUrls: ['./formfield.component.css'],
 })
-export class FormfieldComponent implements AfterViewInit, OnDestroy, OnInit {
+export class FormfieldComponent implements AfterViewInit, OnInit {
 
   public humanReadableValue$: Observable<string>;
 
@@ -40,10 +39,7 @@ export class FormfieldComponent implements AfterViewInit, OnDestroy, OnInit {
 
   private control: AbstractControl;
 
-  private destroyed = new Subject();
-
   constructor(
-    private registry: LinkedAttributeRegistryService,
     private store$: Store<FormState>,
   ) {
   }
@@ -57,24 +53,24 @@ export class FormfieldComponent implements AfterViewInit, OnDestroy, OnInit {
         filter(([feature, config]) => !!feature && !!config &&
           config.featureType === feature.tableName &&
           config.fields.find(field => field.key === this.attribute.key) !== undefined),
-        takeUntil(this.destroyed),
         map(([feature, config]) => {
           return FormTreeHelpers.getFeatureValueForField(feature, config, this.attribute.key);
         }));
     }
 
-  public ngOnDestroy() {
-    this.destroyed.next();
-    this.destroyed.complete();
-  }
-
   public ngAfterViewInit(): void {
     this.control = this.groep.controls[this.attribute.key];
+    if (this.attribute.isReadOnly && this.control.enabled) {
+      this.control.disable({ emitEvent: false });
+    }
+    if (!this.attribute.isReadOnly && this.control.disabled) {
+      this.control.enable({ emitEvent: false });
+    }
     if (!this.isBulk) {
       if (FormFieldHelpers.hasNonValidValue(this.attribute)) {
         this.control.setValidators([FormFieldHelpers.nonExistingValueValidator(this.attribute)]);
       } else {
-        const comparableValue = FormFieldHelpers.getComparableValue(this.attribute);
+        const comparableValue = FormFieldHelpers.findSelectedOption(this.attribute.options, this.attribute.value);
         const value = comparableValue ? comparableValue.val : this.attribute.value;
         if (value) {
           this.control.setValue(value, {
@@ -86,53 +82,6 @@ export class FormfieldComponent implements AfterViewInit, OnDestroy, OnInit {
         }
       }
     }
-  }
-
-  public valueChanged(event: any): void {
-    if (this.isDomainAttribute(this.attribute)) {
-      this.registry.domainFieldChanged(this.attribute, event.value);
-      this.registry.parentValue$.pipe(take(1)).subscribe((parentAttribute) => {
-        if(parentAttribute) {
-          this.groep.get(parentAttribute.key).setValue(parentAttribute.value, {
-            emitEvent: true,
-            onlySelf: false,
-            emitModelToViewChange: true,
-            emitViewToModelChange: true,
-          });
-        }
-      });
-    }
-  }
-
-  public checkboxValue(): boolean {
-    if(this.attribute.value === null) {
-      return false;
-    }
-    return this.attribute.value === this.attribute.valueTrue;
-  }
-
-  public onCheckboxChange(event: any): void {
-    if (event.checked) {
-      this.attribute.value = this.attribute.valueTrue;
-      this.groep.get(this.attribute.key).setValue(this.attribute.valueTrue, {
-        emitEvent: true,
-        onlySelf: false,
-        emitModelToViewChange: true,
-        emitViewToModelChange: true,
-      });
-    } else {
-      this.attribute.value = this.attribute.valueFalse;
-      this.groep.get(this.attribute.key).setValue(this.attribute.valueFalse, {
-        emitEvent: true,
-        onlySelf: false,
-        emitModelToViewChange: true,
-        emitViewToModelChange: true,
-      });
-    }
-  }
-
-  public hasNonValidValue(): boolean {
-    return FormFieldHelpers.hasNonValidValue(this.attribute);
   }
 
   public isTextAttribute = (attr: Attribute): boolean => attr.type === FormFieldType.TEXTFIELD;

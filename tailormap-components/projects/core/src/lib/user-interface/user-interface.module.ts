@@ -16,6 +16,8 @@ import { BaseFieldComponent } from './generic-components/base-field/base-field.c
 import { LabelFieldComponent } from './generic-components/label-field/label-field.component';
 import { createCustomElement } from '@angular/elements';
 import { DatepickerFieldComponent } from './generic-components/datepicker-field/datepicker-field.component';
+import { CheckboxFieldComponent } from './generic-components/checkbox-field/checkbox-field.component';
+import { SelectFieldComponent } from './generic-components/select-field/select-field.component';
 
 @NgModule({
   declarations: [
@@ -28,19 +30,23 @@ import { DatepickerFieldComponent } from './generic-components/datepicker-field/
     BaseFieldComponent,
     LabelFieldComponent,
     DatepickerFieldComponent,
+    CheckboxFieldComponent,
+    SelectFieldComponent,
   ],
   imports: [
     CommonModule,
     SharedModule,
     AttributeListModule,
   ],
-    exports: [
-        EditBarComponent,
-        GeometryConfirmButtonsComponent,
-        InputFieldComponent,
-        LabelFieldComponent,
-        DatepickerFieldComponent,
-    ],
+  exports: [
+    EditBarComponent,
+    GeometryConfirmButtonsComponent,
+    InputFieldComponent,
+    LabelFieldComponent,
+    DatepickerFieldComponent,
+    CheckboxFieldComponent,
+    SelectFieldComponent,
+  ],
   entryComponents: [],
   providers: [
     {
