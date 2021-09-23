@@ -1,14 +1,12 @@
-/* eslint @typescript-eslint/naming-convention: [ "error", { "selector": ["objectLiteralProperty","classProperty"], "format": ["camelCase", "UPPER_CASE", "snake_case"] } ] */
-
-import { Injectable, OnDestroy } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Feature } from '../generated';
 import * as wellknown from 'wellknown';
 import { GeoJSONGeometry } from 'wellknown';
 import { Store } from '@ngrx/store';
 import { ApplicationState } from '../../application/state/application.state';
 import { selectFormConfigForFeatureTypeName } from '../../application/state/application.selectors';
-import { Observable, Subject } from 'rxjs';
-import { map, takeUntil } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { map, take } from 'rxjs/operators';
 import { ExtendedFormConfigurationModel } from '../../application/models/extended-form-configuration.model';
 import { FormConfiguration } from '../../feature-form/form/form-models';
 
@@ -16,20 +14,14 @@ import { FormConfiguration } from '../../feature-form/form/form-models';
 @Injectable({
   providedIn: 'root',
 })
-export class FeatureInitializerService implements OnDestroy {
+export class FeatureInitializerService {
 
   public static enum;
-  private destroyed = new Subject();
 
   public static readonly STUB_OBJECT_GUID_NEW_OBJECT = '-1';
 
   constructor(
     private store$: Store<ApplicationState>) {
-  }
-
-  public ngOnDestroy() {
-    this.destroyed.next();
-    this.destroyed.complete();
   }
 
   public retrieveGeometry(feature: Feature): GeoJSONGeometry {
@@ -40,33 +32,33 @@ export class FeatureInitializerService implements OnDestroy {
     return null;
   }
 
-  public create$(type: string, params: any): Observable<Feature> {
+  public create$(type: string, params: Record<string, any>): Observable<Feature> {
     return this.store$.select(selectFormConfigForFeatureTypeName, type)
-      .pipe(takeUntil(this.destroyed),
-      map((config: ExtendedFormConfigurationModel) => {
-        if (!config) {
-          throw new Error('Featuretype not implemented: ' + type);
-        }
-
-        const feature = this.createFeature(config, type);
-
-        for(const key in params){
-          if(params.hasOwnProperty(key)){
+      .pipe(
+        take(1),
+        map((config: ExtendedFormConfigurationModel) => {
+          if (!config) {
+            throw new Error('Featuretype not implemented: ' + type);
+          }
+          const feature = this.createFeature(config, type);
+          for (const key in params) {
+            if (params.hasOwnProperty(key)) {
+              feature.attributes.push({
+                key,
+                value: params[key],
+              });
+            }
+          }
+          if (config.featuretypeMetadata) {
             feature.attributes.push({
-              key,
-              value: params[key],
+              key: config.featuretypeMetadata.geometryAttribute,
+              type: config.featuretypeMetadata.geometryType,
+              value: params.geometrie,
             });
           }
-        }
-        if (config.featuretypeMetadata) {
-          feature.attributes.push({
-            key: config.featuretypeMetadata.geometryAttribute,
-            type: config.featuretypeMetadata.geometryType,
-            value: params.geometrie,
-          });
-        }
-        return feature;
-      }));
+          return feature;
+        }),
+      );
   }
 
   private createFeature(config: FormConfiguration, type: string): Feature{

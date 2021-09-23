@@ -37,7 +37,7 @@ export class FormActionsService {
     }
   }
 
-  public removeFeature$(feature: Feature): Observable<any> {
+  public removeFeature$(feature: Feature): Observable<boolean> {
     return this.service.delete({application: this.tailormap.getApplicationId(),
       featuretype: feature.tableName, fid: feature.fid});
   }

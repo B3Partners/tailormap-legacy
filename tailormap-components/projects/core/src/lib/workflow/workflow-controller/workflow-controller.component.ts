@@ -12,7 +12,8 @@ import { Store } from '@ngrx/store';
 import { WorkflowState } from '../state/workflow.state';
 import { updateConfig } from '../state/workflow.actions';
 import { selectCopyFormOpen, selectFeatureFormEnabled } from '../../feature-form/state/form.selectors';
-import { Observable } from 'rxjs';
+import { combineLatest, Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'tailormap-workflow-controller',
@@ -31,8 +32,11 @@ export class WorkflowControllerComponent implements OnInit {
     private tailorMap: TailorMapService,
     private store$: Store<WorkflowState>,
   ) {
-    this.formComponentOpen$ = this.store$.select(selectFeatureFormEnabled);
     this.formCopyComponentOpen$ = this.store$.select(selectCopyFormOpen);
+    this.formComponentOpen$ = combineLatest([
+      this.store$.select(selectFeatureFormEnabled),
+      this.formCopyComponentOpen$,
+    ]).pipe(map(([ formOpen, copyFormOpen ]) => formOpen && !copyFormOpen));
   }
 
   @Input()
@@ -44,9 +48,9 @@ export class WorkflowControllerComponent implements OnInit {
   public set highlightLayerId(id: string) {
     const vc = this.tailorMap.getViewerController();
     const mc = vc.mapComponent;
-    const map = mc.getMap();
-    const highlightlayer = map.getLayer(id) as VectorLayer;
-    const vectorlayer = map.getLayer(this.vectorlayerId) as VectorLayer;
+    const olMap = mc.getMap();
+    const highlightlayer = olMap.getLayer(id) as VectorLayer;
+    const vectorlayer = olMap.getLayer(this.vectorlayerId) as VectorLayer;
     this.factory.vectorLayer = vectorlayer;
     this.factory.highlightLayer = highlightlayer;
 

@@ -1,3 +1,7 @@
+:host {
+  --overlay-panel-form-columns: 1;
+}
+
 .container {
   display: flex;
   flex-direction: row;
@@ -45,4 +49,8 @@
 
 .tree-options p + p {
   margin-top: 8px;
+}
+
+mat-checkbox {
+  display: block;
 }
