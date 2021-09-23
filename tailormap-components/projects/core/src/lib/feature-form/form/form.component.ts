@@ -26,6 +26,7 @@ import { EditFeatureGeometryService } from '../services/edit-feature-geometry.se
 import { AttributeMetadataResponse } from '../../shared/attribute-service/attribute-models';
 import { ExtendedFormConfigurationModel } from '../../application/models/extended-form-configuration.model';
 import { METADATA_SERVICE } from '@tailormap/api';
+import { TailorMapService } from '../../../../../bridge/src/tailor-map.service';
 
 @Component({
   selector: 'tailormap-form',
@@ -59,6 +60,7 @@ export class FormComponent implements OnDestroy, OnInit {
     public actions: FormActionsService,
     private editFeatureGeometryService: EditFeatureGeometryService,
     private formElement: ElementRef,
+    private tailormapService: TailorMapService,
   ) {
   }
 
@@ -243,31 +245,44 @@ export class FormComponent implements OnDestroy, OnInit {
         if (!geomField) {
           return;
         }
+        const geomFieldIndex = this.feature.attributes.findIndex(f => f.key === geomField);
+        if (geomFieldIndex === -1) {
+          return;
+        }
+        const geomFieldValues = this.feature.attributes[geomFieldIndex];
         this.feature = {
           ...this.feature,
-          [geomField]: geometry,
+          attributes: [
+            ...this.feature.attributes.slice(0, geomFieldIndex),
+            {
+              ...geomFieldValues,
+              value: geometry,
+            },
+            ...this.feature.attributes.slice(geomFieldIndex + 1),
+          ],
         };
+
+        const parentFeature = this.features[0];
+        this.actions.save$(false, [this.feature], parentFeature).subscribe(savedFeature => {
+          this.tailormapService.getViewerController().mapComponent.getMap().update();
+          this.store$.dispatch(FormActions.setNewFeature({newFeature: savedFeature, parentId: parentFeature.fid}));
+        });
       });
   }
 
   public closeForm() {
-    if (this.formDirty) {
-      this.closeNotification(function () {
-        this.store$.dispatch(FormActions.setCloseFeatureForm());
-      });
-    } else {
-      this.store$.dispatch(FormActions.setCloseFeatureForm());
-    }
-  }
-
-  private closeNotification(afterAction) {
-    this.confirmDialogService.confirm$('Formulier sluiten',
-      'Wilt u het formulier sluiten? Niet opgeslagen wijzigingen gaan verloren.', true)
-      .pipe(take(1), filter(remove => remove))
-      .pipe(takeUntil(this.destroyed))
-      .subscribe(() => {
-        afterAction.call(this);
-      });
+    (
+      !this.formDirty ? of(true) : this.confirmDialogService.confirm$(
+        'Formulier sluiten',
+        'Wilt u het formulier sluiten? Niet opgeslagen wijzigingen gaan verloren.',
+        true,
+      )
+    )
+      .pipe(
+        take(1),
+        filter(remove => remove),
+      )
+      .subscribe(() => this.store$.dispatch(FormActions.setCloseFeatureForm()));
   }
 
 }

@@ -3,13 +3,14 @@ import * as wellknown from 'wellknown';
 import { Feature } from '../../shared/generated';
 import { MapClickedEvent } from '../../shared/models/event-models';
 import { OLFeature, VectorLayer } from '../../../../../bridge/typings';
-import { concatMap, take, takeUntil } from 'rxjs/operators';
+import { concatMap, filter, take, takeUntil } from 'rxjs/operators';
 import { WorkflowHelper } from './workflow.helper';
 import * as FormActions from '../../feature-form/state/form.actions';
 import { selectFormClosed } from '../../feature-form/state/form.state-helpers';
 import { selectFormConfigForFeatureTypeName } from '../../application/state/application.selectors';
 import { selectFeatureType, selectGeometryType, selectWorkflowConfig } from '../state/workflow.selectors';
 import { combineLatest, of } from 'rxjs';
+import { selectCurrentFeature } from '../../feature-form/state/form.selectors';
 
 
 export class StandardFormWorkflow extends Workflow {
@@ -42,6 +43,19 @@ export class StandardFormWorkflow extends Workflow {
               });
           }
           this.isDrawing = true;
+        }
+      });
+
+    this.store$.select(selectCurrentFeature)
+      .pipe(
+        takeUntil(this.destroyed),
+        filter(feature => !!feature),
+      )
+      .subscribe(feature => {
+        const geom = this.featureInitializerService.retrieveGeometry(feature);
+        if (geom) {
+          this.highlightLayer.removeAllFeatures();
+          this.highlightLayer.readGeoJSON(geom);
         }
       });
   }
@@ -83,16 +97,16 @@ export class StandardFormWorkflow extends Workflow {
     this.featureInitializerService.create$(this.featureType,
       {geometrie: geoJson, tableName: this.featureType, layerName: this.featureType, children: []}).subscribe(feat =>{
       const features: Feature[] = [feat];
-      this.openDialog(features, true);
+      this.openDialog(features, true, true);
     });
   }
 
-  public openDialog(formFeatures?: Feature[], editMode: boolean = false): void {
+  public openDialog(formFeatures?: Feature[], editMode: boolean = false, createdFeature?: boolean): void {
     this.store$.dispatch(FormActions.setOpenFeatureForm({features: formFeatures, editMode}));
     this.store$.pipe(selectFormClosed)
       .pipe(take(1))
       .subscribe(() => {
-        this.afterEditing();
+        this.afterEditing(createdFeature);
       });
   }
 
@@ -106,7 +120,7 @@ export class StandardFormWorkflow extends Workflow {
         concatMap(workFlowConfig => this.featureSelectionService.selectFeatureForClick$(data, workFlowConfig.useSelectedLayerFilter)),
         concatMap(feature => combineLatest([
           of(feature),
-          this.store$.select(selectFormConfigForFeatureTypeName, feature.tableName),
+          feature ? this.store$.select(selectFormConfigForFeatureTypeName, feature.tableName) : of(null),
         ])),
       )
       .subscribe(([ feature, formConfig ]) => {
@@ -115,20 +129,17 @@ export class StandardFormWorkflow extends Workflow {
           return;
         }
         this.afterEditing();
-        const geom = this.featureInitializerService.retrieveGeometry(feature);
-        if (geom) {
-          this.highlightLayer.readGeoJSON(geom);
-        }
         this.openDialog([feature]);
       });
   }
 
-  public afterEditing(): void {
+  public afterEditing(updateMap?: boolean): void {
     this.ngZone.runOutsideAngular(() => {
       this.vectorLayer.removeAllFeatures();
       this.highlightLayer.removeAllFeatures();
-
-      this.tailorMap.getViewerController().mapComponent.getMap().update();
+      if (updateMap) {
+        this.tailorMap.getViewerController().mapComponent.getMap().update();
+      }
     });
   }
 
