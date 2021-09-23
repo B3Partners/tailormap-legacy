@@ -23,7 +23,6 @@ import {
 import { FormHelpers } from './form-helpers';
 import { FeatureInitializerService } from '../../shared/feature-initializer/feature-initializer.service';
 import { EditFeatureGeometryService } from '../services/edit-feature-geometry.service';
-import { AttributeMetadataResponse } from '../../shared/attribute-service/attribute-models';
 import { ExtendedFormConfigurationModel } from '../../application/models/extended-form-configuration.model';
 import { METADATA_SERVICE } from '@tailormap/api';
 import { TailorMapService } from '../../../../../bridge/src/tailor-map.service';
@@ -80,24 +79,10 @@ export class FormComponent implements OnDestroy, OnInit {
           this.store$.select(selectFormAlreadyDirty),
           this.store$.select(selectFormConfigForFeatureTypeName, feature.tableName),
           this.store$.select(selectFormConfigs),
-          this.store$.select(selectLayersWithAttributes).pipe(
-            map(appLayers => {
-              const layers = appLayers.filter(appLayer => {
-                const layerName = appLayer.userlayer ? appLayer.userlayer_original_layername : appLayer.layerName;
-                return layerName === features[0].layerName || appLayer.featureTypeName === features[0].tableName;
-                },
-
-              );
-              return layers[0];
-            }),
-            switchMap(layer => {
-              return this.metadataService.getFeatureTypeMetadata$(layer.id).pipe(take(1));
-            }),
-          ),
         ])),
       )
-      .subscribe(([ feature, features, closeAfterSave, formAlreadyDirty, formConfig, allFormConfigs, metaDataResponse ]) => {
-        this.initForm(feature, features, closeAfterSave, formAlreadyDirty, formConfig, allFormConfigs, metaDataResponse);
+      .subscribe(([ feature, features, closeAfterSave, formAlreadyDirty, formConfig, allFormConfigs ]) => {
+        this.initForm(feature, features, closeAfterSave, formAlreadyDirty, formConfig, allFormConfigs);
       });
 
     this.isHidden$ = this.store$.select(selectFormVisible).pipe(map(visible => !visible));
@@ -112,7 +97,6 @@ export class FormComponent implements OnDestroy, OnInit {
     formAlreadyDirty: boolean,
     formConfig: FormConfiguration,
     allFormConfigs: Map<string, ExtendedFormConfigurationModel>,
-    metaDataResponse: AttributeMetadataResponse,
   ) {
     this.initComplete = true;
     if (!formConfig) {
@@ -124,13 +108,9 @@ export class FormComponent implements OnDestroy, OnInit {
     this.features = [...features];
     this.isBulk = features.length > 1;
     this.closeAfterSave = closeAfterSave;
-    this.formsForNew = [];
-    metaDataResponse.relations.forEach(rel => {
-      const relationName = rel.foreignFeatureTypeName;
-      if (allFormConfigs.has(relationName)) {
-        this.formsForNew.push(allFormConfigs.get(relationName));
-      }
-    });
+    this.formsForNew = (feature.relations || [])
+      .filter(relation => allFormConfigs.has(relation.foreignFeatureTypeName))
+      .map(relation => allFormConfigs.get(relation.foreignFeatureTypeName));
     this.formTabs = this.prepareFormConfig();
     this.formElement.nativeElement.style.setProperty('--overlay-panel-form-columns', `${this.getColumnCount()}`);
   }
@@ -181,28 +161,20 @@ export class FormComponent implements OnDestroy, OnInit {
     this.store$.dispatch(FormActions.setFormEditing({ editing }));
   }
 
-  public newItem($event: MouseEvent, featureTypeName: string) {
-    const type = featureTypeName;
-
-    combineLatest([
-      this.store$.select(selectFormConfigForFeatureTypeName, type),
-      this.store$.select(selectFeatures),
-    ])
-      .pipe(take(1))
-      .subscribe(([formConfig, features]) => {
-        const objecttype = FormHelpers.capitalize(type);
-        this.featureInitializerService.create$(type, {
-          id: null,
-          clazz: type,
-          isRelated: true,
-          objecttype,
-          children: null,
-          [formConfig.treeNodeColumn]: `Nieuwe ${formConfig.name}`,
-        }).subscribe(newFeature=>{
-          this.store$.dispatch(FormActions.setNewFeature({newFeature, parentId: features[0].fid}));
-          this.store$.dispatch(FormActions.setFormEditing({editing: true}));
-        });
-      });
+  public newItem(formConfig: FormConfiguration) {
+    const parentFeature = this.feature;
+    const relation = (parentFeature.relations || []).find(r => r.foreignFeatureTypeName === formConfig.featureType);
+    if (!relation) {
+      return;
+    }
+    this.featureInitializerService.create$(formConfig.featureType, {
+      id: null,
+      children: null,
+      [formConfig.treeNodeColumn]: `Nieuwe ${formConfig.name}`,
+    }).subscribe(newFeature => {
+      this.store$.dispatch(FormActions.setNewFeature({ newFeature, parentId: this.feature.fid }));
+      this.store$.dispatch(FormActions.setFormEditing({ editing: true }));
+    });
   }
 
   public remove() {
