@@ -79,6 +79,9 @@ export class FormTreeComponent implements OnInit, OnDestroy {
         return !node.metadata.isFeatureType && this.selectedFeature.fid === node.metadata.fid;
       },
       this.hasCheckboxes,
+      node => {
+        return node.metadata.isFeatureType;
+      },
     );
 
     this.treeOpen$ = this.isCopy ? this.store$.select(selectCopyFormOptionsOpen) : this.store$.select(selectTreeVisible);

@@ -17,10 +17,7 @@ import {
 } from '../state/form.selectors';
 import { WORKFLOW_ACTION } from '../../workflow/state/workflow-models';
 import { WorkflowState } from '../../workflow/state/workflow.state';
-import {
-  selectFormConfigForFeatureTypeName, selectFormConfigs, selectLayersWithAttributes,
-} from '../../application/state/application.selectors';
-import { FormHelpers } from './form-helpers';
+import { selectFormConfigForFeatureTypeName, selectFormConfigs } from '../../application/state/application.selectors';
 import { FeatureInitializerService } from '../../shared/feature-initializer/feature-initializer.service';
 import { EditFeatureGeometryService } from '../services/edit-feature-geometry.service';
 import { ExtendedFormConfigurationModel } from '../../application/models/extended-form-configuration.model';
@@ -112,7 +109,8 @@ export class FormComponent implements OnDestroy, OnInit {
       .filter(relation => allFormConfigs.has(relation.foreignFeatureTypeName))
       .map(relation => allFormConfigs.get(relation.foreignFeatureTypeName));
     this.formTabs = this.prepareFormConfig();
-    this.formElement.nativeElement.style.setProperty('--overlay-panel-form-columns', `${this.getColumnCount()}`);
+    this.formElement.nativeElement.style
+      .setProperty('--overlay-panel-form-columns', `${this.getMaxColumnCount(features, allFormConfigs)}`);
   }
 
   private prepareFormConfig(): Array<TabbedField> {
@@ -144,8 +142,23 @@ export class FormComponent implements OnDestroy, OnInit {
   }
 
   private getColumnCount() {
-    const columnNumbers = this.formConfig.fields.map(field => field.column);
-    return Math.max(...columnNumbers);
+    return this.getColumnCountForFormConfig(this.formConfig);
+  }
+
+  private getMaxColumnCount(features: Feature[], allFormConfigs: Map<string, ExtendedFormConfigurationModel>) {
+    const columnCounts = new Map<string, number>();
+    features.forEach(f => {
+      if (!columnCounts.has(f.tableName) && allFormConfigs.has(f.tableName)) {
+        const columnCount = this.getColumnCountForFormConfig(allFormConfigs.get(f.tableName));
+        columnCounts.set(f.tableName, columnCount);
+      }
+    });
+    return Math.max(...columnCounts.values());
+  }
+
+  private getColumnCountForFormConfig(formConfig: FormConfiguration) {
+    return formConfig.fields
+      .reduce((total, field) => Math.max(total, field.column), 0);
   }
 
   public ngOnDestroy() {
