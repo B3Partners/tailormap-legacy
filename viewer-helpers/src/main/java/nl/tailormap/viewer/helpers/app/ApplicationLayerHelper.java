@@ -86,6 +86,7 @@ public class ApplicationLayerHelper {
         json.put("userlayer", userLayer);
         if(userLayer){
             json.put(Layer.DETAIL_USERLAYER_ORIGINAL_LAYERNAME, l.getDetails().get(Layer.DETAIL_USERLAYER_ORIGINAL_LAYERNAME) );
+            json.put(Layer.DETAIL_USERLAYER_ORIGINAL_FEATURE_TYPE_NAME, l.getDetails().get(Layer.DETAIL_USERLAYER_ORIGINAL_FEATURE_TYPE_NAME) );
         }
         json.put("bufferable", l.isBufferable());
         json.put("editable", l.getFeatureType() != null && l.getFeatureType().isWriteable());

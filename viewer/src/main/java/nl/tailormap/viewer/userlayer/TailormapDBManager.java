@@ -137,6 +137,7 @@ public class TailormapDBManager {
             l.getDetails().put(Layer.DETAIL_USERLAYER_FILTER,  new ClobElement(this.filter));
             l.getDetails().put(Layer.DETAIL_USERLAYER_ORIGINAL_LAYER_ID, new ClobElement(this.layer.getId().toString()));
             l.getDetails().put(Layer.DETAIL_USERLAYER_ORIGINAL_LAYERNAME, new ClobElement(this.layer.getName()));
+            l.getDetails().put(Layer.DETAIL_USERLAYER_ORIGINAL_FEATURE_TYPE_NAME, new ClobElement(this.layer.getFeatureType().getTypeName()));
             l.getDetails().put(Layer.DETAIL_USERLAYER_USER, new ClobElement(this.auditMessageObject.getUsername()));
             l.getReaders().addAll(layer.getReaders());
             processFeatureType(l, viewName);
