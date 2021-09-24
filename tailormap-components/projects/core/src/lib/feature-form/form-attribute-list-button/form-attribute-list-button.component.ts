@@ -1,10 +1,9 @@
 import { Component, OnDestroy } from '@angular/core';
 import { AttributeListService } from '@tailormap/core-components';
 import { TailorMapService } from '../../../../../bridge/src/tailor-map.service';
-import * as wellknown from 'wellknown';
-import { Feature } from '../../shared/generated';
-import { map, take, takeUntil } from 'rxjs/operators';
-import { combineLatest, Observable, Subject } from 'rxjs';
+import { Feature, FeatureControllerService } from '../../shared/generated';
+import { concatMap, map, take, takeUntil } from 'rxjs/operators';
+import { combineLatest, forkJoin, Observable, of, Subject } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { editFeatures } from '../../application/state/application.actions';
 
@@ -22,6 +21,7 @@ export class FormAttributeListButtonComponent implements OnDestroy {
   constructor(
     private tailorMapService: TailorMapService,
     private attributeListService: AttributeListService,
+    private featureControllerService: FeatureControllerService,
     private store$: Store,
   ) {
     this.attributeListService.getCheckedRows$()
@@ -48,40 +48,49 @@ export class FormAttributeListButtonComponent implements OnDestroy {
       .pipe(
         take(1),
       )
-      .subscribe(result => {
-        if (result.features.length === 0) {
+      .subscribe(([ layerId, features ]) => {
+        if (features.length === 0) {
           return;
         }
-        this.store$.dispatch(editFeatures({ features: result.features, layerId: result.layerId }));
+        this.store$.dispatch(editFeatures({ features, layerId }));
       });
   }
 
-  private getCheckedRowsAsFeatures$(): Observable<{ features: Feature[]; layerId: string }> {
+  private getCheckedRowsAsFeatures$(): Observable<[ string, Feature[] ]> {
     return combineLatest([
       this.attributeListService.getCheckedRows$(),
       this.attributeListService.getSelectedLayerId$(),
     ])
       .pipe(
         take(1),
-        map(([ rows, layerId ]) => {
-          return {
-            layerId,
-            features: rows.map(row => {
-              // eslint-disable-next-line @typescript-eslint/naming-convention,@typescript-eslint/no-unused-vars
-              const { object_guid, related_featuretypes, __fid, _checked, _expanded, _selected, rowId, geometrie, ...rest } = row;
-              if (row.geometrie) {
-                rest.geometrie =  wellknown.parse(row.geometrie);
-              }
-              const feature = {} as Feature;
-              const appLayer = this.tailorMapService.getApplayerById(+(layerId));
-              feature.children = [];
-              feature.layerName = appLayer.layerName;
-              feature.fid = row.object_guid;
-              feature.relatedFeatureTypes = row.related_featuretypes;
-              feature.tableName = appLayer.featureTypeName;
-              return ({ ...feature, ...rest });
-            }),
-          };
+        concatMap(([ rows, layerId ]) => {
+          if (rows.length === 0) {
+            return forkJoin([ of(layerId), of([]) ]);
+          }
+          const appLayer = this.tailorMapService.getApplayerById(+(layerId));
+          return forkJoin([
+            of(layerId),
+            this.featureControllerService.getFeaturesForIds({
+              application: this.tailorMapService.getApplicationId(),
+              featureType: appLayer.featureTypeName,
+              featureIds: rows.map(row => `${row.__fid}`),
+            }).pipe(
+              map(features => {
+                if (!features || features.length === 0) {
+                  return [];
+                }
+                const fidList = new Set<string>();
+                const uniqueFeatures: Feature[] = [];
+                features.forEach(feature => {
+                  if (!fidList.has(feature.fid)) {
+                    fidList.add(feature.fid);
+                    uniqueFeatures.push(feature);
+                  }
+                });
+                return uniqueFeatures;
+              }),
+            ),
+          ]);
         }),
       );
   }
