@@ -1,6 +1,6 @@
 import { createServiceFactory, SpectatorService } from '@ngneat/spectator';
 import { FormAttributeListService } from './form-attribute-list.service';
-import { AttributeListService } from '../../../../../../../../tailormap-frontend/dist/core-components';
+import { AttributeListService } from '@tailormap/core-components';
 import { of } from 'rxjs';
 import { provideMockStore } from '@ngrx/store/testing';
 import { getApplicationServiceMockProvider } from '../../application/services/mocks/application.service.mock';
