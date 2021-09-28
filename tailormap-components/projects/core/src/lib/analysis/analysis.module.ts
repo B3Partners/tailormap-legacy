@@ -30,7 +30,7 @@ import { ResolutionSelectorComponent } from './resolution-selector/resolution-se
 import { StylePreviewComponent } from './style-preview/style-preview.component';
 import { ResolutionRangeSelectorComponent } from './resolution-range-selector/resolution-range-selector.component';
 import { AnalysisAttributeListButtonComponent } from './analysis-attribute-list-button/analysis-attribute-list-button.component';
-import { AttributeListService } from '@tailormap/core-components';
+import { AttributeListService, CoreComponentsSharedModule } from '@tailormap/core-components';
 import { AnalysisAttributeListLayerNameChooserComponent } from './analysis-attribute-list-layername-chooser/analysis-attribute-list-layer-name-chooser.component';
 
 
@@ -63,6 +63,7 @@ import { AnalysisAttributeListLayerNameChooserComponent } from './analysis-attri
     ApplicationModule,
     StoreModule.forFeature(analysisStateKey, analysisReducer),
     EffectsModule.forFeature([ AnalysisEffects ]),
+    CoreComponentsSharedModule,
   ],
 })
 export class AnalysisModule {

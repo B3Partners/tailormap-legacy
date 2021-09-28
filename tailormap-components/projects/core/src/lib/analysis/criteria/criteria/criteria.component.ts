@@ -44,6 +44,7 @@ export class CriteriaComponent implements OnInit, OnDestroy {
 
   public formData: Omit<CriteriaConditionModel, 'id' | 'condition' | 'value'> = {};
   public attributeFilter: { condition?: string; value?: string[] } = {};
+  public updatedAttributeFilter: { condition?: string; value?: string[] } = {};
 
   public selectedDataSource: AnalysisSourceModel;
 
@@ -138,10 +139,12 @@ export class CriteriaComponent implements OnInit, OnDestroy {
       condition: initialCriteria.condition,
     };
 
+    this.updatedAttributeFilter = { ...this.attributeFilter };
+
   }
 
   public updateAttributeFilter(attributeFilter: { condition: string; value: string[] }) {
-    this.attributeFilter = { ...this.attributeFilter, ...attributeFilter };
+    this.updatedAttributeFilter = { ...this.attributeFilter, ...attributeFilter };
     this.emitChanges();
   }
 
@@ -149,7 +152,7 @@ export class CriteriaComponent implements OnInit, OnDestroy {
     const criteria = {
       id: this.criteria.id,
       ...this.formData,
-      ...this.attributeFilter,
+      ...this.updatedAttributeFilter,
     };
     this.criteriaChanged.emit(criteria);
   }

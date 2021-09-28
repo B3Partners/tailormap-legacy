@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
 import { AbstractControl, FormGroup } from '@angular/forms';
 import { Attribute, FeatureAttribute, FormFieldType } from '../form/form-models';
 import { FormFieldHelpers } from './form-field-helpers';
@@ -8,7 +8,6 @@ import { Store } from '@ngrx/store';
 import { FormState } from '../state/form.state';
 import { selectCurrentFeature, selectFormConfigForFeature } from '../state/form.selectors';
 import { filter, map } from 'rxjs/operators';
-import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 
 @Component({
   selector: 'tailormap-formfield',
@@ -18,9 +17,6 @@ import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 export class FormfieldComponent implements AfterViewInit, OnInit {
 
   public humanReadableValue$: Observable<string>;
-
-  @Output()
-  public dateChange: EventEmitter< MatDatepickerInputEvent< any>>;
 
   @Input()
   public attribute: FeatureAttribute;
