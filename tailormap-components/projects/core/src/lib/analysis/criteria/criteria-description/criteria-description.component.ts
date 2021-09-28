@@ -23,7 +23,7 @@ import {
 import { AttributeTypeEnum } from '../../../shared/models/attribute-type.enum';
 import * as moment from 'moment';
 import { MetadataService } from '../../../application/services/metadata.service';
-import { AttributeFilterHelper } from '../../../shared/helpers/attribute-filter.helper';
+import { AttributeFilterHelper } from '@tailormap/core-components';
 import { METADATA_SERVICE } from '@tailormap/api';
 
 @Component({
