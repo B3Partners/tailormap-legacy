@@ -7,7 +7,7 @@ import { getMetadataServiceMockProvider } from '../../../application/services/mo
 import { selectSelectedDataSource } from '../../state/analysis.selectors';
 import { AttributeTypeEnum } from '../../../shared/models/attribute-type.enum';
 import { AttributeSelectorComponent } from '../../attribute-selector/attribute-selector.component';
-import { AttributeFilterComponent } from '../../../shared/attribute-filter/attribute-filter.component';
+import { AttributeFilterComponent } from '@tailormap/core-components';
 
 describe('CriteriaComponent', () => {
   let spectator: Spectator<CriteriaComponent>;
