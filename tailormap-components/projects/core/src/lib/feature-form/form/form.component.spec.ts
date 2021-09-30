@@ -5,7 +5,6 @@ import { SharedModule } from '../../shared/shared.module';
 import { FormCreatorComponent } from '../form-creator/form-creator.component';
 import { FormTreeComponent } from '../form-tree/form-tree.component';
 import { FormfieldComponent } from '../form-field/formfield.component';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FeatureControllerService } from '../../shared/generated';
 import { FormConfigMockModule } from '../../shared/formconfig-repository/formconfig-mock.module.spec';
 import { createComponentFactory, Spectator } from '@ngneat/spectator';
@@ -47,14 +46,6 @@ describe('FormComponent', () => {
       provideMockStore({ initialState }),
       FeatureControllerService,
       getDialogRefMockProvider(),
-      {
-        provide: MAT_DIALOG_DATA,
-        useValue: {
-          formFeatures:[{ clazz:'testFeature' }],
-          isBulk: false,
-          lookup: {},
-        },
-      },
       getMetadataServiceMockProvider(),
       getEditFeatureGeometryServiceProvider(),
       getTailorMapServiceMockProvider(),

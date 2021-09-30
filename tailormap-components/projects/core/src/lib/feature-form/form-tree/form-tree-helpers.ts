@@ -20,8 +20,9 @@ export class FormTreeHelpers {
           const featureType = child.tableName;
           if (formConfigs.has(featureType)) {
             if (!fts.hasOwnProperty(featureType)) {
+              const formConfig = formConfigs.get(featureType);
               const featureTypeNode: TreeModel<FormTreeMetadata> = {
-                label: FormHelpers.capitalize(featureType),
+                label: formConfig.name || FormHelpers.capitalize(featureType),
                 children: [],
                 id: 'featuretype_' + featureType,
                 metadata: {

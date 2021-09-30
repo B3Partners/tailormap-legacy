@@ -21,6 +21,10 @@
   overflow: hidden;
 }
 
+.tree ::ng-deep .tree-node-wrapper--folder .tree-node-wrapper {
+  padding-left: 4px;
+}
+
 .tree-container {
   flex: 1;
   overflow: auto;
