@@ -78,9 +78,13 @@ export class CriteriaDescriptionComponent {
   }
 
   private static convertConditionToQuery(condition: CriteriaConditionModel) {
-    let value = condition.value.join(',');
+    let values = condition.value;
     if (condition.attributeType === AttributeTypeEnum.DATE) {
-      value = condition.value.map(v => moment(v).format('DD-MM-YYYY HH:mm')).join(', ');
+      values = condition.value.map(v => moment(v).format('DD-MM-YYYY'));
+    }
+    let value = values.join(',');
+    if (values.length === 2) {
+      value = `${values[0]} en ${values[1]}`;
     }
     return `<strong>${condition.attributeAlias || condition.attribute}</strong> ${CriteriaDescriptionComponent.convertCondition(condition.condition)} <strong>${value}</strong>`;
   }
