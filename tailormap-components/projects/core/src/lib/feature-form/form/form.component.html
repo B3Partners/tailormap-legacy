@@ -27,14 +27,14 @@
       Annuleren
     </button>
 
-    <mat-menu #menu="matMenu">
-      <button *ngFor="let co of formsForNew" [id]="co.featureType" mat-menu-item (click)="newItem($event, co.featureType);">
+    <mat-menu #addFeatureMenu="matMenu">
+      <button *ngFor="let co of formsForNew" [id]="co.featureType" mat-menu-item (click)="newItem(co);">
         {{co.name}}
       </button>
     </mat-menu>
 
     <mat-menu #optiesMenu="matMenu" yPosition="above" class="tailormap-menu-panel">
-      <button mat-menu-item [matMenuTriggerFor]="menu">Object toevoegen</button>
+      <button mat-menu-item [matMenuTriggerFor]="addFeatureMenu">Object toevoegen</button>
       <button mat-menu-item (click)="copy();">Paspoort gegevens kopiëren</button>
       <button mat-menu-item (click)="editGeometry();">Bewerk geometrie</button>
       <button mat-menu-item class="red-item"  (click)="remove();"><mat-icon color="warn">delete_forever</mat-icon>Verwijderen</button>
