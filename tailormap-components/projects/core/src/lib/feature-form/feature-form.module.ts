@@ -17,6 +17,7 @@ import { ApplicationModule } from '../application/application.module';
 import { FormNodeComponent } from './form-tree/form-node/form-node.component';
 import { AttributeListService } from '@tailormap/core-components';
 import { FormAttributeListButtonComponent } from './form-attribute-list-button/form-attribute-list-button.component';
+import { FormAttributeListService } from './services/form-attribute-list.service';
 
 @NgModule({
   declarations: [
@@ -47,6 +48,7 @@ import { FormAttributeListButtonComponent } from './form-attribute-list-button/f
 export class FeatureFormModule {
   constructor(
     attributeListService: AttributeListService,
+    _formAttributeListService: FormAttributeListService,
   ) {
     FormAttributeListButtonComponent.registerWithAttributeList(attributeListService);
   }

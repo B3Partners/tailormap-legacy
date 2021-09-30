@@ -8,7 +8,6 @@ import { ColorPickerComponent } from './color-picker/color-picker.component';
 import { IconPickerComponent } from './icon-picker/icon-picker.component';
 import { ErrorMessageComponent } from './error-message/error-message.component';
 import { FeatureSelectionComponent } from './feature-selection/feature-selection.component';
-import { AttributeFilterComponent } from './attribute-filter/attribute-filter.component';
 import { SharedModule as TailormapSharedModule } from '@tailormap/shared';
 import { HttpClientModule } from '@angular/common/http';
 
@@ -21,7 +20,6 @@ import { HttpClientModule } from '@angular/common/http';
     CapitalizeFirstPipe,
     ErrorMessageComponent,
     FeatureSelectionComponent,
-    AttributeFilterComponent,
   ],
   imports: [
     ApiModule.forRoot({
@@ -39,7 +37,6 @@ import { HttpClientModule } from '@angular/common/http';
     IconPickerComponent,
     CapitalizeFirstPipe,
     ErrorMessageComponent,
-    AttributeFilterComponent,
   ],
 })
 export class SharedModule {}

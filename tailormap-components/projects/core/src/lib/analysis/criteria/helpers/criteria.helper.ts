@@ -9,7 +9,7 @@ import { UserLayerStyleModel } from '../../models/user-layer-style.model';
 import { StyleHelper } from '../../helpers/style.helper';
 import { ScopedUserLayerStyleModel } from '../../models/scoped-user-layer-style.model';
 import { AttributeTypeHelper } from '../../../application/helpers/attribute-type.helper';
-import { AttributeFilterHelper } from '../../../shared/helpers/attribute-filter.helper';
+import { AttributeFilterHelper } from '@tailormap/core-components';
 import { AttributeFilterModel } from '../../../shared/models/attribute-filter.model';
 
 export class CriteriaHelper {

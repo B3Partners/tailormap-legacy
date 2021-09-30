@@ -82,6 +82,7 @@ public class Layer implements Serializable {
 
     public static final String DETAIL_USERLAYER_FILTER = "userlayer_filter";
     public static final String DETAIL_USERLAYER_ORIGINAL_LAYERNAME = "userlayer_original_layername";
+    public static final String DETAIL_USERLAYER_ORIGINAL_FEATURE_TYPE_NAME = "userlayer_original_feature_type_name";
     public static final String DETAIL_USERLAYER_ORIGINAL_LAYER_ID = "userlayer_original_layerid";
     public static final String DETAIL_USERLAYER_DATE_ADDED = "userlayer_date_added";
     public static final String DETAIL_USERLAYER_USER = "userlayer_user";

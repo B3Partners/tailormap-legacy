@@ -62,6 +62,7 @@ declare interface AppLayer {
   editable: boolean;
   userlayer: boolean;
   userlayer_original_layername?: string;
+  userlayer_original_feature_type_name?: string;
   layerId: number;
 }
 declare interface Pixel{

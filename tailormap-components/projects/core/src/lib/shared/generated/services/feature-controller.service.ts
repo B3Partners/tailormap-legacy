@@ -299,6 +299,57 @@ export class FeatureControllerService extends BaseService {
   }
 
   /**
+   * Path part for operation onPoint
+   */
+  static readonly GetFeaturesForIdsPath = '/features/{application}/{featureType}/{featureIds}';
+
+  /**
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `onPoint()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  getFeaturesForIds$Response(params: {
+    application: number;
+    featureType: string;
+    featureIds: Array<string>;
+  }): Observable<StrictHttpResponse<Array<Feature>>> {
+
+    const rb = new RequestBuilder(this.rootUrl, FeatureControllerService.GetFeaturesForIdsPath, 'get');
+    if (params) {
+      rb.path('application', params.application, {});
+      rb.path('featureType', params.featureType, {});
+      rb.path('featureIds', params.featureIds, {});
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'json',
+      accept: 'application/json'
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<Array<Feature>>;
+      })
+    );
+  }
+
+  /**
+   * This method provides access to only to the response body.
+   * To access the full response (for headers, for example), `onPoint$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  getFeaturesForIds(params: {
+    application: number;
+    featureType: string;
+    featureIds: Array<string>;
+  }): Observable<Array<Feature>> {
+    return this.getFeaturesForIds$Response(params).pipe(
+      map((r: StrictHttpResponse<Array<Feature>>) => r.body as Array<Feature>)
+    );
+  }
+
+  /**
    * Path part for operation featuretypeInformation
    */
   static readonly FeaturetypeInformationPath = '/features/info/{appId}/{featureTypes}';
