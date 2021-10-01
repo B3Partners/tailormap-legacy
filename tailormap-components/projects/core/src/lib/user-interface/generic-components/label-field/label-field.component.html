@@ -2,7 +2,7 @@
   <div class="label"><mat-label>{{label}}</mat-label></div>
   <div class="value">
     <div *ngIf="!isHyperlinkField() && !isCheckboxField()">{{value}}</div>
-    <a href="{{value}}" target="_blank" rel="noopener" *ngIf="isHyperlinkField()">{{value}}</a>
+    <a href="{{getLink()}}" target="_blank" rel="noopener" *ngIf="isHyperlinkField()">{{value}}</a>
     <mat-checkbox *ngIf="isCheckboxField()" [checked]="valueTrue" [disabled]="true"></mat-checkbox>
   </div>
 </div>
