@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Observable, Subject, Subscription } from 'rxjs';
 import { Feature } from '../../shared/generated';
@@ -105,6 +105,9 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
       const control = new FormControl(value, [FormFieldHelpers.nonExistingValueValidator(featureAttribute)]);
       if (attr.isReadOnly) {
         control.disable({ emitEvent: false });
+      }
+      if (attr.mandatory) {
+        control.setValidators([ Validators.required ]);
       }
       formControls[attr.key] = control;
     }

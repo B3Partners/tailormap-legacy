@@ -1,6 +1,6 @@
 <div class="select-field">
   <div [formGroup]="groep" class="form-field">
-    <div class="label">{{attribute.label}}</div>
+    <label class="label">{{attribute.label}}</label>
     <mat-select
       (selectionChange)="valueChanged($event)"
       placeholder="{{attribute.key}}"
