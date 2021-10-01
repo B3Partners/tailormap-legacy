@@ -3,7 +3,7 @@ import { FormBuilder } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { AnalysisState } from '../../state/analysis.state';
 import { selectSelectedDataSource } from '../../state/analysis.selectors';
-import { concatMap, debounceTime, filter, takeUntil } from 'rxjs/operators';
+import { concatMap, debounceTime, filter, take, takeUntil } from 'rxjs/operators';
 import { forkJoin, of, Subject } from 'rxjs';
 import { MetadataService } from '../../../application/services/metadata.service';
 import { AttributeMetadataResponse } from '../../../shared/attribute-service/attribute-models';
@@ -12,6 +12,8 @@ import { CriteriaConditionModel } from '../../models/criteria-condition.model';
 import { AttributeTypeEnum } from '../../../shared/models/attribute-type.enum';
 import { ExtendedAttributeModel } from '../../../application/models/extended-attribute.model';
 import { METADATA_SERVICE } from '@tailormap/api';
+import { selectFormConfigs } from '../../../application/state/application.selectors';
+import { ExtendedFormConfigurationModel } from '../../../application/models/extended-form-configuration.model';
 
 type AttributeSource = Omit<AnalysisSourceModel, 'geometryType' | 'geometryAttribute'>;
 
@@ -82,12 +84,16 @@ export class CriteriaComponent implements OnInit, OnDestroy {
         takeUntil(this.destroyed),
         filter(selectedDataSource => !!selectedDataSource),
         concatMap(selectedDataSource => {
-          return forkJoin([ of(selectedDataSource), this.metadataService.getFeatureTypeMetadata$(selectedDataSource.layerId) ]);
+          return forkJoin([
+            of(selectedDataSource),
+            this.metadataService.getFeatureTypeMetadata$(selectedDataSource.layerId),
+            this.store$.select(selectFormConfigs).pipe(take(1)),
+          ]);
         }),
       )
-      .subscribe(([ selectedDataSource, layerMetadata ]) => {
+      .subscribe(([ selectedDataSource, layerMetadata, formConfigs ]) => {
         this.selectedDataSource = selectedDataSource;
-        this.setupFormValues(selectedDataSource, layerMetadata);
+        this.setupFormValues(selectedDataSource, layerMetadata, formConfigs);
         this.setInitialValues();
       });
   }
@@ -97,13 +103,17 @@ export class CriteriaComponent implements OnInit, OnDestroy {
     this.destroyed.complete();
   }
 
-  private setupFormValues(selectedDataSource: AnalysisSourceModel, layerMetadata: AttributeMetadataResponse) {
+  private setupFormValues(
+    selectedDataSource: AnalysisSourceModel,
+    layerMetadata: AttributeMetadataResponse,
+    formConfigs: Map<string, ExtendedFormConfigurationModel>,
+  ) {
     if (!layerMetadata) {
       return;
     }
     const relationSources = layerMetadata.relations.map<AttributeSource>(relation => ({
       featureType: relation.foreignFeatureType,
-      label: `${relation.foreignFeatureTypeName}`,
+      label: `${formConfigs.get(relation.foreignFeatureTypeName)?.name ?? relation.foreignFeatureTypeName}`,
     }));
     this.availableSources = [
       {featureType: selectedDataSource.featureType, label: selectedDataSource.label},
