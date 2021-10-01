@@ -4,9 +4,8 @@ import { Store } from '@ngrx/store';
 import { FeatureControllerService } from '../../shared/generated';
 import { concatMap, filter, map, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
-import { ApplicationService } from '../../application/services/application.service';
 import { setOpenFeatureForm } from '../state/form.actions';
-import { APPLICATION_SERVICE } from '@tailormap/api';
+import { APPLICATION_SERVICE, ApplicationServiceModel } from '@tailormap/api';
 
 @Injectable({
   providedIn: 'root',
@@ -19,7 +18,7 @@ export class FormAttributeListService {
     private attributeListService: AttributeListService,
     private store$: Store,
     private featureControllerService: FeatureControllerService,
-    @Inject(APPLICATION_SERVICE) private applicationService: ApplicationService,
+    @Inject(APPLICATION_SERVICE) private applicationService: ApplicationServiceModel,
   ) {
     attributeListService.getSelectedRow$()
       .pipe(

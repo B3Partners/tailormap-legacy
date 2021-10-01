@@ -158,9 +158,8 @@ export class MetadataService implements OnDestroy, MetadataServiceModel {
     appLayerId: string,
     attributeName: string,
     featureType: number,
-    applyFilter?: boolean,
+    filter?: string,
   ): Observable<UniqueValuesResponse> {
-    const filter = applyFilter ? this.applicationService.getFilterStringForLayer(appLayerId, false) : undefined;
     return this.valueService.uniqueValues$({
       applicationLayer: Number(appLayerId),
       attributes: [attributeName],
