@@ -3,8 +3,9 @@ import { FormAttributeListService } from './form-attribute-list.service';
 import { AttributeListService } from '@tailormap/core-components';
 import { of } from 'rxjs';
 import { provideMockStore } from '@ngrx/store/testing';
-import { getApplicationServiceMockProvider } from '../../application/services/mocks/application.service.mock';
+import { createApplicationServiceMock } from '../../application/services/mocks/application.service.mock';
 import { FeatureControllerService } from '../../shared/generated';
+import { APPLICATION_SERVICE } from '@tailormap/api';
 
 class MockAttributeListService {
   public getSelectedRow$() {
@@ -25,7 +26,7 @@ describe('FormAttributeListService', () => {
     providers: [
       { provide: AttributeListService, useClass: MockAttributeListService },
       provideMockStore(),
-      getApplicationServiceMockProvider(),
+      { provide: APPLICATION_SERVICE, useValue: createApplicationServiceMock() },
       { provide: FeatureControllerService, useClass: MockFeatureControllerService },
     ],
   });
