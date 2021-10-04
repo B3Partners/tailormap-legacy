@@ -9,6 +9,7 @@ import { APPLICATION_SERVICE, ApplicationServiceModel } from '@tailormap/api';
 import { FeatureSelectionComponent } from './feature-selection.component';
 import { MatDialog } from '@angular/material/dialog';
 import { LayerUtils } from '../layer-utils/layer-utils.service';
+import { FeatureSelectionHelper } from './feature-selection.helper';
 
 @Injectable({
   providedIn: 'root',
@@ -61,11 +62,12 @@ export class FeatureSelectionService implements OnDestroy {
         }),
         concatMap((features: Feature[]) => {
           let selectedFeature$ = of(null);
-          if (features && features.length > 1) {
-            selectedFeature$ = this.featureSelection$(features);
+          const uniqueFeatures = FeatureSelectionHelper.getUniqueFeatures(features);
+          if (uniqueFeatures && uniqueFeatures.length > 1) {
+            selectedFeature$ = this.featureSelection$(uniqueFeatures);
           }
-          else if (features && features.length === 1) {
-            selectedFeature$ = of(features[0]);
+          else if (uniqueFeatures && uniqueFeatures.length === 1) {
+            selectedFeature$ = of(uniqueFeatures[0]);
           }
           this.featureSelectionPopupOpen = false;
           return selectedFeature$;

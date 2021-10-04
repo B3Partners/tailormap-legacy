@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { AppLayer } from '../../../../../bridge/typings';
 import { TailorMapService } from '../../../../../bridge/src/tailor-map.service';
 
 @Injectable({
@@ -15,7 +14,7 @@ export class LayerUtils {
     let allowedFeaturesTypes = [];
     const sl = this.tailorMap.selectedLayer;
     if (sl && useSelectedLayerFilter) {
-      allowedFeaturesTypes.push(this.getLayerName(sl));
+      allowedFeaturesTypes.push(sl.layerName);
     } else {
       allowedFeaturesTypes = allFeatureTypes;
     }
@@ -27,17 +26,6 @@ export class LayerUtils {
     return newAr;
   }
 
-  public getLayerName(sl: AppLayer): string {
-    let layerName = '';
-    if (sl.userlayer) {
-      layerName = 'ul_' + sl.layerId;
-    } else {
-      layerName = sl.layerName;
-    }
-    return layerName;
-  }
-
-
   private getVisibleLayerFeatureTypes(userLayers: boolean): string[] {
     const visibleLayers = [];
 
@@ -45,8 +33,7 @@ export class LayerUtils {
     appLayers.forEach(appLayerId => {
       const appLayer = this.tailorMap.getViewerController().getAppLayerById(appLayerId);
       if ((userLayers && appLayer.userlayer) || (!userLayers && !appLayer.userlayer)) {
-        const layerName = this.getLayerName(appLayer);
-        visibleLayers.push(layerName);
+        visibleLayers.push(appLayer.layerName);
       }
     });
     return visibleLayers;

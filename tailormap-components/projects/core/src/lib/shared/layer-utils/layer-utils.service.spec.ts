@@ -46,7 +46,7 @@ describe('LayerUtilsService', () => {
       'aap',
       'noot',
     ]);
-    expect(result).toEqual(['ul_1']);
+    expect(result).toEqual(['aap']);
   });
 
   it('should return all features if useSelectedLayerFilter is false', () => {
@@ -64,19 +64,5 @@ describe('LayerUtilsService', () => {
       'noot',
     ]);
     expect(result).toEqual(['aap', 'noot']);
-  });
-
-  it('should return correct userlayername', () => {
-    const userLayer: AppLayer = appLayerMock({userlayer : true});
-
-    const result = spectator.service.getLayerName(userLayer);
-    expect(result).toEqual('ul_1');
-  });
-
-  it('should return correct layername', () => {
-    const normallayer: AppLayer = appLayerMock({userlayer : false, layerName: 'gb_wegvakonderdeel'});
-
-    const result = spectator.service.getLayerName(normallayer);
-    expect(result).toEqual('gb_wegvakonderdeel');
   });
 });
