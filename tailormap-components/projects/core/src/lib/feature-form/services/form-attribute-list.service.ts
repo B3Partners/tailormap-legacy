@@ -4,7 +4,6 @@ import { Store } from '@ngrx/store';
 import { FeatureControllerService } from '../../shared/generated';
 import { catchError, concatMap, filter, map, takeUntil } from 'rxjs/operators';
 import { of, Subject } from 'rxjs';
-import { ApplicationService } from '../../application/services/application.service';
 import { setOpenFeatureForm } from '../state/form.actions';
 import { APPLICATION_SERVICE, ApplicationServiceModel } from '@tailormap/api';
 
