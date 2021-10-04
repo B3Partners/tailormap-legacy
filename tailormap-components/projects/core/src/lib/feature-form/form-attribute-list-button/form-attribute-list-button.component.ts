@@ -6,6 +6,7 @@ import { concatMap, map, take, takeUntil } from 'rxjs/operators';
 import { combineLatest, forkJoin, Observable, of, Subject } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { editFeatures } from '../../application/state/application.actions';
+import { FeatureSelectionHelper } from '../../shared/feature-selection/feature-selection.helper';
 
 @Component({
   selector: 'tailormap-form-attribute-list-button',
@@ -75,20 +76,7 @@ export class FormAttributeListButtonComponent implements OnDestroy {
               featureType: appLayer.featureTypeName,
               featureIds: rows.map(row => `${row.__fid}`),
             }).pipe(
-              map(features => {
-                if (!features || features.length === 0) {
-                  return [];
-                }
-                const fidList = new Set<string>();
-                const uniqueFeatures: Feature[] = [];
-                features.forEach(feature => {
-                  if (!fidList.has(feature.fid)) {
-                    fidList.add(feature.fid);
-                    uniqueFeatures.push(feature);
-                  }
-                });
-                return uniqueFeatures;
-              }),
+              map(features => FeatureSelectionHelper.getUniqueFeatures(features)),
             ),
           ]);
         }),
