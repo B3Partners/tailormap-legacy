@@ -5,8 +5,7 @@ import { MapClickedEvent } from '../models/event-models';
 import { Observable, of, Subject } from 'rxjs';
 import { selectFormConfigFeatureTypeNames, selectFormConfigs } from '../../application/state/application.selectors';
 import { concatMap, map, take } from 'rxjs/operators';
-import { ApplicationService } from '../../application/services/application.service';
-import { APPLICATION_SERVICE } from '@tailormap/api';
+import { APPLICATION_SERVICE, ApplicationServiceModel } from '@tailormap/api';
 import { FeatureSelectionComponent } from './feature-selection.component';
 import { MatDialog } from '@angular/material/dialog';
 import { LayerUtils } from '../layer-utils/layer-utils.service';
@@ -24,7 +23,7 @@ export class FeatureSelectionService implements OnDestroy {
     private store$: Store,
     private dialog: MatDialog,
     private layerUtils: LayerUtils,
-    @Inject(APPLICATION_SERVICE) private applicationService: ApplicationService,
+    @Inject(APPLICATION_SERVICE) private applicationService: ApplicationServiceModel,
     private featureControllerService: FeatureControllerService,
   ) {}
 
