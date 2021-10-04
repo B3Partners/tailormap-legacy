@@ -1,13 +1,12 @@
 <?xml version="1.0"?>
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <artifactId>viewer-config-persistence</artifactId>
     <packaging>jar</packaging>
     <parent>
         <groupId>org.tailormap</groupId>
         <artifactId>tailormap</artifactId>
-        <version>5.9.9-SNAPSHOT</version>
+        <version>5.9.9</version>
     </parent>
     <name>viewer-config-persistence</name>
     <build>
@@ -55,8 +54,7 @@
                         <configuration>
                             <target>
                                 <!-- run after schema gegeration -->
-                                <move file="target/classes/scripts/hsql-schema-export.sql"
-                                      tofile="target/classes/scripts/hsqldb-schema-export.sql"/>
+                                <move file="target/classes/scripts/hsql-schema-export.sql" tofile="target/classes/scripts/hsqldb-schema-export.sql" />
                             </target>
                         </configuration>
                         <goals>
