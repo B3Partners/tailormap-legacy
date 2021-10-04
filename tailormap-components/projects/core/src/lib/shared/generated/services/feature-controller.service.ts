@@ -301,7 +301,7 @@ export class FeatureControllerService extends BaseService {
   /**
    * Path part for operation onPoint
    */
-  static readonly GetFeaturesForIdsPath = '/features/{application}/{featureType}/{featureIds}';
+  static readonly GetFeaturesForIdsPath = '/features/by-id/{application}/{featureType}';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
@@ -315,11 +315,11 @@ export class FeatureControllerService extends BaseService {
     featureIds: Array<string>;
   }): Observable<StrictHttpResponse<Array<Feature>>> {
 
-    const rb = new RequestBuilder(this.rootUrl, FeatureControllerService.GetFeaturesForIdsPath, 'get');
+    const rb = new RequestBuilder(this.rootUrl, FeatureControllerService.GetFeaturesForIdsPath, 'post');
     if (params) {
       rb.path('application', params.application, {});
       rb.path('featureType', params.featureType, {});
-      rb.path('featureIds', params.featureIds, {});
+      rb.body(params.featureIds || []);
     }
 
     return this.http.request(rb.build({
