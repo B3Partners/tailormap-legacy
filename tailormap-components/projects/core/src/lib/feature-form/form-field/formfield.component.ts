@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
-import { AbstractControl, FormGroup } from '@angular/forms';
+import { AbstractControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
 import { Attribute, FeatureAttribute, FormFieldType } from '../form/form-models';
 import { FormFieldHelpers } from './form-field-helpers';
 import { FormTreeHelpers } from '../form-tree/form-tree-helpers';
@@ -62,9 +62,10 @@ export class FormfieldComponent implements AfterViewInit, OnInit {
     if (!this.attribute.isReadOnly && this.control.disabled) {
       this.control.enable({ emitEvent: false });
     }
+    const validators: ValidatorFn[] = [];
     if (!this.isBulk) {
       if (FormFieldHelpers.hasNonValidValue(this.attribute)) {
-        this.control.setValidators([FormFieldHelpers.nonExistingValueValidator(this.attribute)]);
+        validators.push(FormFieldHelpers.nonExistingValueValidator(this.attribute));
       } else {
         const comparableValue = FormFieldHelpers.findSelectedOption(this.attribute.options, this.attribute.value);
         const value = comparableValue ? comparableValue.val : this.attribute.value;
@@ -77,6 +78,10 @@ export class FormfieldComponent implements AfterViewInit, OnInit {
           });
         }
       }
+      if (this.attribute.mandatory) {
+        validators.push(Validators.required);
+      }
+      this.control.setValidators(validators);
     }
   }
 

@@ -1,5 +1,5 @@
 <div [formGroup]="groep" class="form-field">
-  <div class="label">{{attribute.label}}</div>
+  <label class="label">{{attribute.label}}</label>
   <mat-form-field>
     <input matInput [matDatepicker]="picker" [value]="getDate()" (dateChange)="changeDate($event)" [placeholder]="getDate()">
     <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>

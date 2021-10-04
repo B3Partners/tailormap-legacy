@@ -17,4 +17,11 @@ export class LabelFieldComponent extends BaseFieldComponent implements OnInit {
   public ngOnInit(): void {
   }
 
+  public getLink() {
+    if (!/^http/.test(this.value)) {
+      return `//${this.value}`;
+    }
+    return this.value;
+  }
+
 }
