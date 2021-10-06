@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { concatMap, filter, map, withLatestFrom } from 'rxjs/operators';
 import * as FormActions from './form.actions';
@@ -7,6 +7,7 @@ import { of } from 'rxjs';
 import { selectCloseAfterSaveFeatureForm } from './form.selectors';
 import { Store } from '@ngrx/store';
 import { FormState } from './form.state';
+import { APPLICATION_SERVICE, ApplicationServiceModel } from '@tailormap/api';
 
 @Injectable()
 export class FormEffects {
@@ -38,9 +39,17 @@ export class FormEffects {
     })),
   );
 
+  public setEditFeatureComplete$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(ApplicationActions.editFeaturesComplete),
+      map(payload => this.applicationService.setEditFeaturesCompleted(payload.layerId)),
+    );
+  }, { dispatch: false });
+
   constructor(
     private actions$: Actions,
     private store$: Store<FormState>,
+    @Inject(APPLICATION_SERVICE) private applicationService: ApplicationServiceModel,
   ) {
   }
 
