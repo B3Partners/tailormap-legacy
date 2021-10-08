@@ -96,6 +96,17 @@ Ext.define("viewer.components.GBI", {
         });
         this.config.viewerController.mapComponent.getMap().addLayer(this.vectorLayer);
         this.config.viewerController.mapComponent.getMap().addLayer(this.highlightLayer);
+        this.registerToSnapping(this.vectorLayer);
+    },
+    registerToSnapping: function(layer){
+        var snappings = this.config.viewerController.getComponentsByClassName("viewer.components.Snapping");
+        if (snappings.length === 0) {
+            return;
+        }
+        this.config.viewerController.registerSnappingLayer(layer);
+        for(var i = 0 ; i < snappings.length; i++){
+            snappings[i].snapCtl.layerAdded(null, { layer: layer });
+        }
     },
     initializeForm: function () {
         var useSelectedLayerFilter = typeof this.config.useSelectedLayerFilter !== 'undefined'
