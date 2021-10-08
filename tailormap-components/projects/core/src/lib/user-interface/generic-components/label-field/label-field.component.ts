@@ -24,4 +24,8 @@ export class LabelFieldComponent extends BaseFieldComponent implements OnInit {
     return this.value;
   }
 
+  public hasDisplayValue() {
+    return this.value !== null && this.value !== undefined && this.value !== '';
+  }
+
 }
