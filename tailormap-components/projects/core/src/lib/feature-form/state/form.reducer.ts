@@ -60,7 +60,7 @@ const onSetFormEditing = (state: FormState, payload: ReturnType<typeof FormActio
 
 const onSetFeatureRemoved = (state: FormState, payload: ReturnType<typeof FormActions.setFeatureRemoved>): FormState => {
   const features = removeFeature([...state.features], payload.feature);
-  const hasFeaturesLeft = features.length > 0;
+  const hasFeaturesLeft = payload.keepFormOpen || features.length > 0;
   return {
     ...state,
     features,

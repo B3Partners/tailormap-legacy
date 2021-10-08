@@ -151,7 +151,7 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
     const isNewFeature = this.feature.fid === FeatureInitializerService.STUB_OBJECT_GUID_NEW_OBJECT;
     this.actions.save$(this.isBulk, this.isBulk ? this.features : [ this.feature ], this.parentId).subscribe(savedFeature => {
       if (isNewFeature) {
-        this.store$.dispatch(FormActions.setFeatureRemoved({ feature: this.feature }));
+        this.store$.dispatch(FormActions.setFeatureRemoved({ feature: this.feature, keepFormOpen: true }));
       }
       this.store$.dispatch(FormActions.setNewFeature({ newFeature: savedFeature, parentId: this.parentId }));
       this._snackBar.open('Opgeslagen', '', {duration: 5000});
