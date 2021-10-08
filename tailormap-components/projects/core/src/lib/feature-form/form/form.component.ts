@@ -35,6 +35,7 @@ export class FormComponent implements OnDestroy, OnInit {
   public feature: Feature;
   public formConfig: FormConfiguration;
   public initComplete = false;
+  public currentParentFeature: string | null = null;
 
   public isBulk: boolean;
   public formsForNew: FormConfiguration[] = [];
@@ -170,6 +171,10 @@ export class FormComponent implements OnDestroy, OnInit {
     this.formDirty = result;
   }
 
+  public isCreatingNew() {
+    return this.feature.fid === FeatureInitializerService.STUB_OBJECT_GUID_NEW_OBJECT;
+  }
+
   public setFormEditing(editing) {
     this.store$.dispatch(FormActions.setFormEditing({ editing }));
   }
@@ -181,10 +186,9 @@ export class FormComponent implements OnDestroy, OnInit {
       return;
     }
     this.featureInitializerService.create$(formConfig.featureType, {
-      id: null,
-      children: null,
       [formConfig.treeNodeColumn]: `Nieuwe ${formConfig.name}`,
     }).subscribe(newFeature => {
+      this.currentParentFeature = this.feature.fid;
       this.store$.dispatch(FormActions.setNewFeature({ newFeature, parentId: this.feature.fid }));
       this.store$.dispatch(FormActions.setFormEditing({ editing: true }));
     });
@@ -245,11 +249,9 @@ export class FormComponent implements OnDestroy, OnInit {
             ...this.feature.attributes.slice(geomFieldIndex + 1),
           ],
         };
-
-        const parentFeature = this.features[0];
-        this.actions.save$(false, [this.feature], parentFeature).subscribe(savedFeature => {
+        this.actions.save$(false, [ this.feature ]).subscribe(savedFeature => {
           this.tailormapService.getViewerController().mapComponent.getMap().update();
-          this.store$.dispatch(FormActions.setNewFeature({newFeature: savedFeature, parentId: parentFeature.fid}));
+          this.store$.dispatch(FormActions.setFeature({ feature: savedFeature }));
         });
       });
   }

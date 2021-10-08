@@ -127,7 +127,7 @@ export class SewageWorkflow extends Workflow {
   private createFeature$(geoJson: string, params: any): Observable<Feature> {
     const objecttype = this.featureType.charAt(0).toUpperCase() + this.featureType.slice(1);
     return this.featureInitializerService.create$(objecttype,
-      {...params, geometrie: geoJson, clazz: this.featureType, children: []});
+      { ...params }, geoJson);
   }
 
   private makeChoices(featureType: string) {

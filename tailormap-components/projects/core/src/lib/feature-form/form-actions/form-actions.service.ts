@@ -16,7 +16,7 @@ export class FormActionsService {
   ) {
   }
 
-  public save$(isBulk: boolean, features: Feature[], parent: Feature): Observable<any> {
+  public save$(isBulk: boolean, features: Feature[], parentId?: string | null): Observable<any> {
     if (isBulk) {
       const reqs: Observable<any>[] = [];
       features.forEach(feature => {
@@ -28,11 +28,19 @@ export class FormActionsService {
       const feature = features[0];
       const appId = this.tailormap.getApplicationId();
       if (feature.fid && feature.fid !== FeatureInitializerService.STUB_OBJECT_GUID_NEW_OBJECT) {
-        return this.service.update({application: appId,
-          featuretype: feature.tableName, fid: feature.fid, body: feature});
+        return this.service.update({
+          application: appId,
+          featuretype: feature.tableName,
+          fid: feature.fid,
+          body: feature,
+        });
       } else {
-        const parentId = parent ? parent.fid : null;
-        return this.service.save({application: appId,featuretype: feature.tableName, parentId, body: feature});
+        return this.service.save({
+          application: appId,
+          featuretype: feature.tableName,
+          parentId: parentId || '-1',
+          body: feature,
+        });
       }
     }
   }

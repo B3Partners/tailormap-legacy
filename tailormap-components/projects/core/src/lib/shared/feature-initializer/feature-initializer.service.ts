@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Feature } from '../generated';
+import { Feature, Field } from '../generated';
 import * as wellknown from 'wellknown';
 import { GeoJSONGeometry } from 'wellknown';
 import { Store } from '@ngrx/store';
@@ -32,7 +32,7 @@ export class FeatureInitializerService {
     return null;
   }
 
-  public create$(type: string, params: Record<string, any>): Observable<Feature> {
+  public create$(type: string, params: Record<string, any>, geometry?: string): Observable<Feature> {
     return this.store$.select(selectFormConfigForFeatureTypeName, type)
       .pipe(
         take(1),
@@ -41,24 +41,36 @@ export class FeatureInitializerService {
             throw new Error('Featuretype not implemented: ' + type);
           }
           const feature = this.createFeature(config, type);
-          for (const key in params) {
-            if (params.hasOwnProperty(key)) {
-              feature.attributes.push({
-                key,
-                value: params[key],
-              });
-            }
-          }
-          if (config.featuretypeMetadata) {
-            feature.attributes.push({
-              key: config.featuretypeMetadata.geometryAttribute,
-              type: config.featuretypeMetadata.geometryType,
-              value: params.geometrie,
-            });
+          Object.keys(params).forEach(key => {
+            feature.attributes = this.addOrReplaceAttributeValue(feature.attributes, key, params[key]);
+          });
+          if (!!geometry) {
+            // @TODO: check if this is indeed needed
+            // The hard-coded 'geometrie' field name is probably needed for backwards compatibility.
+            // Older versions / incorrect configured features might expect the 'geometrie' field to be filled with the geometry.
+            // Should be configured in `featuretypeMetadata` though
+            const geomKey = config.featuretypeMetadata ? config.featuretypeMetadata.geometryAttribute : 'geometrie';
+            const geomType = config.featuretypeMetadata ? config.featuretypeMetadata.geometryType : 'GEOMETRY';
+            feature.attributes = this.addOrReplaceAttributeValue(feature.attributes, geomKey, geometry, geomType);
           }
           return feature;
         }),
       );
+  }
+
+  private addOrReplaceAttributeValue(attributes: Field[], key: string, value?: string | number | null, type?: string ): Field[] {
+    const idx = attributes.findIndex(a => a.key === key);
+    if (idx === -1) {
+      return [ ...attributes, { key, value, type }];
+    }
+    return [
+      ...attributes.slice(0, idx),
+      {
+        ...attributes[idx],
+        value,
+      },
+      ...attributes.slice(idx + 1),
+    ];
   }
 
   private createFeature(config: FormConfiguration, type: string): Feature{

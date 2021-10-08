@@ -60,10 +60,10 @@ export class FormCopyService {
       };
       childsToCopy$.forEach(childToCopy$ => {
         requests$.push(
-          childToCopy$.pipe(concatMap(childToCopy => this.saveFeature$([ childToCopy ], copyDestinationFeature))),
+          childToCopy$.pipe(concatMap(childToCopy => this.saveFeature$(childToCopy, copyDestinationFeature))),
         );
       });
-      requests$.push(this.saveFeature$([copyDestinationFeature], copyDestinationFeature));
+      requests$.push(this.saveFeature$(copyDestinationFeature));
     }
     return requests$;
   }
@@ -101,11 +101,11 @@ export class FormCopyService {
       });
   }
 
-  private saveFeature$(children: Feature[], destinationFeature: Feature) {
-    return this.formActionsService.save$(false, children, destinationFeature)
+  private saveFeature$(feature: Feature, parentFeature?: Feature) {
+    return this.formActionsService.save$(false, [ feature ], parentFeature?.fid)
       .pipe(map(result => ({
         success: result,
-        message: !result ? `Kopieren van attributen naar ${destinationFeature.layerName} is niet gelukt` : undefined,
+        message: !result ? `Kopieren van attributen naar ${feature.layerName} is niet gelukt` : undefined,
       })));
   }
 
