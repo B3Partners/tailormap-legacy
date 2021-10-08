@@ -227,6 +227,9 @@ Ext.define("viewer.viewercontroller.openlayers.OpenLayersSnappingController", {
         data.forEach(function (element, index, array) {
             wkt = element["c0"];
             olGeom = OpenLayers.Geometry.fromWKT(wkt);
+            if (!olGeom) {
+                return;
+            }
             olGeom.calculateBounds();
             feats.push(new OpenLayers.Feature.Vector(olGeom));
         });
