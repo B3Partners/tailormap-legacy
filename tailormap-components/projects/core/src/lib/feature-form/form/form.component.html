@@ -24,7 +24,7 @@
 
     <div class="push-buttons"></div>
 
-    <button mat-flat-button color="accent" (click)="formCreator.resetForm()" *ngIf="formCreator.editing$ | async">
+    <button mat-flat-button color="accent" (click)="cancelForm()" *ngIf="formCreator.editing$ | async">
       Annuleren
     </button>
 
@@ -35,13 +35,13 @@
     </mat-menu>
 
     <mat-menu #optiesMenu="matMenu" yPosition="above" class="tailormap-menu-panel">
-      <button mat-menu-item [matMenuTriggerFor]="addFeatureMenu">Object toevoegen</button>
+      <button mat-menu-item *ngIf="formsForNew.length > 0" [matMenuTriggerFor]="addFeatureMenu">Object toevoegen</button>
       <button mat-menu-item (click)="copy();">Paspoort gegevens kopiëren</button>
       <button mat-menu-item (click)="editGeometry();">Bewerk geometrie</button>
-      <button mat-menu-item class="red-item"  (click)="remove();"><mat-icon color="warn">delete_forever</mat-icon>Verwijderen</button>
+      <button mat-menu-item class="red-item" (click)="remove();"><mat-icon color="warn">delete_forever</mat-icon>Verwijderen</button>
     </mat-menu>
 
-    <button mat-flat-button color="accent" [matMenuTriggerFor]="optiesMenu" *ngIf="(formCreator.editing$ | async) === false">
+    <button mat-flat-button color="accent" [matMenuTriggerFor]="optiesMenu" *ngIf="!isCreatingNew() && (formCreator.editing$ | async) === false">
       Opties
     </button>
 

@@ -129,12 +129,6 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
     });
   }
 
-  public resetForm(): void {
-    this.store$.dispatch(FormActions.setFormEditing({editing: false}));
-    this.formChanged.emit(false);
-    this.createFormControls();
-  }
-
   public beforeSave() {
     // show confirm message when multi-edit
     if (this.isBulk) {

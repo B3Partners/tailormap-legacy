@@ -23,6 +23,7 @@ import { EditFeatureGeometryService } from '../services/edit-feature-geometry.se
 import { ExtendedFormConfigurationModel } from '../../application/models/extended-form-configuration.model';
 import { METADATA_SERVICE } from '@tailormap/api';
 import { TailorMapService } from '../../../../../bridge/src/tailor-map.service';
+import { FormTreeHelpers } from '../form-tree/form-tree-helpers';
 
 @Component({
   selector: 'tailormap-form',
@@ -195,8 +196,8 @@ export class FormComponent implements OnDestroy, OnInit {
   }
 
   public remove() {
-    const attribute = Object.keys(this.feature).find(searchAttribute => searchAttribute === this.formConfig.treeNodeColumn);
-    let message = 'Wilt u ' + this.formConfig.name + ' - ' + this.feature[attribute] + ' verwijderen?';
+    const attributeLabel = FormTreeHelpers.getFeatureValueForField(this.feature, this.formConfig, this.formConfig.treeNodeColumn);
+    let message = 'Wilt u ' + this.formConfig.name + ' - ' + attributeLabel + ' verwijderen?';
     if (this.feature.children && this.feature.children.length > 0) {
       message += ' Let op! Alle onderliggende objecten worden ook verwijderd.';
     }
@@ -204,7 +205,7 @@ export class FormComponent implements OnDestroy, OnInit {
       message, true)
       .pipe(take(1), filter(remove => remove)).subscribe(() => {
       this.actions.removeFeature$(this.feature).subscribe(() => {
-        this.store$.dispatch(FormActions.setFeatureRemoved({feature: this.feature}));
+        this.store$.dispatch(FormActions.setFeatureRemoved({ feature: this.feature }));
         if (!this.feature) {
           this.closeForm();
         }
@@ -257,18 +258,54 @@ export class FormComponent implements OnDestroy, OnInit {
   }
 
   public closeForm() {
-    (
-      !this.formDirty ? of(true) : this.confirmDialogService.confirm$(
+    this.confirm(() => this.store$.dispatch(FormActions.setCloseFeatureForm()));
+  }
+
+  public cancelForm() {
+    this.confirm(() => {
+      const isNewlyCreatedFeature = this.features.length === 1 && (this.features[0].children || []).length === 0;
+      if (this.isCreatingNew() && isNewlyCreatedFeature) {
+        this.store$.dispatch(FormActions.setCloseFeatureForm());
+        return;
+      }
+      this.store$.dispatch(FormActions.setFormEditing({editing: false}));
+      this.formChanged(false);
+      let feature = { ...this.feature };
+      if (this.feature.fid === FeatureInitializerService.STUB_OBJECT_GUID_NEW_OBJECT) {
+        feature = { ...this.findFeatureById(this.features, this.currentParentFeature) };
+        this.store$.dispatch(FormActions.setFeatureRemoved({ feature: this.feature }));
+      }
+      this.store$.dispatch(FormActions.setFeature({ feature }));
+      this.currentParentFeature = null;
+    });
+  }
+
+  private findFeatureById(features: Feature[], fid: string) {
+    let feature;
+    features.forEach(f => {
+      if (f.fid === fid) {
+        feature = f;
+      } else if ((f.children || []).length > 0) {
+        feature = this.findFeatureById(f.children, fid) || feature;
+      }
+    });
+    return feature;
+  }
+
+  private confirm(callback: () => void) {
+    let confirm$: Observable<boolean> = of(true);
+    if (this.formDirty || this.isCreatingNew()) {
+      confirm$ = this.confirmDialogService.confirm$(
         'Formulier sluiten',
         'Wilt u het formulier sluiten? Niet opgeslagen wijzigingen gaan verloren.',
-        true,
-      )
-    )
+        true);
+    }
+    confirm$
       .pipe(
         take(1),
         filter(remove => remove),
       )
-      .subscribe(() => this.store$.dispatch(FormActions.setCloseFeatureForm()));
+      .subscribe(() => callback());
   }
 
 }
