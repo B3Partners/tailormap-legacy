@@ -50,9 +50,9 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <!-- when updating geotools also check b3p-commons-csw (and maybe jts) or you will end up in transitive dependency hell -->
-        <geotools.version>25.2</geotools.version>
+        <geotools.version>26.0</geotools.version>
         <jts.version>1.18.2</jts.version>
-        <b3p-commons-csw.version>6.6</b3p-commons-csw.version>
+        <b3p-commons-csw.version>7.0</b3p-commons-csw.version>
         <hsqldb.version>2.6.0</hsqldb.version>
         <test.persistence.unit>viewer-config-hsqldb</test.persistence.unit>
         <postgresql.version>42.2.24</postgresql.version>
@@ -61,6 +61,7 @@
         <apache.poi.version>5.0.0</apache.poi.version>
         <jakarta.mail.version>1.6.6</jakarta.mail.version>
         <apache.httpcomponents.version>4.5.13</apache.httpcomponents.version>
+        <apache.commons-httpclient.version>3.1</apache.commons-httpclient.version>
         <jaxb.api.version>2.3.3</jaxb.api.version>
         <jaxb.impl.version>2.3.3</jaxb.impl.version>
         <activation.api.version>1.2.2</activation.api.version>
@@ -380,6 +381,11 @@
             </dependency>
             <dependency>
                 <groupId>org.geotools</groupId>
+                <artifactId>gt-http</artifactId>
+                <version>${geotools.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.geotools</groupId>
                 <artifactId>gt-wmts</artifactId>
                 <version>${geotools.version}</version>
             </dependency>
@@ -543,6 +549,11 @@
                 <groupId>org.apache.httpcomponents</groupId>
                 <artifactId>httpmime</artifactId>
                 <version>${apache.httpcomponents.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-httpclient</groupId>
+                <artifactId>commons-httpclient</artifactId>
+                <version>${apache.commons-httpclient.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.eclipse.emf</groupId>
