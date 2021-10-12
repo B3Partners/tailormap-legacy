@@ -126,12 +126,12 @@ Ext.define("viewer.AppLoader", {
     },
 
     /**
-     * Get the value for a couple of variables ("viewerController", "appId", "user", "contextPath", "absoluteURIPrefix")
+     * Get the value for a couple of variables ("viewerController", "appId", "user", "contextPath", "absoluteURIPrefix", "loginUrl")
      * @param string varName
      * @returns {*}
      */
     get: function(varName) {
-        var safeVariables = ["viewerController", "appId", "user", "contextPath", "absoluteURIPrefix"];
+        var safeVariables = ["viewerController", "appId", "user", "contextPath", "absoluteURIPrefix", "loginUrl"];
         if(this.config.debugMode) {
             safeVariables.push("app");
         }

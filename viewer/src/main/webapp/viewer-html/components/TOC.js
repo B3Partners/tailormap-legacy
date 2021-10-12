@@ -97,7 +97,80 @@ Ext.define ("viewer.components.TOC",{
         this.config.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_FINISHED_CHANGE_EXTENT,this.extentChanged,this);
         this.config.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_VISIBILITY_CHANGED,this.layerVisibilityChanged,this);
         this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_COMPONENTS_FINISHED_LOADING, this.showAnalysisButton, this);
+        this.checkUrlParams();
         return this;
+    },
+    /**
+     * Set requested layer visible, uses url params to communicate service- and layername.
+     * Will notify user on missing service and/or layer and giv the option to try again after login.
+     */
+    checkUrlParams: function () {
+        var params = Ext.Object.fromQueryString(window.location.search);
+        var serviceName = params['tocService'] || '';
+        var layerName = params['tocLayer'] || '';
+
+        if (serviceName.length < 1 || layerName.length < 1) {
+            // no serviceName or layerName params
+            return;
+        }
+
+        // check for service(s) with requested name
+        var serviceIds = new Set();
+        var maybeLogin = false;
+        Ext.Object.eachValue(this.services, function (service) {
+            if (service['name'] === serviceName) {
+                serviceIds.add(service['id']);
+                maybeLogin = (
+                    // readers defined
+                    service['readers'] && (service['readers'].length > 0)
+                    // layer exists in service
+                    && service.layers && service.layers[layerName]
+                );
+            }
+        });
+        if (serviceIds.size < 1) {
+            // service not found in config
+            Ext.Msg.alert(
+                i18next.t('viewer_components_toc_notfound_title'),
+                i18next.t('viewer_components_toc_notfound_msg_1', {serviceName: serviceName})
+            );
+            return;
+        }
+
+        // check for requested layer in each service
+        var appLayerIds = [];
+        var me = this;
+        Ext.Object.eachValue(this.appLayers, function (appLayer) {
+            if (layerName === appLayer['layerName'] && serviceIds.has(appLayer['serviceId'])) {
+                // set layer visible
+                me.config.viewerController.initLayers();
+                me.config.viewerController.setLayerVisible(appLayer, true);
+                appLayerIds.push(appLayer['id']);
+            }
+        });
+
+        if (appLayerIds.length < 1) {
+            Ext.MessageBox.show({
+                title: i18next.t('viewer_components_toc_notfound_title'),
+                message: i18next.t('viewer_components_toc_notfound_msg_2', {
+                    layerName: layerName,
+                    serviceName: serviceName
+                }) + (maybeLogin ? i18next.t('viewer_components_toc_notfound_msg_2a') : ''),
+                //width: 300,
+                buttons: Ext.Msg.YESNO,
+                buttonText: {
+                    yes: i18next.t('viewer_components_toc_login'),
+                    no: i18next.t('viewer_components_split_5')
+                },
+                icon: Ext.Msg.INFO,
+                fn: function (text, btn) {
+                    if (text === 'yes') {
+                        // redirect to login form
+                        window.location.href = FlamingoAppLoader.get('loginUrl') + '&tocService=' + serviceName + '&tocLayer=' + layerName;
+                    }
+                }
+            });
+        }
     },
     // Build the tree
     loadTree : function(){
