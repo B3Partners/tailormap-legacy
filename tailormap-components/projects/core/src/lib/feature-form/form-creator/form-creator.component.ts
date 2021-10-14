@@ -56,6 +56,9 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
   @Input()
   public formTabs: TabbedField[] = [];
 
+  @Input()
+  public parentId: string | null = null;
+
   public trackByTabId = (idx, tab: TabbedField) => tab.tabId;
 
   public editing$: Observable<boolean>;
@@ -92,14 +95,14 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
     this.domainValues = new Map<Attribute, any>();
     for (const attr of attrs) {
       const featureAttribute = this.indexedAttributes.attrs.get(attr.key);
-      let value = !this.isBulk && featureAttribute ? featureAttribute.value : null;
+      let value: string | number | boolean = !this.isBulk && featureAttribute ? featureAttribute.value : null;
 
       if (attr.type === FormFieldType.DOMAIN) {
         this.registry.registerDomainField(attr.linkedList, featureAttribute);
         if (!this.isBulk && featureAttribute.value && featureAttribute.value !== '-1') {
           this.domainValues.set(attr, featureAttribute.value);
           const compVal = FormFieldHelpers.findSelectedOption(featureAttribute.options, featureAttribute.value);
-          value =  typeof compVal !== 'undefined' && compVal !== null ? compVal.val : featureAttribute.value;
+          value = typeof compVal !== 'undefined' && compVal !== null ? compVal.val : featureAttribute.value;
         }
       }
       const control = new FormControl(value, [FormFieldHelpers.nonExistingValueValidator(featureAttribute)]);
@@ -126,12 +129,6 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
     });
   }
 
-  public resetForm(): void {
-    this.store$.dispatch(FormActions.setFormEditing({editing: false}));
-    this.formChanged.emit(false);
-    this.createFormControls();
-  }
-
   public beforeSave() {
     // show confirm message when multi-edit
     if (this.isBulk) {
@@ -151,22 +148,25 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
     const feature = this.formgroep.value;
     feature.__fid = this.feature.fid;
     this.mergeFormToFeature(feature);
-    const parentFeature = this.features[0];
-
-    this.actions.save$(this.isBulk, this.isBulk ? this.features : [this.feature], parentFeature).subscribe(savedFeature => {
-        this.store$.dispatch(FormActions.setNewFeature({newFeature: savedFeature, parentId: parentFeature.fid}));
-        this._snackBar.open('Opgeslagen', '', {duration: 5000});
-      },
-      error => {
-        this._snackBar.open('Fout: Feature niet kunnen opslaan: ' + error.error.message, '', {
-          duration: 5000,
-        });
-      },
-      () => {
-        this.store$.select(selectLayerIdForEditingFeatures)
-          .pipe(take(1), filter(layerId => layerId !== null))
-          .subscribe(layerId => this.store$.dispatch(editFeaturesComplete({ layerId })));
+    const isNewFeature = this.feature.fid === FeatureInitializerService.STUB_OBJECT_GUID_NEW_OBJECT;
+    this.actions.save$(this.isBulk, this.isBulk ? this.features : [ this.feature ], this.parentId).subscribe(savedFeature => {
+      if (isNewFeature) {
+        this.store$.dispatch(FormActions.setFeatureRemoved({ feature: this.feature, keepFormOpen: true }));
+      }
+      this.store$.dispatch(FormActions.setNewFeature({ newFeature: savedFeature, parentId: this.parentId }));
+      this._snackBar.open('Opgeslagen', '', {duration: 5000});
+    },
+    error => {
+      const errorMsg = error?.error?.message;
+      this._snackBar.open(`Fout: Feature niet kunnen opslaan${errorMsg ? ': ' + errorMsg : ''}`, '', {
+        duration: 5000,
       });
+    },
+    () => {
+      this.store$.select(selectLayerIdForEditingFeatures)
+        .pipe(take(1), filter(layerId => layerId !== null))
+        .subscribe(layerId => this.store$.dispatch(editFeaturesComplete({ layerId })));
+    });
   }
 
   private mergeFormToFeature(form) {

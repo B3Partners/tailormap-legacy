@@ -94,8 +94,7 @@ export class StandardFormWorkflow extends Workflow {
   }
 
   private accept(geoJson: string): void {
-    this.featureInitializerService.create$(this.featureType,
-      {geometrie: geoJson, tableName: this.featureType, layerName: this.featureType, children: []}).subscribe(feat =>{
+    this.featureInitializerService.create$(this.featureType, {}, geoJson).subscribe(feat =>{
       const features: Feature[] = [feat];
       this.openDialog(features, true, true);
     });
