@@ -1658,6 +1658,7 @@ Ext.define("viewer.components.Edit", {
         if(this.mobileHide) {
             return;
         }
+        this.mode = null;
         this.resetForm();
         if(this.config.isPopup) {
             this.popup.hide();
