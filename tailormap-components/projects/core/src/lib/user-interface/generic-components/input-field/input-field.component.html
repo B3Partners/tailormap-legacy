@@ -2,7 +2,7 @@
     <label *ngIf="!hidden" class="label">{{label}}</label>
     <mat-icon *ngIf="!hidden && isHyperlinkField()">http</mat-icon>
     <input
-      [placeholder]="placeholder"
+      [placeholder]="placeholder || ''"
       [formControlName]="id"
       [type]="getInputType()"
       [name]="id"

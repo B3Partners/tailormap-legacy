@@ -74,6 +74,6 @@ export class FormTreeHelpers {
         return option.label;
       }
     }
-    return '' + value;
+    return `${value || ''}`;
   }
 }

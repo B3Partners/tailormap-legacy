@@ -1,8 +1,13 @@
+<ng-template #space>&nbsp;</ng-template>
+<ng-template #displayValue>
+  <ng-container *ngIf="hasDisplayValue(); else: space">{{value}}</ng-container>
+</ng-template>
+
 <div class="form-field">
   <div class="label"><mat-label>{{label}}</mat-label></div>
   <div class="value">
-    <div *ngIf="!isHyperlinkField() && !isCheckboxField()">{{value}}</div>
-    <a href="{{getLink()}}" target="_blank" rel="noopener" *ngIf="isHyperlinkField()">{{value}}</a>
+    <div *ngIf="!isHyperlinkField() && !isCheckboxField()"><ng-container *ngTemplateOutlet="displayValue"></ng-container></div>
+    <a href="{{getLink()}}" target="_blank" rel="noopener" *ngIf="isHyperlinkField()"><ng-container *ngTemplateOutlet="displayValue"></ng-container></a>
     <mat-checkbox *ngIf="isCheckboxField()" [checked]="valueTrue" [disabled]="true"></mat-checkbox>
   </div>
 </div>

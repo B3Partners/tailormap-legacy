@@ -1,8 +1,7 @@
 import { Action, createReducer, on } from '@ngrx/store';
 import { FormState, initialFormState } from './form.state';
 import * as FormActions from './form.actions';
-import { addFeatureToParent, removeFeature, updateFeatureInArray } from './form.state-helpers';
-import { FeatureInitializerService } from '../../shared/feature-initializer/feature-initializer.service';
+import { addOrUpdateFeature, removeFeature } from './form.state-helpers';
 
 const onCloseFeatureForm = (state: FormState): FormState => ({
   ...state,
@@ -25,15 +24,9 @@ const onSetFeature = (state: FormState, payload: ReturnType<typeof FormActions.s
 });
 
 const onSetNewFeature = (state: FormState, payload: ReturnType<typeof FormActions.setNewFeature>): FormState => {
-  let features = [...state.features];
-  if (payload.newFeature.fid !== FeatureInitializerService.STUB_OBJECT_GUID_NEW_OBJECT) {
-    features = updateFeatureInArray(features, payload.newFeature);
-  } else {
-    features = addFeatureToParent(features, payload.newFeature, payload.parentId);
-  }
   return {
     ...state,
-    features,
+    features: addOrUpdateFeature([...state.features], payload.newFeature, payload.parentId),
     feature: payload.newFeature,
     editing: false,
   };
@@ -67,7 +60,7 @@ const onSetFormEditing = (state: FormState, payload: ReturnType<typeof FormActio
 
 const onSetFeatureRemoved = (state: FormState, payload: ReturnType<typeof FormActions.setFeatureRemoved>): FormState => {
   const features = removeFeature([...state.features], payload.feature);
-  const hasFeaturesLeft = features.length > 0;
+  const hasFeaturesLeft = payload.keepFormOpen || features.length > 0;
   return {
     ...state,
     features,

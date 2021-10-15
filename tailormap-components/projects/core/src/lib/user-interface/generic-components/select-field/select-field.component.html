@@ -3,7 +3,7 @@
     <label class="label">{{attribute.label}}</label>
     <mat-select
       (selectionChange)="valueChanged($event)"
-      placeholder="{{attribute.key}}"
+      [placeholder]="placeholder || ''"
       [formControlName]="attribute.key">
       <mat-option [value]="-1">-- Selecteer --</mat-option>
       <mat-option *ngIf="hasNonValidValue()" [value]="this.attribute.value" disabled="true">{{attribute.value}}</mat-option>

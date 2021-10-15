@@ -19,6 +19,9 @@ export class SelectFieldComponent {
   @Input()
   public attribute: FeatureAttribute;
 
+  @Input()
+  public placeholder: string;
+
   constructor(
     private registry: LinkedAttributeRegistryService,
   ) {

@@ -20,24 +20,32 @@ export const removeFeature = (features: Feature[], removed: Feature): Feature[] 
     }));
 };
 
-export const updateFeatureInArray = (features: Feature[], updatedFeature: Feature): Feature[] => {
-  const idx = features.findIndex(feature => feature.fid === updatedFeature.fid);
-  const updatedFeatures = idx !== -1
-      ? [...features.slice(0, idx), { ...updatedFeature }, ...features.slice(idx + 1)]
-      : features;
-  return updatedFeatures.map(feature => ({
-      ...feature,
-      children: feature.children ? updateFeatureInArray(feature.children, updatedFeature) : null,
-    }));
-};
-
-export const addFeatureToParent = (features: Feature[], newFeature: Feature, parentId: string): Feature[] => {
+export const addOrUpdateFeature = (features: Feature[], newFeature: Feature, parentId: string): Feature[] => {
+  if (parentId === null) {
+    return addOrUpdate(features, newFeature);
+  }
   const idx = features.findIndex(feature => feature.fid === parentId);
   const updatedFeatures = idx !== -1
-    ? [...features.slice(0, idx), { ...features[idx], children: [...features[idx].children, newFeature] }, ...features.slice(idx + 1)]
+    ? [
+        ...features.slice(0, idx),
+        { ...features[idx], children: addOrUpdate(features[idx].children, newFeature) },
+        ...features.slice(idx + 1),
+      ]
     : features;
   return updatedFeatures.map(feature => ({
       ...feature,
-      children: feature.children ? addFeatureToParent(feature.children, newFeature, parentId) : null,
+      children: feature.children ? addOrUpdateFeature(feature.children, newFeature, parentId) : null,
     }));
+};
+
+const addOrUpdate = (features: Feature[], newFeature: Feature): Feature[] => {
+  const idx = features.findIndex(f => f.fid === newFeature.fid);
+  if (idx === -1) {
+    return [ ...features, newFeature ];
+  }
+  return [
+    ...features.slice(0, idx),
+    { ...newFeature },
+    ...features.slice(idx + 1),
+  ];
 };
