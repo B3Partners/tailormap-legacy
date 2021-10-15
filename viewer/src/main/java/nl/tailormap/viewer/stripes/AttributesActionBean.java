@@ -679,52 +679,54 @@ public class AttributesActionBean extends LocalizableApplicationActionBean imple
             ResultSet rs = prep.executeQuery();
             ResultSetMetaData rsmd = rs.getMetaData();
             int columnCount = rsmd.getColumnCount();
-
             while(rs.next()) {
-                JSONObject jsonfeature = new JSONObject();
-                String fid = ft.getTypeName();
-                for (PrimaryKeyColumn pkc : pk.getColumns()) {
-                    fid += "." + rs.getObject(pkc.getName()).toString();
-                }
-                jsonfeature.put("__fid", fid);
-                for (int index = 1; index <= columnCount; index++) {
-                    String column = rsmd.getColumnName(index);
-                    Object value = rs.getObject(column);
-                    if (value == null)
-                    {
-                        continue;
-                    } else if (value instanceof Integer) {
-                        jsonfeature.put(column, (Integer) value);
-                    } else if (value instanceof String) {
-                        jsonfeature.put(column, (String) value);
-                    } else if (value instanceof Boolean) {
-                        jsonfeature.put(column, (Boolean) value);
-                    } else if (value instanceof Date) {
-                        jsonfeature.put(column, ((Date) value).getTime());
-                    } else if (value instanceof Long) {
-                        jsonfeature.put(column, (Long) value);
-                    } else if (value instanceof Double) {
-                        jsonfeature.put(column, (Double) value);
-                    } else if (value instanceof Float) {
-                        jsonfeature.put(column, (Float) value);
-                    } else if (value instanceof BigDecimal) {
-                        jsonfeature.put(column, (BigDecimal) value);
-                    } else if (value instanceof Byte) {
-                        jsonfeature.put(column, (Byte) value);
-                    } else if (value instanceof byte[]) {
-                        jsonfeature.put(column, (byte[]) value);
-                    }
-                }
-                features.put(jsonfeature);
+                features.put(ResultSetToJson(rs, rsmd, ft, pk, columnCount));
             }
-
         } catch (IOException | SQLException e) {
-
+            // log error
         } finally {
             if (con != null) {
                 con.close();
             }
         }
         return features;
+    }
+
+    private JSONObject ResultSetToJson(ResultSet rs, ResultSetMetaData rsmd, SimpleFeatureType ft, PrimaryKey pk, int columnCount) throws SQLException {
+        JSONObject jsonFeature = new JSONObject();
+        String fid = ft.getTypeName();
+        for (PrimaryKeyColumn pkc : pk.getColumns()) {
+            fid += "." + rs.getObject(pkc.getName()).toString();
+        }
+        jsonFeature.put("__fid", fid);
+        for (int index = 1; index <= columnCount; index++) {
+            String column = rsmd.getColumnName(index);
+            Object value = rs.getObject(column);
+            if (value == null)
+            {
+                continue;
+            } else if (value instanceof Integer) {
+                jsonFeature.put(column, (Integer) value);
+            } else if (value instanceof String) {
+                jsonFeature.put(column, (String) value);
+            } else if (value instanceof Boolean) {
+                jsonFeature.put(column, (Boolean) value);
+            } else if (value instanceof Date) {
+                jsonFeature.put(column, ((Date) value).getTime());
+            } else if (value instanceof Long) {
+                jsonFeature.put(column, (Long) value);
+            } else if (value instanceof Double) {
+                jsonFeature.put(column, (Double) value);
+            } else if (value instanceof Float) {
+                jsonFeature.put(column, (Float) value);
+            } else if (value instanceof BigDecimal) {
+                jsonFeature.put(column, (BigDecimal) value);
+            } else if (value instanceof Byte) {
+                jsonFeature.put(column, (Byte) value);
+            } else if (value instanceof byte[]) {
+                jsonFeature.put(column, (byte[]) value);
+            }
+        }
+        return jsonFeature;
     }
 }
