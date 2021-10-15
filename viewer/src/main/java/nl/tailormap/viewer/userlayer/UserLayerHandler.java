@@ -20,6 +20,7 @@ import org.geotools.filter.text.cql2.CQLException;
 import org.geotools.jdbc.JDBCDataStore;
 
 import javax.persistence.EntityManager;
+import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -118,7 +119,7 @@ public class UserLayerHandler {
             if (message != null) {
                 message = "Selectielaag kan niet gemaakt worden. " + message;
             }
-        } catch (CQLException e) {
+        } catch (CQLException | IOException e) {
             message = "Selectielaag kan niet gemaakt worden. Syntax fout in CQL expressie: " + e.getLocalizedMessage();
         } catch (FilterToSQLException e) {
             message = "Selectielaag kan niet gemaakt worden. Syntax fout in SQL expressie: " + e.getLocalizedMessage();
@@ -193,8 +194,8 @@ public class UserLayerHandler {
         super.finalize();
     }
 
-    public String getSQLQuery() throws CQLException, FilterToSQLException {
-        TMFilterToSQL f = new TMFilterToSQL(this.dataStore);
+    public String getSQLQuery() throws CQLException, FilterToSQLException, IOException {
+        TMFilterToSQL f = new TMFilterToSQL(this.dataStore, this.tableName);
         f.createFilterCapabilities();
         return f.encodeToString(TailormapCQL.toFilter(this.query, this.entityManager, false));
     }
@@ -212,7 +213,7 @@ public class UserLayerHandler {
             );
 
             this.auditMessageObject.addMessage("Aanmaken van view " + viewName + " is " + (ok ? "gelukt" : "mislukt"));
-        } catch (FilterToSQLException | CQLException e) {
+        } catch (FilterToSQLException | CQLException | IOException e) {
             LOG.error("Problem converting CQL to SQL. " + e.getLocalizedMessage());
         }
         return ok;

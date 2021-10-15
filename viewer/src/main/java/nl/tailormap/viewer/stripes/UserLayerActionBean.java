@@ -31,6 +31,7 @@ import org.json.JSONObject;
 import org.stripesstuff.stripersist.Stripersist;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
 import java.security.Principal;
@@ -149,7 +150,7 @@ public class UserLayerActionBean extends LocalizableActionBean implements Action
         };
     }
 
-    public Resolution validate() throws FilterToSQLException, CQLException {
+    public Resolution validate() throws FilterToSQLException, CQLException, IOException {
 
         final UserLayerHandler ulh = new UserLayerHandler(auditMessageObject, Stripersist.getEntityManager(),
                 application, appLayer, query, title, wellKnownUserLayerWorkspaceName,
