@@ -13,12 +13,12 @@ import java.io.StringWriter;
 
 public class TMFilterToSQL extends FilterToSQL {
     private FilterToSQL base;
-    public TMFilterToSQL(JDBCDataStore dataStore){
-
+    public TMFilterToSQL(JDBCDataStore dataStore, String tableName) throws IOException {
+        this.featureType = dataStore.getSchema(tableName);
         this.base = ((BasicSQLDialect) dataStore.getSQLDialect()).createFilterToSQL();
     }
     @Override
-    protected FilterCapabilities createFilterCapabilities() {
+    public FilterCapabilities createFilterCapabilities() {
         FilterCapabilities caps = super.createFilterCapabilities();
         caps.addType(Subselect.class);
         caps.addAll(this.base.getCapabilities());

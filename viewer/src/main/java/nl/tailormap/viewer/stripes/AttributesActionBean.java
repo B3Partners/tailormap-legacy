@@ -38,17 +38,23 @@ import nl.tailormap.viewer.helpers.AuthorizationsHelper;
 import nl.tailormap.viewer.helpers.app.ApplicationLayerHelper;
 import nl.tailormap.viewer.helpers.featuresources.FeatureSourceFactoryHelper;
 import nl.tailormap.viewer.helpers.featuresources.WFSFeatureSourceHelper;
+import nl.tailormap.viewer.userlayer.TMFilterToSQL;
 import nl.tailormap.viewer.util.ChangeMatchCase;
 import nl.tailormap.viewer.util.FeatureToJson;
 import nl.tailormap.viewer.util.FilterHelper;
 import nl.tailormap.viewer.util.TailormapCQL;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.geotools.data.DefaultTransaction;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
+import org.geotools.data.jdbc.FilterToSQLException;
 import org.geotools.data.wfs.WFSDataStoreFactory;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.filter.text.cql2.CQLException;
+import org.geotools.jdbc.JDBCDataStore;
+import org.geotools.jdbc.PrimaryKey;
+import org.geotools.jdbc.PrimaryKeyColumn;
 import org.geotools.util.factory.GeoTools;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -60,7 +66,10 @@ import org.stripesstuff.stripersist.Stripersist;
 
 import javax.persistence.EntityManager;
 import javax.servlet.http.HttpSession;
+import java.io.IOException;
 import java.io.StringReader;
+import java.math.BigDecimal;
+import java.sql.*;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -541,41 +550,58 @@ public class AttributesActionBean extends LocalizableApplicationActionBean imple
                     fs = FeatureSourceFactoryHelper.openGeoToolsFeatureSource(ft);
                 }
 
-                boolean startIndexSupported = fs.getQueryCapabilities().isOffsetSupported();
-
-                final Query q = new Query(fs.getName().toString());
-                //List<String> propertyNames = FeatureToJson.setPropertyNames(appLayer,q,ft,false);
-
-                setFilter(q, ft, appLayer, em);
-                setAttributesNotNullFilters(q, appLayer, ft, em);
-
-                final FeatureSource fs2 = fs;
-                total = lookupTotalCountCache(new Callable<Integer>() {
-                    public Integer call() throws Exception {
-                        return fs2.getCount(q);
+                // gebruik SQL query op een Connection als het een JDBCDatastore is
+                // Probleem met CQL filter is is dat er een maxFeatures op gezet moet worden waardoor filters niet betrouwbaar zijn
+                if( fs.getDataStore() instanceof JDBCDataStore) {
+                    log.debug("trying to get features with SQL for JDBCDatastore");
+                    json.put("type", "sql");
+                    JDBCDataStore da = (JDBCDataStore) fs.getDataStore();
+                    String sql = "";
+                    if(this.filter != null) {
+                        sql = this.getSQLQuery(da, ft.getTypeName(), em);
                     }
-                });
+                    json.put("features", getFeaturesWithSQL(da, ft, sql));
+                    total = getFeatureCountWithSQL(da, ft, sql);
+                    json.put("success", true);
+                } else {
+                    log.debug("trying to get features with cql");
+                    json.put("type", "cql");
+                    boolean startIndexSupported = fs.getQueryCapabilities().isOffsetSupported();
 
-                if(total == -1) {
-                    json.put("virtualtotal", true);
-                    total = FeatureToJson.MAX_FEATURES;
-                }
+                    final Query q = new Query(fs.getName().toString());
+                    //List<String> propertyNames = FeatureToJson.setPropertyNames(appLayer,q,ft,false);
 
-                q.setStartIndex(start);
-                q.setMaxFeatures(Math.min(limit,FeatureToJson.MAX_FEATURES));
+                    setFilter(q, ft, appLayer, em);
+                    setAttributesNotNullFilters(q, appLayer, ft, em);
 
-                FeatureToJson ftoj = new FeatureToJson(arrays, this.edit, graph, aliases, attributesToInclude);
+                    final FeatureSource fs2 = fs;
+                    total = lookupTotalCountCache(new Callable<Integer>() {
+                        public Integer call() throws Exception {
+                            return fs2.getCount(q);
+                        }
+                    });
 
-                JSONArray features = ftoj.getJSONFeatures(appLayer,ft, fs, q, sort, dir, em, null, null);
-
-                if (!startIndexSupported){
-                    if (features.length() < limit){
-                        //the end is reached..... Otherwise there would be a 'limit' number of features
-                        total = start+features.length();
+                    if (total == -1) {
+                        json.put("virtualtotal", true);
+                        total = FeatureToJson.MAX_FEATURES;
                     }
+
+                    q.setStartIndex(start);
+                    q.setMaxFeatures(Math.min(limit, FeatureToJson.MAX_FEATURES));
+
+                    FeatureToJson ftoj = new FeatureToJson(arrays, this.edit, graph, aliases, attributesToInclude);
+
+                    JSONArray features = ftoj.getJSONFeatures(appLayer, ft, fs, q, sort, dir, em, null, null);
+
+                    if (!startIndexSupported) {
+                        if (features.length() < limit) {
+                            //the end is reached..... Otherwise there would be a 'limit' number of features
+                            total = start + features.length();
+                        }
+                    }
+                    json.put("success", true);
+                    json.put("features", features);
                 }
-                json.put("success", true);
-                json.put("features", features);
             }
             json.put("total", total);
         } catch(Exception e) {
@@ -611,5 +637,111 @@ public class AttributesActionBean extends LocalizableApplicationActionBean imple
         }
         And and = ff2.and(filters);
         q.setFilter(and);
+    }
+
+    private String getSQLQuery(JDBCDataStore dataStore, String tableName, EntityManager em) throws CQLException, FilterToSQLException, IOException {
+        TMFilterToSQL f = new TMFilterToSQL(dataStore, tableName);
+        f.createFilterCapabilities();
+        return f.encodeToString(TailormapCQL.toFilter(this.filter, em, false));
+    }
+
+    private int getFeatureCountWithSQL(JDBCDataStore da, SimpleFeatureType ft, String sql) throws SQLException {
+        int total = 0;
+        Connection con = null;
+        try {
+            con = da.getConnection(new DefaultTransaction("count"));
+            String query = "SELECT COUNT (*) FROM " + ft.getTypeName() + " " + sql;
+            ResultSet rs = con.prepareStatement(query).executeQuery();
+            rs.next();
+            total = rs.getInt(1);
+        } catch (IOException | SQLException e){
+            log.error("Can't get feature count with sql for JDBCDatastore: " + e.getMessage());
+        } finally {
+            if (con != null) {
+                con.close();
+            }
+        }
+        return total;
+    }
+
+    private JSONArray getFeaturesWithSQL(JDBCDataStore da, SimpleFeatureType ft, String sql) throws SQLException {
+        JSONArray features = new JSONArray();
+        Connection con = null;
+        try {
+            con = da.getConnection(new DefaultTransaction("get-features"));
+            // Gebruik orginele laag naam om de PK('s) te vinden voor een user-layer
+            // Deze is nodig om een __FID te maken
+            String featureTypeName = ft.getTypeName();
+            if(layer.isUserlayer()){
+                featureTypeName = layer.getDetails().get("userlayer_original_layername").toString();
+            }
+            PrimaryKey pk = da.getPrimaryKey(da.getSchema(featureTypeName));
+
+            PreparedStatement prep;
+            if(sort != null) { // Gebruik order By als sort wordt meegegeven. Is dit een SQL Injection vulnerability????
+                prep = con.prepareStatement("SELECT * FROM " + ft.getTypeName() + " " + sql + " ORDER BY " + sort + " " + dir + " LIMIT ? OFFSET ? ");
+                prep.setInt(1, limit);
+                prep.setInt(2, start);
+            } else {
+                prep = con.prepareStatement("SELECT * FROM " + ft.getTypeName() + " " + sql + " LIMIT ? OFFSET ? ");
+                prep.setInt(1, limit);
+                prep.setInt(2, start);
+            }
+
+            ResultSet rs = prep.executeQuery();
+            ResultSetMetaData rsmd = rs.getMetaData();
+            int columnCount = rsmd.getColumnCount();
+            while(rs.next()) {
+                features.put(ResultSetToJson(rs, rsmd, ft, pk, columnCount));
+            }
+        } catch (IOException | SQLException e) {
+            log.error("Can't get features with sql for JDBCDatastore: " + e.getMessage());
+        } finally {
+            if (con != null) {
+                con.close();
+            }
+        }
+        return features;
+    }
+
+    private JSONObject ResultSetToJson(ResultSet rs, ResultSetMetaData rsmd, SimpleFeatureType ft, PrimaryKey pk, int columnCount) throws SQLException {
+        JSONObject jsonFeature = new JSONObject();
+        String fid = ft.getTypeName();
+        // Geotools handelt normaal gesproken het maken van een FID af, dat is nu niet geval
+        // Bouw een eigen FID op basis van de PK kolommen
+        for (PrimaryKeyColumn pkc : pk.getColumns()) {
+            fid += "." + rs.getObject(pkc.getName()).toString();
+        }
+        jsonFeature.put("__fid", fid);
+        for (int index = 1; index <= columnCount; index++) {
+            String column = rsmd.getColumnName(index);
+            Object value = rs.getObject(column);
+            if (value == null)
+            {
+                continue;
+            } else if (value instanceof Integer) {
+                jsonFeature.put(column, (Integer) value);
+            } else if (value instanceof String) {
+                jsonFeature.put(column, (String) value);
+            } else if (value instanceof Boolean) {
+                jsonFeature.put(column, (Boolean) value);
+            } else if (value instanceof Date) {
+                jsonFeature.put(column, ((Date) value).getTime());
+            } else if (value instanceof Long) {
+                jsonFeature.put(column, (Long) value);
+            } else if (value instanceof Double) {
+                jsonFeature.put(column, (Double) value);
+            } else if (value instanceof Float) {
+                jsonFeature.put(column, (Float) value);
+            } else if (value instanceof BigDecimal) {
+                jsonFeature.put(column, (BigDecimal) value);
+            } else if (value instanceof Byte) {
+                jsonFeature.put(column, (Byte) value);
+            } else if (value instanceof byte[]) {
+                // Voor nu overslaan Geen idee wat dit wordt in de front-end
+                continue;
+            }
+        }
+        return jsonFeature;
     }
 }
