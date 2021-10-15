@@ -6,6 +6,7 @@ import { provideMockStore } from '@ngrx/store/testing';
 import { createApplicationServiceMock } from '../../application/services/mocks/application.service.mock';
 import { FeatureControllerService } from '../../shared/generated';
 import { APPLICATION_SERVICE } from '@tailormap/api';
+import { WorkflowControllerService } from '../../workflow/workflow-controller/workflow-controller.service';
 
 class MockAttributeListService {
   public getSelectedRow$() {
@@ -19,6 +20,10 @@ class MockFeatureControllerService {
   }
 }
 
+class MockWorkflowControllerService {
+  public zoomToFeature() {}
+}
+
 describe('FormAttributeListService', () => {
   let spectator: SpectatorService<FormAttributeListService>;
   const createService = createServiceFactory({
@@ -28,6 +33,7 @@ describe('FormAttributeListService', () => {
       provideMockStore(),
       { provide: APPLICATION_SERVICE, useValue: createApplicationServiceMock() },
       { provide: FeatureControllerService, useClass: MockFeatureControllerService },
+      { provide: WorkflowControllerService, useClass: MockWorkflowControllerService },
     ],
   });
 
