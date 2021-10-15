@@ -35,7 +35,7 @@ export class FeatureUpdateHelper {
     if (idx === -1 && !allowToAddProperties) {
       return attributes;
     }
-    type = (idx !== -1 ? attributes[idx].type : type).toLowerCase();
+    type = (idx !== -1 ? attributes[idx].type : (type || '')).toLowerCase();
     value = FeatureUpdateHelper.convertValue(value, type);
     if (idx === -1) {
       return [ ...attributes, { key, value, type }];
