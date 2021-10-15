@@ -14,11 +14,6 @@ export const setOpenFeatureForm = createAction(
   props<{ features: Feature[]; closeAfterSave?: boolean; alreadyDirty?: boolean; editMode?: boolean; multiFormWorkflow?: boolean }>(),
 );
 
-export const setSetFeatures = createAction(
-  `${formActionsPrefix} Save features`,
-  props<{ features: Feature[] }>(),
-);
-
 export const setCloseFeatureForm = createAction(
   `${formActionsPrefix} Close feature form`,
 );
