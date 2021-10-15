@@ -52,11 +52,7 @@ export class StandardFormWorkflow extends Workflow {
         filter(feature => !!feature),
       )
       .subscribe(feature => {
-        const geom = this.featureInitializerService.retrieveGeometry(feature);
-        if (geom) {
-          this.highlightLayer.removeAllFeatures();
-          this.highlightLayer.readGeoJSON(geom);
-        }
+        this.zoomToFeature(feature);
       });
   }
 

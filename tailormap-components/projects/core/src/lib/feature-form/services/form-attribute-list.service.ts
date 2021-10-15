@@ -6,6 +6,7 @@ import { catchError, concatMap, filter, map, takeUntil } from 'rxjs/operators';
 import { of, Subject } from 'rxjs';
 import { setOpenFeatureForm } from '../state/form.actions';
 import { APPLICATION_SERVICE, ApplicationServiceModel } from '@tailormap/api';
+import { WorkflowControllerService } from '../../workflow/workflow-controller/workflow-controller.service';
 
 @Injectable({
   providedIn: 'root',
@@ -19,6 +20,7 @@ export class FormAttributeListService {
     private store$: Store,
     private featureControllerService: FeatureControllerService,
     @Inject(APPLICATION_SERVICE) private applicationService: ApplicationServiceModel,
+    private workflowService: WorkflowControllerService,
   ) {
     attributeListService.getSelectedRow$()
       .pipe(
@@ -32,10 +34,10 @@ export class FormAttributeListService {
           catchError(() => of([])),
         )),
         filter(features => !!features && features.length > 0),
-        map(features => features.length > 1 ? [ features[0] ] : features),
       )
       .subscribe(features => {
-        this.store$.dispatch(setOpenFeatureForm({ features }));
+        // this.store$.dispatch(setOpenFeatureForm({ features }));
+        this.workflowService.zoomToFeature(features[0]);
       });
   }
 

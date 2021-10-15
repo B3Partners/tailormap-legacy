@@ -78,4 +78,9 @@ export class WorkflowControllerService implements OnDestroy {
       this.currentWorkflow.geometryDrawn(vectorLayer, feature);
     });
   }
+
+  public zoomToFeature(feature: Feature) {
+    this.currentWorkflow.zoomToFeature(feature);
+  }
+
 }
