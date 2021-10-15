@@ -51,9 +51,10 @@ import org.geotools.data.Query;
 import org.geotools.data.jdbc.FilterToSQLException;
 import org.geotools.data.wfs.WFSDataStoreFactory;
 import org.geotools.factory.CommonFactoryFinder;
-import org.geotools.feature.FeatureCollection;
 import org.geotools.filter.text.cql2.CQLException;
 import org.geotools.jdbc.JDBCDataStore;
+import org.geotools.jdbc.PrimaryKey;
+import org.geotools.jdbc.PrimaryKeyColumn;
 import org.geotools.util.factory.GeoTools;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -549,110 +550,54 @@ public class AttributesActionBean extends LocalizableApplicationActionBean imple
                     fs = FeatureSourceFactoryHelper.openGeoToolsFeatureSource(ft);
                 }
 
-                boolean startIndexSupported = fs.getQueryCapabilities().isOffsetSupported();
-
-                final Query q = new Query(fs.getName().toString());
-                //List<String> propertyNames = FeatureToJson.setPropertyNames(appLayer,q,ft,false);
-
-                setFilter(q, ft, appLayer, em);
-                setAttributesNotNullFilters(q, appLayer, ft, em);
-
-                final FeatureSource fs2 = fs;
-                total = lookupTotalCountCache(new Callable<Integer>() {
-                    public Integer call() throws Exception {
-                        return fs2.getCount(q);
-                    }
-                });
-
-                if(total == -1) {
-                    json.put("virtualtotal", true);
-                    total = FeatureToJson.MAX_FEATURES;
-                }
-
-                q.setStartIndex(start);
-                q.setMaxFeatures(Math.min(limit,FeatureToJson.MAX_FEATURES));
-
                 if( fs.getDataStore() instanceof JDBCDataStore) {
                     JDBCDataStore da = (JDBCDataStore) fs.getDataStore();
-                    Connection con = null;
                     String sql = "";
-                    JSONArray features = null;
                     if(this.filter != null) {
                         sql = this.getSQLQuery(da, ft.getTypeName(), em);
                     }
-                    try {
-                        json.put("total", -1);
-                        json.put("features", "");
-                        con = da.getConnection(new DefaultTransaction("count"));
-                        String query = "SELECT COUNT (*) FROM " + ft.getTypeName() + " " + sql;
-                        ResultSet rs = con.prepareStatement(query).executeQuery();
-                        rs.next();
-                        int totaal = rs.getInt(1);
-                        json.put("total", totaal);
-                        PreparedStatement prep = con.prepareStatement("SELECT * FROM " + ft.getTypeName() + " " + sql + " LIMIT ? OFFSET ?");
-                        prep.setInt(1, limit);
-                        prep.setInt(2, start);
-                        ResultSet rs2 = prep.executeQuery();
-                        ResultSetMetaData rsmd = rs2.getMetaData();
-                        int columnCount = rsmd.getColumnCount();
-                        features = new JSONArray();
-                        while(rs2.next()) {
-                            JSONObject jsonfeature = new JSONObject();
-                            for (int index = 1; index <= columnCount; index++) {
-                                String column = rsmd.getColumnName(index);
-                                Object value = rs2.getObject(column);
-                                if (value == null)
-                                {
-                                    continue;
-                                } else if (value instanceof Integer) {
-                                    jsonfeature.put(column, (Integer) value);
-                                } else if (value instanceof String) {
-                                    jsonfeature.put(column, (String) value);
-                                } else if (value instanceof Boolean) {
-                                    jsonfeature.put(column, (Boolean) value);
-                                } else if (value instanceof Date) {
-                                    jsonfeature.put(column, ((Date) value).getTime());
-                                } else if (value instanceof Long) {
-                                    jsonfeature.put(column, (Long) value);
-                                } else if (value instanceof Double) {
-                                    jsonfeature.put(column, (Double) value);
-                                } else if (value instanceof Float) {
-                                    jsonfeature.put(column, (Float) value);
-                                } else if (value instanceof BigDecimal) {
-                                    jsonfeature.put(column, (BigDecimal) value);
-                                } else if (value instanceof Byte) {
-                                    jsonfeature.put(column, (Byte) value);
-                                } else if (value instanceof byte[]) {
-                                    jsonfeature.put(column, (byte[]) value);
-                                }
-                            }
-                            features.put(jsonfeature);
+                    json.put("features", getFeaturesWithSQL(da, ft, sql));
+                    total = getFeatureCountWithSQL(da, ft, sql);
+                    json.put("success", true);
+                } else {
+                    boolean startIndexSupported = fs.getQueryCapabilities().isOffsetSupported();
+
+                    final Query q = new Query(fs.getName().toString());
+                    //List<String> propertyNames = FeatureToJson.setPropertyNames(appLayer,q,ft,false);
+
+                    setFilter(q, ft, appLayer, em);
+                    setAttributesNotNullFilters(q, appLayer, ft, em);
+
+                    final FeatureSource fs2 = fs;
+                    total = lookupTotalCountCache(new Callable<Integer>() {
+                        public Integer call() throws Exception {
+                            return fs2.getCount(q);
                         }
-                    } catch (Exception e) {
-                        System.out.println(e.getMessage());
-                    } finally {
-                        if (con != null) {
-                            con.close();
-                        }
-                        if (features != null) {
-                            json.put("features", features);
+                    });
+
+                    if (total == -1) {
+                        json.put("virtualtotal", true);
+                        total = FeatureToJson.MAX_FEATURES;
+                    }
+
+                    q.setStartIndex(start);
+                    q.setMaxFeatures(Math.min(limit, FeatureToJson.MAX_FEATURES));
+
+                    FeatureToJson ftoj = new FeatureToJson(arrays, this.edit, graph, aliases, attributesToInclude);
+
+                    JSONArray features = ftoj.getJSONFeatures(appLayer, ft, fs, q, sort, dir, em, null, null);
+
+                    if (!startIndexSupported) {
+                        if (features.length() < limit) {
+                            //the end is reached..... Otherwise there would be a 'limit' number of features
+                            total = start + features.length();
                         }
                     }
+                    json.put("success", true);
+                    json.put("features", features);
                 }
-                FeatureToJson ftoj = new FeatureToJson(arrays, this.edit, graph, aliases, attributesToInclude);
-
-                JSONArray features = ftoj.getJSONFeatures(appLayer,ft, fs, q, sort, dir, em, null, null);
-
-                if (!startIndexSupported){
-                    if (features.length() < limit){
-                        //the end is reached..... Otherwise there would be a 'limit' number of features
-                        total = start+features.length();
-                    }
-                }
-                json.put("success", true);
-                //json.put("features", features);
             }
-            //json.put("total", total);
+            json.put("total", total);
         } catch(Exception e) {
             log.error("Error loading features", e);
 
@@ -692,5 +637,94 @@ public class AttributesActionBean extends LocalizableApplicationActionBean imple
         TMFilterToSQL f = new TMFilterToSQL(dataStore, tableName);
         f.createFilterCapabilities();
         return f.encodeToString(TailormapCQL.toFilter(this.filter, em, false));
+    }
+
+    private int getFeatureCountWithSQL(JDBCDataStore da, SimpleFeatureType ft, String sql) throws SQLException {
+        int total = 0;
+        Connection con = null;
+        try {
+            con = da.getConnection(new DefaultTransaction("count"));
+            String query = "SELECT COUNT (*) FROM " + ft.getTypeName() + " " + sql;
+            ResultSet rs = con.prepareStatement(query).executeQuery();
+            rs.next();
+            total = rs.getInt(1);
+        } catch (IOException | SQLException e){
+            // log error
+        } finally {
+            if (con != null) {
+                con.close();
+            }
+        }
+        return total;
+    }
+
+    private JSONArray getFeaturesWithSQL(JDBCDataStore da, SimpleFeatureType ft, String sql) throws SQLException {
+        JSONArray features = new JSONArray();
+        Connection con = null;
+        try {
+            con = da.getConnection(new DefaultTransaction("get-features"));
+            PrimaryKey pk = da.getPrimaryKey(da.getSchema(ft.getTypeName()));
+
+            PreparedStatement prep;
+            if(sort != null) {
+                prep = con.prepareStatement("SELECT * FROM " + ft.getTypeName() + " " + sql + " ORDER BY " + sort + " " + dir + " LIMIT ? OFFSET ? ");
+                prep.setInt(1, limit);
+                prep.setInt(2, start);
+            } else {
+                prep = con.prepareStatement("SELECT * FROM " + ft.getTypeName() + " " + sql + " LIMIT ? OFFSET ? ");
+                prep.setInt(1, limit);
+                prep.setInt(2, start);
+            }
+
+            ResultSet rs = prep.executeQuery();
+            ResultSetMetaData rsmd = rs.getMetaData();
+            int columnCount = rsmd.getColumnCount();
+
+            while(rs.next()) {
+                JSONObject jsonfeature = new JSONObject();
+                String fid = ft.getTypeName();
+                for (PrimaryKeyColumn pkc : pk.getColumns()) {
+                    fid += "." + rs.getObject(pkc.getName()).toString();
+                }
+                jsonfeature.put("__fid", fid);
+                for (int index = 1; index <= columnCount; index++) {
+                    String column = rsmd.getColumnName(index);
+                    Object value = rs.getObject(column);
+                    if (value == null)
+                    {
+                        continue;
+                    } else if (value instanceof Integer) {
+                        jsonfeature.put(column, (Integer) value);
+                    } else if (value instanceof String) {
+                        jsonfeature.put(column, (String) value);
+                    } else if (value instanceof Boolean) {
+                        jsonfeature.put(column, (Boolean) value);
+                    } else if (value instanceof Date) {
+                        jsonfeature.put(column, ((Date) value).getTime());
+                    } else if (value instanceof Long) {
+                        jsonfeature.put(column, (Long) value);
+                    } else if (value instanceof Double) {
+                        jsonfeature.put(column, (Double) value);
+                    } else if (value instanceof Float) {
+                        jsonfeature.put(column, (Float) value);
+                    } else if (value instanceof BigDecimal) {
+                        jsonfeature.put(column, (BigDecimal) value);
+                    } else if (value instanceof Byte) {
+                        jsonfeature.put(column, (Byte) value);
+                    } else if (value instanceof byte[]) {
+                        jsonfeature.put(column, (byte[]) value);
+                    }
+                }
+                features.put(jsonfeature);
+            }
+
+        } catch (IOException | SQLException e) {
+
+        } finally {
+            if (con != null) {
+                con.close();
+            }
+        }
+        return features;
     }
 }
