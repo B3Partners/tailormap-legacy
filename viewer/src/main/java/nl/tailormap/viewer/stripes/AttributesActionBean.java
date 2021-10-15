@@ -663,7 +663,11 @@ public class AttributesActionBean extends LocalizableApplicationActionBean imple
         Connection con = null;
         try {
             con = da.getConnection(new DefaultTransaction("get-features"));
-            PrimaryKey pk = da.getPrimaryKey(da.getSchema(ft.getTypeName()));
+            String featureTypeName = ft.getTypeName();
+            if(layer.isUserlayer()){
+                featureTypeName = layer.getDetails().get("userlayer_original_layername").toString();
+            }
+            PrimaryKey pk = da.getPrimaryKey(da.getSchema(featureTypeName));
 
             PreparedStatement prep;
             if(sort != null) {
