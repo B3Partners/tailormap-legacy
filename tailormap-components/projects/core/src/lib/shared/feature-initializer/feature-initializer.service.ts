@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Feature, Field } from '../generated';
+import { Feature } from '../generated';
 import * as wellknown from 'wellknown';
 import { GeoJSONGeometry } from 'wellknown';
 import { Store } from '@ngrx/store';
