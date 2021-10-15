@@ -2,9 +2,8 @@ import { Inject, Injectable } from '@angular/core';
 import { AttributeListService } from '@tailormap/core-components';
 import { Store } from '@ngrx/store';
 import { FeatureControllerService } from '../../shared/generated';
-import { catchError, concatMap, filter, map, takeUntil } from 'rxjs/operators';
+import { catchError, concatMap, filter, takeUntil } from 'rxjs/operators';
 import { of, Subject } from 'rxjs';
-import { setOpenFeatureForm } from '../state/form.actions';
 import { APPLICATION_SERVICE, ApplicationServiceModel } from '@tailormap/api';
 import { WorkflowControllerService } from '../../workflow/workflow-controller/workflow-controller.service';
 
