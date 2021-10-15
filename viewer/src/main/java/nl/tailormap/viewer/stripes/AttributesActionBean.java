@@ -38,17 +38,22 @@ import nl.tailormap.viewer.helpers.AuthorizationsHelper;
 import nl.tailormap.viewer.helpers.app.ApplicationLayerHelper;
 import nl.tailormap.viewer.helpers.featuresources.FeatureSourceFactoryHelper;
 import nl.tailormap.viewer.helpers.featuresources.WFSFeatureSourceHelper;
+import nl.tailormap.viewer.userlayer.TMFilterToSQL;
 import nl.tailormap.viewer.util.ChangeMatchCase;
 import nl.tailormap.viewer.util.FeatureToJson;
 import nl.tailormap.viewer.util.FilterHelper;
 import nl.tailormap.viewer.util.TailormapCQL;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.geotools.data.DefaultTransaction;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
+import org.geotools.data.jdbc.FilterToSQLException;
 import org.geotools.data.wfs.WFSDataStoreFactory;
 import org.geotools.factory.CommonFactoryFinder;
+import org.geotools.feature.FeatureCollection;
 import org.geotools.filter.text.cql2.CQLException;
+import org.geotools.jdbc.JDBCDataStore;
 import org.geotools.util.factory.GeoTools;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -60,7 +65,13 @@ import org.stripesstuff.stripersist.Stripersist;
 
 import javax.persistence.EntityManager;
 import javax.servlet.http.HttpSession;
+import java.io.IOException;
 import java.io.StringReader;
+import java.math.BigDecimal;
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -564,6 +575,71 @@ public class AttributesActionBean extends LocalizableApplicationActionBean imple
                 q.setStartIndex(start);
                 q.setMaxFeatures(Math.min(limit,FeatureToJson.MAX_FEATURES));
 
+                if( fs.getDataStore() instanceof JDBCDataStore) {
+                    JDBCDataStore da = (JDBCDataStore) fs.getDataStore();
+                    Connection con = null;
+                    String sql = "";
+                    JSONArray features = null;
+                    if(this.filter != null) {
+                        sql = this.getSQLQuery(da, ft.getTypeName(), em);
+                    }
+                    try {
+                        json.put("total", -1);
+                        json.put("features", "");
+                        con = da.getConnection(new DefaultTransaction("count"));
+                        String query = "SELECT COUNT (*) FROM " + ft.getTypeName() + " " + sql;
+                        ResultSet rs = con.prepareStatement(query).executeQuery();
+                        rs.next();
+                        int totaal = rs.getInt(1);
+                        json.put("total", totaal);
+                        String query2 = "SELECT * FROM " + ft.getTypeName() + " " + sql + " LIMIT " + limit + " OFFSET " + start;
+                        ResultSet rs2 = con.prepareStatement(query2).executeQuery();
+                        ResultSetMetaData rsmd = rs2.getMetaData();
+                        int columnCount = rsmd.getColumnCount();
+                        features = new JSONArray();
+                        while(rs2.next()) {
+                            JSONObject jsonfeature = new JSONObject();
+                            for (int index = 1; index <= columnCount; index++) {
+                                String column = rsmd.getColumnName(index);
+                                Object value = rs2.getObject(column);
+                                if (value == null)
+                                {
+                                    continue;
+                                } else if (value instanceof Integer) {
+                                    jsonfeature.put(column, (Integer) value);
+                                } else if (value instanceof String) {
+                                    jsonfeature.put(column, (String) value);
+                                } else if (value instanceof Boolean) {
+                                    jsonfeature.put(column, (Boolean) value);
+                                } else if (value instanceof Date) {
+                                    jsonfeature.put(column, ((Date) value).getTime());
+                                } else if (value instanceof Long) {
+                                    jsonfeature.put(column, (Long) value);
+                                } else if (value instanceof Double) {
+                                    jsonfeature.put(column, (Double) value);
+                                } else if (value instanceof Float) {
+                                    jsonfeature.put(column, (Float) value);
+                                } else if (value instanceof BigDecimal) {
+                                    jsonfeature.put(column, (BigDecimal) value);
+                                } else if (value instanceof Byte) {
+                                    jsonfeature.put(column, (Byte) value);
+                                } else if (value instanceof byte[]) {
+                                    jsonfeature.put(column, (byte[]) value);
+                                }
+                            }
+                            features.put(jsonfeature);
+                        }
+                    } catch (Exception e) {
+                        System.out.println(e.getMessage());
+                    } finally {
+                        if (con != null) {
+                            con.close();
+                        }
+                        if (features != null) {
+                            json.put("features", features);
+                        }
+                    }
+                }
                 FeatureToJson ftoj = new FeatureToJson(arrays, this.edit, graph, aliases, attributesToInclude);
 
                 JSONArray features = ftoj.getJSONFeatures(appLayer,ft, fs, q, sort, dir, em, null, null);
@@ -575,9 +651,9 @@ public class AttributesActionBean extends LocalizableApplicationActionBean imple
                     }
                 }
                 json.put("success", true);
-                json.put("features", features);
+                //json.put("features", features);
             }
-            json.put("total", total);
+            //json.put("total", total);
         } catch(Exception e) {
             log.error("Error loading features", e);
 
@@ -611,5 +687,11 @@ public class AttributesActionBean extends LocalizableApplicationActionBean imple
         }
         And and = ff2.and(filters);
         q.setFilter(and);
+    }
+
+    private String getSQLQuery(JDBCDataStore dataStore, String tableName, EntityManager em) throws CQLException, FilterToSQLException, IOException {
+        TMFilterToSQL f = new TMFilterToSQL(dataStore, tableName);
+        f.createFilterCapabilities();
+        return f.encodeToString(TailormapCQL.toFilter(this.filter, em, false));
     }
 }
