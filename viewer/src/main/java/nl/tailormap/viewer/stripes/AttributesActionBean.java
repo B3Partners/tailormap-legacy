@@ -550,6 +550,8 @@ public class AttributesActionBean extends LocalizableApplicationActionBean imple
                     fs = FeatureSourceFactoryHelper.openGeoToolsFeatureSource(ft);
                 }
 
+                // gebruik SQL query op een Connection als het een JDBCDatastore is
+                // Probleem met CQL filter is is dat er een maxFeatures op gezet moet worden waardoor filters niet betrouwbaar zijn
                 if( fs.getDataStore() instanceof JDBCDataStore) {
                     JDBCDataStore da = (JDBCDataStore) fs.getDataStore();
                     String sql = "";
@@ -663,6 +665,8 @@ public class AttributesActionBean extends LocalizableApplicationActionBean imple
         Connection con = null;
         try {
             con = da.getConnection(new DefaultTransaction("get-features"));
+            // Gebruik orginele laag naam om de PK('s) te vinden voor een user-layer
+            // Deze is nog om een __FID te maken
             String featureTypeName = ft.getTypeName();
             if(layer.isUserlayer()){
                 featureTypeName = layer.getDetails().get("userlayer_original_layername").toString();
@@ -670,7 +674,7 @@ public class AttributesActionBean extends LocalizableApplicationActionBean imple
             PrimaryKey pk = da.getPrimaryKey(da.getSchema(featureTypeName));
 
             PreparedStatement prep;
-            if(sort != null) {
+            if(sort != null) { // Gebruik order By als sort wordt meegegeven. Is dit een SQL Injection vulnerability????
                 prep = con.prepareStatement("SELECT * FROM " + ft.getTypeName() + " " + sql + " ORDER BY " + sort + " " + dir + " LIMIT ? OFFSET ? ");
                 prep.setInt(1, limit);
                 prep.setInt(2, start);
@@ -699,6 +703,8 @@ public class AttributesActionBean extends LocalizableApplicationActionBean imple
     private JSONObject ResultSetToJson(ResultSet rs, ResultSetMetaData rsmd, SimpleFeatureType ft, PrimaryKey pk, int columnCount) throws SQLException {
         JSONObject jsonFeature = new JSONObject();
         String fid = ft.getTypeName();
+        // Geotools handelt normaal gesproken het maken van een FID af, dat is nu niet geval
+        // Bouw een eigen FID op basis van de PK kolommen
         for (PrimaryKeyColumn pkc : pk.getColumns()) {
             fid += "." + rs.getObject(pkc.getName()).toString();
         }
