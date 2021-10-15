@@ -42,6 +42,7 @@ export class SelectFieldComponent {
               emitModelToViewChange: true,
               emitViewToModelChange: true,
             });
+            this.groep.get(parentAttribute.key).markAsDirty({ onlySelf: true });
           }
         });
     }

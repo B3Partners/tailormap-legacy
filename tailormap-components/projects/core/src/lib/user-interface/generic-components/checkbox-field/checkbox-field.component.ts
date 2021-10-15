@@ -26,23 +26,15 @@ export class CheckboxFieldComponent {
   }
 
   public onCheckboxChange(event: MatCheckboxChange): void {
-    if (event.checked) {
-      this.attribute.value = this.attribute.valueTrue;
-      this.groep.get(this.attribute.key).setValue(this.attribute.valueTrue, {
-        emitEvent: true,
-        onlySelf: false,
-        emitModelToViewChange: true,
-        emitViewToModelChange: true,
-      });
-    } else {
-      this.attribute.value = this.attribute.valueFalse;
-      this.groep.get(this.attribute.key).setValue(this.attribute.valueFalse, {
-        emitEvent: true,
-        onlySelf: false,
-        emitModelToViewChange: true,
-        emitViewToModelChange: true,
-      });
-    }
+    const value = event.checked ? this.attribute.valueTrue : this.attribute.valueFalse;
+    this.attribute.value = value;
+    this.groep.get(this.attribute.key).setValue(value, {
+      emitEvent: true,
+      onlySelf: false,
+      emitModelToViewChange: true,
+      emitViewToModelChange: true,
+    });
+    this.groep.get(this.attribute.key).markAsDirty({ onlySelf: true });
   }
 
 }
