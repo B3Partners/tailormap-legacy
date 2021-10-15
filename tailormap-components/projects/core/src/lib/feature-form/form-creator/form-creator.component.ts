@@ -18,6 +18,7 @@ import { selectFormEditing } from '../state/form.selectors';
 import { selectLayerIdForEditingFeatures } from '../../application/state/application.selectors';
 import { editFeaturesComplete } from '../../application/state/application.actions';
 import { FeatureInitializerService } from '../../shared/feature-initializer/feature-initializer.service';
+import { FeatureUpdateHelper } from '../../shared/feature-initializer/feature-update.helper';
 
 @Component({
   selector: 'tailormap-form-creator',
@@ -145,9 +146,7 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
   }
 
   public save() {
-    const feature = this.formgroep.value;
-    feature.__fid = this.feature.fid;
-    this.mergeFormToFeature(feature);
+    this.mergeFormToFeature();
     const isNewFeature = this.feature.fid === FeatureInitializerService.STUB_OBJECT_GUID_NEW_OBJECT;
     this.actions.save$(this.isBulk, this.isBulk ? this.features : [ this.feature ], this.parentId).subscribe(savedFeature => {
       if (isNewFeature) {
@@ -169,68 +168,20 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
     });
   }
 
-  private mergeFormToFeature(form) {
-    if (this.isBulk) {
-      for (const key in form) {
-        if (this.formgroep.controls[key]?.dirty) {
-
-          this.features = this.features.map(f=> this.featureInitializer.convertOldToNewFeature(f, this.formConfig));
-          this.features = this.features.map(feature => {
-            const index = feature.attributes.findIndex(field => field.key === key);
-            const f= {
-              ...feature,
-              attributes:[
-                ...feature.attributes.slice(0, index),
-                {
-                  key,
-                  value : form[key],
-                  type: feature.attributes[index].type,
-                },
-                ...feature.attributes.slice(index+1),
-              ],
-            };
-            return f;
-
-          });
-        }
+  private mergeFormToFeature() {
+    const updatedFields: Record<string, any> = {};
+    Object.keys(this.formgroep.controls).forEach(key => {
+      const control = this.formgroep.get(key);
+      if (!control || !control.dirty || control.value === 'null') {
+        return;
       }
+      updatedFields[key] = control.value;
+    });
+    if (!this.isBulk) {
+      this.feature = FeatureUpdateHelper.updateFeatureAttributes(this.feature, updatedFields);
     } else {
-      this.feature.attributes.forEach((attr, index) => {
-        for (const key in form) {
-          if (form.hasOwnProperty(key) && key === attr.key &&  form[key] !== 'null') {
-            this.feature.attributes = [
-              ...this.feature.attributes.slice(0, index),
-              {
-                key,
-                value : form[key],
-                type: this.feature.attributes[index].type,
-              },
-              ...this.feature.attributes.slice(index+1),
-            ];
-
-            break;
-          }
-        }
-      });
+      this.features = this.features.map(feature => FeatureUpdateHelper.updateFeatureAttributes(feature, updatedFields));
     }
-  }
-
-  public getChangedValues(): Feature[] {
-    let features = [];
-    if (this.formgroep.dirty) {
-      const attributes = [];
-      for (const key in this.formgroep.controls) {
-        if (this.formgroep.controls.hasOwnProperty(key)) {
-          const control = this.formgroep.controls[key];
-          if (control.dirty) {
-            attributes[key] = control.value;
-          }
-        }
-      }
-      features = [...this.features];
-      features.forEach(f => f.attributes = attributes);
-    }
-    return features;
   }
 
 }

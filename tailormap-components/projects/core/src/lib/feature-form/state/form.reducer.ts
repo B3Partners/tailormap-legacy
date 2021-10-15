@@ -32,11 +32,6 @@ const onSetNewFeature = (state: FormState, payload: ReturnType<typeof FormAction
   };
 };
 
-const onSetFeatures = (state: FormState, payload: ReturnType<typeof FormActions.setSetFeatures>): FormState => ({
-  ...state,
-  features: payload.features,
-});
-
 const onSetOpenFeatureForm = (state: FormState, payload: ReturnType<typeof FormActions.setOpenFeatureForm>): FormState => ({
   ...state,
   features: payload.features,
@@ -141,7 +136,6 @@ const formReducerImpl = createReducer(
   initialFormState,
   on(FormActions.setTreeOpen, onSetTreeOpen),
   on(FormActions.setFormEditing, onSetFormEditing),
-  on(FormActions.setSetFeatures, onSetFeatures),
   on(FormActions.setFeature, onSetFeature),
   on(FormActions.setFeatureRemoved, onSetFeatureRemoved),
   on(FormActions.setNewFeature, onSetNewFeature),
