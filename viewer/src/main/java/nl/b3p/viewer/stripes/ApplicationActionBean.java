@@ -86,6 +86,10 @@ public class ApplicationActionBean extends LocalizableApplicationActionBean impl
     
     @Validate
     private boolean debug;
+    @Validate
+    private String tocService;
+    @Validate
+    private String tocLayer;
 
     @Validate(on = "retrieveAppConfigJSON")
     private Application application;
@@ -248,6 +252,23 @@ public class ApplicationActionBean extends LocalizableApplicationActionBean impl
     public void setLevelOrder(String levelOrder) {
         this.levelOrder = levelOrder;
     }
+
+    public String getTocService() {
+        return tocService;
+    }
+
+    public void setTocService(String tocService) {
+        this.tocService = tocService;
+    }
+
+    public String getTocLayer() {
+        return tocLayer;
+    }
+
+    public void setTocLayer(String tocLayer) {
+        this.tocLayer = tocLayer;
+    }
+
     //</editor-fold>
     
     static Application findApplication(String name, String version) {
@@ -345,6 +366,8 @@ public class ApplicationActionBean extends LocalizableApplicationActionBean impl
                 .addParameter("version", version)
                 .addParameter("debug", debug)
                 .addParameter("uitloggen", true)
+                .addParameter("tocService", tocService)
+                .addParameter("tocLayer", tocLayer)
                 .includeRequestParameters(true);
 
         addBookmarkParameters(login);
@@ -467,14 +490,18 @@ public class ApplicationActionBean extends LocalizableApplicationActionBean impl
         && "true".equals(context.getRequest().getParameter("returnAfterLogout"))) {
             RedirectResolution r = new RedirectResolution(ApplicationActionBean.class)
                     .addParameter("name", application.getName())
-                    .addParameter("version", application.getVersion());
+                    .addParameter("version", application.getVersion())
+                    .addParameter("tocService", tocService)
+                    .addParameter("tocLayer", tocLayer);
             addBookmarkParameters(r);
             return r;
         } else {
             RedirectResolution r = new RedirectResolution(LoginActionBean.class)
                     .addParameter("name", application.getName())
                     .addParameter("debug", debug)
-                    .addParameter("version", application.getVersion());
+                    .addParameter("version", application.getVersion())
+                    .addParameter("tocService", tocService)
+                    .addParameter("tocLayer", tocLayer);
             addBookmarkParameters(r);
             return r;
         }
