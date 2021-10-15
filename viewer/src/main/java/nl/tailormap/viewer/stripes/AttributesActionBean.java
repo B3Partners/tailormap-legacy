@@ -670,7 +670,7 @@ public class AttributesActionBean extends LocalizableApplicationActionBean imple
         try {
             con = da.getConnection(new DefaultTransaction("get-features"));
             // Gebruik orginele laag naam om de PK('s) te vinden voor een user-layer
-            // Deze is nog om een __FID te maken
+            // Deze is nodig om een __FID te maken
             String featureTypeName = ft.getTypeName();
             if(layer.isUserlayer()){
                 featureTypeName = layer.getDetails().get("userlayer_original_layername").toString();
@@ -738,7 +738,8 @@ public class AttributesActionBean extends LocalizableApplicationActionBean imple
             } else if (value instanceof Byte) {
                 jsonFeature.put(column, (Byte) value);
             } else if (value instanceof byte[]) {
-                jsonFeature.put(column, (byte[]) value);
+                // Voor nu overslaan Geen idee wat dit wordt in de front-end
+                continue;
             }
         }
         return jsonFeature;
