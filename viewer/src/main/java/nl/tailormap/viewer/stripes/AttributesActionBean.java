@@ -553,6 +553,8 @@ public class AttributesActionBean extends LocalizableApplicationActionBean imple
                 // gebruik SQL query op een Connection als het een JDBCDatastore is
                 // Probleem met CQL filter is is dat er een maxFeatures op gezet moet worden waardoor filters niet betrouwbaar zijn
                 if( fs.getDataStore() instanceof JDBCDataStore) {
+                    log.debug("trying to get features with SQL for JDBCDatastore");
+                    json.put("type", "sql");
                     JDBCDataStore da = (JDBCDataStore) fs.getDataStore();
                     String sql = "";
                     if(this.filter != null) {
@@ -562,6 +564,8 @@ public class AttributesActionBean extends LocalizableApplicationActionBean imple
                     total = getFeatureCountWithSQL(da, ft, sql);
                     json.put("success", true);
                 } else {
+                    log.debug("trying to get features with cql");
+                    json.put("type", "cql");
                     boolean startIndexSupported = fs.getQueryCapabilities().isOffsetSupported();
 
                     final Query q = new Query(fs.getName().toString());
@@ -651,7 +655,7 @@ public class AttributesActionBean extends LocalizableApplicationActionBean imple
             rs.next();
             total = rs.getInt(1);
         } catch (IOException | SQLException e){
-            // log error
+            log.error("Can't get feature count with sql for JDBCDatastore: " + e.getMessage());
         } finally {
             if (con != null) {
                 con.close();
@@ -691,7 +695,7 @@ public class AttributesActionBean extends LocalizableApplicationActionBean imple
                 features.put(ResultSetToJson(rs, rsmd, ft, pk, columnCount));
             }
         } catch (IOException | SQLException e) {
-            // log error
+            log.error("Can't get features with sql for JDBCDatastore: " + e.getMessage());
         } finally {
             if (con != null) {
                 con.close();
