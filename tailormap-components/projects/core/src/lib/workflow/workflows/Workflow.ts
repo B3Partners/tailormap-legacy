@@ -87,4 +87,13 @@ export abstract class Workflow {
   public endWorkflow(): void {
     this.close$.next(true);
   }
+
+  public zoomToFeature(feature: Feature) {
+    const geom = this.featureInitializerService.retrieveGeometry(feature);
+    if (geom) {
+      this.highlightLayer.removeAllFeatures();
+      this.highlightLayer.readGeoJSON(geom);
+    }
+  }
+
 }
