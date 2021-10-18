@@ -62,6 +62,7 @@
         <jakarta.mail.version>1.6.6</jakarta.mail.version>
         <apache.httpcomponents.version>4.5.13</apache.httpcomponents.version>
         <apache.commons-httpclient.version>3.1</apache.commons-httpclient.version>
+        <apache.commons-codec.version>1.15</apache.commons-codec.version>
         <jaxb.api.version>2.3.3</jaxb.api.version>
         <jaxb.impl.version>2.3.3</jaxb.impl.version>
         <activation.api.version>1.2.2</activation.api.version>
@@ -221,6 +222,11 @@
                 <groupId>commons-io</groupId>
                 <artifactId>commons-io</artifactId>
                 <version>2.11.0</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-codec</groupId>
+                <artifactId>commons-codec</artifactId>
+                <version>${apache.commons-codec.version}</version>
             </dependency>
             <dependency>
                 <groupId>log4j</groupId>
