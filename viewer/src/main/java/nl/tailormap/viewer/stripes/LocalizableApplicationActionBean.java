@@ -7,7 +7,7 @@ import net.sourceforge.stripes.controller.LifecycleStage;
 import nl.tailormap.i18n.LocalizableActionBean;
 import nl.tailormap.i18n.ResourceBundleProvider;
 import nl.tailormap.viewer.config.app.Application;
-import org.apache.commons.lang.LocaleUtils;
+import org.apache.commons.lang3.LocaleUtils;
 
 import java.util.Locale;
 

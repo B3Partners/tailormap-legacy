@@ -52,7 +52,7 @@
         <!-- when updating geotools also check b3p-commons-csw (and maybe jts) or you will end up in transitive dependency hell -->
         <geotools.version>26.0</geotools.version>
         <jts.version>1.18.2</jts.version>
-        <b3p-commons-csw.version>7.0</b3p-commons-csw.version>
+        <b3p-commons-csw.version>7.1</b3p-commons-csw.version>
         <hsqldb.version>2.6.0</hsqldb.version>
         <test.persistence.unit>viewer-config-hsqldb</test.persistence.unit>
         <postgresql.version>42.2.24</postgresql.version>
@@ -68,6 +68,7 @@
         <slf4j.version>1.7.32</slf4j.version>
         <hibernate.version>5.6.0.Final</hibernate.version>
         <jackson2.version>2.12.5</jackson2.version>
+        <lucene.version>4.6.0</lucene.version>
         <test.junit-jupiter.version>5.8.1</test.junit-jupiter.version>
         <test.hamcrest.version>2.2</test.hamcrest.version>
         <!-- skip integration tests by default, override this property from commandline
@@ -94,6 +95,11 @@
                 <groupId>nl.opengeogroep</groupId>
                 <artifactId>safetymaps-api</artifactId>
                 <version>1.0</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-dbutils</groupId>
+                <artifactId>commons-dbutils</artifactId>
+                <version>1.7</version>
             </dependency>
             <dependency>
                 <groupId>commons-fileupload</groupId>
@@ -218,6 +224,11 @@
                 </exclusions>
             </dependency>
             <dependency>
+                <groupId>org.apache.xmlgraphics</groupId>
+                <artifactId>xmlgraphics-commons</artifactId>
+                <version>2.6</version>
+            </dependency>
+            <dependency>
                 <groupId>commons-io</groupId>
                 <artifactId>commons-io</artifactId>
                 <version>2.11.0</version>
@@ -321,7 +332,12 @@
             <dependency>
                 <groupId>org.apache.lucene</groupId>
                 <artifactId>lucene-core</artifactId>
-                <version>4.6.0</version>
+                <version>${lucene.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.lucene</groupId>
+                <artifactId>lucene-analyzers-common</artifactId>
+                <version>${lucene.version}</version>
             </dependency>
             <dependency>
                 <artifactId>solr-solrj</artifactId>
@@ -386,7 +402,17 @@
             </dependency>
             <dependency>
                 <groupId>org.geotools</groupId>
-                <artifactId>gt-wmts</artifactId>
+                <artifactId>gt-cql</artifactId>
+                <version>${geotools.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.geotools</groupId>
+                <artifactId>gt-xml</artifactId>
+                <version>${geotools.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.geotools</groupId>
+                <artifactId>gt-opengis</artifactId>
                 <version>${geotools.version}</version>
             </dependency>
             <dependency>
@@ -549,6 +575,11 @@
                 <groupId>org.apache.httpcomponents</groupId>
                 <artifactId>httpmime</artifactId>
                 <version>${apache.httpcomponents.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpcore</artifactId>
+                <version>4.4.14</version>
             </dependency>
             <dependency>
                 <groupId>commons-httpclient</groupId>
@@ -841,6 +872,7 @@
                                     <excludes>
                                         <exclude>junit:junit</exclude>
                                         <exclude>org.hamcrest:hamcrest-core</exclude>
+                                        <exclude>commons-lang:commons-lang</exclude>
                                     </excludes>
                                 </bannedDependencies>
                             </rules>

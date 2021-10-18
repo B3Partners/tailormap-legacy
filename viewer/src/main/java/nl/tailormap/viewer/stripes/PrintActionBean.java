@@ -43,7 +43,7 @@ import nl.tailormap.viewer.print.PrintUtil;
 import nl.tailormap.viewer.util.FeaturePropertiesArrayHelper;
 import nl.tailormap.viewer.util.FeatureToJson;
 import nl.tailormap.viewer.util.TailormapCQL;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.Logger;
