@@ -671,6 +671,13 @@
             <url>https://repo.osgeo.org/</url>
         </repository>
     </repositories>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>B3Partners</id>
+            <name>Releases hosted by B3Partners</name>
+            <url>https://repo.b3p.nl/nexus/repository/public/</url>
+        </pluginRepository>
+    </pluginRepositories>
     <build>
         <pluginManagement>
             <plugins>
