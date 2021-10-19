@@ -44,7 +44,7 @@ import nl.tailormap.viewer.helpers.AuthorizationsHelper;
 import nl.tailormap.viewer.helpers.app.ApplicationHelper;
 import nl.tailormap.viewer.helpers.app.ComponentHelper;
 import nl.tailormap.viewer.util.SelectedContentCache;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.stripesstuff.stripersist.Stripersist;

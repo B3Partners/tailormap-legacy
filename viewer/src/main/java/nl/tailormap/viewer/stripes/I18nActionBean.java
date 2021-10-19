@@ -9,7 +9,7 @@ import net.sourceforge.stripes.action.UrlBinding;
 import net.sourceforge.stripes.validation.Validate;
 import nl.tailormap.i18n.ResourceBundleProvider;
 import nl.tailormap.i18n.ResourceBundleToJsProvider;
-import org.apache.commons.lang.LocaleUtils;
+import org.apache.commons.lang3.LocaleUtils;
 
 import java.io.StringReader;
 import java.util.Locale;
