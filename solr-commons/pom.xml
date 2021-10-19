@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.tailormap</groupId>
         <artifactId>tailormap</artifactId>
-        <version>5.9.10-SNAPSHOT</version>
+        <version>5.9.10</version>
     </parent>
     <name>solr-commons</name>
     <dependencies>
