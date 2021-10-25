@@ -48,8 +48,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <!-- when updating geotools also check b3p-commons-csw or you will end up in transitive dependency hell -->
-        <geotools.version>25.2</geotools.version>
-        <b3p-commons-csw.version>6.6</b3p-commons-csw.version>
+        <geotools.version>25.3</geotools.version>
+        <b3p-commons-csw.version>6.7-SNAPSHOT</b3p-commons-csw.version>
         <powermock.version>2.0.9</powermock.version>
         <hsqldb.version>2.5.2</hsqldb.version>
         <test.persistence.unit>viewer-config-hsqldb</test.persistence.unit>
