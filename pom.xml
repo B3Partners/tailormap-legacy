@@ -661,7 +661,7 @@
                 <plugin>
                     <groupId>pl.project13.maven</groupId>
                     <artifactId>git-commit-id-plugin</artifactId>
-                    <version>4.0.5</version>
+                    <version>4.9.10</version>
                 </plugin>
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
@@ -690,7 +690,7 @@
                 <plugin>
                     <groupId>org.owasp</groupId>
                     <artifactId>dependency-check-maven</artifactId>
-                    <version>6.3.1</version>
+                    <version>6.4.1</version>
                     <configuration>
                         <skipSystemScope>true</skipSystemScope>
                         <format>ALL</format>
@@ -822,7 +822,7 @@
                 <plugin>
                     <groupId>io.fabric8</groupId>
                     <artifactId>docker-maven-plugin</artifactId>
-                    <version>0.36.1</version>
+                    <version>0.37.0</version>
                 </plugin>
             </plugins>
         </pluginManagement>
