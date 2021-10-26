@@ -53,7 +53,7 @@
         <geotools.version>26.0</geotools.version>
         <jts.version>1.18.2</jts.version>
         <b3p-commons-csw.version>7.1</b3p-commons-csw.version>
-        <hsqldb.version>2.6.0</hsqldb.version>
+        <hsqldb.version>2.6.1</hsqldb.version>
         <test.persistence.unit>viewer-config-hsqldb</test.persistence.unit>
         <postgresql.version>42.3.0</postgresql.version>
         <mssql.version>9.4.0.jre11</mssql.version>
