@@ -926,15 +926,5 @@
         "singleton": true,
         "configSource": ["ConfigObject.js","SelectionWindowConfig.js", "Highlight-config.js"],
         "restrictions": ["content", "left_menu"]
-    },
-    {
-        "className": "viewer.components.NgAttributeList",
-        "name": "NgAttributeList",
-        "group": "Map",
-        "shortName": "NgAttrList",
-        "sources": ["NgAttributeList.js"],
-        "singleton": true,
-        "configSource": ["ConfigObject.js","SelectionWindowConfig.js","NgAttributeList-config.js"],
-        "restrictions": ["left_menu"]
     }
 ]
