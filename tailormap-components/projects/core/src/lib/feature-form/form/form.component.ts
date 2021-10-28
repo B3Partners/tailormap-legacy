@@ -209,6 +209,7 @@ export class FormComponent implements OnDestroy, OnInit {
         if (!this.feature) {
           this.closeForm();
         }
+        this.tailormapService.getViewerController().mapComponent.getMap().update();
       });
     });
   }
