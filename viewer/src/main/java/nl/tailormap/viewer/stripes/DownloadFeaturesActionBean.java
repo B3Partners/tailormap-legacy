@@ -124,6 +124,9 @@ public class DownloadFeaturesActionBean extends LocalizableApplicationActionBean
     @Validate(converter = OneToManyTypeConverter.class)
     private List<String> columns = new ArrayList<>();
 
+    @Validate
+    private String filter;
+
     private AuditMessageObject auditMessageObject;
 
     //<editor-fold defaultstate="collapsed" desc="getters and setters">
@@ -213,6 +216,14 @@ public class DownloadFeaturesActionBean extends LocalizableApplicationActionBean
         this.columns = columns;
     }
 
+    public String getFilter() {
+        return filter;
+    }
+
+    public void setFilter(String filter) {
+        this.filter = filter;
+    }
+
     // </editor-fold>
 
     @After(stages=LifecycleStage.BindingAndValidation)
@@ -236,9 +247,14 @@ public class DownloadFeaturesActionBean extends LocalizableApplicationActionBean
             json.put("message", getBundle().getString("viewer.general.noauth"));
             return new StreamingResolution("application/json", new StringReader(json.toString(4)));
         }
-        String sId = context.getRequest().getSession().getId();
-        Map<String, String> sharedData = SharedSessionData.find(sId);
-        String filter = sharedData.get(appLayer.getId().toString());
+
+        String filter = this.filter;
+        if (filter == null) {
+            String sId = context.getRequest().getSession().getId();
+            Map<String, String> sharedData = SharedSessionData.find(sId);
+            filter = sharedData.get(appLayer.getId().toString());
+        }
+
         File output = null;
         try {
             if (featureType != null || (layer != null && layer.getFeatureType() != null)) {
