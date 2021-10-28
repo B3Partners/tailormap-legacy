@@ -70,7 +70,9 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.math.BigDecimal;
 import java.sql.*;
+import java.text.DateFormat;
 import java.text.MessageFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -707,6 +709,7 @@ public class AttributesActionBean extends LocalizableApplicationActionBean imple
     private JSONObject ResultSetToJson(ResultSet rs, ResultSetMetaData rsmd, SimpleFeatureType ft, PrimaryKey pk, int columnCount) throws SQLException {
         JSONObject jsonFeature = new JSONObject();
         String fid = ft.getTypeName();
+        DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
         // Geotools handelt normaal gesproken het maken van een FID af, dat is nu niet geval
         // Bouw een eigen FID op basis van de PK kolommen
         for (PrimaryKeyColumn pkc : pk.getColumns()) {
@@ -726,7 +729,7 @@ public class AttributesActionBean extends LocalizableApplicationActionBean imple
             } else if (value instanceof Boolean) {
                 jsonFeature.put(column, (Boolean) value);
             } else if (value instanceof Date) {
-                jsonFeature.put(column, ((Date) value).getTime());
+                jsonFeature.put(column, dateFormat.format((Date)value));
             } else if (value instanceof Long) {
                 jsonFeature.put(column, (Long) value);
             } else if (value instanceof Double) {
