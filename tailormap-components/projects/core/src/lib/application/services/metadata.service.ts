@@ -134,6 +134,7 @@ export class MetadataService implements OnDestroy, MetadataServiceModel {
             application,
             limit: 1,
             clearTotalCountCache: true,
+            useSQLFiltering: true,
           };
           if (featureType) {
             featureParams.featureType = featureType;
