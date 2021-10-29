@@ -100,7 +100,7 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
 
       if (attr.type === FormFieldType.DOMAIN) {
         this.registry.registerDomainField(attr.linkedList, featureAttribute);
-        if (!this.isBulk && featureAttribute.value && featureAttribute.value !== '-1') {
+        if (!this.isBulk && featureAttribute.value && featureAttribute.value !== '') {
           this.domainValues.set(attr, featureAttribute.value);
           const compVal = FormFieldHelpers.findSelectedOption(featureAttribute.options, featureAttribute.value);
           value = typeof compVal !== 'undefined' && compVal !== null ? compVal.val : featureAttribute.value;
@@ -175,7 +175,7 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
       if (!control || !control.dirty || control.value === 'null') {
         return;
       }
-      updatedFields[key] = control.value;
+      updatedFields[key] = typeof control.value === 'undefined' ? '' : control.value;
     });
     if (!this.isBulk) {
       this.feature = FeatureUpdateHelper.updateFeatureAttributes(this.feature, updatedFields);
