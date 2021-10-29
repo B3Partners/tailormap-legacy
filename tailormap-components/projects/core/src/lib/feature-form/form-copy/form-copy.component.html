@@ -1,6 +1,7 @@
 <tailormap-form-tree [isCopy]="true"
                      [hidden]="false"
                      [hasCheckboxes]="true"
+                     [checkedFeatures]="relatedFeatures"
                      [feature]="baseCopyFeature"
                      (relatedFeatureChecked)="relatedFeaturesCheckedChanged($event)">
   <div class="tree-options">

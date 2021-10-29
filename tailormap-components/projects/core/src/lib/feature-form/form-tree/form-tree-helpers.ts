@@ -46,7 +46,7 @@ export class FormTreeHelpers {
       const metadata = {
         isFeatureType: false,
         feature,
-        objectGuid: feature.fid,
+        fid: feature.fid,
       };
       nodes.push({
         label: FormTreeHelpers.getFeatureValueForField(feature, config),
