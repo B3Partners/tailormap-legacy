@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import {
   HttpClient,
-  HttpParams, HttpResponse,
+  HttpResponse,
 } from '@angular/common/http';
 import {
   ExportFeaturesParameters,
