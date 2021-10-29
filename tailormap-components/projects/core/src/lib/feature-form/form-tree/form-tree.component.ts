@@ -10,6 +10,7 @@ import { combineLatest, Observable, Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 import { TreeService, TreeModel, TransientTreeHelper } from '@tailormap/shared';
 import { selectFormConfigs } from '../../application/state/application.selectors';
+import { FormConfiguration } from '../form/form-models';
 
 @Component({
   providers: [TreeService],
@@ -28,9 +29,12 @@ export class FormTreeComponent implements OnInit, OnDestroy {
   public hidden = false;
 
   private selectedFeature: Feature;
+  private _checkedFeatures: string[] = [];
 
   public treeOpen$: Observable<boolean>;
   public treeClosed$: Observable<boolean>;
+  private features: Feature[];
+  private formConfigs: Map<string, FormConfiguration>;
 
   @Input()
   public set feature (feature: Feature) {
@@ -48,6 +52,14 @@ export class FormTreeComponent implements OnInit, OnDestroy {
 
   @Input()
   public hasCheckboxes = false;
+
+  @Input()
+  public set checkedFeatures(checkedFeatures: string[]) {
+    this._checkedFeatures = checkedFeatures;
+    if (this.transientTreeHelper) {
+      this.rebuildTree();
+    }
+  }
 
   @Input()
   public isBulk = false;
@@ -76,6 +88,9 @@ export class FormTreeComponent implements OnInit, OnDestroy {
       this.treeService,
       true,
       node => {
+        if (this.hasCheckboxes) {
+          return this._checkedFeatures.indexOf(node.metadata.fid) !== -1;
+        }
         return !node.metadata.isFeatureType && this.selectedFeature.fid === node.metadata.fid;
       },
       this.hasCheckboxes,
@@ -99,11 +114,9 @@ export class FormTreeComponent implements OnInit, OnDestroy {
         filter(([ features, formConfigs]) => !!features[0] && features.length > 0 && !!formConfigs),
       )
       .subscribe(([ features, formConfigs]) => {
-        const tree: TreeModel<FormTreeMetadata> [] = FormTreeHelpers.convertFeatureToTreeModel(features, formConfigs);
-        this.transientTreeHelper.createTree(tree);
-        if (this.selectedFeature) {
-          this.transientTreeHelper.selectNode(this.selectedFeature.fid);
-        }
+        this.features = features;
+        this.formConfigs = formConfigs;
+        this.rebuildTree();
       });
 
     this.treeService.checkStateChangedSource$.pipe(takeUntil(this.destroyed)).subscribe( event => {
@@ -136,6 +149,14 @@ export class FormTreeComponent implements OnInit, OnDestroy {
       ? FormActions.setCopyOptionsOpen({ open: true })
       : FormActions.setTreeOpen({treeOpen: true});
     this.store$.dispatch(action);
+  }
+
+  private rebuildTree() {
+    const tree: TreeModel<FormTreeMetadata> [] = FormTreeHelpers.convertFeatureToTreeModel(this.features, this.formConfigs);
+    this.transientTreeHelper.createTree(tree);
+    if (this.selectedFeature) {
+      this.transientTreeHelper.selectNode(this.selectedFeature.fid);
+    }
   }
 
 }

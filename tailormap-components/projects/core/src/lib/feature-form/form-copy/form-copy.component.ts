@@ -36,7 +36,7 @@ export class FormCopyComponent implements OnInit, OnDestroy {
 
   private destroyed = new Subject();
   private currentlySelectedFeatureFeatureType: string;
-  private relatedFeatures = [];
+  public relatedFeatures: string[] = [];
   private allCheckedCache = new Map<string, boolean>();
 
   constructor(
@@ -164,6 +164,10 @@ export class FormCopyComponent implements OnInit, OnDestroy {
   }
 
   public setCopyAllRelatedFeatures() {
+    if (this.isAllRelatedFeaturesSet()) {
+      this.relatedFeatures = [];
+      return;
+    }
     this.relatedFeatures = (this.baseCopyFeature.children || []).map(child => child.fid);
   }
 
@@ -187,7 +191,7 @@ export class FormCopyComponent implements OnInit, OnDestroy {
         }
       }
     });
-    return relatedFeatures;
+    this.relatedFeatures = relatedFeatures;
   }
 
   private createTabs(formConfig: ExtendedFormConfigurationModel): Tab[] {
