@@ -141,11 +141,6 @@
                 <version>${flamingo.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.flamingo-mc</groupId>
-                <artifactId>form</artifactId>
-                <version>${flamingo.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>org.apache.xmlgraphics</groupId>
                 <artifactId>fop</artifactId>
                 <version>2.6</version>
@@ -1003,7 +998,6 @@
         <module>viewer-commons</module>
         <module>viewer-config-persistence</module>
         <module>solr-commons</module>
-        <module>form</module>
         <module>viewer</module>
         <module>viewer-admin</module>
         <module>docker</module>
