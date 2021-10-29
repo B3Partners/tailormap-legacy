@@ -1,10 +1,7 @@
 version: '{build}-({branch})'
 
 skip_tags: true
-skip_commits:
-  files:
-    - 'tailormap-components/**'
-    
+
 clone_folder: C:\projects\flamingo
 clone_depth: 20
 image: Visual Studio 2019

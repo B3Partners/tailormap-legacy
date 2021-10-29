@@ -4,8 +4,7 @@ set -eE
 set _exitCode=0
 
 # van iedere module 1 classfile testen
-for clazz in 'form/target/classes/ nl.b3p.gbi.converter.Formulier' \
-            'solr-commons/target/classes/ nl.b3p.viewer.solr.SolrUpdateJob' \
+for clazz in 'solr-commons/target/classes/ nl.b3p.viewer.solr.SolrUpdateJob' \
             'viewer/target/classes/ nl.b3p.viewer.util.FlamingoCQL' \
             'viewer-admin/target/classes/ nl.b3p.viewer.admin.stripes.ApplicationActionBean' \
             'viewer-audit/target/classes/ nl.b3p.viewer.audit.LoggingServiceFactory' \
