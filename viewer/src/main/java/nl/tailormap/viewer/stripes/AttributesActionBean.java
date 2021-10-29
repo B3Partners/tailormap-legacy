@@ -124,6 +124,8 @@ public class AttributesActionBean extends LocalizableApplicationActionBean imple
     private String filter;
     @Validate
     private boolean clearTotalCountCache=false;
+    @Validate
+    private boolean useSQLFiltering=false;
 
     /**
      * set to {@code false}/{@code 0} to get attributes without alias
@@ -289,6 +291,10 @@ public class AttributesActionBean extends LocalizableApplicationActionBean imple
     public boolean isClearTotalCountCache() { return clearTotalCountCache; }
 
     public void setClearTotalCountCache(boolean clearTotalCountCache) { this.clearTotalCountCache = clearTotalCountCache; }
+
+    public boolean isUseSQLFiltering() { return useSQLFiltering; }
+
+    public void setUseSQLFiltering(boolean useSQLFiltering) { this.useSQLFiltering = useSQLFiltering; }
 
     public List<Long> getAttributesToInclude() {
         return attributesToInclude;
@@ -554,7 +560,7 @@ public class AttributesActionBean extends LocalizableApplicationActionBean imple
 
                 // gebruik SQL query op een Connection als het een JDBCDatastore is
                 // Probleem met CQL filter is is dat er een maxFeatures op gezet moet worden waardoor filters niet betrouwbaar zijn
-                if( fs.getDataStore() instanceof JDBCDataStore) {
+                if( fs.getDataStore() instanceof JDBCDataStore && useSQLFiltering) {
                     log.debug("trying to get features with SQL for JDBCDatastore");
                     json.put("type", "sql");
                     JDBCDataStore da = (JDBCDataStore) fs.getDataStore();

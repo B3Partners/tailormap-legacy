@@ -16,6 +16,7 @@ export interface AttributeListParameters {
   aliases?: boolean; // true (default) get attributes with their aliases instead of names
   includeRelations?: boolean; // true (default) to get filter for related features
   debug?: boolean; // true (default) to get non-gzipped response from WFS services
+  useSQLFiltering?: boolean;
 }
 
 export interface AttributeListResponse {
