@@ -22,12 +22,11 @@ export class ExportService implements ExportServiceModel {
   }
 
   public exportFeatures$(params: ExportFeaturesParameters): Observable<HttpResponse<Blob>> {
-    let httpParams: HttpParams = new HttpParams();
+    const httpParams: FormData = new FormData();
     Object.entries(params).forEach(([key, value ]) => {
-      httpParams = httpParams.set(key, String(value));
+      httpParams.set(key, String(value));
     });
-    return this.http.get(this.tailorMap.getContextPath() + '/action/downloadfeatures', {
-      params: httpParams,
+    return this.http.post(this.tailorMap.getContextPath() + '/action/downloadfeatures', httpParams,{
       responseType: 'blob',
       observe: 'response',
     });
