@@ -881,6 +881,10 @@
                                         <exclude>commons-lang:commons-lang</exclude>
                                     </excludes>
                                 </bannedDependencies>
+                                <reactorModuleConvergence>
+                                    <message>The reactor is not valid</message>
+                                    <ignoreModuleDependencies>false</ignoreModuleDependencies>
+                                </reactorModuleConvergence>
                             </rules>
                         </configuration>
                     </execution>
