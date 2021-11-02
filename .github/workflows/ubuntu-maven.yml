@@ -48,7 +48,7 @@ jobs:
         run: |
           mvn -e clean test -B
           mvn -e verify -B -Pgh-action -pl '!viewer-admin'
-          mvn -e verify -B -Pgh-action -pl 'viewer-admin'
+          mvn -e verify -B -Pgh-action -pl ':tailormap,:viewer-admin'
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v2
       - name: Build javadoc
