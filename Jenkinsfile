@@ -41,7 +41,7 @@ node {
             stage("Docker image build & push") {
                 echo "Create a docker image of the master branch when running on the master node"
                 sh "mvn install -Dmaven.test.skip=true -B -V -e -fae -q"
-                sh "mvn deploy -B -pl :docker -P docker"
+                sh "mvn deploy -B -pl :tailormap,:docker -P docker"
             }
         }
         stage('OWASP Dependency Check') {
