@@ -41,6 +41,7 @@ export class FormComponent implements OnDestroy, OnInit {
   public isBulk: boolean;
   public formsForNew: FormConfiguration[] = [];
   public formDirty: boolean;
+  public formValid: boolean;
 
   private destroyed = new Subject();
   public closeAfterSave = false;
@@ -170,6 +171,10 @@ export class FormComponent implements OnDestroy, OnInit {
 
   public formChanged(result: boolean) {
     this.formDirty = result;
+  }
+
+  public formValidChanged(result: boolean) {
+    this.formValid = result;
   }
 
   public isCreatingNew() {
@@ -307,6 +312,10 @@ export class FormComponent implements OnDestroy, OnInit {
         filter(remove => remove),
       )
       .subscribe(() => callback());
+  }
+
+  public isSaveAllowed() {
+    return this.formDirty && this.formValid;
   }
 
 }

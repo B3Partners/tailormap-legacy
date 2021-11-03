@@ -1,5 +1,5 @@
-import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
-import { AbstractControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
+import { Component, Input, OnInit } from '@angular/core';
+import { AbstractControl, FormGroup } from '@angular/forms';
 import { Attribute, FeatureAttribute, FormFieldType } from '../form/form-models';
 import { FormFieldHelpers } from './form-field-helpers';
 import { FormTreeHelpers } from '../form-tree/form-tree-helpers';
@@ -14,7 +14,7 @@ import { filter, map } from 'rxjs/operators';
   templateUrl: './formfield.component.html',
   styleUrls: ['./formfield.component.css'],
 })
-export class FormfieldComponent implements AfterViewInit, OnInit {
+export class FormfieldComponent implements OnInit {
 
   public humanReadableValue$: Observable<string>;
 
@@ -52,36 +52,22 @@ export class FormfieldComponent implements AfterViewInit, OnInit {
         map(([feature, config]) => {
           return FormTreeHelpers.getFeatureValueForField(feature, config, this.attribute.key);
         }));
-    }
+    this.updateFieldValue();
+  }
 
-  public ngAfterViewInit(): void {
+  private updateFieldValue(): void {
     this.control = this.groep.controls[this.attribute.key];
-    if (this.attribute.isReadOnly && this.control.enabled) {
-      this.control.disable({ emitEvent: false });
-    }
-    if (!this.attribute.isReadOnly && this.control.disabled) {
-      this.control.enable({ emitEvent: false });
-    }
-    const validators: ValidatorFn[] = [];
     if (!this.isBulk) {
-      if (FormFieldHelpers.hasNonValidValue(this.attribute)) {
-        validators.push(FormFieldHelpers.nonExistingValueValidator(this.attribute));
-      } else {
-        const comparableValue = FormFieldHelpers.findSelectedOption(this.attribute.options, this.attribute.value);
-        const value = comparableValue ? comparableValue.val : this.attribute.value;
-        if (value) {
-          this.control.setValue(value, {
-            emitEvent: false,
-            onlySelf: false,
-            emitModelToViewChange: false,
-            emitViewToModelChange: false,
-          });
-        }
+      const comparableValue = FormFieldHelpers.findSelectedOption(this.attribute.options, this.attribute.value);
+      const value = comparableValue ? comparableValue.val : this.attribute.value;
+      if (value) {
+        this.control.setValue(value, {
+          emitEvent: false,
+          onlySelf: false,
+          emitModelToViewChange: false,
+          emitViewToModelChange: false,
+        });
       }
-      if (this.attribute.mandatory) {
-        validators.push(Validators.required);
-      }
-      this.control.setValidators(validators);
     }
   }
 

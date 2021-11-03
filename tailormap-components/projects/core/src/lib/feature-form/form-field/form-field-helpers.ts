@@ -13,16 +13,18 @@ export class FormFieldHelpers {
 
   public static nonExistingValueValidator(attribute: FeatureAttribute): ValidatorFn {
     return (control: AbstractControl): {[key: string]: any} | null => {
-      return FormFieldHelpers.hasNonValidValue(attribute) ? {invalidValue: {value: control.value}} : null;
+      return FormFieldHelpers.hasNonValidValue({ ...attribute, value: control.value }, true)
+        ? { nonExistingValue: { value: control.value }}
+        : null;
     };
   }
 
-  public static hasNonValidValue(attribute: FeatureAttribute): boolean {
+  public static hasNonValidValue(attribute: FeatureAttribute, allowValueFormEmptyOptions?: boolean): boolean {
     if (attribute.type !== FormFieldType.DOMAIN && attribute.type !== FormFieldType.SELECT) {
       return false;
     }
     if (attribute.value && (!attribute.options || attribute.options.length === 0)) {
-      return true;
+      return allowValueFormEmptyOptions ? false : true;
     }
     if (attribute.options && attribute.options?.length !== 0) {
       return !FormFieldHelpers.findSelectedOption(attribute.options, attribute.value);

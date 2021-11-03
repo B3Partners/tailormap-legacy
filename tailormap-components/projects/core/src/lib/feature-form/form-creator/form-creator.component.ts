@@ -54,6 +54,9 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
   @Output()
   public formChanged = new EventEmitter<boolean>();
 
+  @Output()
+  public formValidChanged = new EventEmitter<boolean>();
+
   @Input()
   public formTabs: TabbedField[] = [];
 
@@ -97,7 +100,6 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
     for (const attr of attrs) {
       const featureAttribute = this.indexedAttributes.attrs.get(attr.key);
       let value: string | number | boolean = !this.isBulk && featureAttribute ? featureAttribute.value : null;
-
       if (attr.type === FormFieldType.DOMAIN) {
         this.registry.registerDomainField(attr.linkedList, featureAttribute);
         if (!this.isBulk && featureAttribute.value && featureAttribute.value !== '') {
@@ -119,6 +121,7 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
     this.formgroep.markAllAsTouched();
     this.formgroep.valueChanges.subscribe(() => {
       this.formChanged.emit(true);
+      this.formValidChanged.emit(this.formgroep.valid);
     });
   }
 
