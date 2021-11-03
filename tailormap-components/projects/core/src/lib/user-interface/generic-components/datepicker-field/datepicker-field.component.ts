@@ -49,4 +49,8 @@ export class DatepickerFieldComponent implements OnInit {
     return this.attribute.dateFormat || 'YYYY-MM-DD';
   }
 
+  public isDisabled() {
+    return this.attribute.isReadOnly;
+  }
+
 }
