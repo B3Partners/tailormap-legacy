@@ -15,7 +15,13 @@ export class FormEffects {
   public editFeatures$ = createEffect(() => this.actions$.pipe(
     ofType(ApplicationActions.editFeatures),
     map(action => {
-      return FormActions.setOpenFeatureForm({ features: action.features, closeAfterSave: true, editMode: true });
+      return FormActions.setOpenFeatureForm({
+        features: action.features,
+        closeAfterSave: true,
+        editMode: true,
+        bulkEditFilter: action.bulkEditFilter,
+        bulkEditFeatureTypeName: action.bulkEditFeatureTypeName,
+      });
     }),
   ));
 

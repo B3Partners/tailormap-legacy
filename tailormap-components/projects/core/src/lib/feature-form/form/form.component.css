@@ -30,6 +30,28 @@
   overflow: hidden;
 }
 
+.bulk-edit ::ng-deep .form-field input.ng-invalid,
+.bulk-edit ::ng-deep .form-field .form-button.ng-invalid,
+.bulk-edit ::ng-deep .form-field mat-select.ng-invalid,
+.bulk-edit ::ng-deep .form-field textarea.ng-invalid {
+  border-color: #e1e1e1;
+}
+
+.bulk-edit ::ng-deep .form-field input:hover,
+.bulk-edit ::ng-deep .form-field .form-button:hover,
+.bulk-edit ::ng-deep .form-field mat-select:hover,
+.bulk-edit ::ng-deep .form-field textarea:hover {
+  border-color: #6236ff;
+}
+
+.bulk-edit ::ng-deep .form-field input.ng-invalid:focus,
+.bulk-edit ::ng-deep .form-field .form-button.ng-invalid:focus,
+.bulk-edit ::ng-deep .form-field mat-select.ng-invalid:focus,
+.bulk-edit ::ng-deep .form-field textarea.ng-invalid:focus {
+  border-color: #6236ff;
+  box-shadow: 0 0 6px rgba(98, 54, 255, 0.5);
+}
+
 .drawerbutton {
   width: 50px;
 }

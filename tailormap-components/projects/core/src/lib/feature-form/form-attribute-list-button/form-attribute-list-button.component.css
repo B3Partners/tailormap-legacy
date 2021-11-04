@@ -1,0 +1,9 @@
+.loading-message {
+  display: flex;
+  align-items: center;
+}
+
+.loading-message .message {
+  display: block;
+  margin-left: 12px;
+}

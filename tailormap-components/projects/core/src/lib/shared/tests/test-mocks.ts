@@ -20,9 +20,12 @@ export const createAttributeListServiceMock = () => createSpyObject(AttributeLis
   },
   registerComponent: () => {},
   getRegisteredComponents$: () => {
-    of([]);
+    return of([]);
   },
   setAttributeListVisible: () => {},
+  getSelectedFeatureTypeTotalObjects$: () => {
+    return of([]);
+  },
 });
 
 export const getAttributeListServiceMockMockProvider = () => {
