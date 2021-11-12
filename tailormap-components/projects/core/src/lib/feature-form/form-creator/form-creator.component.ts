@@ -9,7 +9,7 @@ import { FormActionsService } from '../form-actions/form-actions.service';
 import { LinkedAttributeRegistryService } from '../linked-fields/registry/linked-attribute-registry.service';
 import { FormFieldHelpers } from '../form-field/form-field-helpers';
 import { ConfirmDialogService } from '@tailormap/shared';
-import { concatMap, filter, map, take, takeUntil } from 'rxjs/operators';
+import { concatMap, filter, take, takeUntil } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
 import { FormState } from '../state/form.state';
 import * as FormActions from '../state/form.actions';
