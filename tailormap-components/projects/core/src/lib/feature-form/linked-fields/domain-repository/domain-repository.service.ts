@@ -60,6 +60,7 @@ export class DomainRepositoryService implements OnDestroy {
                     id: domeinwaarde.id,
                   });
                 }
+                options.sort((opt1, opt2) => opt1.label === opt2.label ? 0 : (opt1.label > opt2.label ? 1 : -1));
                 field.options = options;
               }
             });

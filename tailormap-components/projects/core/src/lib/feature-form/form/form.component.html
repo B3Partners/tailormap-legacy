@@ -17,6 +17,7 @@
                               [formConfig]="formConfig"
                               [isBulk]="isBulk"
                               [parentId]="currentParentFeature"
+                              (formValidChanged)="formValidChanged($event)"
                               (formChanged)="formChanged($event)"></tailormap-form-creator>
     </div>
   </div>
@@ -52,7 +53,7 @@
     </button>
 
     <button *ngIf="formCreator.editing$ | async"
-            [disabled]="!formDirty && !closeAfterSave"
+            [disabled]="!isSaveAllowed()"
             mat-flat-button
             color="primary"
             (click)="formCreator.beforeSave();">
