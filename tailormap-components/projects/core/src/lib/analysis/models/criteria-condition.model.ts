@@ -3,7 +3,7 @@ import { AttributeTypeEnum } from '../../shared/models/attribute-type.enum';
 export interface CriteriaConditionModel {
   id: string;
   source?: number;
-  relatedTo?: number;
+  relatedTo?: number[];
   attribute?: string;
   attributeType?: AttributeTypeEnum;
   attributeAlias?: string;

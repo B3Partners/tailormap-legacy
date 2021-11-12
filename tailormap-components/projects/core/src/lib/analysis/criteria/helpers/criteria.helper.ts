@@ -9,10 +9,64 @@ import { UserLayerStyleModel } from '../../models/user-layer-style.model';
 import { StyleHelper } from '../../helpers/style.helper';
 import { ScopedUserLayerStyleModel } from '../../models/scoped-user-layer-style.model';
 import { AttributeTypeHelper } from '../../../application/helpers/attribute-type.helper';
-import { AttributeFilterHelper } from '@tailormap/core-components';
+import { AttributeFilterHelper, RelatedFilterHelper } from '@tailormap/core-components';
 import { AttributeFilterModel } from '../../../shared/models/attribute-filter.model';
+import { AttributeMetadataResponseRelation, RelatedFilterDataModel } from '@tailormap/api';
+import { AnalysisSourceModel } from '../../models/analysis-source.model';
+import { AttributeMetadataResponse } from '@tailormap/api';
+import { ExtendedFormConfigurationModel } from '../../../application/models/extended-form-configuration.model';
+
+export interface AttributeSource extends Omit<AnalysisSourceModel, 'geometryType' | 'geometryAttribute'> {
+  relatedTo?: number[];
+}
 
 export class CriteriaHelper {
+
+  public static getAvailableSources(
+    selectedDataSource: AnalysisSourceModel,
+    layerMetadata: AttributeMetadataResponse,
+    formConfigs: Map<string, ExtendedFormConfigurationModel>,
+  ) {
+    if (!layerMetadata) {
+      return [];
+    }
+    const relationSources = CriteriaHelper.getRelationSources(layerMetadata.relations, formConfigs, [ selectedDataSource.featureType ]);
+    return [
+      { featureType: selectedDataSource.featureType, label: selectedDataSource.label },
+      ...relationSources,
+    ];
+  }
+
+  private static getRelationSources(
+    relations: AttributeMetadataResponseRelation[],
+    formConfigs: Map<string, ExtendedFormConfigurationModel>,
+    relatedTo: number[] = [],
+  ) {
+    const relationSources: AttributeSource[] = [];
+    relations.forEach(relation => {
+      const formConfigName = formConfigs.get(relation.foreignFeatureTypeName)?.name;
+      const parentCount = relatedTo.length;
+      const parentIndent = parentCount > 0
+        ? new Array(parentCount * 4).fill('-').join('') + ' '
+        : '';
+      const label = `${parentIndent}${formConfigName ?? relation.foreignFeatureTypeName}`;
+
+      relationSources.push({
+        featureType: relation.foreignFeatureType,
+        label,
+        relatedTo,
+      });
+
+      if ((relation.relations || []).length > 1) {
+        relationSources.push(...CriteriaHelper.getRelationSources(
+          relation.relations || [],
+          formConfigs,
+          [ ...relatedTo, relation.foreignFeatureType ],
+        ));
+      }
+    });
+    return relationSources;
+  }
 
   public static validGroups(criteriaGroups: CriteriaGroupModel[]) {
     return criteriaGroups.every(group => group.criteria.length >= 1 && group.criteria.every(CriteriaHelper.isValidCriteriaCondition));
@@ -87,10 +141,32 @@ export class CriteriaHelper {
       attribute: condition.attribute,
       condition: condition.condition,
       value: condition.value,
-      relatedToFeatureType: condition.relatedTo,
       attributeType: condition.attributeType,
     };
-    return AttributeFilterHelper.convertFilterToQuery(attributeFilterCondition);
+    const filter = AttributeFilterHelper.convertFilterToQuery(attributeFilterCondition);
+    if (condition.relatedTo && condition.relatedTo.length > 0) {
+      return CriteriaHelper.getRelatedFilter(filter, condition);
+    }
+    return filter;
+  }
+
+  private static getRelatedFilter(filter: string, condition: CriteriaConditionModel) {
+    const relatedFilters: RelatedFilterDataModel[] = [];
+    let prevParent;
+    // condition.relatedTo contains an array with parents, starting at the top-most parent
+    condition.relatedTo.forEach(parent => {
+      relatedFilters.push({
+        featureType: parent,
+        parentFeatureType: prevParent,
+      });
+      prevParent = parent;
+    });
+    relatedFilters.push({
+      featureType: condition.source,
+      parentFeatureType: prevParent,
+      filter,
+    });
+    return RelatedFilterHelper.getFilter(condition.relatedTo[0], relatedFilters);
   }
 
 }
