@@ -298,7 +298,7 @@
             <dependency>
                 <groupId>com.google.javascript</groupId>
                 <artifactId>closure-compiler</artifactId>
-                <version>v20211006</version>
+                <version>v20211107</version>
             </dependency>
             <dependency>
                 <groupId>javax.servlet</groupId>
@@ -793,7 +793,7 @@
                 <plugin>
                     <groupId>org.owasp</groupId>
                     <artifactId>dependency-check-maven</artifactId>
-                    <version>6.4.1</version>
+                    <version>6.5.0</version>
                     <configuration>
                         <skipSystemScope>true</skipSystemScope>
                         <format>ALL</format>
@@ -833,7 +833,7 @@
                 <plugin>
                     <groupId>io.fabric8</groupId>
                     <artifactId>docker-maven-plugin</artifactId>
-                    <version>0.37.0</version>
+                    <version>0.38.0</version>
                 </plugin>
             </plugins>
         </pluginManagement>
