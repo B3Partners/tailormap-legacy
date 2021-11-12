@@ -254,7 +254,7 @@ export class FormComponent implements OnDestroy, OnInit {
             ...this.feature.attributes.slice(geomFieldIndex + 1),
           ],
         };
-        this.actions.save$(false, [ this.feature ]).subscribe(savedFeature => {
+        this.actions.save$(this.feature).subscribe(savedFeature => {
           this.tailormapService.getViewerController().mapComponent.getMap().update();
           this.store$.dispatch(FormActions.setFeature({ feature: savedFeature }));
         });
