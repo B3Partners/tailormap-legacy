@@ -48,8 +48,7 @@ public class TileServiceTest extends TestUtil{
     private TileService instance = new TileService();
 
     private static final String PDOK_WMTS = "http://geodata.nationaalgeoregister.nl/tiles/service/wmts?request=getcapabilities";
-    private static final int PDOK_WMTS_LAYERCOUNT = 41;
-
+    private static final int PDOK_WMTS_LAYERCOUNT = 37;
     DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
     DocumentBuilder builder = null;
     XPathFactory xPathfactory = XPathFactory.newInstance();
