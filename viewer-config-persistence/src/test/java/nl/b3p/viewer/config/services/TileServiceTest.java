@@ -20,6 +20,7 @@ import nl.b3p.viewer.util.TestUtil;
 import nl.b3p.web.WaitPageStatus;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.xml.sax.SAXException;
 
@@ -36,8 +37,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.*;
-import org.junit.Ignore;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  *
@@ -45,12 +48,12 @@ import org.junit.Ignore;
  */
 public class TileServiceTest extends TestUtil{
     
-    private TileService instance = new TileService();
+    private final TileService instance = new TileService();
 
     private static final String PDOK_WMTS = "http://geodata.nationaalgeoregister.nl/tiles/service/wmts?request=getcapabilities";
     private static final int PDOK_WMTS_LAYERCOUNT = 37;
     DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-    DocumentBuilder builder = null;
+    DocumentBuilder builder;
     XPathFactory xPathfactory = XPathFactory.newInstance();
     XPath xpath = xPathfactory.newXPath();
         
@@ -65,7 +68,7 @@ public class TileServiceTest extends TestUtil{
     @Test
     public void testLoadFromUrl() {
         String url = "http://www.openbasiskaart.nl/mapcache/tms/1.0.0/osm-nb@rd";
-        Map params = new HashMap();
+        Map<String, Object> params = new HashMap<>();
         params.put(TileService.PARAM_SERVICENAME, "osm");
         params.put(TileService.PARAM_RESOLUTIONS, "1,2,4");
         params.put(TileService.PARAM_SERVICEBBOX, "16,32,18,34");
@@ -99,10 +102,10 @@ public class TileServiceTest extends TestUtil{
 
     
     @Test
-    public void testLoadBRTWMTSFromURL() throws MalformedURLException {
+    public void testLoadTopLayerChildWMTSFromURL() throws Exception {
         URL u = new URL(PDOK_WMTS);
         String url = u.toString();
-        Map params = new HashMap();
+        Map<String, Object> params = new HashMap<>();
         params.put(TileService.PARAM_TILINGPROTOCOL, "WMTS");
         params.put(TileService.PARAM_SERVICENAME, "Web Map Tile Service - GeoWebCache");
         WaitPageStatus status = new WaitPageStatus();
@@ -111,9 +114,9 @@ public class TileServiceTest extends TestUtil{
         assertEquals("https://geodata.nationaalgeoregister.nl/tiles/service/wmts?",result.getUrl());
         Layer topLayer = result.getTopLayer();
         assertEquals(PDOK_WMTS_LAYERCOUNT, topLayer.getChildren().size());
-        
-        Layer brt = topLayer.getChildren().get(0);
-        assertEquals("brtachtergrondkaart", brt.getName());
+
+        Layer brt = topLayer.getChildren().get(1);
+        assertEquals("natura2000", brt.getName());
         JSONArray styles = new JSONArray(brt.getDetails().get(Layer.DETAIL_WMS_STYLES).getValue());
         JSONObject style = (JSONObject)styles.get(0);
         assertEquals("",  style.getString("identifier"));
@@ -134,7 +137,7 @@ public class TileServiceTest extends TestUtil{
         assertEquals(15, matrices.length());
         assertTrue(serviceObj.has("layers"));
         JSONObject layers = serviceObj.getJSONObject("layers");
-        JSONObject jsonLayer = layers.getJSONObject("brtachtergrondkaart");
+        JSONObject jsonLayer = layers.getJSONObject("natura2000");
         assertNotNull(jsonLayer);
         assertTrue(jsonLayer.has("bbox"));
     }
@@ -143,7 +146,7 @@ public class TileServiceTest extends TestUtil{
     public void testLoadArcGisWMTSFromURL() throws MalformedURLException {
         URL u = new URL("https://tiles.arcgis.com/tiles/nSZVuSZjHpEZZbRo/arcgis/rest/services/Historische_tijdreis_1950/MapServer/WMTS?request=getcapabilities");
         String url = u.toString();
-        Map params = new HashMap();
+        Map<String, Object> params = new HashMap<>();
         params.put(TileService.PARAM_TILINGPROTOCOL, "WMTS");
         
         WaitPageStatus status = new WaitPageStatus();
@@ -181,10 +184,10 @@ public class TileServiceTest extends TestUtil{
     }
     
     @Test
-    public void testLoadTopoWMTSFromURL() throws MalformedURLException {
+    public void testLoadTopLayerWMTSFromURL() throws Exception {
         URL u = new URL(PDOK_WMTS);
         String url = u.toString();
-        Map params = new HashMap();
+        Map<String, Object> params = new HashMap<>();
         params.put(TileService.PARAM_TILINGPROTOCOL, "WMTS");
         params.put(TileService.PARAM_SERVICENAME, "Web Map Tile Service - GeoWebCache");
         WaitPageStatus status = new WaitPageStatus();
@@ -195,7 +198,7 @@ public class TileServiceTest extends TestUtil{
         assertEquals("https://geodata.nationaalgeoregister.nl/tiles/service/wmts?", result.getUrl());
         
         Layer brt = topLayer.getChildren().get(0);
-        assertEquals("brtachtergrondkaart", brt.getName());
+        assertEquals("top10nlv2", brt.getName());
         assertEquals(1, brt.getBoundingBoxes().size());
 
         BoundingBox bbox = brt.getMatrixSets().get(0).getBbox();
@@ -213,7 +216,7 @@ public class TileServiceTest extends TestUtil{
         assertEquals(15, matrices.length());
         assertTrue(serviceObj.has("layers"));
         JSONObject layers = serviceObj.getJSONObject("layers");
-        JSONObject jsonLayer = layers.getJSONObject("brtachtergrondkaart");
+        JSONObject jsonLayer = layers.getJSONObject("top10nlv2");
         assertNotNull(jsonLayer);
         assertTrue(jsonLayer.has("bbox"));
 
@@ -224,7 +227,7 @@ public class TileServiceTest extends TestUtil{
     public void testLoadLufoWMTSFromURL() throws MalformedURLException {
         URL u = new URL("http://webservices.gbo-provincies.nl/lufo/services/wmts?request=GetCapabilities");
         String url = u.toString();
-        Map params = new HashMap();
+        Map<String, Object> params = new HashMap<>();
         params.put(TileService.PARAM_TILINGPROTOCOL, "WMTS");
         params.put(TileService.PARAM_SERVICENAME, "luchtfoto");
         WaitPageStatus status = new WaitPageStatus();
@@ -258,8 +261,8 @@ public class TileServiceTest extends TestUtil{
         assertTrue(jsonLayer.has("bbox"));
     }
 
-    private void compareWMTS(GeoService result, String url){
-            
+    private void compareWMTS(GeoService result) {
+
         assertEquals("tiled", result.getProtocol());
         assertEquals("http://localhost:8084/geoserver/gwc/service/wmts?", result.getUrl());
         
@@ -295,14 +298,15 @@ public class TileServiceTest extends TestUtil{
         JSONObject layers = serviceObj.getJSONObject("layers");
         JSONObject jsonLayer = layers.getJSONObject("test:gemeente");
         assertNotNull(jsonLayer);
-        assertTrue(!jsonLayer.has("bbox"));
+        assertFalse(jsonLayer.has("bbox"));
     }
     
     @Test
     public void testParseMultipleTileMatrixSets() throws ParserConfigurationException, SAXException, IOException, XPathExpressionException{
         
         URL u = TileServiceTest.class.getResource("singleLayer.xml");
-        String url = u.toString();        
+        assert u != null;
+        String url = u.toString();
         org.w3c.dom.Document doc = builder.parse(url);
         
         List<TileMatrixSet> sets = instance.parseMatrixSets(xpath, doc);
@@ -314,6 +318,7 @@ public class TileServiceTest extends TestUtil{
     public void testParseTileMatrixSet() throws ParserConfigurationException, SAXException, IOException, XPathExpressionException{
         
         URL u = TileServiceTest.class.getResource("tilematrixset.xml");
+        assert u != null;
         String url = u.toString();
         org.w3c.dom.Document doc = builder.parse(url);
         
@@ -325,7 +330,7 @@ public class TileServiceTest extends TestUtil{
         assertNotNull(tms.getBbox());
         assertEquals("urn:ogc:def:crs:EPSG::4326", tms.getBbox().getCrs().getName());
         assertEquals(-180.0, tms.getBbox().getMaxy(),0.01);
-        assertEquals(new Double(90), tms.getBbox().getMinx(),0.01);
+        assertEquals(90.0, tms.getBbox().getMinx(),0.01);
         assertEquals(-20037688.34, tms.getBbox().getMiny(),0.01);
         assertEquals(40075106.68, tms.getBbox().getMaxx(),0.01);
         
