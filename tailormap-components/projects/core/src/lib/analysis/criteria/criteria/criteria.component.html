@@ -20,6 +20,7 @@
   <tailormap-attribute-filter class="attribute-filter"
                               [attributeType]="formData.attributeType"
                               [filter]="this.attributeFilter"
+                              [uniqueValues$]="uniqueValues$"
                               (filterChanged)="updateAttributeFilter($event)"></tailormap-attribute-filter>
 
   <div class="form-field centered" *ngIf="showRemoveLink">

@@ -94,7 +94,7 @@ export class CriteriaDescriptionComponent {
   }
 
   private static convertCondition(condition: string) {
-    return AttributeFilterHelper.getConditionTypes().find(c => c.condition === condition).readableLabel;
+    return AttributeFilterHelper.getConditionTypes(true).find(c => c.condition === condition).readableLabel;
   }
 
   private updateTotalCount(selectedDataSource: AnalysisSourceModel, criteria: CriteriaModel) {

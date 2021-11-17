@@ -3,8 +3,8 @@ import { FormBuilder } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { AnalysisState } from '../../state/analysis.state';
 import { selectSelectedDataSource } from '../../state/analysis.selectors';
-import { concatMap, debounceTime, filter, take, takeUntil } from 'rxjs/operators';
-import { forkJoin, of, Subject } from 'rxjs';
+import { concatMap, debounceTime, filter, map, take, takeUntil } from 'rxjs/operators';
+import { forkJoin, Observable, of, Subject } from 'rxjs';
 import { MetadataService } from '../../../application/services/metadata.service';
 import { AttributeMetadataResponse } from '../../../shared/attribute-service/attribute-models';
 import { AnalysisSourceModel } from '../../models/analysis-source.model';
@@ -48,6 +48,7 @@ export class CriteriaComponent implements OnInit, OnDestroy {
   public updatedAttributeFilter: { condition?: string; value?: string[] } = {};
 
   public selectedDataSource: AnalysisSourceModel;
+  public uniqueValues$: Observable<string[]>;
 
   constructor(
     private fb: FormBuilder,
@@ -136,6 +137,7 @@ export class CriteriaComponent implements OnInit, OnDestroy {
 
     this.updatedAttributeFilter = { ...this.attributeFilter };
 
+    this.updateUniqueValuesLoader();
   }
 
   public updateAttributeFilter(attributeFilter: { condition: string; value: string[] }) {
@@ -163,7 +165,26 @@ export class CriteriaComponent implements OnInit, OnDestroy {
       attributeType: $event.attributeType,
       attributeAlias: $event.attribute.alias,
     };
+    this.updateUniqueValuesLoader();
     this.emitChanges();
+  }
+
+  private updateUniqueValuesLoader() {
+    if (!this.selectedDataSource || !this.selectedDataSource.layerId || !this.formData.attribute || !this.formData.source) {
+      return;
+    }
+    this.uniqueValues$ = this.metadataService.getUniqueValuesForAttribute$(
+      `${this.selectedDataSource.layerId}`,
+      this.formData.attribute,
+      this.formData.source,
+    ).pipe(
+      map(response => {
+        if (response.success) {
+          return response.uniqueValues[this.formData.attribute];
+        }
+        return [];
+      }),
+    );
   }
 
 }
