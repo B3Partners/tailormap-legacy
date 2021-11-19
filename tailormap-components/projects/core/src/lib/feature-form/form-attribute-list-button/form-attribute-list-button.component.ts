@@ -1,5 +1,5 @@
-import { Component, OnDestroy } from '@angular/core';
-import { AttributeListService } from '@tailormap/core-components';
+import { Component, Inject, OnDestroy, TemplateRef, ViewChild } from '@angular/core';
+import { AttributeListRowModel, AttributeListService } from '@tailormap/core-components';
 import { TailorMapService } from '../../../../../bridge/src/tailor-map.service';
 import { Feature, FeatureControllerService } from '../../shared/generated';
 import { concatMap, map, take, takeUntil } from 'rxjs/operators';
@@ -7,6 +7,8 @@ import { combineLatest, forkJoin, Observable, of, Subject } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { editFeatures } from '../../application/state/application.actions';
 import { FeatureSelectionHelper } from '../../shared/feature-selection/feature-selection.helper';
+import { APPLICATION_SERVICE, ApplicationServiceModel, ExtendedFormConfigurationModel } from '@tailormap/api';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'tailormap-form-attribute-list-button',
@@ -15,7 +17,11 @@ import { FeatureSelectionHelper } from '../../shared/feature-selection/feature-s
 })
 export class FormAttributeListButtonComponent implements OnDestroy {
 
-  public canOpenForm: boolean;
+  @ViewChild('loadingMessage', { read: TemplateRef, static: true })
+  private loadingMessage: TemplateRef<any>;
+
+  public checkedRowCount: number;
+  public totalCount: number | null;
 
   private destroyed = new Subject();
 
@@ -24,6 +30,8 @@ export class FormAttributeListButtonComponent implements OnDestroy {
     private attributeListService: AttributeListService,
     private featureControllerService: FeatureControllerService,
     private store$: Store,
+    @Inject(APPLICATION_SERVICE) private applicationService: ApplicationServiceModel,
+    private snackBar: MatSnackBar,
   ) {
     this.attributeListService.getCheckedRows$()
       .pipe(
@@ -31,7 +39,14 @@ export class FormAttributeListButtonComponent implements OnDestroy {
         map(rows => rows.length),
       )
       .subscribe(rowCount => {
-        this.canOpenForm = rowCount > 0;
+        this.checkedRowCount = rowCount;
+      });
+    this.attributeListService.getSelectedFeatureTypeTotalObjects$()
+      .pipe(
+        takeUntil(this.destroyed),
+      )
+      .subscribe(totalCount => {
+        this.totalCount = totalCount;
       });
   }
 
@@ -44,7 +59,8 @@ export class FormAttributeListButtonComponent implements OnDestroy {
     this.destroyed.complete();
   }
 
-  public openPassportForm(): void {
+  public openCheckedFeaturesPassportForm(): void {
+    const ref = this.snackBar.openFromTemplate(this.loadingMessage);
     this.getCheckedRowsAsFeatures$()
       .pipe(
         take(1),
@@ -54,14 +70,62 @@ export class FormAttributeListButtonComponent implements OnDestroy {
           return;
         }
         this.store$.dispatch(editFeatures({ features, layerId }));
+        ref.dismiss();
+      });
+  }
+
+  public openBulkEditPassportForm(): void {
+    const observables$: [ Observable<string | null>, Observable<string>, Observable<string>, Observable<Map<string, ExtendedFormConfigurationModel>> ] = [
+      this.attributeListService.getSelectedFeatureTypeName$(),
+      this.attributeListService.getSelectedLayerId$(),
+      this.attributeListService.getSelectedFeatureTypeFilter$(),
+      this.applicationService.getFormConfigs$(),
+    ];
+    combineLatest(observables$)
+      .pipe(
+        take(1),
+      )
+      .subscribe(([ featureTypeName, layerId, filter, formConfigs ]) => {
+        if (!featureTypeName || filter === null) {
+          return;
+        }
+        const appLayer = this.tailorMapService.getApplayerById(+(layerId));
+        const tableName = appLayer.featureTypeName === featureTypeName && appLayer.userlayer
+          ? appLayer.userlayer_original_feature_type_name
+          : featureTypeName;
+        const config = formConfigs.get(tableName);
+        if (!config) {
+          this.snackBar.open('Er is geen formulier beschikbaar voor deze objecten', 'Ok', { duration: 3000 });
+          return;
+        }
+        // Create a dummy feature to show in the tree (name = config.name + count)
+        const bulkEditFeature: Feature = {
+          tableName,
+          layerName: appLayer.layerName,
+          relatedFeatureTypes: [],
+          attributes: [
+            {
+              type: 'string',
+              key: config.treeNodeColumn,
+              value: `${config.name} (${this.totalCount})`,
+            },
+          ],
+        };
+        this.store$.dispatch(editFeatures({
+          features: [ bulkEditFeature ],
+          layerId,
+          bulkEditFeatureTypeName: featureTypeName,
+          bulkEditFilter: filter,
+        }));
       });
   }
 
   private getCheckedRowsAsFeatures$(): Observable<[ string, Feature[] ]> {
-    return combineLatest([
+    const observables$: [ Observable<AttributeListRowModel[]>, Observable<string> ] = [
       this.attributeListService.getCheckedRows$(),
       this.attributeListService.getSelectedLayerId$(),
-    ])
+    ];
+    return combineLatest(observables$)
       .pipe(
         take(1),
         concatMap(([ rows, layerId ]) => {
@@ -76,7 +140,18 @@ export class FormAttributeListButtonComponent implements OnDestroy {
               featureType: appLayer.featureTypeName,
               featureIds: rows.map(row => `${row.__fid}`),
             }).pipe(
-              map(features => FeatureSelectionHelper.getUniqueFeatures(features)),
+              map(features => {
+                const uniqueFeatures = FeatureSelectionHelper.getUniqueFeatures(features);
+                if (uniqueFeatures.length === 1) {
+                  return uniqueFeatures;
+                }
+                // For bulk edit we don't want the relations to show up in the tree since it's not possible to open/edit them
+                return uniqueFeatures.map<Feature>(feature => ({
+                  ...feature,
+                  children: [],
+                  relatedFeatureTypes: [],
+                }));
+              }),
             ),
           ]);
         }),

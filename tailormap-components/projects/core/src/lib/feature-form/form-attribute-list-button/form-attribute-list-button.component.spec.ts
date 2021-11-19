@@ -4,6 +4,8 @@ import { getTailorMapServiceMockProvider } from '../../../../../bridge/src/tailo
 import { provideMockStore } from '@ngrx/store/testing';
 import { getAttributeListServiceMockMockProvider } from '../../shared/tests/test-mocks';
 import { SharedModule } from '@tailormap/shared';
+import { APPLICATION_SERVICE } from '@tailormap/api';
+import { createApplicationServiceMock } from '../../application/services/mocks/application.service.mock';
 
 describe('FormAttributeListButtonComponent', () => {
 
@@ -15,6 +17,7 @@ describe('FormAttributeListButtonComponent', () => {
       provideMockStore(),
       getTailorMapServiceMockProvider(),
       getAttributeListServiceMockMockProvider(),
+      { provide: APPLICATION_SERVICE, useValue: createApplicationServiceMock() },
     ],
   });
 

@@ -1,3 +1,13 @@
-<div matTooltip="Selecteer één of meerdere objecten" [matTooltipDisabled]="canOpenForm">
-  <button mat-menu-item [disabled]="!canOpenForm" (click)="openPassportForm()">Bewerk geselecteerde objecten</button>
+<div matTooltip="Selecteer één of meerdere objecten" [matTooltipDisabled]="checkedRowCount > 1">
+  <button mat-menu-item [disabled]="checkedRowCount === 0" (click)="openCheckedFeaturesPassportForm()">Bewerk geselecteerde objecten ({{checkedRowCount}})</button>
 </div>
+<div matTooltip="Er zijn geen objecten om te bewerken" [matTooltipDisabled]="!!totalCount">
+  <button mat-menu-item [disabled]="!totalCount" (click)="openBulkEditPassportForm()">Bewerk alle objecten ({{totalCount}})</button>
+</div>
+
+<ng-template #loadingMessage>
+  <div class="loading-message">
+    <mat-spinner diameter="20"></mat-spinner>
+    <div class="message">Bezig met ophalen van objecten om te kunnen bewerken</div>
+  </div>
+</ng-template>

@@ -17,6 +17,8 @@ export interface FormState {
   treeVisible: boolean;
   editing: boolean;
   multiFormWorkflow: boolean;
+  bulkEditFilter?: string;
+  bulkEditFeatureTypeName?: string;
 
   copyFeature: Feature;
   copyDestinationFeatures: Feature[];

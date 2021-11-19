@@ -9,16 +9,17 @@ import { FormActionsService } from '../form-actions/form-actions.service';
 import { LinkedAttributeRegistryService } from '../linked-fields/registry/linked-attribute-registry.service';
 import { FormFieldHelpers } from '../form-field/form-field-helpers';
 import { ConfirmDialogService } from '@tailormap/shared';
-import { filter, take, takeUntil } from 'rxjs/operators';
+import { concatMap, filter, take, takeUntil } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
 import { FormState } from '../state/form.state';
 import * as FormActions from '../state/form.actions';
 import { WorkflowState } from '../../workflow/state/workflow.state';
-import { selectFormEditing } from '../state/form.selectors';
+import { selectBulkEditDetails, selectFormEditing } from '../state/form.selectors';
 import { selectLayerIdForEditingFeatures } from '../../application/state/application.selectors';
 import { editFeaturesComplete } from '../../application/state/application.actions';
 import { FeatureInitializerService } from '../../shared/feature-initializer/feature-initializer.service';
 import { FeatureUpdateHelper } from '../../shared/feature-initializer/feature-update.helper';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'tailormap-form-creator',
@@ -149,29 +150,61 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
   }
 
   public save() {
-    this.mergeFormToFeature();
     const isNewFeature = this.feature.fid === FeatureInitializerService.STUB_OBJECT_GUID_NEW_OBJECT;
-    this.actions.save$(this.isBulk, this.isBulk ? this.features : [ this.feature ], this.parentId).subscribe(savedFeature => {
-      if (isNewFeature) {
-        this.store$.dispatch(FormActions.setFeatureRemoved({ feature: this.feature, keepFormOpen: true }));
-      }
-      this.store$.dispatch(FormActions.setNewFeature({ newFeature: savedFeature, parentId: this.parentId }));
-      this._snackBar.open('Opgeslagen', '', {duration: 5000});
-    },
-    error => {
-      const errorMsg = error?.error?.message;
-      this._snackBar.open(`Fout: Feature niet kunnen opslaan${errorMsg ? ': ' + errorMsg : ''}`, '', {
-        duration: 5000,
+    this.store$.select(selectBulkEditDetails)
+      .pipe(
+        take(1),
+        concatMap((bulkEditDetails: [ string, string ] | null) => {
+          if (bulkEditDetails !== null) {
+            // call bulk edit end-point
+            const bulkEditFilter = bulkEditDetails[0];
+            const bulkEditFeatureTypeName = bulkEditDetails[1];
+            const updatedFields = this.getUpdatedFields();
+            console.log('Bulk edit - filter: ', bulkEditFilter, ' - feature type - ', bulkEditFeatureTypeName, ' - updated fields - ', updatedFields);
+            throw new HttpErrorResponse({ error: { message: 'Bulk edit endpoint missing' }});
+          }
+          this.mergeFormToFeature();
+          return this.actions.save$(this.isBulk, this.isBulk ? this.features : [ this.feature ], this.parentId);
+        }),
+      )
+      .subscribe({
+        next: (savedFeature) => this.handleSaveSuccess(isNewFeature, savedFeature),
+        error: error => this.showSaveError(error),
+        complete: () => this.handleSaveComplete(),
       });
-    },
-    () => {
-      this.store$.select(selectLayerIdForEditingFeatures)
-        .pipe(take(1), filter(layerId => layerId !== null))
-        .subscribe(layerId => this.store$.dispatch(editFeaturesComplete({ layerId })));
+  }
+
+  private handleSaveSuccess(isNewFeature: boolean, savedFeature: Feature) {
+    if (isNewFeature) {
+      this.store$.dispatch(FormActions.setFeatureRemoved({ feature: this.feature, keepFormOpen: true }));
+    }
+    this.store$.dispatch(FormActions.setNewFeature({ newFeature: savedFeature, parentId: this.parentId }));
+    this._snackBar.open('Opgeslagen', '', {duration: 5000});
+  }
+
+  private showSaveError(error: HttpErrorResponse) {
+    const errorMsg = error?.error?.message;
+    this._snackBar.open(`Fout: Feature niet kunnen opslaan${errorMsg ? ': ' + errorMsg : ''}`, '', {
+      duration: 5000,
     });
   }
 
+  private handleSaveComplete() {
+    this.store$.select(selectLayerIdForEditingFeatures)
+      .pipe(take(1), filter(layerId => layerId !== null))
+      .subscribe(layerId => this.store$.dispatch(editFeaturesComplete({ layerId })));
+  }
+
   private mergeFormToFeature() {
+    const updatedFields = this.getUpdatedFields();
+    if (!this.isBulk) {
+      this.feature = FeatureUpdateHelper.updateFeatureAttributes(this.feature, updatedFields);
+    } else {
+      this.features = this.features.map(feature => FeatureUpdateHelper.updateFeatureAttributes(feature, updatedFields));
+    }
+  }
+
+  private getUpdatedFields() {
     const updatedFields: Record<string, any> = {};
     Object.keys(this.formgroep.controls).forEach(key => {
       const control = this.formgroep.get(key);
@@ -180,11 +213,7 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
       }
       updatedFields[key] = typeof control.value === 'undefined' ? '' : control.value;
     });
-    if (!this.isBulk) {
-      this.feature = FeatureUpdateHelper.updateFeatureAttributes(this.feature, updatedFields);
-    } else {
-      this.features = this.features.map(feature => FeatureUpdateHelper.updateFeatureAttributes(feature, updatedFields));
-    }
+    return updatedFields;
   }
 
 }
