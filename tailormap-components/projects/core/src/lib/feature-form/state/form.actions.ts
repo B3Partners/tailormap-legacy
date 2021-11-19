@@ -11,7 +11,15 @@ export const setTreeOpen = createAction(
 
 export const setOpenFeatureForm = createAction(
   `${formActionsPrefix} Open feature form`,
-  props<{ features: Feature[]; closeAfterSave?: boolean; alreadyDirty?: boolean; editMode?: boolean; multiFormWorkflow?: boolean }>(),
+  props<{
+    features: Feature[];
+    closeAfterSave?: boolean;
+    alreadyDirty?: boolean;
+    editMode?: boolean;
+    multiFormWorkflow?: boolean;
+    bulkEditFilter?: string;
+    bulkEditFeatureTypeName?: string;
+  }>(),
 );
 
 export const setCloseFeatureForm = createAction(
