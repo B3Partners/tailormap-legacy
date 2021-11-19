@@ -11,6 +11,8 @@ const onCloseFeatureForm = (state: FormState): FormState => ({
   formVisible: false,
   treeVisible: false,
   multiFormWorkflow: false,
+  bulkEditFilter: undefined,
+  bulkEditFeatureTypeName: undefined,
 });
 
 const onSetHideFeatureForm = (state: FormState, payload: ReturnType<typeof FormActions.toggleFeatureFormVisibility>): FormState => ({
@@ -41,6 +43,8 @@ const onSetOpenFeatureForm = (state: FormState, payload: ReturnType<typeof FormA
   alreadyDirty: typeof payload.alreadyDirty !== 'undefined' ? payload.alreadyDirty : false,
   editing: typeof payload.editMode !== 'undefined' ? payload.editMode : false,
   multiFormWorkflow: typeof payload.multiFormWorkflow !== 'undefined' ? payload.multiFormWorkflow : false,
+  bulkEditFilter: payload.bulkEditFilter,
+  bulkEditFeatureTypeName: payload.bulkEditFeatureTypeName,
 });
 
 const onSetTreeOpen = (state: FormState, payload: ReturnType<typeof FormActions.setTreeOpen>): FormState => ({

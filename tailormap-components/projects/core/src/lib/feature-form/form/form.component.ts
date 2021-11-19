@@ -12,7 +12,7 @@ import * as FormActions from '../state/form.actions';
 import { toggleFeatureFormVisibility } from '../state/form.actions';
 import * as WorkflowActions from '../../workflow/state/workflow.actions';
 import {
-  selectCloseAfterSaveFeatureForm, selectCurrentFeature, selectFeatures, selectFormAlreadyDirty, selectFormEditing, selectFormVisible,
+  selectCurrentFeature, selectFeatures, selectFormAlreadyDirty, selectFormEditing, selectFormVisible, selectInBulkEditMode,
   selectIsMultiFormWorkflow,
 } from '../state/form.selectors';
 import { WORKFLOW_ACTION } from '../../workflow/state/workflow-models';
@@ -44,7 +44,6 @@ export class FormComponent implements OnDestroy, OnInit {
   public formValid: boolean;
 
   private destroyed = new Subject();
-  public closeAfterSave = false;
 
   public isHidden$: Observable<boolean>;
   public editing$: Observable<boolean>;
@@ -75,14 +74,14 @@ export class FormComponent implements OnDestroy, OnInit {
         switchMap(([ feature, features ]) => combineLatest([
           of(feature),
           of(features),
-          this.store$.select(selectCloseAfterSaveFeatureForm),
+          this.store$.select(selectInBulkEditMode),
           this.store$.select(selectFormAlreadyDirty),
           this.store$.select(selectFormConfigForFeatureTypeName, feature.tableName),
           this.store$.select(selectFormConfigs),
         ])),
       )
-      .subscribe(([ feature, features, closeAfterSave, formAlreadyDirty, formConfig, allFormConfigs ]) => {
-        this.initForm(feature, features, closeAfterSave, formAlreadyDirty, formConfig, allFormConfigs);
+      .subscribe(([ feature, features, isBulkEdit, formAlreadyDirty, formConfig, allFormConfigs ]) => {
+        this.initForm(feature, features, isBulkEdit, formAlreadyDirty, formConfig, allFormConfigs);
       });
 
     this.isHidden$ = this.store$.select(selectFormVisible).pipe(map(visible => !visible));
@@ -93,7 +92,7 @@ export class FormComponent implements OnDestroy, OnInit {
   private initForm(
     feature: Feature,
     features: Feature[],
-    closeAfterSave: boolean,
+    isBulkEdit: boolean,
     formAlreadyDirty: boolean,
     formConfig: FormConfiguration,
     allFormConfigs: Map<string, ExtendedFormConfigurationModel>,
@@ -106,8 +105,7 @@ export class FormComponent implements OnDestroy, OnInit {
     this.formDirty = !!formAlreadyDirty;
     this.formConfig = formConfig;
     this.features = [...features];
-    this.isBulk = features.length > 1;
-    this.closeAfterSave = closeAfterSave;
+    this.isBulk = isBulkEdit;
     this.formsForNew = (feature.relations || [])
       .filter(relation => allFormConfigs.has(relation.foreignFeatureTypeName))
       .map(relation => allFormConfigs.get(relation.foreignFeatureTypeName));
@@ -270,7 +268,7 @@ export class FormComponent implements OnDestroy, OnInit {
   public cancelForm() {
     this.confirm(() => {
       const isNewlyCreatedFeature = this.features.length === 1 && (this.features[0].children || []).length === 0;
-      if (this.isCreatingNew() && isNewlyCreatedFeature) {
+      if ((this.isCreatingNew() && isNewlyCreatedFeature) || this.isBulk) {
         this.store$.dispatch(FormActions.setCloseFeatureForm());
         return;
       }
@@ -315,7 +313,7 @@ export class FormComponent implements OnDestroy, OnInit {
   }
 
   public isSaveAllowed() {
-    return this.formDirty && this.formValid;
+    return this.formDirty && (this.isBulk || this.formValid);
   }
 
 }
