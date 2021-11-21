@@ -51,7 +51,7 @@
     "@ngrx/effects": "^12.3.0",
     "@ngrx/store": "^12.3.0",
     "@ngrx/store-devtools": "^12.3.0",
-    "@tailormap/core-components": "0.0.30",
+    "@tailormap/core-components": "0.0.31",
     "@tailormap/api": "0.0.12",
     "@tailormap/shared": "0.0.23",
     "@types/wellknown": "^0.5.1",

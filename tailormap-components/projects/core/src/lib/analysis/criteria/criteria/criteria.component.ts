@@ -14,8 +14,7 @@ import { ExtendedAttributeModel } from '../../../application/models/extended-att
 import { METADATA_SERVICE } from '@tailormap/api';
 import { selectFormConfigs } from '../../../application/state/application.selectors';
 import { ExtendedFormConfigurationModel } from '../../../application/models/extended-form-configuration.model';
-
-type AttributeSource = Omit<AnalysisSourceModel, 'geometryType' | 'geometryAttribute'>;
+import { AttributeSource, CriteriaHelper } from '../helpers/criteria.helper';
 
 @Component({
   selector: 'tailormap-criteria',
@@ -67,14 +66,10 @@ export class CriteriaComponent implements OnInit, OnDestroy {
         if (!source) {
           return;
         }
-        let relatedTo: number;
-        if (source.featureType !== this.selectedDataSource.featureType) {
-          relatedTo = this.selectedDataSource.featureType;
-        }
         this.formData = {
           ...this.formData,
           source: source.featureType,
-          relatedTo,
+          relatedTo: source.relatedTo,
         };
         this.emitChanges();
       });
@@ -108,17 +103,7 @@ export class CriteriaComponent implements OnInit, OnDestroy {
     layerMetadata: AttributeMetadataResponse,
     formConfigs: Map<string, ExtendedFormConfigurationModel>,
   ) {
-    if (!layerMetadata) {
-      return;
-    }
-    const relationSources = layerMetadata.relations.map<AttributeSource>(relation => ({
-      featureType: relation.foreignFeatureType,
-      label: `${formConfigs.get(relation.foreignFeatureTypeName)?.name ?? relation.foreignFeatureTypeName}`,
-    }));
-    this.availableSources = [
-      {featureType: selectedDataSource.featureType, label: selectedDataSource.label},
-      ...relationSources,
-    ];
+    this.availableSources = CriteriaHelper.getAvailableSources(selectedDataSource, layerMetadata, formConfigs);
   }
 
   private setInitialValues() {
