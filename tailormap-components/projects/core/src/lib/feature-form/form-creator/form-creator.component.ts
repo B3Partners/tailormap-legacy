@@ -164,7 +164,10 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
             throw new HttpErrorResponse({ error: { message: 'Bulk edit endpoint missing' }});
           }
           this.mergeFormToFeature();
-          return this.actions.save$(this.isBulk, this.isBulk ? this.features : [ this.feature ], this.parentId);
+          if (this.isBulk) {
+            return this.actions.saveBulk$(this.features);
+          }
+          return this.actions.save$(this.feature, this.parentId);
         }),
       )
       .subscribe({
@@ -174,12 +177,17 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
       });
   }
 
-  private handleSaveSuccess(isNewFeature: boolean, savedFeature: Feature) {
+  private handleSaveSuccess(isNewFeature: boolean, savedFeature: Feature | Feature[]) {
+    this._snackBar.open('Opgeslagen', '', {duration: 5000});
+    if (Array.isArray(savedFeature)) {
+      // Is bulk edit so close the form
+      this.store$.dispatch(FormActions.setCloseFeatureForm());
+      return;
+    }
     if (isNewFeature) {
       this.store$.dispatch(FormActions.setFeatureRemoved({ feature: this.feature, keepFormOpen: true }));
     }
     this.store$.dispatch(FormActions.setNewFeature({ newFeature: savedFeature, parentId: this.parentId }));
-    this._snackBar.open('Opgeslagen', '', {duration: 5000});
   }
 
   private showSaveError(error: HttpErrorResponse) {

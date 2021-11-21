@@ -5,7 +5,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { FormCopyService } from './form-copy.service';
 import { ConfirmDialogService, TreeService } from '@tailormap/shared';
 import { concatMap, filter, take, takeUntil } from 'rxjs/operators';
-import { forkJoin, of, Subject } from 'rxjs';
+import { forkJoin, Subject } from 'rxjs';
 import { selectCopyDestinationFeatures, selectCurrentSelectedCopyFeatureAndFormConfig, selectParentCopyFeature } from '../state/form.selectors';
 import { Store } from '@ngrx/store';
 import { FormState } from '../state/form.state';
@@ -89,15 +89,13 @@ export class FormCopyComponent implements OnInit, OnDestroy {
             this.deleteRelated,
             this.relatedFeatures,
           );
-          return forkJoin([
-            forkJoin(copyRequests$),
-            of(copyRequests$.length),
-          ]);
+          return forkJoin(copyRequests$);
         }),
       )
       .subscribe(
-        ([ results, totalResults ]) => {
-          if (results.filter(result => result.success).length === totalResults) {
+        (results) => {
+          const hasFailures = results.some(result => !result.success);
+          if (!hasFailures) {
             this._snackBar.open(`Er zijn ${this.destinationFeatures.length} features gekopieerd`, '', {duration: 5000});
           } else {
             this._snackBar.open(`Er zijn fouten opgetreden tijdens het kopieren van de objecten. Controleer het resultaat en kopieer zo nodig opnieuw`, '', {duration: 5000});
@@ -168,13 +166,23 @@ export class FormCopyComponent implements OnInit, OnDestroy {
       this.relatedFeatures = [];
       return;
     }
-    this.relatedFeatures = (this.baseCopyFeature.children || []).map(child => child.fid);
+    this.relatedFeatures = this.getAllChildIds(this.baseCopyFeature.children || []);
+  }
+
+  private getAllChildIds(children: Feature[]): string[] {
+    const ids: string[] = [];
+    children.forEach(child => {
+      ids.push(child.fid);
+      if ((child.children || []).length > 0) {
+        ids.push(...this.getAllChildIds(child.children || []));
+      }
+    });
+    return ids;
   }
 
   public isAllRelatedFeaturesSet(): boolean {
-    return this.baseCopyFeature.children
-      ? this.baseCopyFeature.children.length === this.relatedFeatures.length
-      : false;
+    const allChildIds = this.getAllChildIds(this.baseCopyFeature.children || []);
+    return allChildIds.length === this.relatedFeatures.length;
   }
 
   public relatedFeaturesCheckedChanged(relFeatures: Map<string, boolean>) {

@@ -2,8 +2,16 @@ import { Injectable } from '@angular/core';
 import { Feature } from '../../shared/generated';
 import { FormActionsService } from '../form-actions/form-actions.service';
 import { FeatureInitializerService } from '../../shared/feature-initializer/feature-initializer.service';
-import { Observable, of } from 'rxjs';
+import { forkJoin, Observable, of } from 'rxjs';
 import { concatMap, map } from 'rxjs/operators';
+
+interface CopyResultResponse {
+  success: boolean;
+  message?: string;
+  feature?: Feature;
+}
+
+type CopyResultType = Observable<CopyResultResponse>;
 
 @Injectable({
   providedIn: 'root',
@@ -37,7 +45,7 @@ export class FormCopyService {
     destinationFeatures: Feature[],
     deleteRelated: boolean,
     relatedFeatures: string[],
-  ): Observable<{ success: boolean; message?: string }>[] {
+  ): CopyResultType[] {
     if (destinationFeatures.length <= 0) {
       return [ of({ success: false, message: 'Er zijn geen objecten geselecteerd!' }) ];
     }
@@ -48,7 +56,6 @@ export class FormCopyService {
       });
     }
     const valuesToCopy = this.getPropertiesToMerge(baseFeature);
-    const childsToCopy$ = this.getNewChildFeatures$(baseFeature, relatedFeatures);
     for (let i  = 0; i <= destinationFeatures.length - 1; i++) {
       const copyDestinationFeature: Feature = {
         ...destinationFeatures[i],
@@ -58,25 +65,28 @@ export class FormCopyService {
           type: field.type,
         })),
       };
-      childsToCopy$.forEach(childToCopy$ => {
-        requests$.push(
-          childToCopy$.pipe(concatMap(childToCopy => this.saveFeature$(childToCopy, copyDestinationFeature))),
-        );
-      });
+      requests$.push(...this.getNewChildFeatureRequests$(baseFeature.children, relatedFeatures, copyDestinationFeature));
       requests$.push(this.saveFeature$(copyDestinationFeature));
     }
     return requests$;
   }
 
-  private getDeleteFeatureRequest$(destinationFeature: Feature): Observable<{ success: boolean; message?: string }>[] {
-    return destinationFeature.children.map(child => {
-      return this.formActionsService.removeFeature$(child).pipe(map(result => {
+  private getDeleteFeatureRequest$(destinationFeature: Feature): Observable<CopyResultResponse>[] {
+    const deleteRequests$: Observable<CopyResultResponse>[] = [];
+    destinationFeature.children.forEach(child => {
+      if (child.children) {
+        const subDeleteRequests$: Observable<CopyResultResponse>[] = [];
+        child.children.forEach(subChild => subDeleteRequests$.push(...this.getDeleteFeatureRequest$(subChild)));
+        deleteRequests$.push(...subDeleteRequests$);
+      }
+      deleteRequests$.push(this.formActionsService.removeFeature$(child).pipe(map(result => {
         return {
           success: result,
           message: !result ? `Fout bij verwijderen van gerelateerd object voor ${destinationFeature.layerName}` : undefined,
         };
-      }));
+      })));
     });
+    return deleteRequests$;
   }
 
   private getPropertiesToMerge(feature: Feature): Map<string, string> {
@@ -89,23 +99,57 @@ export class FormCopyService {
     return valuesToCopy;
   }
 
-  private getNewChildFeatures$(baseFeature: Feature, relatedFeatures: string[]): Observable<Feature>[] {
-    return baseFeature.children
+  private getNewChildFeatureRequests$(children: Feature[], relatedFeatures: string[], parentFeature: Feature) {
+    const requests$: CopyResultType[] = [];
+    children
+      // Filter out children that should not be copied
       .filter(child => relatedFeatures.findIndex(r => child.fid === r) !== -1)
-      .map(child => {
+      .forEach(child => {
+        // Merge the values for the children
         const valuesToCopy = {};
         this.getPropertiesToMerge(child).forEach((value, key) => {
           valuesToCopy[key] = value;
         });
-        return this.featureInitializer.create$(child.tableName, valuesToCopy);
+        requests$.push(
+          // Create a new feature
+          this.featureInitializer.create$(child.tableName, valuesToCopy)
+            .pipe(
+              // Save new feature
+              concatMap(feature => this.saveFeature$(feature, parentFeature)),
+              // If applicable, recursively create child features
+              concatMap(result => this.getRecursiveNewChildRequests$(result, child, relatedFeatures)),
+            ),
+        );
       });
+    return requests$;
+  }
+
+  private getRecursiveNewChildRequests$(parentRequestResult: CopyResultResponse, parent: Feature, relatedFeatures: string[]): CopyResultType {
+    const subChildren = parent.children || [];
+    if (!parentRequestResult.feature || subChildren.length === 0) {
+      return of(parentRequestResult);
+    }
+    // If there are children, execute requests for all children recursively
+    return forkJoin(this.getNewChildFeatureRequests$(subChildren, relatedFeatures, parentRequestResult.feature))
+      .pipe(
+        map(subResults => {
+          // Reduce the response to a single response per child. If one of them is false, the entire result will be false
+          return subResults.reduce((prevResult, subResult) => {
+            if (!subResult.success) {
+              return { ...prevResult, success: false };
+            }
+            return prevResult;
+          }, { success: parentRequestResult.success, feature: parentRequestResult.feature });
+        }),
+      );
   }
 
   private saveFeature$(feature: Feature, parentFeature?: Feature) {
-    return this.formActionsService.save$(false, [ feature ], parentFeature?.fid)
-      .pipe(map(result => ({
-        success: result,
-        message: !result ? `Kopieren van attributen naar ${feature.layerName} is niet gelukt` : undefined,
+    return this.formActionsService.save$(feature, parentFeature?.fid)
+      .pipe(map(savedFeature => ({
+        feature: savedFeature,
+        success: !!savedFeature,
+        message: !savedFeature ? `Kopieren van attributen naar ${feature.layerName} is niet gelukt` : undefined,
       })));
   }
 
