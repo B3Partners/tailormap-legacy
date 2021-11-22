@@ -88,3 +88,7 @@ updates:
   - mprins
   labels:
   - build infrastructure
+  ignore:
+  - dependency-name: tomcat
+    versions:
+    - ">= 10"
