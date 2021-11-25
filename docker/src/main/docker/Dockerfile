@@ -1,4 +1,4 @@
-FROM tomcat:9-jdk11
+FROM tomcat:9.0.55-jre11
 
 ARG FLA_VERSION="5.9.12-SNAPSHOT"
 ENV PG_PORT=5432

@@ -74,7 +74,6 @@ updates:
     timezone: Europe/Amsterdam
   labels:
   - build infrastructure
-  - backport v5.8.x
 
 - package-ecosystem: docker
   directory: "/docker/src/main/docker"
@@ -89,3 +88,7 @@ updates:
   - mprins
   labels:
   - build infrastructure
+  ignore:
+  - dependency-name: tomcat
+    versions:
+    - ">= 10"
