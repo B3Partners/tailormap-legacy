@@ -25,6 +25,9 @@ export class ValueService {
   public uniqueValues$ (params: ValueParameters): Observable<UniqueValuesResponse> {
     let httpParams: HttpParams = new HttpParams();
     Object.entries(params).forEach(([key, value ]) => {
+      if (typeof value === 'undefined') {
+        return;
+      }
       httpParams = httpParams.set(key, String(value));
     });
     return this.http.post<UniqueValuesResponse>(this.tailorMap.getContextPath() + '/action/uniquevalues', httpParams.toString(),
