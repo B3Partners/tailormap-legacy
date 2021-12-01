@@ -79,6 +79,60 @@ export class FeatureControllerService extends BaseService {
   }
 
   /**
+   * Path part for operation update
+   */
+  static readonly UpdateBulkPath = '/features/updatebulk/{application}/{featureType}';
+
+  /**
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `update()` instead.
+   *
+   * This method sends `application/json` and handles request body of type `application/json`.
+   */
+  updateBulk$Response(params: {
+    application: number;
+    featureType: string;
+    filter: string;
+    body: Record<string, string>;
+  }): Observable<StrictHttpResponse<Feature []>> {
+
+    const rb = new RequestBuilder(this.rootUrl, FeatureControllerService.UpdateBulkPath, 'put');
+    if (params) {
+      rb.path('application', params.application, {});
+      rb.path('featureType', params.featureType, {});
+      rb.body(params.body, 'application/json');
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'json',
+      accept: 'application/json'
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<Feature []>;
+      })
+    );
+  }
+
+  /**
+   * This method provides access to only to the response body.
+   * To access the full response (for headers, for example), `update$Response()` instead.
+   *
+   * This method sends `application/json` and handles request body of type `application/json`.
+   */
+  updateBulk(params: {
+    application: number;
+    featureType: string;
+    filter: string;
+    body: Record<string, string>;
+  }): Observable<Feature []> {
+
+    return this.updateBulk$Response(params).pipe(
+      map((r: StrictHttpResponse<Feature []>) => r.body)
+    );
+  }
+
+  /**
    * Path part for operation delete
    */
   static readonly DeletePath = '/features/{application}/{featuretype}/{fid}';

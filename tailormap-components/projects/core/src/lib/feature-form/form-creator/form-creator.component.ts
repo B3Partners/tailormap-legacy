@@ -2,7 +2,7 @@ import { AfterViewInit, Component, EventEmitter, Input, OnChanges, OnDestroy, On
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Observable, Subject, Subscription } from 'rxjs';
-import { Feature } from '../../shared/generated';
+import { Feature, Field } from '../../shared/generated';
 import { Attribute, FormConfiguration, FormFieldType, IndexedFeatureAttributes, TabbedField } from '../form/form-models';
 import { FormCreatorHelpers } from './form-creator-helpers';
 import { FormActionsService } from '../form-actions/form-actions.service';
@@ -161,11 +161,11 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
             const bulkEditFeatureTypeName = bulkEditDetails[1];
             const updatedFields = this.getUpdatedFields();
             console.log('Bulk edit - filter: ', bulkEditFilter, ' - feature type - ', bulkEditFeatureTypeName, ' - updated fields - ', updatedFields);
-            throw new HttpErrorResponse({ error: { message: 'Bulk edit endpoint missing' }});
+            return this.actions.saveBulk$(bulkEditFilter, bulkEditFeatureTypeName, updatedFields);
           }
           this.mergeFormToFeature();
           if (this.isBulk) {
-            return this.actions.saveBulk$(this.features);
+            return this.actions.saveSelection$(this.features);
           }
           return this.actions.save$(this.feature, this.parentId);
         }),
