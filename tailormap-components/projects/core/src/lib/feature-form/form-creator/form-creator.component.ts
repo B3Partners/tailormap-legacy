@@ -177,10 +177,15 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
       });
   }
 
-  private handleSaveSuccess(isNewFeature: boolean, savedFeature: Feature | Feature[]) {
-    this._snackBar.open('Opgeslagen', '', {duration: 5000});
-    if (Array.isArray(savedFeature)) {
-      // Is bulk edit so close the form
+  private handleSaveSuccess(isNewFeature: boolean, savedFeature: boolean | Feature | Feature[]) {
+    if (typeof savedFeature === 'boolean' && !savedFeature) {
+      // bulk edit failed, show error message
+      this._snackBar.open('Fout. Opslaan niet gelukt, probeer opnieuw', '', { duration: 5000 });
+      return;
+    }
+    this._snackBar.open('Opgeslagen', '', { duration: 5000 });
+    if (typeof savedFeature === 'boolean' || Array.isArray(savedFeature)) {
+      // Is bulk / selection edit so close the form
       this.store$.dispatch(FormActions.setCloseFeatureForm());
       return;
     }

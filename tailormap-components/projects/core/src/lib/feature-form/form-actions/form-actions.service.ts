@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Feature, FeatureControllerService } from '../../shared/generated';
-import { forkJoin, Observable, of } from 'rxjs';
+import { forkJoin, Observable } from 'rxjs';
 import { FeatureInitializerService } from '../../shared/feature-initializer/feature-initializer.service';
 import { TailorMapService } from '../../../../../bridge/src/tailor-map.service';
 
@@ -16,12 +16,11 @@ export class FormActionsService {
   ) {
   }
 
-  public saveBulk$(filter: string, featureTypeName: string, updateFields: Record<string, string>): Observable<Feature[]> {
+  public saveBulk$(filter: string, featureTypeName: string, updatedFields: Record<string, string | number | null>): Observable<boolean> {
     return this.service.updateBulk({
       application: this.tailormap.getApplicationId(),
       featureType: featureTypeName,
-      filter,
-      body: updateFields,
+      body: { filter, updatedFields },
     });
   }
 
