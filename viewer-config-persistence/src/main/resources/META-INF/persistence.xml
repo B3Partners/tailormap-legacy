@@ -7,6 +7,13 @@
         <mapping-file>META-INF/orm-postgresql.xml</mapping-file>
         <class>nl.tailormap.viewer.config.services.GeoService</class>
         <class>nl.tailormap.viewer.config.services.Category</class>
+        <class>nl.tailormap.viewer.config.services.TileSet</class>
+        <class>nl.tailormap.viewer.config.services.TileService</class>
+        <class>nl.tailormap.viewer.config.security.User</class>
+        <class>nl.tailormap.viewer.config.security.Group</class>
+        <class>nl.tailormap.viewer.config.metadata.Metadata</class>
+        <class>nl.tailormap.viewer.config.app.Application</class>
+
         <properties>
 
             <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQL10Dialect"/>
