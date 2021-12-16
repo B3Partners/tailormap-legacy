@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 import { BaseFieldComponent } from '../base-field/base-field.component';
+import { FormFieldHelpers } from '../../../feature-form/form-field/form-field-helpers';
 
 @Component({
   selector: 'tailormap-label-field',
@@ -8,8 +9,10 @@ import { BaseFieldComponent } from '../base-field/base-field.component';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LabelFieldComponent extends BaseFieldComponent implements OnInit {
+
   @Input()
-  public valueTrue: string;
+  public valueTrue: boolean;
+
   constructor() {
     super();
   }
@@ -18,14 +21,14 @@ export class LabelFieldComponent extends BaseFieldComponent implements OnInit {
   }
 
   public getLink() {
-    if (!/^http/.test(this.value)) {
+    if (typeof this.value === 'string' && !/^http/.test(this.value)) {
       return `//${this.value}`;
     }
     return this.value;
   }
 
   public hasDisplayValue() {
-    return this.value !== null && this.value !== undefined && this.value !== '';
+    return !FormFieldHelpers.isEmptyAttributeValue(this.value);
   }
 
 }

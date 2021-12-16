@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { FormFieldType } from '../../../feature-form/form/form-models';
+import { FormFieldHelpers } from '../../../feature-form/form-field/form-field-helpers';
 
 @Component({
   selector: 'tailormap-base-field',
@@ -18,7 +19,7 @@ export class BaseFieldComponent implements OnInit {
   public placeholder: string;
 
   @Input()
-  public value: string;
+  public value: string | number | (string | number)[];
 
   @Input()
   public groep: FormGroup;
@@ -41,4 +42,12 @@ export class BaseFieldComponent implements OnInit {
   public isCheckboxField() {
     return this.fieldType === FormFieldType.CHECKBOX;
   }
+
+  public getValue() {
+    if (Array.isArray(this.value)) {
+      return this.value.join(', ');
+    }
+    return this.value;
+  }
+
 }

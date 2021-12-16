@@ -32,12 +32,13 @@ export interface Attribute {
   valueTrue?: string;
   valueFalse?: string;
   dateFormat?: string;
+  multiSelect?: boolean;
 }
 
 export interface FeatureAttribute extends Attribute {
   key: string;
   // type: FormFieldType;
-  value: string | number;
+  value: string | number | (string | number)[];
 }
 
 export enum FormFieldType {

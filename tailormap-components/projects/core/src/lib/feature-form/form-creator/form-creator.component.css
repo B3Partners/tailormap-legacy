@@ -19,6 +19,7 @@ mat-tab-group,
 
 .row {
   min-height: 77px;
+  padding-bottom: 15px;
 }
 
 .row + .row {

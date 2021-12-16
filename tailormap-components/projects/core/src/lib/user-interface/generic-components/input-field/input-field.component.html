@@ -1,11 +1,5 @@
 <div *ngIf="groep" [formGroup]="groep" class="form-field">
     <label *ngIf="!hidden" class="label">{{label}}</label>
     <mat-icon *ngIf="!hidden && isHyperlinkField()">http</mat-icon>
-    <input
-      [placeholder]="placeholder || ''"
-      [formControlName]="id"
-      [type]="getInputType()"
-      [name]="id"
-      [value]="value"
-    />
+    <input [placeholder]="placeholder || ''" [formControlName]="id" [type]="getInputType()" [name]="id" />
 </div>

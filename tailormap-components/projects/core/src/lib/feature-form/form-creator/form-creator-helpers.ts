@@ -2,13 +2,14 @@ import { Field, Feature } from '../../shared/generated';
 import { FeatureAttribute, FormConfiguration, IndexedFeatureAttributes } from '../form/form-models';
 import { AttributeListFeature } from '../../shared/attribute-service/attribute-models';
 import { FormHelpers } from '../form/form-helpers';
+import { FormFieldHelpers } from '../form-field/form-field-helpers';
 
 export class FormCreatorHelpers {
 
   public static convertFeatureToIndexed(feat: Feature | AttributeListFeature, formConfig: FormConfiguration): IndexedFeatureAttributes {
     const m = new Map<string, FeatureAttribute>();
     for (const field of formConfig.fields) {
-      const value = FormHelpers.getValue(feat, field);
+      const value = FormFieldHelpers.getAttributeValue({ ...field, value: FormHelpers.getValue(feat, field) });
       m.set(field.key, {
         ...field,
         value,

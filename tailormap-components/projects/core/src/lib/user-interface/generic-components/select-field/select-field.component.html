@@ -4,7 +4,9 @@
     <mat-select
       (selectionChange)="valueChanged($event)"
       [placeholder]="placeholder || ''"
-      [formControlName]="attribute.key">
+      [formControlName]="attribute.key"
+      [multiple]="isMultiSelectAttribute(attribute)"
+    >
       <mat-option [value]="">-- Selecteer --</mat-option>
       <mat-option *ngIf="hasNonValidValue()" [value]="this.attribute.value" disabled="true">{{attribute.value}}</mat-option>
       <mat-option *ngFor="let opt of attribute.options" [value]="opt.val" [hidden]="opt.disabled">{{opt.label}}</mat-option>
