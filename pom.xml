@@ -57,7 +57,7 @@
         <test.persistence.unit>viewer-config-hsqldb</test.persistence.unit>
         <postgresql.version>42.3.1</postgresql.version>
         <mssql.version>9.4.1.jre11</mssql.version>
-        <oracle.version>21.3.0.0</oracle.version>
+        <oracle.version>21.4.0.0.1</oracle.version>
         <apache.poi.version>5.1.0</apache.poi.version>
         <jakarta.mail.version>1.6.7</jakarta.mail.version>
         <apache.httpcomponents.version>4.5.13</apache.httpcomponents.version>
@@ -791,7 +791,7 @@
                 <plugin>
                     <groupId>org.owasp</groupId>
                     <artifactId>dependency-check-maven</artifactId>
-                    <version>6.5.0</version>
+                    <version>6.5.1</version>
                     <configuration>
                         <skipSystemScope>true</skipSystemScope>
                         <format>ALL</format>
