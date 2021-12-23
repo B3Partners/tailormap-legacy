@@ -125,7 +125,7 @@ export class FeatureControllerService extends BaseService {
     body: { filter: string; updatedFields: Record<string, string | number | null> };
   }): Observable<boolean> {
     return this.updateBulk$Response(params).pipe(
-      map((r: StrictHttpResponse<boolean>) => r.body)
+      map((r: StrictHttpResponse<boolean>) => r.status === 200)
     );
   }
 

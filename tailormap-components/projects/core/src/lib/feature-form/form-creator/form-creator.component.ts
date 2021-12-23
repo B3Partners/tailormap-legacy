@@ -160,7 +160,6 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
             const bulkEditFilter = bulkEditDetails[0];
             const bulkEditFeatureTypeName = bulkEditDetails[1];
             const updatedFields = this.getUpdatedFields();
-            console.log('Bulk edit - filter: ', bulkEditFilter, ' - feature type - ', bulkEditFeatureTypeName, ' - updated fields - ', updatedFields);
             return this.actions.saveBulk$(bulkEditFilter, bulkEditFeatureTypeName, updatedFields);
           }
           this.mergeFormToFeature();
