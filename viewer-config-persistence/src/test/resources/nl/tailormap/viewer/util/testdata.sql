@@ -1,8 +1,7 @@
 SET DATABASE REFERENTIAL INTEGRITY FALSE;
 SET WRITE_DELAY 0
 
-INSERT INTO application (id, authenticated_required, authorizations_modified, layout, max_crs, max_maxx, max_maxy, max_minx, max_miny, name, title, lang, start_crs, start_maxx, start_maxy, start_minx, start_miny, version, owner, root, projection_code)
-    VALUES (1, false, '2015-09-15 16:35:27.956', NULL, NULL, NULL, NULL, NULL, NULL, 'test', 'test title', 'nl_NL', NULL, NULL, NULL, NULL, NULL, '1', NULL, 2, 'EPSG:28992[+proj=sterea +lat_0=52.15616055555555 +lon_0=5.38763888888889 +k=0.9999079 +x_0=155000 +y_0=463000 +ellps=bessel +towgs84=565.237,50.0087,465.658,-0.406857,0.350733,-1.87035,4.0812 +units=m +no_defs]');
+INSERT INTO application (id, authenticated_required, authorizations_modified, layout, max_crs, max_maxx, max_maxy, max_minx, max_miny, name, title, lang, start_crs, start_maxx, start_maxy, start_minx, start_miny, version, owner, root, projection_code) VALUES (1, false, '2015-09-15 16:35:27.956', NULL, NULL, NULL, NULL, NULL, NULL, 'test', 'test title', 'nl_NL', NULL, NULL, NULL, NULL, NULL, '1', NULL, 2, 'EPSG:28992[+proj=sterea +lat_0=52.15616055555555 +lon_0=5.38763888888889 +k=0.9999079 +x_0=155000 +y_0=463000 +ellps=bessel +towgs84=565.237,50.0087,465.658,-0.406857,0.350733,-1.87035,4.0812 +units=m +no_defs]');
 
 INSERT INTO application_details (application, value, details_key) VALUES (1, '#000000', 'steunkleur2');
 INSERT INTO application_details (application, value, details_key) VALUES (1, '/resources/images/default_sprite.png', 'iconSprite');
