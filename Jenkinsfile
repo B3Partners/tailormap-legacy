@@ -37,7 +37,7 @@ node {
             jacoco exclusionPattern: '**/*Test.class', execPattern: '**/target/**.exec'
             sh "curl -s https://codecov.io/bash | bash"
         }
-        if (env.BRANCH_NAME == 'master' && env.NODE_NAME == 'master') {
+        if (env.BRANCH_NAME == 'master' && env.NODE_NAME == 'built-in') {
             stage("Docker image build & push") {
                 echo "Create a docker image of the master branch when running on the master node"
                 sh "mvn install -Dmaven.test.skip=true -B -V -e -fae -q"
