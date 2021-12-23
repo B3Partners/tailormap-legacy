@@ -160,12 +160,11 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
             const bulkEditFilter = bulkEditDetails[0];
             const bulkEditFeatureTypeName = bulkEditDetails[1];
             const updatedFields = this.getUpdatedFields();
-            console.log('Bulk edit - filter: ', bulkEditFilter, ' - feature type - ', bulkEditFeatureTypeName, ' - updated fields - ', updatedFields);
-            throw new HttpErrorResponse({ error: { message: 'Bulk edit endpoint missing' }});
+            return this.actions.saveBulk$(bulkEditFilter, bulkEditFeatureTypeName, updatedFields);
           }
           this.mergeFormToFeature();
           if (this.isBulk) {
-            return this.actions.saveBulk$(this.features);
+            return this.actions.saveSelection$(this.features);
           }
           return this.actions.save$(this.feature, this.parentId);
         }),
@@ -177,10 +176,15 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
       });
   }
 
-  private handleSaveSuccess(isNewFeature: boolean, savedFeature: Feature | Feature[]) {
-    this._snackBar.open('Opgeslagen', '', {duration: 5000});
-    if (Array.isArray(savedFeature)) {
-      // Is bulk edit so close the form
+  private handleSaveSuccess(isNewFeature: boolean, savedFeature: boolean | Feature | Feature[]) {
+    if (typeof savedFeature === 'boolean' && !savedFeature) {
+      // bulk edit failed, show error message
+      this._snackBar.open('Fout. Opslaan niet gelukt, probeer opnieuw', '', { duration: 5000 });
+      return;
+    }
+    this._snackBar.open('Opgeslagen', '', { duration: 5000 });
+    if (typeof savedFeature === 'boolean' || Array.isArray(savedFeature)) {
+      // Is bulk / selection edit so close the form
       this.store$.dispatch(FormActions.setCloseFeatureForm());
       return;
     }

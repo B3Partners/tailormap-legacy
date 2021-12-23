@@ -16,7 +16,15 @@ export class FormActionsService {
   ) {
   }
 
-  public saveBulk$(features: Feature[]): Observable<Feature[]> {
+  public saveBulk$(filter: string, featureTypeName: string, updatedFields: Record<string, string | number | null>): Observable<boolean> {
+    return this.service.updateBulk({
+      application: this.tailormap.getApplicationId(),
+      featureType: featureTypeName,
+      body: { filter, updatedFields },
+    });
+  }
+
+  public saveSelection$(features: Feature[]): Observable<Feature[]> {
     const reqs: Observable<Feature>[] = [];
     features.forEach(feature => {
       reqs.push(this.service.update({application: this.tailormap.getApplicationId(),
