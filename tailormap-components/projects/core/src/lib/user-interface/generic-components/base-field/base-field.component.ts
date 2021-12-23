@@ -1,7 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { FormFieldType } from '../../../feature-form/form/form-models';
-import { FormFieldHelpers } from '../../../feature-form/form-field/form-field-helpers';
 
 @Component({
   selector: 'tailormap-base-field',
