@@ -1,5 +1,4 @@
 import { Feature } from '../../shared/generated';
-import { FormRelationModel } from './form-relation.model';
 
 export const formStateKey = 'form';
 

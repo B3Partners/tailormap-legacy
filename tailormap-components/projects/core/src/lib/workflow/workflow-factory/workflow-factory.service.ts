@@ -7,7 +7,6 @@ import { FeatureInitializerService } from '../../shared/feature-initializer/feat
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { FeatureControllerService } from '../../shared/generated';
 import { VectorLayer } from '../../../../../bridge/typings';
-import { SewageWorkflow } from '../workflows/SewageWorkflow';
 import { CopyWorkflow } from '../workflows/CopyWorkflow';
 import { ConfirmDialogService } from '@tailormap/shared';
 import { NoOpWorkflow } from '../workflows/NoOpWorkflow';

@@ -2,7 +2,6 @@ import { Action, createReducer, on } from '@ngrx/store';
 import { FormState, initialFormState } from './form.state';
 import * as FormActions from './form.actions';
 import { addOrUpdateFeature, removeFeature } from './form.state-helpers';
-import { setCurrentlySelectedRelatedFeature } from './form.actions';
 
 const onCloseFeatureForm = (state: FormState): FormState => ({
   ...state,
