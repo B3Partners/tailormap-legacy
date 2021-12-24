@@ -18,6 +18,7 @@ import { FormNodeComponent } from './form-tree/form-node/form-node.component';
 import { AttributeListService } from '@tailormap/core-components';
 import { FormAttributeListButtonComponent } from './form-attribute-list-button/form-attribute-list-button.component';
 import { FormAttributeListService } from './services/form-attribute-list.service';
+import { CreateRelationsComponent } from './create-relations/create-relations.component';
 
 @NgModule({
   declarations: [
@@ -28,6 +29,7 @@ import { FormAttributeListService } from './services/form-attribute-list.service
     FormCopyComponent,
     FormNodeComponent,
     FormAttributeListButtonComponent,
+    CreateRelationsComponent,
   ],
   imports: [
     CommonModule,
@@ -41,6 +43,7 @@ import { FormAttributeListService } from './services/form-attribute-list.service
   exports: [
     FormComponent,
     FormCopyComponent,
+    CreateRelationsComponent,
   ],
   entryComponents: [
   ],

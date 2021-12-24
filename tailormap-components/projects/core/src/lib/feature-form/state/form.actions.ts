@@ -79,3 +79,14 @@ export const setCopyOptionsOpen = createAction(
   `${formActionsPrefix} Set Copy Options Panel Open`,
   props<{ open: boolean }>(),
 );
+
+export const openRelationsForm = createAction(`${formActionsPrefix} Open Form Relations`);
+export const closeRelationsForm = createAction(`${formActionsPrefix} Close Form Relations`);
+export const allowRelationSelection = createAction(
+  `${formActionsPrefix} Allow Relation Selection`,
+  props<{ allowedFeatureTypes: string[] }>(),
+);
+export const setCurrentlySelectedRelatedFeature = createAction(
+  `${formActionsPrefix} Set Currently Related Feature`,
+  props<{ relatedFeature: Feature | null }>(),
+);

@@ -138,8 +138,4 @@ export class StandardFormWorkflow extends Workflow {
     });
   }
 
-  public getDestinationFeatures(): Feature[] {
-    return [];
-  }
-
 }

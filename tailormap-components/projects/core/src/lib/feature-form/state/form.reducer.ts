@@ -2,6 +2,7 @@ import { Action, createReducer, on } from '@ngrx/store';
 import { FormState, initialFormState } from './form.state';
 import * as FormActions from './form.actions';
 import { addOrUpdateFeature, removeFeature } from './form.state-helpers';
+import { setCurrentlySelectedRelatedFeature } from './form.actions';
 
 const onCloseFeatureForm = (state: FormState): FormState => ({
   ...state,
@@ -136,6 +137,23 @@ const onSetCopyOptionsOpen = (state: FormState, payload: ReturnType<typeof FormA
   copyOptionsOpen: payload.open,
 });
 
+const onOpenRelationsForm = (state: FormState): FormState => ({ ...state, relationsFormOpen: true });
+const onCloseRelationsForm = (state: FormState): FormState => ({
+  ...state,
+  relationsFormOpen: false,
+  allowedRelationSelectionFeatureTypes: [],
+  currentlySelectedRelatedFeature: null,
+});
+const onAllowRelationSelection = (state: FormState, payload: ReturnType<typeof FormActions.allowRelationSelection>): FormState => ({
+  ...state,
+  allowedRelationSelectionFeatureTypes: payload.allowedFeatureTypes,
+  currentlySelectedRelatedFeature: null,
+});
+const onSetCurrentlySelectedRelatedFeature = (state: FormState, payload: ReturnType<typeof FormActions.setCurrentlySelectedRelatedFeature>): FormState => ({
+  ...state,
+  currentlySelectedRelatedFeature: payload.relatedFeature,
+});
+
 const formReducerImpl = createReducer(
   initialFormState,
   on(FormActions.setTreeOpen, onSetTreeOpen),
@@ -152,6 +170,10 @@ const formReducerImpl = createReducer(
   on(FormActions.toggleSelectedAttribute, onToggleSelectedAttribute),
   on(FormActions.closeCopyForm, onCloseCopyForm),
   on(FormActions.setCopyOptionsOpen, onSetCopyOptionsOpen),
+  on(FormActions.openRelationsForm, onOpenRelationsForm),
+  on(FormActions.closeRelationsForm, onCloseRelationsForm),
+  on(FormActions.allowRelationSelection, onAllowRelationSelection),
+  on(FormActions.setCurrentlySelectedRelatedFeature, onSetCurrentlySelectedRelatedFeature),
 );
 
 export const formReducer = (state: FormState | undefined, action: Action) => {

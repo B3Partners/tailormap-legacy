@@ -78,8 +78,6 @@ export abstract class Workflow {
 
   public abstract geometryDrawn(vectorLayer: VectorLayer, feature: any): void;
 
-  public abstract getDestinationFeatures(): Feature [];
-
   public abstract mapClick(data: MapClickedEvent): void;
 
   public abstract afterEditing(): void;

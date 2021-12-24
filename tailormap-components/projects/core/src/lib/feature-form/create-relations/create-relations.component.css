@@ -1,0 +1,94 @@
+:host {
+  --overlay-panel-form-columns: 2;
+}
+
+.overlay-panel {
+  width: calc(var(--overlay-panel-form-columns) * var(--overlay-panel-width));
+}
+
+.form-container {
+  display: flex;
+  padding: 16px 16px 0 16px;
+  flex: 1;
+  overflow: auto;
+  flex-direction: column;
+}
+
+.table-wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.table-mask {
+  position: absolute;
+  text-align: center;
+  height: 100%;
+  width: 100%;
+  z-index: 2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  background-color: rgba(255, 255, 255, 0.8);
+}
+
+.table-mask button {
+  margin-top: 16px;
+}
+
+.bottom-bar {
+  padding: 16px;
+  box-shadow: 0 -1px 4px 0 rgba(0, 0, 0, 0.09);
+  display: flex;
+}
+
+.icon-wrap {
+  display: inline-block;
+  width: 40px;
+  height: 40px;
+  line-height: 40px;
+}
+
+.icon-wrap mat-icon {
+  vertical-align: middle;
+}
+
+.small-column {
+  width: 100px;
+}
+
+.bottom-bar button {
+  flex: 1 0;
+}
+
+.button-separator {
+  width: 16px;
+}
+
+.push-buttons {
+  width: calc(calc(var(--overlay-panel-form-columns) * var(--overlay-panel-width)) - var(--overlay-panel-width));
+}
+
+.updated-relation {
+  color: #6236ff;
+}
+
+.relation-legend,
+.hint {
+  margin-top: 16px;
+}
+
+.relation-legend strong {
+  display: block;
+}
+
+.relation-legend > div {
+  display: flex;
+  align-items: center;
+  margin-top: 4px;
+}
+
+.relation-legend mat-icon {
+  margin-right: 8px;
+}

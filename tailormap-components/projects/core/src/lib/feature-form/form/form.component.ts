@@ -12,8 +12,8 @@ import * as FormActions from '../state/form.actions';
 import { toggleFeatureFormVisibility } from '../state/form.actions';
 import * as WorkflowActions from '../../workflow/state/workflow.actions';
 import {
-  selectCurrentFeature, selectFeatures, selectFormAlreadyDirty, selectFormEditing, selectFormVisible, selectInBulkEditMode,
-  selectIsMultiFormWorkflow,
+  selectCurrentFeature, selectFeatures, selectFormAlreadyDirty, selectFormEditing, selectFormRelationsForCurrentFeature, selectFormVisible,
+  selectInBulkEditMode, selectIsMultiFormWorkflow,
 } from '../state/form.selectors';
 import { WORKFLOW_ACTION } from '../../workflow/state/workflow-models';
 import { WorkflowState } from '../../workflow/state/workflow.state';
@@ -24,6 +24,7 @@ import { ExtendedFormConfigurationModel } from '../../application/models/extende
 import { METADATA_SERVICE } from '@tailormap/api';
 import { TailorMapService } from '../../../../../bridge/src/tailor-map.service';
 import { FormTreeHelpers } from '../form-tree/form-tree-helpers';
+import { FormRelationModel } from '../state/form-relation.model';
 
 @Component({
   selector: 'tailormap-form',
@@ -49,6 +50,7 @@ export class FormComponent implements OnDestroy, OnInit {
   public editing$: Observable<boolean>;
   public isMultiFormWorkflow$: Observable<boolean>;
   public formTabs: TabbedField[] = [];
+  public formRelations$: Observable<FormRelationModel | null>;
 
   constructor(
     private store$: Store<FormState | WorkflowState>,
@@ -87,6 +89,8 @@ export class FormComponent implements OnDestroy, OnInit {
     this.isHidden$ = this.store$.select(selectFormVisible).pipe(map(visible => !visible));
     this.editing$ = this.store$.select(selectFormEditing);
     this.isMultiFormWorkflow$ = this.store$.select(selectIsMultiFormWorkflow);
+
+    this.formRelations$ = this.store$.select(selectFormRelationsForCurrentFeature);
   }
 
   private initForm(
@@ -223,6 +227,11 @@ export class FormComponent implements OnDestroy, OnInit {
       feature: copyFeature,
       action: WORKFLOW_ACTION.COPY,
     }));
+  }
+
+  public createRelations() {
+    this.store$.dispatch(WorkflowActions.setAction({ action: WORKFLOW_ACTION.CREATE_RELATIONS }));
+    this.store$.dispatch(FormActions.openRelationsForm());
   }
 
   public editGeometry(): void {

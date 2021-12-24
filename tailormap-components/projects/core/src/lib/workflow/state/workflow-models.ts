@@ -4,4 +4,5 @@ export enum WORKFLOW_ACTION {
   SPLIT_MERGE = 'split_merge',
   DEFAULT = 'standard',
   NO_OP = 'no_op',
+  CREATE_RELATIONS = 'create_relations',
 }

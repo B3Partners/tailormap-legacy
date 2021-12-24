@@ -1,4 +1,5 @@
 import { Feature } from '../../shared/generated';
+import { FormRelationModel } from './form-relation.model';
 
 export const formStateKey = 'form';
 
@@ -26,6 +27,10 @@ export interface FormState {
   copySelectedFeature: Feature;
   copyFormOpen: boolean;
   copyOptionsOpen: boolean;
+
+  relationsFormOpen: boolean;
+  allowedRelationSelectionFeatureTypes: string[];
+  currentlySelectedRelatedFeature: Feature | null;
 }
 
 export const initialFormState: FormState = {
@@ -45,4 +50,8 @@ export const initialFormState: FormState = {
   copySelectedFeature: null,
   copyFormOpen: false,
   copyOptionsOpen: false,
+
+  relationsFormOpen: false,
+  allowedRelationSelectionFeatureTypes: [],
+  currentlySelectedRelatedFeature: null,
 };

@@ -17,6 +17,7 @@ import { FormState } from '../../feature-form/state/form.state';
 import { Store } from '@ngrx/store';
 import { WORKFLOW_ACTION } from '../state/workflow-models';
 import { FeatureSelectionService } from '../../shared/feature-selection/feature-selection.service';
+import { CreateRelationsWorkflow } from '../workflows/CreateRelationsWorkflow';
 
 @Injectable({
   providedIn: 'root',
@@ -42,23 +43,19 @@ export class WorkflowFactoryService {
   ) {
   }
 
-  public getWorkflow(action: WORKFLOW_ACTION, featureType: string): Workflow {
+  public getWorkflow(action: WORKFLOW_ACTION, _featureType: string): Workflow {
 
     let workflow: Workflow = null;
     switch (action) {
 
       case WORKFLOW_ACTION.ADD_FEATURE:
-        switch (featureType) {
-          case 'mechleiding':
-          case 'vrijvleiding':
-            workflow = new SewageWorkflow();
-            break;
-          default:
-            workflow = new StandardFormWorkflow();
-        }
+        workflow = new StandardFormWorkflow();
         break;
       case WORKFLOW_ACTION.COPY:
         workflow = new CopyWorkflow();
+        break;
+      case WORKFLOW_ACTION.CREATE_RELATIONS:
+        workflow = new CreateRelationsWorkflow();
         break;
       case WORKFLOW_ACTION.NO_OP:
       case WORKFLOW_ACTION.SPLIT_MERGE:

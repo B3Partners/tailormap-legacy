@@ -1,7 +1,9 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
 import { FormState, formStateKey } from './form.state';
 import { Feature } from '../../shared/generated';
-import { selectFormConfigs } from '../../application/state/application.selectors';
+import { selectFormConfigs, selectVisibleLayers } from '../../application/state/application.selectors';
+import { FormRelationModel } from './form-relation.model';
+import { TailormapAppLayer } from '../../application/models/tailormap-app-layer.model';
 
 const selectFormState = createFeatureSelector<FormState>(formStateKey);
 
@@ -68,3 +70,41 @@ export const selectCurrentSelectedCopyFeatureAndFormConfig = createSelector(
   },
 );
 export const selectCopyDestinationFeatures = createSelector(selectFormState, state => state.copyDestinationFeatures);
+
+export const selectRelationsFormOpen = createSelector(selectFormState, state => state.relationsFormOpen);
+export const selectAllowedRelationSelectionFeatureTypes = createSelector(selectFormState, state => state.allowedRelationSelectionFeatureTypes);
+export const selectCurrentlySelectedRelatedFeature = createSelector(selectFormState, state => state.currentlySelectedRelatedFeature);
+export const selectCreateRelationsFeature = createSelector(selectFormState, state => {
+  if (!state.features || state.features.length === 0) {
+    return null;
+  }
+  return state.features[0];
+});
+
+export const selectFormRelationsForCurrentFeature = createSelector(
+  selectVisibleLayers,
+  selectCreateRelationsFeature,
+  (layers: TailormapAppLayer[], feature: Feature | null): FormRelationModel | null => {
+    if (feature === null) {
+      return null;
+    }
+    const layerFeatureTypeNames = new Map(layers.map(layer => [layer.featureTypeName, layer.layerName]));
+    const relations = feature.relations.filter(relation => {
+      return layerFeatureTypeNames.has(relation.foreignFeatureTypeName)
+        && (!!relation.columnName && !!relation.foreignColumnName);
+    });
+    if (relations.length === 0) {
+      return null;
+    }
+    return {
+      featureType: feature.tableName,
+      relations: relations.map(relation => ({
+        featureType: relation.foreignFeatureTypeName,
+        label: `${layerFeatureTypeNames.get(relation.foreignFeatureTypeName)} (${relation.columnName})`,
+        column: relation.columnName,
+        referenceColumn: relation.foreignColumnName,
+        currentRelation: feature.attributes.find(a => a.key === relation.columnName)?.value,
+      })),
+    };
+  },
+);
