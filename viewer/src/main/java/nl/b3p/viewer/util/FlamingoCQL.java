@@ -17,7 +17,7 @@
 package nl.b3p.viewer.util;
 
 import nl.b3p.viewer.config.services.*;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.geotools.factory.CommonFactoryFinder;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryCollection;

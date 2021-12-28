@@ -8,7 +8,7 @@ import net.sourceforge.stripes.action.After;
 import net.sourceforge.stripes.controller.LifecycleStage;
 import nl.b3p.viewer.config.app.Application;
 import nl.b3p.i18n.ResourceBundleProvider;
-import org.apache.commons.lang.LocaleUtils;
+import org.apache.commons.lang3.LocaleUtils;
 
 /**
  * Abstract ActionBean which can be implemented by ActionBeans

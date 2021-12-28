@@ -4,7 +4,7 @@ import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.Validate;
 import nl.b3p.i18n.ResourceBundleToJsProvider;
 import nl.b3p.i18n.ResourceBundleProvider;
-import org.apache.commons.lang.LocaleUtils;
+import org.apache.commons.lang3.LocaleUtils;
 
 import java.io.StringReader;
 import java.util.Locale;

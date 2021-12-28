@@ -31,7 +31,7 @@ import nl.b3p.viewer.print.*;
 import nl.b3p.viewer.util.FeaturePropertiesArrayHelper;
 import nl.b3p.viewer.util.FeatureToJson;
 import nl.b3p.viewer.util.FlamingoCQL;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.Logger;
