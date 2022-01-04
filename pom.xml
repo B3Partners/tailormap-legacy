@@ -36,6 +36,12 @@
             <comments>For any parts of the tailormap codebase</comments>
             <url>https://raw.githubusercontent.com/b3partners/tailormap/master/LICENSE.txt</url>
         </license>
+        <license>
+            <name>MIT License</name>
+            <url>https://raw.githubusercontent.com/b3partners/tailormap/viewer-config-persistence/master/MIT.txt</url>
+            <distribution>repo</distribution>
+            <comments>For any parts of the tailormap codebase. The 'viewer-config-persistence' module is under a dual (AGPL/MIT) license</comments>
+        </license>
     </licenses>
     <properties>
         <java.version>11</java.version>

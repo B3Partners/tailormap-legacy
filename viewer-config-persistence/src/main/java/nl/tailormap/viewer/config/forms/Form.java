@@ -1,3 +1,6 @@
+/*
+ * Copyright (C) 2020-2021 B3Partners B.V.
+ */
 package nl.tailormap.viewer.config.forms;
 
 import nl.tailormap.viewer.config.services.SimpleFeatureType;

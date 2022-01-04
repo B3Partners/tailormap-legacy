@@ -1,3 +1,6 @@
+/*
+ * Copyright (C) 2015-2021 B3Partners B.V.
+ */
 package nl.tailormap.viewer.util;
 
 /**

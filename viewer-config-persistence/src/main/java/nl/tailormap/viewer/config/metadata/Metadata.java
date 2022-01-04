@@ -1,3 +1,6 @@
+/*
+ * Copyright (C) 2013-2021 B3Partners B.V.
+ */
 package nl.tailormap.viewer.config.metadata;
 
 import javax.persistence.Entity;
