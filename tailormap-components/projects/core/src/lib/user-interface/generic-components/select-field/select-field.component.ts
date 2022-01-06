@@ -28,6 +28,7 @@ export class SelectFieldComponent {
   }
 
   public isDomainAttribute = (attr: Attribute): boolean => attr.type === FormFieldType.DOMAIN;
+  public isMultiSelectAttribute = (attr: Attribute) => FormFieldHelpers.isMultiSelectAttribute(attr);
 
   public valueChanged(event: any): void {
     if (this.isDomainAttribute(this.attribute)) {
