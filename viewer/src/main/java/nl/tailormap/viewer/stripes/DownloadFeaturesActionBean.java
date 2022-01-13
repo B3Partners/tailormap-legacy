@@ -125,6 +125,9 @@ public class DownloadFeaturesActionBean extends LocalizableApplicationActionBean
     private List<String> columns = new ArrayList<>();
 
     @Validate
+    private String aliases = null;
+
+    @Validate
     private String filter;
 
     private AuditMessageObject auditMessageObject;
@@ -214,6 +217,14 @@ public class DownloadFeaturesActionBean extends LocalizableApplicationActionBean
 
     public void setColumns(List<String> columns) {
         this.columns = columns;
+    }
+
+    public String getAliases() {
+        return aliases;
+    }
+
+    public void setAliases(String aliases) {
+        this.aliases = aliases;
     }
 
     public String getFilter() {
@@ -357,11 +368,21 @@ public class DownloadFeaturesActionBean extends LocalizableApplicationActionBean
 
     private File convert(SimpleFeatureType ft, FeatureSource fs, Query q, String type, List<ConfiguredAttribute> attributes, Map<String, AttributeDescriptor> featureTypeAttributes) throws IOException {
         Map<String, String> attributeAliases = new HashMap<String, String>();
+        if (aliases != null) {
+            String[] ali = aliases.split(",");
+            int i = 0;
+            for (ConfiguredAttribute ca: attributes) {
+                attributeAliases.put(ca.getAttributeName(), ali[i]);
+                i++;
+            }
+        }
         for (AttributeDescriptor ad : ft.getAttributes()) {
-            if (ad.getAlias() != null) {
-                attributeAliases.put(ad.getName(), ad.getAlias());
-            }else{
-                attributeAliases.put(ad.getName(), ad.getName());
+            if(!attributeAliases.containsKey(ad.getName())) {
+                if (ad.getAlias() != null) {
+                    attributeAliases.put(ad.getName(), ad.getAlias());
+                } else {
+                    attributeAliases.put(ad.getName(), ad.getName());
+                }
             }
         }
         List<String> propertyNames = new ArrayList<String>();
