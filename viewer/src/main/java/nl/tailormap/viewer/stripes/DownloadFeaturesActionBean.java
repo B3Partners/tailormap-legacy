@@ -369,10 +369,10 @@ public class DownloadFeaturesActionBean extends LocalizableApplicationActionBean
     private File convert(SimpleFeatureType ft, FeatureSource fs, Query q, String type, List<ConfiguredAttribute> attributes, Map<String, AttributeDescriptor> featureTypeAttributes) throws IOException {
         Map<String, String> attributeAliases = new HashMap<String, String>();
         if (aliases != null) {
-            String[] ali = aliases.split(",");
+            String[] aliasesList = aliases.split(",");
             int i = 0;
             for (ConfiguredAttribute ca: attributes) {
-                attributeAliases.put(ca.getAttributeName(), ali[i]);
+                attributeAliases.put(ca.getAttributeName(), aliasesList[i]);
                 i++;
             }
         }
