@@ -42,7 +42,7 @@ public class GeoServiceActionBeanTest extends TestUtil {
 
     @Test
     public void addWMSService() {
-        String url = "https://service.pdok.nl/kadaster/bestuurlijkegebieden/wms/v1_0?language=dut&";
+        String url = "https://service.pdok.nl/kadaster/au/wms/v2_0?language=dut&";
         try {
             Category cat = new Category();
             cat.setId(1L);
@@ -57,7 +57,7 @@ public class GeoServiceActionBeanTest extends TestUtil {
             GeoService service = ab.getService();
 
             List<Layer> layers = service.loadLayerTree(entityManager);
-            assertEquals(4, layers.size(), "The number of layers should be the same");
+            assertEquals(3, layers.size(), "The number of layers should be the same");
             assertEquals(url, service.getUrl(), "The url should be the same");
         } catch (Exception ex) {
             log.error("Error testing adding a geoservice: " + url, ex);
