@@ -67,9 +67,12 @@ export class FormTreeHelpers {
     if (!attr) {
       return `${feat[featureKey] || ''}`;
     }
-    const value = FormHelpers.getValue(feat, attr);
+    const value = FormFieldHelpers.getAttributeValue({ ...attr, value: FormHelpers.getValue(feat, attr) });
     if (attr.type === FormFieldType.DOMAIN && attr.options) {
       const option = FormFieldHelpers.findSelectedOption(attr.options, value);
+      if (Array.isArray(option)) {
+        return option.map(opt => opt.label).join(', ');
+      }
       if (option) {
         return option.label;
       }

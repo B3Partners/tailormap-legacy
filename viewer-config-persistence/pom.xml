@@ -6,9 +6,23 @@
     <parent>
         <groupId>org.tailormap</groupId>
         <artifactId>tailormap</artifactId>
-        <version>5.9.12-SNAPSHOT</version>
+        <version>5.9.13-SNAPSHOT</version>
     </parent>
     <name>viewer-config-persistence</name>
+    <licenses>
+        <license>
+            <name>MIT License</name>
+            <url>https://raw.githubusercontent.com/b3partners/tailormap/viewer-config-persistence/master/MIT.txt</url>
+            <distribution>repo</distribution>
+            <comments>For any parts of the `viewer-config-persistence` module only</comments>
+        </license>
+        <license>
+            <distribution>repo</distribution>
+            <name>GNU Affero General Public License v3.0</name>
+            <comments>For any parts of the tailormap codebase. The 'viewer-config-persistence' module is under a dual (AGPL/MIT) license</comments>
+            <url>https://raw.githubusercontent.com/b3partners/tailormap/viewer-config-persistence/master/LICENSE.txt</url>
+        </license>
+    </licenses>
     <build>
         <plugins>
             <plugin>

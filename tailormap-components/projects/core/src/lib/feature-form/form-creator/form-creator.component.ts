@@ -100,13 +100,11 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
     this.domainValues = new Map<Attribute, any>();
     for (const attr of attrs) {
       const featureAttribute = this.indexedAttributes.attrs.get(attr.key);
-      let value: string | number | boolean = !this.isBulk && featureAttribute ? featureAttribute.value : null;
+      const value = this.isBulk ? null : FormFieldHelpers.getAttributeValue(featureAttribute);
       if (attr.type === FormFieldType.DOMAIN) {
         this.registry.registerDomainField(attr.linkedList, featureAttribute);
-        if (!this.isBulk && featureAttribute.value && featureAttribute.value !== '') {
-          this.domainValues.set(attr, featureAttribute.value);
-          const compVal = FormFieldHelpers.findSelectedOption(featureAttribute.options, featureAttribute.value);
-          value = typeof compVal !== 'undefined' && compVal !== null ? compVal.val : featureAttribute.value;
+        if (!this.isBulk && !FormFieldHelpers.isEmptyAttributeValue(value)) {
+          this.domainValues.set(attr, value);
         }
       }
       const control = new FormControl(value, [FormFieldHelpers.nonExistingValueValidator(featureAttribute)]);
@@ -223,7 +221,7 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
       if (!control || !control.dirty || control.value === 'null') {
         return;
       }
-      updatedFields[key] = typeof control.value === 'undefined' ? '' : control.value;
+      updatedFields[key] = FormFieldHelpers.getAttributeControlValue(control);
     });
     return updatedFields;
   }

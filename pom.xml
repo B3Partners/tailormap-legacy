@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.tailormap</groupId>
     <artifactId>tailormap</artifactId>
-    <version>5.9.12-SNAPSHOT</version>
+    <version>5.9.13-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>tailormap</name>
     <url>https://github.com/b3partners/tailormap</url>
@@ -35,6 +35,12 @@
             <name>GNU Affero General Public License v3.0</name>
             <comments>For any parts of the tailormap codebase</comments>
             <url>https://raw.githubusercontent.com/b3partners/tailormap/master/LICENSE.txt</url>
+        </license>
+        <license>
+            <name>MIT License</name>
+            <url>https://raw.githubusercontent.com/b3partners/tailormap/viewer-config-persistence/master/MIT.txt</url>
+            <distribution>repo</distribution>
+            <comments>For any parts of the tailormap codebase. The 'viewer-config-persistence' module is under a dual (AGPL/MIT) license</comments>
         </license>
     </licenses>
     <properties>
@@ -298,7 +304,7 @@
             <dependency>
                 <groupId>com.google.javascript</groupId>
                 <artifactId>closure-compiler</artifactId>
-                <version>v20211201</version>
+                <version>v20220104</version>
             </dependency>
             <dependency>
                 <groupId>javax.servlet</groupId>
@@ -689,7 +695,7 @@
                 <plugin>
                     <groupId>com.github.eirslett</groupId>
                     <artifactId>frontend-maven-plugin</artifactId>
-                    <version>1.12.0</version>
+                    <version>1.12.1</version>
                 </plugin>
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
@@ -699,7 +705,7 @@
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>build-helper-maven-plugin</artifactId>
-                    <version>3.2.0</version>
+                    <version>3.3.0</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-assembly-plugin</artifactId>
@@ -707,7 +713,7 @@
                 </plugin>
                 <plugin>
                     <artifactId>maven-release-plugin</artifactId>
-                    <version>3.0.0-M4</version>
+                    <version>3.0.0-M5</version>
                 </plugin>
                 <plugin>
                     <groupId>de.jpdigital</groupId>
@@ -751,7 +757,7 @@
                 </plugin>
                 <plugin>
                     <artifactId>maven-jar-plugin</artifactId>
-                    <version>3.2.0</version>
+                    <version>3.2.1</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-war-plugin</artifactId>
@@ -778,7 +784,7 @@
                 </plugin>
                 <plugin>
                     <artifactId>maven-deploy-plugin</artifactId>
-                    <version>3.0.0-M1</version>
+                    <version>3.0.0-M2</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-install-plugin</artifactId>
@@ -786,12 +792,12 @@
                 </plugin>
                 <plugin>
                     <artifactId>maven-site-plugin</artifactId>
-                    <version>3.9.1</version>
+                    <version>3.10.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.owasp</groupId>
                     <artifactId>dependency-check-maven</artifactId>
-                    <version>6.5.1</version>
+                    <version>6.5.3</version>
                     <configuration>
                         <skipSystemScope>true</skipSystemScope>
                         <format>ALL</format>

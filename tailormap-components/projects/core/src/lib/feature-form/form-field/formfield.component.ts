@@ -25,7 +25,7 @@ export class FormfieldComponent implements OnInit {
   public editing = false;
 
   @Input()
-  public value: string;
+  public value: string | number | (string | number)[];
 
   @Input()
   public groep: FormGroup;
@@ -58,9 +58,8 @@ export class FormfieldComponent implements OnInit {
   private updateFieldValue(): void {
     this.control = this.groep.controls[this.attribute.key];
     if (!this.isBulk) {
-      const comparableValue = FormFieldHelpers.findSelectedOption(this.attribute.options, this.attribute.value);
-      const value = comparableValue ? comparableValue.val : this.attribute.value;
-      if (value) {
+      const value = FormFieldHelpers.getAttributeValue(this.attribute);
+      if (!FormFieldHelpers.isEmptyAttributeValue(value)) {
         this.control.setValue(value, {
           emitEvent: false,
           onlySelf: false,

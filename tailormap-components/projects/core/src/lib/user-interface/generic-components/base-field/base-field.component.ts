@@ -18,7 +18,7 @@ export class BaseFieldComponent implements OnInit {
   public placeholder: string;
 
   @Input()
-  public value: string;
+  public value: string | number | (string | number)[];
 
   @Input()
   public groep: FormGroup;
@@ -41,4 +41,12 @@ export class BaseFieldComponent implements OnInit {
   public isCheckboxField() {
     return this.fieldType === FormFieldType.CHECKBOX;
   }
+
+  public getValue() {
+    if (Array.isArray(this.value)) {
+      return this.value.join(', ');
+    }
+    return this.value;
+  }
+
 }

@@ -35,9 +35,9 @@ export class FormHelpers {
     return feat.attributes;
   }
 
-  public static getValue(feat: Feature | AttributeListFeature, field: Attribute): string{
+  public static getValue(feat: Feature | AttributeListFeature, field: Attribute): string | number | (string | number)[] {
     let value = null;
-    if(FormHelpers.isGeneratedFeature(feat)){
+    if (FormHelpers.isGeneratedFeature(feat)) {
       const attr = FormCreatorHelpers.getAttribute(feat, field.key);
       value = attr?.value;
     }else{

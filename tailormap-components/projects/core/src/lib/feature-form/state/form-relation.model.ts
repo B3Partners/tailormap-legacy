@@ -1,12 +1,11 @@
-export interface FormChildRelation {
+export interface FeatureChildRelation {
   label: string;
   featureType: string;
   column: string;
   referenceColumn: string;
-  currentRelation?: any | undefined;
 }
 
-export interface FormRelationModel {
+export interface FeatureRelationModel {
   featureType: string;
-  relations: FormChildRelation[];
+  relations: FeatureChildRelation[];
 }
