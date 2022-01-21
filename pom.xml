@@ -64,7 +64,7 @@
         <postgresql.version>42.3.1</postgresql.version>
         <mssql.version>9.4.1.jre11</mssql.version>
         <oracle.version>21.4.0.0.1</oracle.version>
-        <apache.poi.version>5.1.0</apache.poi.version>
+        <apache.poi.version>5.2.0</apache.poi.version>
         <jakarta.mail.version>1.6.7</jakarta.mail.version>
         <apache.httpcomponents.version>4.5.13</apache.httpcomponents.version>
         <apache.commons-httpclient.version>3.1</apache.commons-httpclient.version>
@@ -72,8 +72,8 @@
         <jaxb.api.version>2.3.3</jaxb.api.version>
         <jaxb.impl.version>2.3.5</jaxb.impl.version>
         <activation.api.version>1.2.2</activation.api.version>
-        <slf4j.version>1.7.32</slf4j.version>
-        <hibernate.version>5.6.3.Final</hibernate.version>
+        <slf4j.version>1.7.33</slf4j.version>
+        <hibernate.version>5.6.4.Final</hibernate.version>
         <jackson2.version>2.12.6</jackson2.version>
         <lucene.version>4.6.0</lucene.version>
         <test.junit-jupiter.version>5.8.2</test.junit-jupiter.version>
@@ -220,11 +220,11 @@
             <dependency>
                 <groupId>org.apache.xmlgraphics</groupId>
                 <artifactId>fop</artifactId>
-                <version>2.6</version>
+                <version>2.7</version>
                 <exclusions>
                     <!-- fop-core comes with a load of deps we don't want -->
                     <exclusion>
-                        <!-- fop-core 2.6 drags in servlet api 2.2 -->
+                        <!-- fop-core 2.7 drags in servlet api 2.2 -->
                         <groupId>javax.servlet</groupId>
                         <artifactId>servlet-api</artifactId>
                     </exclusion>
@@ -233,7 +233,7 @@
             <dependency>
                 <groupId>org.apache.xmlgraphics</groupId>
                 <artifactId>xmlgraphics-commons</artifactId>
-                <version>2.6</version>
+                <version>2.7</version>
             </dependency>
             <dependency>
                 <groupId>commons-io</groupId>
@@ -741,7 +741,7 @@
                 </plugin>
                 <plugin>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.8.1</version>
+                    <version>3.9.0</version>
                     <configuration>
                         <source>${java.version}</source>
                         <target>${java.version}</target>
@@ -757,7 +757,7 @@
                 </plugin>
                 <plugin>
                     <artifactId>maven-jar-plugin</artifactId>
-                    <version>3.2.1</version>
+                    <version>3.2.2</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-war-plugin</artifactId>
