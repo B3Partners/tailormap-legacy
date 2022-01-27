@@ -6,6 +6,7 @@
         <non-jta-data-source>java:comp/env/jdbc/geo_viewer</non-jta-data-source>
         <mapping-file>META-INF/orm-postgresql.xml</mapping-file>
         <class>nl.tailormap.viewer.config.services.GeoService</class>
+        <class>nl.tailormap.viewer.config.services.WMSService</class>
         <class>nl.tailormap.viewer.config.services.Category</class>
         <class>nl.tailormap.viewer.config.services.TileSet</class>
         <class>nl.tailormap.viewer.config.services.TileService</class>
