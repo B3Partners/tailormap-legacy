@@ -19,6 +19,7 @@ package nl.tailormap.viewer.config.services;
 import nl.tailormap.viewer.config.ClobElement;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.mutable.MutableObject;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -35,6 +36,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.NoResultException;
 import javax.persistence.OneToMany;
@@ -138,14 +140,23 @@ public abstract class GeoService implements Serializable {
             inverseJoinColumns=@JoinColumn(name="style_library"))
     @OneToMany(cascade=CascadeType.PERSIST) // Actually @OneToMany, workaround for HHH-1268
     @OrderColumn(name="list_index")
-    private List<StyleLibrary> styleLibraries = new ArrayList();
+    private List<StyleLibrary> styleLibraries = new ArrayList<>();
     
     
     @ElementCollection
     @CollectionTable(joinColumns = @JoinColumn(name = "geo_service"))
     @Column(name="role_name")
-    private Set<String> readers = new HashSet<String>();
-    
+    private Set<String> readers = new HashSet<>();
+
+    /**
+     * the capabilities document of the service.
+     */
+    @Lob
+    @Basic(fetch = FetchType.LAZY)
+    @Type(type = "org.hibernate.type.TextType")
+    @Column(name="capabilities_doc")
+    private String capabilitiesDoc;
+
     //<editor-fold defaultstate="collapsed" desc="getters en setters">
     public Long getId() {
         return id;
@@ -274,21 +285,16 @@ public abstract class GeoService implements Serializable {
     public void setVersion(String version) {
         this.version = version;
     }
-    //</editor-fold>
-      /*
-    @PreRemove
-    public void removeAllLayers() {
-        EntityManager em = Stripersist.getEntityManager();
-        List<Layer> allLayers = em.createQuery("from Layer where service = :this")
-                .setParameter("this", this)
-                .getResultList();
-        
-        for(Layer l: allLayers) {
-            l.getChildren().clear();
-            em.remove(l);
-        }
+
+    public String getCapabilitiesDoc() {
+        return capabilitiesDoc;
     }
-*/
+
+    public void setCapabilitiesDoc(String capabilitiesDoc) {
+        this.capabilitiesDoc = capabilitiesDoc;
+    }
+
+    //</editor-fold>
 
     public String getProtocol() {
         return getClass().getAnnotation(DiscriminatorValue.class).value();
@@ -327,12 +333,12 @@ public abstract class GeoService implements Serializable {
             .setParameter("rootId", topLayer.getId())
             .getResultList();   
       
-        childrenByParent = new HashMap<Layer,List<Layer>>();
+        childrenByParent = new HashMap<>();
         for(Layer l: layers) {               
             if(l.getParent() != null) {
                 List<Layer> parentChildren = childrenByParent.get(l.getParent());
                 if(parentChildren == null) {
-                    parentChildren = new ArrayList<Layer>();
+                    parentChildren = new ArrayList<>();
                     childrenByParent.put(l.getParent(), parentChildren);
                 }
                 parentChildren.add(l);
@@ -399,17 +405,14 @@ public abstract class GeoService implements Serializable {
             return null;
         }
         
-        final MutableObject<Layer> layer = new MutableObject(null);
+        final MutableObject<Layer> layer = new MutableObject<>(null);
         
-        topLayer.accept(new Layer.Visitor() {
-            @Override
-            public boolean visit(Layer l, EntityManager em) {
-                if(StringUtils.equals(l.getName(),layerName)) {
-                    layer.setValue(l);
-                    return false;
-                }
-                return true;
+        topLayer.accept((l, em1) -> {
+            if(StringUtils.equals(l.getName(),layerName)) {
+                layer.setValue(l);
+                return false;
             }
+            return true;
         },em);
         
         return layer.getValue();
