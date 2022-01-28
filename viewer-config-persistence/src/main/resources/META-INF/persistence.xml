@@ -66,7 +66,18 @@
             This way, even basic types (e.g. @Basic(fetch = FetchType.LAZY)) can be fetched lazily.
             see https://docs.jboss.org/hibernate/orm/5.6/userguide/html_single/Hibernate_User_Guide.html#BytecodeEnhancement
             -->
+            <!--
+            This causes some springboot error:
+
+            2022-01-28 14:50:55.763  WARN 1568563  [           main] ConfigServletWebServerApplicationContext :
+                    Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.BeanCreationException:
+                    Error creating bean with name 'entityManagerFactory' defined in class path resource [nl/b3p/tailormap/api/JPAConfiguration.class]:
+                    Invocation of init method failed; nested exception is java.lang.IllegalStateException:
+                    Cannot apply class transformer without LoadTimeWeaver specified
+
+            so remove for now...
             <property name="hibernate.enhancer.enableLazyInitialization" value="true"/>
+            -->
         </properties>
     </persistence-unit>
 
