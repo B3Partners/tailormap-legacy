@@ -5,15 +5,47 @@
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
         <non-jta-data-source>java:comp/env/jdbc/geo_viewer</non-jta-data-source>
         <mapping-file>META-INF/orm-postgresql.xml</mapping-file>
-        <class>nl.tailormap.viewer.config.services.GeoService</class>
-        <class>nl.tailormap.viewer.config.services.WMSService</class>
-        <class>nl.tailormap.viewer.config.services.Category</class>
-        <class>nl.tailormap.viewer.config.services.TileSet</class>
-        <class>nl.tailormap.viewer.config.services.TileService</class>
+
+        <class>nl.tailormap.viewer.config.app.Application</class>
+        <class>nl.tailormap.viewer.config.app.ApplicationLayer</class>
+        <class>nl.tailormap.viewer.config.app.Bookmark</class>
+        <class>nl.tailormap.viewer.config.app.ConfiguredAttribute</class>
+        <class>nl.tailormap.viewer.config.app.ConfiguredComponent</class>
+        <class>nl.tailormap.viewer.config.app.FileUpload</class>
+        <class>nl.tailormap.viewer.config.app.Level</class>
+        <class>nl.tailormap.viewer.config.app.Resource</class>
+        <class>nl.tailormap.viewer.config.app.StartLayer</class>
+        <class>nl.tailormap.viewer.config.app.StartLevel</class>
+
+        <class>nl.tailormap.viewer.config.metadata.Metadata</class>
+
         <class>nl.tailormap.viewer.config.security.User</class>
         <class>nl.tailormap.viewer.config.security.Group</class>
-        <class>nl.tailormap.viewer.config.metadata.Metadata</class>
-        <class>nl.tailormap.viewer.config.app.Application</class>
+        <class>nl.tailormap.viewer.config.security.Authorizations</class>
+
+        <class>nl.tailormap.viewer.config.services.ArcGISFeatureSource</class>
+        <class>nl.tailormap.viewer.config.services.ArcGISService</class>
+        <class>nl.tailormap.viewer.config.services.AttributeDescriptor</class>
+        <class>nl.tailormap.viewer.config.services.BoundingBox</class>
+        <class>nl.tailormap.viewer.config.services.Category</class>
+        <class>nl.tailormap.viewer.config.services.CoordinateReferenceSystem</class>
+        <class>nl.tailormap.viewer.config.services.Document</class>
+        <class>nl.tailormap.viewer.config.services.FeatureSource</class>
+        <class>nl.tailormap.viewer.config.services.FeatureTypeRelation</class>
+        <class>nl.tailormap.viewer.config.services.FeatureTypeRelationKey</class>
+        <class>nl.tailormap.viewer.config.services.GeoService</class>
+        <class>nl.tailormap.viewer.config.services.JDBCFeatureSource</class>
+        <class>nl.tailormap.viewer.config.services.Layer</class>
+        <class>nl.tailormap.viewer.config.services.SimpleFeatureType</class>
+        <class>nl.tailormap.viewer.config.services.SolrConf</class>
+        <class>nl.tailormap.viewer.config.services.StyleLibrary</class>
+        <class>nl.tailormap.viewer.config.services.TileMatrix</class>
+        <class>nl.tailormap.viewer.config.services.TileMatrixSet</class>
+        <class>nl.tailormap.viewer.config.services.TileService</class>
+        <class>nl.tailormap.viewer.config.services.TileSet</class>
+        <class>nl.tailormap.viewer.config.services.WFSFeatureSource</class>
+        <class>nl.tailormap.viewer.config.services.WMSExceptionType</class>
+        <class>nl.tailormap.viewer.config.services.WMSService</class>
 
         <properties>
 
