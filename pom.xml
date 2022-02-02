@@ -61,7 +61,7 @@
         <b3p-commons-csw.version>7.3</b3p-commons-csw.version>
         <hsqldb.version>2.6.1</hsqldb.version>
         <test.persistence.unit>viewer-config-hsqldb</test.persistence.unit>
-        <postgresql.version>42.3.1</postgresql.version>
+        <postgresql.version>42.3.2</postgresql.version>
         <mssql.version>10.2.0.jre11</mssql.version>
         <oracle.version>21.4.0.0.1</oracle.version>
         <apache.poi.version>5.2.0</apache.poi.version>
