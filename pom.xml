@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.tailormap</groupId>
     <artifactId>tailormap</artifactId>
-    <version>5.9.14-SNAPSHOT</version>
+    <version>5.9.15-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>tailormap</name>
     <url>https://github.com/b3partners/tailormap</url>
