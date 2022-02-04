@@ -114,7 +114,7 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
         control.disable({ emitEvent: false });
       }
       if (attr.mandatory) {
-        control.setValidators([ Validators.required ]);
+        control.setValidators([ Validators.required, FormFieldHelpers.nonExistingValueValidator(featureAttribute) ]);
         control.updateValueAndValidity({ onlySelf: true, emitEvent: false });
       }
       formControls[attr.key] = control;

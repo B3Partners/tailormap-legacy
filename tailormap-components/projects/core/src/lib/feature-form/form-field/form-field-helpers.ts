@@ -20,6 +20,9 @@ export class FormFieldHelpers {
     if (attribute.value && (!attribute.options || attribute.options.length === 0)) {
       return allowValueFormEmptyOptions ? false : true;
     }
+    if (!attribute.mandatory && FormFieldHelpers.isEmptyAttributeValue(attribute.value)) {
+      return false;
+    }
     if (attribute.options && attribute.options?.length !== 0) {
       const domainValue = FormFieldHelpers.findSelectedOption(attribute.options, attribute.value);
       return Array.isArray(domainValue) ? domainValue.length === 0 : !domainValue;
@@ -58,10 +61,12 @@ export class FormFieldHelpers {
     return value;
   }
 
-  public static isEmptyAttributeValue(value: (string | number)[] | string | number): boolean {
+  public static isEmptyAttributeValue(value: (string | number)[] | string | number | undefined | null): boolean {
     return (Array.isArray(value) && value.length === 0) ||
       (typeof value === 'string' && value === '') ||
-      (typeof value === 'number' && value === -1);
+      (typeof value === 'number' && value === -1) ||
+      (typeof value === 'undefined') ||
+      (value === null);
   }
 
   public static findSelectedOption(options: SelectOption[], attributeValue: string | number | (number | string)[]): SelectOption | SelectOption[] | undefined {
