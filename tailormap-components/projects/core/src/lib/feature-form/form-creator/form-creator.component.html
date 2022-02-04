@@ -1,6 +1,10 @@
 <form [formGroup]="formgroep">
   <mat-tab-group class="tab-group" [class.is-editing]="editing$ | async">
-    <mat-tab *ngFor="let tab of formTabs; trackBy: trackByTabId" label="{{tab.label}}">
+    <mat-tab *ngFor="let tab of formTabs; trackBy: trackByTabId">
+      <ng-template mat-tab-label>
+        {{tab.label}}
+        <span *ngIf="formTabsValidation.has(tab.tabId)" class="tab--invalid-fields"></span>
+      </ng-template>
       <div class="column-container">
         <div *ngFor="let column of tab.columns" class="column">
           <div *ngFor="let attr of column.attributes" class="row">
