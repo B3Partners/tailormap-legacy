@@ -124,7 +124,7 @@ export class MetadataService implements OnDestroy, MetadataServiceModel {
       );
   }
 
-  public getTotalFeaturesForQuery$(appLayer: number, query: string, featureType?: number): Observable<number> {
+  public getTotalFeaturesForQuery$(appLayer: number, query: string, featureType?: number, useSQLFiltering?: boolean): Observable<number> {
     return this.store$.select(selectApplicationId)
       .pipe(
         takeWhile(appId => appId === null, true),
@@ -134,7 +134,7 @@ export class MetadataService implements OnDestroy, MetadataServiceModel {
             application,
             limit: 1,
             clearTotalCountCache: true,
-            useSQLFiltering: true,
+            useSQLFiltering: !!useSQLFiltering,
           };
           if (featureType) {
             featureParams.featureType = featureType;
