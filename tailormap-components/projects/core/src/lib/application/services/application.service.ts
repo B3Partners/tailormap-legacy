@@ -71,6 +71,18 @@ export class ApplicationService implements OnDestroy, ApplicationServiceModel {
         this.store$.dispatch(setSelectedAppLayer({layerId: !!selectedAppLayer ? `${selectedAppLayer.id}` : null}));
       });
 
+    this.tailormapService.layerFilterChangedChanged$
+      .pipe(takeUntil(this.destroyed))
+      .subscribe(({ appLayer, filter }) => {
+        this.layerFilterChangedSubject$.next({
+          appLayer: {
+            ...appLayer,
+            serviceId: '1', // @TODO: Temporary fix
+          },
+          filter,
+        });
+      });
+
     this.formConfigRepositoryService.loadFormConfiguration$()
       .pipe(
         takeUntil(this.destroyed),
