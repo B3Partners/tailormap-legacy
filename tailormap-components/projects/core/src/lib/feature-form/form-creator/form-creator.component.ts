@@ -76,6 +76,8 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
 
   private destroyed = new Subject();
 
+  public formTabsValidation: Map<number, boolean> = new Map();
+
   public ngOnChanges() {
     if (this.feature) {
       this.indexedAttributes = FormCreatorHelpers.convertFeatureToIndexed(this.feature, this.formConfig);
@@ -112,7 +114,8 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
         control.disable({ emitEvent: false });
       }
       if (attr.mandatory) {
-        control.setValidators([ Validators.required ]);
+        control.setValidators([ Validators.required, FormFieldHelpers.nonExistingValueValidator(featureAttribute) ]);
+        control.updateValueAndValidity({ onlySelf: true, emitEvent: false });
       }
       formControls[attr.key] = control;
     }
@@ -121,7 +124,9 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
     this.formgroep.valueChanges.subscribe(() => {
       this.formChanged.emit(true);
       this.formValidChanged.emit(this.formgroep.valid);
+      this.updateTabsValidation();
     });
+    this.updateTabsValidation();
   }
 
   public ngAfterViewInit() {
@@ -224,6 +229,19 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
       updatedFields[key] = FormFieldHelpers.getAttributeControlValue(control);
     });
     return updatedFields;
+  }
+
+  private updateTabsValidation() {
+    this.formTabsValidation = new Map();
+    for (const key in this.formgroep.controls) {
+      if (this.formgroep.controls.hasOwnProperty(key)) {
+        const control = this.formgroep.get(key);
+        if (control.invalid) {
+          const field = this.formConfig.fields.find(f => f.key === key);
+          this.formTabsValidation.set(field.tab, false);
+        }
+      }
+    }
   }
 
 }
