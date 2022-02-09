@@ -1,4 +1,6 @@
-import { AfterViewInit, Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output } from '@angular/core';
+import {
+  AfterViewInit, Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, TemplateRef, ViewChild,
+} from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Observable, Subject, Subscription } from 'rxjs';
@@ -63,6 +65,9 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
 
   @Input()
   public parentId: string | null = null;
+
+  @ViewChild('savingMessage', { read: TemplateRef, static: true })
+  public savingMessage: TemplateRef<any>;
 
   public trackByTabId = (idx, tab: TabbedField) => tab.tabId;
 
@@ -154,6 +159,11 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
 
   public save() {
     const isNewFeature = this.feature.fid === FeatureInitializerService.STUB_OBJECT_GUID_NEW_OBJECT;
+    if (this.savingMessage) {
+      this._snackBar.openFromTemplate(this.savingMessage);
+    } else {
+      this._snackBar.open('Bezig met opslaan...');
+    }
     this.store$.select(selectBulkEditDetails)
       .pipe(
         take(1),
