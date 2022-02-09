@@ -44,6 +44,7 @@ const onSetOpenFeatureForm = (state: FormState, payload: ReturnType<typeof FormA
   editing: typeof payload.editMode !== 'undefined' ? payload.editMode : false,
   multiFormWorkflow: typeof payload.multiFormWorkflow !== 'undefined' ? payload.multiFormWorkflow : false,
   bulkEditFilter: payload.bulkEditFilter,
+  bulkEditFilterType: payload.bulkEditFilterType,
   bulkEditFeatureTypeName: payload.bulkEditFeatureTypeName,
 });
 

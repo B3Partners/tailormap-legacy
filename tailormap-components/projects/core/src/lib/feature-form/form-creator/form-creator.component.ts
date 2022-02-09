@@ -1,4 +1,6 @@
-import { AfterViewInit, Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output } from '@angular/core';
+import {
+  AfterViewInit, Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, TemplateRef, ViewChild,
+} from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Observable, Subject, Subscription } from 'rxjs';
@@ -63,6 +65,9 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
 
   @Input()
   public parentId: string | null = null;
+
+  @ViewChild('savingMessage', { read: TemplateRef, static: true })
+  public savingMessage: TemplateRef<any>;
 
   public trackByTabId = (idx, tab: TabbedField) => tab.tabId;
 
@@ -154,16 +159,20 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
 
   public save() {
     const isNewFeature = this.feature.fid === FeatureInitializerService.STUB_OBJECT_GUID_NEW_OBJECT;
+    if (this.savingMessage) {
+      this._snackBar.openFromTemplate(this.savingMessage);
+    } else {
+      this._snackBar.open('Bezig met opslaan...');
+    }
     this.store$.select(selectBulkEditDetails)
       .pipe(
         take(1),
-        concatMap((bulkEditDetails: [ string, string ] | null) => {
+        concatMap((bulkEditDetails: [ string, string, 'sql' | 'cql' ] | null) => {
           if (bulkEditDetails !== null) {
             // call bulk edit end-point
-            const bulkEditFilter = bulkEditDetails[0];
-            const bulkEditFeatureTypeName = bulkEditDetails[1];
+            const [ bulkEditFilter, bulkEditFeatureTypeName, bulkEditFilterType ] = bulkEditDetails;
             const updatedFields = this.getUpdatedFields();
-            return this.actions.saveBulk$(bulkEditFilter, bulkEditFeatureTypeName, updatedFields);
+            return this.actions.saveBulk$(bulkEditFilter, bulkEditFeatureTypeName, updatedFields, bulkEditFilterType === 'sql');
           }
           this.mergeFormToFeature();
           if (this.isBulk) {

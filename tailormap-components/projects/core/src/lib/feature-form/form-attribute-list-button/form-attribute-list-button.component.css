@@ -4,6 +4,9 @@
 }
 
 .loading-message .message {
-  display: block;
-  margin-left: 12px;
+  margin-left: 16px;
+}
+
+.loading-message .mat-spinner.mat-progress-spinner ::ng-deep circle {
+  stroke: white;
 }

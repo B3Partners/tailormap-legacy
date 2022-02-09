@@ -75,7 +75,12 @@ export class FormAttributeListButtonComponent implements OnDestroy {
   }
 
   public openBulkEditPassportForm(): void {
-    const observables$: [ Observable<string | null>, Observable<string>, Observable<string>, Observable<Map<string, ExtendedFormConfigurationModel>> ] = [
+    const observables$: [
+      Observable<string | null>,
+      Observable<string>,
+      Observable<{ filter: string; filterType: 'sql' | 'cql' } | null>,
+      Observable<Map<string, ExtendedFormConfigurationModel>>,
+    ] = [
       this.attributeListService.getSelectedFeatureTypeName$(),
       this.attributeListService.getSelectedLayerId$(),
       this.attributeListService.getSelectedFeatureTypeFilter$(),
@@ -115,7 +120,8 @@ export class FormAttributeListButtonComponent implements OnDestroy {
           features: [ bulkEditFeature ],
           layerId,
           bulkEditFeatureTypeName: featureTypeName,
-          bulkEditFilter: filter,
+          bulkEditFilter: filter.filter,
+          bulkEditFilterType: filter.filterType,
         }));
       });
   }
