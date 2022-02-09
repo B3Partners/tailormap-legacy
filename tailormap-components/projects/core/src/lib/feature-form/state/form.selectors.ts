@@ -9,16 +9,16 @@ export const selectFeatures = createSelector(selectFormState, state => state.fea
 
 export const selectCurrentFeature = createSelector(selectFormState, state => state.feature);
 
-export const selectBulkEditDetails = createSelector(selectFormState, (state: FormState): [ string, string ] | null => {
+export const selectBulkEditDetails = createSelector(selectFormState, (state: FormState): [ string, string, 'sql' | 'cql' ] | null => {
   return typeof state.bulkEditFilter !== 'undefined' && typeof state.bulkEditFeatureTypeName !== 'undefined'
-    ? [ state.bulkEditFilter, state.bulkEditFeatureTypeName ]
+    ? [ state.bulkEditFilter, state.bulkEditFeatureTypeName, state.bulkEditFilterType ]
     : null;
 });
 
 export const selectInBulkEditMode = createSelector(
   selectFeatures,
   selectBulkEditDetails,
-  (features: Feature[], bulkEditFilter: [ string, string ] | null): boolean => {
+  (features: Feature[], bulkEditFilter: [ string, string, 'sql' | 'cql' ] | null): boolean => {
   return features.length > 1 || bulkEditFilter !== null;
 });
 

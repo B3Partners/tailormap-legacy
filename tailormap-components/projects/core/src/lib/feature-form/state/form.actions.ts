@@ -19,6 +19,7 @@ export const setOpenFeatureForm = createAction(
     multiFormWorkflow?: boolean;
     bulkEditFilter?: string;
     bulkEditFeatureTypeName?: string;
+    bulkEditFilterType?: 'sql' | 'cql';
   }>(),
 );
 

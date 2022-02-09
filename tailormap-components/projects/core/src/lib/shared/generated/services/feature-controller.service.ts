@@ -92,7 +92,7 @@ export class FeatureControllerService extends BaseService {
   updateBulk$Response(params: {
     application: number;
     featureType: string;
-    body: { filter: string; updatedFields: Record<string, string | number | null> };
+    body: { filter: string; updatedFields: Record<string, string | number | null>; useSQLFiltering?: boolean; };
   }): Observable<StrictHttpResponse<boolean>> {
 
     const rb = new RequestBuilder(this.rootUrl, FeatureControllerService.UpdateBulkPath, 'put');
@@ -122,7 +122,7 @@ export class FeatureControllerService extends BaseService {
   updateBulk(params: {
     application: number;
     featureType: string;
-    body: { filter: string; updatedFields: Record<string, string | number | null> };
+    body: { filter: string; updatedFields: Record<string, string | number | null>; useSQLFiltering?: boolean; };
   }): Observable<boolean> {
     return this.updateBulk$Response(params).pipe(
       map((r: StrictHttpResponse<boolean>) => r.status === 200)

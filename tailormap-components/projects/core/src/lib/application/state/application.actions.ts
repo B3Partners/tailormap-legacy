@@ -43,7 +43,7 @@ export const setFormConfigs = createAction(
 
 export const editFeatures = createAction(
   `${applicationActionsPrefix} Edit Features`,
-  props<{ layerId: string; features: Feature[]; bulkEditFilter?: string; bulkEditFeatureTypeName?: string }>(),
+  props<{ layerId: string; features: Feature[]; bulkEditFilter?: string; bulkEditFeatureTypeName?: string; bulkEditFilterType?: 'sql' | 'cql' }>(),
 );
 
 export const editFeaturesComplete = createAction(

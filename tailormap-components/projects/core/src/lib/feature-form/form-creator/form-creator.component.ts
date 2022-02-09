@@ -157,13 +157,12 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
     this.store$.select(selectBulkEditDetails)
       .pipe(
         take(1),
-        concatMap((bulkEditDetails: [ string, string ] | null) => {
+        concatMap((bulkEditDetails: [ string, string, 'sql' | 'cql' ] | null) => {
           if (bulkEditDetails !== null) {
             // call bulk edit end-point
-            const bulkEditFilter = bulkEditDetails[0];
-            const bulkEditFeatureTypeName = bulkEditDetails[1];
+            const [ bulkEditFilter, bulkEditFeatureTypeName, bulkEditFilterType ] = bulkEditDetails;
             const updatedFields = this.getUpdatedFields();
-            return this.actions.saveBulk$(bulkEditFilter, bulkEditFeatureTypeName, updatedFields);
+            return this.actions.saveBulk$(bulkEditFilter, bulkEditFeatureTypeName, updatedFields, bulkEditFilterType === 'sql');
           }
           this.mergeFormToFeature();
           if (this.isBulk) {

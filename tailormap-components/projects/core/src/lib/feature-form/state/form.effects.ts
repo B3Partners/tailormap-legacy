@@ -21,6 +21,7 @@ export class FormEffects {
         editMode: true,
         bulkEditFilter: action.bulkEditFilter,
         bulkEditFeatureTypeName: action.bulkEditFeatureTypeName,
+        bulkEditFilterType: action.bulkEditFilterType,
       });
     }),
   ));
