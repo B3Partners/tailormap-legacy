@@ -55,7 +55,8 @@ public class FeatureTypeRelation {
     private List<FeatureTypeRelationKey> relationKeys = new ArrayList<FeatureTypeRelationKey>();
     
     private String type;
-    
+
+    private boolean searchNextRelation;
 
     //<editor-fold defaultstate="collapsed" desc="Getters/Setters">
     public Long getId() {
@@ -97,6 +98,14 @@ public class FeatureTypeRelation {
     public void setForeignFeatureType(SimpleFeatureType foreignFeatureType) {
         this.foreignFeatureType = foreignFeatureType;
     }
+
+    public boolean isSearchNextRelation() {
+        return searchNextRelation;
+    }
+
+    public void setSearchNextRelation(boolean searchNextRelation) {
+        this.searchNextRelation = searchNextRelation;
+    }
     //</editor-fold>
 
     public JSONObject toJSONObject() throws JSONException {
@@ -117,7 +126,7 @@ public class FeatureTypeRelation {
             j.put("foreignFeatureTypeName", this.foreignFeatureType.getTypeName());
             j.put("foreignFeatureTypePrimaryKeyAttribute", this.foreignFeatureType.getPrimaryKeyAttribute());
             JSONArray jRel = new JSONArray();
-            if (!this.foreignFeatureType.getRelations().isEmpty()){
+            if (!this.foreignFeatureType.getRelations().isEmpty() && this.isSearchNextRelation()){
                 j.put("relations",jRel);
                 for (FeatureTypeRelation rel : this.foreignFeatureType.getRelations()){
                     jRel.put(rel.toJSONObject());
