@@ -105,6 +105,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                                 <td></td>
                                 <td></td>
                             </tr>
+                            <tr>
+                                <td>Zoek volgende relatie:</td>
+                                <td><stripes:checkbox name="relation.searchNextRelation" checked="relation.searchNextRelation" /><br>
+                                </td>
+                                <td></td>
+                                <td></td>
+                            </tr>
                         </table> 
                         <div style="margin-top: 10px;"><fmt:message key="viewer_admin.editfeaturetyperelation.11" />:</div>
                         <div id="attributeContainer"> </div> 
