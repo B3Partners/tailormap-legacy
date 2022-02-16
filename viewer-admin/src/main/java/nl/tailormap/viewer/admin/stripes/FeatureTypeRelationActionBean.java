@@ -95,7 +95,8 @@ public class FeatureTypeRelationActionBean extends LocalizableActionBean {
         @Validate(field="featureType", required=true, on="save"),
         @Validate(field="foreignFeatureType", required=true, on="save"),
         @Validate(field="type", required=true, on="save"),
-        @Validate(field="searchNextRelation", on="save")
+        @Validate(field="searchNextRelation", on="save"),
+        @Validate(field="canCreateNewRelation", on="save")
     })
     private FeatureTypeRelation relation;
         

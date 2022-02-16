@@ -58,6 +58,8 @@ public class FeatureTypeRelation {
 
     private boolean searchNextRelation;
 
+    private boolean canCreateNewRelation;
+
     //<editor-fold defaultstate="collapsed" desc="Getters/Setters">
     public Long getId() {
         return id;
@@ -106,6 +108,10 @@ public class FeatureTypeRelation {
     public void setSearchNextRelation(boolean searchNextRelation) {
         this.searchNextRelation = searchNextRelation;
     }
+
+    public boolean isCanCreateNewRelation() { return canCreateNewRelation; }
+
+    public void setCanCreateNewRelation(boolean canCreateNewRelation) { this.canCreateNewRelation = canCreateNewRelation; }
     //</editor-fold>
 
     public JSONObject toJSONObject(SimpleFeatureType head) throws JSONException {

@@ -107,7 +107,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                             </tr>
                             <tr>
                                 <td>Zoek volgende relatie:</td>
-                                <td><stripes:checkbox name="relation.searchNextRelation" checked="relation.searchNextRelation" /><br>
+                                <td><stripes:checkbox name="relation.searchNextRelation"  checked="relation.searchNextRelation" /><br>
+                                </td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>Relatie kan gelegd worden:</td>
+                                <td><stripes:checkbox name="relation.canCreateNewRelation" checked="relation.canCreateNewRelation" /><br>
                                 </td>
                                 <td></td>
                                 <td></td>
