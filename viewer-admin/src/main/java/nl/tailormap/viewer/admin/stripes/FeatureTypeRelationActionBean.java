@@ -94,7 +94,8 @@ public class FeatureTypeRelationActionBean extends LocalizableActionBean {
     @ValidateNestedProperties({
         @Validate(field="featureType", required=true, on="save"),
         @Validate(field="foreignFeatureType", required=true, on="save"),
-        @Validate(field="type", required=true, on="save")
+        @Validate(field="type", required=true, on="save"),
+        @Validate(field="searchNextRelation", on="save")
     })
     private FeatureTypeRelation relation;
         
