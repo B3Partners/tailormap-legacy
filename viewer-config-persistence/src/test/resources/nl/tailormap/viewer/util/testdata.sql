@@ -202,7 +202,7 @@ INSERT INTO feature_type_attributes (feature_type, attribute_descriptor, list_in
 INSERT INTO feature_type_attributes (feature_type, attribute_descriptor, list_index) VALUES (6, 46, 0);
 
 
-INSERT INTO public.feature_type_relation (id, type, feature_type, foreign_feature_type) VALUES (1, 'relate', 5, 2);
+INSERT INTO public.feature_type_relation (id, type, feature_type, foreign_feature_type, search_next_relation) VALUES (1, 'relate', 5, 2, false);
 
 INSERT INTO public.feature_type_relation_key (id, left_side, relation, right_side) VALUES (1, 43, 1, 11);
 
