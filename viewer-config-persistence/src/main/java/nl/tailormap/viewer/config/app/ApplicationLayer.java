@@ -342,7 +342,7 @@ public class ApplicationLayer {
 
         if(layer != null && layer.getFeatureType() != null) {
             for(FeatureTypeRelation rel: layer.getFeatureType().getRelations()){
-                JSONObject jRel = rel.toJSONObject();
+                JSONObject jRel = rel.toJSONObject(layer.getFeatureType());
                 j.put(jRel);
             }
         }
@@ -365,7 +365,7 @@ public class ApplicationLayer {
                     .setParameter("ft", layer.getFeatureType())
                     .getResultList();
             for (FeatureTypeRelation fr : frs) {
-                relations.put(fr.toJSONObject());
+                relations.put(fr.toJSONObject(layer.getFeatureType()));
             }
         }
         return relations;

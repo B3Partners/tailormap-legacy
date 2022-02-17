@@ -215,10 +215,10 @@ public class FeatureToJson {
                     JSONObject jsonFeature = new JSONObject();
                     jsonFeature.put("__UPLOADS__", uploads);
                     if(this.ordered) {
-                        JSONArray j = this.toJSONFeatureOrdered(jsonFeature,feature,ft,al,propertyNames,attributeAliases,0);
+                        JSONArray j = this.toJSONFeatureOrdered(jsonFeature,feature,ft,al,propertyNames,attributeAliases,0, true, null);
                         features.put(j);
                     } else {
-                        JSONObject j = this.toJSONFeature(jsonFeature,feature,ft,al,propertyNames,attributeAliases,0);
+                        JSONObject j = this.toJSONFeature(jsonFeature,feature,ft,al,propertyNames,attributeAliases,0, true, null);
                         features.put(j);
                     }
                 }
@@ -233,7 +233,7 @@ public class FeatureToJson {
         return features;
     }
 
-    private JSONObject toJSONFeature(JSONObject j,SimpleFeature f, SimpleFeatureType ft, ApplicationLayer al, List<String> propertyNames,Map<String,String> attributeAliases, int index) throws JSONException, Exception{
+    private JSONObject toJSONFeature(JSONObject j,SimpleFeature f, SimpleFeatureType ft, ApplicationLayer al, List<String> propertyNames,Map<String,String> attributeAliases, int index, boolean findNextRelations, SimpleFeatureType head) throws JSONException, Exception{
         if(arrays) {
             for(String name: propertyNames) {
                 Object value = f.getAttribute(name);
@@ -251,13 +251,17 @@ public class FeatureToJson {
             String id = f.getID();
             j.put(FID, id);
         }
-        if (ft.hasRelations()){
-            j = populateWithRelatedFeatures(j,f,ft,al,index, null);
+        if (ft.hasRelations() && findNextRelations){
+            if (head == null) {
+                j = populateWithRelatedFeatures(j,f,ft,al,index, null, ft);
+            } else if (!head.getTypeName().equals(ft.getTypeName())) {
+                j = populateWithRelatedFeatures(j,f,ft,al,index, null, head);
+            }
         }
         return j;
     }
 
-    private JSONArray toJSONFeatureOrdered(JSONObject j,SimpleFeature f, SimpleFeatureType ft, ApplicationLayer al, List<String> propertyNames,Map<String,String> attributeAliases, int index) throws JSONException, Exception{
+    private JSONArray toJSONFeatureOrdered(JSONObject j,SimpleFeature f, SimpleFeatureType ft, ApplicationLayer al, List<String> propertyNames,Map<String,String> attributeAliases, int index, boolean findNextRelations, SimpleFeatureType head) throws JSONException, Exception{
         JSONArray ordered = new JSONArray();
         ordered.put(j);
         for (String name : propertyNames) {
@@ -269,8 +273,12 @@ public class FeatureToJson {
             fidObject.put(FID, id);
             ordered.put(fidObject);
         }
-        if (ft.hasRelations()){
-            populateWithRelatedFeatures(j,f,ft,al,index, ordered);
+        if (ft.hasRelations() && findNextRelations){
+            if (head == null) {
+                populateWithRelatedFeatures(j,f,ft,al,index, ordered, ft);
+            } else if (!head.getTypeName().equals(ft.getTypeName())) {
+                populateWithRelatedFeatures(j,f,ft,al,index, ordered, head);
+            }
         }
         return ordered;
     }
@@ -287,7 +295,7 @@ public class FeatureToJson {
     /**
      * Populate the json object with related featues
      */
-    private JSONObject populateWithRelatedFeatures(JSONObject j,SimpleFeature feature,SimpleFeatureType ft,ApplicationLayer al, int index, JSONArray ordered) throws Exception{
+    private JSONObject populateWithRelatedFeatures(JSONObject j,SimpleFeature feature,SimpleFeatureType ft,ApplicationLayer al, int index, JSONArray ordered, SimpleFeatureType head) throws Exception{
         if (ft.hasRelations()){
             JSONArray related_featuretypes = new JSONArray();
             for (FeatureTypeRelation rel :ft.getRelations()){
@@ -334,9 +342,9 @@ public class FeatureToJson {
                             SimpleFeature foreignFeature = foreignIt.next();
                             //join it in the same json
                             if(ordered == null) {
-                                j = toJSONFeature(j, foreignFeature, rel.getForeignFeatureType(), al, propertyNames, attributeAliases, index);
+                                j = toJSONFeature(j, foreignFeature, rel.getForeignFeatureType(), al, propertyNames, attributeAliases, index, rel.isSearchNextRelation(), head);
                             } else {
-                                this.concatArray(ordered, toJSONFeatureOrdered(j, foreignFeature, rel.getForeignFeatureType(), al, propertyNames, attributeAliases, index));
+                                this.concatArray(ordered, toJSONFeatureOrdered(j, foreignFeature, rel.getForeignFeatureType(), al, propertyNames, attributeAliases, index, rel.isSearchNextRelation(), head));
                             }
                         }
                     }finally{
