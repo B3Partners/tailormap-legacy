@@ -38,12 +38,18 @@ import javax.persistence.EntityManager;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -206,6 +212,7 @@ public class TilingServiceHelper implements GeoServiceHelper {
             // Service info
             s = new TileService();
             s.setTilingProtocol(TILING_PROTOCOL_WMTS);
+            s.setCapabilitiesDoc(documentToString(doc));
 
             XPathExpression expr = xpath.compile("/Capabilities/ServiceIdentification/Title");
             log.error("XPathExpression: " + expr);
@@ -253,10 +260,18 @@ public class TilingServiceHelper implements GeoServiceHelper {
             // Matrices
 
             return s;
-        }catch (ParserConfigurationException | XPathExpressionException ex) {
+        }catch (ParserConfigurationException | XPathExpressionException  | TransformerException ex) {
             log.error("Error reading capabilities: ", ex);
         }
         return s;
+    }
+
+    private static String documentToString(org.w3c.dom.Document document) throws TransformerException {
+        TransformerFactory tf = TransformerFactory.newInstance();
+        Transformer trans = tf.newTransformer();
+        StringWriter sw = new StringWriter();
+        trans.transform(new DOMSource(document), new StreamResult(sw));
+        return sw.toString();
     }
 
     private static List<Layer> parseLayers(XPath xpath, org.w3c.dom.Document doc, Layer topLayer, GeoService s, Map<String, TileMatrixSet> matricesByIdentifier) throws XPathExpressionException{

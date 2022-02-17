@@ -100,7 +100,7 @@ export class CriteriaDescriptionComponent {
   private updateTotalCount(selectedDataSource: AnalysisSourceModel, criteria: CriteriaModel) {
     const query = CriteriaHelper.convertCriteriaToQuery(criteria);
     this.loadingTotalCount = true;
-    this.metadataService.getTotalFeaturesForQuery$(selectedDataSource.layerId, query)
+    this.metadataService.getTotalFeaturesForQuery$(selectedDataSource.layerId, query, undefined, true)
       .pipe(take(1))
       .subscribe(total => {
         this.loadingTotalCount = false;

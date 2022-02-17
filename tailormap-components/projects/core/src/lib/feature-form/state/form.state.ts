@@ -18,6 +18,7 @@ export interface FormState {
   editing: boolean;
   multiFormWorkflow: boolean;
   bulkEditFilter?: string;
+  bulkEditFilterType?: 'sql' | 'cql';
   bulkEditFeatureTypeName?: string;
 
   copyFeature: Feature;

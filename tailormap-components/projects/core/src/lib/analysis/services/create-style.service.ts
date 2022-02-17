@@ -93,7 +93,7 @@ export class CreateStyleService {
       ...StyleHelper.getDefaultStyle(this.idService, this.getNextColor(0)),
       label: selectedDataSource.label,
     };
-    return this.metadataService.getTotalFeaturesForQuery$(selectedDataSource.layerId, query)
+    return this.metadataService.getTotalFeaturesForQuery$(selectedDataSource.layerId, query, undefined, true)
       .pipe(
         map(total => ({ styles: [ { ...style, featureCount: total } ] })),
         // could not get count but we can still create a style here

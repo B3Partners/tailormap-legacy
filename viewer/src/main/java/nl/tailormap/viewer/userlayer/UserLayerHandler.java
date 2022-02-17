@@ -128,7 +128,14 @@ public class UserLayerHandler {
     }
 
     public boolean add() {
-        String viewName = this.dataBase.createViewName(tableName);
+        String viewTableName = tableName;
+        // tableName in the view can be 23 characters max
+        // PostgresSql has an 63 character limit on table name
+        // Prefix + UUID = 40 characters so there are only 23 characters left for the tableName in the view
+        if(viewTableName.length() > 23 ) {
+            viewTableName = viewTableName.substring(0,23);
+        }
+        String viewName = this.dataBase.createViewName(viewTableName);
 
         boolean succes = createView(viewName);
         if (succes) {

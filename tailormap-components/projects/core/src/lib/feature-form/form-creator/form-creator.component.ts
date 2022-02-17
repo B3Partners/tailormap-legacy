@@ -1,4 +1,6 @@
-import { AfterViewInit, Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output } from '@angular/core';
+import {
+  AfterViewInit, Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, TemplateRef, ViewChild,
+} from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Observable, Subject, Subscription } from 'rxjs';
@@ -64,6 +66,9 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
   @Input()
   public parentId: string | null = null;
 
+  @ViewChild('savingMessage', { read: TemplateRef, static: true })
+  public savingMessage: TemplateRef<any>;
+
   public trackByTabId = (idx, tab: TabbedField) => tab.tabId;
 
   public editing$: Observable<boolean>;
@@ -75,6 +80,8 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
   private domainValues = new Map<Attribute, any>();
 
   private destroyed = new Subject();
+
+  public formTabsValidation: Map<number, boolean> = new Map();
 
   public ngOnChanges() {
     if (this.feature) {
@@ -112,7 +119,8 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
         control.disable({ emitEvent: false });
       }
       if (attr.mandatory) {
-        control.setValidators([ Validators.required ]);
+        control.setValidators([ Validators.required, FormFieldHelpers.nonExistingValueValidator(featureAttribute) ]);
+        control.updateValueAndValidity({ onlySelf: true, emitEvent: false });
       }
       formControls[attr.key] = control;
     }
@@ -121,7 +129,9 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
     this.formgroep.valueChanges.subscribe(() => {
       this.formChanged.emit(true);
       this.formValidChanged.emit(this.formgroep.valid);
+      this.updateTabsValidation();
     });
+    this.updateTabsValidation();
   }
 
   public ngAfterViewInit() {
@@ -149,16 +159,20 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
 
   public save() {
     const isNewFeature = this.feature.fid === FeatureInitializerService.STUB_OBJECT_GUID_NEW_OBJECT;
+    if (this.savingMessage) {
+      this._snackBar.openFromTemplate(this.savingMessage);
+    } else {
+      this._snackBar.open('Bezig met opslaan...');
+    }
     this.store$.select(selectBulkEditDetails)
       .pipe(
         take(1),
-        concatMap((bulkEditDetails: [ string, string ] | null) => {
+        concatMap((bulkEditDetails: [ string, string, 'sql' | 'cql' ] | null) => {
           if (bulkEditDetails !== null) {
             // call bulk edit end-point
-            const bulkEditFilter = bulkEditDetails[0];
-            const bulkEditFeatureTypeName = bulkEditDetails[1];
+            const [ bulkEditFilter, bulkEditFeatureTypeName, bulkEditFilterType ] = bulkEditDetails;
             const updatedFields = this.getUpdatedFields();
-            return this.actions.saveBulk$(bulkEditFilter, bulkEditFeatureTypeName, updatedFields);
+            return this.actions.saveBulk$(bulkEditFilter, bulkEditFeatureTypeName, updatedFields, bulkEditFilterType === 'sql');
           }
           this.mergeFormToFeature();
           if (this.isBulk) {
@@ -224,6 +238,19 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
       updatedFields[key] = FormFieldHelpers.getAttributeControlValue(control);
     });
     return updatedFields;
+  }
+
+  private updateTabsValidation() {
+    this.formTabsValidation = new Map();
+    for (const key in this.formgroep.controls) {
+      if (this.formgroep.controls.hasOwnProperty(key)) {
+        const control = this.formgroep.get(key);
+        if (control.invalid) {
+          const field = this.formConfig.fields.find(f => f.key === key);
+          this.formTabsValidation.set(field.tab, false);
+        }
+      }
+    }
   }
 
 }

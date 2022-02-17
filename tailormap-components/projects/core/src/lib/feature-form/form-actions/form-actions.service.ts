@@ -16,11 +16,11 @@ export class FormActionsService {
   ) {
   }
 
-  public saveBulk$(filter: string, featureTypeName: string, updatedFields: Record<string, string | number | null>): Observable<boolean> {
+  public saveBulk$(filter: string, featureTypeName: string, updatedFields: Record<string, string | number | null>, useSQLFiltering?: boolean): Observable<boolean> {
     return this.service.updateBulk({
       application: this.tailormap.getApplicationId(),
       featureType: featureTypeName,
-      body: { filter, updatedFields },
+      body: { filter, updatedFields, useSQLFiltering },
     });
   }
 

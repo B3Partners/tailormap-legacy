@@ -29,3 +29,27 @@ mat-tab-group,
 .is-editing .row + .row {
   border-top: 0 none;
 }
+
+.is-editing .tab--invalid-fields {
+  display: block;
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  border-radius: 100%;
+  background-color: rgb(255, 54, 54);
+  top: 6px;
+  right: 0;
+}
+
+.saving-message {
+  display: flex;
+  align-items: center;
+}
+
+.saving-message div {
+  margin-left: 16px;
+}
+
+.saving-message .mat-spinner.mat-progress-spinner ::ng-deep circle {
+  stroke: white;
+}
