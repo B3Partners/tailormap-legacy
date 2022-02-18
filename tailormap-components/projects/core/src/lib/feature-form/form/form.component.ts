@@ -112,7 +112,7 @@ export class FormComponent implements OnDestroy, OnInit {
     this.isBulk = isBulkEdit;
     this.formsForNew = (feature.relations || [])
       .filter(relation => {
-        return allFormConfigs.has(relation.foreignFeatureTypeName) && !relation.canCreateNewRelation;
+        return allFormConfigs.has(relation.foreignFeatureTypeName) && relation.searchNextRelation;
       })
       .map(relation => allFormConfigs.get(relation.foreignFeatureTypeName));
     this.formTabs = this.prepareFormConfig();
