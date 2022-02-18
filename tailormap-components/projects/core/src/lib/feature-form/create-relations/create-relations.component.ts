@@ -138,6 +138,7 @@ export class CreateRelationsComponent implements OnDestroy {
     this.changedRelations[relation.column] = '';
     this.changedRelationGeom[relation.column] = '';
     this.store$.dispatch(removeNetworkHighlightFeature({ fid: !!changedRelation ? changedRelation : relation.currentRelation }));
+    this.hasChangedRelation = true;
   }
 
   public isEmptyRelation(relation: FormChildRelation) {
