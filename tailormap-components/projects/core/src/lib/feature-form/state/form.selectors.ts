@@ -74,6 +74,7 @@ export const selectCopyDestinationFeatures = createSelector(selectFormState, sta
 export const selectRelationsFormOpen = createSelector(selectFormState, state => state.relationsFormOpen);
 export const selectAllowedRelationSelectionFeatureTypes = createSelector(selectFormState, state => state.allowedRelationSelectionFeatureTypes);
 export const selectCurrentlySelectedRelatedFeature = createSelector(selectFormState, state => state.currentlySelectedRelatedFeature);
+export const selectHighlightNetwork = createSelector(selectFormState, state => state.highlightNetworkFeatures.map(f => f.geom));
 export const selectCreateRelationsFeature = createSelector(selectFormState, state => {
   if (!state.features || state.features.length === 0) {
     return null;
@@ -88,23 +89,31 @@ export const selectFormRelationsForCurrentFeature = createSelector(
     if (feature === null) {
       return null;
     }
-    const layerFeatureTypeNames = new Map(layers.map(layer => [layer.featureTypeName, layer.layerName]));
+    const layerFeatureTypeNames = new Map(layers.map(layer => [layer.featureTypeName, layer.alias || layer.layerName]));
     const relations = feature.relations.filter(relation => {
-      return layerFeatureTypeNames.has(relation.foreignFeatureTypeName)
+      return relation.canCreateNewRelation
+        && layerFeatureTypeNames.has(relation.foreignFeatureTypeName)
         && (!!relation.columnName && !!relation.foreignColumnName);
     });
-    if (relations.length === 0) {
-      return null;
-    }
     return {
       featureType: feature.tableName,
-      relations: relations.map(relation => ({
-        featureType: relation.foreignFeatureTypeName,
-        label: `${layerFeatureTypeNames.get(relation.foreignFeatureTypeName)} (${relation.columnName})`,
-        column: relation.columnName,
-        referenceColumn: relation.foreignColumnName,
-        currentRelation: feature.attributes.find(a => a.key === relation.columnName)?.value,
-      })),
+      relations: relations.map(relation => {
+        const filter = relation.filter
+          ? relation.filter.split('=').map(part => part.trim().replace(/['"]/g, ''))
+          : [];
+        let child: Feature | null = null;
+        if (filter.length === 2) {
+          child = feature.children.find(c => c.attributes.some(a => a.key === filter[0] && a.value === filter[1]));
+        }
+        return {
+          featureType: relation.foreignFeatureTypeName,
+          label: `${layerFeatureTypeNames.get(relation.foreignFeatureTypeName)} (${relation.columnName})`,
+          column: relation.columnName,
+          referenceColumn: relation.foreignColumnName,
+          currentRelation: feature.attributes.find(a => a.key === relation.columnName)?.value,
+          geometry: child ? child.defaultGeometry : null,
+        };
+      }),
     };
   },
 );

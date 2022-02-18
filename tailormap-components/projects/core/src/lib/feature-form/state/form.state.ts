@@ -31,6 +31,7 @@ export interface FormState {
   relationsFormOpen: boolean;
   allowedRelationSelectionFeatureTypes: string[];
   currentlySelectedRelatedFeature: Feature | null;
+  highlightNetworkFeatures: Array<{ fid: string; geom: string }>;
 }
 
 export const initialFormState: FormState = {
@@ -54,4 +55,5 @@ export const initialFormState: FormState = {
   relationsFormOpen: false,
   allowedRelationSelectionFeatureTypes: [],
   currentlySelectedRelatedFeature: null,
+  highlightNetworkFeatures: [],
 };

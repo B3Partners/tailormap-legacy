@@ -3,6 +3,8 @@ export interface FormChildRelation {
   featureType: string;
   column: string;
   referenceColumn: string;
+  geometry?: string;
+  currentRelation?: string | any;
 }
 
 export interface FormRelationModel {

@@ -8,4 +8,6 @@ export interface Relation {
   columnType?: string;
   foreignColumnName?: string;
   foreignColumnType?: string;
+  searchNextRelation?: boolean;
+  canCreateNewRelation?: boolean;
 }

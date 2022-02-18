@@ -91,3 +91,12 @@ export const setCurrentlySelectedRelatedFeature = createAction(
   `${formActionsPrefix} Set Currently Related Feature`,
   props<{ relatedFeature: Feature | null }>(),
 );
+export const toggleNetworkHighlightFeature = createAction(
+  `${formActionsPrefix} Toggle Network Highlight Feature`,
+  props<{ fid: string; geom: string }>(),
+);
+export const removeNetworkHighlightFeature = createAction(
+  `${formActionsPrefix} Remove Network Highlight Feature`,
+  props<{ fid: string }>(),
+);
+export const clearNetworkHighlight = createAction(`${formActionsPrefix} Clear Network Highlight`);

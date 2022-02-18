@@ -142,6 +142,7 @@ const onCloseRelationsForm = (state: FormState): FormState => ({
   ...state,
   relationsFormOpen: false,
   allowedRelationSelectionFeatureTypes: [],
+  highlightNetworkFeatures: [],
   currentlySelectedRelatedFeature: null,
 });
 const onAllowRelationSelection = (state: FormState, payload: ReturnType<typeof FormActions.allowRelationSelection>): FormState => ({
@@ -153,6 +154,44 @@ const onSetCurrentlySelectedRelatedFeature = (state: FormState, payload: ReturnT
   ...state,
   currentlySelectedRelatedFeature: payload.relatedFeature,
 });
+
+const onToggleNetworkHighlightFeature = (state: FormState, payload: ReturnType<typeof FormActions.toggleNetworkHighlightFeature>): FormState => {
+  const idx = state.highlightNetworkFeatures.findIndex(f => f.fid === payload.fid);
+  if (idx === -1) {
+    return {
+      ...state,
+      highlightNetworkFeatures: [
+        ...state.highlightNetworkFeatures,
+        payload,
+      ],
+    };
+  }
+  return {
+    ...state,
+    highlightNetworkFeatures: [
+      ...state.highlightNetworkFeatures.slice(0, idx),
+      ...state.highlightNetworkFeatures.slice(idx + 1),
+    ],
+  };
+};
+
+const onRemoveNetworkHighlightFeature = (state: FormState, payload: ReturnType<typeof FormActions.removeNetworkHighlightFeature>): FormState => {
+  const idx = state.highlightNetworkFeatures.findIndex(f => f.fid === payload.fid);
+  if (idx === -1) {
+    return state;
+  }
+  return {
+    ...state,
+    highlightNetworkFeatures: [
+      ...state.highlightNetworkFeatures.slice(0, idx),
+      ...state.highlightNetworkFeatures.slice(idx + 1),
+    ],
+  };
+};
+
+const onClearNetworkHighlight = (state: FormState): FormState => {
+  return { ...state, highlightNetworkFeatures: [] };
+};
 
 const formReducerImpl = createReducer(
   initialFormState,
@@ -174,6 +213,9 @@ const formReducerImpl = createReducer(
   on(FormActions.closeRelationsForm, onCloseRelationsForm),
   on(FormActions.allowRelationSelection, onAllowRelationSelection),
   on(FormActions.setCurrentlySelectedRelatedFeature, onSetCurrentlySelectedRelatedFeature),
+  on(FormActions.toggleNetworkHighlightFeature, onToggleNetworkHighlightFeature),
+  on(FormActions.removeNetworkHighlightFeature, onRemoveNetworkHighlightFeature),
+  on(FormActions.clearNetworkHighlight, onClearNetworkHighlight),
 );
 
 export const formReducer = (state: FormState | undefined, action: Action) => {
