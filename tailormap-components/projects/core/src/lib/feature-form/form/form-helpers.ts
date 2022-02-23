@@ -1,6 +1,6 @@
 import { Feature } from '../../shared/generated';
 import { AttributeListFeature } from '../../shared/attribute-service/attribute-models';
-import { Attribute } from './form-models';
+import { Attribute, FormConfiguration } from './form-models';
 import { FormCreatorHelpers } from '../form-creator/form-creator-helpers';
 
 export class FormHelpers {
@@ -44,6 +44,32 @@ export class FormHelpers {
       value = feat[field.key] ? feat[field.key] : '';
     }
     return value;
+  }
+
+  public static getRemoveFeatureConfirmMessage(
+    feature: Feature,
+    attributeLabel: string,
+    formConfigs: Map<string, FormConfiguration>,
+  ): string {
+    const formConfig = formConfigs.get(feature.tableName);
+    const message = [];
+    message.push('Wilt u ' + (formConfig.name || feature.tableName) + ' - ' + attributeLabel + ' verwijderen?');
+    if (feature.children && feature.children.length > 0) {
+      const childRelations: Map<string, number> = new Map();
+      feature.children.forEach(child => {
+        childRelations.set(child.tableName, (childRelations.get(child.tableName) || 0) + 1);
+      });
+      message.push('', 'Let op! Dit object heeft een relatie met:');
+      childRelations.forEach((count, tableName) => {
+        message.push('', '- ' + (formConfigs.get(tableName)?.name || tableName) + ' (' + count + ')');
+      });
+      message.push('', 'Deze relaties worden verbroken en object met onderliggende objecten worden verwijderd.');
+    }
+    return FormHelpers.getTextWithNewlines(message);
+  }
+
+  private static getTextWithNewlines(messages: string[]): string {
+    return messages.join('\n');
   }
 
 }
