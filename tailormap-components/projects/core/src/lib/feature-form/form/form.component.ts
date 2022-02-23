@@ -15,6 +15,7 @@ import {
   selectCurrentFeature, selectFeatures, selectFormAlreadyDirty, selectFormEditing, selectFormRelationsForCurrentFeature, selectFormVisible,
   selectInBulkEditMode, selectIsMultiFormWorkflow,
 } from '../state/form.selectors';
+import { FormHelpers } from './form-helpers';
 import { WORKFLOW_ACTION } from '../../workflow/state/workflow-models';
 import { WorkflowState } from '../../workflow/state/workflow.state';
 import { selectFormConfigForFeatureTypeName, selectFormConfigs } from '../../application/state/application.selectors';
@@ -45,6 +46,7 @@ export class FormComponent implements OnDestroy, OnInit {
   public formValid: boolean;
 
   private destroyed = new Subject();
+  private allFormConfigs: Map<string, ExtendedFormConfigurationModel>;
 
   public isHidden$: Observable<boolean>;
   public editing$: Observable<boolean>;
@@ -115,6 +117,7 @@ export class FormComponent implements OnDestroy, OnInit {
         return allFormConfigs.has(relation.foreignFeatureTypeName) && relation.searchNextRelation;
       })
       .map(relation => allFormConfigs.get(relation.foreignFeatureTypeName));
+    this.allFormConfigs = allFormConfigs;
     this.formTabs = this.prepareFormConfig();
     this.formElement.nativeElement.style
       .setProperty('--overlay-panel-form-columns', `${this.getMaxColumnCount(features, allFormConfigs)}`);
@@ -206,10 +209,7 @@ export class FormComponent implements OnDestroy, OnInit {
 
   public remove() {
     const attributeLabel = FormTreeHelpers.getFeatureValueForField(this.feature, this.formConfig, this.formConfig.treeNodeColumn);
-    let message = 'Wilt u ' + this.formConfig.name + ' - ' + attributeLabel + ' verwijderen?';
-    if (this.feature.children && this.feature.children.length > 0) {
-      message += ' Let op! Alle onderliggende objecten worden ook verwijderd.';
-    }
+    const message = FormHelpers.getRemoveFeatureConfirmMessage(this.feature, attributeLabel, this.allFormConfigs);
     this.confirmDialogService.confirm$('Verwijderen',
       message, true)
       .pipe(take(1), filter(remove => remove)).subscribe(() => {
