@@ -103,7 +103,7 @@ public class ApplicationLayerHelper {
         if(layer != null) {
             ft = layer.getFeatureType();
             if(ft != null) {
-                featureTypeAttributes = makeAttributeDescriptorList(ft);
+                featureTypeAttributes = makeAttributeDescriptorList(ft, null);
             }
         }
 
@@ -185,7 +185,7 @@ public class ApplicationLayerHelper {
      * Makes a list of al the attributeDescriptors of the given FeatureType and
      * all the child FeatureTypes (related by join/relate)
      */
-    private static Map<String, AttributeDescriptor> makeAttributeDescriptorList(SimpleFeatureType ft) {
+    private static Map<String, AttributeDescriptor> makeAttributeDescriptorList(SimpleFeatureType ft, SimpleFeatureType head) {
         Map<String,AttributeDescriptor> featureTypeAttributes = new HashMap<>();
         for(AttributeDescriptor ad: ft.getAttributes()) {
             String name=ft.getId()+":"+ad.getName();
@@ -195,9 +195,13 @@ public class ApplicationLayerHelper {
             }
             featureTypeAttributes.put(name, ad);
         }
-        if (ft.getRelations()!=null){
+        if (ft.getRelations()!=null && head == null) {
             for (FeatureTypeRelation rel : ft.getRelations()){
-                featureTypeAttributes.putAll(makeAttributeDescriptorList(rel.getForeignFeatureType()));
+                featureTypeAttributes.putAll(makeAttributeDescriptorList(rel.getForeignFeatureType(), ft));
+            }
+        } else if (ft.getRelations() != null && !ft.getTypeName().equals(head.getTypeName())) {
+            for (FeatureTypeRelation rel : ft.getRelations()){
+                featureTypeAttributes.putAll(makeAttributeDescriptorList(rel.getForeignFeatureType(), head));
             }
         }
         return featureTypeAttributes;
