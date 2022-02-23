@@ -1,11 +1,13 @@
-export interface FeatureChildRelation {
+export interface FormChildRelation {
   label: string;
   featureType: string;
   column: string;
   referenceColumn: string;
+  geometry?: string;
+  currentRelation?: string | any;
 }
 
-export interface FeatureRelationModel {
+export interface FormRelationModel {
   featureType: string;
-  relations: FeatureChildRelation[];
+  relations: FormChildRelation[];
 }

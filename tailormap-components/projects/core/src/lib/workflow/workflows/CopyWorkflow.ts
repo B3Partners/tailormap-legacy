@@ -72,7 +72,4 @@ export class CopyWorkflow extends Workflow {
     this.store$.dispatch(openCopyForm({ feature: this.feature }));
   }
 
-  public getDestinationFeatures(): Feature[] {
-    return this.destinationFeatures;
-  }
 }

@@ -34,7 +34,7 @@ export const toggleFeatureFormVisibility = createAction(
 
 export const setFeature = createAction(
   `${formActionsPrefix} Set feature`,
-  props<{ feature: Feature }>(),
+  props<{ feature: Feature; updateFeatures?: boolean }>(),
 );
 
 export const setNewFeature = createAction(
@@ -80,3 +80,23 @@ export const setCopyOptionsOpen = createAction(
   `${formActionsPrefix} Set Copy Options Panel Open`,
   props<{ open: boolean }>(),
 );
+
+export const openRelationsForm = createAction(`${formActionsPrefix} Open Form Relations`);
+export const closeRelationsForm = createAction(`${formActionsPrefix} Close Form Relations`);
+export const allowRelationSelection = createAction(
+  `${formActionsPrefix} Allow Relation Selection`,
+  props<{ allowedFeatureTypes: string[] }>(),
+);
+export const setCurrentlySelectedRelatedFeature = createAction(
+  `${formActionsPrefix} Set Currently Related Feature`,
+  props<{ relatedFeature: Feature | null }>(),
+);
+export const toggleNetworkHighlightFeature = createAction(
+  `${formActionsPrefix} Toggle Network Highlight Feature`,
+  props<{ fid: string; geom: string }>(),
+);
+export const removeNetworkHighlightFeature = createAction(
+  `${formActionsPrefix} Remove Network Highlight Feature`,
+  props<{ fid: string }>(),
+);
+export const clearNetworkHighlight = createAction(`${formActionsPrefix} Clear Network Highlight`);

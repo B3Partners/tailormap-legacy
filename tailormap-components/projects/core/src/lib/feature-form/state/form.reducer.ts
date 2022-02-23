@@ -23,6 +23,7 @@ const onSetHideFeatureForm = (state: FormState, payload: ReturnType<typeof FormA
 const onSetFeature = (state: FormState, payload: ReturnType<typeof FormActions.setFeature>): FormState => ({
   ...state,
   feature: payload.feature,
+  features: payload.updateFeatures ? addOrUpdateFeature([...state.features], payload.feature, null) : state.features,
 });
 
 const onSetNewFeature = (state: FormState, payload: ReturnType<typeof FormActions.setNewFeature>): FormState => {
@@ -137,6 +138,62 @@ const onSetCopyOptionsOpen = (state: FormState, payload: ReturnType<typeof FormA
   copyOptionsOpen: payload.open,
 });
 
+const onOpenRelationsForm = (state: FormState): FormState => ({ ...state, relationsFormOpen: true });
+const onCloseRelationsForm = (state: FormState): FormState => ({
+  ...state,
+  relationsFormOpen: false,
+  allowedRelationSelectionFeatureTypes: [],
+  highlightNetworkFeatures: [],
+  currentlySelectedRelatedFeature: null,
+});
+const onAllowRelationSelection = (state: FormState, payload: ReturnType<typeof FormActions.allowRelationSelection>): FormState => ({
+  ...state,
+  allowedRelationSelectionFeatureTypes: payload.allowedFeatureTypes,
+  currentlySelectedRelatedFeature: null,
+});
+const onSetCurrentlySelectedRelatedFeature = (state: FormState, payload: ReturnType<typeof FormActions.setCurrentlySelectedRelatedFeature>): FormState => ({
+  ...state,
+  currentlySelectedRelatedFeature: payload.relatedFeature,
+});
+
+const onToggleNetworkHighlightFeature = (state: FormState, payload: ReturnType<typeof FormActions.toggleNetworkHighlightFeature>): FormState => {
+  const idx = state.highlightNetworkFeatures.findIndex(f => f.fid === payload.fid);
+  if (idx === -1) {
+    return {
+      ...state,
+      highlightNetworkFeatures: [
+        ...state.highlightNetworkFeatures,
+        payload,
+      ],
+    };
+  }
+  return {
+    ...state,
+    highlightNetworkFeatures: [
+      ...state.highlightNetworkFeatures.slice(0, idx),
+      ...state.highlightNetworkFeatures.slice(idx + 1),
+    ],
+  };
+};
+
+const onRemoveNetworkHighlightFeature = (state: FormState, payload: ReturnType<typeof FormActions.removeNetworkHighlightFeature>): FormState => {
+  const idx = state.highlightNetworkFeatures.findIndex(f => f.fid === payload.fid);
+  if (idx === -1) {
+    return state;
+  }
+  return {
+    ...state,
+    highlightNetworkFeatures: [
+      ...state.highlightNetworkFeatures.slice(0, idx),
+      ...state.highlightNetworkFeatures.slice(idx + 1),
+    ],
+  };
+};
+
+const onClearNetworkHighlight = (state: FormState): FormState => {
+  return { ...state, highlightNetworkFeatures: [] };
+};
+
 const formReducerImpl = createReducer(
   initialFormState,
   on(FormActions.setTreeOpen, onSetTreeOpen),
@@ -153,6 +210,13 @@ const formReducerImpl = createReducer(
   on(FormActions.toggleSelectedAttribute, onToggleSelectedAttribute),
   on(FormActions.closeCopyForm, onCloseCopyForm),
   on(FormActions.setCopyOptionsOpen, onSetCopyOptionsOpen),
+  on(FormActions.openRelationsForm, onOpenRelationsForm),
+  on(FormActions.closeRelationsForm, onCloseRelationsForm),
+  on(FormActions.allowRelationSelection, onAllowRelationSelection),
+  on(FormActions.setCurrentlySelectedRelatedFeature, onSetCurrentlySelectedRelatedFeature),
+  on(FormActions.toggleNetworkHighlightFeature, onToggleNetworkHighlightFeature),
+  on(FormActions.removeNetworkHighlightFeature, onRemoveNetworkHighlightFeature),
+  on(FormActions.clearNetworkHighlight, onClearNetworkHighlight),
 );
 
 export const formReducer = (state: FormState | undefined, action: Action) => {

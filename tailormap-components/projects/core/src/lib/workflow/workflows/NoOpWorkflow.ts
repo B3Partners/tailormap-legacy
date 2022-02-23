@@ -1,5 +1,4 @@
 import { Workflow } from './Workflow';
-import { Feature } from '../../shared/generated';
 
 export class NoOpWorkflow extends Workflow {
 
@@ -7,10 +6,6 @@ export class NoOpWorkflow extends Workflow {
   }
 
   public geometryDrawn(): void {
-  }
-
-  public getDestinationFeatures(): Feature[] {
-    return [];
   }
 
   public mapClick(): void {

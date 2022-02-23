@@ -203,10 +203,6 @@ export class SewageWorkflow extends Workflow {
     this.tailorMap.getViewerController().mapComponent.getMap().update();
   }
 
-  public getDestinationFeatures(): Feature[] {
-    return [];
-  }
-
 }
 
 enum Step {

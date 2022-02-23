@@ -27,6 +27,11 @@ export interface FormState {
   copySelectedFeature: Feature;
   copyFormOpen: boolean;
   copyOptionsOpen: boolean;
+
+  relationsFormOpen: boolean;
+  allowedRelationSelectionFeatureTypes: string[];
+  currentlySelectedRelatedFeature: Feature | null;
+  highlightNetworkFeatures: Array<{ fid: string; geom: string }>;
 }
 
 export const initialFormState: FormState = {
@@ -46,4 +51,9 @@ export const initialFormState: FormState = {
   copySelectedFeature: null,
   copyFormOpen: false,
   copyOptionsOpen: false,
+
+  relationsFormOpen: false,
+  allowedRelationSelectionFeatureTypes: [],
+  currentlySelectedRelatedFeature: null,
+  highlightNetworkFeatures: [],
 };

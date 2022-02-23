@@ -1,7 +1,9 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
 import { FormState, formStateKey } from './form.state';
 import { Feature } from '../../shared/generated';
-import { selectFormConfigs } from '../../application/state/application.selectors';
+import { selectFormConfigs, selectVisibleLayers } from '../../application/state/application.selectors';
+import { FormRelationModel } from './form-relation.model';
+import { TailormapAppLayer } from '../../application/models/tailormap-app-layer.model';
 
 const selectFormState = createFeatureSelector<FormState>(formStateKey);
 
@@ -68,3 +70,53 @@ export const selectCurrentSelectedCopyFeatureAndFormConfig = createSelector(
   },
 );
 export const selectCopyDestinationFeatures = createSelector(selectFormState, state => state.copyDestinationFeatures);
+
+export const selectRelationsFormOpen = createSelector(selectFormState, state => state.relationsFormOpen);
+export const selectAllowedRelationSelectionFeatureTypes = createSelector(selectFormState, state => state.allowedRelationSelectionFeatureTypes);
+export const selectCurrentlySelectedRelatedFeature = createSelector(selectFormState, state => state.currentlySelectedRelatedFeature);
+export const selectHighlightNetwork = createSelector(selectFormState, state => state.highlightNetworkFeatures.map(f => f.geom));
+export const selectCreateRelationsFeature = createSelector(selectFormState, state => {
+  if (!state.features || state.features.length === 0) {
+    return null;
+  }
+  return state.features[0];
+});
+
+export const selectFormRelationsForCurrentFeature = createSelector(
+  selectVisibleLayers,
+  selectCreateRelationsFeature,
+  (layers: TailormapAppLayer[], feature: Feature | null): FormRelationModel | null => {
+    if (feature === null) {
+      return null;
+    }
+    const layerFeatureTypeNames = new Map(layers.map(layer => [layer.featureTypeName, layer.alias || layer.layerName]));
+    const relationThatCanBeCreated = feature.relations.filter(relation => relation.canCreateNewRelation);
+    if (relationThatCanBeCreated.length === 0) {
+      return null;
+    }
+    const relations = relationThatCanBeCreated.filter(relation => {
+      return layerFeatureTypeNames.has(relation.foreignFeatureTypeName)
+        && (!!relation.columnName && !!relation.foreignColumnName);
+    });
+    return {
+      featureType: feature.tableName,
+      relations: relations.map(relation => {
+        const filter = relation.filter
+          ? relation.filter.split('=').map(part => part.trim().replace(/['"]/g, ''))
+          : [];
+        let child: Feature | null = null;
+        if (filter.length === 2) {
+          child = feature.children.find(c => c.attributes.some(a => a.key === filter[0] && a.value === filter[1]));
+        }
+        return {
+          featureType: relation.foreignFeatureTypeName,
+          label: `${layerFeatureTypeNames.get(relation.foreignFeatureTypeName)} (${relation.columnName})`,
+          column: relation.columnName,
+          referenceColumn: relation.foreignColumnName,
+          currentRelation: feature.attributes.find(a => a.key === relation.columnName)?.value,
+          geometry: child ? child.defaultGeometry : null,
+        };
+      }),
+    };
+  },
+);

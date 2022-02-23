@@ -26,7 +26,10 @@ export class FeatureInitializerService {
   }
 
   public retrieveGeometry(feature: Feature): GeoJSONGeometry {
-    const wkt = feature.defaultGeometry;
+    return this.retrieveGeometryFromWkt(feature.defaultGeometry);
+  }
+
+  public retrieveGeometryFromWkt(wkt: string): GeoJSONGeometry {
     if (wkt != null) {
       return wellknown.parse(wkt);
     }
