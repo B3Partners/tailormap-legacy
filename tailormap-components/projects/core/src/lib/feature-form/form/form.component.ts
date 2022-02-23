@@ -267,7 +267,7 @@ export class FormComponent implements OnDestroy, OnInit {
         };
         this.actions.save$(this.feature).subscribe(savedFeature => {
           this.tailormapService.getViewerController().mapComponent.getMap().update();
-          this.store$.dispatch(FormActions.setFeature({ feature: savedFeature }));
+          this.store$.dispatch(FormActions.setFeature({ feature: savedFeature, updateFeatures: true }));
         });
       });
   }

@@ -34,7 +34,7 @@ export const toggleFeatureFormVisibility = createAction(
 
 export const setFeature = createAction(
   `${formActionsPrefix} Set feature`,
-  props<{ feature: Feature }>(),
+  props<{ feature: Feature; updateFeatures?: boolean }>(),
 );
 
 export const setNewFeature = createAction(

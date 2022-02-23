@@ -129,6 +129,45 @@ export class FeatureControllerService extends BaseService {
     );
   }
 
+  static readonly RemoveRelationPath = '/features/removerelation/{application}/{featureType}';
+
+  removeRelation$Response(params: {
+    application: number;
+    featureType: string;
+    fid: string;
+    relationColumn: string;
+  }): Observable<StrictHttpResponse<Feature>> {
+    const rb = new RequestBuilder(this.rootUrl, FeatureControllerService.RemoveRelationPath, 'post');
+    if (params) {
+      rb.path('application', params.application, {});
+      rb.path('featureType', params.featureType, {});
+      rb.body({
+        featureId: params.fid,
+        relationColumn: params.relationColumn,
+      }, 'application/json');
+    }
+    return this.http.request(rb.build({
+      responseType: 'json',
+      accept: 'application/json'
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<Feature>;
+      })
+    );
+  }
+
+  removeRelation(params: {
+    application: number;
+    featureType: string;
+    fid: string;
+    relationColumn: string;
+  }): Observable<Feature> {
+    return this.removeRelation$Response(params).pipe(
+      map((r: StrictHttpResponse<Feature>) => r.body as Feature)
+    );
+  }
+
   /**
    * Path part for operation delete
    */

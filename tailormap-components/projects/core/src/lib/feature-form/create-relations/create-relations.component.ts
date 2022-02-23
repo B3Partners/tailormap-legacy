@@ -5,17 +5,20 @@ import {
   selectCreateRelationsFeature, selectCurrentlySelectedRelatedFeature,
   selectFormRelationsForCurrentFeature,
 } from '../state/form.selectors';
-import { Subject } from 'rxjs';
+import { of, Subject } from 'rxjs';
 import { FormChildRelation, FormRelationModel } from '../state/form-relation.model';
 import { FormTreeHelpers } from '../form-tree/form-tree-helpers';
 import { selectFormConfigs } from '../../application/state/application.selectors';
 import { ExtendedFormConfigurationModel } from '../../application/models/extended-form-configuration.model';
-import { skip, take, takeUntil } from 'rxjs/operators';
+import { catchError, concatMap, skip, take, takeUntil } from 'rxjs/operators';
 import {
-  allowRelationSelection, clearNetworkHighlight, closeRelationsForm, removeNetworkHighlightFeature, toggleNetworkHighlightFeature,
+  allowRelationSelection, clearNetworkHighlight, closeRelationsForm, removeNetworkHighlightFeature, setFeature,
+  toggleNetworkHighlightFeature,
 } from '../state/form.actions';
 import { FormActionsService } from '../form-actions/form-actions.service';
 import { FeatureUpdateHelper } from '../../shared/feature-initializer/feature-update.helper';
+import { ConfirmDialogService } from '@tailormap/shared';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'tailormap-create-relations',
@@ -27,7 +30,7 @@ export class CreateRelationsComponent implements OnDestroy {
   public featureRelations: FormRelationModel;
   private formConfigs: Map<string, ExtendedFormConfigurationModel>;
   private destroyed = new Subject();
-  private feature: Feature;
+  public feature: Feature;
   public currentRelation: FormChildRelation;
   private changedRelations: Record<string, any> = {};
   private changedRelationGeom: Record<string, string> = {};
@@ -39,6 +42,8 @@ export class CreateRelationsComponent implements OnDestroy {
   constructor(
     private store$: Store,
     private formActionsService: FormActionsService,
+    private confirmService: ConfirmDialogService,
+    private snackBar: MatSnackBar,
   ) {
     this.store$.select(selectFormConfigs)
       .pipe(takeUntil(this.destroyed))
@@ -57,10 +62,16 @@ export class CreateRelationsComponent implements OnDestroy {
   }
 
   public getFeatureName() {
+    if (!this.feature) {
+      return '';
+    }
     return FormTreeHelpers.getFeatureValueForField(this.feature, this.formConfigs.get(this.feature.tableName));
   }
 
   public getLayerName() {
+    if (!this.feature) {
+      return '';
+    }
     return this.feature.layerName;
   }
 
@@ -69,7 +80,8 @@ export class CreateRelationsComponent implements OnDestroy {
       return;
     }
     const updatedFeature: Feature = FeatureUpdateHelper.updateFeatureAttributes(this.feature, this.changedRelations);
-    this.formActionsService.save$(updatedFeature).subscribe(() => {
+    this.formActionsService.save$(updatedFeature).subscribe(feature => {
+      this.store$.dispatch(setFeature({ feature, updateFeatures: true }));
       this.store$.dispatch(closeRelationsForm());
     });
   }
@@ -135,10 +147,34 @@ export class CreateRelationsComponent implements OnDestroy {
 
   public removeRelation(relation: FormChildRelation) {
     const changedRelation = this.getChangedRelationValue(relation);
-    this.changedRelations[relation.column] = null;
-    this.changedRelationGeom[relation.column] = '';
-    this.store$.dispatch(removeNetworkHighlightFeature({ fid: !!changedRelation ? changedRelation : relation.currentRelation }));
-    this.hasChangedRelation = true;
+    const column = relation.column;
+    const relationFid = !!changedRelation ? changedRelation : relation.currentRelation;
+    this.confirmService.confirm$(
+      'Relatie verwijderen?',
+      'Weet u zeker dat u deze relatie wilt verwijderen? Dit kan niet ongedaan worden gemaakt.',
+    ).pipe(
+      concatMap(ok => {
+        if (ok) {
+          return this.formActionsService.removeRelation$(this.feature.fid, this.feature.tableName, column)
+            .pipe(
+              take(1),
+              catchError(() => {
+                this.snackBar.open('Relatie verwijderen niet gelukt, probeer opnieuw', '', { duration: 5000 });
+                return of(null);
+              }),
+            );
+        }
+        return of(null);
+      }),
+    ).subscribe(feature => {
+      if (feature === null) {
+        return;
+      }
+      this.store$.dispatch(setFeature({ feature, updateFeatures: true }));
+      delete this.changedRelations[column];
+      delete this.changedRelationGeom[column];
+      this.store$.dispatch(removeNetworkHighlightFeature({ fid: relationFid }));
+    });
   }
 
   public isEmptyRelation(relation: FormChildRelation) {

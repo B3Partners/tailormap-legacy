@@ -33,6 +33,16 @@ export class FormActionsService {
     return forkJoin(reqs);
   }
 
+  public removeRelation$(featureId: string, featureType: string, relationColumn: string): Observable<Feature> {
+    return this.service.removeRelation({
+      application: this.tailormap.getApplicationId(),
+      featureType,
+      fid: featureId,
+      relationColumn,
+    });
+  }
+
+
   public save$(feature: Feature, parentId?: string | null): Observable<Feature> {
     const appId = this.tailormap.getApplicationId();
     if (feature.fid && feature.fid !== FeatureInitializerService.STUB_OBJECT_GUID_NEW_OBJECT) {
