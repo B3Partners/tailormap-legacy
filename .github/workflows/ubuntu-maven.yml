@@ -15,7 +15,7 @@ jobs:
     name: Ubuntu Java 11 Build
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: actions/cache@v2
         with:
           path: ~/.m2/repository
@@ -63,7 +63,7 @@ jobs:
     needs: build
     if: ${{ github.ref == 'refs/heads/master' && ( github.event_name == 'push' || github.event_name == 'workflow_dispatch' ) }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: actions/cache@v2
         with:
           path: ~/.m2/repository
