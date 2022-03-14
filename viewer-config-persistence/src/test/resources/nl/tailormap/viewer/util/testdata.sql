@@ -352,7 +352,7 @@ INSERT INTO metadata (id, config_key, config_value) VALUES (2, 'default_applicat
 INSERT INTO user_ (username, password) VALUES ('admin', '14c06474bec5e7def0304925d09f2b977af3146a');
 INSERT INTO user_ (username, password) VALUES ('pietje', '14c06474bec5e7def0304925d09f2b977af3146a');
 
-
+INSERT INTO configured_component (id, class_name, name, application) VALUES (1, 'viewer.mapcomponents.OpenLayers5Map', 'openLayers5Map1', 1);
 
 INSERT INTO user_groups (username, group_) VALUES ('admin', 'Admin');
 INSERT INTO user_groups (username, group_) VALUES ('pietje', 'UserAdmin');
