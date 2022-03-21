@@ -85,7 +85,7 @@
         <jacoco-maven-plugin.version>0.8.7</jacoco-maven-plugin.version>
         <cargo-maven3-plugin.version>1.9.8</cargo-maven3-plugin.version>
         <tomcat.localDatasource>false</tomcat.localDatasource>
-        <properties-maven-plugin.version>1.0.0</properties-maven-plugin.version>
+        <properties-maven-plugin.version>1.1.0</properties-maven-plugin.version>
     </properties>
     <dependencyManagement>
         <!--
