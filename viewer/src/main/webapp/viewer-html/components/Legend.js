@@ -468,7 +468,9 @@ Ext.define("viewer.components.Legend", {
     },
 
     toggleLegendImage: function(e) {
-        if(!e.target.className || e.target.className.indexOf("legend-toggle") === -1) {
+        if(!e.target.className
+            || typeof e.target.className !== "string"
+            || e.target.className.indexOf("legend-toggle") === -1) {
             return true;
         }
         e.preventDefault();
