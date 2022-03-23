@@ -14,6 +14,7 @@ import org.apache.commons.logging.LogFactory;
 import org.stripesstuff.stripersist.Stripersist;
 
 import javax.persistence.EntityManager;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -50,7 +51,7 @@ public class SimpleFeatureTypeHelper {
                 // possible.
                 // New Attributes from a join or related featureType are added at the
                 //end of the list.
-                attributesToRetain = rebuildAttributes(appLayer, sft, em, context, bundle, attributeAliases, geomVisible);
+                attributesToRetain = rebuildAttributes(appLayer, sft, em, context, bundle, attributeAliases, geomVisible, null, true);
 
                 // Remove ConfiguredAttributes which are no longer present
                 List<ConfiguredAttribute> attributesToRemove = new ArrayList<>();
@@ -77,7 +78,7 @@ public class SimpleFeatureTypeHelper {
 
 
     private static List<String> rebuildAttributes(ApplicationLayer appLayer, SimpleFeatureType sft, EntityManager em, ActionBeanContext context,
-                                           ResourceBundle bundle, Map<String, String> attributeAliases, boolean geomVisible) {
+                                           ResourceBundle bundle, Map<String, String> attributeAliases, boolean geomVisible, String headName, boolean searchNextRelation) {
         Layer layer = appLayer.getService().getSingleLayer(appLayer.getLayerName(),em);
         List<String> attributesToRetain = new ArrayList<>();
         for(AttributeDescriptor ad: sft.getAttributes()) {
@@ -122,9 +123,19 @@ public class SimpleFeatureTypeHelper {
                 }
             }
         }
-        if (sft.getRelations()!=null){
+
+        String sftName = sft.getTypeName();
+        if (sft.getRelations()!=null && headName == null){
             for (FeatureTypeRelation rel : sft.getRelations()){
-                attributesToRetain.addAll(rebuildAttributes(appLayer, rel.getForeignFeatureType(), em, context,bundle, attributeAliases, geomVisible));
+                if(searchNextRelation) {
+                    attributesToRetain.addAll(rebuildAttributes(appLayer, rel.getForeignFeatureType(), em, context, bundle, attributeAliases, geomVisible, sft.getTypeName(), rel.isSearchNextRelation()));
+                }
+            }
+        } else if (!headName.equals(sft.getTypeName())){
+            if(searchNextRelation) {
+                for (FeatureTypeRelation rel : sft.getRelations()){
+                    attributesToRetain.addAll(rebuildAttributes(appLayer, rel.getForeignFeatureType(), em, context, bundle, attributeAliases, geomVisible, headName, rel.isSearchNextRelation()));
+                }
             }
         }
         return attributesToRetain;

@@ -103,7 +103,7 @@ public class ApplicationLayerHelper {
         if(layer != null) {
             ft = layer.getFeatureType();
             if(ft != null) {
-                featureTypeAttributes = makeAttributeDescriptorList(ft, null);
+                featureTypeAttributes = makeAttributeDescriptorList(ft, null, true);
             }
         }
 
@@ -185,7 +185,7 @@ public class ApplicationLayerHelper {
      * Makes a list of al the attributeDescriptors of the given FeatureType and
      * all the child FeatureTypes (related by join/relate)
      */
-    private static Map<String, AttributeDescriptor> makeAttributeDescriptorList(SimpleFeatureType ft, SimpleFeatureType head) {
+    private static Map<String, AttributeDescriptor> makeAttributeDescriptorList(SimpleFeatureType ft, SimpleFeatureType head, boolean isSearchNextRelation) {
         Map<String,AttributeDescriptor> featureTypeAttributes = new HashMap<>();
         for(AttributeDescriptor ad: ft.getAttributes()) {
             String name=ft.getId()+":"+ad.getName();
@@ -197,11 +197,13 @@ public class ApplicationLayerHelper {
         }
         if (ft.getRelations()!=null && head == null) {
             for (FeatureTypeRelation rel : ft.getRelations()){
-                featureTypeAttributes.putAll(makeAttributeDescriptorList(rel.getForeignFeatureType(), ft));
+                featureTypeAttributes.putAll(makeAttributeDescriptorList(rel.getForeignFeatureType(), ft, rel.isSearchNextRelation()));
             }
         } else if (ft.getRelations() != null && !ft.getTypeName().equals(head.getTypeName())) {
-            for (FeatureTypeRelation rel : ft.getRelations()){
-                featureTypeAttributes.putAll(makeAttributeDescriptorList(rel.getForeignFeatureType(), head));
+            if (isSearchNextRelation) {
+                for (FeatureTypeRelation rel : ft.getRelations()) {
+                    featureTypeAttributes.putAll(makeAttributeDescriptorList(rel.getForeignFeatureType(), head, rel.isSearchNextRelation()));
+                }
             }
         }
         return featureTypeAttributes;

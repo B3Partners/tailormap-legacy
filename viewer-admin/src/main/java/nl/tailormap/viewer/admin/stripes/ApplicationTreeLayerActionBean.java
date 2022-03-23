@@ -218,12 +218,19 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
     }
     
 
-    private void sortPerFeatureType(final SimpleFeatureType layerSft, List<ConfiguredAttribute> cas) {
+    private void sortPerFeatureType(final SimpleFeatureType layerSft, List<ConfiguredAttribute> cas, String headName, boolean searchNextRelation) {
         List<FeatureTypeRelation> relations = layerSft.getRelations();
+        if (headName == null) {
+            headName = layerSft.getTypeName();
+        } else if (headName.equals(layerSft.getTypeName())) {
+            return;
+        }
         for (FeatureTypeRelation relation : relations) {
-             SimpleFeatureType foreign = relation.getForeignFeatureType();
-             // Sort the attributes of the foreign featuretype. The "owning" featuretype is sorted below, so it doesn't need a call to this method.
-             sortPerFeatureType(foreign, cas);
+            if(searchNextRelation) {
+                SimpleFeatureType foreign = relation.getForeignFeatureType();
+                // Sort the attributes of the foreign featuretype. The "owning" featuretype is sorted below, so it doesn't need a call to this method.
+                sortPerFeatureType(foreign, cas, headName, relation.isSearchNextRelation());
+            }
         }
     }
     
@@ -239,7 +246,7 @@ public class ApplicationTreeLayerActionBean extends ApplicationActionBean {
         List<ConfiguredAttribute> cas = applicationLayer.getAttributes();
         if(layerSft != null){
             // Sort the attributes by name (per featuretype)
-            sortPerFeatureType(layerSft, cas);
+            sortPerFeatureType(layerSft, cas, null, true);
         }
 
         for(ConfiguredAttribute ca: cas) {
