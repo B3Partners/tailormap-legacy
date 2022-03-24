@@ -90,7 +90,7 @@ export const selectFormRelationsForCurrentFeature = createSelector(
       return null;
     }
     const layerFeatureTypeNames = new Map(layers.map(layer => [layer.featureTypeName, layer.alias || layer.layerName]));
-    const relationThatCanBeCreated = feature.relations.filter(relation => relation.canCreateNewRelation);
+    const relationThatCanBeCreated = (feature.relations || []).filter(relation => relation.canCreateNewRelation);
     if (relationThatCanBeCreated.length === 0) {
       return null;
     }
