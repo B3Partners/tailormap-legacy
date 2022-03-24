@@ -70,7 +70,6 @@ const onSetFeatureRemoved = (state: FormState, payload: ReturnType<typeof FormAc
     feature: hasFeaturesLeft ? features[0] : null,
     formEnabled: hasFeaturesLeft,
     formVisible: hasFeaturesLeft,
-    treeVisible: hasFeaturesLeft,
   };
 };
 
