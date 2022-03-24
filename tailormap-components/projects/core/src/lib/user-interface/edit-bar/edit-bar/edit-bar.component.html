@@ -18,5 +18,7 @@
 
   <tailormap-add-feature-menu *ngIf="isEditing"
                               class="add-feature-menu mat-elevation-z1"
+                              [previouslySelectedLayer]="currentNewFeatureLayer"
+                              (selectLayer)="setCurrentNewFeatureLayer($event)"
                               (closeMenu)="onEditClose()"></tailormap-add-feature-menu>
 </div>
