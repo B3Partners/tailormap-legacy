@@ -149,7 +149,29 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         </div>
                         
                     </c:when>
-                    <c:when test="${actionBean.context.eventName == 'save' || actionBean.context.eventName == 'delete'}">
+                    <c:when test="${actionBean.context.eventName == 'uploadCsv'}">
+                        <h1>Selecteer attribuutbron:</h1>
+                        <select name="featureSourceId" id="featureSourceSelect">
+                            <option value="-1"><fmt:message key="viewer_admin.editfeaturetyperelation.3" /></option>
+                            <c:forEach var="s" items="${actionBean.featureSources}">
+                                <c:set var="selected" value="" />
+                                <c:if test="${actionBean.relation.featureType.featureSource.id == s.id}">
+                                    <c:set var="selected" value=" selected=\"selected\"" />
+                                </c:if>
+                                <option value="${s.id}"${selected}>${s.name}</option>
+                            </c:forEach>
+                        </select>
+
+                        <h1>Kies csv bestand:</h1>
+                        <stripes:file id="csvInput" name="newAttachment" />
+                        <div class="submitbuttons">
+                            <fmt:message key="viewer_admin.editfeaturetyperelation.12" var="editfeaturetyperelation12" />
+                            <fmt:message key="viewer_admin.editfeaturetyperelation.13" var="editfeaturetyperelation13" />
+                            <stripes:submit name="loadCsv" value="${editfeaturetyperelation12}" />
+                            <stripes:submit name="cancel" value="${editfeaturetyperelation13}" />
+                        </div>
+                    </c:when>
+                    <c:when test="${actionBean.context.eventName == 'save' || actionBean.context.eventName == 'delete' || actionBean.context.eventName == 'loadCsv'}">
                         <script type="text/javascript">
                             var frameParent = getParent();
                             if(frameParent && frameParent.vieweradmin_components_FeaturetypeRelation) {
@@ -158,10 +180,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                         </script>
                         <fmt:message key="viewer_admin.editfeaturetyperelation.14" var="editfeaturetyperelation14" />
                         <stripes:submit name="edit" value="${editfeaturetyperelation14}" />
+                        <fmt:message key="viewer_admin.editfeaturetyperelation.16" var="editfeaturetyperelation16" />
+                        <stripes:submit name="uploadCsv" value="${editfeaturetyperelation16}" />
                     </c:when>
                     <c:otherwise>
                         <fmt:message key="viewer_admin.editfeaturetyperelation.15" var="editfeaturetyperelation15" />
                         <stripes:submit name="edit" value="${editfeaturetyperelation15}" />
+                        <fmt:message key="viewer_admin.editfeaturetyperelation.16" var="editfeaturetyperelation16" />
+                        <stripes:submit name="uploadCsv" value="${editfeaturetyperelation16}" />
                     </c:otherwise>
             </c:choose>
         </stripes:form>

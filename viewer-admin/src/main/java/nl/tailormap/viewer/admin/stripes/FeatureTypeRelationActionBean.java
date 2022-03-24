@@ -16,15 +16,7 @@
  */
 package nl.tailormap.viewer.admin.stripes;
 
-import net.sourceforge.stripes.action.ActionBeanContext;
-import net.sourceforge.stripes.action.DefaultHandler;
-import net.sourceforge.stripes.action.DontBind;
-import net.sourceforge.stripes.action.DontValidate;
-import net.sourceforge.stripes.action.ForwardResolution;
-import net.sourceforge.stripes.action.Resolution;
-import net.sourceforge.stripes.action.SimpleMessage;
-import net.sourceforge.stripes.action.StreamingResolution;
-import net.sourceforge.stripes.action.UrlBinding;
+import net.sourceforge.stripes.action.*;
 import net.sourceforge.stripes.validation.SimpleError;
 import net.sourceforge.stripes.validation.Validate;
 import net.sourceforge.stripes.validation.ValidateNestedProperties;
@@ -36,6 +28,7 @@ import nl.tailormap.viewer.config.services.FeatureSource;
 import nl.tailormap.viewer.config.services.FeatureTypeRelation;
 import nl.tailormap.viewer.config.services.FeatureTypeRelationKey;
 import nl.tailormap.viewer.config.services.SimpleFeatureType;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
@@ -48,11 +41,9 @@ import org.json.JSONObject;
 import org.stripesstuff.stripersist.Stripersist;
 
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.*;
 
 /**
  *
@@ -89,7 +80,10 @@ public class FeatureTypeRelationActionBean extends LocalizableActionBean {
     private String dir;
     @Validate
     private JSONArray filter;
-    
+
+    @Validate
+    private FileBean newAttachment;
+
     @Validate
     @ValidateNestedProperties({
         @Validate(field="featureType", required=true, on="save"),
@@ -141,7 +135,106 @@ public class FeatureTypeRelationActionBean extends LocalizableActionBean {
         Stripersist.getEntityManager().getTransaction().commit();
         return new ForwardResolution(EDITJSP);
     }
-    
+
+    public Resolution uploadCsv() {
+        featureSources = Stripersist.getEntityManager().createQuery("from FeatureSource").getResultList();
+        return new ForwardResolution(EDITJSP);
+    }
+
+    public Resolution loadCsv() {
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(newAttachment.getInputStream()))) {
+            List<String> headers = new ArrayList<>();
+            List<FeatureTypeRelation> relationList = new ArrayList<>();
+            String line;
+            int lineNumber = 0;
+            HashMap<String, SimpleFeatureType> availableFeatureTypes = getFeatureTypesForSource(this.getFeatureSourceId());
+            while ((line = br.readLine()) != null) {
+                if(lineNumber == 0) {
+                    lineNumber ++;
+                    String[] values = line.split(",", -1);
+                    headers.addAll(Arrays.asList(values));
+                    if(!isValidHeaders(headers)){
+                        getContext().getValidationErrors().addGlobalError(new SimpleError(getBundle().getString("viewer_admin.featuretyperelationactionbean.headersmissing")));
+                        return new ForwardResolution(EDITJSP);
+                    }
+                    continue;
+                }
+                FeatureTypeRelation rel = new FeatureTypeRelation();
+                String[] values = line.split(",", -1);
+
+                SimpleFeatureType featureType = availableFeatureTypes.get(values[headers.indexOf("feature_type")]);
+                if(featureType == null) {
+                    getContext().getValidationErrors().addGlobalError(new SimpleError("Feature type: '" +
+                            values[headers.indexOf("feature_type")] +
+                            "' not found on line: " + lineNumber));
+                    return new ForwardResolution(EDITJSP);
+                }
+                rel.setFeatureType(featureType);
+                HashMap<String, Long> leftAttributes  = getAttributesForFeatureType(featureType);
+                Long leftId = leftAttributes.get(values[headers.indexOf("attribute")]);
+                if(leftId == null) {
+                    getContext().getValidationErrors().addGlobalError(new SimpleError("Attribute: '" +
+                            values[headers.indexOf("attribute")] +
+                            "' not found on line: " + lineNumber));
+                    return new ForwardResolution(EDITJSP);
+                }
+                AttributeDescriptor left = Stripersist.getEntityManager().find(AttributeDescriptor.class, leftId);
+
+                SimpleFeatureType foreignFeatureType = availableFeatureTypes.get(values[headers.indexOf("foreign_feature_type")]);
+                if(foreignFeatureType == null) {
+                    getContext().getValidationErrors().addGlobalError(new SimpleError("Foreign feature type: '" +
+                            values[headers.indexOf("foreign_feature_type")] +
+                            "' " + getBundle().getString("viewer_admin.featuretyperelationactionbean.csvlineerror") + " " + lineNumber));
+                    return new ForwardResolution(EDITJSP);
+                }
+                rel.setForeignFeatureType(foreignFeatureType);
+                HashMap<String, Long> rightAttributes  = getAttributesForFeatureType(foreignFeatureType);
+                Long rightId = leftAttributes.get(values[headers.indexOf("foreignattribute")]);
+                if(rightId == null) {
+                    getContext().getValidationErrors().addGlobalError(new SimpleError("Foreign attribute: '" +
+                            values[headers.indexOf("foreignattribute")] +
+                            "' " + getBundle().getString("viewer_admin.featuretyperelationactionbean.csvlineerror") + " " + lineNumber));
+                    return new ForwardResolution(EDITJSP);
+                }
+                AttributeDescriptor right = Stripersist.getEntityManager().find(AttributeDescriptor.class, rightId);
+
+                String type = values[headers.indexOf("type")];
+                if(type == null || type.isEmpty()) {
+                    type = "join";
+                }
+                if(!(type.equals("join") || type.equals("relate"))) {
+                    getContext().getValidationErrors().addGlobalError(new SimpleError("Type: '" +
+                            type +
+                            "' " + getBundle().getString("viewer_admin.featuretyperelationactionbean.notsupported") + " " + lineNumber));
+                    return new ForwardResolution(EDITJSP);
+                }
+                rel.setType(type);
+
+                boolean canCreateNewRelation = BooleanUtils.toBoolean(values[headers.indexOf("can_create_new_relation")]);
+
+                rel.setCanCreateNewRelation(canCreateNewRelation);
+
+                boolean searchNextRelation = BooleanUtils.toBoolean(values[headers.indexOf("search_next_relation")]);
+                rel.setSearchNextRelation(searchNextRelation);
+
+                FeatureTypeRelationKey key = new FeatureTypeRelationKey(rel,left,right);
+                rel.getRelationKeys().add(key);
+
+                relationList.add(rel);
+                lineNumber++;
+            }
+            for (FeatureTypeRelation rel : relationList) {
+                Stripersist.getEntityManager().persist(rel);
+                Stripersist.getEntityManager().getTransaction().commit();
+            }
+        } catch(Exception e) {
+            getContext().getValidationErrors().addGlobalError(new SimpleError(getBundle().getString("viewer_admin.featuretyperelationactionbean.csverrorloading")));
+            return new ForwardResolution(EDITJSP);
+        }
+        getContext().getMessages().add(new SimpleMessage(getBundle().getString("viewer_admin.featuretyperelationactionbean.csvloaded")));
+        return new ForwardResolution(EDITJSP);
+    }
+
     @DontBind
     public Resolution cancel() {        
         return new ForwardResolution(EDITJSP);
@@ -352,7 +445,54 @@ public class FeatureTypeRelationActionBean extends LocalizableActionBean {
             }
         }
     }
-    
+
+    @ValidationMethod(on="loadCsv")
+    public void validateCsv(ValidationErrors errors){
+        if (!newAttachment.getFileName().split("\\.")[1].equals("csv")) {
+            getContext().getValidationErrors().addGlobalError(new SimpleError("Geupload bestand is geen csv bestand."));
+            return;
+        }
+    }
+
+    private HashMap<String, SimpleFeatureType> getFeatureTypesForSource(long featureSourceId) {
+        HashMap<String, SimpleFeatureType> featureTypes = new HashMap<>();
+        FeatureSource featureSource = Stripersist.getEntityManager().find(FeatureSource.class, featureSourceId);
+        if (featureSource!=null){
+            List<SimpleFeatureType> featureTypesList = featureSource.getFeatureTypes();
+            for (SimpleFeatureType ft : featureTypesList){
+                String name = ft.getTypeName();
+                if (!StringUtils.isBlank(ft.getDescription())){
+                    name+=" ("+ft.getDescription()+")";
+                }
+                featureTypes.put(name, ft);
+            }
+        }
+        return featureTypes;
+    }
+
+    private HashMap<String, Long> getAttributesForFeatureType(SimpleFeatureType featureType) {
+        HashMap<String, Long> attributes = new HashMap<>();
+        if (featureType != null) {
+            List<AttributeDescriptor> attributesList = featureType.getAttributes();
+            for (AttributeDescriptor attr : attributesList) {
+                if (!AttributeDescriptor.GEOMETRY_TYPES.contains(attr.getType())) {
+                    attributes.put(attr.getName(), attr.getId());
+                }
+            }
+        }
+        return attributes;
+    }
+
+    private boolean isValidHeaders(List<String> headers) {
+        boolean isValid = true;
+        if (headers.indexOf("foreign_feature_type") == -1 || headers.indexOf("feature_type") == -1 || headers.indexOf("attribute") == -1 ||
+                headers.indexOf("search_next_relation") == -1 || headers.indexOf("can_create_new_relation") == -1 || headers.indexOf("type") == -1 ||
+                headers.indexOf("foreignattribute") == -1) {
+            isValid = false;
+
+        }
+        return isValid;
+    }
     //<editor-fold defaultstate="collapsed" desc="Getters/setters">
     public ActionBeanContext getContext() {
         return context;
@@ -481,5 +621,14 @@ public class FeatureTypeRelationActionBean extends LocalizableActionBean {
     public void setRightSide(Map<Integer,Long> rightSide) {
         this.rightSide = rightSide;
     }
+
+    public FileBean getNewAttachment() {
+        return newAttachment;
+    }
+
+    public void setNewAttachment(FileBean newAttachment) {
+        this.newAttachment = newAttachment;
+    }
+
     //</editor-fold>
 }
