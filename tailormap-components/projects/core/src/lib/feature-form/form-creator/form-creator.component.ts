@@ -132,6 +132,7 @@ export class FormCreatorComponent implements OnChanges, OnDestroy, AfterViewInit
       this.updateTabsValidation();
     });
     this.updateTabsValidation();
+    this.formValidChanged.emit(this.formgroep.valid);
   }
 
   public ngAfterViewInit() {

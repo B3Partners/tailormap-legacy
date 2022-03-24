@@ -329,7 +329,8 @@ export class FormComponent implements OnDestroy, OnInit {
   }
 
   public isSaveAllowed() {
-    return this.formDirty && (this.isBulk || this.formValid);
+    const isValidForm = this.isBulk || this.formValid;
+    return (this.isCreatingNew() && isValidForm) || (this.formDirty && isValidForm);
   }
 
 }
