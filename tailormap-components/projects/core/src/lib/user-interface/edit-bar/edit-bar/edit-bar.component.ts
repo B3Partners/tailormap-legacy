@@ -7,6 +7,7 @@ import { FormState } from '../../../feature-form/state/form.state';
 import { WORKFLOW_ACTION } from '../../../workflow/state/workflow-models';
 import { WorkflowState } from '../../../workflow/state/workflow.state';
 import * as WorkflowActions from '../../../workflow/state/workflow.actions';
+import { TailormapAppLayer } from '../../../application/models/tailormap-app-layer.model';
 
 @Component({
   selector: 'tailormap-edit-bar',
@@ -19,6 +20,8 @@ export class EditBarComponent implements OnInit {
 
   private mergeComponent: MergeComponent;
   private splitComponent: SplitComponent;
+
+  public currentNewFeatureLayer: TailormapAppLayer | null = null;
 
   constructor(
     private tailorMapService: TailorMapService,
@@ -69,6 +72,10 @@ export class EditBarComponent implements OnInit {
   public onMerge(): void {
     this.store$.dispatch(WorkflowActions.setAction({action: WORKFLOW_ACTION.SPLIT_MERGE}));
     this.mergeComponent.showWindow();
+  }
+
+  public setCurrentNewFeatureLayer(layer: TailormapAppLayer) {
+    this.currentNewFeatureLayer = layer;
   }
 
 }
