@@ -489,7 +489,7 @@ public class FeatureToJson {
         FilterHelper.setSortBy(q, sortAttribute, dir);
     }
 
-    private DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+    private DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 
     private Object formatValue(Object value) {
         if (this.returnNullval && value == null) {
@@ -498,7 +498,9 @@ public class FeatureToJson {
         if(value instanceof Date) {
             // JSON has no date type so format the date as it is used for
             // display, not calculation
-            return dateFormat.format((Date)value);
+            String dateValue = dateFormat.format((Date)value);
+            // when there is no hh:mm:ss present on the date, cut it from the value
+            return dateValue.replace(" 00:00:00","");
         } else {
             return value;
         }
