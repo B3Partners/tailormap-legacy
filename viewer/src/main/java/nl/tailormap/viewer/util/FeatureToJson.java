@@ -489,7 +489,7 @@ public class FeatureToJson {
         FilterHelper.setSortBy(q, sortAttribute, dir);
     }
 
-    private DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+    private DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
 
     private Object formatValue(Object value) {
         if (this.returnNullval && value == null) {

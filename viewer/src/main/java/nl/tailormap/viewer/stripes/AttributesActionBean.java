@@ -715,7 +715,7 @@ public class AttributesActionBean extends LocalizableApplicationActionBean imple
     private JSONObject ResultSetToJson(ResultSet rs, ResultSetMetaData rsmd, SimpleFeatureType ft, PrimaryKey pk, int columnCount) throws SQLException {
         JSONObject jsonFeature = new JSONObject();
         String fid = ft.getTypeName();
-        DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+        DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
         // Geotools handelt normaal gesproken het maken van een FID af, dat is nu niet geval
         // Bouw een eigen FID op basis van de PK kolommen
         for (PrimaryKeyColumn pkc : pk.getColumns()) {
