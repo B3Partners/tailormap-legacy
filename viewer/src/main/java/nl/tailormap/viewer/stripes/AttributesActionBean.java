@@ -735,7 +735,9 @@ public class AttributesActionBean extends LocalizableApplicationActionBean imple
             } else if (value instanceof Boolean) {
                 jsonFeature.put(column, (Boolean) value);
             } else if (value instanceof Date) {
-                jsonFeature.put(column, dateFormat.format((Date)value));
+                String dateValue = dateFormat.format((Date)value);
+                // when there is no hh:mm:ss present on the date, cut it from the value
+                jsonFeature.put(column, dateValue.replace(" 00:00:00",""));
             } else if (value instanceof Long) {
                 jsonFeature.put(column, (Long) value);
             } else if (value instanceof Double) {
