@@ -23,7 +23,9 @@ const onSetHideFeatureForm = (state: FormState, payload: ReturnType<typeof FormA
 const onSetFeature = (state: FormState, payload: ReturnType<typeof FormActions.setFeature>): FormState => ({
   ...state,
   feature: payload.feature,
-  features: payload.updateFeatures ? addOrUpdateFeature([...state.features], payload.feature, null) : state.features,
+  features: payload.updateFeatures
+    ? addOrUpdateFeature([...state.features], payload.feature, null)
+    : state.features,
 });
 
 const onSetNewFeature = (state: FormState, payload: ReturnType<typeof FormActions.setNewFeature>): FormState => {
@@ -68,7 +70,6 @@ const onSetFeatureRemoved = (state: FormState, payload: ReturnType<typeof FormAc
     feature: hasFeaturesLeft ? features[0] : null,
     formEnabled: hasFeaturesLeft,
     formVisible: hasFeaturesLeft,
-    treeVisible: hasFeaturesLeft,
   };
 };
 

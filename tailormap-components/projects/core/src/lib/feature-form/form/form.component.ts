@@ -119,8 +119,10 @@ export class FormComponent implements OnDestroy, OnInit {
       .map(relation => allFormConfigs.get(relation.foreignFeatureTypeName));
     this.allFormConfigs = allFormConfigs;
     this.formTabs = this.prepareFormConfig();
-    this.formElement.nativeElement.style
-      .setProperty('--overlay-panel-form-columns', `${this.getMaxColumnCount(features, allFormConfigs)}`);
+    const colCount = this.getMaxColumnCount(features, allFormConfigs);
+    if (colCount !== null) {
+      this.formElement.nativeElement.style.setProperty('--overlay-panel-form-columns', `${colCount}`);
+    }
   }
 
   private prepareFormConfig(): Array<TabbedField> {
@@ -163,7 +165,10 @@ export class FormComponent implements OnDestroy, OnInit {
         columnCounts.set(f.tableName, columnCount);
       }
     });
-    return Math.max(...columnCounts.values());
+    if (columnCounts.size === 0) {
+      return null;
+    }
+    return Math.max(...columnCounts.values(), 1);
   }
 
   private getColumnCountForFormConfig(formConfig: FormConfiguration) {
@@ -324,7 +329,8 @@ export class FormComponent implements OnDestroy, OnInit {
   }
 
   public isSaveAllowed() {
-    return this.formDirty && (this.isBulk || this.formValid);
+    const isValidForm = this.isBulk || this.formValid;
+    return (this.isCreatingNew() && isValidForm) || (this.formDirty && isValidForm);
   }
 
 }
