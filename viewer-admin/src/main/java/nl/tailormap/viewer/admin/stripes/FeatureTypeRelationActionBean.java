@@ -166,7 +166,7 @@ public class FeatureTypeRelationActionBean extends LocalizableActionBean {
                 if(featureType == null) {
                     getContext().getValidationErrors().addGlobalError(new SimpleError("Feature type: '" +
                             values[headers.indexOf("feature_type")] +
-                            "' not found on line: " + lineNumber));
+                            "' " + getBundle().getString("viewer_admin.featuretyperelationactionbean.csvlineerror") + " " + lineNumber));
                     return new ForwardResolution(EDITJSP);
                 }
                 rel.setFeatureType(featureType);
@@ -175,7 +175,7 @@ public class FeatureTypeRelationActionBean extends LocalizableActionBean {
                 if(leftId == null) {
                     getContext().getValidationErrors().addGlobalError(new SimpleError("Attribute: '" +
                             values[headers.indexOf("attribute")] +
-                            "' not found on line: " + lineNumber));
+                            "' " + getBundle().getString("viewer_admin.featuretyperelationactionbean.csvlineerror") + " " + lineNumber));
                     return new ForwardResolution(EDITJSP);
                 }
                 AttributeDescriptor left = Stripersist.getEntityManager().find(AttributeDescriptor.class, leftId);
