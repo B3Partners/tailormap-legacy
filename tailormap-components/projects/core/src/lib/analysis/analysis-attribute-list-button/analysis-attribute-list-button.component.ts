@@ -44,6 +44,8 @@ export class AnalysisAttributeListButtonComponent implements OnDestroy {
       return 'Er kunnen geen selectielagen op basis van andere selectielagen gemaakt worden';
     } else if(!this.tailorMapService.getFilterString(+(this.layerId), false)) {
       return 'Stel eerst een filter in op de attributenlijst om een laag te kunnen publiceren';
+    } else if(this.hasExternalFilters()) {
+      return 'Er kan alleen een laag gemaakt worden op basis van attributenlijst filters. Reset andere filters zoals het ruimtelijk filter.';
     } else {
       return '';
     }
@@ -51,7 +53,12 @@ export class AnalysisAttributeListButtonComponent implements OnDestroy {
 
   public getCanCreateUserLayer(): boolean {
     return !(this.tailorMapService.getApplayerById(+(this.layerId)).userlayer
-      || !this.tailorMapService.getFilterString(+(this.layerId), false));
+      || !this.tailorMapService.getFilterString(+(this.layerId), false)
+      || this.hasExternalFilters());
+  }
+
+  private hasExternalFilters(): boolean {
+    return !!this.tailorMapService.getFilterString(+(this.layerId));
   }
 
   public static registerWithAttributeList(attributeListService: AttributeListService) {
@@ -64,6 +71,9 @@ export class AnalysisAttributeListButtonComponent implements OnDestroy {
   }
 
   public createUserLayer(): void {
+    if (!this.getCanCreateUserLayer()) {
+      return;
+    }
     const query = this.tailorMapService.getFilterString(+(this.layerId), false);
     const dialogRef = this.dialog.open(AnalysisAttributeListLayerNameChooserComponent, {
       width: '250px',
