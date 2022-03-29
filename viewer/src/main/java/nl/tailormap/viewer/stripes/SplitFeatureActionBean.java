@@ -368,6 +368,10 @@ public class SplitFeatureActionBean extends LocalizableApplicationActionBean imp
         for (int i = 0; i < lines.getNumGeometries(); i++) {
             LineString l = (LineString) lines.getGeometryN(i);
             if (bufferedToSplit.contains(l)) {
+                if (l.getCoordinates()[0].compareTo(line.getCoordinates()[0]) == 0 ||
+                        l.getCoordinates()[l.getCoordinates().length-1].compareTo(line.getCoordinates()[line.getCoordinates().length-1]) == 0) {
+                    continue;
+                }
                 output.add(l);
             }
         }
