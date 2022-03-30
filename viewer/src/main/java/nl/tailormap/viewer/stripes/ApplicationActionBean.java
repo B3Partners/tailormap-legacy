@@ -45,6 +45,7 @@ import nl.tailormap.viewer.helpers.app.ApplicationHelper;
 import nl.tailormap.viewer.helpers.app.ComponentHelper;
 import nl.tailormap.viewer.util.SelectedContentCache;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.client.utils.URIBuilder;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.stripesstuff.stripersist.Stripersist;
@@ -325,10 +326,16 @@ public class ApplicationActionBean extends LocalizableApplicationActionBean impl
         EntityManager em = Stripersist.getEntityManager();
         JSONObject response = new JSONObject();
         response.put("success", false);
+        HttpServletRequest req  = context.getRequest();
+        URIBuilder builder = new URIBuilder()
+                .setScheme(req.getScheme())
+                .setHost(req.getServerName())
+                .setPath(req.getContextPath())
+                .setPort(req.getServerPort());
         JSONObject obj = ApplicationHelper.toJSON(
                 application,
                 AuthorizationsHelper.getRoles(context.getRequest(), em),
-                URI.create(context.getRequest().getRequestURI()),
+                URI.create(builder.toString()),
                 context.getRequest().getServletContext().getInitParameter("proxy"),
                 false,
                 false,
@@ -404,9 +411,14 @@ public class ApplicationActionBean extends LocalizableApplicationActionBean impl
         }
 
         buildComponentSourceHTML(em);
-
+        HttpServletRequest req  = context.getRequest();
+        URIBuilder builder = new URIBuilder()
+                .setScheme(req.getScheme())
+                .setHost(req.getServerName())
+                .setPath(req.getContextPath())
+                .setPort(req.getServerPort());
         appConfigJSON = ApplicationHelper.toJSON( application,  AuthorizationsHelper.getRoles(context.getRequest(), em),
-                URI.create(context.getRequest().getRequestURI()),
+                URI.create(builder.toString()),
                 context.getRequest().getServletContext().getInitParameter("proxy"),  false,  false,  false,  false,
                 em,  true,  false).toString();
 
