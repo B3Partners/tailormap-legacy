@@ -411,9 +411,14 @@ public class ApplicationActionBean extends LocalizableApplicationActionBean impl
         }
 
         buildComponentSourceHTML(em);
-
+        HttpServletRequest req  = context.getRequest();
+        URIBuilder builder = new URIBuilder()
+                .setScheme(req.getScheme())
+                .setHost(req.getServerName())
+                .setPath(req.getContextPath())
+                .setPort(req.getServerPort());
         appConfigJSON = ApplicationHelper.toJSON( application,  AuthorizationsHelper.getRoles(context.getRequest(), em),
-                URI.create(context.getRequest().getRequestURI()),
+                URI.create(builder.toString()),
                 context.getRequest().getServletContext().getInitParameter("proxy"),  false,  false,  false,  false,
                 em,  true,  false).toString();
 
