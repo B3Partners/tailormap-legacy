@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.tailormap</groupId>
         <artifactId>tailormap</artifactId>
-        <version>5.9.16-SNAPSHOT</version>
+        <version>5.9.16</version>
     </parent>
     <name>viewer</name>
     <properties>
