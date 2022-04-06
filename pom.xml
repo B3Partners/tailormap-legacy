@@ -83,7 +83,7 @@
         or as part of a profile, see eg. 'gh-action' profile in viewer -->
         <test.skip.integrationtests>false</test.skip.integrationtests>
         <maven-surefire-plugin.version>3.0.0-M6</maven-surefire-plugin.version>
-        <jacoco-maven-plugin.version>0.8.7</jacoco-maven-plugin.version>
+        <jacoco-maven-plugin.version>0.8.8</jacoco-maven-plugin.version>
         <cargo-maven3-plugin.version>1.9.8</cargo-maven3-plugin.version>
         <tomcat.localDatasource>false</tomcat.localDatasource>
         <properties-maven-plugin.version>1.1.0</properties-maven-plugin.version>
