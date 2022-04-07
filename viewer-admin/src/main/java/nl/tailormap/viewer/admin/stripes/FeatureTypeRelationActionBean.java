@@ -189,7 +189,7 @@ public class FeatureTypeRelationActionBean extends LocalizableActionBean {
                 }
                 rel.setForeignFeatureType(foreignFeatureType);
                 HashMap<String, Long> rightAttributes  = getAttributesForFeatureType(foreignFeatureType);
-                Long rightId = leftAttributes.get(values[headers.indexOf("foreignattribute")]);
+                Long rightId = rightAttributes.get(values[headers.indexOf("foreignattribute")]);
                 if(rightId == null) {
                     getContext().getValidationErrors().addGlobalError(new SimpleError("Foreign attribute: '" +
                             values[headers.indexOf("foreignattribute")] +
