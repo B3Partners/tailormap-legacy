@@ -58,7 +58,7 @@
     "document-register-element": "^1.14.10",
     "dpdm": "^3.7.0",
     "material-design-icons": "^3.0.1",
-    "moment": "^2.29.1",
+    "moment": "^2.29.2",
     "ng-openapi-gen": "^0.17.2",
     "rxjs": "6.6.7",
     "tslib": "^2.3.0",
