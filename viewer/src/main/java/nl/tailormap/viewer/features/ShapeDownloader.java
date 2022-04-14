@@ -98,12 +98,18 @@ public class ShapeDownloader extends FeatureDownloader {
     }
 
     @Override
-    public File write() throws IOException{
+    public File write() throws IOException {
         ssw.close();
         
         File zip = File.createTempFile("downloadshp", ".zip");
         zipDirectory(dir, zip);
-        FileUtils.deleteDirectory(dir);
+
+        // Delete in Try-Catch for issue SUPPORT-12983 -> DirectoryNotEmptyException
+        try {
+            FileUtils.deleteDirectory(dir);
+        } catch (Exception e) {
+            log.warn("Cannot delete temp dir for shapeDownloader with message: " + e.getMessage());
+        }
         return zip;
     }
 
@@ -132,7 +138,7 @@ public class ShapeDownloader extends FeatureDownloader {
      * This method zips the directory
      *
      * @param dir
-     * @param zipDirName
+     * @param zip
      */
     private void zipDirectory(File dir, File zip) throws IOException {
         try {
