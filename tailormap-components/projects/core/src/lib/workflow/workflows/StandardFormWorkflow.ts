@@ -6,7 +6,7 @@ import { OLFeature, VectorLayer } from '../../../../../bridge/typings';
 import { concatMap, filter, take, takeUntil } from 'rxjs/operators';
 import { WorkflowHelper } from './workflow.helper';
 import * as FormActions from '../../feature-form/state/form.actions';
-import { selectFormClosed } from '../../feature-form/state/form.state-helpers';
+import { selectFormClosed, selectFormEditingDone } from '../../feature-form/state/form.state-helpers';
 import { selectFormConfigForFeatureTypeName } from '../../application/state/application.selectors';
 import { selectFeatureType, selectGeometryType, selectWorkflowConfig } from '../state/workflow.selectors';
 import { combineLatest, of } from 'rxjs';
@@ -47,10 +47,7 @@ export class StandardFormWorkflow extends Workflow {
       });
 
     this.store$.select(selectCurrentFeature)
-      .pipe(
-        takeUntil(this.destroyed),
-        filter(feature => !!feature),
-      )
+      .pipe(takeUntil(this.destroyed))
       .subscribe(feature => {
         this.zoomToFeature(feature);
       });
@@ -98,7 +95,7 @@ export class StandardFormWorkflow extends Workflow {
 
   public openDialog(formFeatures?: Feature[], editMode: boolean = false, createdFeature?: boolean): void {
     this.store$.dispatch(FormActions.setOpenFeatureForm({features: formFeatures, editMode}));
-    this.store$.pipe(selectFormClosed)
+    this.store$.pipe(editMode ? selectFormEditingDone : selectFormClosed)
       .pipe(take(1))
       .subscribe(() => {
         this.afterEditing(createdFeature);

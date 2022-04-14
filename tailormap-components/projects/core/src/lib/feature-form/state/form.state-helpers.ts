@@ -1,4 +1,4 @@
-import { selectFeatureFormEnabled } from './form.selectors';
+import { selectFeatureFormEnabled, selectFormEditing } from './form.selectors';
 import { pipe } from 'rxjs';
 import { select } from '@ngrx/store';
 import { filter } from 'rxjs/operators';
@@ -8,6 +8,11 @@ import { FeatureInitializerService } from '../../shared/feature-initializer/feat
 export const selectFormClosed = pipe(
   select(selectFeatureFormEnabled),
   filter(open => !open),
+);
+
+export const selectFormEditingDone = pipe(
+  select(selectFormEditing),
+  filter(editing => !editing),
 );
 
 export const removeFeature = (features: Feature[], removed: Feature): Feature[] => {
