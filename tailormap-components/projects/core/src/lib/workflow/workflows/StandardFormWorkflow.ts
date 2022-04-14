@@ -3,7 +3,7 @@ import * as wellknown from 'wellknown';
 import { Feature } from '../../shared/generated';
 import { MapClickedEvent } from '../../shared/models/event-models';
 import { OLFeature, VectorLayer } from '../../../../../bridge/typings';
-import { concatMap, filter, take, takeUntil } from 'rxjs/operators';
+import { concatMap, take, takeUntil } from 'rxjs/operators';
 import { WorkflowHelper } from './workflow.helper';
 import * as FormActions from '../../feature-form/state/form.actions';
 import { selectFormClosed, selectFormEditingDone } from '../../feature-form/state/form.state-helpers';
