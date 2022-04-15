@@ -18,7 +18,7 @@ import {
 import { FormHelpers } from './form-helpers';
 import { WORKFLOW_ACTION } from '../../workflow/state/workflow-models';
 import { WorkflowState } from '../../workflow/state/workflow.state';
-import { selectFormConfigForFeatureTypeName, selectFormConfigs } from '../../application/state/application.selectors';
+import { selectFormConfigs } from '../../application/state/application.selectors';
 import { FeatureInitializerService } from '../../shared/feature-initializer/feature-initializer.service';
 import { EditFeatureGeometryService } from '../services/edit-feature-geometry.service';
 import { ExtendedFormConfigurationModel } from '../../application/models/extended-form-configuration.model';
