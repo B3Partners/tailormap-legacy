@@ -26,6 +26,7 @@ import { METADATA_SERVICE } from '@tailormap/api';
 import { TailorMapService } from '../../../../../bridge/src/tailor-map.service';
 import { FormTreeHelpers } from '../form-tree/form-tree-helpers';
 import { FormRelationModel } from '../state/form-relation.model';
+import { DomainRepositoryService } from '../linked-fields/domain-repository/domain-repository.service';
 
 @Component({
   selector: 'tailormap-form',
@@ -63,6 +64,7 @@ export class FormComponent implements OnDestroy, OnInit {
     private editFeatureGeometryService: EditFeatureGeometryService,
     private formElement: ElementRef,
     private tailormapService: TailorMapService,
+    private domainRepositoryService: DomainRepositoryService,
   ) {
   }
 
@@ -80,7 +82,7 @@ export class FormComponent implements OnDestroy, OnInit {
           of(features),
           this.store$.select(selectInBulkEditMode),
           this.store$.select(selectFormAlreadyDirty),
-          this.store$.select(selectFormConfigForFeatureTypeName, feature.tableName),
+          this.domainRepositoryService.getFormConfigWithDomainOptions$(feature.tableName),
           this.store$.select(selectFormConfigs),
         ])),
       )

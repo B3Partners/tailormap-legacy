@@ -21,6 +21,10 @@
   padding: 16px;
 }
 
+.loading {
+  padding: 16px;
+}
+
 .form-container {
   display: flex;
   flex-direction: row;
