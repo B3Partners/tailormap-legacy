@@ -4,8 +4,6 @@
  */
 package nl.tailormap.viewer.stripes;
 
-import eu.medsea.mimeutil.MimeType;
-import eu.medsea.mimeutil.MimeUtil;
 import net.sourceforge.stripes.action.ActionBean;
 import net.sourceforge.stripes.action.ActionBeanContext;
 import net.sourceforge.stripes.action.ErrorResolution;
@@ -18,12 +16,12 @@ import nl.tailormap.viewer.components.ComponentRegistry;
 import nl.tailormap.viewer.components.ViewerComponent;
 import nl.tailormap.web.stripes.ErrorMessageResolution;
 import org.apache.commons.io.IOUtils;
+import org.apache.tika.Tika;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.Collection;
 
 /**
  * ActionBean to get the resource of a (3rd party component).
@@ -78,18 +76,10 @@ public class ComponentResourceActionBean implements ActionBean{
         };
     }
     private String getContentType(File f){
-        if(MimeUtil.getMimeDetector("eu.medsea.mimeutil.detector.MagicMimeMimeDetector") == null) {
-            // First one will probably not fail (3rd one does when there is no mime.cache at /usr/share/mime), so only register when MagicMimeMimeDetector is not yet registered thus preventing multiple registrations of the detectors.
-            MimeUtil.registerMimeDetector("eu.medsea.mimeutil.detector.MagicMimeMimeDetector");
-            MimeUtil.registerMimeDetector("eu.medsea.mimeutil.detector.ExtensionMimeDetector");
-            MimeUtil.registerMimeDetector("eu.medsea.mimeutil.detector.OpendesktopMimeDetector");
-        }
-        Collection mimeTypes = MimeUtil.getMimeTypes(f);
-        if (!mimeTypes.isEmpty()) {
-            Object[] mimeArray = mimeTypes.toArray();
-            MimeType mime = (MimeType) mimeArray[0];
-            return mime.toString();
-        } else {
+        final Tika tika = new Tika();
+        try {
+            return tika.detect(f);
+        } catch (IOException e) {
             return "plain/text";
         }
     }

@@ -103,6 +103,12 @@
                 <groupId>nl.opengeogroep</groupId>
                 <artifactId>safetymaps-api</artifactId>
                 <version>1.0</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>log4j</groupId>
+                        <artifactId>log4j</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>commons-dbutils</groupId>
@@ -143,6 +149,12 @@
                 <groupId>net.sourceforge.stripes</groupId>
                 <artifactId>stripes</artifactId>
                 <version>1.6.0</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>log4j</groupId>
+                        <artifactId>log4j</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.stripesstuff</groupId>
@@ -247,9 +259,9 @@
                 <version>${apache.commons-codec.version}</version>
             </dependency>
             <dependency>
-                <groupId>log4j</groupId>
-                <artifactId>log4j</artifactId>
-                <version>1.2.17</version>
+                <groupId>ch.qos.reload4j</groupId>
+                <artifactId>reload4j</artifactId>
+                <version>1.2.20</version>
             </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
@@ -259,7 +271,7 @@
             <dependency>
                 <!-- for ao. hibernate, dbunit... -->
                 <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-log4j12</artifactId>
+                <artifactId>slf4j-reload4j</artifactId>
                 <version>${slf4j.version}</version>
             </dependency>
             <dependency>
@@ -294,6 +306,10 @@
                     <exclusion>
                         <groupId>org.geotools</groupId>
                         <artifactId>gt-epsg-hsql</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>log4j</groupId>
+                        <artifactId>log4j</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>
@@ -563,11 +579,6 @@
                 <groupId>org.apache.poi</groupId>
                 <artifactId>poi</artifactId>
                 <version>${apache.poi.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>eu.medsea.mimeutil</groupId>
-                <artifactId>mime-util</artifactId>
-                <version>2.1.3</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.httpcomponents</groupId>
@@ -885,7 +896,7 @@
                         <configuration>
                             <rules>
                                 <requireMavenVersion>
-                                    <version>[3.6.0,)</version>
+                                    <version>[3.8.0,)</version>
                                 </requireMavenVersion>
                                 <requireJavaVersion>
                                     <version>${java.version}</version>
@@ -895,6 +906,8 @@
                                         <exclude>junit:junit</exclude>
                                         <exclude>org.hamcrest:hamcrest-core</exclude>
                                         <exclude>commons-lang:commons-lang</exclude>
+                                        <exclude>log4j:log4j</exclude>
+                                        <exclude>org.slf4j:slf4j-log4j12</exclude>
                                     </excludes>
                                 </bannedDependencies>
                                 <reactorModuleConvergence>
