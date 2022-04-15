@@ -30,13 +30,6 @@
         <cpe>cpe:/a:data-tools_project:data_tools</cpe>
     </suppress>
     <suppress>
-        <notes><![CDATA[
-        Log4J SocketServer is not used, so not vulnerable
-        ]]></notes>
-        <packageUrl regex="true">^pkg:maven/log4j/log4j@.*$</packageUrl>
-        <cpe>cpe:/a:apache:log4j</cpe>
-    </suppress>
-    <suppress>
        <notes><![CDATA[
        ignore false identification as flamingo_project:flamingo (which is an IM system)
        ]]></notes>
