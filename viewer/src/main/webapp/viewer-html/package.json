@@ -15,6 +15,6 @@
         "karma": "^6.0.0",
         "karma-chrome-launcher": "^3.1.0",
         "karma-firefox-launcher": "^2.0.0",
-        "karma-jasmine": "^4.0.1"
+        "karma-jasmine": "^5.0.0"
     }
 }
