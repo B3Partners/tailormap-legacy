@@ -61,7 +61,7 @@ timestamps {
                                     sh "mvn -e verify -B -Pjenkins -pl '!viewer-admin'"
 
                                     echo "Running integration tests on viewer-admin module only"
-                                    sh "mvn -e verify -B -Pjenkins -pl 'viewer-admin'"
+                                    sh "mvn -e verify -B -Pjenkins -pl ':flamingo-mc,:viewer-admin'"
                                 }
                             }
                         }

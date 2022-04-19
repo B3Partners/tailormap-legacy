@@ -6,21 +6,21 @@ on:
 jobs:
   build:
     name: MacOS Java ${{ matrix.java }}
-    runs-on: [macos-10.15]
+    runs-on: macos-10.15
     strategy:
       matrix:
         java: [11]
 
     steps:
-    - uses: actions/checkout@v2
-    - uses: actions/cache@v2.1.5
+    - uses: actions/checkout@v3
+    - uses: actions/cache@v3
       with:
         path: ~/.m2/repository
-        key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+        key: maven-${{ hashFiles('**/pom.xml') }}
         restore-keys: |
-          ${{ runner.os }}-maven-
+          maven-
     - name: Set up JDK
-      uses: actions/setup-java@v2
+      uses: actions/setup-java@v3
       with:
         java-version: ${{ matrix.java }}
         distribution: 'adopt'
@@ -28,3 +28,9 @@ jobs:
       run: |
         mvn -B test -fae
         mvn -B verify -fae -e
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v3
+    - name: Cleanup snapshots
+      if: ${{ always() }}
+      run: |
+        find ~/.m2/repository -name "*SNAPSHOT*" -type d | xargs rm -rf {}
