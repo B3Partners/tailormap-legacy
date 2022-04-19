@@ -3,7 +3,7 @@ import { TailorMapFilters, TailorMapService } from '../../../../../bridge/src/ta
 import { Store } from '@ngrx/store';
 import { ApplicationState } from '../state/application.state';
 import { setApplicationContent, setFormConfigs, setLayerVisibility, setSelectedAppLayer } from '../state/application.actions';
-import { concatMap, debounceTime, map, take, takeUntil, tap } from 'rxjs/operators';
+import { debounceTime, map, take, takeUntil, tap } from 'rxjs/operators';
 import { Observable, Subject } from 'rxjs';
 import { FormConfigRepositoryService } from '../../shared/formconfig-repository/form-config-repository.service';
 import { DomainRepositoryService } from '../../feature-form/linked-fields/domain-repository/domain-repository.service';
@@ -84,13 +84,8 @@ export class ApplicationService implements OnDestroy, ApplicationServiceModel {
       });
 
     this.formConfigRepositoryService.loadFormConfiguration$()
-      .pipe(
-        takeUntil(this.destroyed),
-        concatMap(formConfigs => this.domainRepositoryService.initFormConfig$(formConfigs)),
-      )
-      .subscribe(formConfigs => {
-        this.store$.dispatch(setFormConfigs({formConfigs}));
-      });
+      .pipe(takeUntil(this.destroyed))
+      .subscribe(formConfigs => this.store$.dispatch(setFormConfigs({formConfigs})));
   }
 
   public getApplicationId(): number {
