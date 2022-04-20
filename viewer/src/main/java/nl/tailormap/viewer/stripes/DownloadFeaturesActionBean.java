@@ -290,7 +290,7 @@ public class DownloadFeaturesActionBean extends LocalizableApplicationActionBean
                 setFilter(filter, q, ft, Stripersist.getEntityManager());
 
                 Map<String, AttributeDescriptor> featureTypeAttributes = new HashMap<String, AttributeDescriptor>();
-                featureTypeAttributes = makeAttributeDescriptorList(ft);
+                featureTypeAttributes = makeAttributeDescriptorList(ft, true);
 
                 List<ConfiguredAttribute> attributes =  appLayer.getAttributes();
 
@@ -438,7 +438,7 @@ public class DownloadFeaturesActionBean extends LocalizableApplicationActionBean
      * Makes a list of al the attributeDescriptors of the given FeatureType and
      * all the child FeatureTypes (related by join/relate)
      */
-    private Map<String, AttributeDescriptor> makeAttributeDescriptorList(SimpleFeatureType ft) {
+    private Map<String, AttributeDescriptor> makeAttributeDescriptorList(SimpleFeatureType ft, boolean searchNextRelation) {
         Map<String,AttributeDescriptor> featureTypeAttributes = new HashMap<String,AttributeDescriptor>();
         for(AttributeDescriptor ad: ft.getAttributes()) {
             String name=ft.getId()+":"+ad.getName();
@@ -448,9 +448,9 @@ public class DownloadFeaturesActionBean extends LocalizableApplicationActionBean
             }
             featureTypeAttributes.put(name, ad);
         }
-        if (ft.getRelations()!=null){
-            for (FeatureTypeRelation rel : ft.getRelations()){
-                featureTypeAttributes.putAll(makeAttributeDescriptorList(rel.getForeignFeatureType()));
+        if (ft.getRelations()!=null && searchNextRelation) {
+            for (FeatureTypeRelation rel : ft.getRelations()) {
+                featureTypeAttributes.putAll(makeAttributeDescriptorList(rel.getForeignFeatureType(), rel.isSearchNextRelation()));
             }
         }
         return featureTypeAttributes;
