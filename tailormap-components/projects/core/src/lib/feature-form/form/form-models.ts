@@ -49,6 +49,7 @@ export enum FormFieldType {
   HYPERLINK = 'hyperlink',
   CHECKBOX = 'checkbox',
   DATE = 'date',
+  IMAGE = 'image',
 }
 
 

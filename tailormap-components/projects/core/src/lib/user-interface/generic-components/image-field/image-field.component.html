@@ -1,0 +1,29 @@
+<div *ngIf="editing && !!groep" [formGroup]="groep" class="form-field">
+    <label class="label">{{attribute.label}}</label>
+    <div class="upload-wrapper" [class.upload-complete]="isImageSaved">
+      <input type="file" accept="image/*" (change)="fileChangeEvent($event)" class="fileInputProfile">
+      <button mat-stroked-button
+              color="warn"
+              matTooltip="Remove the image"
+              (click)="clearImage()">
+        <mat-icon svgIcon="interface_trash_filled"></mat-icon>
+      </button>
+    </div>
+    <div class="img-space" *ngIf="isImageSaved && !isImageRemoved">
+      <img [src]="imageContent" alt="Preview uploaded image" />
+    </div>
+    <div class="img-space" *ngIf="hasUrl() && !isImageSaved && !isImageRemoved">
+      <img [src]="getUrl()" [alt]="'Current image for ' + attribute.label" />
+    </div>
+</div>
+
+<div class="form-field form-field--view-only" *ngIf="!editing && !!attribute">
+  <div class="label"><mat-label>{{attribute.label}}</mat-label></div>
+  <div class="value img-view" *ngIf="hasUrl(); else emptyValue">
+    <a [href]="getUrl()" target="_blank">
+      <img [src]="getUrl()" [alt]="'Image for ' + attribute.label" />
+    </a>
+  </div>
+</div>
+
+<ng-template #emptyValue><div class="value"></div></ng-template>

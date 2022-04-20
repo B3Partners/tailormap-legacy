@@ -1,0 +1,56 @@
+:host {
+  display: block;
+}
+
+.label {
+  display: block;
+  font-weight: bold;
+  padding-bottom: 5px;
+}
+
+.form-field--view-only .label {
+  line-height: 16px;
+  padding-bottom: 10px;
+}
+
+.form-field {
+  position: relative;
+}
+
+.upload-wrapper {
+  display: flex;
+}
+
+.upload-wrapper input,
+.upload-wrapper .img-space {
+  flex: 1;
+}
+
+.upload-wrapper button {
+  margin-left: 5px;
+  width: 40px;
+  max-width: 40px;
+  padding: 0;
+  min-width: 40px;
+}
+
+.img-space {
+  margin-top: 16px;
+  max-height: 84px;
+}
+
+.img-space img {
+  max-height: 84px;
+  max-width: 100%;
+}
+
+.img-view {
+  margin-top: 0;
+  max-height: 96px;
+}
+
+.img-view img {
+  max-height: 96px;
+  max-width: 100%;
+  border: 0;
+}

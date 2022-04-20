@@ -77,5 +77,6 @@ export class FormfieldComponent implements OnInit {
   public isHyperlinkAttribute = (attr: Attribute): boolean => attr.type === FormFieldType.HYPERLINK;
   public isCheckboxAttribute = (attr: Attribute): boolean => attr.type === FormFieldType.CHECKBOX;
   public isDateAttribute = (attr: Attribute): boolean => attr.type === FormFieldType.DATE;
+  public isImageAttribute = (attr: Attribute): boolean => attr.type === FormFieldType.IMAGE;
 
 }

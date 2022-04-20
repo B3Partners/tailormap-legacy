@@ -18,6 +18,7 @@ import { createCustomElement } from '@angular/elements';
 import { DatepickerFieldComponent } from './generic-components/datepicker-field/datepicker-field.component';
 import { CheckboxFieldComponent } from './generic-components/checkbox-field/checkbox-field.component';
 import { SelectFieldComponent } from './generic-components/select-field/select-field.component';
+import { ImageFieldComponent } from './generic-components/image-field/image-field.component';
 
 @NgModule({
   declarations: [
@@ -32,6 +33,7 @@ import { SelectFieldComponent } from './generic-components/select-field/select-f
     DatepickerFieldComponent,
     CheckboxFieldComponent,
     SelectFieldComponent,
+    ImageFieldComponent,
   ],
   imports: [
     CommonModule,
@@ -46,6 +48,7 @@ import { SelectFieldComponent } from './generic-components/select-field/select-f
     DatepickerFieldComponent,
     CheckboxFieldComponent,
     SelectFieldComponent,
+    ImageFieldComponent,
   ],
   entryComponents: [],
   providers: [

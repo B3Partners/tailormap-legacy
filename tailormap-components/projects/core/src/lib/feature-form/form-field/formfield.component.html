@@ -1,5 +1,5 @@
 <tailormap-label-field
-  *ngIf="!editing"
+  *ngIf="!editing && !isImageAttribute(attribute)"
   [value]="humanReadableValue$ | async"
   [label]="attribute.label"
   [fieldType]="attribute.type"
@@ -33,3 +33,10 @@
   [groep]="groep"
   [attribute]="attribute"
 ></tailormap-datepicker-field>
+
+<tailormap-image-field
+  *ngIf="isImageAttribute(attribute)"
+  [editing]="editing"
+  [groep]="groep"
+  [attribute]="attribute"
+></tailormap-image-field>
