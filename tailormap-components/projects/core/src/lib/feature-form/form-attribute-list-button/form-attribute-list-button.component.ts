@@ -91,7 +91,7 @@ export class FormAttributeListButtonComponent implements OnDestroy {
         take(1),
       )
       .subscribe(([ featureTypeName, layerId, filter, formConfigs ]) => {
-        if (!featureTypeName || filter === null) {
+        if (!featureTypeName) {
           return;
         }
         const appLayer = this.tailorMapService.getApplayerById(+(layerId));
@@ -120,8 +120,8 @@ export class FormAttributeListButtonComponent implements OnDestroy {
           features: [ bulkEditFeature ],
           layerId,
           bulkEditFeatureTypeName: featureTypeName,
-          bulkEditFilter: filter.filter,
-          bulkEditFilterType: filter.filterType,
+          bulkEditFilter: filter?.filter || '',
+          bulkEditFilterType: filter?.filterType || 'cql',
         }));
       });
   }
