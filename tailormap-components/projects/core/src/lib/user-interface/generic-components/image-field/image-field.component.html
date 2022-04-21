@@ -3,6 +3,7 @@
     <div class="upload-wrapper" [class.upload-complete]="isImageSaved">
       <input type="file" accept="image/*" (change)="fileChangeEvent($event)" class="fileInputProfile">
       <button mat-stroked-button
+              *ngIf="isImageSaved || hasUrl()"
               color="warn"
               matTooltip="Remove the image"
               (click)="clearImage()">
