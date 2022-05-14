@@ -7,7 +7,7 @@
         "test": "jasmine"
     },
     "devDependencies": {
-        "grunt": "1.5.2",
+        "grunt": "1.5.3",
         "grunt-svgstore": "2.0.0",
         "http-server": "^14.0.0",
         "jasmine-core": "^4.0.0",
