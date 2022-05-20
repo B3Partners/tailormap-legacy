@@ -8,7 +8,7 @@ import { Subject } from 'rxjs';
 })
 export class LinkedAttributeRegistryService {
 
-  private linkedAttributes: { [key: number]: Attribuut };
+  private linkedAttributes: { [key: number]: Attribuut } = {};
   private domainToAttribute: Map<number, FeatureAttribute>;
 
   private valueToParentValue: Map<number, Domeinwaarde>;
@@ -26,7 +26,6 @@ export class LinkedAttributeRegistryService {
   }
 
   public setLinkedAttributes(linkedAttributes: Array<Attribuut>) {
-    this.linkedAttributes = {};
     linkedAttributes.forEach(attribuut => {
       this.linkedAttributes[attribuut.id] = attribuut;
       attribuut.domein.waardes.forEach(domeinWaarde => {
