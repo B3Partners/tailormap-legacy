@@ -1,6 +1,6 @@
 import { Component, ElementRef, Inject, OnDestroy, OnInit } from '@angular/core';
 import { ConfirmDialogService } from '@tailormap/shared';
-import { filter, map, switchMap, take, takeUntil } from 'rxjs/operators';
+import { filter, map, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { combineLatest, Observable, of, Subject } from 'rxjs';
 import { Attribute, FormConfiguration, TabbedField, TabColumn } from './form-models';
 import { Feature } from '../../shared/generated';
@@ -72,6 +72,7 @@ export class FormComponent implements OnDestroy, OnInit {
     this.store$.select(selectCurrentFeature)
       .pipe(
         takeUntil(this.destroyed),
+        tap(() => this.initComplete = false),
         switchMap(feature => combineLatest([
           of(feature),
           this.store$.select(selectFeatures),

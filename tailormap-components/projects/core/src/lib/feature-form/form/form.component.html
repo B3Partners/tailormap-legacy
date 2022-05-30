@@ -5,70 +5,68 @@
   <div class="error">Fout: Geen formulier gevonden</div>
 </div>
 
-<div *ngIf="!formConfig && !initComplete" class="overlay-panel mat-elevation-z4">
-  <tailormap-dialog-close-button (closeDialog)="closeForm()"></tailormap-dialog-close-button>
-  <div class="loading">
-    <mat-spinner mode="indeterminate" color="primary" diameter="20"></mat-spinner>
-  </div>
-</div>
-
 <div *ngIf="formConfig" class="overlay-panel mat-elevation-z4" [class.overlay-panel--hidden]="isHidden$ | async">
   <tailormap-dialog-close-button (closeDialog)="closeForm()"></tailormap-dialog-close-button>
-  <h1>{{formConfig.name}} {{formDirty ? '*' : ''}}</h1>
-  <div class="form-container" [class.bulk-edit]="isBulk">
-    <div class="form">
-      <tailormap-form-creator #formCreator
-                              [feature]="feature"
-                              [formTabs]="formTabs"
-                              [features]="features"
-                              [formConfig]="formConfig"
-                              [isBulk]="isBulk"
-                              [parentId]="currentParentFeature"
-                              (formValidChanged)="formValidChanged($event)"
-                              (formChanged)="formChanged($event)"></tailormap-form-creator>
+  <h1>
+    {{formConfig.name}} {{formDirty ? '*' : ''}}
+    <mat-spinner *ngIf="!initComplete" mode="indeterminate" color="primary" diameter="20"></mat-spinner>
+  </h1>
+  <ng-container *ngIf="initComplete">
+    <div class="form-container" [class.bulk-edit]="isBulk">
+      <div class="form">
+        <tailormap-form-creator #formCreator
+                                [feature]="feature"
+                                [formTabs]="formTabs"
+                                [features]="features"
+                                [formConfig]="formConfig"
+                                [isBulk]="isBulk"
+                                [parentId]="currentParentFeature"
+                                (formValidChanged)="formValidChanged($event)"
+                                (formChanged)="formChanged($event)"></tailormap-form-creator>
+      </div>
     </div>
-  </div>
-  <div class="bottom-bar">
+    <div class="bottom-bar">
 
-    <div class="push-buttons"></div>
+      <div class="push-buttons"></div>
 
-    <button mat-flat-button color="accent" (click)="cancelForm()" *ngIf="formCreator.editing$ | async">
-      Annuleren
-    </button>
-
-    <mat-menu #addFeatureMenu="matMenu">
-      <button *ngFor="let co of formsForNew" [id]="co.featureType" mat-menu-item (click)="newItem(co);">
-        {{co.name}}
+      <button mat-flat-button color="accent" (click)="cancelForm()" *ngIf="formCreator.editing$ | async">
+        Annuleren
       </button>
-    </mat-menu>
 
-    <mat-menu #optiesMenu="matMenu" yPosition="above" class="tailormap-menu-panel">
-      <button mat-menu-item *ngIf="formsForNew.length > 0" [matMenuTriggerFor]="addFeatureMenu">Object toevoegen</button>
-      <button mat-menu-item *ngIf="(formRelations$ | async) !== null" (click)="createRelations()">Relaties leggen</button>
-      <button mat-menu-item (click)="copy();">Formulier gegevens kopiëren</button>
-      <button mat-menu-item (click)="editGeometry();">Bewerk geometrie</button>
-      <button mat-menu-item class="red-item" (click)="remove();"><mat-icon color="warn">delete_forever</mat-icon>Verwijderen</button>
-    </mat-menu>
+      <mat-menu #addFeatureMenu="matMenu">
+        <button *ngFor="let co of formsForNew" [id]="co.featureType" mat-menu-item (click)="newItem(co);">
+          {{co.name}}
+        </button>
+      </mat-menu>
 
-    <button mat-flat-button color="accent" [matMenuTriggerFor]="optiesMenu" *ngIf="!isCreatingNew() && (formCreator.editing$ | async) === false">
-      Opties
-    </button>
+      <mat-menu #optiesMenu="matMenu" yPosition="above" class="tailormap-menu-panel">
+        <button mat-menu-item *ngIf="formsForNew.length > 0" [matMenuTriggerFor]="addFeatureMenu">Object toevoegen</button>
+        <button mat-menu-item *ngIf="(formRelations$ | async) !== null" (click)="createRelations()">Relaties leggen</button>
+        <button mat-menu-item (click)="copy();">Formulier gegevens kopiëren</button>
+        <button mat-menu-item (click)="editGeometry();">Bewerk geometrie</button>
+        <button mat-menu-item class="red-item" (click)="remove();"><mat-icon color="warn">delete_forever</mat-icon>Verwijderen</button>
+      </mat-menu>
 
-    <div class="button-separator"></div>
+      <button mat-flat-button color="accent" [matMenuTriggerFor]="optiesMenu" *ngIf="!isCreatingNew() && (formCreator.editing$ | async) === false">
+        Opties
+      </button>
 
-    <button mat-flat-button *ngIf="(formCreator.editing$ | async) === false" color="primary" (click)="setFormEditing(true)">
-      Bewerken
-    </button>
+      <div class="button-separator"></div>
 
-    <button *ngIf="formCreator.editing$ | async"
-            [disabled]="!isSaveAllowed()"
-            mat-flat-button
-            color="primary"
-            (click)="formCreator.beforeSave();">
-      <span *ngIf="isMultiFormWorkflow$ | async; else saveLabel">Volgende</span>
-    </button>
+      <button mat-flat-button *ngIf="(formCreator.editing$ | async) === false" color="primary" (click)="setFormEditing(true)">
+        Bewerken
+      </button>
 
-  </div>
+      <button *ngIf="formCreator.editing$ | async"
+              [disabled]="!isSaveAllowed()"
+              mat-flat-button
+              color="primary"
+              (click)="formCreator.beforeSave();">
+        <span *ngIf="isMultiFormWorkflow$ | async; else saveLabel">Volgende</span>
+      </button>
+
+    </div>
+  </ng-container>
 </div>
 
 <ng-template #saveLabel><span>Opslaan</span></ng-template>
