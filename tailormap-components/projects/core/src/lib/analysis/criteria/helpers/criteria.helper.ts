@@ -10,8 +10,7 @@ import { StyleHelper } from '../../helpers/style.helper';
 import { ScopedUserLayerStyleModel } from '../../models/scoped-user-layer-style.model';
 import { AttributeTypeHelper } from '../../../application/helpers/attribute-type.helper';
 import { AttributeFilterHelper, RelatedFilterHelper } from '@tailormap/core-components';
-import { AttributeFilterModel } from '../../../shared/models/attribute-filter.model';
-import { AttributeMetadataResponseRelation, RelatedFilterDataModel } from '@tailormap/api';
+import { AttributeMetadataResponseRelation, RelatedFilterDataModel, AttributeFilterModel } from '@tailormap/api';
 import { AnalysisSourceModel } from '../../models/analysis-source.model';
 import { AttributeMetadataResponse } from '@tailormap/api';
 import { ExtendedFormConfigurationModel } from '../../../application/models/extended-form-configuration.model';
@@ -137,6 +136,7 @@ export class CriteriaHelper {
 
   public static convertConditionToQuery(condition: CriteriaConditionModel) {
     const attributeFilterCondition: AttributeFilterModel = {
+      dataId: `${condition.source}_${condition.attribute}_${condition.condition}`,
       featureType: condition.source,
       attribute: condition.attribute,
       condition: condition.condition,
@@ -153,20 +153,28 @@ export class CriteriaHelper {
   private static getRelatedFilter(filter: string, condition: CriteriaConditionModel) {
     const relatedFilters: RelatedFilterDataModel[] = [];
     let prevParent;
+    let prevParentId;
+    let idCount = 0;
     // condition.relatedTo contains an array with parents, starting at the top-most parent
     condition.relatedTo.forEach(parent => {
+      const id = `condition-${idCount++}`;
       relatedFilters.push({
+        dataId: id,
+        parentId: prevParentId,
         featureType: parent,
         parentFeatureType: prevParent,
       });
       prevParent = parent;
+      prevParentId = id;
     });
     relatedFilters.push({
+      dataId: `condition-${idCount++}`,
       featureType: condition.source,
       parentFeatureType: prevParent,
+      parentId: prevParentId,
       filter,
     });
-    return RelatedFilterHelper.getFilter(condition.relatedTo[0], relatedFilters);
+    return RelatedFilterHelper.getFilter(relatedFilters[0].dataId, relatedFilters);
   }
 
 }
