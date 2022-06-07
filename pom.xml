@@ -70,7 +70,7 @@
         <apache.commons-httpclient.version>3.1</apache.commons-httpclient.version>
         <apache.commons-codec.version>1.15</apache.commons-codec.version>
         <jaxb.api.version>2.3.3</jaxb.api.version>
-        <jaxb.impl.version>2.3.5</jaxb.impl.version>
+        <jaxb.impl.version>4.0.0</jaxb.impl.version>
         <activation.api.version>1.2.2</activation.api.version>
         <slf4j.version>1.7.36</slf4j.version>
         <hibernate.version>5.6.9.Final</hibernate.version>
