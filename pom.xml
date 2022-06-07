@@ -40,7 +40,6 @@
     <properties>
         <flamingo.version>5.8.5-SNAPSHOT</flamingo.version>
         <java.version>1.8</java.version>
-        <node.version>v14.17.5</node.version>
         <project.build.sourceVersion>${java.version}</project.build.sourceVersion>
         <project.build.targetVersion>${java.version}</project.build.targetVersion>
         <maven.compiler.source>${java.version}</maven.compiler.source>
@@ -53,17 +52,17 @@
         <powermock.version>2.0.9</powermock.version>
         <hsqldb.version>2.5.2</hsqldb.version>
         <test.persistence.unit>viewer-config-hsqldb</test.persistence.unit>
-        <postgresql.version>42.3.3</postgresql.version>
+        <postgresql.version>42.3.6</postgresql.version>
         <mssql.version>9.4.1.jre8</mssql.version>
         <oracle.version>21.5.0.0</oracle.version>
         <apache.poi.version>5.2.2</apache.poi.version>
         <jakarta.mail.version>1.6.7</jakarta.mail.version>
         <apache.httpcomponents.version>4.5.13</apache.httpcomponents.version>
         <jaxb.api.version>2.3.3</jaxb.api.version>
-        <jaxb.impl.version>2.3.5</jaxb.impl.version>
+        <jaxb.impl.version>2.3.6</jaxb.impl.version>
         <activation.api.version>1.2.2</activation.api.version>
         <slf4j.version>1.7.36</slf4j.version>
-        <jackson2.version>2.12.6</jackson2.version>
+        <jackson2.version>2.12.7</jackson2.version>
         <!-- skip integration tests by default, override this property from commandline
         or as part of a profile, see eg. 'gh-action' profile in viewer -->
         <test.skip.integrationtests>false</test.skip.integrationtests>
@@ -350,7 +349,7 @@
                 <!-- override the version provided by hibernate -->
                 <groupId>org.javassist</groupId>
                 <artifactId>javassist</artifactId>
-                <version>3.28.0-GA</version>
+                <version>3.29.0-GA</version>
             </dependency>
             <dependency>
                 <groupId>org.hibernate</groupId>
@@ -498,7 +497,7 @@
             <dependency>
                 <groupId>org.eclipse.emf</groupId>
                 <artifactId>org.eclipse.emf.common</artifactId>
-                <version>2.24.0</version>
+                <version>2.25.0</version>
             </dependency>
             <dependency>
                 <groupId>xalan</groupId>
@@ -553,7 +552,7 @@
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-databind</artifactId>
-                <version>${jackson2.version}.1</version>
+                <version>${jackson2.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.owasp.encoder</groupId>
