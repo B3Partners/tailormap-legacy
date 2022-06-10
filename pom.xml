@@ -84,7 +84,7 @@
         <test.skip.integrationtests>false</test.skip.integrationtests>
         <maven-surefire-plugin.version>3.0.0-M7</maven-surefire-plugin.version>
         <jacoco-maven-plugin.version>0.8.8</jacoco-maven-plugin.version>
-        <cargo-maven3-plugin.version>1.9.11</cargo-maven3-plugin.version>
+        <cargo-maven3-plugin.version>1.9.12</cargo-maven3-plugin.version>
         <tomcat.localDatasource>false</tomcat.localDatasource>
         <properties-maven-plugin.version>1.1.0</properties-maven-plugin.version>
     </properties>
