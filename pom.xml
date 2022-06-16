@@ -47,22 +47,23 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <!-- when updating geotools also check b3p-commons-csw or you will end up in transitive dependency hell -->
-        <geotools.version>25.6</geotools.version>
-        <b3p-commons-csw.version>6.8</b3p-commons-csw.version>
+        <geotools.version>27.0</geotools.version>
+        <b3p-commons-csw.version>8.0</b3p-commons-csw.version>
         <powermock.version>2.0.9</powermock.version>
-        <hsqldb.version>2.5.2</hsqldb.version>
+        <hsqldb.version>2.6.1</hsqldb.version>
         <test.persistence.unit>viewer-config-hsqldb</test.persistence.unit>
-        <postgresql.version>42.3.6</postgresql.version>
-        <mssql.version>9.4.1.jre8</mssql.version>
+        <postgresql.version>42.4.0</postgresql.version>
+        <mssql.version>10.2.1.jre11</mssql.version>
         <oracle.version>21.5.0.0</oracle.version>
         <apache.poi.version>5.2.2</apache.poi.version>
         <jakarta.mail.version>1.6.7</jakarta.mail.version>
         <apache.httpcomponents.version>4.5.13</apache.httpcomponents.version>
+        <apache.commons-httpclient.version>3.1</apache.commons-httpclient.version>
         <jaxb.api.version>2.3.3</jaxb.api.version>
         <jaxb.impl.version>2.3.6</jaxb.impl.version>
         <activation.api.version>1.2.2</activation.api.version>
         <slf4j.version>1.7.36</slf4j.version>
-        <jackson2.version>2.12.7</jackson2.version>
+        <jackson2.version>2.13.3</jackson2.version>
         <!-- skip integration tests by default, override this property from commandline
         or as part of a profile, see eg. 'gh-action' profile in viewer -->
         <test.skip.integrationtests>false</test.skip.integrationtests>
@@ -337,6 +338,11 @@
             </dependency>
             <dependency>
                 <groupId>org.geotools</groupId>
+                <artifactId>gt-http</artifactId>
+                <version>${geotools.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.geotools</groupId>
                 <artifactId>gt-wmts</artifactId>
                 <version>${geotools.version}</version>
             </dependency>
@@ -493,6 +499,11 @@
                 <groupId>org.apache.httpcomponents</groupId>
                 <artifactId>httpmime</artifactId>
                 <version>${apache.httpcomponents.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-httpclient</groupId>
+                <artifactId>commons-httpclient</artifactId>
+                <version>${apache.commons-httpclient.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.eclipse.emf</groupId>

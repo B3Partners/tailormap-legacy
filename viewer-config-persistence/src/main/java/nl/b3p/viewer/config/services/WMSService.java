@@ -16,11 +16,6 @@
  */
 package nl.b3p.viewer.config.services;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.*;
-import javax.persistence.*;
 import nl.b3p.viewer.config.ClobElement;
 import nl.b3p.web.WaitPageStatus;
 import org.apache.commons.lang3.mutable.MutableBoolean;
@@ -30,16 +25,41 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.geotools.data.ServiceInfo;
-import org.geotools.data.ows.HTTPClient;
-import org.geotools.ows.wms.LayerDescription;
-import org.geotools.data.ows.SimpleHttpClient;
 import org.geotools.data.ows.Specification;
 import org.geotools.data.wfs.WFSDataStoreFactory;
-import org.geotools.ows.wms.*;
+import org.geotools.http.HTTPClient;
+import org.geotools.http.SimpleHttpClient;
+import org.geotools.ows.ServiceException;
+import org.geotools.ows.wms.LayerDescription;
+import org.geotools.ows.wms.WMS1_0_0;
+import org.geotools.ows.wms.WMS1_1_0;
+import org.geotools.ows.wms.WMS1_1_1;
+import org.geotools.ows.wms.WMS1_3_0;
+import org.geotools.ows.wms.WebMapServer;
 import org.geotools.ows.wms.request.DescribeLayerRequest;
 import org.geotools.ows.wms.response.DescribeLayerResponse;
-import org.geotools.ows.ServiceException;
 import org.stripesstuff.stripersist.Stripersist;
+
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
+import javax.persistence.EntityManager;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Queue;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 /**
  * Entity for saving WMS service metadata. Enables the administration module to
