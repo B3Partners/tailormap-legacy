@@ -1,0 +1,36 @@
+name: "Cleanup and Maintenance"
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "19 23 * * 1"
+
+concurrency:
+  # More info: https://stackoverflow.com/a/68422069/253468
+  group: ${{ github.workflow }}-${{ ( github.ref == 'refs/heads/master' || github.ref == 'refs/heads/release' ) && format('ci-master-{0}', github.sha) || format('ci-master-{0}', github.ref) }}
+  cancel-in-progress: true
+
+jobs:
+  stale:
+    runs-on: ubuntu-latest
+    name: Close Stale PRs
+    permissions:
+      pull-requests: write
+    steps:
+      - uses: actions/stale@v5
+        with:
+          days-before-stale: 60
+          days-before-close: 10
+
+  workflows:
+    runs-on: ubuntu-latest
+    name: Cleanup old workflow runs
+    steps:
+      - name: Delete workflow runs
+        uses: Mattraks/delete-workflow-runs@v2
+        with:
+          token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          # same as "Artifact and log retention" in https://github.com/B3Partners/tailormap/settings/actions
+          retain_days: 90
+          keep_minimum_runs: 2
