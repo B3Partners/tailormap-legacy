@@ -9,7 +9,6 @@ updates:
   open-pull-requests-limit: 25
   reviewers:
   - mprins
-  - mtoonen
   assignees:
   - mprins
   labels:
@@ -25,14 +24,11 @@ updates:
   open-pull-requests-limit: 25
   reviewers:
   - mprins
-  - mtoonen
   assignees:
   - mprins
-  - mtoonen
   labels:
   - build infrastructure
   - dependencies
-  - backport v5.6.x
   - backport v5.8.x
   ignore:
   - dependency-name: javax.servlet:javax.servlet-api
@@ -94,9 +90,7 @@ updates:
   open-pull-requests-limit: 25
   reviewers:
   - mprins
-  - mtoonen
   assignees:
-  - mtoonen
   - mprins
   labels:
   - dependencies
