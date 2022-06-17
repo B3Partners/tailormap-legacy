@@ -62,5 +62,5 @@ jobs:
         if: ${{ always() }}
         # geoserver generates some files that cause the cache generation to fail with EACCES
         run: |
-          sudo rm -rf /home/runner/work/tailormap/tailormap/viewer-commons/docker/geoserver/geoserver-data/gwc/tmp
+          sudo rm -rf /home/runner/work/tailormap/tailormap/viewer-commons/docker/geoserver/geoserver-data/
           find ~/.m2/repository -name "*SNAPSHOT*" -type d | xargs rm -rf {}
