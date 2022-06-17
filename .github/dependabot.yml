@@ -96,7 +96,6 @@ updates:
   - dependencies
   - javascript
   - build infrastructure
-  - backport v5.8.x
 
 - package-ecosystem: "github-actions"
   directory: "/"

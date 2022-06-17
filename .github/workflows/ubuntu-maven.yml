@@ -1,14 +1,14 @@
 name: Ubuntu Maven build
 
 on:
- push:
- pull_request:
- workflow_dispatch:
+  push:
+  pull_request:
+  workflow_dispatch:
 
 jobs:
   build:
     name: Ubuntu Java 11
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
 
     steps:
       - uses: actions/checkout@v3
@@ -60,5 +60,7 @@ jobs:
 
       - name: Cleanup snapshot cache
         if: ${{ always() }}
+        # geoserver generates some files that cause the cache generation to fail with EACCES
         run: |
+          sudo rm -rf /home/runner/work/tailormap/tailormap/viewer-commons/docker/geoserver/geoserver-data/gwc/tmp
           find ~/.m2/repository -name "*SNAPSHOT*" -type d | xargs rm -rf {}
