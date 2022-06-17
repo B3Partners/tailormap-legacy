@@ -9,7 +9,7 @@
     "devDependencies": {
         "grunt": "1.5.3",
         "grunt-svgstore": "2.0.0",
-        "http-server": "^0.12.1",
+        "http-server": "^14.1.1",
         "jasmine-core": "^4.2.0",
         "jsdom": "^16.1.0",
         "karma": "^6.0.0",
