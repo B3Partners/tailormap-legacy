@@ -34,3 +34,14 @@ jobs:
           # same as "Artifact and log retention" in https://github.com/B3Partners/tailormap/settings/actions
           retain_days: 90
           keep_minimum_runs: 2
+
+
+  environments:
+    runs-on: ubuntu-latest
+    name: Cleanup old review environments
+    steps:
+      - uses: strumwolf/delete-deployment-environment@v2
+        with:
+          # ⚠️ The provided token needs permission for admin write:org
+          token: ${{ secrets.GHCR_CLEANUP_PAT }}
+          environment: pr-review/*
