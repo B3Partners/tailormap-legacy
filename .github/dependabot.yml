@@ -7,10 +7,6 @@ updates:
     timezone: Europe/Amsterdam
     day: "saturday"
   open-pull-requests-limit: 25
-  reviewers:
-  - mprins
-  assignees:
-  - mprins
   labels:
   - build infrastructure
   - backport v5.8.x
@@ -22,10 +18,6 @@ updates:
     time: "03:00"
     timezone: Europe/Amsterdam
   open-pull-requests-limit: 25
-  reviewers:
-  - mprins
-  assignees:
-  - mprins
   labels:
   - build infrastructure
   - dependencies
@@ -88,10 +80,6 @@ updates:
     day: saturday
     timezone: Europe/Amsterdam
   open-pull-requests-limit: 25
-  reviewers:
-  - mprins
-  assignees:
-  - mprins
   labels:
   - dependencies
   - javascript
@@ -114,10 +102,6 @@ updates:
     timezone: Europe/Amsterdam
     day: "saturday"
   open-pull-requests-limit: 25
-  reviewers:
-  - mprins
-  assignees:
-  - mprins
   labels:
   - build infrastructure
   - backport v5.8.x
