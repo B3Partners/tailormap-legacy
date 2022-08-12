@@ -24,6 +24,10 @@ COPY bin_unzipped/java11-extra/*.* /usr/local/tomcat/lib/
 RUN mkdir -p $FLA_DATA_DIR/.solr \
     # solr config
     && TMPDIR=`mktemp -d` \
+    && apt update \
+    && apt install -y --no-install-recommends unzip \
+    && apt update && apt upgrade -y && apt autoremove -y && apt autoclean && apt clean && rm -rf /tmp/* && rm -rf /var/tmp/* \
+    && rm -rf /var/lib/apt/lists/* \
     && unzip -o /usr/local/tomcat/webapps/viewer-admin.war 'WEB-INF/classes/solr/*' -d $TMPDIR \
     && mv $TMPDIR/WEB-INF/classes/solr/* $FLA_DATA_DIR/.solr/ \
     && chmod -R 777 $FLA_DATA_DIR/ \
@@ -40,9 +44,11 @@ EXPOSE 8009
 
 HEALTHCHECK CMD curl -f http://localhost:8080/viewer-admin/action/admin/upgradecheck/ping || exit 1
 
-LABEL maintainer=B3Partners \
-      nl.b3p.vendor=B3Partners \
-      nl.b3p.image=Flamingo \
-      nl.b3p.version=$FLA_VERSION
+LABEL org.opencontainers.image.authors="support@b3partners.nl" \
+      org.opencontainers.image.description="Flamingo aka Tailormap" \
+      org.opencontainers.image.vendor="B3Partners BV" \
+      org.opencontainers.image.title="Flamingo" \
+      org.opencontainers.image.documentation="https://github.com/B3Partners/tailormap/" \
+      org.opencontainers.image.version=$FLA_VERSION
 
 VOLUME ["$FLA_DATA_DIR", "/usr/local/tomcat/logs"]
