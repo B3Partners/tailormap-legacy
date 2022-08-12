@@ -48,7 +48,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <!-- when updating geotools also check b3p-commons-csw or you will end up in transitive dependency hell -->
         <geotools.version>27.0</geotools.version>
-        <b3p-commons-csw.version>8.0</b3p-commons-csw.version>
+        <b3p-commons-csw.version>8.1</b3p-commons-csw.version>
         <powermock.version>2.0.9</powermock.version>
         <hsqldb.version>2.6.1</hsqldb.version>
         <test.persistence.unit>viewer-config-hsqldb</test.persistence.unit>
@@ -238,7 +238,7 @@
             <dependency>
                 <groupId>com.google.javascript</groupId>
                 <artifactId>closure-compiler</artifactId>
-                <version>v20220601</version>
+                <version>v20220803</version>
             </dependency>
             <dependency>
                 <groupId>javax.servlet</groupId>
@@ -355,7 +355,7 @@
                 <!-- override the version provided by hibernate -->
                 <groupId>org.javassist</groupId>
                 <artifactId>javassist</artifactId>
-                <version>3.29.0-GA</version>
+                <version>3.29.1-GA</version>
             </dependency>
             <dependency>
                 <groupId>org.hibernate</groupId>
