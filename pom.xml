@@ -50,7 +50,7 @@
         <geotools.version>25.6</geotools.version>
         <b3p-commons-csw.version>6.8</b3p-commons-csw.version>
         <powermock.version>2.0.9</powermock.version>
-        <hsqldb.version>2.5.2</hsqldb.version>
+        <hsqldb.version>2.7.0</hsqldb.version>
         <test.persistence.unit>viewer-config-hsqldb</test.persistence.unit>
         <postgresql.version>42.3.6</postgresql.version>
         <mssql.version>9.4.1.jre8</mssql.version>
@@ -508,6 +508,7 @@
                 <groupId>org.hsqldb</groupId>
                 <artifactId>hsqldb</artifactId>
                 <version>${hsqldb.version}</version>
+                <classifier>jdk8</classifier>
             </dependency>
             <dependency>
                 <groupId>org.postgresql</groupId>
