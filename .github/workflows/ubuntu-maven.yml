@@ -8,7 +8,7 @@ on:
 jobs:
   build:
     name: Ubuntu Java ${{ matrix.java }}
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     strategy:
       matrix:
         java: [8, 11]
@@ -25,7 +25,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           java-version: ${{ matrix.java }}
-          distribution: 'adopt'
+          distribution: 'temurin'
       - name: setup database
         run: |
           sudo systemctl start postgresql.service
@@ -56,5 +56,7 @@ jobs:
         uses: codecov/codecov-action@v3
       - name: Cleanup snapshot cache
         if: ${{ always() }}
+        # geoserver generates some files that cause the cache generation to fail with EACCES
         run: |
+          sudo rm -rf /home/runner/work/tailormap/tailormap/viewer-commons/docker/geoserver/geoserver-data/
           find ~/.m2/repository -name "*SNAPSHOT*" -type d | xargs rm -rf {}
