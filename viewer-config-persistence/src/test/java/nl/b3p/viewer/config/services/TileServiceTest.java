@@ -51,7 +51,7 @@ public class TileServiceTest extends TestUtil{
     private final TileService instance = new TileService();
 
     private static final String PDOK_WMTS = "http://geodata.nationaalgeoregister.nl/tiles/service/wmts?request=getcapabilities";
-    private static final int PDOK_WMTS_LAYERCOUNT = 17;
+    private static final int PDOK_WMTS_LAYERCOUNT = 16;
     DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
     DocumentBuilder builder;
     XPathFactory xPathfactory = XPathFactory.newInstance();
@@ -116,7 +116,7 @@ public class TileServiceTest extends TestUtil{
         assertEquals(PDOK_WMTS_LAYERCOUNT, topLayer.getChildren().size());
 
         Layer brt = topLayer.getChildren().get(1);
-        assertEquals("natura2000", brt.getName());
+        assertEquals("aan", brt.getName());
         JSONArray styles = new JSONArray(brt.getDetails().get(Layer.DETAIL_WMS_STYLES).getValue());
         JSONObject style = (JSONObject)styles.get(0);
         assertEquals("",  style.getString("identifier"));
@@ -198,7 +198,7 @@ public class TileServiceTest extends TestUtil{
         assertEquals("https://geodata.nationaalgeoregister.nl/tiles/service/wmts?", result.getUrl());
         
         Layer brt = topLayer.getChildren().get(0);
-        assertEquals("top10nlv2", brt.getName());
+        assertEquals("natura2000", brt.getName());
         assertEquals(1, brt.getBoundingBoxes().size());
 
         BoundingBox bbox = brt.getMatrixSets().get(0).getBbox();
@@ -216,7 +216,7 @@ public class TileServiceTest extends TestUtil{
         assertEquals(15, matrices.length());
         assertTrue(serviceObj.has("layers"));
         JSONObject layers = serviceObj.getJSONObject("layers");
-        JSONObject jsonLayer = layers.getJSONObject("top10nlv2");
+        JSONObject jsonLayer = layers.getJSONObject("natura2000");
         assertNotNull(jsonLayer);
         assertTrue(jsonLayer.has("bbox"));
 
