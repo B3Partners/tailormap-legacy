@@ -56,8 +56,7 @@ public class ComponentResourceActionBean implements ActionBean{
             return new ErrorResolution(HttpServletResponse.SC_NOT_FOUND,"Resource not found");
         }
         //check if the file requested is in the path of the component
-        String check = file.getCanonicalPath();
-        if (!check.startsWith(comp.getPath())){
+        if (!file.getCanonicalFile().toPath().startsWith(comp.getPath())){
             return new ErrorResolution(HttpServletResponse.SC_FORBIDDEN,"Not allowed to access file");
         }
 
