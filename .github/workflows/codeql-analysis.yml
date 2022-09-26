@@ -16,7 +16,7 @@ on:
   push:
     branches: [ master, v5.6.x, v5.8.x ]
   pull_request: # The branches below must be a subset of the branches above
-    branches: [ master ]
+    branches: [ master, v5.8.x ]
   schedule:
     - cron: '26 18 * * 0'
 
