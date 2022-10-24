@@ -50,7 +50,7 @@
         <geotools.version>25.6</geotools.version>
         <b3p-commons-csw.version>6.8</b3p-commons-csw.version>
         <powermock.version>2.0.9</powermock.version>
-        <hsqldb.version>2.7.0</hsqldb.version>
+        <hsqldb.version>2.7.1</hsqldb.version>
         <test.persistence.unit>viewer-config-hsqldb</test.persistence.unit>
         <postgresql.version>42.5.0</postgresql.version>
         <mssql.version>11.2.1.jre8</mssql.version>
