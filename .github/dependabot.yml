@@ -5,7 +5,7 @@ updates:
   schedule:
     interval: weekly
     timezone: Europe/Amsterdam
-    day: "saturday"
+    day: "monday"
   open-pull-requests-limit: 25
   labels:
   - build infrastructure
@@ -14,8 +14,8 @@ updates:
 - package-ecosystem: maven
   directory: "/"
   schedule:
-    interval: daily
-    time: "03:00"
+    interval: weekly
+    day: monday
     timezone: Europe/Amsterdam
   open-pull-requests-limit: 25
   labels:
@@ -73,7 +73,7 @@ updates:
   directory: "/viewer/src/main/webapp/viewer-html"
   schedule:
     interval: weekly
-    day: saturday
+    day: monday
     timezone: Europe/Amsterdam
   open-pull-requests-limit: 25
   labels:
@@ -85,7 +85,7 @@ updates:
   directory: "/"
   schedule:
     interval: "weekly"
-    day: saturday
+    day: monday
     timezone: Europe/Amsterdam
   labels:
   - build infrastructure
@@ -96,7 +96,7 @@ updates:
   schedule:
     interval: weekly
     timezone: Europe/Amsterdam
-    day: "saturday"
+    day: "monday"
   open-pull-requests-limit: 25
   labels:
   - build infrastructure
