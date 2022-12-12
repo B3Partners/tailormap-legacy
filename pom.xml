@@ -57,7 +57,7 @@
         <oracle.version>21.7.0.0</oracle.version>
         <apache.poi.version>5.2.3</apache.poi.version>
         <jakarta.mail.version>1.6.7</jakarta.mail.version>
-        <apache.httpcomponents.version>4.5.13</apache.httpcomponents.version>
+        <apache.httpcomponents.version>4.5.14</apache.httpcomponents.version>
         <apache.commons-httpclient.version>3.1</apache.commons-httpclient.version>
         <jaxb.api.version>2.3.3</jaxb.api.version>
         <jaxb.impl.version>2.3.6</jaxb.impl.version>
