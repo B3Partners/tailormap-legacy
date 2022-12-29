@@ -66,7 +66,10 @@ Ext.define("viewer.Bookmark", {
                 var response = Ext.JSON.decode(result.responseText);
                 
                 if(response.success) {
-                    successFunction(response.params);
+                    // decode bookmark URL
+                    // https://github.com/B3Partners/tailormap/pull/2391/files
+                    // Na dit PR worden tekeningen decoded opgeslagen maar niet op de juiste manier terugggeven.
+                    successFunction(response.params.replaceAll(new RegExp('&#34;', 'g'), '\\"'));
                 } else {
                     if(failureFunction != undefined) {
                         failureFunction(response.error);
