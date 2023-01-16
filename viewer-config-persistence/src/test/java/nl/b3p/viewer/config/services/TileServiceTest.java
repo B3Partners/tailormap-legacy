@@ -102,6 +102,7 @@ public class TileServiceTest extends TestUtil{
 
     
     @Test
+    @Ignore("iedere keer als pdok iets aanpast valt deze test om, dat is teveel werk geworden om bij te houden")
     public void testLoadTopLayerChildWMTSFromURL() throws Exception {
         URL u = new URL(PDOK_WMTS);
         String url = u.toString();
@@ -184,6 +185,7 @@ public class TileServiceTest extends TestUtil{
     }
     
     @Test
+    @Ignore("iedere keer als pdok iets aanpast valt deze test om, dat is teveel werk geworden om bij te houden")
     public void testLoadTopLayerWMTSFromURL() throws Exception {
         URL u = new URL(PDOK_WMTS);
         String url = u.toString();
