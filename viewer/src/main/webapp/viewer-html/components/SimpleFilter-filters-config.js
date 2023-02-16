@@ -83,11 +83,10 @@ Ext.define("viewer.components.sf.Config", {
                 label:  i18next.t('viewer_components_sf_config_81'),
                 id: -1
             }];
-        var currentConfig = null;
         for(var i = 0 ; i <this.configurator.filterConfigs.length; i++){
             var f = this.configurator.filterConfigs[i];
-            if(f.config.id !== this.id && f.appLayerId !== null){
-                var type = "";
+            if(f.config.id !== this.id && f.appLayerId !== null) {
+                var type = f.class.substring(f.class.lastIndexOf(".")+1);
                 var appLayer = this.configurator.getAppConfig().appLayers[f.appLayerId];
                 filters.push({
                     label: this.configurator.createDescription(type, appLayer, f),
