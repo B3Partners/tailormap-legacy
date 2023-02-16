@@ -329,9 +329,12 @@ Ext.define("viewer.components.CustomConfiguration",{
         if(appLayer){
             filter.appLayerId = appLayer.id;
             var description = this.createDescription(type, appLayer, filter);
+            this.filterConfigs.push(filter);
+            this.filterStore.add({soort: soort, description: description, id:filter.config.id});
+        } else if( type === "Reset" || type === "Textlabel") {
+            this.filterConfigs.push(filter);
+            this.filterStore.add({soort: soort, description: " - ", id:filter.config.id});
         }
-        this.filterConfigs.push(filter);
-        this.filterStore.add({soort: soort, description: description, id:filter.config.id});
     },
     gridSelect: function(grid, record, index) {
         this.currentEditIndex = index;
