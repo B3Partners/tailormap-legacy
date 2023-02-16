@@ -1,4 +1,4 @@
-FROM tomcat:9-jdk11
+FROM tomcat:10-jdk11
 
 ARG FLA_VERSION=5.7.8
 ENV PG_PORT=5432
