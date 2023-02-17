@@ -87,7 +87,7 @@ Ext.define("viewer.components.sf.Config", {
         for(var i = 0 ; i <this.configurator.filterConfigs.length; i++){
             var f = this.configurator.filterConfigs[i];
             if(f.config.id !== this.id && f.appLayerId !== null){
-                var type = "";
+                var type = f.class.substring(f.class.lastIndexOf(".")+1);
                 var appLayer = this.configurator.getAppConfig().appLayers[f.appLayerId];
                 filters.push({
                     label: this.configurator.createDescription(type, appLayer, f),
