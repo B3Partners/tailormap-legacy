@@ -9,10 +9,10 @@ At the time of writing (March 2021) the support matrix looks as follows:
 
 | Version | Supported          | Stable / Community release? |
 | ------- | ------------------ | --------------------------- |
-| 5.9.x   | :white_check_mark: | Community                   |
+| 5.9.x   | :x:                | Community                   |
 | 5.8.x   | :white_check_mark: | Stable                      |
 | 5.7.x   | :x:                | Community                   |
-| 5.6.x   | :white_check_mark: | Stable                      |
+| 5.6.x   | :x:                | Old Stable                  |
 | 5.5.x   | :x:                | Community                   |
 | 5.4.x   | :x:                | Old stable                  |
 | 5.2.x   | :x:                | Old stable                  |
