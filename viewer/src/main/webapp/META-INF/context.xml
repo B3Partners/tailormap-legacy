@@ -78,6 +78,7 @@
   <ResourceLink global="jdbc/geo_viewer" name="jdbc/geo_viewer" type="javax.sql.DataSource"/>
   
   <!-- USE THIS FOR SAFETYMAYPSCOMPONENT
+  <Parameter name="flamingo.safetymaps.group" override="false" value="safetyct"/>
   <ResourceLink global="jdbc/safetymaps-server" name="jdbc/safetymaps-server" type="javax.sql.DataSource"/>
   -->
   
