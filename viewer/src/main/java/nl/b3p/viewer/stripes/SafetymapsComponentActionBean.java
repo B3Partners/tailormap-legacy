@@ -9,9 +9,9 @@ import nl.opengeogroep.SafetymapsApi;
 import nl.opengeogroep.SafetymapsUtils;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.handlers.ScalarHandler;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.json.JSONObject;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -28,8 +28,6 @@ public class SafetymapsComponentActionBean implements ActionBean {
     private ActionBeanContext context;
 
     public static final String ROLE_ADMIN = "Admin";
-
-    static final String ROLE = "safetyct";
 
     private String JNDI_NAME = "java:/comp/env/jdbc/safetymaps-server";
     private static final String FEATURES = "features.json";
@@ -103,7 +101,9 @@ public class SafetymapsComponentActionBean implements ActionBean {
     }
 
     public Resolution api() throws Exception {
-        if(!context.getRequest().isUserInRole(ROLE) && !context.getRequest().isUserInRole(ROLE_ADMIN)) {
+        String role = StringUtils.defaultIfEmpty(context.getServletContext().getInitParameter("flamingo.safetymaps.group"), "safetyct");
+
+        if(!context.getRequest().isUserInRole(role) && !context.getRequest().isUserInRole(ROLE_ADMIN)) {
             return new ErrorMessageResolution(HttpServletResponse.SC_FORBIDDEN, "Gebruiker heeft geen toegang tot webservice");
         }
 
