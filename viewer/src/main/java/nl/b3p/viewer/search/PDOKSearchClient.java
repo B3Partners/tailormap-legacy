@@ -20,17 +20,17 @@ import org.locationtech.jts.geom.Envelope;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.io.ParseException;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.solr.client.solrj.SolrQuery;
-import org.apache.solr.client.solrj.SolrServer;
-import org.apache.solr.client.solrj.SolrServerException;
-import org.apache.solr.client.solrj.impl.HttpSolrServer;
-import org.apache.solr.client.solrj.response.QueryResponse;
-import org.apache.solr.common.SolrDocument;
-import org.apache.solr.common.SolrDocumentList;
 import org.geotools.geometry.jts.WKTReader2;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -43,10 +43,10 @@ import org.json.JSONObject;
  */
 public class PDOKSearchClient extends SearchClient {
 
-    private static final Log log = LogFactory.getLog(SolrSearchClient.class);  
-    private SolrServer server;
+    private static final Log log = LogFactory.getLog(SolrSearchClient.class);
     private WKTReader2 wkt;
     private String filter;
+    private static final String PDOK_URL="https://api.pdok.nl/bzk/locatieserver/search/v3_1/free";
 
     /* This is a lookup table with a distance per type of object so we can generate a sensible
         bbox to zoom to, these values are used when we only get a point for a hit.
@@ -66,7 +66,6 @@ public class PDOKSearchClient extends SearchClient {
     }
     
     public PDOKSearchClient(String filter){
-        server = new HttpSolrServer("http://geodata.nationaalgeoregister.nl/locatieserver/v3");
         wkt = new WKTReader2();
         this.filter = filter;
     }
@@ -76,30 +75,45 @@ public class PDOKSearchClient extends SearchClient {
         SearchResult result = new SearchResult();
         try {
             JSONArray respDocs = new JSONArray();
-            SolrQuery query = new SolrQuery();
             // add asterisk to make it match partial queries (for autosuggest)
             term += "*";
-            if(this.filter != null){
-                query.setFilterQueries(this.filter);
+            String  final_url = this.PDOK_URL + "?q=" + term;
+            if(this.filter != null && !this.filter.isEmpty()){
+                final_url += "&fq=" + this.filter;
             }
-            query.setQuery(term);
+
             // specify fields to retrieve (null values wil be omitted in the response),
             //   the default is listed at https://github.com/PDOK/locatieserver/wiki/API-Locatieserver#52url-parameters
             //   this list is probably still longer than needed, so maybe could be pruned
-            query.setParam("fl", "identificatie,weergavenaam,bron,type,openbareruimte_id,openbareruimtetype,straatnaam,adresseerbaarobject_id,nummeraanduiding_id,huisnummer,huisletter,huisnummertoevoeging,huis_nlt,postcode,woonplaatscode,woonplaatsnaam,gemeentenaam,provinciecode,provincienaam,kadastraal_object_id,kadastrale_gemeentecode,kadastrale_gemeentenaam,kadastrale_sectie,perceelnummer,kadastrale_grootte,gekoppeld_perceel,kadastrale_aanduiding,centroide_rd,boundingbox_rd,geometrie_rd,score");
-            query.setRequestHandler("/free");
-            QueryResponse rsp = server.query(query);
-            SolrDocumentList list = rsp.getResults();
-            
-            for (SolrDocument solrDocument : list) {
-                JSONObject doc = solrDocumentToResult(solrDocument);
+            final_url += "&fl=" + "identificatie,weergavenaam,bron,type,openbareruimte_id,openbareruimtetype,straatnaam,adresseerbaarobject_id,nummeraanduiding_id,huisnummer,huisletter,huisnummertoevoeging,huis_nlt,postcode,woonplaatscode,woonplaatsnaam,gemeentenaam,provinciecode,provincienaam,kadastraal_object_id,kadastrale_gemeentecode,kadastrale_gemeentenaam,kadastrale_sectie,perceelnummer,kadastrale_grootte,gekoppeld_perceel,kadastrale_aanduiding,centroide_rd,boundingbox_rd,geometrie_rd,score";
+            URL url = new URL(final_url);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
+            StringBuilder response = new StringBuilder();
+            String line;
+            try(BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
+                while ((line = reader.readLine()) != null) {
+                    response.append(line);
+                }
+            } catch (IOException ex) {
+                log.error("Cannot get search response from PDOK:",ex);
+            }
+
+            JSONObject pdokResponse = new JSONObject(response.toString()).getJSONObject("response");
+            JSONArray docs = pdokResponse.getJSONArray("docs");
+
+            Iterator<Object> it = docs.iterator();
+            while (it.hasNext()) {
+                JSONObject doc = (JSONObject) it.next();
+                doc = solrDocumentToResult(doc);
                 if (doc != null) {
                     respDocs.put(doc);
                 }
             }
+
             result.setResults(respDocs);
-            result.setLimitReached(list.getNumFound() > list.size());
-        } catch (SolrServerException ex) {
+            result.setLimitReached(pdokResponse.getInt("numFound") > docs.length());
+        } catch (  IOException ex) {
             log.error("Cannot search:",ex);
         }
         return result;
@@ -111,10 +125,10 @@ public class PDOKSearchClient extends SearchClient {
       return r.getResults();
     }
     
-    private JSONObject solrDocumentToResult(SolrDocument doc){
+    private JSONObject solrDocumentToResult(JSONObject doc){
         JSONObject result = null;
         try {
-            Map<String, Object> values = doc.getFieldValueMap();
+            Map<String, Object> values = doc.toMap();
             result = new JSONObject();
             for (String key : values.keySet()) {
                 switch (key) {
@@ -129,7 +143,7 @@ public class PDOKSearchClient extends SearchClient {
                 }
             }
 
-            String geom = (String) doc.getFieldValue("centroide_rd");
+            String geom = (String) doc.get("centroide_rd");
             if (values.containsKey("geometrie_rd")) {
                 geom = (String) values.get("geometrie_rd");
             } else if (values.containsKey("boundingbox_rd")) {
