@@ -26,6 +26,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -77,9 +79,9 @@ public class PDOKSearchClient extends SearchClient {
             JSONArray respDocs = new JSONArray();
             // add asterisk to make it match partial queries (for autosuggest)
             term += "*";
-            String  final_url = this.PDOK_URL + "?q=" + term;
+            String  final_url = this.PDOK_URL + "?q=" + URLEncoder.encode(term, StandardCharsets.UTF_8.toString());
             if(this.filter != null && !this.filter.isEmpty()){
-                final_url += "&fq=" + this.filter;
+                final_url += "&fq=" + URLEncoder.encode(this.filter, StandardCharsets.UTF_8.toString());
             }
 
             // specify fields to retrieve (null values wil be omitted in the response),
