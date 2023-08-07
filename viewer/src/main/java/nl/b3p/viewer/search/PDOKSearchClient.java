@@ -45,7 +45,7 @@ import org.json.JSONObject;
  */
 public class PDOKSearchClient extends SearchClient {
 
-    private static final Log log = LogFactory.getLog(SolrSearchClient.class);
+    private static final Log log = LogFactory.getLog(PDOKSearchClient.class);
     private WKTReader2 wkt;
     private String filter;
     private static final String PDOK_URL="https://api.pdok.nl/bzk/locatieserver/search/v3_1/free";
