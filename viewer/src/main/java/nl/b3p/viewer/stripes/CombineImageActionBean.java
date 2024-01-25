@@ -166,6 +166,8 @@ public class CombineImageActionBean extends LocalizableActionBean implements Act
                 this.prepareImageSettings(jRequest);
                 String url = this.context.getRequest().getRequestURL().toString();
                 url += "?getImage=t&imageId=" + imageId;
+                final CombineImageSettings settings = imageSettings.get(imageId);
+                jResponse.put("bbox",settings.correctBoundingBoxForScale(settings.getBbox(), settings.getScale(), settings.getPaperFormat()));
                 String jsessionId = null;
                 String j = "jsessionid";
                 int index = url.toLowerCase().indexOf(j);
@@ -218,6 +220,8 @@ public class CombineImageActionBean extends LocalizableActionBean implements Act
         }
         if (bbox != null) {
             settings.setBbox(bbox);
+        } else {
+            settings.setBbox(settings.correctBoundingBoxForScale(settings.getBbox(), settings.getScale(), settings.getPaperFormat()));
         }
         if (this.getGeom() != null) {
             String firstChar = geom.substring(0, 1);

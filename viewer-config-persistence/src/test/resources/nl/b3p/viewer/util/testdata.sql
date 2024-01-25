@@ -227,7 +227,7 @@ INSERT INTO geo_service_keywords (geo_service, keyword) VALUES (2, 'WMS');
 INSERT INTO geo_service_keywords (geo_service, keyword) VALUES (2, 'http://x12.b3p.nl/cgi-bin/mapserv?map=/srv/maps/solparc/groen_productie.map&');
 INSERT INTO geo_service_keywords (geo_service, keyword) VALUES (3, 'http://x12.b3p.nl/cgi-bin/mapserv?map=/srv/maps/solparc/woonplaats_productie.map');
 INSERT INTO geo_service_keywords (geo_service, keyword) VALUES (3, 'WMS');
-INSERT INTO geo_service_keywords (geo_service, keyword) VALUES (4, 'https://flamingo5.b3p.nl/geoserver/test_omgeving_fla5/wms');
+INSERT INTO geo_service_keywords (geo_service, keyword) VALUES (4, 'https://test.tailormap.com/geoserver/test_omgeving_fla5/wms');
 INSERT INTO geo_service_keywords (geo_service, keyword) VALUES (4, 'WMS');
 
 

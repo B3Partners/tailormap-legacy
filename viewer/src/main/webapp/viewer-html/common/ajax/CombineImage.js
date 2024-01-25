@@ -41,7 +41,7 @@ Ext.define("viewer.CombineImage", {
             success: function(result) {
                 var response = Ext.JSON.decode(result.responseText);                
                 if(response.success) {
-                    successFunction(response.imageUrl);
+                    successFunction(response.imageUrl, response.bbox);
                 } else {
                     if(failureFunction != undefined) {
                         failureFunction(response.error);

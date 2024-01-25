@@ -66,7 +66,7 @@ public abstract class TestUtil extends LoggingTestUtil {
 
     protected String layerName = "Test_omgeving:unittest";
     protected String geometryAttribute = "geom";
-    protected String url = "https://flamingo5.b3p.nl/geoserver/Test_omgeving/ows";
+    protected String url = "https://test.tailormap.com/geoserver/Test_omgeving/ows";
     protected List<ConfiguredAttribute> attributes = new ArrayList<ConfiguredAttribute>();
 
     /**
