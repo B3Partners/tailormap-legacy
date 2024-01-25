@@ -84,9 +84,26 @@ Ext.define("viewer.components.Print", {
         this.extraInfoCallbacks = new Array();
         this.extraLayerCallbacks = new Array();
 
+        this.vectorLayer = this.viewerController.mapComponent.createVectorLayer({
+            name: 'Printpreview VectorLayer',
+            geometrytypes: ["Polygon"],
+            showmeasures: false,
+            mustCreateVertices: true,
+            allowselection: false,
+            viewerController: this.config.viewerController,
+            style: {
+                fillopacity: 10,
+                strokecolor: "FF0000",
+            }
+        });
+        this.viewerController.mapComponent.getMap().addLayer(this.vectorLayer);
         this.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_VISIBILITY_CHANGED,this.layerVisibilityChanged,this);
         this.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,this.layerAdded,this);
         this.viewerController.mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_REMOVED,this.layerRemoved,this);
+
+        this.popup.addListener('hide', function() {
+            this.vectorLayer.getFrameworkLayer().removeAllFeatures();
+        }, this);
 
         return this;
     },
@@ -438,7 +455,15 @@ Ext.define("viewer.components.Print", {
                                     name: 'orientation',
                                     inputValue: 'portrait',
                                     checked: !(me.getOrientation()==='landscape')
-                                }]
+                                }],
+                                listeners: {
+                                    change: {
+                                        scope: this,
+                                        fn: function () {
+                                            this.redrawPreview();
+                                        }
+                                    }
+                                }
                             },{
                                 xtype: 'checkbox',
                                 name: 'includeLegend',
@@ -474,7 +499,15 @@ Ext.define("viewer.components.Print", {
                                 itemId: 'scale',
                                 fieldLabel: i18next.t('viewer_components_print_12'),
                                 xtype:"textfield",
-                                value: this.config.viewerController.mapComponent.getMap().getActualScale()
+                                value: this.config.viewerController.mapComponent.getMap().getActualScale(),
+                                listeners: {
+                                    blur: {
+                                        fn: function(){
+                                            this.redrawPreview();
+                                        },
+                                        scope:this
+                                    }
+                                }
                             },{
                                 xtype: 'checkbox',
                                 name: 'includeOverview',
@@ -518,7 +551,15 @@ Ext.define("viewer.components.Print", {
                                 // 2014, Eddy Scheper, ARIS B.V. - A5 and A0 added.
                                 store: pageFormats,
                                 width: 100,
-                                value: me.getDefault_format()? me.getDefault_format(): "a4"
+                                value: me.getDefault_format()? me.getDefault_format(): "a4",
+                                listeners: {
+                                    change:{
+                                        fn: function(){
+                                            this.redrawPreview();
+                                        },
+                                        scope:this
+                                    }
+                                }
                             },{
                                 xtype: 'slider',
                                 itemId: 'rotateSlider',
@@ -579,6 +620,7 @@ Ext.define("viewer.components.Print", {
                         click:{
                             scope: this,
                             fn: function (){
+                                this.vectorLayer.getFrameworkLayer().removeAllFeatures();
                                 this.popup.hide();
                             }
                         }
@@ -684,9 +726,15 @@ Ext.define("viewer.components.Print", {
     * Call to redraw the preview
     */
     redrawPreview: function (){
+        this.vectorLayer.getFrameworkLayer().removeAllFeatures();
         document.getElementById('previewImg').innerHTML = i18next.t('viewer_components_print_29');
         var properties = this.getProperties();
-        this.combineImageService.getImageUrl(Ext.JSON.encode(properties),this.imageSuccess,this.imageFailure);
+        var me = this;
+        this.combineImageService.getImageUrl(Ext.JSON.encode(properties),function (url, bbox){
+            var bboxFeature = me.imageSuccess(url,bbox);
+            me.vectorLayer.getFrameworkLayer().addFeatures(bboxFeature);
+            me.vectorLayer.bringToFront();
+        },this.imageFailure);
     },
     /**
      *
@@ -856,7 +904,9 @@ Ext.define("viewer.components.Print", {
     * Called when a button is clicked and the form must be submitted.
     */
     submitSettings: function(action){
+        this.vectorLayer.setVisible(false);
         var properties = this.getAllProperties(action);
+        this.vectorLayer.setVisible(true);
         // console.debug("submitting print values:", properties);
         Ext.getCmp('formParams').setValue(Ext.JSON.encode(properties));
         //this.combineImageService.getImageUrl(Ext.JSON.encode(properties),this.imageSuccess,this.imageFailure);
@@ -885,10 +935,14 @@ Ext.define("viewer.components.Print", {
      *Called when the imageUrl is succesfully returned
      *@param imageUrl the url to the image
      */
-    imageSuccess: function(imageUrl){
+    imageSuccess: function(imageUrl, bbox){
         if(Ext.isEmpty(imageUrl) || !Ext.isDefined(imageUrl)) imageUrl = null;
         if(imageUrl === null) document.getElementById('previewImg').innerHTML = i18next.t('viewer_components_print_31');
         else {
+            bbox = bbox.split(",");
+            var bounds = new OpenLayers.Bounds(bbox[0],bbox[1],bbox[2],bbox[3]);
+            var geom = bounds.toGeometry();
+            var feat = new OpenLayers.Feature.Vector(geom,{name: 'print-preview-bbox-feature'});
             var image = new Image();
             image.onload = function() {
                 var img = document.createElement('img');
@@ -901,6 +955,7 @@ Ext.define("viewer.components.Print", {
                 preview.appendChild(img);
             };
             image.src = imageUrl;
+            return [feat];
         }
     },
     /**

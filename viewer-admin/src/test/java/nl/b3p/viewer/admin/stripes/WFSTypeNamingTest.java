@@ -82,8 +82,8 @@ public class WFSTypeNamingTest extends TestUtil {
     public static Collection params() {
         return Arrays.asList(new Object[][]{
             // {"url","name","wfs",typecount},
-            {"https://flamingo5.b3p.nl:443/geoserver/Test_omgeving/wfs?SERVICE=WFS&", "geoserver-namespaced-wfsurl", "wfs", 4, 0},
-            {"https://flamingo5.b3p.nl:443/geoserver/Test_omgeving/wms?SERVICE=WMS&", "geoserver-namespaced-wmsurl", "wms", 5, 0}
+            {"https://test.tailormap.com/geoserver/Test_omgeving/wfs?SERVICE=WFS&", "geoserver-namespaced-wfsurl", "wfs", 4, 0},
+            {"https://test.tailormap.com/geoserver/Test_omgeving/wms?SERVICE=WMS&", "geoserver-namespaced-wmsurl", "wms", 5, 0}
         });
     }
 

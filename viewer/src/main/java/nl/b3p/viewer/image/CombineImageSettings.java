@@ -16,9 +16,13 @@
  */
 package nl.b3p.viewer.image;
 
+import nl.b3p.viewer.print.PaperFormat;
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.json.JSONArray;
@@ -47,12 +51,29 @@ public class CombineImageSettings {
     private Integer width = null;
     private Integer height = null;
     private Integer angle = null;
+    private Double scale = 0.0;
     public static Color defaultWktGeomColor= Color.RED;
     private String mimeType="image/png";
-    
+    private PaperFormat paperFormat = null;
     // bbox + ";"+ resolutions + ";" + tileSize + ";" + serviceUrl;
     
-    private String tilingServiceUrl = null;    
+    private String tilingServiceUrl = null;
+
+    private static final Map<String, PaperFormat> FORMAT_MAP = new HashMap<>();
+    static {
+        FORMAT_MAP.put("a0_landscape", PaperFormat.A0_landscape);
+        FORMAT_MAP.put("a0_portrait", PaperFormat.A0_portrait);
+        FORMAT_MAP.put("a1_landscape", PaperFormat.A1_landscape);
+        FORMAT_MAP.put("a1_portrait", PaperFormat.A1_portrait);
+        FORMAT_MAP.put("a2_landscape", PaperFormat.A2_landscape);
+        FORMAT_MAP.put("a2_portrait", PaperFormat.A2_portrait);
+        FORMAT_MAP.put("a3_landscape", PaperFormat.A3_landscape);
+        FORMAT_MAP.put("a3_portrait", PaperFormat.A3_portrait);
+        FORMAT_MAP.put("a4_landscape", PaperFormat.A4_landscape);
+        FORMAT_MAP.put("a4_portrait", PaperFormat.A4_portrait);
+        FORMAT_MAP.put("a5_landscape", PaperFormat.A5_landscape);
+        FORMAT_MAP.put("a5_portrait", PaperFormat.A5_portrait);
+    }
     
     /**
      * Calculate the urls in the combineImageSettings.
@@ -246,7 +267,27 @@ public class CombineImageSettings {
         this.angle = angle;
     }
 
-    //</editor-fold>   
+    public void setBbox(Bbox bbox) {
+        this.bbox = bbox;
+    }
+
+    public Double getScale() {
+        return scale;
+    }
+
+    public void setScale(Double scale) {
+        this.scale = scale;
+    }
+
+    public PaperFormat getPaperFormat() {
+        return paperFormat;
+    }
+
+    public void setPaperFormat(PaperFormat paperFormat) {
+        this.paperFormat = paperFormat;
+    }
+
+    //</editor-fold>
     /**
      * Create a new BBOX that covers the original and the rotated bbox.
      *
@@ -518,6 +559,39 @@ public class CombineImageSettings {
                 cis.setHeight(quality);
             }
         }
+
+        if (settings.has("scale")){
+            cis.setScale(settings.getDouble("scale"));
+        }
+        if(settings.has("pageformat") && settings.has("orientation")) {
+            cis.setPaperFormat(cis.getPaperFormat(settings.getString("pageformat"), settings.getString("orientation")));
+        }
+
         return cis;
+    }
+
+    private PaperFormat getPaperFormat(String pageFormat, String orientation) {
+        String key = pageFormat.toLowerCase() + "_" + orientation.toLowerCase();
+        return FORMAT_MAP.getOrDefault(key, PaperFormat.A4_portrait);
+    }
+
+    public String correctBoundingBoxForScale(Bbox bbox, double scale, PaperFormat paperFormat) {
+        if(scale == 0.0 || paperFormat == null) {
+            return bbox.toString();
+        }
+        double widthPx = paperFormat.getWidth();
+        double heightPx = paperFormat.getHeight();
+        double ppm = 2.8;
+
+        double widthCorrected = (widthPx / ppm) * (scale / 1000);
+        double heightCorrected = (heightPx / ppm) * (scale / 1000);
+
+        double xMid = (bbox.getMinx() + bbox.getMaxx()) / 2;
+        double yMid = (bbox.getMiny() + bbox.getMaxy()) / 2;
+        bbox.setMinx(xMid - (widthCorrected / 2));
+        bbox.setMiny(yMid - (heightCorrected / 2));
+        bbox.setMaxx(xMid + (widthCorrected / 2));
+        bbox.setMaxy(yMid + (heightCorrected / 2));
+        return bbox.toString();
     }
 }
